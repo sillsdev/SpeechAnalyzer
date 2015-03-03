@@ -8,21 +8,18 @@
 #include "DlgWaveNotifyObj.h"
 #include "IWaveNotifiable.h"
 
-class CDlgRecorder : public CDialog, public IWaveNotifiable
-{
+class CDlgRecorder : public CDialog, public IWaveNotifiable {
 public:
     CDlgRecorder(CWnd * pParent = NULL); // standard constructor
     virtual ~CDlgRecorder();
 
-	enum EMode { IDLE=0, STOPPED=1, PAUSED=2, PLAYING=3, RECORDING=4};
+    enum EMode { IDLE=0, STOPPED=1, PAUSED=2, PLAYING=3, RECORDING=4};
 
-    struct sourceInfo
-    {
+    struct sourceInfo {
         BOOL bEnable;
         SourceParm source;
 
-        sourceInfo()
-        {
+        sourceInfo() {
             source.nGender = -1;
         };
 
@@ -33,9 +30,9 @@ public:
     static sourceInfo & GetStaticSourceInfo();
     UINT GetRecVolume();
     void SetRecVolume(int nVolume);
-    BOOL CreateTempFile();		// create the temporary wave file for writing
-    void DeleteTempFile();		// delete the temporary wave file
-    void CleanUp();				// clean up memory and delete the temporary wave file
+    BOOL CreateTempFile();      // create the temporary wave file for writing
+    void DeleteTempFile();      // delete the temporary wave file
+    void CleanUp();             // clean up memory and delete the temporary wave file
     void OnHelpRecorder();
     virtual void BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride = NULL);
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT = 100);
@@ -44,7 +41,7 @@ public:
     virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
     void SetRecorderMode(EMode mode); // set recorder mode (record, play, stop...)
     HMMIO GetFileHandle();
-    BOOL Apply(CDocument *);	// apply wave file to document
+    BOOL Apply(CDocument *);    // apply wave file to document
     void ClearFileName();
     CSaDoc * GetDocument();
 
@@ -78,14 +75,14 @@ protected:
 
 private:
     void EnableRecVolume(BOOL bEnable);
-    HANDLE m_hData;					// needed to get m_lpPlayData
-    HPSTR m_lpPlayData;				// pointer to wave data
-    HMMIO m_hmmioFile;				// mmio file handle
-    TCHAR m_szFileName[_MAX_PATH];	// file name of the temporary wave file
-    MMCKINFO m_mmckinfoSubchunk;	// 'data' subchunk information
-    MMCKINFO m_mmckinfoParent;		// 'RIFF' parent chunk information
-    BOOL m_bFileReady;				// TRUE, if temporary file OK
-    BOOL m_bFileApplied;			// TRUE, if temporary file ready to copy
+    HANDLE m_hData;                 // needed to get m_lpPlayData
+    HPSTR m_lpPlayData;             // pointer to wave data
+    HMMIO m_hmmioFile;              // mmio file handle
+    TCHAR m_szFileName[_MAX_PATH];  // file name of the temporary wave file
+    MMCKINFO m_mmckinfoSubchunk;    // 'data' subchunk information
+    MMCKINFO m_mmckinfoParent;      // 'RIFF' parent chunk information
+    BOOL m_bFileReady;              // TRUE, if temporary file OK
+    BOOL m_bFileApplied;            // TRUE, if temporary file ready to copy
     CLEDDisplay m_LEDTotalTime;     // embedded control objects
     CLEDDisplay m_LEDPosTime;
     CSliderVertical m_SliderVolume;
@@ -97,15 +94,15 @@ private:
     CToggleButton m_stop;
     CToggleButton m_pause;
     CToggleButton m_play;
-    EMode m_nMode;					// recorder mode (record, play, stop...)
-    EMode m_nOldMode;				// previous recorder mode
-    CFont m_Font;					// special font for dialog controls
+    EMode m_nMode;                  // recorder mode (record, play, stop...)
+    EMode m_nOldMode;               // previous recorder mode
+    CFont m_Font;                   // special font for dialog controls
     CWave * m_pWave;
     CDlgWaveNotifyObj m_NotifyObj;  // recorder notification object
-    CSaDoc * m_pDoc;				// pointer to document
+    CSaDoc * m_pDoc;                // pointer to document
     CSaView * m_pView;              // pointer to view
-    DWORD m_dwRecordSize;			// size of recorded data
-    DWORD m_dwPlayPosition;			// pointer in already played data
+    DWORD m_dwRecordSize;           // size of recorded data
+    DWORD m_dwPlayPosition;         // pointer in already played data
     UINT m_nVolume;
     UINT m_nRecVolume;
     enum { IDD = IDD_RECORDER };

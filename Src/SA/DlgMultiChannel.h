@@ -13,8 +13,7 @@
 
 class CSaDoc;
 
-class CDlgMultiChannel : public CDialog
-{
+class CDlgMultiChannel : public CDialog {
 
     DECLARE_DYNAMIC(CDlgMultiChannel)
 public:
@@ -29,7 +28,7 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
 
-	CComboBox m_MultiChannelCombo;
+    CComboBox m_MultiChannelCombo;
     int m_nChannels;
 
     DECLARE_MESSAGE_MAP()

@@ -5,8 +5,7 @@
 
 class CFlexEditWnd;
 
-class CFlexEditGrid : public CMSHFlexGrid
-{
+class CFlexEditGrid : public CMSHFlexGrid {
 public:
     CFlexEditGrid();
     virtual BOOL Create(LPCTSTR lpszClassName,
@@ -37,8 +36,7 @@ public:
     void InvalidData();
     virtual ~CFlexEditGrid();
     BOOL handleEditBoxSpecialKeys(short * KeyCode, short Shift, BOOL bHandleIt = TRUE);
-    void FakeArrowKeys(BOOL bSetting)
-    {
+    void FakeArrowKeys(BOOL bSetting) {
         m_bFakeArrowKeys = bSetting;
     }
     void SetFont(LPCTSTR face, float nPointSize, long startRow, long startCol = 0, long rows = 1,  long cols = 1);

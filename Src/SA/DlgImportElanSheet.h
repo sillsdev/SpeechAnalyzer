@@ -9,14 +9,13 @@
 
 typedef map<EAnnotation,wstring> ElanMap;
 
-class CDlgImportElanSheet : public CPropertySheet
-{
+class CDlgImportElanSheet : public CPropertySheet {
 public:
-    CDlgImportElanSheet( CWnd * pParentWnd, Elan::CAnnotationDocument & document);
+    CDlgImportElanSheet(CWnd * pParentWnd, Elan::CAnnotationDocument & document);
     virtual ~CDlgImportElanSheet();
     virtual BOOL OnInitDialog();
 
-	map<EAnnotation,wstring> getAssignments();
+    map<EAnnotation,wstring> getAssignments();
 
 protected:
     DECLARE_MESSAGE_MAP()
@@ -28,9 +27,9 @@ private:
     CDlgImportElanSelectPage pg2;
     CDlgImportElanFinishPage pg3;
 
-	int selection;
-	Elan::CAnnotationDocument & document;
-	ElanMap assignments;
+    int selection;
+    Elan::CAnnotationDocument & document;
+    ElanMap assignments;
 
 };
 

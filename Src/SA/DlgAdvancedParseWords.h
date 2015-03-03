@@ -18,12 +18,11 @@
 
 class CSaDoc;
 
-class CDlgAdvancedParseWords : public CDialog
-{
+class CDlgAdvancedParseWords : public CDialog {
     DECLARE_DYNAMIC(CDlgAdvancedParseWords)
 
 public:
-    CDlgAdvancedParseWords( CSaDoc * pDoc);
+    CDlgAdvancedParseWords(CSaDoc * pDoc);
     virtual ~CDlgAdvancedParseWords();
     BOOL Create();
     void Show(LPCTSTR title);

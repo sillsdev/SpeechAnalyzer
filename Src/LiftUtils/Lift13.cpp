@@ -120,16 +120,16 @@ wstring parse_uri(LPCTSTR in) {
     UriParserStateW state;
     UriUriW uri;
     state.uri = &uri;
-    if (uriParseUriW( &state, in) != URI_SUCCESS) {
+    if (uriParseUriW(&state, in) != URI_SUCCESS) {
         uriFreeUriMembersW(&uri);
-		stringstream msg;
-		msg << "unable to parse URI. position="<<state.errorPos<<", error="<<state.errorCode;
-		throw logic_error(msg.str().c_str());
+        stringstream msg;
+        msg << "unable to parse URI. position="<<state.errorPos<<", error="<<state.errorCode;
+        throw logic_error(msg.str().c_str());
     }
 
-	wstring result = uri.hostText.first;
+    wstring result = uri.hostText.first;
     uriFreeUriMembersW(&uri);
-	return result;
+    return result;
 }
 
 /**
@@ -140,9 +140,9 @@ lift Lift13::load(LPCTSTR filename) {
 
     lift document;
     try {
-		if (!FileUtils::FileExists(filename)) {
-			throw exception("file not found");
-		}
+        if (!FileUtils::FileExists(filename)) {
+            throw exception("file not found");
+        }
 
         // Initialize the XML4C2 system
         ScopedXMLUtils xmlUtils;
@@ -178,11 +178,11 @@ lift Lift13::load(LPCTSTR filename) {
         parser->setErrorHandler(&handler);
         parser->parse(filename);
         errorCount = parser->getErrorCount();
-		if (errorCount!=0) {
-			throw exception("document contained errors");
-		}
+        if (errorCount!=0) {
+            throw exception("document contained errors");
+        }
 
-		document.load(handler.document.element);
+        document.load(handler.document.element);
 
         // get the list of external files
         map<wstring,lift_ranges> hrefs = document.get_external_range_refs();

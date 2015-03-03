@@ -3,8 +3,7 @@
 
 #include "DependentSegment.h"
 
-class COrthoSegment : public CDependentSegment
-{
+class COrthoSegment : public CDependentSegment {
 public:
     COrthoSegment(EAnnotation index, int master = -1);
 

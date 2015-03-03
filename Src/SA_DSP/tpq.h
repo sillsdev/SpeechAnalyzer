@@ -1,5 +1,4 @@
-class CTPQueue
-{
+class CTPQueue {
 public:
     CTPQueue();
     ~CTPQueue();

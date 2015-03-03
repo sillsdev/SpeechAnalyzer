@@ -8,8 +8,7 @@ char * RTFprolog =
 char * RTFepilog = "\\par}";
 
 
-CClipboard::CClipboard(HWND hwnd)
-{
+CClipboard::CClipboard(HWND hwnd) {
     hWindow = hwnd;
     OpenClipboard(hwnd);
     clipboard_open = TRUE;
@@ -17,13 +16,11 @@ CClipboard::CClipboard(HWND hwnd)
     RTFFormat = RegisterClipboardFormat(_T("Rich Text Format"));
 }
 
-CClipboard::~CClipboard() 
-{
-	close();
+CClipboard::~CClipboard() {
+    close();
 }
 
-CClipboard & CClipboard::operator<<(LPCSTR string)
-{
+CClipboard & CClipboard::operator<<(LPCSTR string) {
     // clear out old contents of clipboard
     EmptyClipboard();
 
@@ -32,16 +29,14 @@ CClipboard & CClipboard::operator<<(LPCSTR string)
         GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT,
                     strlen(string) + 1);
 
-    if (!hMemory)
-    {
+    if (!hMemory) {
         reportError();
         return *this;
     }
 
     // copy the data into the clipboard
     LPSTR lpMemory = (LPSTR) GlobalLock(hMemory);
-    while (*string)
-    {
+    while (*string) {
         *lpMemory++ = *string++;
     }
     *lpMemory = '\0';
@@ -51,11 +46,9 @@ CClipboard & CClipboard::operator<<(LPCSTR string)
     return *this;
 }
 
-CClipboard & CClipboard::operator>>(char *& string)
-{
+CClipboard & CClipboard::operator>>(char *& string) {
     HANDLE hClipboard = GetClipboardData(CF_OEMTEXT);
-    if (!hClipboard)
-    {
+    if (!hClipboard) {
         // no data available in the requested format
         string = NULL;
         return *this;
@@ -64,8 +57,7 @@ CClipboard & CClipboard::operator>>(char *& string)
     // allocate memory for the copy operation
     DWORD size = GlobalSize(hClipboard) + 1;
     string = new char [size];
-    if (!string)
-    {
+    if (!string) {
         reportError();
         return *this;
     }
@@ -75,8 +67,7 @@ CClipboard & CClipboard::operator>>(char *& string)
 
     // copy the data from the clipboard
     char * cp = string;
-    while (*lpClipboard)
-    {
+    while (*lpClipboard) {
         *cp++ = *lpClipboard++;
     }
     *cp = '\0';
@@ -86,8 +77,7 @@ CClipboard & CClipboard::operator>>(char *& string)
     return *this;
 }
 
-void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
-{
+void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring) {
     // clear out old contents of clipboard
     EmptyClipboard();
 
@@ -95,8 +85,7 @@ void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
     HANDLE hRTFMemory =
         GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT,
                     strlen(RTFprolog) + strlen(RTFstring) + strlen(RTFepilog)+ 1);
-    if (!hRTFMemory)
-    {
+    if (!hRTFMemory) {
         reportError();
         return;
     }
@@ -105,8 +94,7 @@ void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
         GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT,
                     strlen(TEXTstring) + 1);
 
-    if (!hTEXTMemory)
-    {
+    if (!hTEXTMemory) {
         GlobalFree(hRTFMemory);
         reportError();
         return;
@@ -116,16 +104,13 @@ void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
 
     // copy the data into the clipboard
     LPSTR lpMemory = (LPSTR) GlobalLock(hRTFMemory);
-    for (i=0; RTFprolog[i]; ++i)
-    {
+    for (i=0; RTFprolog[i]; ++i) {
         *lpMemory++ = RTFprolog[i];
     }
-    while (*RTFstring)
-    {
+    while (*RTFstring) {
         *lpMemory++ = *RTFstring++;
     }
-    for (i=0; RTFepilog[i]; ++i)
-    {
+    for (i=0; RTFepilog[i]; ++i) {
         *lpMemory++ = RTFepilog[i];
     }
     *lpMemory = '\0';
@@ -133,8 +118,7 @@ void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
     SetClipboardData(RTFFormat, hRTFMemory);
 
     lpMemory = (LPSTR) GlobalLock(hTEXTMemory);
-    while (*TEXTstring)
-    {
+    while (*TEXTstring) {
         *lpMemory++ = *TEXTstring++;
     }
     *lpMemory = '\0';
@@ -142,22 +126,19 @@ void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
     SetClipboardData(CF_OEMTEXT, hTEXTMemory);
 }
 
-void CClipboard::reportError()
-{
+void CClipboard::reportError() {
     // Close clipboard and report the error
     close();
-    AfxMessageBox( IDS_MEMORY_FAILURE, MB_OK | MB_ICONEXCLAMATION);
+    AfxMessageBox(IDS_MEMORY_FAILURE, MB_OK | MB_ICONEXCLAMATION);
     return;
 }
 
-int CClipboard::hasText()
-{
+int CClipboard::hasText() {
     // see if the clipboard contains text
     return IsClipboardFormatAvailable(CF_TEXT);
 }
 
-void CClipboard::close()
-{
+void CClipboard::close() {
     if (!clipboard_open)
         // clipboard has already been closed
     {

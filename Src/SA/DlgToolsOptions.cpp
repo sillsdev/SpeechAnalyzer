@@ -61,8 +61,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgOptionsViewPage::CDlgOptionsViewPage Constructor
 /***************************************************************************/
-CDlgOptionsViewPage::CDlgOptionsViewPage() : CPropertyPage(CDlgOptionsViewPage::IDD)
-{
+CDlgOptionsViewPage::CDlgOptionsViewPage() : CPropertyPage(CDlgOptionsViewPage::IDD) {
 
     m_bStatusbar = FALSE;
     m_bToolbar = FALSE;
@@ -80,8 +79,7 @@ CDlgOptionsViewPage::CDlgOptionsViewPage() : CPropertyPage(CDlgOptionsViewPage::
 /***************************************************************************/
 // CDlgOptionsViewPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgOptionsViewPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgOptionsViewPage::DoDataExchange(CDataExchange * pDX) {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, ID_VIEW_STATUSBAR, m_bStatusbar);
     DDX_Check(pDX, ID_VIEW_TOOLBAR, m_bToolbar);
@@ -104,11 +102,9 @@ void CDlgOptionsViewPage::DoDataExchange(CDataExchange * pDX)
 // CDlgOptionsViewPage::OnInitDialog Dialog initialization
 // The grid line combo boxes are sub-classed with a user drawn control.
 /***************************************************************************/
-BOOL CDlgOptionsViewPage::OnInitDialog()
-{
+BOOL CDlgOptionsViewPage::OnInitDialog() {
 
-    static const int StyleList[] =
-    {
+    static const int StyleList[] = {
         // This list is based on the interpretation of Style numbers in the rest of SA.
         0,
         PS_SOLID,
@@ -124,14 +120,12 @@ BOOL CDlgOptionsViewPage::OnInitDialog()
     VERIFY(m_xGridlines.SubclassDlgItem(IDC_XGRIDTYPE, this));
     VERIFY(m_yGridlines.SubclassDlgItem(IDC_YGRIDTYPE, this));
     // add pen styles to the combobox
-    for (int n=1; IndexToStyle[n] != -1; n++)
-    {
+    for (int n=1; IndexToStyle[n] != -1; n++) {
         m_xGridlines.AddLineItem(StyleList[IndexToStyle[n]]);
         m_yGridlines.AddLineItem(StyleList[IndexToStyle[n]]);
     }
     // if no statusbar disable statusbar readout modes
-    if (!m_bStatusbar)
-    {
+    if (!m_bStatusbar) {
         GetDlgItem(IDC_VIEW_UNITSTEXT)->EnableWindow(FALSE);
         GetDlgItem(IDC_VIEW_UNITSMODE)->EnableWindow(FALSE);
     }
@@ -142,12 +136,9 @@ BOOL CDlgOptionsViewPage::OnInitDialog()
     CView * pView = pMDIFrameWnd->GetCurrSaView();
     CSaDoc * pDoc = (CSaDoc *) pView->GetDocument();
     CProcessFragments * pFragmenter = pDoc->GetFragments();
-    if (pFragmenter->IsDataReady())
-    {
+    if (pFragmenter->IsDataReady()) {
         GetDlgItem(IDC_SNAPTOFRAGMENT)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         GetDlgItem(IDC_SNAPTOFRAGMENT)->EnableWindow(FALSE);
     }
 
@@ -173,17 +164,13 @@ BOOL CDlgOptionsViewPage::OnInitDialog()
 /***************************************************************************/
 // CDlgOptionsViewPage::OnModifiedStatusbar Status bar data modified
 /***************************************************************************/
-void CDlgOptionsViewPage::OnModifiedStatusbar()
-{
+void CDlgOptionsViewPage::OnModifiedStatusbar() {
 
     UpdateData(TRUE);
-    if (m_bStatusbar)
-    {
+    if (m_bStatusbar) {
         GetDlgItem(IDC_VIEW_UNITSTEXT)->EnableWindow(TRUE);
         GetDlgItem(IDC_VIEW_UNITSMODE)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         GetDlgItem(IDC_VIEW_UNITSTEXT)->EnableWindow(FALSE);
         GetDlgItem(IDC_VIEW_UNITSMODE)->EnableWindow(FALSE);
     }
@@ -193,8 +180,7 @@ void CDlgOptionsViewPage::OnModifiedStatusbar()
 /***************************************************************************/
 // CDlgOptionsViewPage::OnModified Data modified
 /***************************************************************************/
-void CDlgOptionsViewPage::OnModified()
-{
+void CDlgOptionsViewPage::OnModified() {
 
     SetModified(TRUE); // data modified, enable apply button
 }
@@ -202,24 +188,21 @@ void CDlgOptionsViewPage::OnModified()
 /***************************************************************************/
 // CDlgOptionsViewPage::OnModifiedRange Cursor Alignment range modified
 /***************************************************************************/
-void CDlgOptionsViewPage::OnModifiedRange()
-{
+void CDlgOptionsViewPage::OnModifiedRange() {
 
     int nOldCursorAlignment = m_nCursorAlignment;
     int nOldGraphUpdateMode = m_nGraphUpdateMode;
     UpdateData(TRUE);
 
     BOOL bEnable = (m_nCursorAlignment == ALIGN_AT_FRAGMENT);
-    if (m_nCursorAlignment != nOldCursorAlignment)
-    {
+    if (m_nCursorAlignment != nOldCursorAlignment) {
         bEnable = (m_nCursorAlignment == ALIGN_AT_FRAGMENT);
         GetDlgItem(IDC_VIEW_UPDATE_DYNAMIC)->EnableWindow(bEnable);
         GetDlgItem(IDC_VIEW_UPDATE_STATIC)->EnableWindow(bEnable);
 
         OnModifiedAnimate();
     }
-    if (m_nGraphUpdateMode != nOldGraphUpdateMode)
-    {
+    if (m_nGraphUpdateMode != nOldGraphUpdateMode) {
         OnModifiedAnimate();
     }
     bEnable &= (m_nGraphUpdateMode == DYNAMIC_UPDATE);
@@ -229,8 +212,7 @@ void CDlgOptionsViewPage::OnModifiedRange()
 /***************************************************************************/
 // CDlgParametersViewPage::OnModifiedAnimate Animate on/off changed
 /***************************************************************************/
-void CDlgOptionsViewPage::OnModifiedAnimate()
-{
+void CDlgOptionsViewPage::OnModifiedAnimate() {
 
     UpdateData(TRUE);
 
@@ -246,36 +228,28 @@ void CDlgOptionsViewPage::OnModifiedAnimate()
 /***************************************************************************/
 // CDlgOptionsViewPage::OnAnimationRateScroll Animation spin control hit
 /***************************************************************************/
-void CDlgOptionsViewPage::OnAnimationRateScroll()
-{
+void CDlgOptionsViewPage::OnAnimationRateScroll() {
 
     int nOptions[] = {1, 2, 5, 10, 30, 60};   // only options allowed
     int nOptionsCount = sizeof(nOptions)/sizeof(*nOptions);
     int nData = GetDlgItemInt(IDC_VIEW_ANIMRATEEDIT, NULL, TRUE);
     int nIndex = 0;
     for (; nIndex < nOptionsCount; nIndex++)
-        if (nData == nOptions[nIndex])
-        {
+        if (nData == nOptions[nIndex]) {
             break;
         }
-    if (m_SpinAnimationRate.UpperButtonClicked())
-    {
+    if (m_SpinAnimationRate.UpperButtonClicked()) {
         nIndex++;
-    }
-    else
-    {
+    } else {
         nIndex--;
     }
-    if (nIndex >= nOptionsCount)
-    {
+    if (nIndex >= nOptionsCount) {
         nIndex = nOptionsCount - 1;
     }
-    if (nIndex < 0)
-    {
+    if (nIndex < 0) {
         nIndex = 0;
     }
-    if (m_nAnimationRate != nOptions[nIndex])
-    {
+    if (m_nAnimationRate != nOptions[nIndex]) {
         m_nAnimationRate = nOptions[nIndex];
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -286,15 +260,13 @@ void CDlgOptionsViewPage::OnAnimationRateScroll()
 /***************************************************************************/
 // CDlgOptionsViewPage::OnChange page changed
 /***************************************************************************/
-void CDlgOptionsViewPage::OnChange()
-{
+void CDlgOptionsViewPage::OnChange() {
 
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
 }
 
-const int CDlgOptionsViewPage::IndexToStyle[] =
-{
+const int CDlgOptionsViewPage::IndexToStyle[] = {
 
     // refers to entries in StyleList in Init
     0,
@@ -310,23 +282,18 @@ const int CDlgOptionsViewPage::IndexToStyle[] =
 /***************************************************************************/
 // CDlgOptionsViewPage::SetGridStyle
 /***************************************************************************/
-void CDlgOptionsViewPage::SetGridStyle(int nXStyle, int nYStyle)
-{
+void CDlgOptionsViewPage::SetGridStyle(int nXStyle, int nYStyle) {
 
     int n;
-    for (n=0; IndexToStyle[n] != -1; n++)
-    {
-        if (nXStyle == IndexToStyle[n])
-        {
+    for (n=0; IndexToStyle[n] != -1; n++) {
+        if (nXStyle == IndexToStyle[n]) {
             m_nXStyleIndex = n;
             break;
         }
     }
 
-    for (n=0; IndexToStyle[n] != -1; n++)
-    {
-        if (nYStyle == IndexToStyle[n])
-        {
+    for (n=0; IndexToStyle[n] != -1; n++) {
+        if (nYStyle == IndexToStyle[n]) {
             m_nYStyleIndex = n;
             break;
         }
@@ -336,16 +303,13 @@ void CDlgOptionsViewPage::SetGridStyle(int nXStyle, int nYStyle)
 /***************************************************************************/
 // CDlgOptionsViewPage::GetGridStyle
 /***************************************************************************/
-void CDlgOptionsViewPage::GetGridStyle(int * nXStyle, int * nYStyle)
-{
+void CDlgOptionsViewPage::GetGridStyle(int * nXStyle, int * nYStyle) {
 
-    if (nXStyle)
-    {
+    if (nXStyle) {
         *nXStyle = IndexToStyle[m_nXStyleIndex];
     }
 
-    if (nYStyle)
-    {
+    if (nYStyle) {
         *nYStyle = IndexToStyle[m_nYStyleIndex];
     }
 }
@@ -354,8 +318,7 @@ void CDlgOptionsViewPage::GetGridStyle(int * nXStyle, int * nYStyle)
 * CDlgOptionsViewPage::EnableDynamicUpdate
 * enable dynamic graph update mode
 ***************************************************************************/
-void CDlgOptionsViewPage::EnableDynamicUpdate(BOOL bState)
-{
+void CDlgOptionsViewPage::EnableDynamicUpdate(BOOL bState) {
 
     GetDlgItem(IDC_VIEW_UPDATE_DYNAMIC)->EnableWindow(bState);
 }
@@ -377,8 +340,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CComboColor::MeasureItem
 /***************************************************************************/
-void CComboColor::MeasureItem(LPMEASUREITEMSTRUCT lpMIS)
-{
+void CComboColor::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) {
 
     lpMIS->itemHeight = 15;
 }
@@ -386,8 +348,7 @@ void CComboColor::MeasureItem(LPMEASUREITEMSTRUCT lpMIS)
 /***************************************************************************/
 // CComboColor::DrawItem Item drawing
 /***************************************************************************/
-void CComboColor::DrawItem(LPDRAWITEMSTRUCT lpDIS)
-{
+void CComboColor::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
 
     RECT     rc;
     CDC   *  pDC               = CDC::FromHandle(lpDIS->hDC);
@@ -404,12 +365,10 @@ void CComboColor::DrawItem(LPDRAWITEMSTRUCT lpDIS)
     rc.bottom = lpDIS->rcItem.bottom - 2;
 
     if ((lpDIS->itemAction & ODA_DRAWENTIRE) || (lpDIS->itemID == -1) ||
-            (!(lpDIS->itemState & ODS_SELECTED) && (lpDIS->itemAction & ODA_SELECT)))
-    {
+            (!(lpDIS->itemState & ODS_SELECTED) && (lpDIS->itemAction & ODA_SELECT))) {
         CBrush brush(GetSysColor(COLOR_WINDOW));
         pDC->FillRect(&lpDIS->rcItem, &brush);
-        if (lpDIS->itemID == -1)
-        {
+        if (lpDIS->itemID == -1) {
             return;
         }
 
@@ -420,8 +379,7 @@ void CComboColor::DrawItem(LPDRAWITEMSTRUCT lpDIS)
         pDC->FrameRect(&rc, &brush2);
     }
 
-    if ((lpDIS->itemState & ODS_SELECTED) && (lpDIS->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)))
-    {
+    if ((lpDIS->itemState & ODS_SELECTED) && (lpDIS->itemAction & (ODA_SELECT | ODA_DRAWENTIRE))) {
         CBrush brush(GetSysColor(COLOR_HIGHLIGHT));
         pDC->FillRect(&lpDIS->rcItem, &brush);
 
@@ -439,8 +397,7 @@ void CComboColor::DrawItem(LPDRAWITEMSTRUCT lpDIS)
     CBrush brush(pColorInfo->cColor);
     pDC->FillRect(&rc, &brush);
 
-    if (lpDIS->itemState & ODS_FOCUS)
-    {
+    if (lpDIS->itemState & ODS_FOCUS) {
         pDC->DrawFocusRect(&lpDIS->rcItem);
     }
 
@@ -451,8 +408,7 @@ void CComboColor::DrawItem(LPDRAWITEMSTRUCT lpDIS)
 
 /***************************************************************************/
 /***************************************************************************/
-ColorComboInfo GraphColorsComboInfo[] =
-{
+ColorComboInfo GraphColorsComboInfo[] = {
 
     {_T("Background"),             0L},
     {_T("Highlighted Background"), 0L},
@@ -472,8 +428,7 @@ ColorComboInfo GraphColorsComboInfo[] =
     {NULL,                     0L}
 };
 
-ColorComboInfo AnnotColorsComboInfo[] =
-{
+ColorComboInfo AnnotColorsComboInfo[] = {
 
     {_T("Phonetic Background"),    0L},
     {_T("Phonetic Fonts"),         0L},
@@ -488,8 +443,7 @@ ColorComboInfo AnnotColorsComboInfo[] =
     {NULL,                     0L}
 };
 
-ColorComboInfo ScaleColorsComboInfo[] =
-{
+ColorComboInfo ScaleColorsComboInfo[] = {
 
     {_T("Background"), 0L},
     {_T("Lines"),      0L},
@@ -497,8 +451,7 @@ ColorComboInfo ScaleColorsComboInfo[] =
     {NULL,         0L}
 };
 
-ColorComboInfo OvrlyColorsComboInfo[] =
-{
+ColorComboInfo OvrlyColorsComboInfo[] = {
 
     {_T("Overlay 1 Data"), 0L},
     {_T("Overlay 2 Data"), 0L},
@@ -511,8 +464,7 @@ ColorComboInfo OvrlyColorsComboInfo[] =
 /***************************************************************************/
 // CDlgOptionsColorPage::CDlgOptionsColorPage Constructor
 /***************************************************************************/
-CDlgOptionsColorPage::CDlgOptionsColorPage() : CPropertyPage(CDlgOptionsColorPage::IDD)
-{
+CDlgOptionsColorPage::CDlgOptionsColorPage() : CPropertyPage(CDlgOptionsColorPage::IDD) {
 
     m_nGraphSelect = 0;
     m_nAnnotationSelect = -1;
@@ -524,8 +476,7 @@ CDlgOptionsColorPage::CDlgOptionsColorPage() : CPropertyPage(CDlgOptionsColorPag
 /***************************************************************************/
 // CDlgOptionsColorPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgOptionsColorPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgOptionsColorPage::DoDataExchange(CDataExchange * pDX) {
     CPropertyPage::DoDataExchange(pDX);
     DDX_CBIndex(pDX, IDC_COLORSGRAPHSETUP, m_nGraphSelect);
     DDX_CBIndex(pDX, IDC_COLORSANNOTSETUP, m_nAnnotationSelect);
@@ -537,51 +488,39 @@ void CDlgOptionsColorPage::DoDataExchange(CDataExchange * pDX)
 // CDlgOptionsColorPage::FillColorComboBoxInfo
 // DDO - 08/12/00
 /***************************************************************************/
-void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings)
-{
+void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings) {
 
     int i = 0;
-    for (; GraphColorsComboInfo[i].pszColorItem; i++)
-    {
-        if (bAddStrings)
-        {
+    for (; GraphColorsComboInfo[i].pszColorItem; i++) {
+        if (bAddStrings) {
             m_GraphItemColors.AddString(NULL);
         }
         GraphColorsComboInfo[i].cColor = *(&m_cColors.cPlotBkg + i);
         m_GraphItemColors.SetItemDataPtr(i, &GraphColorsComboInfo[i]);
     }
 
-    for (i = 0; AnnotColorsComboInfo[i].pszColorItem; i++)
-    {
-        if (bAddStrings)
-        {
+    for (i = 0; AnnotColorsComboInfo[i].pszColorItem; i++) {
+        if (bAddStrings) {
             m_AnnotItemColors.AddString(NULL);
         }
-        if (i % 2)
-        {
+        if (i % 2) {
             AnnotColorsComboInfo[i].cColor = *(&m_cColors.cAnnotationFont[PHONETIC] + i / 2);
-        }
-        else
-        {
+        } else {
             AnnotColorsComboInfo[i].cColor = *(&m_cColors.cAnnotationBkg[PHONETIC] + i / 2);
         }
         m_AnnotItemColors.SetItemDataPtr(i, &AnnotColorsComboInfo[i]);
     }
 
-    for (i = 0; ScaleColorsComboInfo[i].pszColorItem; i++)
-    {
-        if (bAddStrings)
-        {
+    for (i = 0; ScaleColorsComboInfo[i].pszColorItem; i++) {
+        if (bAddStrings) {
             m_ScaleItemColors.AddString(NULL);
         }
         ScaleColorsComboInfo[i].cColor = *(&m_cColors.cScaleBkg + i);
         m_ScaleItemColors.SetItemDataPtr(i, &ScaleColorsComboInfo[i]);
     }
 
-    for (i = 0; OvrlyColorsComboInfo[i].pszColorItem; i++)
-    {
-        if (bAddStrings)
-        {
+    for (i = 0; OvrlyColorsComboInfo[i].pszColorItem; i++) {
+        if (bAddStrings) {
             m_OvrlyItemColors.AddString(NULL);
         }
         OvrlyColorsComboInfo[i].cColor = m_cColors.cPlotData[i];
@@ -594,8 +533,7 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings)
     // combo boxes to redraw so they're displaying the color
     // change.
     //************************************************************
-    if (!bAddStrings)
-    {
+    if (!bAddStrings) {
         GetDlgItem(IDC_COLORSGRAPHSETUP)->Invalidate();
         GetDlgItem(IDC_COLORSANNOTSETUP)->Invalidate();
         GetDlgItem(IDC_COLORSSCALESETUP)->Invalidate();
@@ -606,8 +544,7 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings)
 /***************************************************************************/
 // CDlgOptionsColorPage::OnInitDialog Dialog initialization
 /***************************************************************************/
-BOOL CDlgOptionsColorPage::OnInitDialog()
-{
+BOOL CDlgOptionsColorPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
     m_bColorsChanged = FALSE;
@@ -642,14 +579,11 @@ BOOL CDlgOptionsColorPage::OnInitDialog()
 /***************************************************************************/
 // DDO - 08/12/00
 /***************************************************************************/
-BOOL CDlgOptionsColorPage::ChangeColor(COLORREF * pColor)
-{
+BOOL CDlgOptionsColorPage::ChangeColor(COLORREF * pColor) {
 
     CColorDialog dlgColor(*pColor);
-    if (dlgColor.DoModal() == IDOK)
-    {
-        if (*pColor != dlgColor.m_cc.rgbResult)
-        {
+    if (dlgColor.DoModal() == IDOK) {
+        if (*pColor != dlgColor.m_cc.rgbResult) {
             *pColor = dlgColor.m_cc.rgbResult;
             m_bColorsChanged = TRUE;
             SetModified();
@@ -663,12 +597,10 @@ BOOL CDlgOptionsColorPage::ChangeColor(COLORREF * pColor)
 /***************************************************************************/
 // DDO - 08/12/00
 /***************************************************************************/
-void CDlgOptionsColorPage::OnChgColorGraph()
-{
+void CDlgOptionsColorPage::OnChgColorGraph() {
 
     UpdateData(TRUE);
-    if (m_nGraphSelect >= 0)
-    {
+    if (m_nGraphSelect >= 0) {
         ChangeColor(&m_cColors.cPlotBkg  + m_nGraphSelect);
     }
     GetDlgItem(IDC_COLORSGRAPHSETUP)->SetFocus();
@@ -677,18 +609,13 @@ void CDlgOptionsColorPage::OnChgColorGraph()
 /***************************************************************************/
 // DDO - 08/12/00
 /***************************************************************************/
-void CDlgOptionsColorPage::OnChgColorAnnot()
-{
+void CDlgOptionsColorPage::OnChgColorAnnot() {
 
     UpdateData(TRUE);
-    if (m_nAnnotationSelect >= 0)
-    {
-        if (m_nAnnotationSelect % 2)
-        {
+    if (m_nAnnotationSelect >= 0) {
+        if (m_nAnnotationSelect % 2) {
             ChangeColor(&m_cColors.cAnnotationFont[PHONETIC] + m_nAnnotationSelect / 2);
-        }
-        else
-        {
+        } else {
             ChangeColor(&m_cColors.cAnnotationBkg[PHONETIC] + m_nAnnotationSelect / 2);
         }
 
@@ -699,12 +626,10 @@ void CDlgOptionsColorPage::OnChgColorAnnot()
 /***************************************************************************/
 // DDO - 08/12/00
 /***************************************************************************/
-void CDlgOptionsColorPage::OnChgColorScale()
-{
+void CDlgOptionsColorPage::OnChgColorScale() {
 
     UpdateData(TRUE);
-    if (m_nScaleSelect >= 0)
-    {
+    if (m_nScaleSelect >= 0) {
         ChangeColor(&m_cColors.cScaleBkg + m_nScaleSelect);
     }
     GetDlgItem(IDC_COLORSSCALESETUP)->SetFocus();
@@ -713,12 +638,10 @@ void CDlgOptionsColorPage::OnChgColorScale()
 /***************************************************************************/
 // DDO - 08/12/00
 /***************************************************************************/
-void CDlgOptionsColorPage::OnChgColorOvrly()
-{
+void CDlgOptionsColorPage::OnChgColorOvrly() {
 
     UpdateData(TRUE);
-    if (m_nOverlaySelect >= 0)
-    {
+    if (m_nOverlaySelect >= 0) {
         ChangeColor(&(m_cColors.cPlotData[m_nOverlaySelect]));
     }
     GetDlgItem(IDC_COLORSOVERLAY)->SetFocus();
@@ -727,8 +650,7 @@ void CDlgOptionsColorPage::OnChgColorOvrly()
 /***************************************************************************/
 // CDlgOptionsColorPage::OnDefault Button default hit
 /***************************************************************************/
-void CDlgOptionsColorPage::OnDefault()
-{
+void CDlgOptionsColorPage::OnDefault() {
 
     m_cColors.SetupDefault(FALSE);
     m_bColorsChanged = TRUE;
@@ -739,8 +661,7 @@ void CDlgOptionsColorPage::OnDefault()
 /***************************************************************************/
 // CDlgOptionsColorPage::OnSystem Button system colors hit
 /***************************************************************************/
-void CDlgOptionsColorPage::OnSystem()
-{
+void CDlgOptionsColorPage::OnSystem() {
 
     m_cColors.SetupDefault(); // set the internal color structure to system
     m_bColorsChanged = TRUE;
@@ -760,8 +681,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // Added the following strings.  DDO - 08/14/00
 /***************************************************************************/
-static LPCTSTR pszFontAnnot[] =
-{
+static LPCTSTR pszFontAnnot[] = {
 
     _T("Reference"),
     _T("Phonetic"),
@@ -780,8 +700,7 @@ static LPCTSTR pszFontAnnot[] =
 /***************************************************************************/
 // Added the following array.  DDO - 10/11/00
 /***************************************************************************/
-static const int anAnnotDisplayOrder[] =
-{
+static const int anAnnotDisplayOrder[] = {
 
     REFERENCE,
     PHONETIC,
@@ -789,7 +708,7 @@ static const int anAnnotDisplayOrder[] =
     PHONEMIC,
     ORTHO,
     GLOSS,
-	GLOSS_NAT,
+    GLOSS_NAT,
     MUSIC_PL1,
     MUSIC_PL2,
     MUSIC_PL3,
@@ -799,8 +718,7 @@ static const int anAnnotDisplayOrder[] =
 /***************************************************************************/
 // CDlgOptionsFontPage::CDlgOptionsFontPage Constructor
 /***************************************************************************/
-CDlgOptionsFontPage::CDlgOptionsFontPage() : CPropertyPage(CDlgOptionsFontPage::IDD)
-{
+CDlgOptionsFontPage::CDlgOptionsFontPage() : CPropertyPage(CDlgOptionsFontPage::IDD) {
 
     m_szAnnotFontInfo = "";
     m_nAnnotListIndex = -1;
@@ -812,10 +730,8 @@ CDlgOptionsFontPage::CDlgOptionsFontPage() : CPropertyPage(CDlgOptionsFontPage::
 
 /***************************************************************************/
 /***************************************************************************/
-CDlgOptionsFontPage::~CDlgOptionsFontPage()
-{
-    if (m_pSampleFont)
-    {
+CDlgOptionsFontPage::~CDlgOptionsFontPage() {
+    if (m_pSampleFont) {
         delete m_pSampleFont;
     }
 }
@@ -823,8 +739,7 @@ CDlgOptionsFontPage::~CDlgOptionsFontPage()
 /***************************************************************************/
 // DDO - 08/14/00
 /***************************************************************************/
-BOOL CDlgOptionsFontPage::OnInitDialog()
-{
+BOOL CDlgOptionsFontPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
     LOGFONT logFont;
@@ -835,8 +750,7 @@ BOOL CDlgOptionsFontPage::OnInitDialog()
 
     GetDlgItem(IDC_ANNOTFONT)->SetFont(&m_Font);
 
-    for (int i = 0; pszFontAnnot[i]; i++)
-    {
+    for (int i = 0; pszFontAnnot[i]; i++) {
         m_lbAnnotList.AddString(pszFontAnnot[i]);
         m_lbAnnotList.SetItemData(i, anAnnotDisplayOrder[i]);
     }
@@ -853,8 +767,7 @@ BOOL CDlgOptionsFontPage::OnInitDialog()
 /***************************************************************************/
 // CDlgOptionsFontPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgOptionsFontPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgOptionsFontPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_ANNOTLIST, m_lbAnnotList);
@@ -869,8 +782,7 @@ void CDlgOptionsFontPage::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // DDO - 08/14/00
 /***************************************************************************/
-void CDlgOptionsFontPage::OnSelChangeAnnotList()
-{
+void CDlgOptionsFontPage::OnSelChangeAnnotList() {
 
     UpdateData(TRUE);
     int nIndex = (int)m_lbAnnotList.GetItemData(m_nAnnotListIndex);
@@ -902,16 +814,11 @@ void CDlgOptionsFontPage::OnSelChangeAnnotList()
     // looks like a valid pitch pattern. Otherwise display
     // something readable.
     //**************************************************************
-    if (m_GraphFonts.GetAt(nIndex).IsEmpty())
-    {
+    if (m_GraphFonts.GetAt(nIndex).IsEmpty()) {
         m_szSampleText = "";
-    }
-    else if (m_GraphFonts.GetAt(nIndex) == TONE_DEFAULT_FONT)
-    {
+    } else if (m_GraphFonts.GetAt(nIndex) == TONE_DEFAULT_FONT) {
         m_szSampleText = "0200e00e00x00\x91";
-    }
-    else
-    {
+    } else {
         m_szSampleText = "Sample Text";
     }
 
@@ -925,10 +832,8 @@ void CDlgOptionsFontPage::OnSelChangeAnnotList()
     // change its font to be that of the font face name for the
     // currently selected annotation. Use the selected pt size
     //**************************************************************
-    if (!m_szSampleText.IsEmpty())
-    {
-        if (m_pSampleFont)
-        {
+    if (!m_szSampleText.IsEmpty()) {
+        if (m_pSampleFont) {
             delete m_pSampleFont;
         }
         m_pSampleFont = new CFont;
@@ -940,8 +845,7 @@ void CDlgOptionsFontPage::OnSelChangeAnnotList()
 /***************************************************************************/
 // CDlgOptionsFontPage::OnFont Button font hit
 /***************************************************************************/
-void CDlgOptionsFontPage::OnFont()
-{
+void CDlgOptionsFontPage::OnFont() {
 
     UpdateData(TRUE); // get newest selection
     int nIndex = (int)m_lbAnnotList.GetItemData(m_nAnnotListIndex);
@@ -956,8 +860,7 @@ void CDlgOptionsFontPage::OnFont()
     dlgFont.m_cf.lpTemplateName = MAKEINTRESOURCE(IDD_FONT_TEMPLATE_ANNOTATION);
     dlgFont.m_cf.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD_FONT_TEMPLATE_ANNOTATION),RT_DIALOG);
 
-    if (dlgFont.DoModal() == IDOK)
-    {
+    if (dlgFont.DoModal() == IDOK) {
         m_GraphFonts.SetAt(nIndex, dlgFont.GetFaceName());
         m_GraphFontSizes.SetAt(nIndex, (dlgFont.GetSize() + 5)/10);
         m_bFontChanged = TRUE;
@@ -981,8 +884,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgOptionsSavePage construction/destruction/creation
 
-CDlgOptionsSavePage::CDlgOptionsSavePage() : CPropertyPage(CDlgOptionsSavePage::IDD)
-{
+CDlgOptionsSavePage::CDlgOptionsSavePage() : CPropertyPage(CDlgOptionsSavePage::IDD) {
     m_saveOpenFiles = FALSE;  // tdg - 09/03/97
     m_showStartupDlg = FALSE; // DDO - 08/03/00
     m_szPermGraphs = "";
@@ -999,8 +901,7 @@ CDlgOptionsSavePage::CDlgOptionsSavePage() : CPropertyPage(CDlgOptionsSavePage::
 /////////////////////////////////////////////////////////////////////////////
 // CDlgOptionsSavePage helper functions
 
-void CDlgOptionsSavePage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgOptionsSavePage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_TEMPLAYOUTICON, m_TempIcon);
@@ -1021,8 +922,7 @@ void CDlgOptionsSavePage::DoDataExchange(CDataExchange * pDX)
 //                 static controls to the list of those whose font is
 //                 changed.
 /***************************************************************************/
-BOOL CDlgOptionsSavePage::OnInitDialog()
-{
+BOOL CDlgOptionsSavePage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
 
@@ -1052,8 +952,7 @@ BOOL CDlgOptionsSavePage::OnInitDialog()
 // CDlgOptionsSavePage::ShowCurrentDefaultViews()
 // Added by DDO - 08/07/00
 /***************************************************************************/
-void CDlgOptionsSavePage::SetStartDlgCheckHelp()
-{
+void CDlgOptionsSavePage::SetStartDlgCheckHelp() {
 
     int nShowState = (m_showStartupDlg && m_saveOpenFiles) ? SW_SHOWNORMAL : SW_HIDE;
     GetDlgItem(IDC_STATIC6)->ShowWindow(nShowState);
@@ -1063,15 +962,13 @@ void CDlgOptionsSavePage::SetStartDlgCheckHelp()
 // CDlgOptionsSavePage::ShowCurrentDefaultViews()
 // Added by DDO - 08/07/00
 /***************************************************************************/
-void CDlgOptionsSavePage::ShowCurrentDefaultViews(BOOL bPermanent)
-{
+void CDlgOptionsSavePage::ShowCurrentDefaultViews(BOOL bPermanent) {
 
     UINT     nIconID;
     UINT     nLayout;
     CStatic * pIcon;
 
-    if (bPermanent)
-    {
+    if (bPermanent) {
         nLayout = ((CMainFrame *)AfxGetMainWnd())->GetPermLayout();
         pIcon   = &m_PermIcon;
         m_szPermGraphs = ((CMainFrame *)AfxGetMainWnd())->GetPermGraphNames();
@@ -1079,9 +976,7 @@ void CDlgOptionsSavePage::ShowCurrentDefaultViews(BOOL bPermanent)
         m_szTempGraphs = "";
         m_szTempCurrLabel = "";
         GetDlgItem(IDC_TEMPLAYOUTICON)->ShowWindow(SW_HIDE);
-    }
-    else
-    {
+    } else {
         nLayout = ((CMainFrame *)AfxGetMainWnd())->GetTempLayout();
         pIcon = &m_TempIcon;
         m_szTempGraphs = ((CMainFrame *)AfxGetMainWnd())->GetTempGraphNames();
@@ -1089,8 +984,7 @@ void CDlgOptionsSavePage::ShowCurrentDefaultViews(BOOL bPermanent)
         GetDlgItem(IDC_TEMPLAYOUTICON)->ShowWindow(SW_SHOWNORMAL);
     }
 
-    switch (nLayout)
-    {
+    switch (nLayout) {
     case ID_LAYOUT_1:
         nIconID = IDI_LAYOUT1;
         break;
@@ -1134,8 +1028,7 @@ void CDlgOptionsSavePage::ShowCurrentDefaultViews(BOOL bPermanent)
         nIconID = 0;
     }
 
-    if (nIconID)
-    {
+    if (nIconID) {
         pIcon->SetIcon(((CSaApp *)AfxGetApp())->LoadIcon(nIconID));
     }
     UpdateData(FALSE);
@@ -1144,8 +1037,7 @@ void CDlgOptionsSavePage::ShowCurrentDefaultViews(BOOL bPermanent)
 /***************************************************************************/
 // CDlgOptionsSavePage::OnSaveTempDefaultTemplate()
 /***************************************************************************/
-void CDlgOptionsSavePage::OnSaveTempDefaultTemplate()
-{
+void CDlgOptionsSavePage::OnSaveTempDefaultTemplate() {
 
     ((CMainFrame *)AfxGetMainWnd())->OnSetDefaultGraphs(FALSE);
     ShowCurrentDefaultViews(FALSE);
@@ -1154,8 +1046,7 @@ void CDlgOptionsSavePage::OnSaveTempDefaultTemplate()
 /***************************************************************************/
 // CDlgOptionsSavePage::OnSavePermDefaultTemplate
 /***************************************************************************/
-void CDlgOptionsSavePage::OnSavePermDefaultTemplate()
-{
+void CDlgOptionsSavePage::OnSavePermDefaultTemplate() {
 
     ((CMainFrame *)AfxGetMainWnd())->OnSetDefaultGraphs(TRUE);
     ShowCurrentDefaultViews(TRUE);
@@ -1164,8 +1055,7 @@ void CDlgOptionsSavePage::OnSavePermDefaultTemplate()
 
 /***************************************************************************/
 /***************************************************************************/
-void CDlgOptionsSavePage::OnReopenFiles()
-{
+void CDlgOptionsSavePage::OnReopenFiles() {
 
     UpdateData();
     SetStartDlgCheckHelp();
@@ -1174,8 +1064,7 @@ void CDlgOptionsSavePage::OnReopenFiles()
 
 /***************************************************************************/
 /***************************************************************************/
-void CDlgOptionsSavePage::OnShowsStartupDlg()
-{
+void CDlgOptionsSavePage::OnShowsStartupDlg() {
     UpdateData();
     SetStartDlgCheckHelp();
 }
@@ -1188,20 +1077,17 @@ void CDlgOptionsSavePage::OnShowsStartupDlg()
 BEGIN_MESSAGE_MAP(CDlgOptionsAudioPage, CPropertyPage)
 END_MESSAGE_MAP()
 
-CDlgOptionsAudioPage::CDlgOptionsAudioPage() : CPropertyPage(CDlgOptionsAudioPage::IDD)
-{
+CDlgOptionsAudioPage::CDlgOptionsAudioPage() : CPropertyPage(CDlgOptionsAudioPage::IDD) {
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     m_bShowAdvancedAudio = pMainWnd->GetShowAdvancedAudio();
 }
 
-void CDlgOptionsAudioPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgOptionsAudioPage::DoDataExchange(CDataExchange * pDX) {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_SHOW_ADVANCED_OPTIONS, m_bShowAdvancedAudio);
 }
 
-BOOL CDlgOptionsAudioPage::OnInitDialog()
-{
+BOOL CDlgOptionsAudioPage::OnInitDialog() {
     CPropertyPage::OnInitDialog();
     return TRUE;
 }
@@ -1221,35 +1107,30 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgToolsOptions::CDlgToolsOptions Constructor
 /***************************************************************************/
-CDlgToolsOptions::CDlgToolsOptions( LPCTSTR pszCaption, CWnd * pParent, bool full) :
-    CPropertySheet(pszCaption, pParent, 0)
-{
-	fullView = full;
-	if (full)
-	{
-		AddPage(&m_dlgViewPage);
-		AddPage(&m_dlgColorPage);
-		AddPage(&m_dlgFontPage);
-		AddPage(&m_dlgSavePage);
-	}
+CDlgToolsOptions::CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent, bool full) :
+    CPropertySheet(pszCaption, pParent, 0) {
+    fullView = full;
+    if (full) {
+        AddPage(&m_dlgViewPage);
+        AddPage(&m_dlgColorPage);
+        AddPage(&m_dlgFontPage);
+        AddPage(&m_dlgSavePage);
+    }
     AddPage(&m_dlgAudioPage);
 }
 
 /***************************************************************************/
 // CDlgToolsOptions::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgToolsOptions::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgToolsOptions::DoDataExchange(CDataExchange * pDX) {
     CPropertySheet::DoDataExchange(pDX);
 }
 
 /***************************************************************************/
 // CDlgToolsOptions::OnCreate Dialog creation
 /***************************************************************************/
-int CDlgToolsOptions::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-    if (CPropertySheet::OnCreate(lpCreateStruct) == -1)
-    {
+int CDlgToolsOptions::OnCreate(LPCREATESTRUCT lpCreateStruct) {
+    if (CPropertySheet::OnCreate(lpCreateStruct) == -1) {
         return -1;
     }
     return 0;
@@ -1258,8 +1139,7 @@ int CDlgToolsOptions::OnCreate(LPCREATESTRUCT lpCreateStruct)
 /***************************************************************************/
 // CDlgToolsOptions::OnInitDialog Dialog initialization
 /***************************************************************************/
-BOOL CDlgToolsOptions::OnInitDialog()
-{
+BOOL CDlgToolsOptions::OnInitDialog() {
     CPropertySheet::OnInitDialog();
     ChangeButtons();
     return TRUE;
@@ -1268,8 +1148,7 @@ BOOL CDlgToolsOptions::OnInitDialog()
 /***************************************************************************/
 // CDlgToolsOptions::ChangeButtons Rearrange buttons on the dialog
 /***************************************************************************/
-void CDlgToolsOptions::ChangeButtons()
-{
+void CDlgToolsOptions::ChangeButtons() {
     CWnd * pWndOK = GetDlgItem(IDOK); // get pointers to the button objects
     CWnd * pWndCancel = GetDlgItem(IDCANCEL);
     CWnd * pWndApply = GetDlgItem(ID_APPLY_NOW);
@@ -1303,12 +1182,11 @@ void CDlgToolsOptions::ChangeButtons()
 // The main frame window has to be informed, because it has to init some
 // action concerning the mainframe.
 /***************************************************************************/
-void CDlgToolsOptions::OnApplyNow()
-{
+void CDlgToolsOptions::OnApplyNow() {
     GetActivePage()->UpdateData(TRUE); // retrieve data
 
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    pMainWnd->SetToolSettings( GetSettings( fullView),fullView);
+    pMainWnd->SetToolSettings(GetSettings(fullView),fullView);
     AfxGetMainWnd()->SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);
     GetActivePage()->SetModified(FALSE);
     SendMessage(PSM_CANCELTOCLOSE, 0, 0L);
@@ -1317,14 +1195,12 @@ void CDlgToolsOptions::OnApplyNow()
 /***************************************************************************/
 // CDlgToolsOptions::OnHelpToolsOptions Call Tools Options help
 /***************************************************************************/
-void CDlgToolsOptions::OnHelpToolsOptions()
-{
+void CDlgToolsOptions::OnHelpToolsOptions() {
     // create the pathname
     long nActiveIndex = GetActiveIndex();
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Tools/Options/";
-    switch (nActiveIndex)
-    {
+    switch (nActiveIndex) {
     case 0:
         szPath += "View_tab_Options.htm";
         break;
@@ -1344,68 +1220,64 @@ void CDlgToolsOptions::OnHelpToolsOptions()
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
-CToolSettings CDlgToolsOptions::GetSettings( bool full)
-{
+CToolSettings CDlgToolsOptions::GetSettings(bool full) {
     // view page
     CToolSettings settings;
-	if (full) {
-		settings.m_bStatusbar = m_dlgViewPage.m_bStatusbar;
-		settings.m_bToolbar = m_dlgViewPage.m_bToolbar;
-		settings.m_bScrollZoom = m_dlgViewPage.m_bScrollZoom;
-		settings.m_nCaptionStyle = m_dlgViewPage.m_nCaptionStyle;
-		settings.m_bXGrid = m_dlgViewPage.m_bXGrid;
-		settings.m_bYGrid = m_dlgViewPage.m_bYGrid;
-		settings.m_nXStyleIndex = m_dlgViewPage.m_nXStyleIndex;
-		settings.m_nYStyleIndex = m_dlgViewPage.m_nYStyleIndex;
-		settings.m_nCursorAlignment = m_dlgViewPage.m_nCursorAlignment;
-		settings.m_nPitchMode = m_dlgViewPage.m_nPitchMode;
-		settings.m_nPosMode = m_dlgViewPage.m_nPosMode;
-		settings.m_bToneAbove = m_dlgViewPage.m_bToneAbove;
-		settings.m_nGraphUpdateMode = m_dlgViewPage.m_nGraphUpdateMode;
-		settings.m_bAnimate = m_dlgViewPage.m_bAnimate;
-		settings.m_nAnimationRate = m_dlgViewPage.m_nAnimationRate;
-		settings.m_bTaskbar = m_dlgViewPage.m_bTaskbar;
-		settings.m_nDlgXStyle = m_dlgViewPage.IndexToStyle[m_dlgViewPage.m_nXStyleIndex];
-		settings.m_nDlgYStyle = m_dlgViewPage.IndexToStyle[m_dlgViewPage.m_nYStyleIndex];
+    if (full) {
+        settings.m_bStatusbar = m_dlgViewPage.m_bStatusbar;
+        settings.m_bToolbar = m_dlgViewPage.m_bToolbar;
+        settings.m_bScrollZoom = m_dlgViewPage.m_bScrollZoom;
+        settings.m_nCaptionStyle = m_dlgViewPage.m_nCaptionStyle;
+        settings.m_bXGrid = m_dlgViewPage.m_bXGrid;
+        settings.m_bYGrid = m_dlgViewPage.m_bYGrid;
+        settings.m_nXStyleIndex = m_dlgViewPage.m_nXStyleIndex;
+        settings.m_nYStyleIndex = m_dlgViewPage.m_nYStyleIndex;
+        settings.m_nCursorAlignment = m_dlgViewPage.m_nCursorAlignment;
+        settings.m_nPitchMode = m_dlgViewPage.m_nPitchMode;
+        settings.m_nPosMode = m_dlgViewPage.m_nPosMode;
+        settings.m_bToneAbove = m_dlgViewPage.m_bToneAbove;
+        settings.m_nGraphUpdateMode = m_dlgViewPage.m_nGraphUpdateMode;
+        settings.m_bAnimate = m_dlgViewPage.m_bAnimate;
+        settings.m_nAnimationRate = m_dlgViewPage.m_nAnimationRate;
+        settings.m_bTaskbar = m_dlgViewPage.m_bTaskbar;
+        settings.m_nDlgXStyle = m_dlgViewPage.IndexToStyle[m_dlgViewPage.m_nXStyleIndex];
+        settings.m_nDlgYStyle = m_dlgViewPage.IndexToStyle[m_dlgViewPage.m_nYStyleIndex];
 
 
-		// color page
-		settings.m_bColorsChanged = m_dlgColorPage.m_bColorsChanged;
-		settings.m_cColors = m_dlgColorPage.m_cColors;
-		settings.m_nGraphSelect = m_dlgColorPage.m_nGraphSelect;
-		settings.m_nAnnotationSelect = m_dlgColorPage.m_nAnnotationSelect;
-		settings.m_nScaleSelect = m_dlgColorPage.m_nScaleSelect;
-		settings.m_nOverlaySelect = m_dlgColorPage.m_nOverlaySelect;
+        // color page
+        settings.m_bColorsChanged = m_dlgColorPage.m_bColorsChanged;
+        settings.m_cColors = m_dlgColorPage.m_cColors;
+        settings.m_nGraphSelect = m_dlgColorPage.m_nGraphSelect;
+        settings.m_nAnnotationSelect = m_dlgColorPage.m_nAnnotationSelect;
+        settings.m_nScaleSelect = m_dlgColorPage.m_nScaleSelect;
+        settings.m_nOverlaySelect = m_dlgColorPage.m_nOverlaySelect;
 
-		//font page
-		settings.m_bFontChanged = m_dlgFontPage.m_bFontChanged;
-		settings.m_GraphFonts.RemoveAll();
-		for (int i=0; i<m_dlgFontPage.m_GraphFonts.GetCount(); i++)
-		{
-			settings.m_GraphFonts.Add(m_dlgFontPage.m_GraphFonts.GetAt(i));
-		}
-		settings.m_GraphFontSizes.RemoveAll();
-		for (int i=0; i<m_dlgFontPage.m_GraphFontSizes.GetCount(); i++)
-		{
-			settings.m_GraphFontSizes.Add(m_dlgFontPage.m_GraphFontSizes.GetAt(i));
-		}
-		settings.m_bUseUnicodeEncoding = m_dlgFontPage.m_bUseUnicodeEncoding;
+        //font page
+        settings.m_bFontChanged = m_dlgFontPage.m_bFontChanged;
+        settings.m_GraphFonts.RemoveAll();
+        for (int i=0; i<m_dlgFontPage.m_GraphFonts.GetCount(); i++) {
+            settings.m_GraphFonts.Add(m_dlgFontPage.m_GraphFonts.GetAt(i));
+        }
+        settings.m_GraphFontSizes.RemoveAll();
+        for (int i=0; i<m_dlgFontPage.m_GraphFontSizes.GetCount(); i++) {
+            settings.m_GraphFontSizes.Add(m_dlgFontPage.m_GraphFontSizes.GetAt(i));
+        }
+        settings.m_bUseUnicodeEncoding = m_dlgFontPage.m_bUseUnicodeEncoding;
 
-		// save page
-		settings.m_saveOpenFiles = m_dlgSavePage.m_saveOpenFiles;
-		settings.m_showStartupDlg = m_dlgSavePage.m_showStartupDlg;
-		settings.m_szPermGraphs = m_dlgSavePage.m_szPermGraphs;
-		settings.m_szTempGraphs = m_dlgSavePage.m_szTempGraphs;
-		settings.m_szPermCurrLabel = m_dlgSavePage.m_szPermCurrLabel;
-		settings.m_szTempCurrLabel = m_dlgSavePage.m_szTempCurrLabel;
-	}
+        // save page
+        settings.m_saveOpenFiles = m_dlgSavePage.m_saveOpenFiles;
+        settings.m_showStartupDlg = m_dlgSavePage.m_showStartupDlg;
+        settings.m_szPermGraphs = m_dlgSavePage.m_szPermGraphs;
+        settings.m_szTempGraphs = m_dlgSavePage.m_szTempGraphs;
+        settings.m_szPermCurrLabel = m_dlgSavePage.m_szPermCurrLabel;
+        settings.m_szTempCurrLabel = m_dlgSavePage.m_szTempCurrLabel;
+    }
 
     // audio page
     settings.m_bShowAdvancedAudio = m_dlgAudioPage.m_bShowAdvancedAudio;
     return settings;
 }
 
-void CDlgToolsOptions::ApplyNow()
-{
+void CDlgToolsOptions::ApplyNow() {
     OnApplyNow();
 }

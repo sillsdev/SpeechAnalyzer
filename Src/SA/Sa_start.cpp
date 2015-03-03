@@ -52,15 +52,13 @@ BEGIN_MESSAGE_MAP(CStartModeDlg, CDialog)
 END_MESSAGE_MAP()
 
 //CStartModeDlg::CStartModeDlg(CWnd* pParent /*=NULL*/)
-CStartModeDlg::CStartModeDlg(CWnd * pParent) : CDialog(CStartModeDlg::IDD, pParent)
-{
+CStartModeDlg::CStartModeDlg(CWnd * pParent) : CDialog(CStartModeDlg::IDD, pParent) {
     m_nDontShowAgain = FALSE;
     m_bShowDontShowAgainOption = TRUE;
     m_nDataMode = -1;
 }
 
-void CStartModeDlg::DoDataExchange(CDataExchange * pDX)
-{
+void CStartModeDlg::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_RECENTLIST, m_lbRecentFiles);
     DDX_Check(pDX, IDC_STARTMODE_DONTSHOW, m_nDontShowAgain);
@@ -72,8 +70,7 @@ void CStartModeDlg::DoDataExchange(CDataExchange * pDX)
 
 //****************************************************************
 //****************************************************************
-BOOL CStartModeDlg::OnInitDialog()
-{
+BOOL CStartModeDlg::OnInitDialog() {
     CDialog::OnInitDialog();
     // center dialog on framewindow
     CenterWindow();
@@ -102,14 +99,11 @@ BOOL CStartModeDlg::OnInitDialog()
     m_lbRecentFiles.GetClientRect(rWnd);
     // calculate number of characters possible to display and limit the string
     int nChars = (rWnd.right / tm.tmAveCharWidth * 8 / 10); // experience values
-    for (int i = 0; i < _AFX_MRU_MAX_COUNT; i++)
-    {
+    for (int i = 0; i < _AFX_MRU_MAX_COUNT; i++) {
         CFileStatus status;
         pApp->GetMRUFilePath(i,workDir);
-        if ((workDir.GetLength() > 0)  && CFile::GetStatus(workDir, status))
-        {
-            if (workDir.GetLength() > nChars)   // file path is too long
-            {
+        if ((workDir.GetLength() > 0)  && CFile::GetStatus(workDir, status)) {
+            if (workDir.GetLength() > nChars) { // file path is too long
                 CSaString szRightPath = workDir.Right(nChars - 6);
                 szRightPath = szRightPath.Right(szRightPath.GetLength() - szRightPath.Find(_T("\\")));
                 workDir = workDir.Left(3) + "..." + szRightPath; // drive...rest
@@ -117,8 +111,7 @@ BOOL CStartModeDlg::OnInitDialog()
             m_lbRecentFiles.AddString(workDir);
             CSize sz = pDC->GetTextExtent(workDir);
 
-            if (sz.cx > dx)
-            {
+            if (sz.cx > dx) {
                 dx = sz.cx;
             }
         }
@@ -147,8 +140,7 @@ BOOL CStartModeDlg::OnInitDialog()
     GetDlgItem(IDC_STATIC3)->SetFont(&m_Font);
     GetDlgItem(IDC_STATIC4)->SetFont(&m_Font);
 
-    if (!m_bShowDontShowAgainOption)
-    {
+    if (!m_bShowDontShowAgainOption) {
         GetDlgItem(IDC_STARTMODE_DONTSHOW)->ShowWindow(SW_HIDE);
     }
 
@@ -163,8 +155,7 @@ BOOL CStartModeDlg::OnInitDialog()
     // User Specified, then change the data mode to
     // Phonetic.
     //**************************************************
-    if (m_nDataMode == 0 && !bEnableUserSpec)
-    {
+    if (m_nDataMode == 0 && !bEnableUserSpec) {
         m_nDataMode = 1;
         UpdateData(FALSE);
     }
@@ -185,10 +176,8 @@ BOOL CStartModeDlg::OnInitDialog()
 
 //****************************************************************
 //****************************************************************
-void CStartModeDlg::OnStartModeRecord()
-{
-    if (!Cleanup())
-    {
+void CStartModeDlg::OnStartModeRecord() {
+    if (!Cleanup()) {
         return;
     }
     // create new file and launch recorder
@@ -198,10 +187,8 @@ void CStartModeDlg::OnStartModeRecord()
 
 //****************************************************************
 //****************************************************************
-void CStartModeDlg::OnCloseButton()
-{
-    if (!Cleanup())
-    {
+void CStartModeDlg::OnCloseButton() {
+    if (!Cleanup()) {
         return;
     }
     CDialog::OnOK();
@@ -209,8 +196,7 @@ void CStartModeDlg::OnCloseButton()
 
 //****************************************************************
 //****************************************************************
-bool CStartModeDlg::Cleanup()
-{
+bool CStartModeDlg::Cleanup() {
     //**************************************************
     // Enable this radio button first or UpdateData
     // will bomb.
@@ -218,8 +204,7 @@ bool CStartModeDlg::Cleanup()
     //kg why is this needed?
     //  GetDlgItem(IDC_STARTMODE_TEMPLATE)->EnableWindow(TRUE);
 
-    if (!UpdateData(TRUE))
-    {
+    if (!UpdateData(TRUE)) {
         return false;
     }
     ((CMainFrame *)AfxGetMainWnd())->SetShowStartupDlg(!m_nDontShowAgain);
@@ -230,19 +215,16 @@ bool CStartModeDlg::Cleanup()
 //****************************************************************
 // DDO - 08/08/00
 //****************************************************************
-void CStartModeDlg::OnDblclkRecentlist()
-{
+void CStartModeDlg::OnDblclkRecentlist() {
     UINT nOpenID = ID_FILE_OPEN;
     int nIndex = m_lbRecentFiles.GetCurSel();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
 
-    if (!Cleanup())
-    {
+    if (!Cleanup()) {
         return;
     }
 
-    switch (m_nDataMode)
-    {
+    switch (m_nDataMode) {
     case 0:
         nOpenID = ID_FILE_OPEN;
         break;
@@ -254,23 +236,18 @@ void CStartModeDlg::OnDblclkRecentlist()
         break;
     }
 
-    if (nIndex == 0)
-    {
+    if (nIndex == 0) {
         pMainWnd->PostMessage(WM_COMMAND, nOpenID, 0L);
-    }
-    else
-    {
+    } else {
         CSaApp * pApp = ((CSaApp *)AfxGetApp());
 
         pApp->SetOpenAsID(nOpenID);
 
         CSaString szFile;
         CFileStatus status;
-        for (int i = 0; i < nIndex; i++)
-        {
+        for (int i = 0; i < nIndex; i++) {
             pApp->GetMRUFilePath(i,szFile);
-            if (!CFile::GetStatus(szFile, status))
-            {
+            if (!CFile::GetStatus(szFile, status)) {
                 nIndex++;
             }
         }
@@ -284,20 +261,17 @@ void CStartModeDlg::OnDblclkRecentlist()
 //****************************************************************
 // DDO - 08/08/2000
 //****************************************************************
-void CStartModeDlg::OnOk()
-{
+void CStartModeDlg::OnOk() {
     OnDblclkRecentlist();
 }
 
 //****************************************************************
 // OnPlay  Play selected file
 //****************************************************************
-void CStartModeDlg::OnPlay()
-{
+void CStartModeDlg::OnPlay() {
     int nIndex = m_lbRecentFiles.GetCurSel();
 
-    if (nIndex > 0)
-    {
+    if (nIndex > 0) {
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         CSaString file;
 
@@ -310,41 +284,34 @@ void CStartModeDlg::OnPlay()
 //****************************************************************
 // OnStop  Stop playback file
 //****************************************************************
-void CStartModeDlg::OnStop()
-{
+void CStartModeDlg::OnStop() {
     PlaySound(NULL, 0, SND_PURGE | SND_NODEFAULT);
 }
 
 //****************************************************************
 // OnSelchangeRecentlist  Update play selected file button
 //****************************************************************
-void CStartModeDlg::OnSelchangeRecentlist()
-{
+void CStartModeDlg::OnSelchangeRecentlist() {
     int nIndex = m_lbRecentFiles.GetCurSel();
 
     OnStop();
 
     CWnd * pWnd = GetDlgItem(IDC_PLAY);
-    if (!pWnd)
-    {
+    if (!pWnd) {
         return;
     }
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaString file;
-    if (nIndex > 0)
-    {
+    if (nIndex > 0) {
         pApp->GetMRUFilePath(nIndex - 1,file);
     }
 
     CFileStatus status;
 
-    if ((nIndex > 0) && CFile::GetStatus(LPCTSTR(file), status))
-    {
+    if ((nIndex > 0) && CFile::GetStatus(LPCTSTR(file), status)) {
         pWnd->EnableWindow();
-    }
-    else
-    {
+    } else {
         pWnd->EnableWindow(FALSE);
     }
 
@@ -353,8 +320,7 @@ void CStartModeDlg::OnSelchangeRecentlist()
 /***************************************************************************/
 // CStartModeDlg::OnHelpStartMode Call Start Mode help
 /***************************************************************************/
-void CStartModeDlg::OnHelpStartMode()
-{
+void CStartModeDlg::OnHelpStartMode() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Start_Mode.htm";

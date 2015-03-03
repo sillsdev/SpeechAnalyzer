@@ -3,8 +3,7 @@
 
 #include "SaString.h"
 
-class CDlgAlignTranscriptionDataSegmentByPage : public CPropertyPage
-{
+class CDlgAlignTranscriptionDataSegmentByPage : public CPropertyPage {
 public:
     CDlgAlignTranscriptionDataSegmentByPage();
     virtual ~CDlgAlignTranscriptionDataSegmentByPage();

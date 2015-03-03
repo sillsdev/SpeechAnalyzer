@@ -10,16 +10,15 @@ using std::stringstream;
 using std::wstringstream;
 using std::wistringstream;
 
-class CTextHelper
-{
+class CTextHelper {
 public:
     static bool ImportText(wistringstream & stream, const CSaString & sync, const MarkerList & markers, TranscriptionDataMap & map, bool addTag);
 private:
     static vector<string> Tokenize(const string & str, const string & delimiters);
 };
 
-extern vector<wstring> TokenizeBufferToLines( wistringstream & stream);
-extern vector<wstring> TokenizeLineToTokens( wstring & line, wchar_t token);
+extern vector<wstring> TokenizeBufferToLines(wistringstream & stream);
+extern vector<wstring> TokenizeLineToTokens(wstring & line, wchar_t token);
 
 #endif
 

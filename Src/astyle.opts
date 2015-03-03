@@ -1,4 +1,4 @@
---style=allman
+--style=java
 --indent=spaces=4 
 --align-pointer=middle 
 --align-reference=middle 

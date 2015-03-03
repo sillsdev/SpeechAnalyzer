@@ -9,15 +9,14 @@ typedef std::deque<CDBL> DEQUE_CDBL;
 typedef double DBL;
 typedef std::vector<DBL> VECTOR_DBL;
 
-class CProcessFormantTracker : public CProcess
-{
+class CProcessFormantTracker : public CProcess {
 public:
     CProcessFormantTracker(CProcess & Real, CProcess & Imag, CProcess & Pitch);
     virtual ~CProcessFormantTracker();
 
     virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
     SFormantFreq * GetFormant(DWORD dwIndex);
-	void Dump( LPCSTR ofilename);
+    void Dump(LPCSTR ofilename);
 
 private:
     CProcess * m_pReal;

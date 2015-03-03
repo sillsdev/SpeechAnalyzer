@@ -1,20 +1,17 @@
 #ifndef COMPLEX_H
 #define COMPLEX_H
 
-struct SComplexRectFloat
-{
+struct SComplexRectFloat {
     float real;
     float imag;
 };
 
-struct SComplexPolarFloat
-{
+struct SComplexPolarFloat {
     float mag;
     float phase;
 };
 
-union UComplexFloat
-{
+union UComplexFloat {
     SComplexRectFloat rect;
     SComplexPolarFloat polar;
 };

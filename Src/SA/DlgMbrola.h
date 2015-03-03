@@ -3,8 +3,7 @@
 
 #include "flexEditGrid.h"
 
-class CDlgMbrola : public CPropertyPage
-{
+class CDlgMbrola : public CPropertyPage {
     DECLARE_DYNCREATE(CDlgMbrola)
 
 public:
@@ -29,8 +28,7 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX);
 
 private:
-    enum
-    {
+    enum {
         rowHeading = 0,
         rowIpa = 1, rowSampa = 1,
         rowDuration = 2,

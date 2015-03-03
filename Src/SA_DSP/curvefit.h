@@ -6,8 +6,7 @@
 
 enum ECURVE_TYPE {PARABOLIC = 3};  // type must be set to number of polynomial coefficients
 
-class CCurveFitting
-{
+class CCurveFitting {
 public:
     static char * Copyright(void);
     static float Version(void);

@@ -159,7 +159,7 @@
 #include "DlgImportElanSheet.h"
 #include "SAXMLUtils.h"
 #include "DlgExportLiftResult.h"
-#include <LiftUtils.h>
+#include "LiftUtils.h"
 #include <uriparser/uri.h>
 
 #ifdef _DEBUG
@@ -241,7 +241,8 @@ static LPCSTR psz_saview = "saview";
 /***************************************************************************/
 // CSaDoc::CSaDoc Constructor
 /***************************************************************************/
-CSaDoc::CSaDoc() {
+CSaDoc::CSaDoc() :
+segmentOps(*this) {
     m_bAudioModified = false;
     m_bTransModified = false;
     m_bTempOverlay = false;
@@ -706,11 +707,11 @@ void CSaDoc::OnCloseDocument() {
     ASSERT(pFrame);
     ASSERT(pFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
-	if (IsUsingTempFile()) {
-		m_AutoSave.Close(GetTempFilename());
-	} else {
-		m_AutoSave.Close(GetPathName());
-	}
+    if (!m_szTempWave.IsEmpty()) {
+        m_AutoSave.Close(m_szTempWave);
+    } else {
+        m_AutoSave.Close(GetPathName());
+    }
 
     // NOTE - OnCloseDocument calls delete this,
     // don't access the document after this point.
@@ -900,7 +901,7 @@ BOOL CSaDoc::LoadDataFiles(LPCTSTR pszPathName, bool bTemp/*=FALSE*/) {
     //SDM 1.06.6U2
     //handle temporary file load.
     if (bTemp) {
-        ApplyWaveFile(pszPathName, GetRawDataSize());
+        ApplyWaveFile( pszPathName, m_dwDataSize);
     } else {
         // create the temporary wave chunk copy
         CopyWaveToTemp(szWavePath.c_str());
@@ -992,9 +993,9 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp) {
         m_saParam.lSignalMin = 0;
 
         if ((m_saParam.dwRecordBandWidth == 0) &&
-            (m_saParam.byRecordSmpSize == 0) &&
-            (m_saParam.dwSignalBandWidth == 0) &&
-            (m_saParam.byQuantization == 0)) {
+                (m_saParam.byRecordSmpSize == 0) &&
+                (m_saParam.dwSignalBandWidth == 0) &&
+                (m_saParam.byQuantization == 0)) {
             // These parameters used to be initialized improperly to 0 -- Change them
             m_saParam.RecordTimeStamp = m_fileStat.m_ctime;                     // Creation time of file
             m_saParam.byRecordSmpSize = (BYTE)m_FmtParm.wBitsPerSample;
@@ -1025,7 +1026,7 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp) {
     saAudioDocRdr = NULL;
     CoUninitialize();
 
-	NormalizePhoneticDependencies();
+    NormalizePhoneticDependencies();
 
     return TRUE;
 }
@@ -1142,7 +1143,8 @@ bool CSaDoc::ReadRiff(LPCTSTR pszPathName) {
 // speaker, language, and reference chunks.
 /***************************************************************************/
 void CSaDoc::ReadNonSegmentData(ISaAudioDocumentReaderPtr saAudioDocRdr) {
-    m_szMD5HashCode = saAudioDocRdr->MD5HashCode;
+    
+	m_szMD5HashCode = saAudioDocRdr->MD5HashCode;
 
     // Get SA data
     m_saParam.szDescription = (wchar_t *)saAudioDocRdr->SADescription;
@@ -1211,8 +1213,8 @@ void CSaDoc::ReadNonSegmentData(ISaAudioDocumentReaderPtr saAudioDocRdr) {
 // @param limit the length of the audio data in seconds.
 /***************************************************************************/
 void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD limit, int & exceeded, int & limited) {
-    
-	CSegment * pSegment = ((CSaDoc *)this)->GetSegment(transType);
+
+    CSegment * pSegment = ((CSaDoc *)this)->GetSegment(transType);
 
     DWORD offset = 0;
     DWORD length = 0;
@@ -1224,8 +1226,8 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
     CDWordArray dwDurations;
 
     while (saAudioDocRdr->ReadSegment((long)transType, &offset, &length, annotation)) {
-        
-		offset = offset / (long)m_FmtParm.wChannels;
+
+        offset = offset / (long)m_FmtParm.wChannels;
         length = length / (long)m_FmtParm.wChannels;
         if (offset>limit) {
             TRACE("dropping segment type:%d offset:%d duration:%d sum:%d limit:%d\n",transType,offset,length,(offset+length),limit);
@@ -1247,7 +1249,7 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
 
     ASSERT(dwOffsets.GetSize()==dwDurations.GetSize());
     for (int i=0; i<dwOffsets.GetSize(); i++) {
-        pSegment->InsertAt(i,texts[i],dwOffsets[i],dwDurations[i]);
+        pSegment->InsertAt(i,(LPCTSTR)texts[i],dwOffsets[i],dwDurations[i]);
     }
 
     free(annotation);
@@ -1264,7 +1266,7 @@ void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr,
     CGlossNatSegment * pGlossNat = (CGlossNatSegment *)m_apSegments[GLOSS_NAT];
     CReferenceSegment * pReference = (CReferenceSegment *)m_apSegments[REFERENCE];
 
-	DWORD offset = 0;
+    DWORD offset = 0;
     DWORD length = 0;
     BSTR * gloss = (BSTR *)calloc(1, sizeof(long));
     BSTR * glossNat = (BSTR *)calloc(1, sizeof(long));
@@ -1277,8 +1279,8 @@ void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr,
     // length (which is mark duration) determines whether segment exists or not
     // string pointer may be NULL if no data exists - but length>0 indicates empty segment.
     while (saAudioDocRdr->ReadMarkSegment(&offset, &length, gloss, glossNat, ref, &isBookmark)) {
-        
-		offset /= m_FmtParm.wChannels;
+
+        offset /= m_FmtParm.wChannels;
         length /= m_FmtParm.wChannels;
 
         if (offset>limit) {
@@ -1419,8 +1421,8 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
 void CSaDoc::InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos) {
 
     CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
-	CGlossNatSegment * pGlossNat = (CGlossNatSegment *)m_apSegments[GLOSS_NAT];
-	CReferenceSegment * pReference = (CReferenceSegment *)m_apSegments[REFERENCE];
+    CGlossNatSegment * pGlossNat = (CGlossNatSegment *)m_apSegments[GLOSS_NAT];
+    CReferenceSegment * pReference = (CReferenceSegment *)m_apSegments[REFERENCE];
 
     // which segment includes the insertion position?
     int nIndex = 0;
@@ -1450,7 +1452,7 @@ void CSaDoc::InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDoc
         CSaString szGlossNat = *glossNat;
         pGlossNat->Insert(nIndex, szGlossNat, false, offset + dwPos, length);
 
-		CSaString szRef = *ref;
+        CSaString szRef = *ref;
         pReference->Insert(nIndex++, szRef, false, offset + dwPos, length);
     }
 
@@ -1841,16 +1843,14 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
     pStatusBar->SetPaneText(ID_PROGRESSPANE_3, _T(""));
 
     // create temp file
-    TCHAR szTempFilePath[_MAX_PATH];
-    FileUtils::GetTempFileName(_T("WAV"), szTempFilePath, _countof(szTempFilePath));
-    m_szTempConvertedWave = szTempFilePath;
+    m_szTempConvertedWave = FileUtils::GetTempFileName(_T("WAV"));
 
     // if it's a wave file, but in a different format then try and convert it
     // if this errors, we will just continue on trying with ST_Audio
     {
         CProgressUpdater updater(*pStatusBar);
         CWaveResampler resampler;
-        CWaveResampler::ECONVERT result = resampler.Resample(pszPathName, szTempFilePath, updater);
+		CWaveResampler::ECONVERT result = resampler.Resample(pszPathName, m_szTempConvertedWave.c_str(), updater);
         if (result==CWaveResampler::EC_SUCCESS) {
             pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
             return true;
@@ -1874,7 +1874,7 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
     }
     pStatusBar->SetProgress(30);
     try {
-        result = (stAudio->ConvertToWAV(_bstr_t(pszPathName), _bstr_t(szTempFilePath), 22050, 16, 1)==VARIANT_TRUE);
+        result = (stAudio->ConvertToWAV(_bstr_t(pszPathName), _bstr_t(m_szTempConvertedWave.c_str()), 22050, 16, 1)==VARIANT_TRUE);
     } catch (...) {
         pApp->ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
         pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
@@ -1896,7 +1896,7 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
 // Override for CDocument::OnSaveDocument()
 /***************************************************************************/
 BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName) {
-    return OnSaveDocument(pszPathName, TRUE);
+    return SaveDocument(pszPathName, true);
 }
 
 /***************************************************************************/
@@ -1909,7 +1909,7 @@ BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName) {
 // file from the recorder contains the RIFF structure with the fmt and the
 // data chunks. After the copying, the file has to be saved in the normal way.
 /***************************************************************************/
-BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName, BOOL bSaveAudio) {
+BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 
     std::wstring target = pszPathName;
 
@@ -1958,51 +1958,52 @@ BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName, BOOL bSaveAudio) {
             // does the file still exist?
             if (!FileUtils::FileExists(target.c_str())) {
 
-                CSaString fileName = GetPathName();
-                if (fileName.IsEmpty()) {
-                    fileName = GetFilenameFromTitle().c_str(); // get the current view caption string
-                }
+				CString newFile;
+				bool bSameFileName = false;
+				{
+					CSaString oldFile = GetPathName();
+					if (oldFile.IsEmpty()) {
+						oldFile = GetFilenameFromTitle().c_str(); // get the current view caption string
+					}
+					oldFile = FileUtils::ReplaceExtension( (LPCTSTR)oldFile, L".wav").c_str();
+					// need to save copy (return value is destroyed)
+					CString defaultDir = pApp->DefaultDir();
+					CDlgSaveAsOptions dlg(_T("wav"), oldFile, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, false, (GetNumChannels()!=1));
+					if (dlg.DoModal()!=IDOK) {
+						return FALSE;
+					}
 
-                fileName = SetFileExtension(fileName, _T(".wav"));
+					bSameFileName = dlg.IsSameFile();
+					newFile = dlg.GetSelectedPath();
 
-                CDlgSaveAsOptions dlg(_T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, false, (GetNumChannels()!=1));
-                CSaString szDefault = pApp->DefaultDir(); // need to save copy (return value is destroyed)
-                dlg.m_ofn.lpstrInitialDir = szDefault;
-                if (dlg.DoModal()!=IDOK) {
-                    return FALSE;
-                }
+					// validate the file status
+					if (bSameFileName) {
+						// There is only one file.
+						dlg.mShowFiles = showNew; 
+					} else if (pApp->IsFileOpened(newFile)) {
+						// error file already opened by SA
+						pApp->ErrorMessage(IDS_ERROR_FILEOPENED, newFile);
+						return FALSE;
+					}
 
-                fileName = dlg.GetPathName();
-
-                bool bSameFileName = false;
-                if (fileName == GetPathName()) {
-                    bSameFileName = true;
-                    dlg.m_eShowFiles = showNew; // There is only one file.
-                } else if (pApp->IsFileOpened(fileName)) {
-                    // error file already opened by SA
-                    pApp->ErrorMessage(IDS_ERROR_FILEOPENED, fileName);
-                    return FALSE;
-                }
-
-                CFileStatus status;
-                if (CFile::GetStatus(fileName, status)) {
-                    // File exists overwrite existing file
-                    try {
-                        status.m_attribute |= CFile::readOnly;
-                        CFile::SetStatus(fileName, status);
-                    } catch (...) {
-                        pApp->ErrorMessage(IDS_ERROR_FILEWRITE, fileName);
-                        return FALSE;
-                    }
-                }
-
-                target = fileName;
+					CFileStatus status;
+					if (CFile::GetStatus(newFile, status)) {
+						// File exists overwrite existing file
+						try {
+							status.m_attribute |= CFile::readOnly;
+							CFile::SetStatus(newFile, status);
+						} catch (...) {
+							pApp->ErrorMessage(IDS_ERROR_FILEWRITE, newFile);
+							return FALSE;
+						}
+					}
+				}
+                target = newFile;
             }
         }
 
         DeleteWaveFromUndo(); // delete wave undo entry
-
-        if (!WriteDataFiles(target.c_str(), bSaveAudio)) {
+        if (!WriteDataFiles(target.c_str(), bSaveAudio, false)) {
             return FALSE;
         }
     }
@@ -2015,7 +2016,8 @@ BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName, BOOL bSaveAudio) {
 
     // if batch mode, set file in changed state
     if (pApp->GetBatchMode() != 0) {
-        pApp->SetBatchFileChanged(target.c_str(), m_ID, this); // set changed state
+		// set changed state
+        pApp->SetBatchFileChanged(target.c_str(), m_ID, this); 
     }
     return TRUE;
 }
@@ -2023,10 +2025,11 @@ BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName, BOOL bSaveAudio) {
 /***************************************************************************/
 // CSaDoc::WriteDataFiles Saving a document
 // Stores all available information from data members in the RIFF header of
-// the document (wave file). The fmt and data chunks have to be there al-
-// ready! The temporary wave file data will be copied into the wave chunk.
+// the document (wave file). 
+// The fmt and data chunks have to be there already! 
+// The temporary wave file data will be copied into the wave chunk.
 /***************************************************************************/
-BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL bIsClipboardFile/*=FALSE*/) {
+BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipboardFile) {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
@@ -2056,7 +2059,7 @@ BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL 
         szMD5HashCode = (wchar_t *)0;
     }
 
-    if (!saAudioDocWriter->Initialize(pszPathName, szMD5HashCode, (short)bIsClipboardFile)) {
+    if (!saAudioDocWriter->Initialize( pszPathName, szMD5HashCode, (short)bIsClipboardFile)) {
         CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
         pApp->ErrorMessage(IDS_ERROR_WRITEPHONETIC, pszPathName);
         saAudioDocWriter->Close();
@@ -2066,7 +2069,7 @@ BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL 
         return FALSE;
     }
 
-    WriteNonSegmentData(dwDataSize, saAudioDocWriter);
+    WriteNonSegmentData( dwDataSize, saAudioDocWriter);
     saAudioDocWriter->DeleteSegments();
     WriteTranscription(PHONETIC, saAudioDocWriter);
     WriteTranscription(PHONEMIC, saAudioDocWriter);
@@ -2093,6 +2096,7 @@ BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL 
 // The temporary wave file data will be copied into the wave chunk.
 /***************************************************************************/
 DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
+
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 
     CScopedCursor waitCursor(this);
@@ -2205,9 +2209,10 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
 // to the transcription database.
 /***************************************************************************/
 void CSaDoc::WriteNonSegmentData(DWORD dwDataSize, ISaAudioDocumentWriterPtr saAudioDocWriter) {
-    saAudioDocWriter->DataChunkSize = dwDataSize;
+    
+	saAudioDocWriter->DataChunkSize = dwDataSize;
     saAudioDocWriter->FormatTag = m_FmtParm.wTag;
-    saAudioDocWriter->Channels =m_FmtParm.wChannels;
+    saAudioDocWriter->Channels = m_FmtParm.wChannels;
     saAudioDocWriter->SamplesPerSecond = m_FmtParm.dwSamplesPerSec;
     saAudioDocWriter->AverageBytesPerSecond = m_FmtParm.dwAvgBytesPerSec;
     saAudioDocWriter->BlockAlignment = m_FmtParm.wBlockAlign;
@@ -2267,7 +2272,7 @@ void CSaDoc::WriteNonSegmentData(DWORD dwDataSize, ISaAudioDocumentWriterPtr saA
 // CSaDoc::WriteTranscription  Write the transcription from the document
 // to the transcription database.
 /***************************************************************************/
-void CSaDoc::WriteTranscription( int transType, ISaAudioDocumentWriterPtr saAudioDocWriter) {
+void CSaDoc::WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudioDocWriter) {
     CSegment * pSegment = m_apSegments[transType];
     size_t count = pSegment->GetOffsetSize();
     if (count==0) {
@@ -2279,7 +2284,7 @@ void CSaDoc::WriteTranscription( int transType, ISaAudioDocumentWriterPtr saAudi
         CSaString text = pSegment->GetText(i);
         DWORD dwOffset = pSegment->GetOffset(i) * m_FmtParm.wChannels;
         DWORD dwLength = pSegment->GetDuration(i) * m_FmtParm.wChannels;
-        saAudioDocWriter->AddSegment( transType, dwOffset, dwLength, (_bstr_t)text);
+        saAudioDocWriter->AddSegment(transType, dwOffset, dwLength, (_bstr_t)text);
     }
 }
 
@@ -2386,11 +2391,10 @@ void CSaDoc::WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter) {
 *
 /***************************************************************************/
 BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTotalLength) {
-    TCHAR szTempPath[_MAX_PATH];
-    FileUtils::GetTempFileName(_T("WAV"), szTempPath, _countof(szTempPath));
-    LPCTSTR pszTempPathName = szTempPath;
+    
+    wstring szTempPath = FileUtils::GetTempFileName(_T("WAV"));
     TRACE(L"using %s\n",pszSourcePathName);
-    TRACE(L"generating %s\n",szTempPath);
+    TRACE(L"generating %s\n",szTempPath.c_str());
 
     // get pointer to view and app
     POSITION pos = GetFirstViewPosition();
@@ -2403,9 +2407,9 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
     {
         CFile file;
         // create and open or just open the file
-        if (!file.Open(pszTempPathName, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
+        if (!file.Open( szTempPath.c_str(), CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
             // error opening file
-            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
+            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath.c_str());
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2470,7 +2474,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
             TRACE(_T("front pad bytes written=%lu\n"), lSizeWritten);
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
+            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2553,7 +2557,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
                         lSizeWritten += lWriteSize;
                     } catch (CFileException e) {
                         // error writing file
-                        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
+                        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
                         m_dwDataSize = 0;       // no data available
                         SetModifiedFlag(FALSE); // will be unable to save
                         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2601,7 +2605,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
                 lSizeWritten += lWriteSize;
             } catch (CFileException e) {
                 // error writing file
-                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
+                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
                 m_dwDataSize = 0;       // no data available
                 SetModifiedFlag(FALSE); // will be unable to save
                 pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2632,7 +2636,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
             }
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
+            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2651,12 +2655,11 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
         FileUtils::RemoveFile(m_szRawDataWrk.c_str());
     }
 
-    m_szRawDataWrk = pszTempPathName;
-
+    m_szRawDataWrk = szTempPath.c_str();
     m_dwDataSize = lSizeWritten;
 
     // now use our modified temp file to recreate the wave file.
-    WriteDataFiles(pszSourcePathName);
+    WriteDataFiles(pszSourcePathName,true,false);
 
     // fragment the waveform
     // remove old fragmented data
@@ -3847,20 +3850,20 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart) {
 // The function takes wave data out of the wave file copy at the position and
 // with the length given as parameters (in bytes) and copies it to an
 // globally allocated buffer (not locked). In case of error it returns a NULL
-// handle. If the flag bDelete is TRUE (default is FALSE) it deletes the
-// copied section out of the wavefile.
+// handle. 
+// If the flag bDelete is TRUE (default is FALSE) it deletes the copied 
+// section out of the wavefile.
 /***************************************************************************/
 BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, BOOL bDelete) {
-    // because we now use true CF_WAVE we support annotations embedded in the data
+    
+	// because we now use true CF_WAVE we support annotations embedded in the data
     // temporary target file has to be created
     // Make new wave file with selected data and segments
     // Find and Copy Original Wave File
-    TCHAR szTempNewWave[_MAX_PATH];
-    FileUtils::GetTempFileName(_T("WAV"), szTempNewWave, _countof(szTempNewWave));
-
     DWORD tempSize = FileUtils::GetFileSize(m_szRawDataWrk.c_str());
 
-    if (!CopySectionToNewWavFile(sectionStart, sectionLength, szTempNewWave, TRUE)) {
+	wstring tempNewWave = FileUtils::GetTempFileName(_T("WAV"));
+	if (!CopySectionToNewWavFile( sectionStart, sectionLength, tempNewWave.c_str(), true)) {
         return FALSE;
     }
 
@@ -3868,7 +3871,7 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
 
     // We have a wave file
     CFile file;
-    if (!file.Open(szTempNewWave,CFile::modeRead | CFile::shareExclusive)) {
+	if (!file.Open(tempNewWave.c_str(),CFile::modeRead | CFile::shareExclusive)) {
         TRACE("unable to open file on render\n");
         return FALSE;
     }
@@ -3988,7 +3991,8 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
         POSITION pos = GetFirstViewPosition();
 
         ((CSaView *)GetNextView(pos))->AdjustCursors(dwSectionStart1, dwSectionLength1, TRUE);  // adjust cursors to new file size
-        AdjustSegments(sectionStart, sectionLength, true);  // adjust segments to new file size
+		// adjust segments to new file size
+        segmentOps.ShrinkSegments(sectionStart, sectionLength);  
     }
 
     return TRUE;
@@ -4098,7 +4102,8 @@ BOOL CSaDoc::PasteClipboardToWave(HGLOBAL hData, WAVETIME insertTime) {
 
     WAVETIME start = insertTime;
     WAVETIME length = pasteLength;
-    AdjustSegments(start, length, false);   // adjust segments to new file size
+	// adjust segments to new file size
+    segmentOps.GrowSegments(start, length);   
 
     //Get new segments
     InsertTranscriptions(pApp->GetLastClipboardPath(), insertPos);
@@ -4232,7 +4237,8 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
     CURSORPOS startPos = toCursor(insertAt);
     ((CSaView *)GetNextView(pos))->SetStartStopCursorPosition(startPos, startPos+(repetitions*dwSilenceSize), SNAP_BOTH, ALIGN_AT_SAMPLE);
 
-    AdjustSegments(insertAt, silence, false);   // adjust segments to new file size
+	// adjust segments to new file size
+    segmentOps.GrowSegments(insertAt, silence);   
 
     return TRUE;
 }
@@ -4287,175 +4293,6 @@ void CSaDoc::UndoWaveFile() {
     // Clear Redo List
     CheckPoint();
     Undo(FALSE, FALSE); // SDM 1.5Test10.5
-}
-
-/***************************************************************************/
-// CSaDoc::SetFileExtension Sets the file extension of a filename.
-/***************************************************************************/
-CSaString CSaDoc::SetFileExtension(CSaString fileName, LPCTSTR szExt) {
-
-    CSaString szReturn = fileName;
-
-    // get rid of existing file extension
-    int pos = fileName.ReverseFind(_T('.'));
-    if (pos == -1) {
-        pos = fileName.GetLength();
-    }
-    szReturn = fileName.Left(pos);
-
-    // append desired file extension
-    szReturn += szExt;
-
-    return szReturn;
-}
-
-/***************************************************************************
-* CSaDoc::AdjustSegments Adjust segments to new file size
-* The function adjusts the segments to the new file size. The file size
-* changed at the position dwSectionStart by dwSectionLength bytes and it
-* shrunk, if the flag bShrink is TRUE, otherwise it grew. In case of growth
-* all the segments offsets after dwSectionStart change. In the other way,
-* the segments in the deleted section will be deleted. The ones that over-
-* lap into the section will be adjusted if valid
-***************************************************************************/
-void CSaDoc::AdjustSegments(WAVETIME sectionStart, WAVETIME sectionLength, bool bShrink) {
-
-    DWORD dwSectionStart = toBytes(sectionStart, true);
-    DWORD dwSectionLength = toBytes(sectionLength, true);
-
-    if (bShrink) {
-        for (int independent=0; independent<ANNOT_WND_NUMBER; independent++) {
-            if (m_apSegments[independent]->GetMasterIndex() != -1) {
-                continue;
-            }
-
-            // section in file deleted, find segments to delete
-            int nIndex = m_apSegments[independent]->FindFromPosition(dwSectionStart);
-            while (nIndex != -1) {
-                DWORD dwOldOffset = m_apSegments[independent]->GetOffset(nIndex);
-                if (dwOldOffset > (dwSectionStart + dwSectionLength)) {
-                    break; // no more to delete
-                }
-                if (m_apSegments[independent]->GetSelection() != nIndex) {
-                    m_apSegments[independent]->SetSelection(nIndex);
-                }
-                //SDM 1.06.6U1 if segments overlap adjust if its valid
-                BOOL bAdjusted;
-                bAdjusted = FALSE;
-                if (dwOldOffset < dwSectionStart) {
-                    if ((m_apSegments[independent]->GetDuration(nIndex)+dwOldOffset) > (dwSectionStart+dwSectionLength)) {
-                        //Segment overlaps entire cut region
-                        DWORD dwNewStop = m_apSegments[independent]->GetDuration(nIndex)+dwOldOffset-dwSectionLength;
-                        if (m_apSegments[independent]->CheckPosition(this, dwOldOffset, dwNewStop, CSegment::MODE_EDIT)!=-1) {
-                            bAdjusted = TRUE;
-                            ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset, dwNewStop-dwOldOffset);
-                        }
-                    } else if ((m_apSegments[independent]->GetDuration(nIndex) + dwOldOffset) > dwSectionStart) {
-                        //Segment ends in cut region
-                        if (m_apSegments[independent]->CheckPosition(this, dwOldOffset, dwSectionStart, CSegment::MODE_EDIT)!=-1) {
-                            bAdjusted = TRUE;
-                            ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset, dwSectionStart-dwOldOffset);
-                        }
-                    } else {
-                        bAdjusted = TRUE;    // segment ends before the cut region
-                    }
-                } else if ((m_apSegments[independent]->GetDuration(nIndex)+dwOldOffset) > (dwSectionStart+dwSectionLength)) {
-                    //Segment starts in cut region
-                    DWORD dwNewStop = m_apSegments[independent]->GetDuration(nIndex)+dwSectionStart-(dwSectionStart+dwSectionLength-dwOldOffset);
-                    if (m_apSegments[independent]->CheckPosition(this, dwSectionStart, dwNewStop, CSegment::MODE_EDIT)!=-1) {
-                        bAdjusted = TRUE;
-                        ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwSectionStart, dwNewStop-dwSectionStart);
-                    }
-                }
-                if (!bAdjusted) {
-                    // delete segment
-                    // change the independent arrays
-                    m_apSegments[independent]->RemoveAt(nIndex,true);
-                    // delete aligned dependent segments and gloss
-                    for (int nLoop = 1; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-                        CSegment * pSegment = m_apSegments[nLoop];
-                        if (pSegment) {
-                            int nInnerIndex = pSegment->FindOffset(dwOldOffset);
-                            if (nInnerIndex != -1) {
-                                if (pSegment->GetSelection() != nInnerIndex) {
-                                    pSegment->SetSelection(nInnerIndex);
-                                }
-                                pSegment->RemoveAt(pSegment->GetSelection(),true);
-                            }
-                        }
-                    }
-                    nIndex--; // segment deleted decrement to point to last segment
-                }
-                if (nIndex==-1) {
-                    // GetNext does not work correctly for (nIndex==-1)
-                    nIndex = 0;
-                    if (m_apSegments[independent]->IsEmpty()) {
-                        return;    // nothing more to do
-                    }
-                } else {
-                    nIndex = m_apSegments[independent]->GetNext(nIndex); // find next index
-                }
-            }
-            // now change all the offsets of the following segment
-            while (nIndex != -1) {
-                DWORD dwOldOffset = m_apSegments[independent]->GetOffset(nIndex);
-                DWORD dwOldDuration = m_apSegments[independent]->GetDuration(nIndex);
-                ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset - dwSectionLength, dwOldDuration);
-                nIndex = m_apSegments[independent]->GetNext(nIndex); // find next index
-            }
-        }
-    } else {
-        for (int independent=0; independent<ANNOT_WND_NUMBER; independent++) {
-            if (m_apSegments[independent]->GetMasterIndex() != -1) {
-                continue;
-            }
-
-            m_apSegments[independent]->SetSelection(-1);                // make sure nothing selected
-            int nIndex = m_apSegments[independent]->GetPrevious(-1);    // find last index (works if nothing selected)
-
-            // now change all the offsets of the following segment
-            while (nIndex != -1) {
-                DWORD dwOldOffset = m_apSegments[independent]->GetOffset(nIndex);
-                DWORD dwOldDuration = m_apSegments[independent]->GetDuration(nIndex);
-
-                if (dwOldOffset < dwSectionStart) {
-                    break;
-                }
-
-                ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset + dwSectionLength, dwOldDuration);
-                nIndex = m_apSegments[independent]->GetPrevious(nIndex); // find next index
-            }
-
-            // section in file added, adjust gloss duration and offsets
-            nIndex = m_apSegments[independent]->FindFromPosition(dwSectionStart);
-            if (nIndex != -1) {
-                DWORD dwOldOffset = m_apSegments[independent]->GetOffset(nIndex);
-                DWORD dwOldDuration = m_apSegments[independent]->GetDuration(nIndex);
-
-                if (dwOldOffset <= dwSectionStart) {
-                    // check if insertion into segment happened
-                    DWORD dwOldCenter = dwOldOffset + dwOldDuration/2;
-
-                    // we are to the right of center
-                    if (dwOldCenter <= dwSectionStart) {
-                        // but still within the old segment
-                        if (dwSectionStart<(dwOldOffset+dwOldDuration)) {
-                            ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset, dwSectionStart - dwOldOffset);
-                        }
-                    } else {
-                        // insert the new segment before this overlapping one
-                        ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwSectionStart + dwSectionLength , dwOldOffset + dwOldDuration - dwSectionStart);
-                    }
-                }
-            }
-        }
-    }
-    // deselect everything
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-        if (m_apSegments[nLoop]) {
-            m_apSegments[nLoop]->SetSelection(-1);
-        }
-    }
 }
 
 /***************************************************************************/
@@ -4713,17 +4550,18 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
             int nNext = pSegment->GetNext(nSelection);
             if ((dwNewOffset != dwOffset) && (nPrevious != -1)) {
                 DWORD dwNewPreviousStop = SnapCursor(STOP_CURSOR, dwNewOffset);
-                pSegment->Adjust( this, nPrevious, pSegment->GetOffset(nPrevious), dwNewPreviousStop - pSegment->GetOffset(nPrevious));
+                pSegment->Adjust(this, nPrevious, pSegment->GetOffset(nPrevious), dwNewPreviousStop - pSegment->GetOffset(nPrevious), false);
             }
             if (((dwNewStop) != (dwStop)) && (nNext != -1)) {
                 DWORD dwNewNextOffset = SnapCursor(START_CURSOR, dwNewStop);
-                pSegment->Adjust( this, nNext, dwNewNextOffset, pSegment->GetStop(nNext) - (dwNewNextOffset));
+                pSegment->Adjust(this, nNext, dwNewNextOffset, pSegment->GetStop(nNext) - (dwNewNextOffset), false);
             }
         }
 
         m_bModified = TRUE; // document has been modified
-        pSegment->Adjust(this, nSelection, dwNewOffset, dwNewStop - dwNewOffset);
+        pSegment->Adjust(this, nSelection, dwNewOffset, dwNewStop - dwNewOffset,false);
     }
+
     if (nLoop==GLOSS) {
         // gloss mode
         // Prepare for Update Boundaries
@@ -4739,11 +4577,11 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
         }
 
         // Adjust Offset for current & Duration for previous segment & dependent segments
-        ((CGlossSegment *)pSegment)->Adjust(pDoc, nSelection, dwNewOffset, dwNewStop - dwNewOffset);
+        ((CGlossSegment *)pSegment)->Adjust(pDoc, nSelection, dwNewOffset, dwNewStop - dwNewOffset,false);
 
         if (dwOffset!=dwNewOffset) {
             if (nSelection > 0) { // Adjust previous segment
-                ((CGlossSegment *)pSegment)->Adjust(pDoc, nSelection-1, pSegment->GetOffset(nSelection-1), ((CGlossSegment *)pSegment)->CalculateDuration(pDoc, nSelection-1));
+                ((CGlossSegment *)pSegment)->Adjust(pDoc, nSelection-1, pSegment->GetOffset(nSelection-1), ((CGlossSegment *)pSegment)->CalculateDuration(pDoc, nSelection-1),false);
             }
         }
 
@@ -4754,7 +4592,7 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 
                 DWORD dwNextOffset = pPhonetic->GetOffset(pPhonetic->GetNext(pPhonetic->FindStop(dwNewStop)));
                 // Adjust offset for next and duration for previous segment & dependent segments
-                ((CGlossSegment *)pSegment)->Adjust(pDoc, nNextSegment, dwNextOffset, dwNextStop - dwNextOffset);
+                ((CGlossSegment *)pSegment)->Adjust(pDoc, nNextSegment, dwNextOffset, dwNextStop - dwNextOffset,false);
             }
         }
     }
@@ -4770,7 +4608,7 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 
         m_bModified = TRUE; // document has been modified
 
-        pSegment->Adjust(this, nSelection, dwNewOffset, dwNewStop - dwNewOffset);
+        pSegment->Adjust(this, nSelection, dwNewOffset, dwNewStop - dwNewOffset, false);
     }
 
     return TRUE;
@@ -5164,7 +5002,7 @@ BOOL CSaDoc::DoFileSave() {
 
     // audio wasn't modified so just save the transcription
     if (!IsAudioModified()) {
-        return OnSaveDocument(szPathName, FALSE);
+        return SaveDocument(szPathName, false);
     }
 
     // this isn't a wave file, so let the user Save As...
@@ -5173,7 +5011,7 @@ BOOL CSaDoc::DoFileSave() {
         return TRUE;
     }
 
-    BOOL bSaveAudio = TRUE;
+    bool bSaveAudio = true;
     if (!szPathName.IsEmpty()) {
         if (SetFileAttributes(szPathName, (DWORD)m_fileStat.m_attribute)) {
             if (FileUtils::IsReadOnly(szPathName)) {
@@ -5182,14 +5020,14 @@ BOOL CSaDoc::DoFileSave() {
                     OnFileSaveAs();
                     break;
                 case IDNO:
-                    bSaveAudio = FALSE;
-                    bResult = OnSaveDocument(szPathName, bSaveAudio);
+                    bSaveAudio = false;
+                    bResult = SaveDocument(szPathName, bSaveAudio);
                     break;
                 case IDCANCEL:
                     return FALSE;
                 }
             } else {
-                bResult = OnSaveDocument(szPathName, bSaveAudio);
+                bResult = SaveDocument(szPathName, bSaveAudio);
             }
         } else {
             szPathName.Empty();
@@ -5222,8 +5060,7 @@ BOOL CSaDoc::DoFileSave() {
             CFile::SetStatus(szPathName, status);
         }
 
-        bResult = OnSaveDocument(szPathName, bSaveAudio);
-        if (bResult) {
+        if (SaveDocument(szPathName, bSaveAudio)) {
             SetPathName(szPathName);
         }
 
@@ -5265,55 +5102,89 @@ void CSaDoc::OnUpdateFileSave(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaDoc::OnFileSaveAs() {
 
+	CSaApp * pApp = static_cast<CSaApp *>(AfxGetApp());
+
     const bool stereo = GetNumChannels()>1;
 
-	wstring original_name;
-    if (IsUsingTempFile()) {
-		original_name = GetTempFilename();
-	} else {
-		original_name = GetPathName();
+    wstring original_name;
+    if (!m_szTempWave.IsEmpty()) {
+        original_name = m_szTempWave;
+    } else {
+        original_name = GetPathName();
+    }
+
+    ESaveArea saveArea;
+    EShowFiles showFiles;
+    EFileFormat fileFormat;
+	bool sameFile = false;
+	wstring oldFile;
+	wstring newFile;
+	{
+		CString path = GetPathName();
+		if (path.IsEmpty()) {
+			path = GetFilenameFromTitle().c_str(); // get the current view caption string
+		}
+		path = FileUtils::ReplaceExtension( (LPCTSTR)path, L".wav").c_str();
+
+		CString defaultDir = pApp->DefaultDir();
+		oldFile = path;
+		CDlgSaveAsOptions dlg(_T("wav"), path, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, true, stereo);
+		if (dlg.DoModal()!=IDOK) {
+			return;
+		}
+
+		sameFile = dlg.IsSameFile();
+		newFile = dlg.GetSelectedPath();
+		if (sameFile) {
+			dlg.mShowFiles = showNew; // There is only one file.
+			if ((stereo) && ((dlg.mFileFormat==formatMono) || (dlg.mFileFormat==formatRight))) {
+				((CSaApp *) AfxGetApp())->ErrorMessage(IDS_ERROR_NO_DUPE_FILENAME);
+				return;
+			}
+		} else if (pApp->IsFileOpened(newFile.c_str())) {
+			// error file already opened by SA
+			pApp->ErrorMessage(IDS_ERROR_FILEOPENED, newFile.c_str());
+			return;
+		}
+		saveArea = dlg.mSaveArea;
+		showFiles = dlg.mShowFiles;
+		fileFormat = dlg.mFileFormat;
 	}
 
-    CSaString ifileName = GetPathName();
-    if (ifileName.IsEmpty()) {
-        ifileName = GetFilenameFromTitle().c_str(); // get the current view caption string
+	SaveSection( sameFile, oldFile.c_str(), newFile.c_str(), saveArea, fileFormat);
+
+    switch (showFiles) {
+    case showBoth:
+		// Open new document
+		AfxGetApp()->OpenDocumentFile(newFile.c_str());         
+        break;
+    case showNew:
+	    m_AutoSave.Close(oldFile.c_str());
+        OnCloseDocument();
+		// Open new document
+        AfxGetApp()->OpenDocumentFile(newFile.c_str());         
+        break;
+    case showOriginal:
+		// show nothing
+        break;
     }
-    ifileName = SetFileExtension(ifileName, _T(".wav"));
+}
 
-	CString originalFile = ifileName;
-
-    CDlgSaveAsOptions dlg(_T("wav"), ifileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, true, stereo);
-
-    // need to save copy (return value is destroyed)
-    CSaString szDefault = static_cast<CSaApp *>(AfxGetApp())->DefaultDir();
-    dlg.m_ofn.lpstrInitialDir = szDefault;
-    if (dlg.DoModal()!=IDOK) {
-        return;
-    }
-
-    CSaString newFile = dlg.GetPathName();
-
-    bool bSameFile = false;
-    if (newFile.CompareNoCase(originalFile)==0) {
-        bSameFile = true;
-        dlg.m_eShowFiles = showNew; // There is only one file.
-        if ((stereo) &&
-            ((dlg.m_eFileFormat==formatMono) || (dlg.m_eFileFormat==formatRight))) {
-            ((CSaApp *) AfxGetApp())->ErrorMessage(IDS_ERROR_NO_DUPE_FILENAME);
-            return;
-        }
-    } else if (static_cast<CSaApp *>(AfxGetApp())->IsFileOpened(newFile)) {
-        // error file already opened by SA
-        static_cast<CSaApp *>(AfxGetApp())->ErrorMessage(IDS_ERROR_FILEOPENED, newFile);
-        return;
-    }
+/**
+* Save a selected section, view or entire file to a new filename
+*/
+void CSaDoc::SaveSection( bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESaveArea saveArea, EFileFormat fileFormat) {
 
     CScopedCursor waitCursor(this);
+	TRACE(L"old file = %s\n",oldFile);
+	TRACE(L"new file = %s\n",newFile);
+	TRACE(L"same? = %d\n",sameFile);
 
     // do all the work in a temporary file, and copy it when done
     wstring tempFile = FileUtils::GetTempFileName(L"OFSA");
+	TRACE(L"temp file = %s\n",tempFile.c_str());
 
-    switch (dlg.m_eSaveArea) {
+    switch (saveArea) {
     case saveCursors: {
         POSITION pos = GetFirstViewPosition();
         CSaView * pView = (CSaView *)GetNextView(pos);
@@ -5321,8 +5192,7 @@ void CSaDoc::OnFileSaveAs() {
         CURSORPOS dwStop = pView->GetStopCursorPosition();
         WAVETIME start = toTime((CURSORPOS)dwStart);
         WAVETIME stop = toTime((CURSORPOS)dwStop);
-        if (!CopySectionToNewWavFile(start, stop-start, tempFile.c_str(), TRUE)) {
-            FileUtils::RemoveFile(tempFile.c_str());
+        if (!CopySectionToNewWavFile(start, stop-start, tempFile.c_str(), false)) {
             return;
         }
     }
@@ -5334,12 +5204,12 @@ void CSaDoc::OnFileSaveAs() {
         DWORD dwFrame = 0;
         pView->GetDataFrame(dwStart, dwFrame);
         if (GetBitsPerSample() == 16) {
-            dwFrame &= ~0x1; // force even if file is 16 bit.
+			// force even if file is 16 bit.
+            dwFrame &= ~0x1; 
         }
         WAVETIME start = toTime((CURSORPOS)dwStart);
         WAVETIME stop = toTime((CURSORPOS)dwFrame);
-        if (!CopySectionToNewWavFile(start, stop, tempFile.c_str(), TRUE)) {
-            FileUtils::RemoveFile(tempFile.c_str());
+        if (!CopySectionToNewWavFile(start, stop, tempFile.c_str(), false)) {
             return;
         }
     }
@@ -5349,15 +5219,14 @@ void CSaDoc::OnFileSaveAs() {
         // show original or both?
         WAVETIME start = 0;
         WAVETIME length = toTime(GetDataSize(), true);
-        if (!CopySectionToNewWavFile(start, length, tempFile.c_str(), TRUE)) {
-            FileUtils::RemoveFile(tempFile.c_str());
+        if (!CopySectionToNewWavFile(start, length, tempFile.c_str(), false)) {
             return;
         }
     }
     break;
     }
 
-    switch (dlg.m_eFileFormat) {
+    switch (fileFormat) {
     case formatStereo:
         // no conversion
         break;
@@ -5375,44 +5244,25 @@ void CSaDoc::OnFileSaveAs() {
         break;
     }
 
-    // the temp file now contains the new data.
-    // if the destination file and the source are the same, we need to overwrite
-    if (FileUtils::FileExists(newFile)) {
-        DeleteFile(newFile);
-    }
-    if (bSameFile) {
+    if (sameFile) {
         // the same file. delete the original and rename
-        DeleteFile(originalFile);
+        DeleteFile(oldFile);
         FileUtils::RenameFile(tempFile.c_str(),newFile);
+		// rename data as well
+		wstring from = FileUtils::ReplaceExtension(tempFile.c_str(),L".saxml");
+		wstring to = FileUtils::ReplaceExtension(newFile,L".saxml");
+		FileUtils::RenameFile(from.c_str(),to.c_str());
     } else {
         // not the same, just simply rename it
         FileUtils::RenameFile(tempFile.c_str(),newFile);
-    }
-
-    // save the transcriptions...
-    if (!OnSaveDocument(newFile, FALSE)) {
-        FileUtils::RemoveFile(newFile);
-        return;
+		// rename data as well
+		wstring from = FileUtils::ReplaceExtension(tempFile.c_str(),L".saxml");
+		wstring to = FileUtils::ReplaceExtension(newFile,L".saxml");
+		FileUtils::RenameFile(from.c_str(),to.c_str());
     }
 
     // change the file attribute to read only
-    if (_tcslen(newFile) > 0) {
-        CFile::SetStatus(newFile, m_fileStat);
-    }
-
-	m_AutoSave.Close(originalFile);
-
-    switch (dlg.m_eShowFiles) {
-    case showBoth:
-        AfxGetApp()->OpenDocumentFile(newFile);         // Open new document
-        break;
-    case showNew:
-        OnCloseDocument();
-        AfxGetApp()->OpenDocumentFile(newFile);         // Open new document
-        break;
-    case showOriginal:                                  // show nothing
-        break;
-    }
+    CFile::SetStatus(newFile, m_fileStat);
 }
 
 /***************************************************************************/
@@ -5960,7 +5810,7 @@ BOOL CSaDoc::AdvancedSegment() {
                 nPhonetic = pSegment->GetNext(nPhonetic);
             } else if ((pGloss->GetNext(nGloss) != -1) && ((dwStart+dwTemp)/2 <= pGloss->GetOffset(nGloss+1))) { // next gloss nearest to same phonetic
                 if ((pGloss->GetOffset(nGloss+1) < dwStart) ||
-					(dwDistance > (pGloss->GetOffset(nGloss+1) - dwStart))) { // next gloss closer
+                        (dwDistance > (pGloss->GetOffset(nGloss+1) - dwStart))) { // next gloss closer
                     bInsert = TRUE;
                     // nPhonetic is correct
                 }
@@ -5973,19 +5823,19 @@ BOOL CSaDoc::AdvancedSegment() {
                 }
                 int nPrevious = pSegment->GetPrevious(nPhonetic);
                 if (nPrevious != -1) {
-                    pSegment->Adjust(this, nPrevious, pSegment->GetOffset(nPrevious), dwStart - pSegment->GetOffset(nPrevious));
+                    pSegment->Adjust(this, nPrevious, pSegment->GetOffset(nPrevious), dwStart - pSegment->GetOffset(nPrevious), false);
                 }
                 CSaString szEmpty = SEGMENT_DEFAULT_CHAR;
                 pSegment->Insert(nPhonetic, szEmpty, false, dwStart , pSegment->GetOffset(nPhonetic) - dwStart);
             } else {
-                pGloss->Adjust(this, nGloss, dwStart, dwStop - dwStart);
+                pGloss->Adjust(this, nGloss, dwStart, dwStop - dwStart, false);
             }
             if (nGloss > 0) { // Adjust previous gloss segment
-                pGloss->Adjust(pDoc, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration(pDoc, nGloss-1));
+                pGloss->Adjust(pDoc, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration(pDoc, nGloss-1),false);
             }
         }
         if (nGloss > 0) { // Adjust previous gloss segment (last)
-            pGloss->Adjust(pDoc, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration(pDoc, nGloss-1));
+            pGloss->Adjust(pDoc, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration(pDoc, nGloss-1),false);
         }
     }
 
@@ -6023,7 +5873,8 @@ void CSaDoc::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_wndlst);
     POSITION pos = GetFirstViewPosition();
     while (pos) {
-        CSaView * pshv = (CSaView *)GetNextView(pos); // increments pos
+		// increments pos
+        CSaView * pshv = (CSaView *)GetNextView(pos); 
         if (pshv && pshv->IsKindOf(RUNTIME_CLASS(CSaView))) {
             pshv->WriteProperties(obs);
         }
@@ -6767,8 +6618,8 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
     // remove trailing and leading spaces
     settings.m_szGloss.Trim(SPACE_DELIMITER);
 
-	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
-	CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetSegment(PHONETIC);
+    CGlossSegment * pGloss = (CGlossSegment *)GetSegment(GLOSS);
 
     if (pGloss->IsEmpty()) {
         // auto parse
@@ -6883,8 +6734,8 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
         break;
     }
 
-    case IDC_KEEP: { 
-		// SDM 1.5Test8.2
+    case IDC_KEEP: {
+        // SDM 1.5Test8.2
         // Copy gloss segments SDM 1.5Test8.2
         for (int i=0; i<pGloss->GetOffsetSize(); i++) {
             DWORD offset = pGloss->GetOffset(i);
@@ -7014,12 +6865,12 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
         // Process phonemic
         // SDM 1.06.8 only change  if new segmentation or text changed
         if ((settings.m_bPhonemic) &&
-            ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified))) {
+                ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified))) {
 
             nStringIndex = 0;
             nGlossIndex = 0;
             nWordIndex = 0;
-            CPhonemicSegment * pPhonemic = (CPhonemicSegment*)GetSegment(PHONEMIC);
+            CPhonemicSegment * pPhonemic = (CPhonemicSegment *)GetSegment(PHONEMIC);
             pTable = GetFont(PHONEMIC);
             pPhonemic->DeleteContents(); // Delete contents and reinsert from scratch
 
@@ -7099,7 +6950,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
             nStringIndex = 0;
             nGlossIndex = 0;
             nWordIndex = 0;
-            CToneSegment * pTone = (CToneSegment*)GetSegment(TONE);
+            CToneSegment * pTone = (CToneSegment *)GetSegment(TONE);
             pTone->DeleteContents();
         }
 
@@ -7110,7 +6961,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
             nStringIndex = 0;
             nGlossIndex = 0;
             nWordIndex = 0;
-            COrthoSegment * pOrtho = (COrthoSegment*)GetSegment(ORTHO);
+            COrthoSegment * pOrtho = (COrthoSegment *)GetSegment(ORTHO);
             pTable = GetFont(ORTHO);
             pOrtho->DeleteContents(); // Delete contents and reinsert from scratch
 
@@ -7467,8 +7318,8 @@ const CSaString CSaDoc::BuildImportString(BOOL /*gloss*/, BOOL /*glossnat*/, BOO
 * This is used by the automatic transcription feature returns false on failure
 */
 const bool CSaDoc::ImportTranscription(wistringstream & stream, BOOL gloss, BOOL glossNat, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td, bool addTag, bool showDlg) {
-    
-	// rewind the stream
+
+    // rewind the stream
     stream.clear();
     stream.seekg(0);
     stream.clear();
@@ -7746,78 +7597,96 @@ SDPParm * CSaDoc::GetSDPParm() {
 // and places in a new wav file
 // dwSectionStart the start index in bytes (single channel)
 // dwSectionLength the length in bytes (single channel)
+// if the function fails, it will delete the target wave file
 /***************************************************************************/
-BOOL CSaDoc::CopySectionToNewWavFile(WAVETIME sectionStart, WAVETIME sectionLength, LPCTSTR szNewWave, BOOL usingClipboard) {
+bool CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLength, LPCTSTR szNewWave, bool usingClipboard) {
 
-    CSaString szOriginalWave;
+    CString originalWave;
     if (m_bUsingTempFile) {
-        szOriginalWave = m_szTempConvertedWave.c_str();
+        originalWave = m_szTempConvertedWave.c_str();
     } else if ((GetPathName().GetLength() !=0)) {
-        szOriginalWave = GetPathName();
+        originalWave = GetPathName();
     } else if (m_szTempWave.GetLength() !=0) {
-        szOriginalWave = m_szTempWave;
+        originalWave = m_szTempWave;
     }
 
-    if (szOriginalWave.GetLength() == 0) {
+	if (originalWave.GetLength() == 0) {
         //Original not found
-        return FALSE;
+		FileUtils::RemoveFile(szNewWave);
+        return false;
     }
 
-    bool bSameFileName = (szNewWave == szOriginalWave);
-    if ((!bSameFileName) && (!CopyWave(szOriginalWave, szNewWave))) {
+	// Copy wanted portion of the wave data file
+
+	bool bSameFileName = (originalWave.CompareNoCase(szNewWave)==0);
+	if (bSameFileName) {
+
+		wstring tempNewTemp = FileUtils::GetTempFileName(_T("TMP"));
+
+		if (!CopyWave(m_szRawDataWrk.c_str(), tempNewTemp.c_str(), sectionStart, sectionLength, TRUE)) {
+			FileUtils::RemoveFile(tempNewTemp.c_str());
+			FileUtils::RemoveFile(szNewWave);
+			return false;
+		}
+
+		// Set segments to selected wave
+		// adjust segments to new file size
+		WAVETIME length = toTime(GetDataSize(), true);
+		segmentOps.ShrinkSegments(sectionStart+sectionLength, length-(sectionStart+sectionLength));
+		segmentOps.ShrinkSegments(0, sectionStart);
+
+		// Set document to use new wave data
+		m_dwDataSize = toBytes(sectionLength, false);
+
+		// Done with this file
+		FileUtils::RemoveFile(m_szRawDataWrk.c_str());  
+
+		m_szRawDataWrk = tempNewTemp.c_str();
+		
+		OnFileSave();
+		InvalidateAllProcesses();
+
+		POSITION pos = GetFirstViewPosition();
+		CSaView * pView = ((CSaView *)GetNextView(pos));
+
+		pView->SetStartStopCursorPosition(0, GetDataSize());
+		pView->RefreshGraphs();
+
+		while (CanUndo()) {
+			// remove undo list
+			Undo(FALSE, FALSE);
+		}
+		return true;
+	}
+
+	// NOT the same file
+    if (!CopyWave( originalWave, szNewWave)) {
         FileUtils::RemoveFile(szNewWave);
-        return FALSE;
+        return false;
     }
 
-    // Copy wanted portion of the wave data file
-    TCHAR szTempNewTemp[_MAX_PATH];
-    FileUtils::GetTempFileName(_T("TMP"), szTempNewTemp, _countof(szTempNewTemp));
-
-    if (!CopyWave(m_szRawDataWrk.c_str(), szTempNewTemp, sectionStart, sectionLength, TRUE)) {
-        if (!bSameFileName) {
-            FileUtils::RemoveFile(szNewWave);
-        }
-        FileUtils::RemoveFile(szTempNewTemp);
-        return FALSE;
+	// write the current data to a backup.
+	// we will restore it later
+	wstring backupTemp = FileUtils::GetTempFileName(_T("TMP"));
+	if (!CopyWave( m_szRawDataWrk.c_str(), backupTemp.c_str(), sectionStart, sectionLength, TRUE)) {
+        FileUtils::RemoveFile(szNewWave);
+        FileUtils::RemoveFile(backupTemp.c_str());
+        return false;
     }
 
-    if (!bSameFileName) {
-        //Save segment data we will use this documents segments for calculations
-        CheckPoint();  // save file state for Undo below
-    }
+    // Save segment data we will use this documents segments for calculations
+	// save file state for Undo below
+    CheckPoint();  
 
     // Set segments to selected wave
     // adjust segments to new file size
     WAVETIME length = toTime(GetDataSize(), true);
-    AdjustSegments(sectionStart+sectionLength, length-(sectionStart+sectionLength), true);
-    AdjustSegments(0, sectionStart, TRUE);
+    segmentOps.ShrinkSegments(sectionStart+sectionLength, length-(sectionStart+sectionLength));
+    segmentOps.ShrinkSegments(0, sectionStart);
 
-    if (bSameFileName) {
-        // Set document to use new wave data
-        m_dwDataSize = toBytes(sectionLength, false);
-
-        FileUtils::RemoveFile(m_szRawDataWrk.c_str());  // Done with this file
-
-        m_szRawDataWrk = szTempNewTemp;
-        OnFileSave();
-        InvalidateAllProcesses();
-
-        POSITION pos = GetFirstViewPosition();
-        CSaView * pView = ((CSaView *)GetNextView(pos));
-
-        pView->SetStartStopCursorPosition(0, GetDataSize());
-        pView->RefreshGraphs();
-
-        while (CanUndo()) {
-            // remove undo list
-            Undo(FALSE, FALSE);
-        }
-        return TRUE;
-    }
-
-    //Copy key document parameters
+    // backup key document parameters
     wstring szTempName = m_szRawDataWrk;
-    DWORD dwDataSize = GetRawDataSize();
+    DWORD dwDataSize = m_dwDataSize;
     WORD wFlags = m_saParam.wFlags;
 
     // Set document to use new wave data
@@ -7825,29 +7694,30 @@ BOOL CSaDoc::CopySectionToNewWavFile(WAVETIME sectionStart, WAVETIME sectionLeng
 
     // Create Wave file
     try {
-        m_szRawDataWrk = szTempNewTemp;
-        if (!WriteDataFiles(szNewWave, TRUE, usingClipboard)) {
+        m_szRawDataWrk = backupTemp.c_str();
+        if (!WriteDataFiles( szNewWave, true, usingClipboard)) {
             AfxThrowFileException(CFileException::genericException, -1);
         }
         //Restore Document
         m_saParam.wFlags = wFlags;
         m_dwDataSize = dwDataSize;
         m_szRawDataWrk = szTempName;
-        FileUtils::RemoveFile(szTempNewTemp);  // Done with this file
-        Undo(FALSE);  // return segments to original state
+		// Done with this file
+        FileUtils::RemoveFile(backupTemp.c_str());  
+		// return segments to original state
+        Undo(FALSE);  
     } catch (const CException &) {
         m_szRawDataWrk = szTempName;
         m_dwDataSize = dwDataSize;
         FileUtils::RemoveFile(szNewWave);
-        FileUtils::RemoveFile(szTempNewTemp);
+        FileUtils::RemoveFile(backupTemp.c_str());
         Undo(FALSE);
-        return FALSE;
+        return false;
     }
 
     // save path for copying transcriptions
     ((CSaApp *)AfxGetApp())->SetLastClipboardPath(szNewWave);
-
-    return TRUE;
+    return true;
 }
 
 /**
@@ -7894,9 +7764,6 @@ bool CSaDoc::ConvertToMono(bool extractLeft, LPCTSTR filename) {
         WORD newChannels = 1;
         CWaveWriter writer;
         writer.write(tempfilename, MMIO_CREATE | MMIO_WRITE, bitsPerSample, formatTag, newChannels, samplesPerSec, newBuffer);
-
-        // delete the original file
-        ::DeleteFileW(filename);
 
         // rename the new file
         FileUtils::RenameFile(tempfilename, filename);
@@ -7964,13 +7831,13 @@ void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings) {
 
     if (!TryExportSegmentsBy(settings, REFERENCE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
         if (!TryExportSegmentsBy(settings, GLOSS, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-	        if (!TryExportSegmentsBy(settings, GLOSS_NAT, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-		        if (!TryExportSegmentsBy(settings, ORTHO, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-			        if (!TryExportSegmentsBy(settings, PHONEMIC, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-				        if (!TryExportSegmentsBy(settings, TONE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-					        TryExportSegmentsBy(settings, PHONETIC, file, skipEmptyGloss, szPath, dataCount, wavCount);
-						}
-					}
+            if (!TryExportSegmentsBy(settings, GLOSS_NAT, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+                if (!TryExportSegmentsBy(settings, ORTHO, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+                    if (!TryExportSegmentsBy(settings, PHONEMIC, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+                        if (!TryExportSegmentsBy(settings, TONE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+                            TryExportSegmentsBy(settings, PHONETIC, file, skipEmptyGloss, szPath, dataCount, wavCount);
+                        }
+                    }
                 }
             }
         }
@@ -8195,13 +8062,13 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
     return true;
 }
 
-bool CSaDoc::TryExportSegmentsBy( CExportFWSettings & settings, 
-								  EAnnotation master, 
-								  CFile & file, 
-								  bool skipEmptyGloss, 
-								  LPCTSTR szPath, 
-								  int & dataCount, 
-								  int & wavCount) {
+bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings,
+                                 EAnnotation master,
+                                 CFile & file,
+                                 bool skipEmptyGloss,
+                                 LPCTSTR szPath,
+                                 int & dataCount,
+                                 int & wavCount) {
 
     TRACE("EXPORTING>>>>%d\n",master);
 
@@ -8367,8 +8234,8 @@ BOOL CSaDoc::GetFlag(EAnnotation val, CExportFWSettings & settings) {
         return settings.bPhonemic;
     case ORTHO:
         return settings.bOrtho;
-	case TONE:
-		return settings.bTone;
+    case TONE:
+        return settings.bTone;
     case GLOSS:
         return settings.bGloss;
     case GLOSS_NAT:
@@ -8607,7 +8474,7 @@ DWORD CSaDoc::GetNumChannels() const {
 }
 
 DWORD CSaDoc::GetNumSamples() const {
-    return (GetRawDataSize() / m_FmtParm.GetSampleSize())/ GetNumChannels();
+    return (m_dwDataSize / m_FmtParm.GetSampleSize())/ m_FmtParm.wChannels;
 }
 
 CSaString CSaDoc::GetTempFilename() {
@@ -8619,14 +8486,16 @@ bool CSaDoc::IsUsingTempFile() {
 }
 
 void CSaDoc::StoreAutoRecoveryInformation() {
-	m_AutoSave.Save( *this);
+    m_AutoSave.Save(*this);
 }
 
 wstring CSaDoc::GetFilenameFromTitle() {
-    wstring result = GetTitle();            // load file name
+	// load file name
+    wstring result = GetTitle();            
     size_t nFind = result.find(':');
     if (nFind != wstring::npos) {
-        result = result.substr(0,nFind-1);  // extract part left of :
+		// extract part left of :
+        result = result.substr(0,nFind-1);  
     }
     return result;
 }
@@ -8872,52 +8741,71 @@ int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, 
 * @param sel the selected phonetic segment
 * @param segmental true if there are multiple phonetic segments to a gloss segment
 */
-void CSaDoc::SplitSegment( CSaView * pView, CPhoneticSegment * pSeg, int sel, bool segmental) {
-    if (sel==-1) return;
+void CSaDoc::SplitSegment(CSaView * pView, CPhoneticSegment * pSeg, int sel, bool segmental) {
+    if (sel==-1) {
+        return;
+    }
     DWORD start = pSeg->GetOffset(sel);
     DWORD duration = pSeg->GetDuration(sel);
     DWORD newStopStart = start+(duration/2);
 
-    newStopStart = SnapCursor( STOP_CURSOR, newStopStart, newStopStart, GetDataSize(), SNAP_RIGHT);
-    DWORD newDuration = newStopStart-start;
+    newStopStart = SnapCursor(STOP_CURSOR, newStopStart, newStopStart, GetDataSize(), SNAP_RIGHT);
 
     CheckPoint();
 
     for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
         CSegment * pSeg = m_apSegments[n];
         if (n==PHONETIC) {
-            pSeg->Split( this, pView, start, newStopStart);
+            pSeg->Split(this, pView, start, newStopStart);
         } else if ((pSeg->GetMasterIndex()==PHONETIC) && (pSeg->GetAnnotationIndex()!=GLOSS)) {
-            pSeg->Split( this, pView, start, newStopStart);
+            pSeg->Split(this, pView, start, newStopStart);
         } else if (!segmental) {
-            pSeg->Split( this, pView, start, newStopStart);
+            pSeg->Split(this, pView, start, newStopStart);
         }
     }
 }
 
-bool CSaDoc::CanSplit( CSegment * pSeg) {
-    if (pSeg==NULL) return false;
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) return false;
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
+bool CSaDoc::CanSplit(CSegment * pSeg) {
+    if (pSeg==NULL) {
+        return false;
+    }
+    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+        return false;
+    }
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
     // no data
-    if (pPhonetic->GetOffsetSize()==0) return false;
+    if (pPhonetic->GetOffsetSize()==0) {
+        return false;
+    }
     int sel = pPhonetic->GetSelection();
-    if (sel==-1) return false;
+    if (sel==-1) {
+        return false;
+    }
     return true;
 }
 
-bool CSaDoc::CanMerge( CSegment * pSeg) {
+bool CSaDoc::CanMerge(CSegment * pSeg) {
 
-    if (pSeg==NULL) return false;
+    if (pSeg==NULL) {
+        return false;
+    }
     // phonetic not selected
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) return false;
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
+    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+        return false;
+    }
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
     // no data
-    if (pPhonetic->GetOffsetSize()==0) return false;
+    if (pPhonetic->GetOffsetSize()==0) {
+        return false;
+    }
     int sel = pPhonetic->GetSelection();
-    if (sel==-1) return false;
+    if (sel==-1) {
+        return false;
+    }
     // can't merge first segment
-    if (sel==0) return false;
+    if (sel==0) {
+        return false;
+    }
 
     // if we are in a segmental transcription, we can't merge left
     if ((IsBoundary(pPhonetic,sel))&&
@@ -8937,13 +8825,17 @@ bool CSaDoc::CanMerge( CSegment * pSeg) {
     return true;
 }
 
-void CSaDoc::MergeSegments( CSaView * pView, CPhoneticSegment * pPhonetic) {
+void CSaDoc::MergeSegments(CSaView * pView, CPhoneticSegment * pPhonetic) {
     int sel = pPhonetic->GetSelection();
-    if (sel==-1) return;
+    if (sel==-1) {
+        return;
+    }
     // find the end of the prev segment
     int prev = pPhonetic->GetPrevious(sel);
-    if (prev==-1) return;
-    bool segmental = IsSegmental( pPhonetic, sel);
+    if (prev==-1) {
+        return;
+    }
+    bool segmental = IsSegmental(pPhonetic, sel);
 
     CheckPoint();
     DWORD thisOffset = pPhonetic->GetOffset(sel);
@@ -8954,24 +8846,28 @@ void CSaDoc::MergeSegments( CSaView * pView, CPhoneticSegment * pPhonetic) {
     for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
         CSegment * pSeg = m_apSegments[n];
         if (n==PHONETIC) {
-            pSeg->Merge( this, pView, thisOffset, prevOffset, thisStop);
+            pSeg->Merge(this, pView, thisOffset, prevOffset, thisStop);
         } else if ((pSeg->GetMasterIndex()==PHONETIC) && (pSeg->GetAnnotationIndex()!=GLOSS)) {
-            pSeg->Merge( this, pView, thisOffset, prevOffset, thisStop);
+            pSeg->Merge(this, pView, thisOffset, prevOffset, thisStop);
         } else if (!segmental) {
-            pSeg->Merge( this, pView, thisOffset, prevOffset, thisStop);
+            pSeg->Merge(this, pView, thisOffset, prevOffset, thisStop);
         }
     }
 }
 
 // determine if the transcriptions are segmental - multiple phonetic segments per
-bool CSaDoc::IsSegmental( CPhoneticSegment * pPhonetic, int sel) {
+bool CSaDoc::IsSegmental(CPhoneticSegment * pPhonetic, int sel) {
 
-    CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
-    if (pGloss->IsEmpty()) return false;
+    CGlossSegment * pGloss = (CGlossSegment *)GetSegment(GLOSS);
+    if (pGloss->IsEmpty()) {
+        return false;
+    }
 
     DWORD offset = pPhonetic->GetOffset(sel);
     int gsel = pGloss->FindFromPosition(offset);
-    if (gsel==-1) return false;
+    if (gsel==-1) {
+        return false;
+    }
 
     DWORD start = pGloss->GetOffset(gsel);
     DWORD stop = pGloss->GetStop(gsel);
@@ -8980,10 +8876,16 @@ bool CSaDoc::IsSegmental( CPhoneticSegment * pPhonetic, int sel) {
     DWORD lastoffset = 0;
     for (size_t i=0; i<pPhonetic->GetOffsetSize(); i++) {
         DWORD offset = pPhonetic->GetOffset(i);
-        if (offset>=stop) break;
-        if (lastoffset==offset) continue;
+        if (offset>=stop) {
+            break;
+        }
+        if (lastoffset==offset) {
+            continue;
+        }
         lastoffset = offset;
-        if (offset<start) continue;
+        if (offset<start) {
+            continue;
+        }
         count++;
     }
     return (count>1);
@@ -8991,33 +8893,43 @@ bool CSaDoc::IsSegmental( CPhoneticSegment * pPhonetic, int sel) {
 
 // determine if we are at a segment boundary.
 // The phonetic offset would match a gloss offset
-bool CSaDoc::IsBoundary( CPhoneticSegment * pPhonetic, int sel) {
+bool CSaDoc::IsBoundary(CPhoneticSegment * pPhonetic, int sel) {
 
-    CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
-    if (pGloss->IsEmpty()) return false;
+    CGlossSegment * pGloss = (CGlossSegment *)GetSegment(GLOSS);
+    if (pGloss->IsEmpty()) {
+        return false;
+    }
     DWORD thisOffset = pPhonetic->GetOffset(sel);
     int gsel = pGloss->FindOffset(thisOffset);
     return (gsel!=-1)?true:false;
 }
 
-void CSaDoc::SelectSegment( CSegment * pSegment, int index) {
+void CSaDoc::SelectSegment(CSegment * pSegment, int index) {
     POSITION pos = GetFirstViewPosition();
-    CSaView * pView = (CSaView*)GetNextView(pos);
-    pView->SelectSegment( pSegment, index);
+    CSaView * pView = (CSaView *)GetNextView(pos);
+    pView->SelectSegment(pSegment, index);
 }
 
-bool CSaDoc::CanMoveDataLeft( CSegment * pSeg) {
-    if (pSeg==NULL) return false;
+bool CSaDoc::CanMoveDataLeft(CSegment * pSeg) {
+    if (pSeg==NULL) {
+        return false;
+    }
     int sel = pSeg->GetSelection();
-    if (sel==-1) return false;
-    if (sel==pSeg->GetOffsetSize()-1) return false;
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) return false;
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
-    bool segmental = IsSegmental( pPhonetic, sel);
+    if (sel==-1) {
+        return false;
+    }
+    if (sel==pSeg->GetOffsetSize()-1) {
+        return false;
+    }
+    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+        return false;
+    }
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
+    bool segmental = IsSegmental(pPhonetic, sel);
     return !segmental;
 }
 
-void CSaDoc::MoveDataLeft( DWORD offset) {
+void CSaDoc::MoveDataLeft(DWORD offset) {
     CheckPoint();
     for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
         CSegment * pSeg = m_apSegments[n];
@@ -9025,18 +8937,26 @@ void CSaDoc::MoveDataLeft( DWORD offset) {
     }
 }
 
-bool CSaDoc::CanMoveDataRight( CSegment * pSeg) {
-    if (pSeg==NULL) return false;
+bool CSaDoc::CanMoveDataRight(CSegment * pSeg) {
+    if (pSeg==NULL) {
+        return false;
+    }
     int sel = pSeg->GetSelection();
-    if (sel==-1) return false;
-    if (sel==pSeg->GetOffsetSize()-1) return false;
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) return false;
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
-    bool segmental = IsSegmental( pPhonetic, sel);
+    if (sel==-1) {
+        return false;
+    }
+    if (sel==pSeg->GetOffsetSize()-1) {
+        return false;
+    }
+    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+        return false;
+    }
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
+    bool segmental = IsSegmental(pPhonetic, sel);
     return !segmental;
 }
 
-void CSaDoc::MoveDataRight( DWORD offset) {
+void CSaDoc::MoveDataRight(DWORD offset) {
     CheckPoint();
     for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
         CSegment * pSeg = m_apSegments[n];
@@ -9052,38 +8972,53 @@ void CSaDoc::MoveDataRight( DWORD offset) {
 * if the segment is populated and the offset exceeds it, return
 * the last index for appending
 */
-int CSaDoc::GetInsertionIndex( CSegment * pSegment, DWORD offset) {
-	if (pSegment->GetOffsetSize()==0) return 0;
-	for (int i=0;i<pSegment->GetOffsetSize();i++) {
-		DWORD thisOffset = pSegment->GetOffset(i);
-		if (offset==thisOffset) return -1;
-		if (offset<thisOffset) return i; 
-	}
-	return pSegment->GetOffsetSize();
+int CSaDoc::GetInsertionIndex(CSegment * pSegment, DWORD offset) {
+    if (pSegment->GetOffsetSize()==0) {
+        return 0;
+    }
+    for (int i=0; i<pSegment->GetOffsetSize(); i++) {
+        DWORD thisOffset = pSegment->GetOffset(i);
+        if (offset==thisOffset) {
+            return -1;
+        }
+        if (offset<thisOffset) {
+            return i;
+        }
+    }
+    return pSegment->GetOffsetSize();
 }
 
 void CSaDoc::NormalizePhoneticDependencies() {
 
-	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
-	CPhonemicSegment * pPhonemic = (CPhonemicSegment*)GetSegment(PHONEMIC);
-	COrthoSegment * pOrtho = (COrthoSegment*)GetSegment(ORTHO);
-	CToneSegment * pTone = (CToneSegment*)GetSegment(TONE);
-	
-	for (int i=0;i<pPhonetic->GetOffsetSize();i++) {
-		DWORD offset = pPhonetic->GetOffset(i);
-		DWORD duration = pPhonetic->GetDuration(i);
-		// add blank segments for the locations that don't have them
-		int j = GetInsertionIndex( pPhonemic, offset);
-		if (j!=-1) {
-			pPhonemic->InsertAt( j, CString(""), offset, duration);
-		}
-		j = GetInsertionIndex( pOrtho, offset);
-		if (j!=-1) {
-			pOrtho->InsertAt( j, CString(""), offset, duration);
-		}
-		j = GetInsertionIndex( pTone, offset);
-		if (j!=-1) {
-			pTone->InsertAt( j, CString(""), offset, duration);
-		}
-	}
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetSegment(PHONETIC);
+    CPhonemicSegment * pPhonemic = (CPhonemicSegment *)GetSegment(PHONEMIC);
+    COrthoSegment * pOrtho = (COrthoSegment *)GetSegment(ORTHO);
+    CToneSegment * pTone = (CToneSegment *)GetSegment(TONE);
+
+    for (int i=0; i<pPhonetic->GetOffsetSize(); i++) {
+        DWORD offset = pPhonetic->GetOffset(i);
+        DWORD duration = pPhonetic->GetDuration(i);
+        // add blank segments for the locations that don't have them
+        int j = GetInsertionIndex(pPhonemic, offset);
+        if (j!=-1) {
+            pPhonemic->InsertAt(j, L"", offset, duration);
+        }
+        j = GetInsertionIndex(pOrtho, offset);
+        if (j!=-1) {
+            pOrtho->InsertAt(j, L"", offset, duration);
+        }
+        j = GetInsertionIndex(pTone, offset);
+        if (j!=-1) {
+            pTone->InsertAt(j, L"", offset, duration);
+        }
+    }
+}
+
+void CSaDoc::DeselectAll() {
+    // deselect everything
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        if (m_apSegments[nLoop]!=NULL) {
+            m_apSegments[nLoop]->SetSelection(-1);
+        }
+    }
 }

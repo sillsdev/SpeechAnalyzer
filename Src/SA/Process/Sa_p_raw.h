@@ -10,8 +10,7 @@
 //###########################################################################
 // CProcessRaw data processing
 
-class CProcessRaw : public CProcess
-{
+class CProcessRaw : public CProcess {
 public:
     CProcessRaw();
     virtual ~CProcessRaw();

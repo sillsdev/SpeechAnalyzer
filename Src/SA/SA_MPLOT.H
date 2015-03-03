@@ -11,8 +11,7 @@
 //###########################################################################
 // CMultiPlotWnd
 
-class CMultiPlotWnd : public CPlotWnd
-{
+class CMultiPlotWnd : public CPlotWnd {
     DECLARE_DYNCREATE(CMultiPlotWnd)
 
 // Construction/destruction/creation
@@ -21,14 +20,12 @@ public:
     virtual ~CMultiPlotWnd();
     BOOL IsIDincluded(UINT id);
     void AddPlot(CPlotWnd * plot, UINT id, CSaView * pView);
-    int GetNumPlots()
-    {
+    int GetNumPlots() {
         return m_List.GetCount();
     };
     void RemovePlot(const CPlotWnd * pPlot);
     UINT GetBasePlotID();
-    const PlotWndListDef * GetList()
-    {
+    const PlotWndListDef * GetList() {
         return &m_List;
     };
     PlotWndListDef m_List;

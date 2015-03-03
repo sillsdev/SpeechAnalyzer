@@ -10,8 +10,7 @@
 //###########################################################################
 // CWorkbenchDoc document
 
-class CWorkbenchDoc : public CDocument
-{
+class CWorkbenchDoc : public CDocument {
     DECLARE_SERIAL(CWorkbenchDoc)
 
     // Operations

@@ -3,8 +3,7 @@
 
 #include "Process.h"
 
-class CProcess3dPitch : public CProcess
-{
+class CProcess3dPitch : public CProcess {
 public:
     CProcess3dPitch();           // protected constructor used by dynamic creation
     virtual ~CProcess3dPitch();

@@ -310,12 +310,12 @@ CMainFrame::CMainFrame() {
     }
 
     m_bPrintPreviewInProgress = FALSE;
-    m_wplDlgEditor.length = 0;	// SDM 1.5Test8.2
-    m_pDisplayPlot = NULL;		// SDM 1.5Test8.5
+    m_wplDlgEditor.length = 0;  // SDM 1.5Test8.2
+    m_pDisplayPlot = NULL;      // SDM 1.5Test8.5
     m_pAutoRecorder = NULL;
-    m_hNewMenu = NULL;			// SDM 1.5Test8.5
-    m_hNewAccel = NULL;			// SDM 1.5Test8.5
-    m_nPopup = 0;				// SDM 1.5Test8.5
+    m_hNewMenu = NULL;          // SDM 1.5Test8.5
+    m_hNewAccel = NULL;         // SDM 1.5Test8.5
+    m_nPopup = 0;               // SDM 1.5Test8.5
 
     // Initialize parsing, segmenting, pitch, spectrum and spectrogram parameter defaults // RLJ 11.1A
     m_parseParmDefaults.Init();
@@ -481,8 +481,8 @@ void CMainFrame::SetFnKeys(CFnKeys * pfnKeys) {
 // CMainFrame::IsPlayerPlaying Returns TRUE if player is playing
 /***************************************************************************/
 BOOL CMainFrame::IsPlayerPlaying() {
-    if (CDlgPlayer::IsLaunched()) {			// player launched
-        return GetPlayer(false)->IsPlaying();	// return TRUE if player is playing
+    if (CDlgPlayer::IsLaunched()) {         // player launched
+        return GetPlayer(false)->IsPlaying();   // return TRUE if player is playing
     } else {
         return FALSE;
     }
@@ -492,8 +492,8 @@ BOOL CMainFrame::IsPlayerPlaying() {
 // CMainFrame::IsPlayerPlaying Returns TRUE if player is playing
 /***************************************************************************/
 BOOL CMainFrame::IsPlayerPaused() {
-    if (CDlgPlayer::IsLaunched()) {			// player launched
-        return GetPlayer(false)->IsPaused();	// return TRUE if player is paused
+    if (CDlgPlayer::IsLaunched()) {         // player launched
+        return GetPlayer(false)->IsPaused();    // return TRUE if player is paused
     } else {
         return FALSE;
     }
@@ -503,8 +503,8 @@ BOOL CMainFrame::IsPlayerPaused() {
 // CMainFrame::IsPlayerTestRun Returns TRUE if player runs function key test
 /***************************************************************************/
 BOOL CMainFrame::IsPlayerTestRun() {
-    if (CDlgPlayer::IsLaunched()) {			// player launched
-        return GetPlayer(false)->IsTestRun();	// return TRUE if player runs Fn test
+    if (CDlgPlayer::IsLaunched()) {         // player launched
+        return GetPlayer(false)->IsTestRun();   // return TRUE if player runs Fn test
     } else {
         return FALSE;
     }
@@ -577,7 +577,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
     // create data statusbar
     if ((!m_dataStatusBar.Create(this)) ||
-            (!m_dataStatusBar.SetIndicators( dataIndicators, sizeof(dataIndicators)/sizeof(UINT)))) {
+            (!m_dataStatusBar.SetIndicators(dataIndicators, sizeof(dataIndicators)/sizeof(UINT)))) {
         TRACE(_T("Failed to create data status bar\n"));
         return -1; // failed to create
     }
@@ -629,10 +629,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 void CMainFrame::OnInitMenu(CMenu * pMenu) {
     CMDIFrameWnd::OnInitMenu(pMenu);
     UINT nMenuCount = GetVisibleMenuItemCount(pMenu);
-    if ((nMenuCount > 6) &&			// standalone menu loaded
-            (pMenu == GetMenu())) {	// don't modify floating popup menu
-        if (!m_bMenuModified) {	// attach layout menu on standalone menu
-            TCHAR szString[256];	// don't change the string
+    if ((nMenuCount > 6) &&         // standalone menu loaded
+            (pMenu == GetMenu())) { // don't modify floating popup menu
+        if (!m_bMenuModified) { // attach layout menu on standalone menu
+            TCHAR szString[256];    // don't change the string
             pMenu->GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND);
             if (szString[0] != 0) {
                 VERIFY(pMenu->ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)m_LayoutMenu.m_hMenu, szString));
@@ -641,20 +641,20 @@ void CMainFrame::OnInitMenu(CMenu * pMenu) {
         }
     }
 
-	// setup the autosave checks
-	if (m_bAutoSave) {
-	    UINT state = pMenu->GetMenuState(ID_AUTOSAVE_ON,MF_BYCOMMAND);
-		if ((m_bAutoSave)&&((state&MF_CHECKED)!=MF_CHECKED)) {
-			pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_CHECKED);
-			pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_UNCHECKED);
-		}
-	} else {
-		UINT state = pMenu->GetMenuState(ID_AUTOSAVE_OFF,MF_BYCOMMAND);
-		if ((!m_bAutoSave)&&((state&MF_CHECKED)!=MF_CHECKED)) {
-			pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_UNCHECKED);
-			pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_CHECKED);
-		}
-	}
+    // setup the autosave checks
+    if (m_bAutoSave) {
+        UINT state = pMenu->GetMenuState(ID_AUTOSAVE_ON,MF_BYCOMMAND);
+        if ((m_bAutoSave)&&((state&MF_CHECKED)!=MF_CHECKED)) {
+            pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_CHECKED);
+            pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_UNCHECKED);
+        }
+    } else {
+        UINT state = pMenu->GetMenuState(ID_AUTOSAVE_OFF,MF_BYCOMMAND);
+        if ((!m_bAutoSave)&&((state&MF_CHECKED)!=MF_CHECKED)) {
+            pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_UNCHECKED);
+            pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_CHECKED);
+        }
+    }
 }
 
 /***************************************************************************/
@@ -664,20 +664,20 @@ void CMainFrame::OnInitMenu(CMenu * pMenu) {
 // button.
 /***************************************************************************/
 void CMainFrame::OnToolsOptions() {
-    
-	if (GetCurrSaView() != NULL) {
+
+    if (GetCurrSaView() != NULL) {
 
         // set property sheet caption
         CSaString szCaption;
         szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
-        
-		// create property sheet object
-        CDlgToolsOptions dlg( szCaption, NULL, true);
-        
-		// get pointer to active view and document
+
+        // create property sheet object
+        CDlgToolsOptions dlg(szCaption, NULL, true);
+
+        // get pointer to active view and document
         CSaView * pView = (CSaView *)GetCurrSaView();
-        
-		// setup initial dialog values
+
+        // setup initial dialog values
         dlg.m_dlgViewPage.m_nCaptionStyle = m_nCaptionStyle; // DDO - 08/07/00
         dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
         dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
@@ -718,7 +718,7 @@ void CMainFrame::OnToolsOptions() {
         CSaString szCaption;
         szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
         // create property sheet object
-        CDlgToolsOptions dlg( szCaption, NULL, false);
+        CDlgToolsOptions dlg(szCaption, NULL, false);
 
         // create the modal dialog box
         if (dlg.DoModal() == IDOK) {       // OK button pressed
@@ -896,13 +896,13 @@ CDlgPlayer * CMainFrame::GetPlayer(bool bCreate) {
             return NULL;
         }
         if (m_pDlgPlayer!=NULL) {
-            delete m_pDlgPlayer;		// delete old dialog object
+            delete m_pDlgPlayer;        // delete old dialog object
             m_pDlgPlayer = NULL;
         }
-        m_pDlgPlayer = new CDlgPlayer();	// create new player object
+        m_pDlgPlayer = new CDlgPlayer();    // create new player object
 
         if (!CDlgPlayer::IsLaunched()) { // player dialog not launched
-            m_pDlgPlayer->Create();		// create player
+            m_pDlgPlayer->Create();     // create player
         }
     }
     return m_pDlgPlayer;
@@ -915,7 +915,7 @@ CDlgPlayer * CMainFrame::GetPlayer(bool bCreate) {
 // and on top of all other windows. lParam delivers the player mode to be
 // set.
 /***************************************************************************/
-LRESULT CMainFrame::OnPlayer( WPARAM wParam, LPARAM lParam) {
+LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam) {
     return OnPlayer(wParam, lParam, NULL);
 }
 
@@ -926,7 +926,7 @@ LRESULT CMainFrame::OnPlayer( WPARAM wParam, LPARAM lParam) {
 // and on top of all other windows. lParam delivers the player mode to be
 // set.
 /***************************************************************************/
-LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecific) {
+LRESULT CMainFrame::OnPlayer(WPARAM wParam2, LPARAM lParam, SSpecific * pSpecific) {
     CDlgPlayer::EMode mode = (CDlgPlayer::EMode)wParam2;
 
     TRACE("OnPlayer %s %x %x\n", CDlgPlayer::GetMode(mode), HIWORD(lParam), LOWORD(lParam));
@@ -944,7 +944,7 @@ LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecif
         if (!(BOOL)HIWORD(lParam)) {
             pWnd->SetActiveWindow();
         }
-        GetPlayer(false)->SetPlayerMode( mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific); // set player mode
+        GetPlayer(false)->SetPlayerMode(mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific);  // set player mode
     } else {
         if (!GetPlayer(false)->IsTestRun()) {
             // player not running function key test
@@ -955,7 +955,7 @@ LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecif
                 bFnKey = TRUE;
                 lParam = MAKELONG(LOWORD(lParam), FALSE);
             }
-            GetPlayer(false)->SetPlayerMode( mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific); // set player mode
+            GetPlayer(false)->SetPlayerMode(mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific);  // set player mode
             if (GetPlayer(false)->IsFullSize()) { // player has full size, set it the active window
                 GetPlayer(false)->SetActiveWindow(); // set focus on player
                 GetPlayer(false)->ShowWindow(SW_SHOW);
@@ -1005,7 +1005,7 @@ void CMainFrame::OnUpdateEditEditor(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CMainFrame::OnIdleUpdate handles idle time update needs
 /***************************************************************************/
-LRESULT CMainFrame::OnIdleUpdate( WPARAM /*wParam*/, LPARAM /*lParam*/) {
+LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/) {
     if (m_pDlgEditor!=NULL) {
         m_pDlgEditor->UpdateDialog();
     }
@@ -1082,7 +1082,7 @@ void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI) {
 // informed to stop playing immediatly and to change caption. The statusbar
 // panes have to be cleared if there is no more view.
 /***************************************************************************/
-LRESULT CMainFrame::OnChangeView( WPARAM wParam, LPARAM lParam) {
+LRESULT CMainFrame::OnChangeView(WPARAM wParam, LPARAM lParam) {
     if (m_pDlgFind!=NULL) {
         if (wParam!=FALSE) {
             m_pDlgFind->ChangeView();
@@ -1091,7 +1091,7 @@ LRESULT CMainFrame::OnChangeView( WPARAM wParam, LPARAM lParam) {
             m_pDlgFind = NULL;
         }
     }
-    if (CDlgPlayer::IsLaunched()) {					// player dialog launched
+    if (CDlgPlayer::IsLaunched()) {                 // player dialog launched
         if (wParam!=FALSE) {
             GetPlayer(false)->ChangeView((CSaView *)lParam);    // inform player
         } else {
@@ -1370,7 +1370,7 @@ void CMainFrame::OnSaveWindowAsBMP() {
             rectCrop.left = nWidth - 2;
         }
     }
-    dib.CaptureWindow( this, rectCrop, TRUE);
+    dib.CaptureWindow(this, rectCrop, TRUE);
     dib.Save();
 }
 
@@ -1424,8 +1424,8 @@ void CMainFrame::OnCopyWindowAsBMP() {
         }
     }
 
-    dib.CaptureWindow( this, rectCrop, TRUE);
-    dib.CopyToClipboard( this);
+    dib.CaptureWindow(this, rectCrop, TRUE);
+    dib.CopyToClipboard(this);
 }
 
 //SDM 1.06.6U4
@@ -2161,7 +2161,7 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite) {
             obs.getIos().close();
             m_bDefaultViewExists = TRUE;
         } else {
-            CObjectIStream obs( szPath.utf8().c_str());
+            CObjectIStream obs(szPath.utf8().c_str());
 
             obs.bReadBool(psz_bMaxView, m_bDefaultMaximizeView);
             obs.bReadInteger(psz_HeightView, m_nDefaultHeightView);
@@ -2278,7 +2278,7 @@ void CMainFrame::OnWaveformGenerator() {
 
     dlg.working.pcm.wf.nSamplesPerSec = _tcstol(dlg.m_szSamplingRate,NULL,10);
     ASSERT(dlg.working.pcm.wf.nSamplesPerSec > 0);
-    dlg.working.pcm.wBitsPerSample = (unsigned short) _tcstol( dlg.m_szBits,NULL,10);
+    dlg.working.pcm.wBitsPerSample = (unsigned short) _tcstol(dlg.m_szBits,NULL,10);
     ASSERT(dlg.working.pcm.wBitsPerSample == 8 || dlg.working.pcm.wBitsPerSample == 16);
 
     m_waveformGeneratorSettings = dlg.working;
@@ -2383,7 +2383,7 @@ void CMainFrame::OnRecordOverlay() {
             if (pView->IsKindOf(RUNTIME_CLASS(CSaView))) {
                 if (!CDlgAutoRecorder::IsLaunched()) {
                     int wholeFile = (AfxGetApp()->GetProfileInt(L"AutoRecorder",L"WholeFile",0)!=0);
-                    m_pAutoRecorder = new CDlgAutoRecorder( pDoc, pView, pSourceView, alignInfo, wholeFile);
+                    m_pAutoRecorder = new CDlgAutoRecorder(pDoc, pView, pSourceView, alignInfo, wholeFile);
                     if (m_pDisplayPlot!=NULL) {
                         m_pDisplayPlot->m_pModal = m_pAutoRecorder;
                     }
@@ -2655,7 +2655,7 @@ int CMainFrame::GetPopup() const {
     return m_nPopup ? m_nPopup : IDR_SA_FLOATINGPOPUP;
 };
 
-void CMainFrame::SetToolSettings( CToolSettings settings, bool fullView) {
+void CMainFrame::SetToolSettings(CToolSettings settings, bool fullView) {
     if (fullView) {
         toolSettings = settings;
     } else {
@@ -2666,7 +2666,7 @@ void CMainFrame::SetToolSettings( CToolSettings settings, bool fullView) {
 /**
 * callback for EnumChildWindows in OnTimer function
 */
-BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM) {
+BOOL CALLBACK AutosaveTimerChildProc(HWND hwnd,  LPARAM) {
     if (DYNAMIC_DOWNCAST(CSaView,CWnd::FromHandle(hwnd)) != NULL) {
         ::PostMessage(hwnd,WM_USER_AUTOSAVE,0,0);
     }
@@ -2674,7 +2674,7 @@ BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM) {
 }
 
 void CMainFrame::OnTimer(UINT nIDEvent) {
-	//TRACE("OnTimer %d\n",nIDEvent);
+    //TRACE("OnTimer %d\n",nIDEvent);
     if (nIDEvent == ID_TIMER_AUTOSAVE) {
         // if we are playing something, defer autosave for performance reasons
         if (IsPlayerPlaying()) {
@@ -2688,18 +2688,20 @@ void CMainFrame::OnTimer(UINT nIDEvent) {
 
 void CMainFrame::InitializeAutoSave() {
     if (m_bAutoSave) {
-	    TRACE("enabling autosave\n");
-		SetTimer(ID_TIMER_AUTOSAVE, AUTOSAVE_TIMER, NULL);  // start the timer
-	} else {
-	    TRACE("disabling autosave\n");
-	    KillTimer(ID_TIMER_AUTOSAVE);
-	}
+        TRACE("enabling autosave\n");
+        SetTimer(ID_TIMER_AUTOSAVE, AUTOSAVE_TIMER, NULL);  // start the timer
+    } else {
+        TRACE("disabling autosave\n");
+        KillTimer(ID_TIMER_AUTOSAVE);
+    }
 }
 
 void CMainFrame::OnAutoSaveOn() {
     CMenu * pMenu = GetMenu();
     UINT state = pMenu->GetMenuState(ID_AUTOSAVE_ON,MF_BYCOMMAND);
-    if ((m_bAutoSave)&&((state&MF_CHECKED)==MF_CHECKED)) return;
+    if ((m_bAutoSave)&&((state&MF_CHECKED)==MF_CHECKED)) {
+        return;
+    }
     TRACE("enabling autosave\n");
     pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_CHECKED);
     pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_UNCHECKED);
@@ -2710,7 +2712,9 @@ void CMainFrame::OnAutoSaveOn() {
 void CMainFrame::OnAutoSaveOff() {
     CMenu * pMenu = GetMenu();
     UINT state = pMenu->GetMenuState(ID_AUTOSAVE_OFF,MF_BYCOMMAND);
-    if ((!m_bAutoSave)&&((state&MF_CHECKED)==MF_CHECKED)) return;
+    if ((!m_bAutoSave)&&((state&MF_CHECKED)==MF_CHECKED)) {
+        return;
+    }
     TRACE("disabling autosave\n");
     pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_UNCHECKED);
     pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_CHECKED);
@@ -2719,12 +2723,14 @@ void CMainFrame::OnAutoSaveOff() {
     m_bAutoSave = FALSE;
 }
 
-LRESULT CMainFrame::OnUpdatePlayer( WPARAM wParam, LPARAM /*lParam*/) {
+LRESULT CMainFrame::OnUpdatePlayer(WPARAM wParam, LPARAM /*lParam*/) {
     if (m_pDlgEditor!=NULL) {
         m_pDlgEditor->UpdatePlayer();
     }
     if (CDlgAutoRecorder::IsLaunched()) {
-        if (wParam ==2) m_pAutoRecorder->EndPlayback();
+        if (wParam ==2) {
+            m_pAutoRecorder->EndPlayback();
+        }
     }
     return 0;
 }

@@ -86,8 +86,7 @@ using std::wstring;
 //###########################################################################
 // CSaApp window
 
-class CSaApp : public CWinApp
-{
+class CSaApp : public CWinApp {
 
     // Construction/destruction/creation
 public:
@@ -144,7 +143,7 @@ public:
     void        SetBatchFileChanged(CSaString, int, CDocument *); // set file changed in batch mode list file
     int         GetBatchMode();                                 // return application mode (batch or not, exit allowed)
     void        CancelBatchMode();                              // allow SA to exit
-    CDocument * IsFileOpened(LPCTSTR pszFileName);        // check is this file already opened
+    CDocument * IsFileOpened(LPCTSTR pszFileName);				// check is this file already opened
     bool        IsDocumentOpened(const CSaDoc * pDoc);           // check is this file already opened
     BOOL        CloseWorkbench(CDocument *);                    // close an already opened workbench document
     void        WorkbenchClosed();                              // signal, that workbench has been closed
@@ -206,7 +205,7 @@ protected:
     afx_msg void OnHelpMiscInfo();
     afx_msg void OnHelpTrouble();
     afx_msg void OnHelpWhatsNew();
-	afx_msg void OnHelpSFMMarkers();
+    afx_msg void OnHelpSFMMarkers();
     afx_msg void OnHelpGraphs();
     afx_msg void OnHelpMusic();
     afx_msg void OnHelpTrainingStudent();
@@ -246,6 +245,6 @@ private:
     BOOL WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue);
 };
 
-CSaString GetShellFolderPath( DWORD csidl);
+CSaString GetShellFolderPath(DWORD csidl);
 
 #endif // __SA_H__

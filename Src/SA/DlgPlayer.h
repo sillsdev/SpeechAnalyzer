@@ -23,43 +23,41 @@
 
 //###########################################################################
 // CDlgPlayer dialog
-struct SSpecific
-{
+struct SSpecific {
     double begin;
     double end;
 };
 
-class CDlgPlayer : public CDialog, public IWaveNotifiable
-{
+class CDlgPlayer : public CDialog, public IWaveNotifiable {
 public:
-	CDlgPlayer(CWnd * pParent = NULL);
+    CDlgPlayer(CWnd * pParent = NULL);
     ~CDlgPlayer();
-    
-	enum EMode { IDLE=0, STOPPED=1, PAUSED=2, PLAYING=3, RECORDING=4};
-	
-	BOOL Create();
-    void SetTotalTime();								// set total time display
-    void SetPositionTime();								// set position time display
-    void EnableSpeedSlider(BOOL bState = TRUE);			// activate speed slider
+
+    enum EMode { IDLE=0, STOPPED=1, PAUSED=2, PLAYING=3, RECORDING=4};
+
+    BOOL Create();
+    void SetTotalTime();                                // set total time display
+    void SetPositionTime();                             // set position time display
+    void EnableSpeedSlider(BOOL bState = TRUE);         // activate speed slider
     virtual void BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride = NULL);
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed = 100);
     virtual void StoreFailed();
     virtual void EndPlayback();
     virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
-    bool SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey = FALSE, SSpecific * pSpecific = NULL);
-    void ChangeView(CSaView * pView);					// set new view
+    bool SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey = FALSE, SSpecific * pSpecific = NULL);
+    void ChangeView(CSaView * pView);                   // set new view
     bool IsPlaying();
     bool IsPaused();
     bool IsFullSize();
     bool IsTestRun();
     void OnHelpPlayer();
-	static bool IsLaunched();
-	static const char * GetMode( EMode mode);
-	UINT GetSubmode();
+    static bool IsLaunched();
+    static const char * GetMode(EMode mode);
+    UINT GetSubmode();
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
-    void SetPlayerFullSize();							// set the full size of the player
+    void SetPlayerFullSize();                           // set the full size of the player
     virtual BOOL OnInitDialog();
     afx_msg void OnPlay();
     afx_msg void OnStop();
@@ -86,7 +84,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-    CLEDDisplay m_LEDTotalTime;			// embedded control objects
+    CLEDDisplay m_LEDTotalTime;         // embedded control objects
     CLEDDisplay m_LEDPosTime;
     CSliderVertical m_SliderSpeed;
     CSliderVertical m_SliderVolume;
@@ -95,25 +93,25 @@ private:
     CSpinControl m_SpinVolume;
     CSpinControl m_SpinSpeed;
     CSpinControl m_SpinDelay;
-    CToggleButton m_play;				// toggle button objects
+    CToggleButton m_play;               // toggle button objects
     CToggleButton m_stop;
     CToggleButton m_pause;
-    EMode m_nMode;						// player mode (play, rewind, stop...)
-    EMode m_nOldMode;					// previous recorder mode
-    UINT m_nSubMode;					// player submode (play between cursors, window, file...)
-    bool m_bFullSize;					// if TRUE, player shows up in full size
-    CRect m_rSize;						// dialog width and height expanded and small
+    EMode m_nMode;                      // player mode (play, rewind, stop...)
+    EMode m_nOldMode;                   // previous recorder mode
+    UINT m_nSubMode;                    // player submode (play between cursors, window, file...)
+    bool m_bFullSize;                   // if TRUE, player shows up in full size
+    CRect m_rSize;                      // dialog width and height expanded and small
     CWave * m_pWave;
-    CDlgWaveNotifyObj m_NotifyObj;		// player notification object
-    CDocument * m_pDoc;					// pointer to document
-    CSaView * m_pView;					// pointer to view
-    DWORD m_dwPlayPosition;				// pointer in already played data
-    bool m_bTestRunning;				// TRUE if function key dialog open
+    CDlgWaveNotifyObj m_NotifyObj;      // player notification object
+    CDocument * m_pDoc;                 // pointer to document
+    CSaView * m_pView;                  // pointer to view
+    DWORD m_dwPlayPosition;             // pointer in already played data
+    bool m_bTestRunning;                // TRUE if function key dialog open
     UINT m_nOldVolume;
     UINT m_nOldSpeed;
     UINT m_nOldDelay;
     bool m_bOldRepeat;
-    bool m_bFnKeySetting;				// TRUE, if function key setting
+    bool m_bFnKeySetting;               // TRUE, if function key setting
     UINT m_nFnKey;
 
     // Dialog Data

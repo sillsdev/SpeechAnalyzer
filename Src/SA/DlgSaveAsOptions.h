@@ -4,32 +4,40 @@
 #include "mixer.h"
 #include "AppDefs.h"
 
-class CDlgSaveAsOptions : public CFileDialog
-{
-// Construction
+class CDlgSaveAsOptions : protected CFileDialog {
+
 public:
+	// Construction
     CDlgSaveAsOptions(LPCTSTR lpszDefExt,
                       LPCTSTR lpszFileName,
-                      DWORD dwFlags,
+                      LPCTSTR lpszDefaultDir,
+					  DWORD dwFlags,
                       LPCTSTR lpszFilter,
                       CWnd * pParentWnd,
-					  bool saveAs,
-					  bool stereo);
+                      bool saveAs,
+                      bool stereo);
+	virtual INT_PTR DoModal();
+	bool IsSameFile();
+	CString GetSelectedPath();
 
-    ESaveArea m_eSaveArea;
-    EShowFiles m_eShowFiles;
-	EFileFormat m_eFileFormat;
+    ESaveArea mSaveArea;
+    EShowFiles mShowFiles;
+    EFileFormat mFileFormat;
+    bool mStereo;
+    bool mSaveAs;
+
     enum { IDD = IDD_SAVEAS };
 
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
+	// DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);   
     afx_msg void OnClicked();
     virtual BOOL OnInitDialog();
 
-	bool stereo;
-	bool saveAs;
+	// the original saveas filename
+	CString mOriginalPath;
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif

@@ -40,14 +40,12 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotZCross::CPlotZCross Constructor
 /***************************************************************************/
-CPlotZCross::CPlotZCross()
-{
+CPlotZCross::CPlotZCross() {
 }
 
 
 
-CPlotWnd * CPlotZCross::NewCopy()
-{
+CPlotWnd * CPlotZCross::NewCopy() {
     CPlotWnd * pRet = new CPlotZCross;
 
     CopyTo(pRet);
@@ -58,8 +56,7 @@ CPlotWnd * CPlotZCross::NewCopy()
 /***************************************************************************/
 // CPlotZCross::~CPlotZCross Destructor
 /***************************************************************************/
-CPlotZCross::~CPlotZCross()
-{
+CPlotZCross::~CPlotZCross() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -73,8 +70,7 @@ CPlotZCross::~CPlotZCross()
 // the drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotZCross::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
+void CPlotZCross::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc  *  pDoc   = pView->GetDocument();
@@ -82,12 +78,10 @@ void CPlotZCross::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     CProcessZCross * pZCross = (CProcessZCross *)pDoc->GetZCross(); // get pointer to zero crossings object
     short int nResult = LOWORD(pZCross->Process(this, pDoc)); // process data
     nResult = CheckResult(nResult, pZCross); // check the process result
-    if (nResult == PROCESS_ERROR)
-    {
+    if (nResult == PROCESS_ERROR) {
         return;
     }
-    if (nResult != PROCESS_CANCELED)
-    {
+    if (nResult != PROCESS_CANCELED) {
         pGraph->SetLegendScale(SCALE | NUMBERS, -0.5, pZCross->GetMaxValue(), _T("Zero Crossing")); // set legend scale
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);

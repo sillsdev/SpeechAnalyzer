@@ -66,8 +66,7 @@
 
 class Colors;
 
-class CLegendWnd : public CWnd
-{
+class CLegendWnd : public CWnd {
 
     // Construction/destruction/creation
 public:
@@ -115,36 +114,28 @@ public:
     int GetWindowWidth(); // return width of legend window
     BOOL SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.); // set legend scale
     void CalculateScale(CDC *, CRect *); // calculate new scale
-    CFont * GetFont()
-    {
+    CFont * GetFont() {
         return &m_font;   // return selected font
     }
-    int GetScaleMode()
-    {
+    int GetScaleMode() {
         return m_nScaleMode;   // return scale mode
     }
-    double GetFirstGridPosition()
-    {
+    double GetFirstGridPosition() {
         return m_dFirstGridPos;   // return position of first gridline
     }
-    double GetGridDistance()
-    {
+    double GetGridDistance() {
         return m_fGridDistance;   // return distance between gridlines
     }
-    CString * GetDimensionText()
-    {
+    CString * GetDimensionText() {
         return &m_szScaleDimension;   // return pointer to dimension text
     }
-    double GetScaleBase()
-    {
+    double GetScaleBase() {
         return m_fBase;   // return base of scale
     }
-    double GetScaleMaxValue()
-    {
+    double GetScaleMaxValue() {
         return m_dScaleMaxValue;   // return max scale value
     }
-    double GetScaleMinValue()
-    {
+    double GetScaleMinValue() {
         return m_dScaleMinValue;   // return min scale value
     }
     void OnDraw(CDC * pDC,
@@ -182,8 +173,7 @@ protected:
 #define NUMBERS         0x0002  // numbers near vertical lines
 #define TIME_FROM_VIEW  0x0004  // take the time scale from view
 
-class CXScaleWnd : public CWnd
-{
+class CXScaleWnd : public CWnd {
 
     // Construction/destruction/creation
 public:
@@ -217,24 +207,19 @@ public:
     int GetWindowHeight(); // return height of x-scale window
     BOOL SetScale(int nMode, double dMinValue, double nMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.);
     void CalculateScale(CDC *, int nWidth); // calculate new scale
-    CFont * GetFont()
-    {
+    CFont * GetFont() {
         return &m_font;   // return selected font
     }
-    int GetScaleMode()
-    {
+    int GetScaleMode() {
         return m_nScaleMode;   // return scale mode
     }
-    double GetFirstGridPosition()
-    {
+    double GetFirstGridPosition() {
         return m_fFirstGridPos;   // return position of first gridline
     }
-    double GetGridDistance()
-    {
+    double GetGridDistance() {
         return m_fGridDistance;   // return distance between gridlines
     }
-    CString * GetDimensionText()
-    {
+    CString * GetDimensionText() {
         return &m_szScaleDimension;   // return pointer to dimension text
     }
     void OnDraw(CDC * pDC, const CRect & printRect, const CRect & printPlotWnd);
@@ -259,8 +244,7 @@ protected:
 
 class CDlgAnnotationEdit;
 
-class CAnnotationWnd : public CWnd
-{
+class CAnnotationWnd : public CWnd {
 
     // Construction/destruction/creation
 public:
@@ -274,10 +258,10 @@ public:
     void SetHintUpdateBoundaries(bool bHint, bool bOverlap);
     void OnCreateEdit(const CString * szString = NULL);
     static void CreateAnnotationFont(CFont * pFont, int nPoint, LPCTSTR szFace);
-	void ShowTranscriptionBoundaries( BOOL val);
+    void ShowTranscriptionBoundaries(BOOL val);
 
 protected:
-	void DrawTranscriptionBorders(CDC * pDC, CRect rWnd, Colors * pColors);
+    void DrawTranscriptionBorders(CDC * pDC, CRect rWnd, Colors * pColors);
 
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
@@ -287,15 +271,15 @@ protected:
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 
-	int m_nIndex;					// index of annotation window
-    bool m_bHintUpdateBoundaries;	// request for draw hint of updated boundaries
+    int m_nIndex;                   // index of annotation window
+    bool m_bHintUpdateBoundaries;   // request for draw hint of updated boundaries
     DWORD m_dwHintStart,m_dwHintStop;
     bool m_bOverlap;
 
     DECLARE_MESSAGE_MAP()
 
 protected:
-	bool m_bTranscriptionBoundary;
+    bool m_bTranscriptionBoundary;
 
 private:
     DWORD m_nSelectTickCount;
@@ -304,8 +288,7 @@ private:
 //###########################################################################
 // CPhoneticWnd window
 
-class CPhoneticWnd : public CAnnotationWnd
-{
+class CPhoneticWnd : public CAnnotationWnd {
 public:
     CPhoneticWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
@@ -313,8 +296,7 @@ public:
 //###########################################################################
 // CToneWnd window
 
-class CToneWnd : public CAnnotationWnd
-{
+class CToneWnd : public CAnnotationWnd {
 public:
     CToneWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
@@ -322,8 +304,7 @@ public:
 //###########################################################################
 // CPhonemicWnd window
 
-class CPhonemicWnd : public CAnnotationWnd
-{
+class CPhonemicWnd : public CAnnotationWnd {
 public:
     CPhonemicWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
@@ -331,8 +312,7 @@ public:
 //###########################################################################
 // COrthographicWnd window
 
-class COrthographicWnd : public CAnnotationWnd
-{
+class COrthographicWnd : public CAnnotationWnd {
 public:
     COrthographicWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
@@ -340,15 +320,13 @@ public:
 //###########################################################################
 // CGlossWnd window
 
-class CGlossWnd : public CAnnotationWnd
-{
+class CGlossWnd : public CAnnotationWnd {
 public:
     CGlossWnd(int nIndex) : CAnnotationWnd(nIndex) {};
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 
-class CMusicPhraseWnd : public CAnnotationWnd
-{
+class CMusicPhraseWnd : public CAnnotationWnd {
 public:
     CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };

@@ -8,36 +8,30 @@
 class CSaDoc;
 
 CDlgImportElanFinishPage::CDlgImportElanFinishPage() :
-    CPropertyPage(IDD)
-{
+    CPropertyPage(IDD) {
 }
 
-CDlgImportElanFinishPage::~CDlgImportElanFinishPage()
-{
+CDlgImportElanFinishPage::~CDlgImportElanFinishPage() {
 }
 
 BEGIN_MESSAGE_MAP(CDlgImportElanFinishPage, CPropertyPage)
 END_MESSAGE_MAP()
 
 
-BOOL CDlgImportElanFinishPage::OnWizardFinish()
-{
+BOOL CDlgImportElanFinishPage::OnWizardFinish() {
     return CPropertyPage::OnWizardFinish();
 }
 
-BOOL CDlgImportElanFinishPage::OnSetActive()
-{
+BOOL CDlgImportElanFinishPage::OnSetActive() {
     CDlgImportElanSheet * pSheet = GetParent();
     pSheet->SetWizardButtons(PSWIZB_BACK|PSWIZB_FINISH);
     return CPropertyPage::OnSetActive();
 }
 
-LRESULT CDlgImportElanFinishPage::OnWizardBack()
-{
-	return IDD_IMPORT_ELAN_SELECT_PAGE;
+LRESULT CDlgImportElanFinishPage::OnWizardBack() {
+    return IDD_IMPORT_ELAN_SELECT_PAGE;
 }
 
-CDlgImportElanSheet * CDlgImportElanFinishPage::GetParent()
-{
+CDlgImportElanSheet * CDlgImportElanFinishPage::GetParent() {
     return reinterpret_cast<CDlgImportElanSheet *>(((CPropertySheet *)this)->GetParent());
 }

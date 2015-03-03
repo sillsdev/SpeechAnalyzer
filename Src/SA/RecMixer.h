@@ -4,8 +4,7 @@
 #include "SaString.h"
 #include "mixer.h"
 
-class CRecMixer : public CMixer
-{
+class CRecMixer : public CMixer {
 public:
     CRecMixer();
     ~CRecMixer();

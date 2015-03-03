@@ -472,9 +472,9 @@ CString CSegmentSelection::GetSelectedAnnotationString(CSaView * pView, BOOL bRe
 // removes empty dependent segments.  Refreshes graphs, sets modified flag
 // and optionally adds CheckPoint()
 /***************************************************************************/
-BOOL CSegmentSelection::SetSelectedAnnotationString( CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck) {
-    
-	if (m_nIndex == -1) {
+BOOL CSegmentSelection::SetSelectedAnnotationString(CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck) {
+
+    if (m_nIndex == -1) {
         return FALSE;
     }
 
@@ -513,7 +513,7 @@ BOOL CSegmentSelection::SetSelectedAnnotationString( CSaView * pView, CSaString 
         if (pSegment->GetMasterIndex() != -1) {
             ((CDependentSegment *) pSegment)->Add(pView->GetDocument(), pView, m_dwStart, szString, FALSE, bCheck);
         } else {
-            int nInsertAt = pSegment->CheckPosition( pDoc, m_dwStart, m_dwStop, CSegment::MODE_ADD);
+            int nInsertAt = pSegment->CheckPosition(pDoc, m_dwStart, m_dwStop, CSegment::MODE_ADD);
             if (nInsertAt != -1) {
                 if (bCheck) {
                     pDoc->CheckPoint();
@@ -521,17 +521,17 @@ BOOL CSegmentSelection::SetSelectedAnnotationString( CSaView * pView, CSaString 
                 pDoc->SetModifiedFlag(TRUE); // document has been modified
                 pDoc->SetTransModifiedFlag(TRUE); // transcription has been modified
                 pSegment->Insert(nInsertAt, szString, true, m_dwStart,m_dwDuration);
-                pView->ChangeAnnotationSelection( pSegment, nInsertAt);
+                pView->ChangeAnnotationSelection(pSegment, nInsertAt);
             }
         }
-    } else if (szString.GetLength() == 0) { 
-		// We need to remove the dependent segment
+    } else if (szString.GetLength() == 0) {
+        // We need to remove the dependent segment
         DWORD dwPosition = m_dwStart;
         // Remove refreshes graphs, set modified flag, & check point
-		int index = pSegment->GetSelection();
-		if (index != -1) {
-			pSegment->Remove( pView->GetDocument(), index, bCheck);
-		}
+        int index = pSegment->GetSelection();
+        if (index != -1) {
+            pSegment->Remove(pView->GetDocument(), index, bCheck);
+        }
         SelectFromPosition(pView, nIndex, dwPosition, true);
     } else {
         if (bCheck) {

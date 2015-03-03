@@ -11,8 +11,7 @@
 
 class CTranscriptionDataSettings;
 
-class CDlgAlignTranscriptionDataSheet : public CPropertySheet
-{
+class CDlgAlignTranscriptionDataSheet : public CPropertySheet {
 
     DECLARE_DYNAMIC(CDlgAlignTranscriptionDataSheet)
 

@@ -344,12 +344,12 @@ int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pD
     if (wSmpSize == 1) {
         // 8 bit data
         void * pSourceData = pLowerProcess->GetProcessedObject(pDoc->GetProcessFilename(),
-															   pDoc->GetSelectedChannel(),
-															   pDoc->GetNumChannels(),
-															   pDoc->GetSampleSize(),
-															   dwDataPos,
-															   1,
-															   m_bReverse);
+                             pDoc->GetSelectedChannel(),
+                             pDoc->GetNumChannels(),
+                             pDoc->GetSampleSize(),
+                             dwDataPos,
+                             1,
+                             m_bReverse);
         if (pSourceData==NULL) {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
@@ -360,12 +360,12 @@ int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pD
     } else {
         // 16 bit data
         void * pSourceData = pLowerProcess->GetProcessedObject(pDoc->GetProcessFilename(),
-															   pDoc->GetSelectedChannel(),
-															   pDoc->GetNumChannels(),
-															   pDoc->GetSampleSize(),
-															   dwDataPos>>1,
-															   2,
-															   m_bReverse);
+                             pDoc->GetSelectedChannel(),
+                             pDoc->GetNumChannels(),
+                             pDoc->GetSampleSize(),
+                             dwDataPos>>1,
+                             2,
+                             m_bReverse);
         if (pSourceData==NULL) {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));

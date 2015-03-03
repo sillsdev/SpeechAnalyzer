@@ -50,8 +50,7 @@ END_MESSAGE_MAP()
 
 using namespace std;
 
-static struct RGB sparsePalette[sparsePaletteSize+1] =      // SDM 1.5Test10.3
-{
+static struct RGB sparsePalette[sparsePaletteSize+1] = {    // SDM 1.5Test10.3
     {0,0,0}, {70,0,90}, {87,0,114}, {74,0,138}, {60,0,160}, {0,0,170},
     {0,0,200}, {0,0,220}, {0,0,255}, {0,70,255}, {0,150,255}, {0,200,255},
     {0,220,255}, {0,255,255}, {0,255,180}, {0,255,150}, {0,255,130},
@@ -60,8 +59,7 @@ static struct RGB sparsePalette[sparsePaletteSize+1] =      // SDM 1.5Test10.3
     {255,0,155}, {255,0,255}
 };
 
-static unsigned char sparseBlack[] =
-{
+static unsigned char sparseBlack[] = {
     255, 250, 245, 240, 238, 236, 233, 230, 227, 224, 218, 212,
     206, 199, 192, 184, 176, 168, 160, 152, 144, 136, 128, 122,
     116, 109, 102, 89, 76 , 63, 50 , 0
@@ -73,13 +71,11 @@ CPalette CPlotWavelet::SpectroPalette;                          // color palette
 
 extern CSaApp NEAR theApp;
 
-CPlotWavelet::CPlotWavelet()
-{
+CPlotWavelet::CPlotWavelet() {
     drawing_level = 1;
 }
 
-CPlotWavelet::~CPlotWavelet()
-{
+CPlotWavelet::~CPlotWavelet() {
 }
 
 IMPLEMENT_DYNCREATE(CPlotWavelet, CPlotWnd)
@@ -92,10 +88,8 @@ IMPLEMENT_DYNCREATE(CPlotWavelet, CPlotWnd)
 //*  Postcondtions : None
 //*  Returns       : void
 //**************************************************************************
-void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
-    if (IsIconic())
-    {
+void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+    if (IsIconic()) {
         return;    // nothing to draw
     }
 
@@ -117,8 +111,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     CDC pTempDC;                                                            // Temp area for drawing
     pTempDC.CreateCompatibleDC(pDC);
     BITMAPINFO * pInfo = (BITMAPINFO *) malloc(sizeof(BITMAPINFO) + 256 * sizeof(RGBQUAD));
-    if (pInfo == NULL)
-    {
+    if (pInfo == NULL) {
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L);
         return;
@@ -128,8 +121,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     int height = rWnd.Height();
 
     // Set up the color Palette
-    if (!CreateSpectroPalette(&pTempDC, pDoc))
-    {
+    if (!CreateSpectroPalette(&pTempDC, pDoc)) {
         // error creating color palette
         pApp->ErrorMessage(IDS_ERROR_SPECTROPALETTE);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
@@ -153,8 +145,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     unsigned char * pBits = NULL;
     HBITMAP pTempBitmap = CreateDIBSection(pTempDC.m_hDC,pInfo,DIB_RGB_COLORS, (void **)&pBits,NULL,0);
 
-    if (!pTempBitmap)
-    {
+    if (!pTempBitmap) {
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L);
         return;
@@ -177,8 +168,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     // Get the raw data from SA
     long * pData = NULL;
     DWORD dwDataSize = 0;
-    if (!pWavelet->Get_Raw_Data(&pData, &dwDataSize, pDoc))
-    {
+    if (!pWavelet->Get_Raw_Data(&pData, &dwDataSize, pDoc)) {
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L);
         return;
@@ -212,8 +202,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     GdiFlush();  // finish all drawing to pTempDC
 
     // Blit the final image
-    if (!pDC->BitBlt(rClip.left,0, rClip.Width(), rClip.Height(), &pTempDC, 0, 0, SRCCOPY))
-    {
+    if (!pDC->BitBlt(rClip.left,0, rClip.Width(), rClip.Height(), &pTempDC, 0, 0, SRCCOPY)) {
         CSaString szError;
         szError.Format(_T("BitBLT Failed in ")_T(__FILE__)_T(" line %d"),__LINE__);
         ((CSaApp *)AfxGetApp())->ErrorMessage(szError);
@@ -225,8 +214,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     pTempDC.SelectObject(pOldBitmap);
     DeleteObject(pTempBitmap);
 
-    if (pData)
-    {
+    if (pData) {
         delete pData;
     }
 }
@@ -241,64 +229,50 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 // function creates the full 233 grayscale and above the 233 color palette.
 // The function returns FALSE in case on error, else TRUE.
 /***************************************************************************/
-BOOL CPlotWavelet::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/)
-{
+BOOL CPlotWavelet::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
 #define SET_RGB(r,g,b) ((PC_NOCOLLAPSE << 24) | RGB(r,g,b)) // PC_NOCOLLAPSE make new entry if possible
 
     // get device capabilities
     int nRasterCaps = pDC->GetDeviceCaps(RASTERCAPS);
     // SDM 1.5Test10.7 rebuild palette on DeviceCaps() change
-    if ((nRasterCaps & RC_BITBLT) == 0)
-    {
+    if ((nRasterCaps & RC_BITBLT) == 0) {
         nPaletteMode = SYSTEMCOLOR; // use system colors only
         return FALSE; // device is not able to handle raster operations
     }
 
-    if (nRasterCaps & RC_PALETTE)
-    {
+    if (nRasterCaps & RC_PALETTE) {
         nRasterCaps = TRUE;
-    }
-    else
-    {
+    } else {
         nRasterCaps = FALSE;
     }
     int nNumColors;
-    if (nRasterCaps)
-    {
+    if (nRasterCaps) {
         nNumColors = pDC->GetDeviceCaps(SIZEPALETTE);
-    }
-    else
-    {
+    } else {
         nNumColors = pDC->GetDeviceCaps(NUMCOLORS);
     }
 
-    if (nNumColors == -1)
-    {
+    if (nNumColors == -1) {
         int nBits = pDC->GetDeviceCaps(BITSPIXEL);
         nNumColors = 1 << nBits;
     }
 
     int nDesiredPaletteMode = HALFCOLOR;
-    if (nNumColors < 256)
-    {
+    if (nNumColors < 256) {
         nDesiredPaletteMode = SYSTEMCOLOR; // use system colors only
     }
-    if (nNumColors > 256)
-    {
+    if (nNumColors > 256) {
         nDesiredPaletteMode = FULLCOLOR;
     }
 
-    if (nDesiredPaletteMode != nPaletteMode)   // not yet compatible with this context
-    {
-        if (nNumColors < 256)
-        {
+    if (nDesiredPaletteMode != nPaletteMode) { // not yet compatible with this context
+        if (nNumColors < 256) {
             nPaletteMode = SYSTEMCOLOR; // use system colors only
             return TRUE; // less than 256 colors supported, just use system colors
         }
         int nPaletteSize = 117;
         nPaletteMode = HALFCOLOR;
-        if (nNumColors > 256)
-        {
+        if (nNumColors > 256) {
             // more than 256 colors supported
             nPaletteSize = 233;
             nPaletteMode = FULLCOLOR;
@@ -308,37 +282,29 @@ BOOL CPlotWavelet::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/)
         // create palette
         LPLOGPALETTE lpLogPalette = (LPLOGPALETTE)new char[sizeof(LOGPALETTE)
                                     + (2 * nPaletteSize - 1) * sizeof(PALETTEENTRY)];
-        if (!lpLogPalette)
-        {
+        if (!lpLogPalette) {
             return FALSE;
         }
         lpLogPalette->palVersion = 0x300;
         lpLogPalette->palNumEntries = WORD(2 * nPaletteSize);
-        if (!bPaletteInit)
-        {
-            if (!SpectroPalette.CreatePalette(lpLogPalette))
-            {
+        if (!bPaletteInit) {
+            if (!SpectroPalette.CreatePalette(lpLogPalette)) {
                 return FALSE;
             }
-        }
-        else
-        {
-            if (!SpectroPalette.ResizePalette(2*nPaletteSize))
-            {
+        } else {
+            if (!SpectroPalette.ResizePalette(2*nPaletteSize)) {
                 return FALSE;
             }
         }
         WORD wColorIndex;
         long lRed, lGreen, lBlue, lGrayLevel;
         // create grayscale palette
-        for (wColorIndex = 0; (int)wColorIndex < nPaletteSize; wColorIndex++)
-        {
+        for (wColorIndex = 0; (int)wColorIndex < nPaletteSize; wColorIndex++) {
             lGrayLevel = 255 - (long)(((double)wColorIndex * 255.) / (double)nPaletteSize + 0.5);
             *(unsigned long *)&lpLogPalette->palPalEntry[wColorIndex] = SET_RGB(lGrayLevel, lGrayLevel, lGrayLevel);
         }
         // create color palette // SDM 1.5Test10.3
-        for (wColorIndex = 0; (int)wColorIndex < nPaletteSize; wColorIndex++)
-        {
+        for (wColorIndex = 0; (int)wColorIndex < nPaletteSize; wColorIndex++) {
             long lowSparseIndex = wColorIndex * sparsePaletteSize / nPaletteSize;
             long remainderSparseIndex = (wColorIndex * sparsePaletteSize) % nPaletteSize;
 
@@ -361,8 +327,7 @@ BOOL CPlotWavelet::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/)
     // select the new palette
     CPalette * pOldSysPalette;
     pOldSysPalette = pDC->SelectPalette(&SpectroPalette, FALSE);
-    if (pOldSysPalette)   // SDM 1.5Test11.32
-    {
+    if (pOldSysPalette) { // SDM 1.5Test11.32
         pOldSysPalette->UnrealizeObject();
     }
     pDC->RealizePalette();
@@ -380,8 +345,7 @@ BOOL CPlotWavelet::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/)
 //*  Postcondtions :
 //*  Returns       :
 //**************************************************************************
-void CPlotWavelet::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/)
-{
+void CPlotWavelet::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // prepare to draw
     COLORREF Color[256];
@@ -393,25 +357,18 @@ void CPlotWavelet::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/)
     int bGrayScale = FALSE;             // COLOR OR GRAYSCALE YOU Decide, here
     int nMinThreshold = 0;
     int nMaxThreshold = 234;
-    if (bGrayScale)
-    {
+    if (bGrayScale) {
         // create grayscale palette
         Color[0] = RGB(255, 255, 255);   // white
         Color[234] = RGB(0, 0, 0);     // black
         unsigned int nPaletteSize = 234;
         // use closest system gray
-        for (WORD wColorIndex = 1; wColorIndex < 234; wColorIndex++)
-        {
-            if (wColorIndex <= (WORD)nMinThreshold)
-            {
+        for (WORD wColorIndex = 1; wColorIndex < 234; wColorIndex++) {
+            if (wColorIndex <= (WORD)nMinThreshold) {
                 Color[wColorIndex] = RGB(255, 255, 255);
-            }
-            else if (wColorIndex >= (WORD)nMaxThreshold)
-            {
+            } else if (wColorIndex >= (WORD)nMaxThreshold) {
                 Color[wColorIndex] = RGB(0, 0, 0);
-            }
-            else
-            {
+            } else {
                 long intermediate = (wColorIndex - nMinThreshold) * (sizeof(sparseBlack)-1) * 234
                                     / (nMaxThreshold - nMinThreshold);
                 long lowSparseIndex = intermediate  / nPaletteSize ;
@@ -424,9 +381,7 @@ void CPlotWavelet::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/)
                 Color[wColorIndex] = RGB(lGray, lGray, lGray);
             }
         }
-    }
-    else
-    {
+    } else {
         // create color map
         // SDM 1.5Test10.3
         Color[0] = RGB(0, 0, 0);       // black
@@ -435,18 +390,12 @@ void CPlotWavelet::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/)
         unsigned int nPaletteSize = 234;
 
         // use closest system color
-        for (WORD wColorIndex = 0; wColorIndex < nPaletteSize; wColorIndex++)
-        {
-            if (wColorIndex <= (WORD)nMinThreshold)
-            {
+        for (WORD wColorIndex = 0; wColorIndex < nPaletteSize; wColorIndex++) {
+            if (wColorIndex <= (WORD)nMinThreshold) {
                 Color[wColorIndex] = RGB(0, 0, 0);
-            }
-            else if (wColorIndex >= (WORD)nMaxThreshold)
-            {
+            } else if (wColorIndex >= (WORD)nMaxThreshold) {
                 Color[wColorIndex] = RGB(255, 0, 255);
-            }
-            else
-            {
+            } else {
                 long intermediate = (wColorIndex - nMinThreshold) * sparsePaletteSize * 234
                                     / (nMaxThreshold - nMinThreshold);
                 long lowSparseIndex = intermediate  / nPaletteSize ;
@@ -468,8 +417,7 @@ void CPlotWavelet::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/)
         }
     }
 
-    for (int i = 0; i < 256; i++)
-    {
+    for (int i = 0; i < 256; i++) {
         QuadColors[i].rgbBlue = GetBValue(Color[i]);
         QuadColors[i].rgbGreen = GetGValue(Color[i]);
         QuadColors[i].rgbRed = GetRValue(Color[i]);

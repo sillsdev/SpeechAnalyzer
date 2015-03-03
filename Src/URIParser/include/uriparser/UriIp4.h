@@ -44,8 +44,8 @@
  */
 
 #if (defined(URI_PASS_ANSI) && !defined(URI_IP4_TWICE_H_ANSI)) \
-	|| (defined(URI_PASS_UNICODE) && !defined(URI_IP4_TWICE_H_UNICODE)) \
-	|| (!defined(URI_PASS_ANSI) && !defined(URI_PASS_UNICODE))
+    || (defined(URI_PASS_UNICODE) && !defined(URI_IP4_TWICE_H_UNICODE)) \
+    || (!defined(URI_PASS_ANSI) && !defined(URI_PASS_UNICODE))
 /* What encodings are enabled? */
 #include "UriDefsConfig.h"
 #if (!defined(URI_PASS_ANSI) && !defined(URI_PASS_UNICODE))
@@ -62,8 +62,8 @@
 # endif
 /* Only one pass for each encoding */
 #elif (defined(URI_PASS_ANSI) && !defined(URI_IP4_TWICE_H_ANSI) \
-	&& defined(URI_ENABLE_ANSI)) || (defined(URI_PASS_UNICODE) \
-	&& !defined(URI_IP4_TWICE_H_UNICODE) && defined(URI_ENABLE_UNICODE))
+    && defined(URI_ENABLE_ANSI)) || (defined(URI_PASS_UNICODE) \
+    && !defined(URI_IP4_TWICE_H_UNICODE) && defined(URI_ENABLE_UNICODE))
 # ifdef URI_PASS_ANSI
 #  define URI_IP4_TWICE_H_ANSI 1
 #  include "UriDefsAnsi.h"
@@ -84,7 +84,7 @@
  * @return Error code or 0 on success
  */
 int URI_FUNC(ParseIpFourAddress)(unsigned char * octetOutput,
-		const URI_CHAR * first, const URI_CHAR * afterLast);
+                                 const URI_CHAR * first, const URI_CHAR * afterLast);
 
 
 

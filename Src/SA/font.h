@@ -1,8 +1,7 @@
 #ifndef OLEFONT_H
 #define OLEFONT_H
 
-class COleFont : public COleDispatchDriver
-{
+class COleFont : public COleDispatchDriver {
 public:
     COleFont() {}       // Calls COleDispatchDriver default constructor
     COleFont(LPDISPATCH pDispatch) : COleDispatchDriver(pDispatch) {}

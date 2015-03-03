@@ -30,11 +30,9 @@ LONG NEAR saAssertBusy = -1;
 #pragma optimize("g", off) // assembler cannot be globally optimized
 
 extern "C"
-void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
-{
+void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine) {
 #ifdef _DEBUG
-    if (saIgnoreAssertCount > 0)
-    {
+    if (saIgnoreAssertCount > 0) {
         saIgnoreAssertCount--;
         return;
     }
@@ -46,8 +44,7 @@ void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
     static TCHAR szUnknown[] = _T("<unknown application>");
 
     // In case _AfxGetAppDataFails.
-    if (++saAssertBusy > 0)
-    {
+    if (++saAssertBusy > 0) {
         // assume the debugger or auxiliary port
         swprintf_s(sz,szMessage,szUnknown,lpszFileName, nLine);
 #ifdef _AFXCTL
@@ -56,8 +53,7 @@ void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
 
         AfxOutputDebugString(sz);
 #else
-        if (afxTraceEnabled)
-        {
+        if (afxTraceEnabled) {
             ::OutputDebugString(sz);
         }
 #endif
@@ -65,8 +61,7 @@ void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
 
         // break into the debugger (or Dr Watson log)
 #ifndef _PORTABLE
-        _asm
-        {
+        _asm {
             int 3
         };
 #endif
@@ -77,8 +72,7 @@ void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
     LPCTSTR pszAppName = AfxGetAppName();
     swprintf_s(sz, szMessage, (pszAppName == NULL) ? szUnknown : pszAppName, lpszFileName, nLine);
 
-    if (afxTraceEnabled)
-    {
+    if (afxTraceEnabled) {
         // assume the debugger or auxiliary port
         ::OutputDebugString(sz);
         ::OutputDebugString(_T(", "));
@@ -91,18 +85,14 @@ void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
 
     // break into the debugger (or Dr Watson log)
 #ifndef _PORTABLE
-    _asm
-    {
+    _asm {
         int 3
     };
 #endif
 
-    if (nCode == IDIGNORE)
-    {
+    if (nCode == IDIGNORE) {
         return;     // ignore
-    }
-    else if (nCode == IDRETRY)
-    {
+    } else if (nCode == IDRETRY) {
         return; // ignore and continue in debugger to diagnose problem
     }
     // else fall through and call AfxAbort

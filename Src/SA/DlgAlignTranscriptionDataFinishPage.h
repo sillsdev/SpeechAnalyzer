@@ -4,8 +4,7 @@
 class CDlgAlignTranscriptionDataSheet;
 class CSaDoc;
 
-class CDlgAlignTranscriptionDataFinishPage : public CPropertyPage
-{
+class CDlgAlignTranscriptionDataFinishPage : public CPropertyPage {
 
 public:
     CDlgAlignTranscriptionDataFinishPage(CSaDoc * pSaDoc);

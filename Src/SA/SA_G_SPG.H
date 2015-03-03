@@ -17,8 +17,7 @@
 class CProcessSpectrogram;
 class CProcessSpectroFormants;
 
-class CPlotSpectrogram : public CPlotWnd
-{
+class CPlotSpectrogram : public CPlotWnd {
 
     DECLARE_DYNCREATE(CPlotSpectrogram)
 
@@ -52,8 +51,7 @@ private:
     CProcessSpectrogram * GetSpectrogram(CSaDoc * pDoc);
     CProcessSpectroFormants * GetFormantProcess(CSaDoc * pDoc);
 
-    enum PaletteMode                          // mode of palette
-    {
+    enum PaletteMode {                        // mode of palette
         SYSTEMCOLOR,
         HALFCOLOR,
         FULLCOLOR,

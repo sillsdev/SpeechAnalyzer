@@ -165,8 +165,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-char * CWaveWarp::Copyright(void)
-{
+char * CWaveWarp::Copyright(void) {
     static char Notice[] = {"WaveWarp Version " VERSION_NUMBER "\n"
                             "Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. "
                             "All rights reserved.\n"
@@ -177,8 +176,7 @@ char * CWaveWarp::Copyright(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return version of class.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-float CWaveWarp::Version(void)
-{
+float CWaveWarp::Version(void) {
     return((float)atof(VERSION_NUMBER));
 }
 
@@ -192,28 +190,23 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
                                    ISaDoc * pDoc,
                                    ULONG dwWaveStart,
                                    USHORT wSpeed,
-                                   SFragParms * pstFragStart)
-{
+                                   SFragParms * pstFragStart) {
 
     // Validate parameters passed.
-    if ((ppWaveWarp==NULL) || (pDoc==NULL))
-    {
+    if ((ppWaveWarp==NULL) || (pDoc==NULL)) {
         return(Code(INVALID_PARM_PTR));
     }
 
     *ppWaveWarp = NULL;
     ULONG dwWaveLength = pDoc->GetNumSamples();
-    if (dwWaveStart >= dwWaveLength)
-    {
+    if (dwWaveStart >= dwWaveLength) {
         return(Code(INVALID_BLOCK));
     }
-    if (!wSpeed)
-    {
+    if (!wSpeed) {
         return(Code(INVALID_WARP_SPEED));
     }
     if ((!pDoc->IsPCM()) ||
-            ((pDoc->GetBitsPerSample()!=8) && (pDoc->GetBitsPerSample()!=16)))
-    {
+            ((pDoc->GetBitsPerSample()!=8) && (pDoc->GetBitsPerSample()!=16))) {
         return(Code(UNSUPP_SMP_DATA_FMT));
     }
 
@@ -224,51 +217,41 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
 
     ULONG dwFragBlock = 0;
     SFragParms * pstFragBfr = pFragments->GetFragmentBlock(dwFragBlock);
-    if (!pstFragBfr)
-    {
+    if (!pstFragBfr) {
         return(Code(FRAGMENT_NOT_FOUND));
     }
     ULONG dwFragBlockLength = min(dwFragBfrLength, dwFragCount - dwFragBlock);
     ULONG dwFragBfrIndex;
 
-    do
-    {
+    do {
         // scan through fragment buffer
         for (dwFragBfrIndex = 0; dwFragBfrIndex < dwFragBlockLength; dwFragBfrIndex++)
             if ((dwWaveStart >= pstFragBfr[dwFragBfrIndex].dwOffset) &&
-                (dwWaveStart < (pstFragBfr[dwFragBfrIndex].dwOffset + pstFragBfr[dwFragBfrIndex].wLength)))
-            {
+                    (dwWaveStart < (pstFragBfr[dwFragBfrIndex].dwOffset + pstFragBfr[dwFragBfrIndex].wLength))) {
                 break;
             }
 
         // if not found, load the next fragment block into the fragment buffer
-        if (dwFragBfrIndex == dwFragBlockLength)
-        {
+        if (dwFragBfrIndex == dwFragBlockLength) {
             dwFragBlock += dwFragBlockLength;
-            if (dwFragBlock != dwFragCount)
-            {
+            if (dwFragBlock != dwFragCount) {
                 // not the last fragment block
                 dwFragBlockLength = min(dwFragBfrLength, dwFragCount - dwFragBlock);  // recalc block length
                 pFragments->GetFragmentBlock(dwFragBlock);  // load next block
             }
-        }
-        else
-        {
+        } else {
             break;
         }
 
-    }
-    while (dwFragBlock < dwFragCount);   // loop through fragment blocks
-    if (dwFragBlock == dwFragCount)
-    {
+    } while (dwFragBlock < dwFragCount); // loop through fragment blocks
+    if (dwFragBlock == dwFragCount) {
         return(Code(FRAGMENT_NOT_FOUND));
     }
     *pstFragStart = pstFragBfr[dwFragBfrIndex];   // return parameters for fragment to load into waveform buffer
 
     // Construct wavewarp object.
     *ppWaveWarp = new CWaveWarp(pDoc, dwWaveStart, wSpeed, dwFragBlock + dwFragBfrIndex);
-    if (*ppWaveWarp==NULL)
-    {
+    if (*ppWaveWarp==NULL) {
         return (Code(OUT_OF_MEMORY));
     }
 
@@ -279,8 +262,7 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
 ////////////////////////////////////////////////////////////////////////////////////////
 // Wavewarp object constructor.                                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-CWaveWarp::CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFragStart)
-{
+CWaveWarp::CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFragStart) {
 
     // Initialize member variables.
     m_pDoc = pDoc;
@@ -303,17 +285,14 @@ CWaveWarp::CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFr
 ////////////////////////////////////////////////////////////////////////////////////////
 // Wavewarp object destructor.                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////
-CWaveWarp::~CWaveWarp()
-{
+CWaveWarp::~CWaveWarp() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to set waveform buffer.                                            //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CWaveWarp::SetWaveBuffer(void * pWaveBfr)
-{
-    if (!pWaveBfr)
-    {
+dspError_t CWaveWarp::SetWaveBuffer(void * pWaveBfr) {
+    if (!pWaveBfr) {
         return Code(INVALID_PARM);
     }
     m_pWaveBfr = pWaveBfr;
@@ -324,10 +303,8 @@ dspError_t CWaveWarp::SetWaveBuffer(void * pWaveBfr)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to set or change playback buffer.                                  //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CWaveWarp::SetPlayBuffer(void * pPlayBfr, ULONG dwPlayBfrLength)
-{
-    if ((pPlayBfr==NULL) || (dwPlayBfrLength==0))
-    {
+dspError_t CWaveWarp::SetPlayBuffer(void * pPlayBfr, ULONG dwPlayBfrLength) {
+    if ((pPlayBfr==NULL) || (dwPlayBfrLength==0)) {
         return Code(INVALID_PARM);
     }
     m_pPlayBfr = pPlayBfr;
@@ -346,65 +323,52 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
                                      ULONG dwWaveBlockLength,
                                      SFragParms * pstCallFragment,
                                      ULONG * pdwPlayLength,
-                                     USHORT wNewSpeed)
-{
+                                     USHORT wNewSpeed) {
 
-    if (!m_pWaveBfr || !m_pPlayBfr)
-    {
+    if (!m_pWaveBfr || !m_pPlayBfr) {
         return(Code(INVALID_PARM));    //!!is this necessary?
     }
     CProcessFragments * pFragments = m_pDoc->GetFragments();
-    if (pFragments->GetProcessBufferIndex() != m_dwFragBlock)
-    {
+    if (pFragments->GetProcessBufferIndex() != m_dwFragBlock) {
         pFragments->GetFragmentBlock(m_dwFragBlock);    // reload block
     }
-    if (dwWaveBlock != m_pstFragBfr[m_dwFragBfrIndex].dwOffset)
-    {
+    if (dwWaveBlock != m_pstFragBfr[m_dwFragBfrIndex].dwOffset) {
         return(Code(INVALID_BLOCK));
     }
 
     ULONG dwFragCount = pFragments->GetFragmentCount();
     ULONG dwFragBfrLength = pFragments->GetBufferLength();
-    do
-    {
+    do {
         // Translate sample position back to unscaled waveform.
         ULONG dwWaveIndex = m_dwWarpStart + (ULONG)((float)m_dwWarpIndex*(float)m_wSpeed/100.F + 0.5F);
 
         // Find fragment containing this sample.
         ULONG dwPrevFragIndex = m_dwFragBlock + m_dwFragBfrIndex;
         ULONG dwFragBlockLength = min(dwFragBfrLength, dwFragCount - m_dwFragBlock);
-        do
-        {
+        do {
             // scan through fragment buffer
             for (; m_dwFragBfrIndex < dwFragBlockLength; m_dwFragBfrIndex++)   // continues from last fragment checked
                 if (dwWaveIndex >= m_pstFragBfr[m_dwFragBfrIndex].dwOffset &&
-                        dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength)
-                {
+                        dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength) {
                     break;
                 }
 
             // if not found, load the next fragment block into the fragment buffer
-            if (m_dwFragBfrIndex == dwFragBlockLength)
-            {
+            if (m_dwFragBfrIndex == dwFragBlockLength) {
                 m_dwFragBlock += dwFragBlockLength;
-                if (m_dwFragBlock != dwFragCount)
-                {
+                if (m_dwFragBlock != dwFragCount) {
                     // not the last fragment block
                     dwFragBlockLength = min(dwFragBfrLength, dwFragCount - m_dwFragBlock);  // recalc block length
                     pFragments->GetFragmentBlock(m_dwFragBlock);  // load next block
                     m_dwFragBfrIndex = 0;  // reset index into fragment buffer
                 }
-            }
-            else
-            {
+            } else {
                 break;
             }
 
-        }
-        while (m_dwFragBlock < dwFragCount);   // loop through fragment blocks
+        } while (m_dwFragBlock < dwFragCount); // loop through fragment blocks
 
-        if (m_dwFragBlock == dwFragCount)
-        {
+        if (m_dwFragBlock == dwFragCount) {
             // no more fragment blocks
             pstCallFragment->dwOffset = m_pstFragBfr[dwFragBlockLength-1].dwOffset + m_pstFragBfr[dwFragBlockLength-1].wLength;
             pstCallFragment->wLength = 0;
@@ -413,8 +377,7 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         }
 
         // Change speed as required only when waveform fragment copying is done.
-        if (m_wSpeed != wNewSpeed && m_dwFragBlock + m_dwFragBfrIndex != dwPrevFragIndex)
-        {
+        if (m_wSpeed != wNewSpeed && m_dwFragBlock + m_dwFragBfrIndex != dwPrevFragIndex) {
             m_dwWarpStart = m_pstFragBfr[m_dwFragBfrIndex].dwOffset;
             m_dwWarpIndex = 0;
             m_wSpeed = wNewSpeed;
@@ -424,17 +387,15 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         long lWaveBfrIndex = (long)m_pstFragBfr[m_dwFragBfrIndex].dwOffset - (long)dwWaveBlock;
         ULONG dwFragLength =  m_pstFragBfr[m_dwFragBfrIndex].wLength;
 
-        if (lWaveBfrIndex < 0 || (ULONG)lWaveBfrIndex + dwFragLength > dwWaveBlockLength)
-        {
+        if (lWaveBfrIndex < 0 || (ULONG)lWaveBfrIndex + dwFragLength > dwWaveBlockLength) {
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength =  m_dwPlayLength;
-            return OUTSIDE_WAVE_BUFFER;		//!!last playback should be cut short in calling function
-        }									//!!use WAVE_BUFFER_CALLBACK
+            return OUTSIDE_WAVE_BUFFER;     //!!last playback should be cut short in calling function
+        }                                   //!!use WAVE_BUFFER_CALLBACK
 
         // If play buffer is full, return for playback.
         //!! handle partial fragment in calling function by offsetting into play buffer before playback
-        if ((m_dwPlayLength + dwFragLength) > m_dwPlayBfrLength)
-        {
+        if ((m_dwPlayLength + dwFragLength) > m_dwPlayBfrLength) {
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength = m_dwPlayLength;
             m_dwPlayLength = 0;
@@ -451,71 +412,58 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         m_dwPlayLength += dwFragLength;    // update playback length
         m_dwWarpIndex += dwFragLength;     // update scaling index
 
-    }
-    while (TRUE);
+    } while (TRUE);
 }
 
 dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
                                      ULONG dwWaveBlockLength,
                                      SFragParms * pstCallFragment,
-                                     ULONG * pdwPlayLength)
-{
+                                     ULONG * pdwPlayLength) {
     //TRACE("FillPlayBuffer %d %d\n", dwWaveBlock, dwWaveBlockLength);
 
-	if ((m_pWaveBfr==NULL) || (m_pPlayBfr==NULL))
-    {
+    if ((m_pWaveBfr==NULL) || (m_pPlayBfr==NULL)) {
         return Code(INVALID_PARM);
     }
     CProcessFragments * pFragments = m_pDoc->GetFragments();
-    if (pFragments->GetProcessBufferIndex() != m_dwFragBlock)
-    {
+    if (pFragments->GetProcessBufferIndex() != m_dwFragBlock) {
         pFragments->GetFragmentBlock(m_dwFragBlock);    // reload block
     }
-    if (dwWaveBlock != m_pstFragBfr[m_dwFragBfrIndex].dwOffset)
-    {
+    if (dwWaveBlock != m_pstFragBfr[m_dwFragBfrIndex].dwOffset) {
         return Code(INVALID_BLOCK);
     }
 
     ULONG dwFragCount = pFragments->GetFragmentCount();
     ULONG dwFragBfrLength = pFragments->GetBufferLength();
-    do
-    {
+    do {
         // Translate sample position back to unscaled waveform.
         ULONG dwWaveIndex = m_dwWarpStart + (ULONG)((float)m_dwWarpIndex*(float)m_wSpeed/100.F + 0.5F);
 
         // Find fragment containing this sample.
         ULONG dwFragBlockLength = min(dwFragBfrLength, dwFragCount - m_dwFragBlock);
-        do
-        {
+        do {
             // scan through fragment buffer
             for (; m_dwFragBfrIndex < dwFragBlockLength; m_dwFragBfrIndex++)   // continues from last fragment checked
                 if ((dwWaveIndex >= m_pstFragBfr[m_dwFragBfrIndex].dwOffset) &&
-                    (dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength))
-                {
+                        (dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength)) {
                     break;
                 }
 
             // if not found, load the next fragment block into the fragment buffer
-            if (m_dwFragBfrIndex == dwFragBlockLength)
-            {
+            if (m_dwFragBfrIndex == dwFragBlockLength) {
                 m_dwFragBlock += dwFragBlockLength;
-                if (m_dwFragBlock != dwFragCount)
-                {
+                if (m_dwFragBlock != dwFragCount) {
                     // not the last fragment block
                     dwFragBlockLength = min(dwFragBfrLength, dwFragCount - m_dwFragBlock);  // recalc block length
                     pFragments->GetFragmentBlock(m_dwFragBlock);  // load next block
                     m_dwFragBfrIndex = 0;  // reset index into fragment buffer
                 }
-            }
-            else
-            {
+            } else {
                 break;
             }
 
         } while (m_dwFragBlock < dwFragCount);   // loop through fragment blocks
 
-        if (m_dwFragBlock == dwFragCount)
-        {
+        if (m_dwFragBlock == dwFragCount) {
             // no more fragment blocks
             pstCallFragment->dwOffset = m_pstFragBfr[dwFragBlockLength-1].dwOffset +
                                         m_pstFragBfr[dwFragBlockLength-1].wLength;
@@ -527,18 +475,16 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         long lWaveBfrIndex = (long)m_pstFragBfr[m_dwFragBfrIndex].dwOffset - (long)dwWaveBlock;
         ULONG dwFragLength =  m_pstFragBfr[m_dwFragBfrIndex].wLength;
 
-        if ((lWaveBfrIndex < 0) || 
-			((ULONG)lWaveBfrIndex + dwFragLength > dwWaveBlockLength))
-        {
+        if ((lWaveBfrIndex < 0) ||
+                ((ULONG)lWaveBfrIndex + dwFragLength > dwWaveBlockLength)) {
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength =  m_dwPlayLength;
-            return OUTSIDE_WAVE_BUFFER;		//!!last playback should be cut short in calling function
-        }									//!!use WAVE_BUFFER_CALLBACK
+            return OUTSIDE_WAVE_BUFFER;     //!!last playback should be cut short in calling function
+        }                                   //!!use WAVE_BUFFER_CALLBACK
 
         // If play buffer is full, return for playback.
         //!! handle partial fragment in calling function by offsetting into play buffer before playback
-        if ((m_dwPlayLength + dwFragLength) > m_dwPlayBfrLength)
-        {
+        if ((m_dwPlayLength + dwFragLength) > m_dwPlayBfrLength) {
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength = m_dwPlayLength;
             m_dwPlayLength = 0;
@@ -546,37 +492,26 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         }
 
         // Copy fragment.
-        if (m_sbSmpDataFmt == PCM_UBYTE)
-        {
+        if (m_sbSmpDataFmt == PCM_UBYTE) {
             uint8 * pPlay = &((uint8 *)m_pPlayBfr)[m_dwPlayLength];
             uint8 * pBlock = &((uint8 *)m_pWaveBfr)[lWaveBfrIndex];
-            for (DWORD i = 0; i < dwFragLength; i++)
-            {
+            for (DWORD i = 0; i < dwFragLength; i++) {
                 float fSample = (float)Round((float)((int8)(*pBlock++ - 128)));
-                if (fSample > 127.F)
-                {
+                if (fSample > 127.F) {
                     fSample = 127.F;
-                }
-                else if (fSample < -128.F)
-                {
+                } else if (fSample < -128.F) {
                     fSample = -128.F;
                 }
                 *pPlay++ = (uint8)(fSample + 128.F);
             }
-        }
-        else     // PCM_2SSHORT
-        {
+        } else { // PCM_2SSHORT
             short * pPlay = &((short *)m_pPlayBfr)[m_dwPlayLength];
             short * pBlock = &((short *)m_pWaveBfr)[lWaveBfrIndex];
-            for (DWORD i = 0; i < dwFragLength; i++)
-            {
+            for (DWORD i = 0; i < dwFragLength; i++) {
                 float fSample = (float)Round((float)*pBlock++);
-                if (fSample > 32767.F)
-                {
+                if (fSample > 32767.F) {
                     fSample = 32767.F;
-                }
-                else if (fSample < -32768.F)
-                {
+                } else if (fSample < -32768.F) {
                     fSample = -32768.F;
                 }
                 *pPlay++ = (short)fSample;
@@ -585,65 +520,53 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         m_dwPlayLength += dwFragLength;    // update playback length
         m_dwWarpIndex += dwFragLength;     // update scaling index
 
-    } 
-	while (TRUE);
+    } while (TRUE);
 }
 
 dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
                                      ULONG dwWaveBlockLength,
                                      ULONG * pdwPlayLength,
-                                     USHORT wNewSpeed)
-{
-	//TRACE("FillPlayBuffer %d\n",dwWaveBlockLength);
-	// Validate buffer pointers.
-    if ((m_pWaveBfr==NULL) || (m_pPlayBfr==NULL))
-    {
+                                     USHORT wNewSpeed) {
+    //TRACE("FillPlayBuffer %d\n",dwWaveBlockLength);
+    // Validate buffer pointers.
+    if ((m_pWaveBfr==NULL) || (m_pPlayBfr==NULL)) {
         return Code(INVALID_PARM);
     }
 
     CProcessFragments * pFragments = m_pDoc->GetFragments();
     ULONG dwFragCount = pFragments->GetFragmentCount();
     ULONG dwFragBfrLength = pFragments->GetBufferLength();
-    do
-    {
+    do {
         // Translate sample position back to unscaled waveform.
         ULONG dwWaveIndex = m_dwWarpStart + (ULONG)((float)m_dwWarpIndex*(float)m_wSpeed/100.F + 0.5F);
 
         // Find fragment containing this sample.
         ULONG dwPrevFragIndex = m_dwFragBlock + m_dwFragBfrIndex;
         ULONG dwFragBlockLength = min(dwFragBfrLength, dwFragCount - m_dwFragBlock);
-        do
-        {
+        do {
             // scan through fragment buffer
             for (; m_dwFragBfrIndex < dwFragBlockLength; m_dwFragBfrIndex++)   // continues from last fragment checked
                 if ((dwWaveIndex >= m_pstFragBfr[m_dwFragBfrIndex].dwOffset) &&
-                    (dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength))
-                {
+                        (dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength)) {
                     break;
                 }
 
             // if not found, load the next fragment block into the fragment buffer
-            if (m_dwFragBfrIndex == dwFragBlockLength)
-            {
+            if (m_dwFragBfrIndex == dwFragBlockLength) {
                 m_dwFragBlock += dwFragBlockLength;
-                if (m_dwFragBlock != dwFragCount)
-                {
+                if (m_dwFragBlock != dwFragCount) {
                     // not the last fragment block
                     dwFragBlockLength = min(dwFragBfrLength, dwFragCount - m_dwFragBlock);  // recalc block length
                     pFragments->GetFragmentBlock(m_dwFragBlock);  // load next block
                     m_dwFragBfrIndex = 0;  // reset index into fragment buffer
                 }
-            }
-            else
-            {
+            } else {
                 break;
             }
 
-        }
-        while (m_dwFragBlock < dwFragCount);   // loop through fragment blocks
+        } while (m_dwFragBlock < dwFragCount); // loop through fragment blocks
 
-        if (m_dwFragBlock == dwFragCount)
-        {
+        if (m_dwFragBlock == dwFragCount) {
             // no more fragment blocks
             pstCallData->dwOffset = m_pstFragBfr[dwFragBlockLength-1].dwOffset + m_pstFragBfr[dwFragBlockLength-1].wLength;
             pstCallData->wLength = 0;
@@ -654,8 +577,7 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
         // Request reload if fragment not contained in waveform buffer.
         long lWaveBfrIndex = (long)m_pstFragBfr[m_dwFragBfrIndex].dwOffset - (long)pstCallData->dwOffset;
         ULONG dwFragLength =  m_pstFragBfr[m_dwFragBfrIndex].wLength;
-        if (lWaveBfrIndex < 0 || (ULONG)lWaveBfrIndex + dwFragLength > dwWaveBlockLength)
-        {
+        if (lWaveBfrIndex < 0 || (ULONG)lWaveBfrIndex + dwFragLength > dwWaveBlockLength) {
             // load starting at sample before zero crossing
             pstCallData->dwOffset = m_pstFragBfr[m_dwFragBfrIndex].dwOffset - (m_dwFragBfrIndex != 0);
             pstCallData->wLength = (USHORT)(m_pstFragBfr[m_dwFragBfrIndex].wLength + (m_dwFragBfrIndex != 0));
@@ -664,27 +586,22 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
         }
 
         // If new fragment, estimate start and end times.
-        if (m_dwFragBfrIndex != dwPrevFragIndex)
-        {
+        if (m_dwFragBfrIndex != dwPrevFragIndex) {
             double dSmpDiff;
-            if (m_sbSmpDataFmt == PCM_UBYTE)
-            {
+            if (m_sbSmpDataFmt == PCM_UBYTE) {
                 // Initialize to first sample location after zero crossing.
                 m_dFragStartTime = (double)m_pstFragBfr[m_dwFragBfrIndex].dwOffset;
                 // Interpolate between last fragment and this one.
-                if (lWaveBfrIndex)
-                {
+                if (lWaveBfrIndex) {
                     // Compute difference in sample values between last sample of previous fragment and first
                     // sample of current.
                     dSmpDiff = (double)((uint8 *)m_pWaveBfr)[lWaveBfrIndex] - (double)((uint8 *)m_pWaveBfr)[lWaveBfrIndex-1];
                     // If no difference, assume zero crossing is halfway between samples.
-                    if (dSmpDiff == 0.)
-                    {
+                    if (dSmpDiff == 0.) {
                         m_dFragStartTime -= 0.5;
                     }
                     // Otherwise, estimate zero crossing using a linear interpolation method.
-                    else
-                    {
+                    else {
                         m_dFragStartTime -= (double)(((uint8 *)m_pWaveBfr)[lWaveBfrIndex] - 128) / dSmpDiff;
                     }
 
@@ -693,41 +610,33 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
                 m_dFragEndTime = (double)(m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength);
                 // Interpolate between last sample of current fragment and first sample of next.
                 lWaveBfrIndex += (long)dwFragLength;
-                if (lWaveBfrIndex < (long)dwWaveBlockLength && m_dwFragBfrIndex < dwFragCount)
-                {
+                if (lWaveBfrIndex < (long)dwWaveBlockLength && m_dwFragBfrIndex < dwFragCount) {
                     // Compute difference in sample values between last sample of previous fragment and first
                     // sample of current.
                     dSmpDiff = (double)((uint8 *)m_pWaveBfr)[lWaveBfrIndex] - (double)((uint8 *)m_pWaveBfr)[lWaveBfrIndex - 1];
                     // If no difference, assume zero crossing is halfway between samples.
-                    if (dSmpDiff == 0.)
-                    {
+                    if (dSmpDiff == 0.) {
                         m_dFragEndTime -= 0.5;
                     }
                     // Otherwise, estimate zero crossing using a linear interpolation method.
-                    else
-                    {
+                    else {
                         m_dFragEndTime -= (double)(((uint8 *)m_pWaveBfr)[lWaveBfrIndex] - 128) / dSmpDiff;
                     }
                 }
-            }
-            else     // PCM_2SSHORT
-            {
+            } else { // PCM_2SSHORT
                 // Initialize to first sample location after zero crossing.
                 m_dFragStartTime = (double)m_pstFragBfr[m_dwFragBfrIndex].dwOffset;
                 // Interpolate between last fragment and this one.
-                if (lWaveBfrIndex)
-                {
+                if (lWaveBfrIndex) {
                     // Compute difference in sample values between last sample of previous fragment and first
                     // sample of current.
                     dSmpDiff = (double)((short *)m_pWaveBfr)[lWaveBfrIndex] - (double)((short *)m_pWaveBfr)[lWaveBfrIndex-1];
                     // If no difference, assume zero crossing is halfway between samples.
-                    if (dSmpDiff == 0.)
-                    {
+                    if (dSmpDiff == 0.) {
                         m_dFragStartTime -= 0.5;
                     }
                     // Otherwise, estimate zero crossing using a linear interpolation method.
-                    else
-                    {
+                    else {
                         m_dFragStartTime -= (double)((short *)m_pWaveBfr)[lWaveBfrIndex] / dSmpDiff;
                     }
                 }
@@ -735,26 +644,22 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
                 m_dFragEndTime = (double)(m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength);
                 // Interpolate between last sample of current fragment and first sample of next.
                 lWaveBfrIndex += (long)dwFragLength;
-                if (lWaveBfrIndex < (long)dwWaveBlockLength && m_dwFragBfrIndex < dwFragCount)
-                {
+                if (lWaveBfrIndex < (long)dwWaveBlockLength && m_dwFragBfrIndex < dwFragCount) {
                     // Compute difference in sample values between last sample of previous fragment and first
                     // sample of current.
                     dSmpDiff = (double)((short *)m_pWaveBfr)[lWaveBfrIndex] - (double)((short *)m_pWaveBfr)[lWaveBfrIndex - 1];
                     // If no difference, assume zero crossing is halfway between samples.
-                    if (dSmpDiff == 0.)
-                    {
+                    if (dSmpDiff == 0.) {
                         m_dFragEndTime -= 0.5;
                     }
                     // Otherwise, estimate zero crossing using a linear interpolation method.
-                    else
-                    {
+                    else {
                         m_dFragEndTime -= (double)((short *)m_pWaveBfr)[lWaveBfrIndex] / dSmpDiff;
                     }
                 }
             }
 
-            if (m_wSpeed != wNewSpeed)
-            {
+            if (m_wSpeed != wNewSpeed) {
                 // change speed
                 m_dwWarpStart = m_pstFragBfr[m_dwFragBfrIndex].dwOffset;
                 m_dwWarpIndex = 0;
@@ -763,8 +668,7 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
         }
 
         // Otherwise, resample current fragment.
-        else
-        {
+        else {
             m_dSmpTime -= (m_dFragEndTime - m_dFragStartTime);
             m_dJitterFactor = fmod(m_dSmpTime, 1.);     // calculate fraction of sample period
         }
@@ -772,8 +676,7 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
         dwPrevFragIndex = m_dwFragBfrIndex;
         //!! handle partial fragment in calling function by offsetting into play buffer before playback
         ULONG dwSamples = (ULONG)floor(m_dFragEndTime - m_dSmpTime) + 1;
-        if ((m_dwPlayLength + dwSamples) > m_dwPlayBfrLength)
-        {
+        if ((m_dwPlayLength + dwSamples) > m_dwPlayBfrLength) {
             pstCallData->dwOffset = m_pstFragBfr[m_dwFragBfrIndex].dwOffset - (pstCallData->dwOffset != 0);
             pstCallData->wLength = (USHORT)(m_pstFragBfr[m_dwFragBfrIndex].wLength + (pstCallData->dwOffset != 0));
             *pdwPlayLength = m_dwPlayLength;
@@ -783,32 +686,24 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
 
         // Copy fragment.
         ULONG dwSmpIndex = (ULONG)floor(m_dSmpTime) - pstCallData->dwOffset;
-        if (m_sbSmpDataFmt == PCM_UBYTE)
-        {
-            do
-            {
+        if (m_sbSmpDataFmt == PCM_UBYTE) {
+            do {
                 ((uint8 *)m_pPlayBfr)[m_dwPlayLength++] = (uint8)(Round((double)(((uint8 *)m_pWaveBfr)[dwSmpIndex] - 128) + m_dJitterFactor *
                         (double)(short)(((uint8 *)m_pWaveBfr)[dwSmpIndex + 1] -  //!!in buffer?
                                         ((uint8 *)m_pWaveBfr)[dwSmpIndex])) + 128.);
                 dwSmpIndex++;
                 m_dSmpTime += 1.;
-            }
-            while (m_dSmpTime < m_dFragEndTime);    //!! <=?
-        }
-        else     // PCM_2SSHORT
-        {
-            do
-            {
+            } while (m_dSmpTime < m_dFragEndTime);  //!! <=?
+        } else { // PCM_2SSHORT
+            do {
                 ((short *)m_pPlayBfr)[m_dwPlayLength++] = (short)Round((double)((short *)m_pWaveBfr)[dwSmpIndex] + m_dJitterFactor *
                         (double)(((short *)m_pWaveBfr)[dwSmpIndex + 1] -  //!!in buffer?
                                  ((short *)m_pWaveBfr)[dwSmpIndex]));
                 dwSmpIndex++;
                 m_dSmpTime += 1.;
-            }
-            while (m_dSmpTime < m_dFragEndTime);    //!! <=?
+            } while (m_dSmpTime < m_dFragEndTime);  //!! <=?
         }
         m_dwWarpIndex += dwSamples;     // update scaling index    //!!check this
 
-    }
-    while (TRUE);
+    } while (TRUE);
 }

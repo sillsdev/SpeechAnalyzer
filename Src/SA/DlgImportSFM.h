@@ -31,8 +31,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgImportSFM private dialog
 
-class CDlgImportSFM : public CDialog
-{
+class CDlgImportSFM : public CDialog {
     // Construction
 public:
     CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd * pParent = NULL);  // standard constructor
@@ -46,7 +45,7 @@ public:
     BOOL m_bOrthographic;
     CSaString m_szPhonemic;
     CSaString m_szGloss;
-	CSaString m_szGlossNat;
+    CSaString m_szGlossNat;
     CSaString m_szPhonetic;
     CSaString m_szOrthographic;
 

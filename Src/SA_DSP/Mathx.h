@@ -19,8 +19,7 @@
 #define FLT_MIN_NEG  (-FLT_MIN)
 
 // Type definitions
-struct SStatistic
-{
+struct SStatistic {
     double Mean;
     double StdDev;
 };

@@ -5,13 +5,11 @@ class COleFont;
 class CPicture;
 class CRecordset1;
 
-class CMSHFlexGrid : public CWnd
-{
+class CMSHFlexGrid : public CWnd {
 protected:
     DECLARE_DYNCREATE(CMSHFlexGrid)
 public:
-    CLSID const & GetClsid()
-    {
+    CLSID const & GetClsid() {
         static CLSID const clsid
             = { 0xecd9b64, 0x23aa, 0x11d0, { 0xb3, 0x51, 0x0, 0xa0, 0xc9, 0x5, 0x5d, 0x8e } };
         return clsid;
@@ -20,16 +18,14 @@ public:
                         LPCTSTR lpszWindowName, DWORD dwStyle,
                         const RECT & rect,
                         CWnd * pParentWnd, UINT nID,
-                        CCreateContext * /*pContext*/ = NULL)
-    {
+                        CCreateContext * /*pContext*/ = NULL) {
         return CreateControl(GetClsid(), lpszWindowName, dwStyle, rect, pParentWnd, nID);
     }
 
     BOOL Create(LPCTSTR lpszWindowName, DWORD dwStyle,
                 const RECT & rect, CWnd * pParentWnd, UINT nID,
                 CFile * pPersist = NULL, BOOL bStorage = FALSE,
-                BSTR bstrLicKey = NULL)
-    {
+                BSTR bstrLicKey = NULL) {
         return CreateControl(GetClsid(), lpszWindowName, dwStyle, rect, pParentWnd, nID,
                              pPersist, bStorage, bstrLicKey);
     }

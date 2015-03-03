@@ -19,8 +19,7 @@
 
 #define SB_FONT_SIZE  -10 // status bar font size
 
-class CDataStatusBar : public CStatusBar
-{
+class CDataStatusBar : public CStatusBar {
 
     // Construction/destruction/creation
 public:
@@ -62,8 +61,7 @@ protected:
 
 #define SB_FONT_SIZE  -10 // status bar font size
 
-class CProgressStatusBar : public CStatusBar
-{
+class CProgressStatusBar : public CStatusBar {
 
 public:
     CProgressStatusBar();

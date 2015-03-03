@@ -24,8 +24,7 @@
 //###########################################################################
 // CDlgAutoRecorder dialog
 
-class CDlgAutoRecorder : public CDialog, public IWaveNotifiable
-{
+class CDlgAutoRecorder : public CDialog, public IWaveNotifiable {
 
     enum ERecordState { WaitForSilence, WaitingForVoice, Recording, Stopping, PlayingRecording, PlayingOriginal, Idle};
     enum ERecordMode { Disabled, Record, Stop, Monitor, PlayRecording, PlayOriginal};
@@ -37,10 +36,10 @@ class CDlgAutoRecorder : public CDialog, public IWaveNotifiable
 public:
     CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pParent, CSaView * pTarget, CAlignInfo & alignInfo, int wholeFile); // standard constructor
     virtual ~CDlgAutoRecorder();
-	
-	void Create( CWnd * pParent);
 
-	UINT GetRecVolume();
+    void Create(CWnd * pParent);
+
+    UINT GetRecVolume();
     void SetRecVolume(int nVolume);
     CSaView * GetTarget();
     CString m_szTitle;
@@ -52,32 +51,32 @@ public:
     virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
     HMMIO GetFileHandle();
     void OnHelpAutoRecorder();
-	afx_msg void OnRadioBetweenCursors();
-	afx_msg void OnClickedRadioWholeFile();
-	int GetPlayWholeFile();
-	static bool IsLaunched();
+    afx_msg void OnRadioBetweenCursors();
+    afx_msg void OnClickedRadioWholeFile();
+    int GetPlayWholeFile();
+    static bool IsLaunched();
 
     enum { IDD = IDD_AUTORECORDER };
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-    void SetTotalTime( DWORD val);		// set total time display
-    double SetPositionTime(  DWORD val);// set position time display
-    void HighPassFilter();				// filter the waveform
-    BOOL CreateTempFile();				// create the temporary wave file for writing
-    void DeleteTempFile();				// delete the temporary wave file
+    void SetTotalTime(DWORD val);        // set total time display
+    double SetPositionTime(DWORD val);  // set position time display
+    void HighPassFilter();              // filter the waveform
+    BOOL CreateTempFile();              // create the temporary wave file for writing
+    void DeleteTempFile();              // delete the temporary wave file
     void SetRecorderMode(ERecordMode eMode);  // set recorder mode (record, play, stop...)
 
-    void ChangeState( ERecordState eState);
-	const char * GetState( ERecordState eState);
+    void ChangeState(ERecordState eState);
+    const char * GetState(ERecordState eState);
 
-    BOOL Apply();						// apply wave file to document
+    BOOL Apply();                       // apply wave file to document
 
     virtual BOOL OnInitDialog();
     afx_msg void OnPlayRecording();
     afx_msg void OnStopRecording();
     afx_msg void OnStopPlaying();
-	afx_msg void OnPlaybackOriginal();
+    afx_msg void OnPlaybackOriginal();
     afx_msg void OnStopOriginal();
     afx_msg void OnClose();
     afx_msg void OnCancel();
@@ -92,7 +91,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 
     ERecordState m_eState;
-    DWORD m_dwTickCount;				// current reference time
+    DWORD m_dwTickCount;                // current reference time
 
 private:
     void EnableRecVolume(BOOL bEnable);
@@ -104,10 +103,10 @@ private:
     ERecordMode m_eMode;                    // recorder mode (record, play, stop...)
     ERecordMode m_eOldMode;                 // previous recorder mode
 
-    bool m_bClosePending;					// the close button was pressed
-	CAlignInfo m_AlignInfo;
-	double m_dSourceLength;					// length of original source wave file
-	double m_dRecordLength;					// the amount data we will be recording.
+    bool m_bClosePending;                   // the close button was pressed
+    CAlignInfo m_AlignInfo;
+    double m_dSourceLength;                 // length of original source wave file
+    double m_dRecordLength;                 // the amount data we will be recording.
 
     HANDLE m_hData;                         // needed to get m_lpRecData
     HPSTR m_lpRecData;                      // pointer to wave data
@@ -117,7 +116,7 @@ private:
     MMCKINFO m_mmckinfoParent;              // 'RIFF' parents chunk information
     BOOL m_bFileReady;                      // TRUE, if temporary file OK
     BOOL m_bFileApplied;                    // TRUE, if temporary file ready to copy
-	bool m_bRecordingAvailable;
+    bool m_bRecordingAvailable;
     CLEDDisplay m_LEDTotalTime;             // embedded control objects
     CLEDDisplay m_LEDPosTime;
     CSliderVertical m_SliderVolume;
@@ -135,11 +134,11 @@ private:
 
     UINT m_nVolume;
     UINT m_nRecVolume;
-	int m_nPlayWholeFile;
+    int m_nPlayWholeFile;
 
-	virtual void PostNcDestroy();
+    virtual void PostNcDestroy();
 
-	static bool bLaunched;
+    static bool bLaunched;
 };
 
 #endif

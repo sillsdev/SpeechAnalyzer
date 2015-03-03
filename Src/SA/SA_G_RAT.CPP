@@ -41,15 +41,13 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotRatio::CPlotRatio Constructor
 /***************************************************************************/
-CPlotRatio::CPlotRatio()
-{
+CPlotRatio::CPlotRatio() {
 }
 
 /***************************************************************************/
 // CPlotRatio::~CPlotRatio Destructor
 /***************************************************************************/
-CPlotRatio::~CPlotRatio()
-{
+CPlotRatio::~CPlotRatio() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -63,8 +61,7 @@ CPlotRatio::~CPlotRatio()
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotRatio::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
+void CPlotRatio::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc  *  pDoc   = pView->GetDocument();
@@ -72,12 +69,10 @@ void CPlotRatio::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     CProcessRatio * pRatio = (CProcessRatio *)pDoc->GetRatio(); // get pointer to ratio object
     short int nResult = LOWORD(pRatio->Process(this, pDoc)); // process data
     nResult = CheckResult(nResult, pRatio); // check the process result
-    if (nResult == PROCESS_ERROR)
-    {
+    if (nResult == PROCESS_ERROR) {
         return;
     }
-    if (nResult != PROCESS_CANCELED)
-    {
+    if (nResult != PROCESS_CANCELED) {
         pGraph->SetLegendScale(SCALE | NUMBERS, 0, pRatio->GetMaxValue() / PRECISION_MULTIPLIER, _T("Ratio")); // set legend scale
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);

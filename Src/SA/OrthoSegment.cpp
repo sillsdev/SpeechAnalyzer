@@ -2,12 +2,10 @@
 #include "OrthoSegment.h"
 
 COrthoSegment::COrthoSegment(EAnnotation index, int master) :
-    CDependentSegment(index,master)
-{
+    CDependentSegment(index,master) {
 }
 
-CFontTable * COrthoSegment::NewFontTable() const
-{
+CFontTable * COrthoSegment::NewFontTable() const {
     return new CFontTableANSI;
 }
 

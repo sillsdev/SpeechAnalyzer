@@ -22,8 +22,7 @@ bReadProperties routine to read its member variables.
 See bottom of file for samples.
 */
 // **************************************************************************
-class CObjectOStream
-{
+class CObjectOStream {
 public:
     CObjectOStream(LPCSTR filename);
     ~CObjectOStream();

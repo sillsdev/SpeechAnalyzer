@@ -1,8 +1,7 @@
 #ifndef DLGIMPORT_H
 #define DLGIMPORT_H
 
-class CDlgImport : public CDialog
-{
+class CDlgImport : public CDialog {
     // Construction
 public:
     CDlgImport(CWnd * pParent = NULL); // standard constructor

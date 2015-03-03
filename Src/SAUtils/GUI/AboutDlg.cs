@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // <copyright from='2002' to='2004' company='SIL International'>
-//		Copyright © 2002-2004, SIL International. All Rights Reserved.
+//      Copyright © 2002-2004, SIL International. All Rights Reserved.
 //
-//		Distributable under the terms of either the Common Public License or the
-//		GNU Lesser General Public License, as specified in the LICENSING.txt file.
+//      Distributable under the terms of either the Common Public License or the
+//      GNU Lesser General Public License, as specified in the LICENSING.txt file.
 // </copyright>
 //
 // File: AboutDlg.cs
@@ -25,8 +25,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
 
-namespace SIL.SpeechAnalyzer.GUI
-{
+namespace SIL.SpeechAnalyzer.GUI {
 /// ----------------------------------------------------------------------------------------
 /// <summary>
 /// FW Help about dialog (previously HelpAboutDlg in AfDialog.cpp)
@@ -99,7 +98,7 @@ public class AboutDlg : Form, IAboutDlg {
 
     /// ------------------------------------------------------------------------------------
     public AboutDlg(bool showBuild, bool isBetaVersion)
-    : this() {
+        : this() {
         m_showBuild = showBuild;
         m_isBetaVersion = isBetaVersion;
 
@@ -114,8 +113,9 @@ public class AboutDlg : Form, IAboutDlg {
     /// ----------------------------------------------------------------------------------------
     protected override void Dispose(bool disposing) {
         // Must not be run more than once.
-        if (IsDisposed)
+        if (IsDisposed) {
             return;
+        }
 
         if (disposing) {
             if (components != null) {
@@ -303,8 +303,9 @@ public class AboutDlg : Form, IAboutDlg {
         var attributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
         var productName = Application.ProductName;
 
-        if (string.IsNullOrEmpty(productName) && attributes.Length > 0)
+        if (string.IsNullOrEmpty(productName) && attributes.Length > 0) {
             productName = ((AssemblyTitleAttribute)attributes[0]).Title;
+        }
 
         lblName.Text = productName;
         InternalSetBuild(null);
@@ -338,9 +339,9 @@ public class AboutDlg : Form, IAboutDlg {
     private void InternalSetBuild(string build) {
         lblBuild.Visible = m_showBuild;
 
-        if (!string.IsNullOrEmpty(build))
+        if (!string.IsNullOrEmpty(build)) {
             lblBuild.Text = build;
-        else {
+        } else {
             // The build number is just the number of days since 01/01/2000
             //var ver = new Version(Application.ProductVersion);
             //int bldNum = ver.Build;
@@ -382,11 +383,13 @@ public class AboutDlg : Form, IAboutDlg {
         var strRoot = Application.ExecutablePath.Substring(0, 2);
 
         // Must be called from COM client
-        if (!string.IsNullOrEmpty(m_sDriveLetter))
+        if (!string.IsNullOrEmpty(m_sDriveLetter)) {
             strRoot = m_sDriveLetter;
+        }
 
-        if (!strRoot.EndsWith(Path.VolumeSeparatorChar.ToString()))
+        if (!strRoot.EndsWith(Path.VolumeSeparatorChar.ToString())) {
             strRoot += Path.VolumeSeparatorChar;
+        }
 
         strRoot = Application.ExecutablePath.Substring(0, 2) + Path.DirectorySeparatorChar;
 

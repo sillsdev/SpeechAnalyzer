@@ -12,8 +12,7 @@
 //###########################################################################
 // CProcessPOA data processing
 
-class CProcessPOA : public CProcess
-{
+class CProcessPOA : public CProcess {
 
 // Construction/destruction/creation
 public:

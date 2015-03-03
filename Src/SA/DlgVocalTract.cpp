@@ -33,13 +33,11 @@ static char THIS_FILE[] = __FILE__;
 
 
 CDlgVTOrder::CDlgVTOrder(CWnd * pParent /*=NULL*/)
-    : CDialog(CDlgVTOrder::IDD, pParent)
-{
+    : CDialog(CDlgVTOrder::IDD, pParent) {
     m_nOrder = 0;
 }
 
-void CDlgVTOrder::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgVTOrder::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_ORDER, m_nOrder);
     DDV_MinMaxUInt(pDX, m_nOrder, 1, 889);
@@ -51,22 +49,19 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgVTOrder message handlers
 
-void CDlgVTOrder::OnOK()
-{
+void CDlgVTOrder::OnOK() {
     UpdateData();
 
     CDialog::OnOK();
 }
 
-void CIpaVTCharVector::Load(CString szPath)
-{
+void CIpaVTCharVector::Load(CString szPath) {
     // is there a saved map???
     CFileStatus status; // file status
 
     reserve(1024);  // growth is exponential save some time here
 
-    if ((!CFile::GetStatus(szPath, status)) || (status.m_size==0))
-    {
+    if ((!CFile::GetStatus(szPath, status)) || (status.m_size==0)) {
         return;
     }
 
@@ -75,10 +70,8 @@ void CIpaVTCharVector::Load(CString szPath)
     file.Open(szPath,CFile::modeRead | CFile::shareDenyWrite);
 
     CString line;
-    while (file.ReadString(line))
-    {
-        if (line[0] == '#')   // skip comments
-        {
+    while (file.ReadString(line)) {
+        if (line[0] == '#') { // skip comments
             continue;
         }
 
@@ -89,8 +82,7 @@ void CIpaVTCharVector::Load(CString szPath)
 
         value = CSFMHelper::ExtractTabField(line, field++);
         columnChar.m_ipa = value;
-        if (columnChar.m_ipa.IsEmpty())
-        {
+        if (columnChar.m_ipa.IsEmpty()) {
             continue;
         }
 
@@ -132,8 +124,7 @@ void CIpaVTCharVector::Load(CString szPath)
         swscanf_s(value,_T("%d"),&i);
         const int VTAreas = i;
         columnChar.m_areas.reserve(VTAreas);
-        for (i = 0; i < VTAreas; i++)
-        {
+        for (i = 0; i < VTAreas; i++) {
             CString szValue;
             double dValue = 1.;
 
@@ -147,8 +138,7 @@ void CIpaVTCharVector::Load(CString szPath)
         swscanf_s(value,_T("%d"),&i);
         const int VTReflections = i;
         columnChar.m_reflection.reserve(VTReflections);
-        for (i = 0; i < VTReflections; i++)
-        {
+        for (i = 0; i < VTReflections; i++) {
             CString szValue;
             double dValue = 0.;
 
@@ -162,8 +152,7 @@ void CIpaVTCharVector::Load(CString szPath)
         swscanf_s(value,_T("%d"),&i);
         const int VTPreds = i;
         columnChar.m_pred.reserve(VTPreds);
-        for (i = 0; i < VTPreds; i++)
-        {
+        for (i = 0; i < VTPreds; i++) {
             CString szValue;
             double dValue = 0.;
 
@@ -180,21 +169,18 @@ void CIpaVTCharVector::Load(CString szPath)
     file.Close();
 }
 
-void CIpaVTCharVector::Save(CString szPath)
-{
+void CIpaVTCharVector::Save(CString szPath) {
     CFile file;
 
     UINT nSuccess = file.Open(szPath,CFile::modeWrite | CFile::modeCreate | CFile::shareDenyWrite);
-    if (!nSuccess)
-    {
+    if (!nSuccess) {
         ::MessageBoxA(::GetDesktopWindow(),"Could not open IpaVTDefaults#.txt.\n    Check Read-Only status.", "IPAVTDefaults#",MB_OK|MB_ICONEXCLAMATION);
         return;
     }
 
     const_iterator pParm;
 
-    for (pParm = begin(); pParm != end(); pParm++)
-    {
+    for (pParm = begin(); pParm != end(); pParm++) {
         const CIpaVTChar & vtChar = *pParm;
         CString entry;
         CString field;
@@ -223,8 +209,7 @@ void CIpaVTCharVector::Save(CString szPath)
         field.Format(_T("%d\t"),vtChar.m_areas.size());
         entry = entry + field;
 
-        for (i=0; i<vtChar.m_areas.size(); i++)
-        {
+        for (i=0; i<vtChar.m_areas.size(); i++) {
             field.Format(_T("%f\t"),vtChar.m_areas[i]);
             entry = entry + field;
         }
@@ -232,8 +217,7 @@ void CIpaVTCharVector::Save(CString szPath)
         field.Format(_T("%d\t"),vtChar.m_reflection.size());
         entry = entry + field;
 
-        for (i=0; i<vtChar.m_reflection.size(); i++)
-        {
+        for (i=0; i<vtChar.m_reflection.size(); i++) {
             field.Format(_T("%f\t"),vtChar.m_reflection[i]);
             entry = entry + field;
         }
@@ -241,8 +225,7 @@ void CIpaVTCharVector::Save(CString szPath)
         field.Format(_T("%d\t"),vtChar.m_pred.size());
         entry = entry + field;
 
-        for (i=0; i<vtChar.m_pred.size(); i++)
-        {
+        for (i=0; i<vtChar.m_pred.size(); i++) {
             field.Format(_T("%f\t"),vtChar.m_pred[i]);
             entry = entry + field;
         }
@@ -253,11 +236,9 @@ void CIpaVTCharVector::Save(CString szPath)
     }
 }
 
-CIpaVTCharMap::CIpaVTCharMap(CIpaVTCharVector & vect)
-{
+CIpaVTCharMap::CIpaVTCharMap(CIpaVTCharVector & vect) {
     CIpaVTCharVector::const_iterator pChar = vect.begin();
-    for (pChar = vect.begin(); pChar != vect.end(); pChar++)
-    {
+    for (pChar = vect.begin(); pChar != vect.end(); pChar++) {
         (*this)[pChar->m_ipa] = *pChar;
     }
 }
@@ -273,8 +254,7 @@ CDlgVocalTract * CDlgVocalTract::m_pDlgSynthesis = NULL;
 
 
 CDlgVocalTract::CDlgVocalTract(CWnd * pParent /*=NULL*/)
-    : CFrameWnd()
-{
+    : CFrameWnd() {
     m_nSelectedView = m_nSelectedMethod;
     m_szGrid[kFragment] = _T("Fragments.txt");
 
@@ -305,8 +285,7 @@ CDlgVocalTract::CDlgVocalTract(CWnd * pParent /*=NULL*/)
     ASSERT(bResult);
 
     CRect rc(20,20,400,400); // arbitrary rect
-    if (pParent)
-    {
+    if (pParent) {
         pParent->GetWindowRect(rc);
     }
     rc.DeflateRect(20,20);
@@ -314,31 +293,25 @@ CDlgVocalTract::CDlgVocalTract(CWnd * pParent /*=NULL*/)
     ShowWindow(SW_SHOWMAXIMIZED);
 }
 
-CDlgVocalTract::~CDlgVocalTract()
-{
-    if (m_nCurrentOrder)
-    {
+CDlgVocalTract::~CDlgVocalTract() {
+    if (m_nCurrentOrder) {
         m_cDefaults.Save(GetDefaultsPath(m_nCurrentOrder));
     }
 }
 
 
-void CDlgVocalTract::CreateSynthesizer(CWnd * pParent)
-{
+void CDlgVocalTract::CreateSynthesizer(CWnd * pParent) {
     DestroySynthesizer();
     ASSERT(m_pDlgSynthesis == NULL);
     m_pDlgSynthesis = new CDlgVocalTract(pParent);
 }
 
-void CDlgVocalTract::DestroySynthesizer()
-{
-    if (m_pDlgSynthesis)
-    {
+void CDlgVocalTract::DestroySynthesizer() {
+    if (m_pDlgSynthesis) {
         m_pDlgSynthesis->DestroyWindow();
     }
 
-    if (m_pDlgSynthesis)
-    {
+    if (m_pDlgSynthesis) {
         delete m_pDlgSynthesis;
         m_pDlgSynthesis = NULL;
     }
@@ -417,10 +390,8 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgVocalTract message handlers
 
-void CDlgVocalTract::PostNcDestroy()
-{
-    if (m_pDlgSynthesis)
-    {
+void CDlgVocalTract::PostNcDestroy() {
+    if (m_pDlgSynthesis) {
         delete m_pDlgSynthesis;
         m_pDlgSynthesis = NULL;
     }
@@ -428,16 +399,13 @@ void CDlgVocalTract::PostNcDestroy()
     CWnd::PostNcDestroy();
 }
 
-int CDlgVocalTract::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-    if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
-    {
+int CDlgVocalTract::OnCreate(LPCREATESTRUCT lpCreateStruct) {
+    if (CFrameWnd::OnCreate(lpCreateStruct) == -1) {
         return -1;
     }
 
     CRect rc(0,0,0,0);
-    for (int i=0; i < kGrids; i++)
-    {
+    for (int i=0; i < kGrids; i++) {
         m_cGrid[i].Create(NULL, _T(""), WS_VISIBLE,rc,this,i);
         m_cGrid[i].SetBorderStyle(FALSE);
         m_cGrid[i].PreSubclassWindow();
@@ -457,38 +425,31 @@ int CDlgVocalTract::OnCreate(LPCREATESTRUCT lpCreateStruct)
     return 0;
 }
 
-void CDlgVocalTract::OnClose()
-{
+void CDlgVocalTract::OnClose() {
     DestroySynthesizer();
 }
 
-void CDlgVocalTract::OnUpdateClose(CCmdUI *)
-{
+void CDlgVocalTract::OnUpdateClose(CCmdUI *) {
 }
 
-void CDlgVocalTract::OnSize(UINT nType, int cx, int cy)
-{
+void CDlgVocalTract::OnSize(UINT nType, int cx, int cy) {
     CFrameWnd::OnSize(nType, cx, cy);
 
     CRect rc;
 
     this->GetClientRect(rc);
-    if (m_cGrid[m_nSelectedView].GetSafeHwnd())
-    {
+    if (m_cGrid[m_nSelectedView].GetSafeHwnd()) {
         m_cGrid[m_nSelectedView].MoveWindow(rc);
     }
 }
 
-BOOL CDlgVocalTract::OnCmdMsg(UINT nID, int nCode, void * pExtra, AFX_CMDHANDLERINFO * pHandlerInfo)
-{
+BOOL CDlgVocalTract::OnCmdMsg(UINT nID, int nCode, void * pExtra, AFX_CMDHANDLERINFO * pHandlerInfo) {
     return CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
 
-void CDlgVocalTract::ShowGrid(int nGrid)
-{
+void CDlgVocalTract::ShowGrid(int nGrid) {
 
-    if (nGrid < 0 || nGrid >= kGrids)
-    {
+    if (nGrid < 0 || nGrid >= kGrids) {
         ASSERT(FALSE);
         return;
     }
@@ -498,18 +459,15 @@ void CDlgVocalTract::ShowGrid(int nGrid)
     m_nSelectedView = nGrid;
 
     this->GetClientRect(rc);
-    if (m_cGrid[nGrid].GetSafeHwnd())
-    {
+    if (m_cGrid[nGrid].GetSafeHwnd()) {
         m_cGrid[nGrid].MoveWindow(rc);
         m_cGrid[nGrid].SetEnabled(TRUE);
         m_cGrid[nGrid].SetFocus();
     }
 
     // hide all others
-    for (int i=0; i < kGrids; i++)
-    {
-        if (i != nGrid)
-        {
+    for (int i=0; i < kGrids; i++) {
+        if (i != nGrid) {
             m_cGrid[i].MoveWindow(0,0,0,0);
             m_cGrid[i].SetEnabled(FALSE);
         }
@@ -518,23 +476,19 @@ void CDlgVocalTract::ShowGrid(int nGrid)
     CString szText;
     GetWindowText(szText);
     int nStart = szText.Find(_T(" - "));
-    if (nStart != -1)
-    {
+    if (nStart != -1) {
         szText = szText.Left(nStart);
     }
     szText += _T(" - ") + m_szGrid[nGrid];
     SetWindowText(szText);
 }
 
-void CDlgVocalTract::OnSynthDisplay()
-{
+void CDlgVocalTract::OnSynthDisplay() {
     OnSynthesize();
     // open synthesized wavefile in SA
     CFileStatus status; // file status
-    if (CFile::GetStatus(m_szSynthesizedFilename, status))
-    {
-        if (status.m_size!=0)
-        {
+    if (CFile::GetStatus(m_szSynthesizedFilename, status)) {
+        if (status.m_size!=0) {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
 
@@ -543,16 +497,14 @@ void CDlgVocalTract::OnSynthDisplay()
 
             LabelDocument(pDoc);
 
-            if (m_bMinimize)
-            {
+            if (m_bMinimize) {
                 ShowWindow(SW_MINIMIZE);
             }
         }
     }
 }
 
-void CDlgVocalTract::OnSynthShow()
-{
+void CDlgVocalTract::OnSynthShow() {
     CString szSave(m_szSynthesizedFilename);
 
     m_szSynthesizedFilename  = m_szShowFilename;
@@ -560,34 +512,28 @@ void CDlgVocalTract::OnSynthShow()
     OnSynthesize();
     // open synthesized wavefile in SA
     CFileStatus status; // file status
-    if (CFile::GetStatus(m_szSynthesizedFilename, status))
-    {
-        if (status.m_size!=0)
-        {
+    if (CFile::GetStatus(m_szSynthesizedFilename, status)) {
+        if (status.m_size!=0) {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
             CSaDoc * pDoc = pApp->IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
-            if ((pDoc!=NULL) && (pDoc->GetFileStatus()->m_szFullName != m_szSynthesizedFilename))
-            {
+            if ((pDoc!=NULL) && (pDoc->GetFileStatus()->m_szFullName != m_szSynthesizedFilename)) {
                 pDoc = NULL;
             }
 
             // Load temporarary file into document
-            if (pDoc!=NULL)
-            {
+            if (pDoc!=NULL) {
                 pDoc->ApplyWaveFile(m_szSynthesizedFilename, pDoc->GetRawDataSize(), FALSE);
             }
 
-            if (pDoc==NULL)
-            {
+            if (pDoc==NULL) {
                 pDoc = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
             }
             m_szShowFilename = m_szSynthesizedFilename;
 
             LabelDocument(pDoc);
 
-            if (m_bMinimize)
-            {
+            if (m_bMinimize) {
                 ShowWindow(SW_MINIMIZE);
             }
 
@@ -597,29 +543,24 @@ void CDlgVocalTract::OnSynthShow()
     }
 }
 
-void CDlgVocalTract::OnSetFocus(CWnd * pOldWnd)
-{
+void CDlgVocalTract::OnSetFocus(CWnd * pOldWnd) {
     CFrameWnd::OnSetFocus(pOldWnd);
 
     m_cGrid[m_nSelectedView].SetFocus();
 }
 
-void CDlgVocalTract::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTCharVector & cChars)
-{
+void CDlgVocalTract::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTCharVector & cChars) {
     CIpaVTCharVector::const_iterator pParm;
     int column = columnFirst;
 
-    for (pParm = cChars.begin(); pParm != cChars.end(); pParm++)
-    {
+    for (pParm = cChars.begin(); pParm != cChars.end(); pParm++) {
         PopulateParameterGrid(cGrid, *pParm, column);
         column++;
     }
 }
 
-void CDlgVocalTract::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTChar & cChar, int column)
-{
-    if (column >= cGrid.GetCols(0))
-    {
+void CDlgVocalTract::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTChar & cChar, int column) {
+    if (column >= cGrid.GetCols(0)) {
         cGrid.SetCols(0, column + 1);
         cGrid.SetFont(PHONETIC_DEFAULT_FONT,PHONETIC_DEFAULT_FONTSIZE,rowIpa,column,1,-1);
     }
@@ -629,8 +570,7 @@ void CDlgVocalTract::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTCh
 
     // clear column
     szString.Empty();
-    for (int row = rowFirst; row < cGrid.GetRows(); row++)
-    {
+    for (int row = rowFirst; row < cGrid.GetRows(); row++) {
         cGrid.SetTextMatrix(row,column,szString);
     }
 
@@ -639,12 +579,9 @@ void CDlgVocalTract::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTCh
     szString.Format(_T("%.2f"),cChar.m_duration);
     cGrid.SetTextMatrix(rowDuration,column,szString);
 
-    if (cChar.m_stimulus.Pitch)
-    {
+    if (cChar.m_stimulus.Pitch) {
         szString.Format(_T("%.5g"),cChar.m_stimulus.Pitch);
-    }
-    else
-    {
+    } else {
         szString.Empty();
     }
     cGrid.SetTextMatrix(rowPitch,column,szString);
@@ -666,34 +603,28 @@ void CDlgVocalTract::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTCh
     cGrid.SetTextMatrix(rowAF,column,szString);
 
     unsigned int i;
-    for (i=0; i<cChar.m_areas.size(); i++)
-    {
+    for (i=0; i<cChar.m_areas.size(); i++) {
         szString.Format(_T("%.5g"), cChar.m_areas[i]);
         cGrid.SetTextMatrix(i+getRow(rAreaFirst),column,szString);
     }
 
-    for (i=0; i<cChar.m_reflection.size(); i++)
-    {
+    for (i=0; i<cChar.m_reflection.size(); i++) {
         szString.Format(_T("%.5g"), cChar.m_reflection[i]);
         cGrid.SetTextMatrix(i+getRow(rReflectionFirst),column,szString);
     }
 
-    for (i=0; i<cChar.m_pred.size(); i++)
-    {
+    for (i=0; i<cChar.m_pred.size(); i++) {
         szString.Format(_T("%.5g"), cChar.m_pred[i]);
         cGrid.SetTextMatrix(i+getRow(rPredFirst),column,szString);
     }
 }
 
-void CDlgVocalTract::LabelGrid(int nGrid)
-{
-    if (nGrid == -1)
-    {
+void CDlgVocalTract::LabelGrid(int nGrid) {
+    if (nGrid == -1) {
         nGrid = m_nSelectedView;
     }
 
-    if (m_cGrid[nGrid].GetCols(0) < 3)
-    {
+    if (m_cGrid[nGrid].GetCols(0) < 3) {
         m_cGrid[nGrid].SetCols(0,3);
     }
     m_cGrid[nGrid].SetFixedCols(2);
@@ -703,12 +634,10 @@ void CDlgVocalTract::LabelGrid(int nGrid)
     m_cGrid[nGrid].SetColWidth(columnSym,0, 600);
     {
         // Label Grid
-        if (m_cGrid[nGrid].GetCols(0) < 100)
-        {
+        if (m_cGrid[nGrid].GetCols(0) < 100) {
             m_cGrid[nGrid].SetCols(0,100);
         }
-        if (m_cGrid[nGrid].GetRows() != getRow(rLast))
-        {
+        if (m_cGrid[nGrid].GetRows() != getRow(rLast)) {
             m_cGrid[nGrid].SetRows(getRow(rLast));
         }
         m_cGrid[nGrid].SetTextMatrix(rowIpa,columnDescription, _T("IPA"));
@@ -735,14 +664,12 @@ void CDlgVocalTract::LabelGrid(int nGrid)
         m_cGrid[nGrid].SetTextMatrix(rowVTGain, columnDescription, _T("VT Gain"));
         m_cGrid[nGrid].SetTextMatrix(rowVTGain,columnSym, _T("dB"));
 
-        for (int i = getRow(rAreaFirst); i < getRow(rLast); i++)
-        {
+        for (int i = getRow(rAreaFirst); i < getRow(rLast); i++) {
             m_cGrid[nGrid].SetTextMatrix(i, columnSym, _T(""));
             m_cGrid[nGrid].SetTextMatrix(i, columnDescription, _T(""));
         }
 
-        for (int i = getRow(rAreaFirst); i < getRow(rAreaLast); i++)
-        {
+        for (int i = getRow(rAreaFirst); i < getRow(rAreaLast); i++) {
             CString szArea;
 
             szArea.Format(_T("%d"), i-getRow(rAreaFirst)+1);
@@ -753,8 +680,7 @@ void CDlgVocalTract::LabelGrid(int nGrid)
         }
         m_cGrid[nGrid].SetTextMatrix(getRow(rAreaFirst), columnDescription, _T("Tube #1 area (source)"));
 
-        for (int i = getRow(rPredFirst); i < getRow(rPredLast); i++)
-        {
+        for (int i = getRow(rPredFirst); i < getRow(rPredLast); i++) {
             CString szPred;
 
             szPred.Format(_T("%d"), i-getRow(rPredFirst)+1);
@@ -764,8 +690,7 @@ void CDlgVocalTract::LabelGrid(int nGrid)
             m_cGrid[nGrid].SetTextMatrix(i, columnDescription, szPred);
         }
 
-        for (int i = getRow(rReflectionFirst); i < getRow(rReflectionLast); i++)
-        {
+        for (int i = getRow(rReflectionFirst); i < getRow(rReflectionLast); i++) {
             CString szReflection;
 
             szReflection.Format(_T("%d"), i-getRow(rReflectionFirst)+1);
@@ -780,18 +705,15 @@ void CDlgVocalTract::LabelGrid(int nGrid)
     }
 }
 
-void CDlgVocalTract::NumberGrid(int nGrid)
-{
-    for (int i=columnFirst; i<m_cGrid[nGrid].GetCols(0); i++)
-    {
+void CDlgVocalTract::NumberGrid(int nGrid) {
+    for (int i=columnFirst; i<m_cGrid[nGrid].GetCols(0); i++) {
         CString number;
         number.Format(_T("%d"), i-columnFirst+1);
         m_cGrid[nGrid].SetTextMatrix(rowHeading,i, number);
     }
 }
 
-CString CDlgVocalTract::GetDefaultsPath(int nOrder)
-{
+CString CDlgVocalTract::GetDefaultsPath(int nOrder) {
     CSaString szPath = AfxGetApp()->GetProfileString(_T(""), _T("DataLocation"));
     szPath += "\\";
 
@@ -802,11 +724,9 @@ CString CDlgVocalTract::GetDefaultsPath(int nOrder)
 }
 
 
-void CDlgVocalTract::OnGetAll()
-{
+void CDlgVocalTract::OnGetAll() {
     OnUpdateSourceName();
-    if (m_nCurrentOrder != m_nRequestedOrder)
-    {
+    if (m_nCurrentOrder != m_nRequestedOrder) {
         m_cDefaults.Save(GetDefaultsPath(m_nCurrentOrder));
         m_cDefaults.Load(GetDefaultsPath(m_nRequestedOrder));
         m_nCurrentOrder = m_nRequestedOrder;
@@ -840,15 +760,13 @@ void CDlgVocalTract::OnGetAll()
                 || pUttParm->nCritLoud != pSavedUttParm->nCritLoud
                 || pUttParm->nMaxChange != pSavedUttParm->nMaxChange
                 || pUttParm->nMinGroup != pSavedUttParm->nMinGroup
-                || pUttParm->nMaxInterp != pSavedUttParm->nMaxInterp)
-        {
+                || pUttParm->nMaxInterp != pSavedUttParm->nMaxInterp) {
             pPitch->SetDataInvalid();
         }
         pDoc->SetUttParm(pUttParm);
         short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
         pDoc->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
-        if (nResult == PROCESS_ERROR || nResult == PROCESS_CANCELED)
-        {
+        if (nResult == PROCESS_ERROR || nResult == PROCESS_CANCELED) {
             return;
         }
 
@@ -868,27 +786,21 @@ void CDlgVocalTract::OnGetAll()
     }
 }
 
-void CDlgVocalTract::OnUpdateSourceName()
-{
-    if (m_szSourceFilename.IsEmpty() || !static_cast<CSaApp *>(AfxGetApp())->IsFileOpened(m_szSourceFilename))
-    {
+void CDlgVocalTract::OnUpdateSourceName() {
+    if (m_szSourceFilename.IsEmpty() || !static_cast<CSaApp *>(AfxGetApp())->IsFileOpened(m_szSourceFilename)) {
         m_szSourceFilename.Empty();
         m_szShowFilename.Empty();
         m_pShowDoc = 0;
 
         // Populate Source
         CMDIChildWnd * pChild = static_cast<CMainFrame *>(AfxGetMainWnd())->MDIGetActive();
-        while (pChild)
-        {
+        while (pChild) {
             CDocument * pDoc = pChild->GetActiveDocument(); // get pointer to document
-            if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)))
-            {
+            if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
                 m_szSourceFilename = pDoc->GetPathName();
             }
-            if (!m_szSourceFilename.IsEmpty())
-            {
-                if (m_nRequestedOrder == 0)
-                {
+            if (!m_szSourceFilename.IsEmpty()) {
+                if (m_nRequestedOrder == 0) {
                     DWORD samplesPerSec = reinterpret_cast<CSaDoc *>(pDoc)->GetSamplesPerSec();
                     m_nRequestedOrder = (samplesPerSec + 500)/1000;
                 }
@@ -899,25 +811,20 @@ void CDlgVocalTract::OnUpdateSourceName()
     }
 }
 
-void CDlgVocalTract::OnApplyIpaDefaults(CFlexEditGrid & cGrid)
-{
+void CDlgVocalTract::OnApplyIpaDefaults(CFlexEditGrid & cGrid) {
     CIpaVTCharMap map(m_cDefaults);
-    for (int column=columnFirst; column<cGrid.GetCols(0); column++)
-    {
+    for (int column=columnFirst; column<cGrid.GetCols(0); column++) {
         CIpaVTChar cCurrent;
         ParseParameterGrid(cGrid, column, cCurrent);
         CString ipa = cCurrent.m_ipa;
-        if (ipa.GetLength())
-        {
+        if (ipa.GetLength()) {
             CIpaVTCharMap::const_iterator pParm = map.find(ipa);
 
-            if (pParm == map.end())
-            {
+            if (pParm == map.end()) {
                 pParm = map.find("undefined");
             }
 
-            if (pParm != map.end())
-            {
+            if (pParm != map.end()) {
                 CIpaVTChar cMixed = pParm->second;
 
                 double adjust = cMixed.m_dFrameEnergy - cCurrent.m_dFrameEnergy;
@@ -937,8 +844,7 @@ void CDlgVocalTract::OnApplyIpaDefaults(CFlexEditGrid & cGrid)
 }
 
 
-static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, double dEndWAV, double * offset, double * slope)
-{
+static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, double dEndWAV, double * offset, double * slope) {
     DWORD dwIndex;
     DWORD dwBegin = (DWORD)(dBeginWAV/fSizeFactor);
     DWORD dwEnd = (DWORD)(dEndWAV/fSizeFactor);
@@ -951,12 +857,10 @@ static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, d
     double sumXY = 0;
 
     BOOL bRes = TRUE;
-    for (dwIndex = dwBegin; dwIndex <= dwEnd; dwIndex++)
-    {
+    for (dwIndex = dwBegin; dwIndex <= dwEnd; dwIndex++) {
         // get data for this pixel
         int nHere = pDoc->GetSmoothedPitch()->GetProcessedData(dwIndex, &bRes); // SDM 1.5Test11.0
-        if (nHere > 0)
-        {
+        if (nHere > 0) {
             double Y = double(nHere)/PRECISION_MULTIPLIER;
             double X = double(dwIndex-dwBegin)*fSizeFactor;
 
@@ -969,36 +873,26 @@ static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, d
             n++;
         }
     }
-    if (n>0)
-    {
+    if (n>0) {
         double localSlope;
-        if (sumX)
-        {
+        if (sumX) {
             localSlope = (n*sumXY - sumX*sumY)/(n*sumXX - sumX*sumX);
-        }
-        else
-        {
+        } else {
             localSlope = 0;    // if no change in x, assume 0 slope
         }
         double localOffset = sumY/n - localSlope*sumX/n;
 
-        if (offset)
-        {
+        if (offset) {
             *offset = localOffset;
         }
-        if (slope)
-        {
+        if (slope) {
             *slope = localSlope;
         }
-    }
-    else
-    {
-        if (offset)
-        {
+    } else {
+        if (offset) {
             *offset = - 1.;
         }
-        if (slope)
-        {
+        if (slope) {
             *slope = 0;
         }
     }
@@ -1007,8 +901,7 @@ static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, d
 // The following formula attempts to calculate the VH crossover using higher order statistics
 // to distinguish between harmonics and noise.
 // See derivation in mathcad...  You would never believe
-static double VHX(double meanSqError, double meanQuadError, double /*analysisLength*/, double samplingRate, double pitch)
-{
+static double VHX(double meanSqError, double meanQuadError, double /*analysisLength*/, double samplingRate, double pitch) {
     double nyquistRate = samplingRate/2;
     double fr2 = meanSqError;
     double fr4 = meanQuadError;
@@ -1027,20 +920,17 @@ static double VHX(double meanSqError, double meanQuadError, double /*analysisLen
     // The correction factor is approximate... It might be better to update the model.
     vhx *= 0.5;
 
-    if (vhx < 3 * pitch)
-    {
+    if (vhx < 3 * pitch) {
         vhx = 3*pitch;
     }
 
     return vhx > samplingRate/2 ? samplingRate/2 - pitch : vhx;
 }
 
-struct SAnalyzer
-{
+struct SAnalyzer {
 
     SAnalyzer(CSaDoc * ipDoc, WORD iwSmpSize, SSigParms & iSignal, const SLPCSettings & iLpcSetting, BOOL ibClosedPhase = FALSE)
-        : Signal(iSignal), LpcSetting(iLpcSetting)
-    {
+        : Signal(iSignal), LpcSetting(iLpcSetting) {
         pDoc = ipDoc;
         wSmpSize = iwSmpSize;
         bClosedPhase = ibClosedPhase;
@@ -1053,8 +943,7 @@ struct SAnalyzer
     const SLPCSettings & LpcSetting;
 };
 
-static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CIpaVTChar & cChar, DWORD dwDuration=0, DWORD dwOffset=0, std::vector<double> * pResidual=NULL)
-{
+static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CIpaVTChar & cChar, DWORD dwDuration=0, DWORD dwOffset=0, std::vector<double> * pResidual=NULL) {
     double pitch = 0;
 
     cChar.m_ipa = szIpa;
@@ -1069,12 +958,9 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         double fSizeFactorPitch = (double)a.pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
 
         CurveFitPitch(a.pDoc, fSizeFactorPitch, dwStart, dwEnd, &offset, &slope);
-        if (offset > 0)
-        {
+        if (offset > 0) {
             pitch = offset + slope*(dwEnd - dwStart + 1)/2.;
-        }
-        else
-        {
+        } else {
             pitch = 0;
         }
         cChar.m_stimulus.Pitch = pitch;
@@ -1089,45 +975,34 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         int nMinLength = nSections*nSamplesPerSection;
         int nDesiredLength = nMinLength;
 
-        if (pitch)
-        {
+        if (pitch) {
             int nPitchLength = int(a.Signal.SmpRate/pitch);
 
-            if (nDesiredLength < 3*nPitchLength)
-            {
+            if (nDesiredLength < 3*nPitchLength) {
                 nDesiredLength = 3*nPitchLength;
             }
         }
 
-        if (DWORD(nDesiredLength)*a.wSmpSize > dwEnd - dwStart)
-        {
-            if (DWORD(nDesiredLength)*a.wSmpSize <= dwDuration)
-            {
+        if (DWORD(nDesiredLength)*a.wSmpSize > dwEnd - dwStart) {
+            if (DWORD(nDesiredLength)*a.wSmpSize <= dwDuration) {
                 int nCenter = (dwStart + dwEnd)/(2*a.wSmpSize);
                 nNewStart = nCenter - nDesiredLength/2;
                 nNewEnd = nNewStart + nDesiredLength;
 
-                if (DWORD(nNewEnd*a.wSmpSize) > dwOffset + dwDuration)
-                {
+                if (DWORD(nNewEnd*a.wSmpSize) > dwOffset + dwDuration) {
                     nNewEnd = (dwOffset + dwDuration)/a.wSmpSize;
                     nNewStart = nNewEnd - nDesiredLength;
                 }
 
-                if (DWORD(nNewStart*a.wSmpSize) < dwOffset)
-                {
+                if (DWORD(nNewStart*a.wSmpSize) < dwOffset) {
                     nNewStart = dwOffset/a.wSmpSize;
                     nNewEnd = nNewStart + nDesiredLength;
                 }
-            }
-            else if ((dwEnd - dwStart) <= dwDuration)
-            {
+            } else if ((dwEnd - dwStart) <= dwDuration) {
                 nNewStart = dwOffset/a.wSmpSize;
                 nNewEnd = (dwOffset + dwDuration)/a.wSmpSize;
-            }
-            else
-            {
-                if (nNewStart < nSections)
-                {
+            } else {
+                if (nNewStart < nSections) {
                     nNewEnd += nSections - nNewStart;
                     nNewStart = nSections;
                 }
@@ -1136,8 +1011,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
 
         nNewStart -= nSections;
 
-        if (nNewStart < 0)
-        {
+        if (nNewStart < 0) {
             nNewStart = 0;
         }
 
@@ -1151,8 +1025,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         LpcSetting.nOrder = (unsigned short)nSections;
         LpcSetting.nFrameLen = (unsigned short)(dwFrameSize);
 
-        if (a.bClosedPhase && pitch != 0)
-        {
+        if (a.bClosedPhase && pitch != 0) {
             // determine pitch phase
             // Construct an LPC object for vocal tract modeling.
             CLinPredCoding * pLpcObject = NULL;
@@ -1167,8 +1040,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
             double dSin = 0;
             double dCos = 0;
 
-            for (int i = 0; i < pLpc->nResiduals; i++)
-            {
+            for (int i = 0; i < pLpc->nResiduals; i++) {
                 double dPhase;
                 dPhase= (i+LpcSetting.nOrder)*(pitch/a.Signal.SmpRate)*2*PI;
                 dSin += sin(dPhase)*pLpc->pResidual[i]*pLpc->pResidual[i];
@@ -1197,8 +1069,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
 
         cChar.m_dVTGain = -10*log10(pLpc->dMeanSqPredError / (pLpc->dMeanEnergy+0.25));
 
-        if (pitch > 0)
-        {
+        if (pitch > 0) {
             cChar.m_stimulus.AV =
                 cChar.m_stimulus.AH = 10*log10(pLpc->dMeanSqPredError) - 3;
             cChar.m_stimulus.AF = 0;
@@ -1206,9 +1077,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
             // This is a place holder...
             // Needs to be replaced by an analysis of the Voicing Aspiration Crossover frequency
             cChar.m_stimulus.VHX = VHX(pLpc->dMeanSqPredError, pLpc->dMeanQuadPredError, pLpc->nResiduals, a.Signal.SmpRate, pitch);
-        }
-        else
-        {
+        } else {
             cChar.m_stimulus.AV = 0;
             cChar.m_stimulus.AH = 0;
             cChar.m_stimulus.AF = 10*log10(pLpc->dMeanSqPredError) - 3;
@@ -1227,24 +1096,19 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         cChar.m_pred.reserve(nSections);
         std::copy(&pLpc->pPredCoeff[1], &pLpc->pPredCoeff[nSections+1], std::back_inserter(cChar.m_pred));
 
-        if (pResidual)
-        {
+        if (pResidual) {
             std::vector<double> & residual = *pResidual;
 
             int nFirst = dwStart/a.wSmpSize - (nNewStart + nSections);
             int nLast = dwEnd/a.wSmpSize - (nNewStart + nSections);
-            if (nFirst < 0)
-            {
+            if (nFirst < 0) {
                 residual.insert(residual.end(), -nFirst, 0);
                 nFirst = 0;
             }
-            if (pLpc->nResiduals <= nLast)
-            {
+            if (pLpc->nResiduals <= nLast) {
                 std::copy(&pLpc->pResidual[nFirst], &pLpc->pResidual[pLpc->nResiduals], std::back_inserter(residual));
                 residual.insert(residual.end(), nLast + 1 - pLpc->nResiduals, 0);
-            }
-            else
-            {
+            } else {
                 std::copy(&pLpc->pResidual[nFirst], &pLpc->pResidual[nLast+1], std::back_inserter(residual));
             }
         }
@@ -1254,22 +1118,19 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
     }
 }
 
-void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pDoc, DWORD dwDuration, WORD wSmpSize)
-{
+void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pDoc, DWORD dwDuration, WORD wSmpSize) {
     CString szString;
 
     // clear parameters
     szString.Empty();
-    for (int row = rowFirst; row < cGrid.GetRows(); row++)
-    {
+    for (int row = rowFirst; row < cGrid.GetRows(); row++) {
         cGrid.SetTextMatrix(row,column,szString);
     }
 
     szString.Format(_T("silence"));
     cGrid.SetTextMatrix(rowIpa,column,szString);
 
-    if (dwDuration)
-    {
+    if (dwDuration) {
         szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(dwDuration * wSmpSize)*1000.);
         cGrid.SetTextMatrix(rowDuration,column,szString);
     }
@@ -1279,28 +1140,24 @@ void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pD
     cGrid.SetTextMatrix(rowAF,column,_T("0"));
 }
 
-void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
-{
+void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     CString szFilename = m_szSourceFilename;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(szFilename);
-    if (!pDoc)
-    {
+    if (!pDoc) {
         return;
     }
     CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
 
-    if (pPhonetic->IsEmpty())   // no annotations
-    {
+    if (pPhonetic->IsEmpty()) { // no annotations
         return;
     }
 
     enum {PITCH, CALCULATIONS};
     double fSizeFactor[CALCULATIONS];
 
-    if (m_bPitch)   // formants need pitch info
-    {
+    if (m_bPitch) { // formants need pitch info
         CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
         fSizeFactor[PITCH] = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
     }
@@ -1320,12 +1177,9 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
     DWORD wSmpSize = pDoc->GetSampleSize();
 
     SSigParms Signal;
-    if (wSmpSize == 1)
-    {
+    if (wSmpSize == 1) {
         Signal.SmpDataFmt = PCM_UBYTE;    //samples are unsigned 8 bit
-    }
-    else
-    {
+    } else {
         Signal.SmpDataFmt = PCM_2SSHORT;    //samples are 2's complement 16 bit
     }
     Signal.SmpRate = pDoc->GetSamplesPerSec();  //set sample rate
@@ -1334,12 +1188,10 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
 
     SLPCSettings LpcSetting;
     LpcSetting.Process.Flags = NORM_CROSS_SECT | MEAN_SQ_ERR | ENERGY | RESIDUAL;
-    if (m_bWindowLPC)
-    {
+    if (m_bWindowLPC) {
         LpcSetting.Process.Flags |= WINDOW_SIGNAL;
     }
-    if (m_bPreEmphasize)
-    {
+    if (m_bPreEmphasize) {
         LpcSetting.Process.Flags |= PRE_EMPHASIS;
     }
     LpcSetting.nMethod = (unsigned short)m_nMethod;
@@ -1349,12 +1201,10 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
     SAnalyzer analyze(pDoc, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
 
     // construct table entries
-    while (nIndex != -1)
-    {
+    while (nIndex != -1) {
         dwPrevOffset = dwOffset;
         dwOffset = pPhonetic->GetOffset(nIndex);
-        if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset)
-        {
+        if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
             dwDuration = dwOffset - (dwPrevOffset + dwDuration);
             SilentColumn(cGrid, column, pDoc, dwDuration, 1);
             column++;
@@ -1370,8 +1220,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
 
         column++;
 
-        if (column >= cGrid.GetCols(0))
-        {
+        if (column >= cGrid.GetCols(0)) {
             cGrid.SetCols(0, column+10);
             cGrid.SetFont(PHONETIC_DEFAULT_FONT,PHONETIC_DEFAULT_FONTSIZE,rowIpa,column,1,-1);
         }
@@ -1379,8 +1228,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
 
     dwPrevOffset = dwOffset;
     dwOffset = pDoc->GetDataSize();
-    if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset)
-    {
+    if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
         dwDuration = dwOffset - (dwPrevOffset + dwDuration);
         SilentColumn(cGrid, column, pDoc, dwDuration, 1);
         column++;
@@ -1390,20 +1238,17 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
     cGrid.SetCols(0, column);
 }
 
-void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
-{
+void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     CString szFilename = m_szSourceFilename;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(szFilename);
-    if (!pDoc)
-    {
+    if (!pDoc) {
         return;
     }
     CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
     m_dwSampleRate = pDoc->GetSamplesPerSec();
-    if (pPhonetic->IsEmpty())   // no annotations
-    {
+    if (pPhonetic->IsEmpty()) { // no annotations
         return;
     }
 
@@ -1413,8 +1258,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
     BOOL bPitch = TRUE;
     BOOL bVocalTract = TRUE;
 
-    if (bPitch || bVocalTract)   // formants need pitch info
-    {
+    if (bPitch || bVocalTract) { // formants need pitch info
         CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
         fSizeFactor[PITCH] = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
     }
@@ -1425,16 +1269,12 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
     CProcessFragments * pFragment = pDoc->GetFragments();
     DWORD wSmpSize = pDoc->GetSampleSize();
     SSigParms Signal;
-    if (bVocalTract)
-    {
+    if (bVocalTract) {
         residual.clear();
         residual.reserve(pDoc->GetDataSize()/wSmpSize);
-        if (wSmpSize == 1)
-        {
+        if (wSmpSize == 1) {
             Signal.SmpDataFmt = PCM_UBYTE;      //samples are unsigned 8 bit
-        }
-        else
-        {
+        } else {
             Signal.SmpDataFmt = PCM_2SSHORT;    //samples are 2's complement 16 bit
         }
         Signal.SmpRate = pDoc->GetSamplesPerSec();  //set sample rate
@@ -1464,12 +1304,10 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
 
     SLPCSettings LpcSetting;
     LpcSetting.Process.Flags = NORM_CROSS_SECT | MEAN_SQ_ERR | ENERGY | RESIDUAL;
-    if (m_bWindowLPC)
-    {
+    if (m_bWindowLPC) {
         LpcSetting.Process.Flags |= WINDOW_SIGNAL;
     }
-    if (m_bPreEmphasize)
-    {
+    if (m_bPreEmphasize) {
         LpcSetting.Process.Flags |= PRE_EMPHASIS;
     }
     LpcSetting.nMethod = (unsigned short)m_nMethod;
@@ -1479,12 +1317,10 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
     SAnalyzer analyze(pDoc, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
 
     // construct table entries
-    while (nIndex != -1)
-    {
+    while (nIndex != -1) {
         dwPrevOffset = dwOffset;
         dwOffset = pPhonetic->GetOffset(nIndex);
-        if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset)
-        {
+        if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
             dwDuration = dwOffset - (dwPrevOffset + dwDuration);
             SilentColumn(cGrid, column, pDoc, dwDuration, 1);
             // clear parameters
@@ -1498,19 +1334,16 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
         dwLastFragmentIndex = pFragment->GetFragmentIndex((dwOffset + dwDuration - 1) / wSmpSize);
 
 
-        while (dwFragmentIndex <= dwLastFragmentIndex)
-        {
+        while (dwFragmentIndex <= dwLastFragmentIndex) {
             szString = pPhonetic->GetSegmentString(nIndex);
 
             stFragment = pFragment->GetFragmentParms(dwFragmentIndex);
             dwFragmentStart = stFragment.dwOffset * wSmpSize;
-            if (dwFragmentStart < dwOffset)
-            {
+            if (dwFragmentStart < dwOffset) {
                 dwFragmentStart = dwOffset;
             }
             dwFragmentEnd = (stFragment.dwOffset + stFragment.wLength - 1) * wSmpSize;
-            if (dwFragmentEnd > dwOffset + dwDuration)
-            {
+            if (dwFragmentEnd > dwOffset + dwDuration) {
                 dwFragmentEnd = dwOffset + dwDuration;
             }
 
@@ -1519,8 +1352,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
 
             column++;
 
-            if (column >= cGrid.GetCols(0))
-            {
+            if (column >= cGrid.GetCols(0)) {
                 cGrid.SetCols(0, column+10);
                 cGrid.SetFont(PHONETIC_DEFAULT_FONT,PHONETIC_DEFAULT_FONTSIZE,rowIpa,column,1,-1);
             }
@@ -1532,8 +1364,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
 
     dwPrevOffset = dwOffset;
     dwOffset = pDoc->GetDataSize();
-    if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset)
-    {
+    if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
         dwDuration = dwOffset - (dwPrevOffset + dwDuration);
         SilentColumn(cGrid, column, pDoc, dwDuration, 1);
 
@@ -1544,57 +1375,44 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
     cGrid.SetCols(0, column);
 
     // m_bGetComplete = TRUE;
-    if (bVocalTract)
-    {
+    if (bVocalTract) {
         int nDuration = pDoc->GetDataSize()/wSmpSize - residual.size();
-        if (nDuration > 0)
-        {
+        if (nDuration > 0) {
             residual.insert(residual.end(), nDuration, 0);
         }
     }
 }
 
-static double InterpolateWeight(double dLocation, double dBreakPoint, double dEndPoint)
-{
+static double InterpolateWeight(double dLocation, double dBreakPoint, double dEndPoint) {
     // second order
-    if (dLocation < dBreakPoint)
-    {
+    if (dLocation < dBreakPoint) {
         return 1.0 - 0.5*(dLocation / dBreakPoint)*(dLocation / dBreakPoint);
-    }
-    else
-    {
+    } else {
         return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint) * (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
     }
 
     // simple linear for now
-    if (dLocation < dBreakPoint)
-    {
+    if (dLocation < dBreakPoint) {
         return 1.0 - 0.5*(dLocation / dBreakPoint);
-    }
-    else
-    {
+    } else {
         return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
     }
 }
 
-static void WeightChars(CIpaVTChar & cPrev, CIpaVTChar & cNext, double dWeight, CIpaVTChar & cThis)
-{
+static void WeightChars(CIpaVTChar & cPrev, CIpaVTChar & cNext, double dWeight, CIpaVTChar & cThis) {
 #define WeightParameter(P) ((cThis. ## P) = ((cPrev. ## P)*dWeight + (cNext. ## P)*(1 - dWeight)))
 
     unsigned int i;
 
-    for (i=0; i<cThis.m_areas.size(); i++)
-    {
+    for (i=0; i<cThis.m_areas.size(); i++) {
         WeightParameter(m_areas[i]);
     }
 
-    for (i=0; i<cThis.m_reflection.size(); i++)
-    {
+    for (i=0; i<cThis.m_reflection.size(); i++) {
         WeightParameter(m_reflection[i]);
     }
 
-    for (i=0; i<cThis.m_pred.size(); i++)
-    {
+    for (i=0; i<cThis.m_pred.size(); i++) {
         WeightParameter(m_pred[i]);
     }
 
@@ -1609,23 +1427,19 @@ static void WeightChars(CIpaVTChar & cPrev, CIpaVTChar & cNext, double dWeight, 
 #undef WeightParameter
 }
 
-static void Interpolate(CIpaVTCharVector & cInterpolated, int nPrevious, double dBreakPoint, int nNext)
-{
+static void Interpolate(CIpaVTCharVector & cInterpolated, int nPrevious, double dBreakPoint, int nNext) {
     double breakTime = 0;
-    for (int nLocation = nPrevious; nLocation < dBreakPoint; nLocation++)
-    {
+    for (int nLocation = nPrevious; nLocation < dBreakPoint; nLocation++) {
         breakTime += cInterpolated[nLocation].m_duration;
     }
 
     double endTime = 0;
-    for (int nLocation = nPrevious; nLocation < nNext; nLocation++)
-    {
+    for (int nLocation = nPrevious; nLocation < nNext; nLocation++) {
         endTime += cInterpolated[nLocation].m_duration;
     }
 
     double time = 0;
-    for (int nLocation = nPrevious + 1; nLocation < nNext; nLocation++)
-    {
+    for (int nLocation = nPrevious + 1; nLocation < nNext; nLocation++) {
         time += cInterpolated[nLocation].m_duration/2.;
         double dWeight = InterpolateWeight(time, breakTime, endTime);
 
@@ -1634,20 +1448,17 @@ static void Interpolate(CIpaVTCharVector & cInterpolated, int nPrevious, double 
     }
 }
 
-void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid & cGrid)
-{
+void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid & cGrid) {
     CIpaVTCharVector cSegments;
     CIpaVTCharVector cInterpolated;
     ParseParameterGrid(nSrc, cSegments);
 
     cInterpolated.reserve(cSegments.size()*8); // estimate 8x growth from unblended
 
-    for (unsigned int nIndex = 0; nIndex < cSegments.size(); nIndex++)
-    {
+    for (unsigned int nIndex = 0; nIndex < cSegments.size(); nIndex++) {
         if (cSegments[nIndex].m_stimulus.AH == 0. &&
                 cSegments[nIndex].m_stimulus.AF == 0. &&
-                (cSegments[nIndex].m_stimulus.AV == 0. || cSegments[nIndex].m_stimulus.Pitch == 0.))
-        {
+                (cSegments[nIndex].m_stimulus.AV == 0. || cSegments[nIndex].m_stimulus.Pitch == 0.)) {
             // Silence
             CIpaVTChar value = cSegments[nIndex > 0 ? nIndex - 1 : nIndex];
             // Insert end marker to prevent blending amlitudes
@@ -1675,17 +1486,14 @@ void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid & cGrid)
             // sudden transition to new amplitude
             value.m_stimulus = cSegments[nIndex + 1 < cSegments.size() ? nIndex + 1 : nIndex].m_stimulus;
             cInterpolated.push_back(value);
-        }
-        else
-        {
+        } else {
             CIpaVTChar newValue(cSegments[nIndex]);
 
             double dLength = cSegments[nIndex].m_duration/2;
             double desiredLength = 5; // aim for 5ms segments
 
             newValue.m_duration = dLength/int(dLength/desiredLength);
-            for (int replicas = int(dLength/desiredLength); replicas > 0; replicas--)
-            {
+            for (int replicas = int(dLength/desiredLength); replicas > 0; replicas--) {
                 cInterpolated.push_back(newValue);
             }
 
@@ -1693,8 +1501,7 @@ void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid & cGrid)
             cInterpolated.push_back(newValue);
 
             newValue.m_duration = dLength/int(dLength/desiredLength);
-            for (int replicas = int(dLength/desiredLength); replicas > 0; replicas--)
-            {
+            for (int replicas = int(dLength/desiredLength); replicas > 0; replicas--) {
                 cInterpolated.push_back(newValue);
             }
         }
@@ -1704,18 +1511,14 @@ void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid & cGrid)
     int nLastMarker = 0;
     double dBreakPoint= 0;
     CString szPrevious;
-    for (unsigned int nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
-    {
-        if (szPrevious != cInterpolated[nIndex].m_ipa)
-        {
+    for (unsigned int nIndex = 0; nIndex < cInterpolated.size(); nIndex++) {
+        if (szPrevious != cInterpolated[nIndex].m_ipa) {
             dBreakPoint = nIndex - 0.5;
             szPrevious = cInterpolated[nIndex].m_ipa;
         }
 
-        if (cInterpolated[nIndex].m_duration == 0)
-        {
-            if (dBreakPoint >= nLastMarker && nIndex)
-            {
+        if (cInterpolated[nIndex].m_duration == 0) {
+            if (dBreakPoint >= nLastMarker && nIndex) {
                 // Interpolate between markers
                 Interpolate(cInterpolated, nLastMarker, dBreakPoint, nIndex);
             }
@@ -1726,20 +1529,17 @@ void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid & cGrid)
     PopulateParameterGrid(cGrid, cInterpolated);
 }
 
-void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaVTChar & columnChar)
-{
+void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaVTChar & columnChar) {
     columnChar.m_ipa.Empty();
     columnChar.m_ipa = cGrid.GetTextMatrix(rowIpa,column);
 
-    if (columnChar.m_ipa.IsEmpty())
-    {
+    if (columnChar.m_ipa.IsEmpty()) {
         return;
     }
 
     const int VTAreas = getRow(rAreaLast) - getRow(rAreaFirst);
     columnChar.m_areas.reserve(VTAreas);
-    for (int i = 0; i < VTAreas; i++)
-    {
+    for (int i = 0; i < VTAreas; i++) {
         CString szValue;
         double dValue = 1.;
 
@@ -1750,8 +1550,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaV
 
     const int VTReflections = getRow(rReflectionLast) - getRow(rReflectionFirst);
     columnChar.m_reflection.reserve(VTReflections);
-    for (int i = 0; i < VTReflections; i++)
-    {
+    for (int i = 0; i < VTReflections; i++) {
         CString szValue;
         double dValue = 0.;
 
@@ -1762,8 +1561,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaV
 
     const int VTPreds = getRow(rPredLast) - getRow(rPredFirst);
     columnChar.m_pred.reserve(VTPreds);
-    for (int i = 0; i < VTPreds; i++)
-    {
+    for (int i = 0; i < VTPreds; i++) {
         CString szValue;
         double dValue = 0.;
 
@@ -1771,8 +1569,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaV
         swscanf_s(szValue, _T("%lf"), &dValue);
         columnChar.m_pred.push_back(dValue);
     }
-    if (TRUE)
-    {
+    if (TRUE) {
         CString value;
 
         columnChar.m_duration = 0;
@@ -1809,24 +1606,20 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaV
     }
 }
 
-void CDlgVocalTract::ParseParameterGrid(int nGrid, CIpaVTCharVector & cChars)
-{
+void CDlgVocalTract::ParseParameterGrid(int nGrid, CIpaVTCharVector & cChars) {
     ParseParameterGrid(m_cGrid[nGrid], cChars);
 }
 
-void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, CIpaVTCharVector & cChars)
-{
+void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, CIpaVTCharVector & cChars) {
     cChars.clear();
 
     cChars.reserve(cGrid.GetCols(0));
-    for (int column = columnFirst; column < cGrid.GetCols(0); column++)
-    {
+    for (int column = columnFirst; column < cGrid.GetCols(0); column++) {
         CIpaVTChar columnChar;
 
         ParseParameterGrid(cGrid, column, columnChar);
 
-        if (columnChar.m_ipa.IsEmpty())
-        {
+        if (columnChar.m_ipa.IsEmpty()) {
             continue;
         }
 
@@ -1834,20 +1627,17 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, CIpaVTCharVector 
     }
 }
 
-void CDlgVocalTract::OnSynthesize()
-{
+void CDlgVocalTract::OnSynthesize() {
     CIpaVTCharVector cChars;
 
     //  ParseConstantsGrid(kConstants, m_cConstants);
     ParseParameterGrid(m_nSelectedMethod, cChars);
 
-    if (cChars.begin() == cChars.end())
-    {
+    if (cChars.begin() == cChars.end()) {
         return;
     }
 
-    if (m_szSynthesizedFilename.IsEmpty())
-    {
+    if (m_szSynthesizedFilename.IsEmpty()) {
         // create temp filename for synthesized waveform
         FileUtils::GetTempFileName(_T("lvt"), m_szSynthesizedFilename.GetBuffer(_MAX_PATH), _MAX_PATH);
         m_szSynthesizedFilename.ReleaseBuffer();
@@ -1857,8 +1647,7 @@ void CDlgVocalTract::OnSynthesize()
 }
 
 
-PCMWAVEFORMAT CDlgVocalTract::pcmWaveFormat()
-{
+PCMWAVEFORMAT CDlgVocalTract::pcmWaveFormat() {
     PCMWAVEFORMAT pcm;
 
     pcm.wBitsPerSample = 16;
@@ -1873,20 +1662,17 @@ PCMWAVEFORMAT CDlgVocalTract::pcmWaveFormat()
     return pcm;
 }
 
-static double RandOneRms()
-{
+static double RandOneRms() {
     double randOnePeakPeak = double(rand()*2 - RAND_MAX)/RAND_MAX;
 
     return 1.5*randOnePeakPeak*rand()/RAND_MAX;
 }
 
-static double Impulse(double dImpulsePhase, int nHarmonics)
-{
+static double Impulse(double dImpulsePhase, int nHarmonics) {
     double pulse = 0;
     double alt = 1;
 
-    for (int i = 1; i < nHarmonics; i++)
-    {
+    for (int i = 1; i < nHarmonics; i++) {
         pulse += alt*sin(i*dImpulsePhase);
     }
 
@@ -1895,12 +1681,10 @@ static double Impulse(double dImpulsePhase, int nHarmonics)
 
 // Preemphasis delay as defined in the LPC code
 #define DECAY  0.95
-BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIpaVTCharVector & cChars)
-{
+BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIpaVTCharVector & cChars) {
     const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-    if (cChars.size() == 0)
-    {
+    if (cChars.size() == 0) {
         return TRUE;
     }
 
@@ -1920,8 +1704,7 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
     double dImpulsePhase = -pi;
     double dAspOpen = 10;
     double dAspClose = 0;
-    for (unsigned int i = 0; i < cChars.size(); i++)
-    {
+    for (unsigned int i = 0; i < cChars.size(); i++) {
         int nSections = cChars[i].m_areas.size();
         vt.SetTransform(cChars[i].m_areas, cChars[i].m_reflection);
         double AH = cChars[i].m_stimulus.AH > 0 ? pow(10, cChars[i].m_stimulus.AH/20) : 0;
@@ -1938,70 +1721,54 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
         CProcessButterworth artificialStimulusAspiration;
         CProcessButterworth artificialStimulusVoice;
 
-        if (artificialStimulus && cChars[i].m_stimulus.VHX)
-        {
+        if (artificialStimulus && cChars[i].m_stimulus.VHX) {
             artificialStimulusVoice.LowPass(2, cChars[i].m_stimulus.VHX);
             artificialStimulusVoice.ConfigureProcess(pcm.wf.nSamplesPerSec);
             artificialStimulusAspiration.HighPass(2, cChars[i].m_stimulus.VHX);
             artificialStimulusAspiration.ConfigureProcess(pcm.wf.nSamplesPerSec);
 
-            for (int j = int(10*pcm.wf.nSamplesPerSec/cChars[i].m_stimulus.VHX); j>0; j--)
-            {
+            for (int j = int(10*pcm.wf.nSamplesPerSec/cChars[i].m_stimulus.VHX); j>0; j--) {
                 artificialStimulusAspiration.ForwardTick(RandOneRms());
                 artificialStimulusVoice.ForwardTick(Impulse(dImpulsePhase - j*dImpulsePhaseChange, nHarmonics));
             }
         }
 
         nSamples += cChars[i].m_duration*pcm.wf.nSamplesPerSec/1000;
-        while (data.size() < nSamples)
-        {
+        while (data.size() < nSamples) {
             double stimulus = 0;
 
-            if (artificialStimulus)
-            {
+            if (artificialStimulus) {
                 stimulus += AF*RandOneRms();
 
-                if (AH)
-                {
+                if (AH) {
                     stimulus += 0.1*AH*artificialStimulusAspiration.ForwardTick(RandOneRms());
 
-                    if (dAspOpen < data.size() && cChars[i].m_stimulus.Pitch)
-                    {
+                    if (dAspOpen < data.size() && cChars[i].m_stimulus.Pitch) {
                         stimulus += 1.4*AH*artificialStimulusAspiration.ForwardTick(RandOneRms());
                     }
                 }
 
-                if (dAspClose <= data.size())
-                {
-                    if (cChars[i].m_stimulus.Pitch)
-                    {
+                if (dAspClose <= data.size()) {
+                    if (cChars[i].m_stimulus.Pitch) {
                         dAspClose += pcm.wf.nSamplesPerSec/cChars[i].m_stimulus.Pitch;
                         dAspOpen = dAspClose - 0.5*pcm.wf.nSamplesPerSec/cChars[i].m_stimulus.Pitch;
-                    }
-                    else
-                    {
+                    } else {
                         dAspClose = nSamples;
                         dAspOpen = dAspOpen + 10;
                     }
                 }
 
-                if (dVoice <= data.size())
-                {
-                    if (dVoicePitch)
-                    {
-                        if (dImpulsePhase >= pi)
-                        {
+                if (dVoice <= data.size()) {
+                    if (dVoicePitch) {
+                        if (dImpulsePhase >= pi) {
                             dImpulsePhase -= 2*pi;
                         }
-                    }
-                    else if (dImpulsePhase >= pi)
-                    {
+                    } else if (dImpulsePhase >= pi) {
                         dVoice = nSamples;
                         dImpulsePhase = pi;  // as soon as we are commanded to begin voicing start
                     }
 
-                    if (dVoicePitch > 0)
-                    {
+                    if (dVoicePitch > 0) {
                         double dImpulse = artificialStimulusVoice.ForwardTick(Impulse(dImpulsePhase, nHarmonics));
                         //            double dImpulse = impulse(dImpulsePhase, nHarmonics);
 
@@ -2013,31 +1780,24 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
                         dImpulsePhase += dImpulsePhaseChange;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 unsigned dataSize = data.size();
                 stimulus = residual[dataSize];
             }
 
-            if (m_bPreEmphasize)
-            {
+            if (m_bPreEmphasize) {
                 // Handle preemphasis here... all residue must have reverse preemphasis applied...
                 stimulus = inversePreEmphasis.Tick(stimulus);
             }
 
             double dOutput = 0;
 
-            switch (m_nStructure)
-            {
-            case DIRECT:
-            {
+            switch (m_nStructure) {
+            case DIRECT: {
                 dOutput = stimulus;
 
-                for (int j = 0; j < nSections; j++)
-                {
-                    if (data.size() > (unsigned) j)
-                    {
+                for (int j = 0; j < nSections; j++) {
+                    if (data.size() > (unsigned) j) {
                         dOutput += cChars[i].m_pred[j]*data[data.size()-1-j];
                     }
                 }
@@ -2060,8 +1820,7 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
         }
     }
 
-    if (m_nTilt == DB12 || m_nTilt == DB6)
-    {
+    if (m_nTilt == DB12 || m_nTilt == DB6) {
         // Apply radiation and glottal spectral shape
         CProcessButterworth filter(NULL);
         double FC = 20;
@@ -2071,12 +1830,9 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
         double dScale0to6 = 0.7*sqrt((NF-FC)/(FC*atan2(NF,FC) - FC*atan2(FC,FC)));
 
         double dScale = m_nTilt == DB6 ? -1 : 1;
-        if (!m_bPreEmphasize)
-        {
+        if (!m_bPreEmphasize) {
             dScale *= (m_nTilt == DB6) ? dScale0to6 : dScale0to12;
-        }
-        else
-        {
+        } else {
             dScale *= dScale0to12/dScale0to6;
         }
 
@@ -2085,29 +1841,24 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
         filter.ConfigureProcess(NF*2);
 
         CZTransform zReverse = filter.GetForward();
-        for (unsigned int i = data.size(); i>0; i--)   // Apply filter in reverse to get better phase estimate
-        {
+        for (unsigned int i = data.size(); i>0; i--) { // Apply filter in reverse to get better phase estimate
             data[i-1] = zReverse.Tick(dScale*data[i-1]);
         }
 
-        if (m_nTilt == DB12)
-        {
+        if (m_nTilt == DB12) {
             CZTransform zForward = filter.GetForward();
-            for (unsigned int i = 0; i < data.size(); i++)
-            {
+            for (unsigned int i = 0; i < data.size(); i++) {
                 data[i] = zForward.Tick(data[i]);
             }
         }
     }
 
-    if (m_bMirror)
-    {
+    if (m_bMirror) {
         std::vector<double> mirror;
 
         mirror.reserve(data.size());
 
-        for (unsigned int i = data.size(); i>0; i--)   // Mirror waveform
-        {
+        for (unsigned int i = data.size(); i>0; i--) { // Mirror waveform
             mirror.push_back(data[i-1]);
         }
 
@@ -2116,23 +1867,20 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
 
     std::vector<SHORT> shortData;
     shortData.reserve(data.size());
-    for (unsigned int i = 0; i < data.size(); i++)   // Convert samples to double
-    {
+    for (unsigned int i = 0; i < data.size(); i++) { // Convert samples to double
         shortData.push_back((SHORT) min(max(data[i],-0x8000), 0x7fff));
     }
 
     return mmioWrite(hmmioFile, (char *) &shortData[0], sizeof(SHORT)*data.size());
 }
 
-BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cChars)
-{
+BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cChars) {
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 
     // open file
     HMMIO hmmioFile; // file handle
     hmmioFile = mmioOpen((LPTSTR)pszPathName, NULL, MMIO_READWRITE | MMIO_EXCLUSIVE);
-    if (!hmmioFile)
-    {
+    if (!hmmioFile) {
         // error opening file
         pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
         return FALSE;
@@ -2142,8 +1890,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
     */
     MMCKINFO mmckinfoParent;  // chunk info. for output RIFF chunk
     mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E');
-    if (mmioCreateChunk(hmmioFile, &mmckinfoParent, MMIO_CREATERIFF) != 0)
-    {
+    if (mmioCreateChunk(hmmioFile, &mmckinfoParent, MMIO_CREATERIFF) != 0) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
@@ -2158,8 +1905,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
     MMCKINFO       mmckinfoSubchunk;      // info. for a chunk in output file
     mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
     mmckinfoSubchunk.cksize = sizeof(PCMWAVEFORMAT);  // we know the size of this ck.
-    if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0)
-    {
+    if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
@@ -2170,8 +1916,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
     */
     PCMWAVEFORMAT pcm = pcmWaveFormat();
     if (mmioWrite(hmmioFile, (HPSTR) &pcm, sizeof(PCMWAVEFORMAT))
-            != sizeof(PCMWAVEFORMAT))
-    {
+            != sizeof(PCMWAVEFORMAT)) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
@@ -2180,8 +1925,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
 
     /* Ascend out of the 'fmt ' chunk, back into the 'RIFF' chunk.
     */
-    if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0) != 0)
-    {
+    if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0) != 0) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
@@ -2191,8 +1935,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
     /* Create the 'data' chunk that holds the waveform samples.
     */
     mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
-    if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0)
-    {
+    if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
@@ -2206,8 +1949,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
 
     // At file end what is file position
     MMIOINFO mmioinfo;
-    if (mmioGetInfo(hmmioFile,&mmioinfo,0))
-    {
+    if (mmioGetInfo(hmmioFile,&mmioinfo,0)) {
         // error writing RIFF chunk
         pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
@@ -2215,8 +1957,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
     }
 
     // get out of 'data' chunk
-    if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0))
-    {
+    if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0)) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
@@ -2224,15 +1965,13 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
     }
 
     // get out of 'RIFF' chunk, to write RIFF size
-    if (mmioAscend(hmmioFile, &mmckinfoParent, 0))
-    {
+    if (mmioAscend(hmmioFile, &mmckinfoParent, 0)) {
         // error writing RIFF chunk
         pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
-    if (!mmioClose(hmmioFile, 0))   // close file
-    {
+    if (!mmioClose(hmmioFile, 0)) { // close file
         // Set File Length ...
         // SDM 1.5Test10.2
         CFile WaveFile(pszPathName,CFile::modeReadWrite);
@@ -2243,8 +1982,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
 }
 
 // This function labels the document with the grid parameters
-void CDlgVocalTract::LabelDocument(CSaDoc * pDoc)
-{
+void CDlgVocalTract::LabelDocument(CSaDoc * pDoc) {
     CIpaVTCharVector cChars;
     ParseParameterGrid(m_nSelectedMethod, cChars);
 
@@ -2256,10 +1994,8 @@ void CDlgVocalTract::LabelDocument(CSaDoc * pDoc)
     double labelTime = 0;
     CSaString szIPA;
     double lastCharStopTime = 0;
-    for (unsigned int i = 0; i < cChars.size(); i++)
-    {
-        if (labelTime <= elapsedTime)
-        {
+    for (unsigned int i = 0; i < cChars.size(); i++) {
+        if (labelTime <= elapsedTime) {
             const double minLabelTime = 0.005;
             DWORD dwStart = DWORD(elapsedTime*SR+0.5)*2;
             double length = minLabelTime > cChars[i].m_duration/1000. ? minLabelTime : cChars[i].m_duration/1000.;
@@ -2267,20 +2003,18 @@ void CDlgVocalTract::LabelDocument(CSaDoc * pDoc)
 
             CSaString szIndex;
             szIndex.Format(_T("%d"),i+1);
-            pIndexSeg->Append( szIndex, true, dwStart, dwDuration);
+            pIndexSeg->Append(szIndex, true, dwStart, dwDuration);
 
             labelTime = elapsedTime + minLabelTime;
         }
 
-        if (szIPA != cChars[i].m_ipa || i == cChars.size() - 1)
-        {
+        if (szIPA != cChars[i].m_ipa || i == cChars.size() - 1) {
             DWORD dwStart = DWORD(lastCharStopTime*SR+0.5)*2;
             double length = elapsedTime - lastCharStopTime;
             DWORD dwDuration = DWORD(length*SR+0.5)*2;
 
-            if (dwDuration)
-            {
-                pCharSeg->Append( szIPA, true, dwStart, dwDuration);
+            if (dwDuration) {
+                pCharSeg->Append(szIPA, true, dwStart, dwDuration);
             }
             szIPA = cChars[i].m_ipa;
 
@@ -2295,107 +2029,84 @@ void CDlgVocalTract::LabelDocument(CSaDoc * pDoc)
     pView->PostMessage(WM_COMMAND, ID_PHRASE_L1_RAWDATA);
 }
 
-void CDlgVocalTract::OnPlayBoth()
-{
+void CDlgVocalTract::OnPlayBoth() {
     OnPlaySynth();
     OnPlaySource();
 }
 
-void CDlgVocalTract::OnPlaySynth()
-{
+void CDlgVocalTract::OnPlaySynth() {
     OnSynthesize();
-    if (m_szSynthesizedFilename.GetLength())
-    {
+    if (m_szSynthesizedFilename.GetLength()) {
         PlaySound(m_szSynthesizedFilename, 0, SND_SYNC | SND_NODEFAULT | SND_FILENAME);
     }
 }
 
-void CDlgVocalTract::OnPlaySource()
-{
-    if (m_szSourceFilename.GetLength())
-    {
+void CDlgVocalTract::OnPlaySource() {
+    if (m_szSourceFilename.GetLength()) {
         PlaySound(m_szSourceFilename, 0, SND_SYNC | SND_NODEFAULT | SND_FILENAME);
     }
 }
 
-void CDlgVocalTract::OnFileOpen()
-{
+void CDlgVocalTract::OnFileOpen() {
     CFileDialog dlg(TRUE, _T("txt"), _T("*.txt"), OFN_FILEMUSTEXIST, _T("Text Files (*.txt)|*.txt|Labeled Grid Files (*.grd)|*.grd||"));
 
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         CFile data(dlg.GetPathName(), CFile::modeRead | CFile::shareExclusive | CFile::typeBinary);
 
         CString szData;
 
         UINT uRead;
 
-        do
-        {
+        do {
             char buf[1024];
             uRead = data.Read(buf, sizeof(buf)-1);
 
             buf[uRead] = 0;
 
             szData += buf;
-        }
-        while (uRead);
+        } while (uRead);
 
         CString szExt(dlg.GetFileExt());
         szExt.MakeUpper();
         m_cGrid[m_nSelectedView].ClearRange(rowFirst, columnFirst, getRow(rLast), m_cGrid[m_nSelectedView].GetCols(0) - 1);
-        if (szExt == "GRD")
-        {
+        if (szExt == "GRD") {
             m_cGrid[m_nSelectedView].LoadRange(0, 0, szData, FALSE);
-        }
-        else
-        {
+        } else {
             m_cGrid[m_nSelectedView].LoadRange(rowFirst, columnFirst, szData, TRUE);
         }
     }
 }
 
-void CDlgVocalTract::OnUpdateFileOpen(CCmdUI *)
-{
+void CDlgVocalTract::OnUpdateFileOpen(CCmdUI *) {
 }
 
-void CDlgVocalTract::OnFileSaveAs()
-{
+void CDlgVocalTract::OnFileSaveAs() {
     CFileDialog dlg(FALSE, _T("txt"), m_szGrid[m_nSelectedView], OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Text Files (*.txt)|*.txt|Labeled Grid Files (*.grd)|*.grd||"));
 
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         CFile data(dlg.GetPathName(), CFile::modeWrite | CFile::shareExclusive | CFile::typeBinary | CFile::modeCreate);
 
         CString szData;
         CString szExt(dlg.GetFileExt());
         szExt.MakeUpper();
-        if (szExt == "GRD")
-        {
+        if (szExt == "GRD") {
             // skip column numbers since they number entire grid, we need size of user area
             szData = m_cGrid[m_nSelectedView].SaveRange(rowFirst, 0, m_cGrid[m_nSelectedView].GetRows(), m_cGrid[m_nSelectedView].GetCols(0), FALSE);
             int nColumnsMax = 1;
             int nColumns = 1;
 
-            for (int i = 0; i < szData.GetLength(); i++)
-            {
-                if (szData[i] == _T('\t'))
-                {
+            for (int i = 0; i < szData.GetLength(); i++) {
+                if (szData[i] == _T('\t')) {
                     nColumns++;
-                    if (nColumns > nColumnsMax)
-                    {
+                    if (nColumns > nColumnsMax) {
                         nColumnsMax = nColumns;
                     }
-                }
-                else if (szData[i] == _T('\n'))
-                {
+                } else if (szData[i] == _T('\n')) {
                     nColumns = 1;
                 }
             }
             szData = m_cGrid[m_nSelectedView].SaveRange(0, 0, m_cGrid[m_nSelectedView].GetRows(), nColumnsMax, FALSE);
-        }
-        else
-        {
+        } else {
             szData = m_cGrid[m_nSelectedView].SaveRange(rowFirst, columnFirst, m_cGrid[m_nSelectedView].GetRows(), m_cGrid[m_nSelectedView].GetCols(0), TRUE);
         }
 
@@ -2404,244 +2115,197 @@ void CDlgVocalTract::OnFileSaveAs()
 }
 
 // ****************************************** //
-void CDlgVocalTract::OnEditCopy()
-{
+void CDlgVocalTract::OnEditCopy() {
     m_cGrid[m_nSelectedView].OnEditCopy();
 }
 
-void CDlgVocalTract::OnEditClear()
-{
+void CDlgVocalTract::OnEditClear() {
     m_cGrid[m_nSelectedView].OnEditClear();
 }
 
-void CDlgVocalTract::OnEditCut()
-{
+void CDlgVocalTract::OnEditCut() {
     m_cGrid[m_nSelectedView].OnEditCut();
 }
 
-void CDlgVocalTract::OnEditPaste()
-{
+void CDlgVocalTract::OnEditPaste() {
     m_cGrid[m_nSelectedView].OnEditPaste();
 }
 
-void CDlgVocalTract::OnUpdateEditPaste(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateEditPaste(CCmdUI * pCmdUI) {
     m_cGrid[m_nSelectedView].OnUpdateEditPaste(pCmdUI);
 }
 
-void CDlgVocalTract::OnUpdateEditCopy(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateEditCopy(CCmdUI * pCmdUI) {
     m_cGrid[m_nSelectedView].OnUpdateEditCopy(pCmdUI);
 }
 
-void CDlgVocalTract::OnUpdateEditCut(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateEditCut(CCmdUI * pCmdUI) {
     m_cGrid[m_nSelectedView].OnUpdateEditCut(pCmdUI);
 }
 
-void CDlgVocalTract::OnUpdateEditClear(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateEditClear(CCmdUI * pCmdUI) {
     m_cGrid[m_nSelectedView].OnUpdateEditClear(pCmdUI);
 }
 
 
-void CDlgVocalTract::OnArtificial()
-{
+void CDlgVocalTract::OnArtificial() {
     m_bArtificialStimulus = !m_bArtificialStimulus;
 }
 
-void CDlgVocalTract::OnUpdateArtificial(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateArtificial(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_bArtificialStimulus);
 }
 
-void CDlgVocalTract::OnWindow()
-{
+void CDlgVocalTract::OnWindow() {
     m_bWindowLPC = !m_bWindowLPC;
 }
 
-void CDlgVocalTract::OnUpdateWindow(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateWindow(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_bWindowLPC);
 }
 
-void CDlgVocalTract::OnLosslessTube()
-{
+void CDlgVocalTract::OnLosslessTube() {
     m_nStructure = LOSSLESS_TUBE;
 }
 
-void CDlgVocalTract::OnUpdateLosslessTube(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateLosslessTube(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nStructure == LOSSLESS_TUBE);
 }
 
-void CDlgVocalTract::OnLattice()
-{
+void CDlgVocalTract::OnLattice() {
     m_nStructure = LATTICE;
 }
 
-void CDlgVocalTract::OnUpdateLattice(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateLattice(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nStructure == LATTICE);
 }
 
-void CDlgVocalTract::OnDirect()
-{
+void CDlgVocalTract::OnDirect() {
     m_nStructure = DIRECT;
 }
 
-void CDlgVocalTract::OnUpdateDirect(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateDirect(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nStructure == DIRECT);
 }
 
-void CDlgVocalTract::OnResidual()
-{
+void CDlgVocalTract::OnResidual() {
     m_nStructure = RESIDUAL_ERROR;
 }
 
-void CDlgVocalTract::OnUpdateResidual(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateResidual(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nStructure == RESIDUAL_ERROR);
 }
 
-void CDlgVocalTract::OnVTGain()
-{
+void CDlgVocalTract::OnVTGain() {
     m_nStructure = VTGAIN;
 }
 
-void CDlgVocalTract::OnUpdateVTGain(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateVTGain(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nStructure == VTGAIN);
 }
 
-void CDlgVocalTract::OnSqError()
-{
+void CDlgVocalTract::OnSqError() {
     m_nStructure = SQ_ERROR;
 }
 
-void CDlgVocalTract::OnUpdateSqError(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateSqError(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nStructure == SQ_ERROR);
 }
 
-void CDlgVocalTract::OnCovariance()
-{
+void CDlgVocalTract::OnCovariance() {
     m_nMethod = LPC_COVAR_LATTICE;
 }
 
-void CDlgVocalTract::OnUpdateCovariance(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateCovariance(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nMethod == LPC_COVAR_LATTICE);
 }
 
-void CDlgVocalTract::OnAutocor()
-{
+void CDlgVocalTract::OnAutocor() {
     m_nMethod = LPC_AUTOCOR;
 }
 
-void CDlgVocalTract::OnUpdateAutocor(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateAutocor(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nMethod == LPC_AUTOCOR);
 }
 
-void CDlgVocalTract::OnOrder()
-{
+void CDlgVocalTract::OnOrder() {
     CDlgVTOrder dlgOrder;
 
     dlgOrder.m_nOrder = m_nRequestedOrder;
 
-    if (dlgOrder.DoModal() == IDOK)
-    {
+    if (dlgOrder.DoModal() == IDOK) {
         m_nRequestedOrder = dlgOrder.m_nOrder;
     }
 }
 
 
 
-void CDlgVocalTract::On0dB()
-{
+void CDlgVocalTract::On0dB() {
     m_nTilt = DB0;
 }
 
-void CDlgVocalTract::OnUpdate0dB(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdate0dB(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nTilt == DB0);
 }
 
-void CDlgVocalTract::On6dB()
-{
+void CDlgVocalTract::On6dB() {
     m_nTilt = DB6;
 }
 
-void CDlgVocalTract::OnUpdate6dB(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdate6dB(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nTilt == DB6);
 }
 
-void CDlgVocalTract::On12dB()
-{
+void CDlgVocalTract::On12dB() {
     m_nTilt = DB12;
 }
 
-void CDlgVocalTract::OnUpdate12dB(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdate12dB(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nTilt == DB12);
 }
 
 
-void CDlgVocalTract::OnPreemphasize()
-{
+void CDlgVocalTract::OnPreemphasize() {
     m_bPreEmphasize = !m_bPreEmphasize;
 }
 
-void CDlgVocalTract::OnUpdatePreemphasize(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdatePreemphasize(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_bPreEmphasize);
 }
 
-void CDlgVocalTract::OnMirror()
-{
+void CDlgVocalTract::OnMirror() {
     m_bMirror = !m_bMirror;
 }
 
-void CDlgVocalTract::OnUpdateMirror(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateMirror(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_bMirror);
 }
 
 
 
-void CDlgVocalTract::OnClosedPhase()
-{
+void CDlgVocalTract::OnClosedPhase() {
     m_bClosedPhase = !m_bClosedPhase;
 }
 
-void CDlgVocalTract::OnUpdateClosedPhase(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateClosedPhase(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_bClosedPhase);
 }
 
-void CDlgVocalTract::OnAdjustCells()
-{
+void CDlgVocalTract::OnAdjustCells() {
     CDlgSynthesisAdjustCells dlg;
 
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         long rowEnd = m_cGrid[m_nSelectedView].GetRowSel();
         long colEnd = m_cGrid[m_nSelectedView].GetColSel();
         long row = m_cGrid[m_nSelectedView].GetRow();
         long col = m_cGrid[m_nSelectedView].GetCol();
 
-        for (long y = row; y <= rowEnd; y++)
-        {
-            for (long x = col; x <= colEnd; x++)
-            {
+        for (long y = row; y <= rowEnd; y++) {
+            for (long x = col; x <= colEnd; x++) {
                 CString szValue = m_cGrid[m_nSelectedView].GetTextMatrix(y, x);
                 double value;
 
-                if (!szValue.IsEmpty() && swscanf_s(szValue, _T("%lf"), &value))
-                {
+                if (!szValue.IsEmpty() && swscanf_s(szValue, _T("%lf"), &value)) {
                     CString szNewValue;
                     szNewValue.Format(_T("%.5g"), dlg.m_dScale*value + dlg.m_dOffset);
                     m_cGrid[m_nSelectedView].SetTextMatrix(y, x, szNewValue);
@@ -2651,85 +2315,68 @@ void CDlgVocalTract::OnAdjustCells()
     }
 }
 
-void CDlgVocalTract::OnFragments()
-{
+void CDlgVocalTract::OnFragments() {
     m_nSelectedMethod = kFragment;
 
-    if (m_nSelectedView != kFragment)
-    {
+    if (m_nSelectedView != kFragment) {
         ShowGrid(m_nSelectedMethod);
     }
 }
 
-void CDlgVocalTract::OnUpdateFragments(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateFragments(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nSelectedView == kFragment);
 }
 
-void CDlgVocalTract::OnIpa()
-{
+void CDlgVocalTract::OnIpa() {
     m_nSelectedMethod = kSegment;
 
-    if (m_nSelectedView != kSegment)
-    {
+    if (m_nSelectedView != kSegment) {
         ShowGrid(m_nSelectedMethod);
     }
 }
 
-void CDlgVocalTract::OnUpdateIpa(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateIpa(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nSelectedView == kSegment);
 }
 
 
-void CDlgVocalTract::OnIpaBlend()
-{
+void CDlgVocalTract::OnIpaBlend() {
     m_nSelectedMethod = kIpaBlended;
 
-    if (m_nSelectedView != kIpaBlended)
-    {
+    if (m_nSelectedView != kIpaBlended) {
         ShowGrid(m_nSelectedMethod);
     }
 }
 
-void CDlgVocalTract::OnUpdateIpaBlend(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateIpaBlend(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nSelectedView == kIpaBlended);
 }
 
-void CDlgVocalTract::OnIpaDefaults()
-{
-    if (m_nSelectedView != kDefaults)
-    {
+void CDlgVocalTract::OnIpaDefaults() {
+    if (m_nSelectedView != kDefaults) {
         ShowGrid(kDefaults);
-    }
-    else
-    {
+    } else {
         ShowGrid(m_nSelectedMethod);
     }
 }
 
-void CDlgVocalTract::OnUpdateIpaDefaults(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateIpaDefaults(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_nSelectedView == kDefaults);
 }
 
 
 
-void CDlgVocalTract::OnDestroy()
-{
+void CDlgVocalTract::OnDestroy() {
     ParseParameterGrid(kDefaults, m_cDefaults);
 
     CFrameWnd::OnDestroy();
 }
 
-void CDlgVocalTract::OnSynthHide()
-{
+void CDlgVocalTract::OnSynthHide() {
     m_bMinimize = !m_bMinimize;
 }
 
-void CDlgVocalTract::OnUpdateSynthHide(CCmdUI * pCmdUI)
-{
+void CDlgVocalTract::OnUpdateSynthHide(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_bMinimize);
 }
 

@@ -4,8 +4,7 @@
 #ifndef ACOUSTICTUBE_H
 #define ACOUSTICTUBE_H
 
-class CAcousticTube
-{
+class CAcousticTube {
 public:
     CAcousticTube(const std::vector<double> & dDiameters, const std::vector<double> & dReflections);
     virtual ~CAcousticTube();

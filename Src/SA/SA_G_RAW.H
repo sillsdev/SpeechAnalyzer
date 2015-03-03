@@ -10,8 +10,7 @@
 //###########################################################################
 // CPlotRawData plot window
 
-class CPlotRawData : public CPlotWnd
-{
+class CPlotRawData : public CPlotWnd {
 
     DECLARE_DYNCREATE(CPlotRawData)
 

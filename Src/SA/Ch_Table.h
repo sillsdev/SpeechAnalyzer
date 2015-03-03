@@ -12,8 +12,7 @@
 // CCharTable
 
 class CDlgCharChart;
-class CCharTable
-{
+class CCharTable {
 
     // Construction/destruction/creation
 public:
@@ -40,8 +39,7 @@ public:
 //###########################################################################
 // CIPATable
 
-class CIPATable : public CCharTable
-{
+class CIPATable : public CCharTable {
 
     // Construction/destruction/creation
 public:

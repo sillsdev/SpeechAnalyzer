@@ -75,8 +75,7 @@ class CSaDoc;
 class CDlgAutoRecorder;
 class CPlotWnd;
 
-class CSaView : public CView
-{
+class CSaView : public CView {
     DECLARE_DYNCREATE(CSaView)
 
 public:
@@ -110,20 +109,20 @@ public:
     DWORD AdjustDataFrame(int nWndWidth);               // return adjusted data frame width for particular window
     CURSORPOS GetStartCursorPosition();
     CURSORPOS GetStopCursorPosition();
-	DWORD GetPlaybackCursorPosition();
+    DWORD GetPlaybackCursorPosition();
     void SetCursorPosition(ECursorSelect nCursorSelect, DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
                            ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);
     void SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
-                                ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);	// set new start cursor position
+                                ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);    // set new start cursor position
     void SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
-                               ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);		// set new stop cursor
+                               ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);     // set new stop cursor
     void SetStartStopCursorPosition(DWORD dwNewStartPos, DWORD dwNewStopPos, ESnapDirection nSnapDirection = SNAP_BOTH,
                                     ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);// set new start/stop cursor position
     void SetStartStopCursorPosition(WAVETIME startTime, WAVETIME stopTime, ESnapDirection nSnapDirection = SNAP_BOTH,
                                     ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);// set new start/stop cursor position
-    void SetPlaybackPosition( DWORD dwPos = ~0,int nSpeed = 0, BOOL bEstimate = FALSE);		// default hide playback position indicators
-    void StopPlaybackTimer();																// stop the cursor from advancing
-	void SetPlaybackFlash( bool on);
+    void SetPlaybackPosition(DWORD dwPos = ~0,int nSpeed = 0, BOOL bEstimate = FALSE);       // default hide playback position indicators
+    void StopPlaybackTimer();                                                               // stop the cursor from advancing
+    void SetPlaybackFlash(bool on);
     int iGetStartCursorSegment(int iSegment);
     int iGetStopCursorSegment(int iSegment);
     void MoveStartCursor(DWORD);        // move start cursor
@@ -193,8 +192,8 @@ public:
     void SetStaticTWC(BOOL bChecked);
     BOOL GetNormalMelogram();
     void SetNormalMelogram(BOOL bChecked);
-    EBoundary GetEditBoundaries( bool checkKeys = true);
-    BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);				// change graph type
+    EBoundary GetEditBoundaries(bool checkKeys = true);
+    BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);             // change graph type
     void RemoveRtPlots();
     virtual ~CSaView();
     CMainFrame * MainFrame();
@@ -207,25 +206,25 @@ public:
 #endif
     CSaDoc * GetDocument();
 
-	// selection
-	BOOL SelectFromPosition( int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
-    BOOL SetSelectedAnnotationString( CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
+    // selection
+    BOOL SelectFromPosition(int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
+    BOOL SetSelectedAnnotationString(CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
     CSaString GetSelectedAnnotationString();
-    CString GetSelectedAnnotationString( BOOL bRemoveDelimiter);
-	void UpdateSelection( BOOL bClearVirtual=FALSE);
-	DWORD GetSelectionStart();
-	DWORD GetSelectionStop();
-	int	GetSelectionIndex();
-	bool IsSelectionVirtual();
-	void ShowCursors();
-	void HideCursors();
+    CString GetSelectedAnnotationString(BOOL bRemoveDelimiter);
+    void UpdateSelection(BOOL bClearVirtual=FALSE);
+    DWORD GetSelectionStart();
+    DWORD GetSelectionStop();
+    int GetSelectionIndex();
+    bool IsSelectionVirtual();
+    void ShowCursors();
+    void HideCursors();
 
     CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
 
-	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+    afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 
-	void EnableScrolling( bool val);
-	void SelectSegment(  CSegment * pSegment, int index);
+    void EnableScrolling(bool val);
+    void SelectSegment(CSegment * pSegment, int index);
 
 protected:
     BOOL PreCreateWindow(CREATESTRUCT & cs);
@@ -251,7 +250,7 @@ protected:
     afx_msg void OnUpdatePrintPreview(CCmdUI * pCmdUI);
     afx_msg void OnUpdateFilenew(CCmdUI * pCmdUI);
     afx_msg void OnGraphsTypes();
-	afx_msg void OnShowBorders();
+    afx_msg void OnShowBorders();
     afx_msg void OnGraphsParameters();
     afx_msg void OnEditBoundaries();
     afx_msg void OnUpdateEditBoundaries(CCmdUI * pCmdUI);
@@ -299,8 +298,8 @@ protected:
     afx_msg void OnUpdateXScaleRawdata(CCmdUI * pCmdUI);
     afx_msg void OnXScaleNone();
     afx_msg void OnUpdateXScaleNone(CCmdUI * pCmdUI);
-	afx_msg void OnViewTranscriptionBoundaries();
-	afx_msg void OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI);
+    afx_msg void OnViewTranscriptionBoundaries();
+    afx_msg void OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI);
     afx_msg void OnBoundariesAll();
     afx_msg void OnUpdateBoundariesAll(CCmdUI * pCmdUI);
     afx_msg void OnBoundariesRawdata();
@@ -332,7 +331,7 @@ protected:
     afx_msg void OnActivateView(BOOL, CView *, CView *);
     afx_msg void OnDestroy();
     afx_msg void OnUpdateGraphsTypes(CCmdUI * pCmdUI);
-	afx_msg void OnUpdateShowBorders(CCmdUI * pCmdUI);
+    afx_msg void OnUpdateShowBorders(CCmdUI * pCmdUI);
     afx_msg void OnUpdateGraphsParameters(CCmdUI * pCmdUI);
     afx_msg void OnPopupgraphGridlines();
     afx_msg void OnUpdatePopupgraphGridlines(CCmdUI * pCmdUI);
@@ -476,12 +475,12 @@ protected:
     afx_msg void OnRemoveOverlays();
     afx_msg void OnEditCopyPhoneticToPhonemic();
     afx_msg void OnUpdateEditCopyPhoneticToPhonemic(CCmdUI * pCmdUI);
-	afx_msg void OnSelectTranscriptionBars();
-	afx_msg void OnUpdateSelectTranscriptionBars(CCmdUI * pCmdUI);
+    afx_msg void OnSelectTranscriptionBars();
+    afx_msg void OnUpdateSelectTranscriptionBars(CCmdUI * pCmdUI);
     DECLARE_MESSAGE_MAP()
 
 private:
-    static int GetNumberOfGraphs(UINT * pGraphIDs);			// return number of graphs from layout ID
+    static int GetNumberOfGraphs(UINT * pGraphIDs);         // return number of graphs from layout ID
     WINDOWPLACEMENT DeleteGraphs(int nPosition = -1, BOOL bClearID = TRUE); // delete existing graph objects
     void CreateGraph(int nPosition, int nNewID,
                      CREATE_HOW ch = CREATE_STANDARD,
@@ -530,19 +529,19 @@ private:
     void CalculatePrintOrigin(CDC * pDC);
     int  CalculateHiResPrintPages(void);
     void PreparePrintingForScreenShot(void);
-	void MoveBoundary( bool start, bool left);
-	CGraphWnd * GetGraphForAnnotation( int annotation);
-	DWORD GetMinimumSeparation( CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot);
+    void MoveBoundary(bool start, bool left);
+    CGraphWnd * GetGraphForAnnotation(int annotation);
+    DWORD GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot);
 
-	BOOL AllowEditAdd( bool story);
-	BOOL AllowAddPhrase( EAnnotation annot, bool story);
-	BOOL IsPhoneticOverlapping(bool story);
-	BOOL AllowAutoAdd(bool story);
+    BOOL AllowEditAdd(bool story);
+    BOOL AllowAddPhrase(EAnnotation annot, bool story);
+    BOOL IsPhoneticOverlapping(bool story);
+    BOOL AllowAutoAdd(bool story);
 
-    UINT m_anGraphID[MAX_GRAPHS_NUMBER];	// array of graph IDs
-    UINT m_nLayout;							// actual Layout number
+    UINT m_anGraphID[MAX_GRAPHS_NUMBER];    // array of graph IDs
+    UINT m_nLayout;                         // actual Layout number
     CSegmentSelection m_advancedSelection;
-    CGraphWnd * m_pFocusedGraph;			// pointer to focused graph
+    CGraphWnd * m_pFocusedGraph;            // pointer to focused graph
     CPrintOptionsDlg * m_pPageLayout;
     CPrintOptionsDlg * m_pPgLayoutBackup;
     CPickOverlayDlg * m_pPickOverlay;
@@ -554,9 +553,9 @@ private:
     BOOL m_abAnnAll[ANNOT_WND_NUMBER];      // array of boolean, annotation window show/hide all
     BOOL m_abAnnNone[ANNOT_WND_NUMBER];     // array of boolean, annotation window hide all
     ECursorAlignment m_nCursorAlignment;    // cursor snap mode: align to sample, zero crossing, or fragment
-	BOOL m_bTranscriptionBoundaries;		// show transcription boundaries
-	BOOL m_bSegmentBoundaries;              // boundaries show/hide all
-	BOOL m_bUpdateBoundaries;               // boundaries updated or not in transcription editor
+    BOOL m_bTranscriptionBoundaries;        // show transcription boundaries
+    BOOL m_bSegmentBoundaries;              // boundaries show/hide all
+    BOOL m_bUpdateBoundaries;               // boundaries updated or not in transcription editor
     bool m_bEditBoundaries;                 // TRUE = INS pressed
     bool m_bEditSegmentSize;                // TRUE = CTRL_SHIFT pressed
     BOOL m_bDrawStyleLine;                  // graph drawing style line or solid
@@ -569,7 +568,7 @@ private:
     DWORD m_dwScrollLine;                   // number of samples to scroll one line
     DWORD m_dwStartCursor;                  // start cursor position
     DWORD m_dwStopCursor;                   // stop cursor position
-    DWORD m_dPlaybackPosition;				// playback cursor position
+    DWORD m_dPlaybackPosition;              // playback cursor position
     DWORD m_dwPlaybackTime;                 // TickCount of last playback update
     double m_dPlaybackPositionLimit;        // playback cursor position
     int m_nPlaybackSpeed;
@@ -604,13 +603,13 @@ private:
     CSaApp * pSaApp;
     CMainFrame * pViewMainFrame;
 
-	DWORD lastBoundaryStartCursor;
-	DWORD lastBoundaryStopCursor;
-	int lastBoundaryIndex;
-	ECursorSelect lastBoundaryCursor;
-	DWORD lastPlaybackPosition;
+    DWORD lastBoundaryStartCursor;
+    DWORD lastBoundaryStopCursor;
+    int lastBoundaryIndex;
+    ECursorSelect lastBoundaryCursor;
+    DWORD lastPlaybackPosition;
 
-	bool bEnableScrolling;					// true if we should scroll during playback
+    bool bEnableScrolling;                  // true if we should scroll during playback
 
 };
 

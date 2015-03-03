@@ -15,8 +15,7 @@
 #define POINT_MISSING   -2    // point is missing but can be interpolated
 #define POINT_UNSET     -1    // there is no data for this point
 
-class CProcessCustomPitch : public CProcess
-{
+class CProcessCustomPitch : public CProcess {
 // Construction/destruction/creation
 public:
     CProcessCustomPitch();

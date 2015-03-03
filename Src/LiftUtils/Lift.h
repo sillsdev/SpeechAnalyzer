@@ -70,12 +70,12 @@ public:
         }
         return true;
     }
-	const T & get() {
-		return inner;
-	}
-	void operator = ( const T & right) {
-		inner = right;
-	}
+    const T & get() {
+        return inner;
+    }
+    void operator = (const T & right) {
+        inner = right;
+    }
 
     LPCTSTR name;
 private:
@@ -89,11 +89,11 @@ public:
     }
     optional(LPCTSTR _name, const T & value) :
         name(_name) {
-		inner.push_back(value);
+        inner.push_back(value);
     }
-	size_t size() {
-		return inner.size();
-	}
+    size_t size() {
+        return inner.size();
+    }
     void add(const optional<T> & right) {
         if (inner.size()!=0) {
             inner = right.inner;
@@ -113,8 +113,8 @@ public:
     void remove() {
         inner.clear();
     }
-	T & get() {
-		assert(inner.size()>0);
+    T & get() {
+        assert(inner.size()>0);
         return inner[0];
     }
     void operator = (const T & right) {
@@ -122,7 +122,7 @@ public:
         inner.push_back(right);
     }
 
-	LPCTSTR name;
+    LPCTSTR name;
 private:
     vector<T> inner;
 };
@@ -132,12 +132,12 @@ public:
     zero_more(LPCTSTR _name) :
         name(_name) {
     };
-	size_t size() {
-		return inner.size();
-	}
-	T & operator[](size_t idx) {
+    size_t size() {
+        return inner.size();
+    }
+    T & operator[](size_t idx) {
         return inner[idx];
-	}
+    }
     void append(T & right) {
         inner.push_back(right);
     }
@@ -166,15 +166,15 @@ public:
             }
         }
     }
-	/**
-	* Assignment.  if we are shoving in a value, very
-	* that there are no pre-existing entries.
-	* We are assuming the user is doing this as the one-and-only.
-	*/
-	void operator=(const T & right) {
-		assert(inner.size()==0);
-		inner.push_back(right);
-	}
+    /**
+    * Assignment.  if we are shoving in a value, very
+    * that there are no pre-existing entries.
+    * We are assuming the user is doing this as the one-and-only.
+    */
+    void operator=(const T & right) {
+        assert(inner.size()==0);
+        inner.push_back(right);
+    }
 
     bool operator!=(const zero_more<T> & right) const {
         if (name!=right.name) {
@@ -188,11 +188,11 @@ public:
     void remove() {
         inner.clear();
     }
-	void push_back( const T & right) {
-		inner.push_back(right);
-	}
+    void push_back(const T & right) {
+        inner.push_back(right);
+    }
 
-	LPCTSTR name;
+    LPCTSTR name;
 private:
     vector<T> inner;
 };
@@ -202,12 +202,12 @@ public:
     one_more(LPCTSTR _name) :
         name(_name) {
     };
-	size_t size() {
-		return inner.size();
-	}
-	T & operator[](size_t idx) {
+    size_t size() {
+        return inner.size();
+    }
+    T & operator[](size_t idx) {
         return inner[idx];
-	}
+    }
 
     LPCTSTR name;
 private:

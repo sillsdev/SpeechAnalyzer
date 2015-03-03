@@ -272,9 +272,9 @@ void CDlgEditor::OnUpdateInputstring() {
     pEdit->GetWindowText(szString);
 
     // Filter input string if input filter specified
-	CSegment * pSegment = GetView()->GetAnnotation(GetView()->GetSelectionIndex());
-	if (pSegment->Filter(szString)) {
-		DWORD dwSelection = pEdit->GetSel();
+    CSegment * pSegment = GetView()->GetAnnotation(GetView()->GetSelectionIndex());
+    if (pSegment->Filter(szString)) {
+        DWORD dwSelection = pEdit->GetSel();
         pEdit->SetWindowText(szString);
         pEdit->SetSel(dwSelection);
     }
@@ -305,7 +305,7 @@ void CDlgEditor::UpdateDialog() {
     {
         CFont * pFont = NULL;
         CString szText;
-		szText.LoadString(IDS_DISABLED_SEGMENT);
+        szText.LoadString(IDS_DISABLED_SEGMENT);
         BOOL bEnable = FALSE;
         BOOL bEnableChart = FALSE;
         BOOL bFontASAPSIL = FALSE;
@@ -314,8 +314,8 @@ void CDlgEditor::UpdateDialog() {
         UpdateDialogControls(GetMainFrame(), FALSE);
 
         GetView()->UpdateSelection();
-        if (GetView()->GetSelectionIndex() != -1) { 
-			//selection available
+        if (GetView()->GetSelectionIndex() != -1) {
+            //selection available
             int nAnnotation = GetView()->GetSelectionIndex();
             pFont = GetDoc()->GetFont(nAnnotation);
 
@@ -346,9 +346,9 @@ void CDlgEditor::UpdateDialog() {
             if (IsDifferent(TRUE)) {
                 pWnd->SetWindowText(szText);
                 if (bEnable) {
-                    pWnd->SetSel(0,-1);			// Select all text
+                    pWnd->SetSel(0,-1);         // Select all text
                 } else {
-                    pWnd->SetSel(-1,-1);		// Select all text
+                    pWnd->SetSel(-1,-1);        // Select all text
                 }
                 pWnd->EnableWindow(bEnable);
                 if ((bEnable) && (m_bActivated)) {
@@ -395,7 +395,7 @@ BOOL CDlgEditor::IsDifferent(BOOL bUpdate) {
     }
 
     if ((m_dwPreviousStart != pView->GetSelectionStart()) ||
-        (m_dwPreviousStop != pView->GetSelectionStop())) {
+            (m_dwPreviousStop != pView->GetSelectionStop())) {
         ret = TRUE;
         if (bUpdate) {
             m_dwPreviousStart = pView->GetSelectionStart();
@@ -692,11 +692,11 @@ void CDlgAnnotationEdit::OnUpdateInputstring() {
     m_bChanged = TRUE;
 
     // Filter Inputstring if input filter specified
-	CSegment * pSegment = GetView()->GetAnnotation(GetView()->GetSelectionIndex());
+    CSegment * pSegment = GetView()->GetAnnotation(GetView()->GetSelectionIndex());
     CEdit * pEdit = (CEdit *)GetDlgItem(IDC_INPUTSTRING);
     CSaString szString;
     pEdit->GetWindowText(szString);
-	if (pSegment->Filter(szString)) {
+    if (pSegment->Filter(szString)) {
         DWORD dwSelection = pEdit->GetSel();
         pEdit->SetWindowText(szString);
         pEdit->SetSel(dwSelection);

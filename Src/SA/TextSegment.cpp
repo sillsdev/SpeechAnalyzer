@@ -39,9 +39,9 @@ CTextSegment::~CTextSegment() {
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CTextSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
-    
-	// prepare delimiter
+BOOL CTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+
+    // prepare delimiter
     CSaString szDelimiter = WORD_DELIMITER;
     if (delimiter) {
         szDelimiter.SetAt(0, TEXT_DELIMITER);
@@ -52,7 +52,7 @@ BOOL CTextSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD 
     } else {
         text = szDelimiter;
     }
-    InsertAt( nIndex, text, dwStart, dwDuration);
+    InsertAt(nIndex, (LPCTSTR)text, dwStart, dwDuration);
     return TRUE;
 }
 
@@ -61,23 +61,23 @@ BOOL CTextSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD 
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CTextSegment::Append( LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
-	return Insert( GetOffsetSize(), pszString, delimiter, dwStart, dwDuration);
+BOOL CTextSegment::Append(LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+    return Insert(GetOffsetSize(), pszString, delimiter, dwStart, dwDuration);
 }
 
 /***************************************************************************/
 // CTextSegment::CaluculateDuration calculate segment duration from master data
 /***************************************************************************/
-DWORD CTextSegment::CalculateDuration( ISaDoc * pDoc, const int nIndex) const {
+DWORD CTextSegment::CalculateDuration(ISaDoc * pDoc, const int nIndex) const {
+
     CSegment * pMaster = (CSegment *)pDoc->GetSegment(m_nMasterIndex);
     pMaster->Validate();
-
     DWORD offset_size = GetOffsetSize();
     if ((nIndex < 0) || (nIndex >= offset_size)) {
         return DWORD(-1);
     }
     if ((nIndex + 1) == offset_size) {
-        return pMaster->GetStop( pMaster->GetOffsetSize()-1) - GetOffset(nIndex);
+        return pMaster->GetStop(pMaster->GetOffsetSize()-1) - GetOffset(nIndex);
     } else {
         DWORD next = GetNext(nIndex);
         DWORD offset = GetOffset(next);
@@ -274,13 +274,13 @@ void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString 
     }
 
     // insert or append the new segment
-    if (!Insert( nPos, szString, bDelimiter, dwStart, dwStop - dwStart)) {
+    if (!Insert(nPos, szString, bDelimiter, dwStart, dwStop - dwStart)) {
         return;    // return on error
     }
 
     // move the end of the previous text segment
     if (nPos > 0) {
-        Adjust(pDoc, nPos - 1, GetOffset(nPos - 1), CalculateDuration(pDoc, nPos -1));
+        Adjust(pDoc, nPos - 1, GetOffset(nPos - 1), CalculateDuration( pDoc, nPos -1), false);
     }
 
     pDoc->SetModifiedFlag(TRUE); // document has been modified

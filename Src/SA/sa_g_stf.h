@@ -12,8 +12,7 @@
 //###########################################################################
 // CPlotStaff plot window
 
-class CPlotStaff : public CPlotWnd
-{
+class CPlotStaff : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotStaff)
 
 // Construction/destruction/creation
@@ -36,10 +35,8 @@ private:
     // Operations
 public:
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-    void SetFocusedGraph(CGraphWnd * cgw)
-    {
-        if (m_pView)
-        {
+    void SetFocusedGraph(CGraphWnd * cgw) {
+        if (m_pView) {
             m_pView->SetFocusedGraph(cgw);
         }
         OnSetFocus(cgw);
@@ -65,10 +62,8 @@ public:
 
     // Generated message map functions
 protected:
-    afx_msg void OnSetFocus(CWnd *)
-    {
-        if ((HWND)StaffControl)
-        {
+    afx_msg void OnSetFocus(CWnd *) {
+        if ((HWND)StaffControl) {
             ::SetFocus((HWND)StaffControl);
         }
     }

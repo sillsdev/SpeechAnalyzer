@@ -12,8 +12,7 @@
 
 #include "SaString.h"
 
-class CWbDlgProcesses : public CDialog
-{
+class CWbDlgProcesses : public CDialog {
 
 public:
     CWbDlgProcesses(CWnd * pParent = NULL); // standard constructor
@@ -48,8 +47,7 @@ private:
 
 };
 
-class CWbDlgFilterPass : public CDialog
-{
+class CWbDlgFilterPass : public CDialog {
 public:
     CWbDlgFilterPass(CWnd * pParent = NULL); // standard constructor
     void OnHelpWorkbench();
@@ -80,8 +78,7 @@ private:
 
 };
 
-class CWbDlgFilterReverb : public CDialog
-{
+class CWbDlgFilterReverb : public CDialog {
 
 public:
     CWbDlgFilterReverb(CWnd * pParent = NULL);  // standard constructor
@@ -107,8 +104,7 @@ private:
     CSpinControl m_SpinGain;
 };
 
-class CWbDlgFilterEquation : public CDialog
-{
+class CWbDlgFilterEquation : public CDialog {
 
 public:
     CWbDlgFilterEquation(CWnd * pParent = NULL);        // standard constructor

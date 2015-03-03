@@ -4,8 +4,7 @@
 #include "objectistream.h"
 #include "objectostream.h"
 
-class CWaveformGeneratorSettings
-{
+class CWaveformGeneratorSettings {
 
 public:
     CWaveformGeneratorSettings();

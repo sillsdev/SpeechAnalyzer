@@ -11,8 +11,7 @@
 
 enum ESpectrum {CEPSTRAL_SPECTRUM = 0x0001, LPC_SPECTRUM = 0x0002};   // spectra selections
 
-struct SSpectProcSelect
-{
+struct SSpectProcSelect {
     BOOL bCepstralSpectrum   : 1;
     BOOL bLpcSpectrum        : 1;
     BOOL bSpare4             : 1;
@@ -32,24 +31,21 @@ struct SSpectProcSelect
 };
 
 #pragma pack(1)
-struct SSpectValue
-{
+struct SSpectValue {
     float Raw;
     float Smooth;
     float Lpc;
 };
 #pragma pack()
 
-struct SSpectPowerRange
-{
+struct SSpectPowerRange {
     SSpectValue Max;
     SSpectValue Min;
     float fdBRef;
 };
 
 #pragma pack(1)
-struct SFormant
-{
+struct SFormant {
     SFormantValues Cepstral;
     SFormantValues Lpc;
 };
@@ -57,8 +53,7 @@ struct SFormant
 
 
 #pragma pack(1)
-struct SFormantFrame
-{
+struct SFormantFrame {
     double LpcErrorInPercent;
     SFormant Formant[MAX_NUM_FORMANTS+1];
 };
@@ -66,8 +61,7 @@ struct SFormantFrame
 
 #define LPC_ERROR_THRESHOLD  15
 
-class CProcessSpectrum : public CProcess
-{
+class CProcessSpectrum : public CProcess {
 
 public:
     CProcessSpectrum();

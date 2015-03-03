@@ -69,10 +69,9 @@ static LPCSTR psz_Phonetic = "ph";
 static LPCSTR psz_Orthographic = "or";
 
 CDlgImportSFM::CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd * pParent /*=NULL*/)
-    : CDialog(CDlgImportSFM::IDD, pParent)
-{
+    : CDialog(CDlgImportSFM::IDD, pParent) {
     m_bGloss = FALSE;
-	m_bGlossNat = FALSE;
+    m_bGlossNat = FALSE;
     m_bPhonemic = bPhonemic;
     m_bPhonetic = bPhonetic;
     m_bOrthographic = bOrtho;
@@ -83,8 +82,7 @@ CDlgImportSFM::CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd *
     m_szOrthographic = psz_Orthographic;
 }
 
-void CDlgImportSFM::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgImportSFM::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
     DDX_Check(pDX, IDC_GLOSS_NAT_ENABLED, m_bGlossNat);
@@ -106,11 +104,9 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgAnnotation::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgImportSFM::SetEnable(int nItem, BOOL bEnable)
-{
+void CDlgImportSFM::SetEnable(int nItem, BOOL bEnable) {
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->EnableWindow(bEnable);
     }
 }
@@ -121,16 +117,14 @@ void CDlgImportSFM::SetEnable(int nItem, BOOL bEnable)
 /***************************************************************************/
 // CDlgAnnotation::OnImportPlainText Plain Text Button hit
 /***************************************************************************/
-void CDlgImportSFM::OnImportPlainText()
-{
+void CDlgImportSFM::OnImportPlainText() {
     EndDialog(IDC_IMPORT_PLAIN_TEXT);
 }
 
 /***************************************************************************/
 // CDlgAnnotation::OnInitDialog
 /***************************************************************************/
-BOOL CDlgImportSFM::OnInitDialog()
-{
+BOOL CDlgImportSFM::OnInitDialog() {
     CDialog::OnInitDialog();
 
     SetEnable(IDC_GLOSS, m_bGloss);

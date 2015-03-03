@@ -12,8 +12,7 @@
 //
 // This is an instance of the Decorator design pattern.
 
-class CEnergyPeakSource : public CPeakSource
-{
+class CEnergyPeakSource : public CPeakSource {
 public:
     // Construct this peak source as a wrapper around the given peak
     // source.

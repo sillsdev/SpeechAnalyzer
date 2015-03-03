@@ -26,6 +26,8 @@ extern DWORD GetFileSize(LPCSTR path);
 extern bool EndsWith(LPCTSTR path, LPCTSTR extension);
 extern bool IsReadOnly(LPCTSTR path);
 extern wstring NormalizePath(LPCTSTR path);
+extern wstring ReplaceExtension(LPCTSTR path, LPCTSTR extension);
+extern wstring RemoveExtension(LPCTSTR path);
 
 }
 

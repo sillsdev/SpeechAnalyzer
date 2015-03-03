@@ -967,14 +967,14 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
         int nIndex = nPhonetic;
         while ((nIndex != -1) && (pPhonetic->GetOffset(nIndex) < dwStop)) {
             if (nCount >= nSegments) {
-				// no checkpoint
-                pPhonetic->Remove(pDoc, nIndex, FALSE); 
+                // no checkpoint
+                pPhonetic->Remove(pDoc, nIndex, FALSE);
                 if (nIndex >= pPhonetic->GetOffsetSize()) {
                     break;
                 }
             } else {
                 DWORD dwBegin = dwStart + nCount;
-                pPhonetic->Adjust(pDoc, nIndex, dwBegin, 1);
+                pPhonetic->Adjust(pDoc, nIndex, dwBegin, 1, false);
                 nIndex = pPhonetic->GetNext(nIndex);
                 nCount++;
             }
@@ -1010,7 +1010,7 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
             if ((dwBegin + dwDuration) > dwStop) {
                 dwDuration = dwStop - dwBegin;
             }
-            pPhonetic->Adjust(pDoc, nIndex, dwBegin, dwDuration);
+            pPhonetic->Adjust(pDoc, nIndex, dwBegin, dwDuration, false);
             nIndex = pPhonetic->GetPrevious(nIndex);
         }
     }

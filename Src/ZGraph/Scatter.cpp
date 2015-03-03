@@ -15,24 +15,21 @@
 //////////////////////////////////////////////////////////////////////////
 //                           CScatterGraph Class
 //////////////////////////////////////////////////////////////////////////
-BOOL CScatterGraph::zInitGraph()
-{
+BOOL CScatterGraph::zInitGraph() {
     // Call Base-Class Implementation
     BOOL status = zGraph::zInitGraph();
 
     //
     // Establish Size of the Grid
     //
-    if (_3D_flag)
-    {
+    if (_3D_flag) {
         zGetGridDimensions();
     }
 
     return (status);
 }
 
-void CScatterGraph::zGetGridDimensions()
-{
+void CScatterGraph::zGetGridDimensions() {
     //
     // Sets the Dimensions of the 3-D Graph Grid and Sets Some
     //   Constant Multipliers Which Are Used in the Coordinate
@@ -60,8 +57,7 @@ void CScatterGraph::zGetGridDimensions()
 }
 
 
-void CScatterGraph::zDraw3DGrid()
-{
+void CScatterGraph::zDraw3DGrid() {
     // For the 3-D grid We Add Just a Small Refinement--
     //   More Lines on the Floor Plane
 
@@ -87,8 +83,7 @@ void CScatterGraph::zDraw3DGrid()
     // Draw In the Individual Vertical Grid Segments
     //
     double grid_height = (double) Y_BOTTOM - zY_ADJUST * (Y_TOP + z3D_GRID_Y_SLANT_OFFSET);
-    for (INT j = 0; j < z_axis_divisions; j++)
-    {
+    for (INT j = 0; j < z_axis_divisions; j++) {
         INT y_offset_1 = Y_BOTTOM - zY_ADJUST * zRound(grid_height * j / z_axis_divisions);
         INT y_offset_2 = y_offset_1 - zY_ADJUST * zRound(z3D_GRID_Y_SLANT_OFFSET);
 
@@ -111,20 +106,15 @@ void CScatterGraph::zDraw3DGrid()
 
 }
 
-void CScatterGraph::zDrawDataPoints()
-{
-    if (_3D_flag)         // If Making a 3-D Style Graph
-    {
+void CScatterGraph::zDrawDataPoints() {
+    if (_3D_flag) {       // If Making a 3-D Style Graph
         zDraw3DDataPoints();
-    }
-    else                 // If Making a 2-D Style Graph
-    {
+    } else {             // If Making a 2-D Style Graph
         zDraw2DDataPoints();
     }
 }
 
-void CScatterGraph::zDraw2DDataPoints()
-{
+void CScatterGraph::zDraw2DDataPoints() {
     //
     //  Plots Data Points for a Scatter Graph.  This Function is
     //    Overriden From the Base zGraph Class...
@@ -138,38 +128,30 @@ void CScatterGraph::zDraw2DDataPoints()
     // Draw in the Data Points
     //
     INT color_index = 0;
-    for (INT j = 0; j < n; j++)          // For Each Data Point. . .
-    {
+    for (INT j = 0; j < n; j++) {        // For Each Data Point. . .
         INT symbol = abs(sym[j]);         // This is the symbol to display
 
         //
         // Choose New Color For Each New Symbol Set
         //
-        if (j > 0  && (symbol != abs(sym[j-1])))
-        {
+        if (j > 0  && (symbol != abs(sym[j-1]))) {
             ++color_index ;
         }
 
-        if (symbols_flag)
-        {
+        if (symbols_flag) {
             zDraw_Symbol(xnew[j], ynew[j], symbol, color_index);
-        }
-        else
-        {
+        } else {
             //
             // Draw Each Data Point.  Note -- 1 Pixel Is Too Small to See (!)
             //   So Draw a Little Cluster of Pixels at Each Data Point...
             //
             int l = 1;
             //if (n == 1) l *= 2; // if only one data point to draw, make it bigger
-            if (j == n-1)
-            {
+            if (j == n-1) {
                 l *= 2;    // make last data point larger   AKE 7/31/2001
             }
-            for (int i = -l; i <= l; i++)
-            {
-                for (int k = -l; k <= l; k++)
-                {
+            for (int i = -l; i <= l; i++) {
+                for (int k = -l; k <= l; k++) {
                     // Set New Color
                     zSelectGraphColor(color_index);
 
@@ -187,8 +169,7 @@ void CScatterGraph::zDraw2DDataPoints()
     num_sets = color_index + 1;
 }
 
-void CScatterGraph::zDraw3DDataPoints()
-{
+void CScatterGraph::zDraw3DDataPoints() {
     //
     // Draws a 3-D Graph Composed of Discrete Points
     //
@@ -207,8 +188,7 @@ void CScatterGraph::zDraw3DDataPoints()
     // Select the First Graph Color
     zSelectGraphColor(0);
 
-    for (INT j = 0; j < n; j++)
-    {
+    for (INT j = 0; j < n; j++) {
         //
         // Map the Current Data Point into our (X,Y) Window Area
         //
@@ -223,8 +203,7 @@ void CScatterGraph::zDraw3DDataPoints()
         //
         // Choose New PEN color for each NEW symbol set.
         //
-        if (j > 0  && (symbol != abs(sym[j-1])))
-        {
+        if (j > 0  && (symbol != abs(sym[j-1]))) {
             ++color_index ;
 
             // Set New Color
@@ -235,21 +214,15 @@ void CScatterGraph::zDraw3DDataPoints()
         //
         // Display the symbol if we're supposed to...
         //
-        if (symbols_flag)
-        {
+        if (symbols_flag) {
             zDraw_Symbol(NewPoint.x, NewPoint.y, symbol, color_index);
-        }
-        else
-        {
+        } else {
             int l = 1;
-            if (n == 1)
-            {
+            if (n == 1) {
                 l *= 2;    // if only one data point to draw, make it bigger
             }
-            for (INT i = -l; i <= l; i++)
-            {
-                for (INT k = -l; k <= l; k++)
-                {
+            for (INT i = -l; i <= l; i++) {
+                for (INT k = -l; k <= l; k++) {
                     // Set New Color
                     zSelectGraphColor(color_index);
 
@@ -260,8 +233,7 @@ void CScatterGraph::zDraw3DDataPoints()
             }
         }
 
-        if (line_connect)
-        {
+        if (line_connect) {
             // Set New Color
             zSelectGraphColor(color_index);
 
@@ -280,16 +252,14 @@ void CScatterGraph::zDraw3DDataPoints()
 
 }
 
-BOOL CScatterGraph::zScaleData()
-{
+BOOL CScatterGraph::zScaleData() {
     // Call Base Class to Handle X- and Y- Components
     BOOL bStatus = zGraph::zScaleData();
 
     return (bStatus);
 }
 
-POINT CScatterGraph::zMapCoordinates(double X1, double Y1, double Z1)
-{
+POINT CScatterGraph::zMapCoordinates(double X1, double Y1, double Z1) {
     // Maps a 3-D Point Into 2-D Space.  See File XYZ.CPP for Full
     //   Details
 
@@ -302,8 +272,7 @@ POINT CScatterGraph::zMapCoordinates(double X1, double Y1, double Z1)
     double YPrime_XComponent = (xend - X1)   * Multiplier3;
     double YPrime_ZComponent = (Z1 - zstart) * Multiplier4;
 
-    POINT pt =
-    {
+    POINT pt = {
         (X_LEFT   + (INT)(XPrime_XComponent + XPrime_YComponent)),
         (Y_BOTTOM - (INT)(YPrime_XComponent + YPrime_ZComponent))
     };
@@ -311,13 +280,11 @@ POINT CScatterGraph::zMapCoordinates(double X1, double Y1, double Z1)
     return (pt);
 }
 
-void CScatterGraph::zDrawGraphAxes()
-{
+void CScatterGraph::zDrawGraphAxes() {
     //
     // Displays Numbers along the X-, Y-, and Z-axes for the 3-D Graph
     //
-    if (! _3D_flag)
-    {
+    if (! _3D_flag) {
         // For 2-D Graph, Just Use the Base-Class Implementation
         zGraph::zDrawGraphAxes();
         return;
@@ -351,8 +318,7 @@ void CScatterGraph::zDrawGraphAxes()
 
 
     // For Each Y-Axis Graph Division...
-    for (i = 0; i <= y_axis_divisions; i++)
-    {
+    for (i = 0; i <= y_axis_divisions; i++) {
         double y_value = ymin + (double)i * y_inc;
 
         // Show This Axis Number.  Set Last Value to [ymax]
@@ -379,8 +345,7 @@ void CScatterGraph::zDrawGraphAxes()
     //
     double x_value, x_inc = (xmax - xmin) / x_axis_divisions ;
 
-    for (i = 0; i <= x_axis_divisions; i+=2)
-    {
+    for (i = 0; i <= x_axis_divisions; i+=2) {
         // Calculate coordinates for text
         INT irev = draw_forward?x_axis_divisions-i:i;
         j = X_LEFT + GridWidth + zRound(z3D_GRID_X_SLANT_OFFSET * irev / x_axis_divisions);     // horizontal
@@ -408,8 +373,7 @@ void CScatterGraph::zDrawGraphAxes()
     double zstep = (double)(z_bottom - z_top) / z_axis_divisions;
 
     // Draw In the Z-Axis Divisions
-    for (i = 0; i <= z_axis_divisions;  i++)
-    {
+    for (i = 0; i <= z_axis_divisions;  i++) {
         // Calculate tic mark value
         z_value = zmin + (double)i * z_inc;
 
@@ -425,8 +389,7 @@ void CScatterGraph::zDrawGraphAxes()
 }
 
 
-void CScatterGraph::zDraw()
-{
+void CScatterGraph::zDraw() {
     //
     // Prepare to Draw the Graph
     //
@@ -450,8 +413,7 @@ void CScatterGraph::zDraw()
 
 
 
-void CScatterGraph::zFlip()                      // This routine Flips data for F2 F1 & (F2-F1) F1 Charts
-{
+void CScatterGraph::zFlip() {                    // This routine Flips data for F2 F1 & (F2-F1) F1 Charts
     INT grid_width  = abs(X_RIGHT - X_LEFT);     //  Taken from zGraph.cpp   // tdg
     INT grid_height = abs(Y_TOP - Y_BOTTOM);
 
@@ -461,8 +423,7 @@ void CScatterGraph::zFlip()                      // This routine Flips data for 
     double d = (double) Y_TOP - c * ymax ;
     int j;
 
-    for (j = 0; j < n; j++)
-    {
+    for (j = 0; j < n; j++) {
         //
         // Scale X-Coordinate
         //
@@ -479,8 +440,7 @@ void CScatterGraph::zFlip()                      // This routine Flips data for 
 
 //////////////////////////  ScatterGraph() /////////////////////////////////
 
-void ScatterGraph(SGraph * zG)
-{
+void ScatterGraph(SGraph * zG) {
 
     // Declare an Instance of the "CScatterGraph" Class
     CScatterGraph zScatter(zG);

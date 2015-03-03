@@ -22,14 +22,13 @@ class CSaDoc;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportFW dialog
-class CDlgExportFW : public CDialog
-{
+class CDlgExportFW : public CDialog {
 public:
     CDlgExportFW(LPCTSTR szDocTitle,
                  BOOL gloss,
-				 BOOL glossNat,
+                 BOOL glossNat,
                  BOOL ortho,
-				 BOOL tone,
+                 BOOL tone,
                  BOOL phonemic,
                  BOOL phonetic,
                  BOOL reference,
@@ -47,7 +46,7 @@ protected:
     void UpdateButtonState();
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
     CSaString GetFieldWorksProjectDirectory();
-	bool SearchForValue( HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
+    bool SearchForValue(HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
 
     afx_msg void OnAllAnnotations();
     afx_msg void OnClickedExSfmInterlinear();
@@ -72,9 +71,9 @@ protected:
     CStatic ctlStaticTags;
 
     BOOL bGlossDflt;
-	BOOL bGlossNatDflt;
+    BOOL bGlossNatDflt;
     BOOL bOrthoDflt;
-	BOOL bToneDflt;
+    BOOL bToneDflt;
     BOOL bPhonemicDflt;
     BOOL bPhoneticDflt;
     BOOL bPOSDflt;

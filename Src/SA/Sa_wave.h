@@ -21,8 +21,7 @@ class CPlayMixer;
 class CWaveOutDevice;
 class CWaveInDevice;
 
-struct SWaveHdrInfo
-{
+struct SWaveHdrInfo {
     WAVEHDR * pHdr;
     int iBuffer;
 };
@@ -30,8 +29,7 @@ struct SWaveHdrInfo
 //###########################################################################
 // CWaveNotifyObj this class provides a notification object used by CWave objects
 
-class CWaveNotifyObj : public CObject
-{
+class CWaveNotifyObj : public CObject {
 public:
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed = 100) = 0;
     virtual void BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride = NULL) = 0;
@@ -40,8 +38,7 @@ public:
     virtual HPSTR GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize) = 0;
 };
 
-class CWave : public CObject
-{
+class CWave : public CObject {
 
 public:
     CWave();

@@ -3,8 +3,7 @@
 
 #include "DependentTextSegment.h"
 
-class CGlossNatSegment : public CDependentTextSegment
-{
+class CGlossNatSegment : public CDependentTextSegment {
 public:
     CGlossNatSegment(EAnnotation index, int master = -1);
 

@@ -47,7 +47,7 @@
 
 
 void uriWriteQuadToDoubleByte(const unsigned char * hexDigits, int digitCount,
-		unsigned char * output);
+                              unsigned char * output);
 unsigned char uriGetOctetValue(const unsigned char * digits, int digitCount);
 
 

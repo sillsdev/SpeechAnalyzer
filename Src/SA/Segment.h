@@ -70,7 +70,6 @@ class CSaView;
 
 //###########################################################################
 // CSegment data processing
-
 class CSegment : public CProcess {
 
 public:
@@ -87,29 +86,29 @@ public:
     int GetDurationSize() const;
     DWORD GetOffset(const int nIndex) const;        // return offset
     DWORD GetDuration(const int nIndex) const;      // return duration
-    CString GetText(const int nIndex) const;		// return text
+    CString GetText(const int nIndex) const;        // return text
     DWORD GetStop(const int nIndex) const;          // return stop
-    int GetSelection() const;						// return the index of the selected character
+    int GetSelection() const;                       // return the index of the selected character
     int GetPrevious(int nIndex = -1) const;         // return the index of the previous segment
     int GetNext(int nIndex = -1) const;             // return the index of the next segment
     int FindOffset(DWORD dwOffset) const;           // return segment with matching offset
     int FindStop(DWORD dwOffset) const;             // return segment with matching stop
     int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; // get segment index from position
     virtual bool Match(int index, LPCTSTR find);
-    virtual void Replace( CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
-    int FindIndex( DWORD offset);
+    virtual void Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
+    int FindIndex(DWORD offset);
     virtual int FindNext(int fromIndex, LPCTSTR strToFind);
     virtual int FindPrev(int fromIndex, LPCTSTR strToFind);
     int CheckCursors(CSaDoc *, BOOL bOverlap) const;        // checks the position of the cursors for new segment
     DWORD GetDurationAt(int index) const;
-    void InsertAt(int index, CString & text, DWORD offset, DWORD duration);
-    virtual void RemoveAt(int index, bool remove);			// remove text, offset and duration
-    virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart);
-    virtual void Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
-    virtual void MoveDataLeft( DWORD offset);
-    virtual void MoveDataRight( DWORD offset);
-    void AdjustDuration( DWORD offset, DWORD duration);
-    virtual void Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
+    void InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration);
+    virtual void RemoveAt(int index, bool remove);          // remove text, offset and duration
+    virtual void Split(CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart);
+    virtual void Merge(CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
+    virtual void MoveDataLeft(DWORD offset);
+    virtual void MoveDataRight(DWORD offset);
+    void AdjustDuration(DWORD offset, DWORD duration);
+    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
     virtual BOOL SetText(int nIndex, LPCTSTR pszString, int nDelimiter, DWORD dwOffset, DWORD dwDuration);   // insert a new segment
 
     enum EMode {
@@ -137,46 +136,67 @@ public:
     BOOL IsEmpty() const;
 
     // modify internal data
-    void AdjustCursorsToSnap(CDocument * pDoc);				// adjust cursors to appropriate snap position
-    void SetSelection(int nIndex);							// set selection
-    virtual void Remove( CSaDoc * pDoc, int index, BOOL bCheck);	// remove a segment
+	// adjust cursors to appropriate snap position
+    void AdjustCursorsToSnap(CDocument * pDoc);
+	// set selection
+    void SetSelection(int nIndex);
+	// remove a segment
+    virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);
     virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace);
-    virtual void DeleteContents();							// delete all contents of the segment arrays
-    virtual void Adjust(ISaDoc * saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0, bool segmental = false);	// adjust position of segment
-    virtual BOOL SetAt( const CSaString & data, bool delimiter, DWORD dwStart, DWORD dwDuration, bool textSegment);	// sets a new segment
-    virtual BOOL SetAt( const CSaString & data, DWORD dwStart, DWORD dwDuration);									// sets a new segment without delimiters
-    virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);				// insert a new segment
-    virtual BOOL Append( LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);							// insert a new segment
+	// delete all contents of the segment arrays
+    virtual void DeleteContents();
+    // adjust position of segment
+	virtual void Adjust(ISaDoc * saDoc, int nIndex, DWORD dwNewOffset, DWORD dwNewDuration, bool segmental);
+	// adjust position of segment - local only
+	void Adjust( int nIndex, DWORD dwNewOffset, DWORD dwNewDuration);
+	// sets a new segment
+    virtual BOOL SetAt(const CSaString & data, bool delimiter, DWORD dwStart, DWORD dwDuration, bool textSegment);
+	// sets a new segment without delimiters
+    virtual BOOL SetAt(const CSaString & data, DWORD dwStart, DWORD dwDuration);
+	// insert a new segment
+    virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);
+	// insert a new segment
+    virtual BOOL Append(LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);
     virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);
     virtual CSaString GetOverlappingText(DWORD dwStart, DWORD dwStop);
 
     // annotation functions
-    virtual CSaString GetSegmentString(int nIndex) const;   // return segment string
-    virtual int GetSegmentLength(int nIndex) const;         // return segment length
+	// return segment string
+    virtual CSaString GetSegmentString(int nIndex) const;
+	// return segment length
+    virtual int GetSegmentLength(int nIndex) const;
 
     virtual CSaString GetDefaultChar();
 
     void Validate();
 
-    CString GetContent() const;								// return the contents of the entire segment
-    size_t GetContentLength() const;                        // return the text string length
+	// return the contents of the entire segment
+    CString GetContent() const;
+	// return the text string length
+    size_t GetContentLength() const;
 
     virtual bool Filter();
-    virtual bool Filter( CString & text);
+    virtual bool Filter(CString & text);
 
     int CountWords();
 
-protected:
-	int GetReferenceCount( CSegment * pSegment, int sel);
+	// adjust segments to new file size
+    void ShrinkSegment( CSaDoc & document, DWORD sectionStart, DWORD sectionLength);  
+	// adjust segments to new file size
+    void GrowSegment( CSaDoc & document, DWORD sectionStart, DWORD sectionLength);  
+	bool IsDependent( CSegment & parent);
 
-	typedef BOOL (CALLBACK EXPORT * TpInputFilterProc)(CSaString &);
+protected:
+    int GetReferenceCount(CSegment * pSegment, int sel);
+
+    typedef BOOL (CALLBACK EXPORT * TpInputFilterProc)(CSaString &);
     int m_nSelection;                   // selected segment
     EAnnotation m_nAnnotationIndex;
     int m_nMasterIndex;
 
-protected:
-    CStringArray m_Text;				// array of text strings
+    CStringArray m_Text;                // array of text strings
+
 private:
     CDWordArray m_Offset;               // array of offsets
     CDWordArray m_Duration;             // array of durations

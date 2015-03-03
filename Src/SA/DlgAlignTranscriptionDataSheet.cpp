@@ -13,18 +13,17 @@ IMPLEMENT_DYNAMIC(CDlgAlignTranscriptionDataSheet, CPropertySheet)
 
 CDlgAlignTranscriptionDataSheet::CDlgAlignTranscriptionDataSheet(CWnd * pParentWnd, CSaDoc * pSaDoc) :
     gloss(pSaDoc,GLOSS,IDD_ANNOTATION_GLOSS_PAGE),
-	glossNat(pSaDoc,GLOSS_NAT,IDD_ANNOTATION_GLOSS_NAT_PAGE),
+    glossNat(pSaDoc,GLOSS_NAT,IDD_ANNOTATION_GLOSS_NAT_PAGE),
     ortho(pSaDoc,ORTHO,IDD_ANNOTATION_ORTHOGRAPHIC_PAGE),
     phonemic(pSaDoc,PHONEMIC,IDD_ANNOTATION_PHONEMIC_PAGE),
     phonetic(pSaDoc,PHONETIC,IDD_ANNOTATION_PHONETIC_PAGE),
     import(pSaDoc),
     finish(pSaDoc),
-    CPropertySheet(IDS_AWIZ_CAPTION_ALIGN, pParentWnd, 0)
-{
+    CPropertySheet(IDS_AWIZ_CAPTION_ALIGN, pParentWnd, 0) {
     AddPage(&init);
     AddPage(&import);
     AddPage(&gloss);
-	AddPage(&glossNat);
+    AddPage(&glossNat);
     AddPage(&ortho);
     AddPage(&phonetic);
     AddPage(&phonemic);
@@ -33,15 +32,13 @@ CDlgAlignTranscriptionDataSheet::CDlgAlignTranscriptionDataSheet(CWnd * pParentW
     AddPage(&finish);
 }
 
-CDlgAlignTranscriptionDataSheet::~CDlgAlignTranscriptionDataSheet()
-{
+CDlgAlignTranscriptionDataSheet::~CDlgAlignTranscriptionDataSheet() {
 }
 
 BEGIN_MESSAGE_MAP(CDlgAlignTranscriptionDataSheet, CPropertySheet)
 END_MESSAGE_MAP()
 
-CTranscriptionDataSettings CDlgAlignTranscriptionDataSheet::GetSettings()
-{
+CTranscriptionDataSettings CDlgAlignTranscriptionDataSheet::GetSettings() {
     CTranscriptionDataSettings result;
 
     result.m_bUseReference = (init.m_bUseReference!=FALSE);
@@ -51,12 +48,9 @@ CTranscriptionDataSettings CDlgAlignTranscriptionDataSheet::GetSettings()
     result.m_bOrthographic = (init.m_bOrthographic!=FALSE);
     result.m_bGloss = (init.m_bGloss!=FALSE);
 
-    if (result.m_bUseReference)
-    {
+    if (result.m_bUseReference) {
         result.m_TranscriptionData = import.m_TranscriptionData;
-    }
-    else
-    {
+    } else {
         result.m_bPhoneticModified = phonetic.m_bModified;
         result.m_szPhonetic = phonetic.m_szText;
 
@@ -71,7 +65,7 @@ CTranscriptionDataSettings CDlgAlignTranscriptionDataSheet::GetSettings()
 
         result.m_bGlossNatModified = glossNat.m_bModified;
         result.m_szGlossNat = glossNat.m_szText;
-	}
+    }
 
     result.m_nAlignBy = align.m_nAlignBy;
     result.m_nSegmentBy = segment.m_nSegmentBy;
@@ -79,52 +73,40 @@ CTranscriptionDataSettings CDlgAlignTranscriptionDataSheet::GetSettings()
     return result;
 }
 
-BOOL CDlgAlignTranscriptionDataSheet::OnInitDialog()
-{
+BOOL CDlgAlignTranscriptionDataSheet::OnInitDialog() {
     BOOL bResult = CPropertySheet::OnInitDialog();
     SendMessage(DM_SETDEFID, PSBTN_NEXT);
     return bResult;
 }
 
-LRESULT CDlgAlignTranscriptionDataSheet::CalculateNext(int currentIDD)
-{
+LRESULT CDlgAlignTranscriptionDataSheet::CalculateNext(int currentIDD) {
 
-    if (init.m_bUseReference)
-    {
-        switch (currentIDD)
-        {
+    if (init.m_bUseReference) {
+        switch (currentIDD) {
         case IDD_ANNOTATION_INIT_PAGE:
             return import.IDD;
         }
         return finish.IDD;
-    }
-    else
-    {
-        switch (currentIDD)
-        {
+    } else {
+        switch (currentIDD) {
         case IDD_ANNOTATION_INIT_PAGE:
-            if (init.m_bPhonetic)
-            {
+            if (init.m_bPhonetic) {
                 return phonetic.IDD;
             }
         case IDD_ANNOTATION_PHONETIC_PAGE:
-            if (init.m_bPhonemic)
-            {
+            if (init.m_bPhonemic) {
                 return phonemic.IDD;
             }
         case IDD_ANNOTATION_PHONEMIC_PAGE:
-            if (init.m_bOrthographic)
-            {
+            if (init.m_bOrthographic) {
                 return ortho.IDD;
             }
         case IDD_ANNOTATION_ORTHOGRAPHIC_PAGE:
-            if (init.m_bGloss)
-            {
+            if (init.m_bGloss) {
                 return gloss.IDD;
             }
         case IDD_ANNOTATION_GLOSS_PAGE:
-            if (init.m_bGlossNat)
-            {
+            if (init.m_bGlossNat) {
                 return glossNat.IDD;
             }
         }
@@ -132,45 +114,34 @@ LRESULT CDlgAlignTranscriptionDataSheet::CalculateNext(int currentIDD)
     }
 }
 
-LRESULT CDlgAlignTranscriptionDataSheet::CalculateBack(int currentIDD)
-{
+LRESULT CDlgAlignTranscriptionDataSheet::CalculateBack(int currentIDD) {
 
-    if (init.m_bUseReference)
-    {
-        switch (currentIDD)
-        {
+    if (init.m_bUseReference) {
+        switch (currentIDD) {
         case IDD_ANNOTATION_FINISH_PAGE:
             return import.IDD;
         }
         return init.IDD;
-    }
-    else
-    {
-        switch (currentIDD)
-        {
+    } else {
+        switch (currentIDD) {
         case IDD_ANNOTATION_ALIGN_PAGE:
-            if (init.m_bGlossNat)
-            {
+            if (init.m_bGlossNat) {
                 return glossNat.IDD;
             }
         case IDD_ANNOTATION_GLOSS_NAT_PAGE:
-            if (init.m_bGloss)
-            {
+            if (init.m_bGloss) {
                 return gloss.IDD;
             }
         case IDD_ANNOTATION_GLOSS_PAGE:
-            if (init.m_bOrthographic)
-            {
+            if (init.m_bOrthographic) {
                 return ortho.IDD;
             }
         case IDD_ANNOTATION_ORTHOGRAPHIC_PAGE:
-            if (init.m_bPhonemic)
-            {
+            if (init.m_bPhonemic) {
                 return phonemic.IDD;
             }
         case IDD_ANNOTATION_PHONEMIC_PAGE:
-            if (init.m_bPhonetic)
-            {
+            if (init.m_bPhonetic) {
                 return phonetic.IDD;
             }
         }

@@ -3,8 +3,7 @@
 
 #include "SaString.h"
 
-class CExportLiftSettings
-{
+class CExportLiftSettings {
 public:
     BOOL bGloss;
     BOOL bGlossNat;
@@ -15,14 +14,14 @@ public:
     BOOL bPhrase;
 
     wstring gloss;
-	wstring glossNat;
+    wstring glossNat;
     wstring ortho;
     wstring phonemic;
     wstring phonetic;
     wstring reference;
     wstring phrase;
 
-	CString szDocTitle;
+    CString szDocTitle;
     CString szPath;
 };
 

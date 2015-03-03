@@ -30,8 +30,7 @@ class CMainFrame;
 class CSaDoc;
 class CSaView;
 
-class CDlgEditor : public CDialog
-{
+class CDlgEditor : public CDialog {
 public:
     CDlgEditor(CWnd * pParent=NULL);
 
@@ -43,7 +42,7 @@ public:
     void UpdateDialog();
     virtual BOOL PreTranslateMessage(MSG * pMsg);
     void OnHelpEdit();
-	void UpdatePlayer();
+    void UpdatePlayer();
 
     enum { IDD = IDD_EDITOR };
     CButton m_NextButton;
@@ -73,7 +72,7 @@ protected:
 
 private:
     BOOL IsDifferent(BOOL bUpdate);
-	void SetButtonState( int button1, int button2, bool playing);
+    void SetButtonState(int button1, int button2, bool playing);
 
     //Annotation Navigation Buttons
     //
@@ -93,8 +92,7 @@ private:
     BOOL bEditor;
 };
 
-class CDlgAnnotationEdit : public CDialog
-{
+class CDlgAnnotationEdit : public CDialog {
 public:
     CDlgAnnotationEdit(CWnd * pParent = NULL);
     BOOL Create(UINT nIDTemplate, CWnd * pParentWnd=NULL);
@@ -123,7 +121,7 @@ protected:
     virtual void OnOK();
     afx_msg void OnClose();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 private:
     CMainFrame * GetMainFrame() const;

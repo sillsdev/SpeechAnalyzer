@@ -311,7 +311,7 @@ CFragment::CFragment(SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLen
     m_dwMaxRange = 0;
     m_dwMaxRangeCrossing = 0;
     m_bUnvoiced = true;
-	m_dwFragBlockLength = 0;
+    m_dwFragBlockLength = 0;
 
 
 //  Since the output will be smoothed, the filtering operation may be expedited by

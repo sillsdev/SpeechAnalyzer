@@ -7,9 +7,8 @@
 
 using std::map;
 
-class CSAXMLUtils
-{
+class CSAXMLUtils {
 public:
-	static void WriteSAXML( LPCTSTR filename, Elan::CAnnotationDocument & document, ElanMap & assignments);
+    static void WriteSAXML(LPCTSTR filename, Elan::CAnnotationDocument & document, ElanMap & assignments);
 };
 

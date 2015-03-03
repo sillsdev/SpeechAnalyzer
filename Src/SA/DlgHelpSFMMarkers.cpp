@@ -9,16 +9,13 @@
 IMPLEMENT_DYNAMIC(CDlgHelpSFMMarkers, CDialog)
 
 CDlgHelpSFMMarkers::CDlgHelpSFMMarkers(CWnd * pParent /*=NULL*/)
-    : CDialog(CDlgHelpSFMMarkers::IDD, pParent)
-{
+    : CDialog(CDlgHelpSFMMarkers::IDD, pParent) {
 }
 
-CDlgHelpSFMMarkers::~CDlgHelpSFMMarkers()
-{
+CDlgHelpSFMMarkers::~CDlgHelpSFMMarkers() {
 }
 
-void CDlgHelpSFMMarkers::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgHelpSFMMarkers::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
 }
 

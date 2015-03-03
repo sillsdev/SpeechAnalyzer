@@ -827,8 +827,8 @@ CProcessAreaData::~CProcessAreaData() {
 
 BOOL CProcessAreaData::SetArea(CSaView * pView) {
     if (IsStatusFlag(KEEP_AREA)) {
-		// not a new area
-        return FALSE;    
+        // not a new area
+        return FALSE;
     }
 
     // get new area boundaries
@@ -860,12 +860,12 @@ void CProcessAreaData::UpdateArea() {
 
 // return area position
 DWORD CProcessAreaData::GetAreaPosition() {
-    return m_dwAreaPos;   
+    return m_dwAreaPos;
 }
 
 // return area length
 DWORD CProcessAreaData::GetAreaLength() {
-    return m_dwAreaLength;   
+    return m_dwAreaLength;
 }
 
 long CProcess::GetStatus() const {
@@ -874,17 +874,17 @@ long CProcess::GetStatus() const {
 
 // cancel current process
 void CProcess::CancelProcess() {
-    SetStatusFlag(PROCESS_CANCEL);   
+    SetStatusFlag(PROCESS_CANCEL);
 }
 
 // restart current process
 void CProcess::RestartProcess() {
-    SetStatusFlag(PROCESS_CANCEL, FALSE);   
+    SetStatusFlag(PROCESS_CANCEL, FALSE);
 }
 
 // return the process canceled flag
 BOOL CProcess::IsCanceled() const {
-    return IsStatusFlag(PROCESS_CANCEL);   
+    return IsStatusFlag(PROCESS_CANCEL);
 }
 
 BOOL CProcess::IsDataReady() const {
@@ -901,7 +901,7 @@ void CProcess::SetDataInvalid() {
 // effectively return the number of samples
 // return processed data size in words (16 bit)
 DWORD CProcess::GetDataSize() const {
-    
+
     return GetDataSize(2);
 }
 
@@ -917,12 +917,12 @@ DWORD CProcess::GetDataSize(size_t nElementSize) const {
 
 // return maximum value
 int CProcess::GetMaxValue() const {
-    return m_nMaxValue;   
+    return m_nMaxValue;
 }
 
 // return minimum value
 int CProcess::GetMinValue() const {
-    return m_nMinValue;   
+    return m_nMinValue;
 }
 
 long CProcess::IsStatusFlag(long nStatus) const {
@@ -931,13 +931,13 @@ long CProcess::IsStatusFlag(long nStatus) const {
 
 // return TRUE if process is idle
 BOOL CProcess::IsIdle() const {
-    return (IsStatusFlag(PROCESS_IDLE) != 0);   
+    return (IsStatusFlag(PROCESS_IDLE) != 0);
 }
 
 // return TRUE if processed data is aliased
 BOOL CProcess::IsAliased() const {
     return (IsStatusFlag(DATA_ALIASED) != 0);
-}; 
+};
 
 // provides implementation for IProcess interface.
 // return processed wave source data size
@@ -957,7 +957,7 @@ DWORD CProcess::GetProcessBufferIndex(size_t nSize) {
 
 // return process buffer size
 DWORD CProcess::GetProcessBufferSize() {
-    return m_dwBufferSize;   
+    return m_dwBufferSize;
 }
 
 void CProcess::SetProcessBufferSize(DWORD dwSize) {
@@ -966,12 +966,12 @@ void CProcess::SetProcessBufferSize(DWORD dwSize) {
 
 // return process temporary file path and name
 LPCTSTR CProcess::GetProcessFileName() {
-    return m_fileStatus.m_szFullName;   
+    return m_fileStatus.m_szFullName;
 }
 
 // delete the temporary file name
 void CProcess::DeleteProcessFileName() {
-    m_fileStatus.m_szFullName[0] = 0;   
+    m_fileStatus.m_szFullName[0] = 0;
 }
 
 void CProcess::SetStatusFlag(long nStatus, BOOL bValue) {

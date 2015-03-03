@@ -14,8 +14,7 @@
 #ifndef _SA_CDIB_
 #define _SA_CDIB_
 
-class CDib : public CObject
-{
+class CDib : public CObject {
     DECLARE_SERIAL(CDib)
 
 public:

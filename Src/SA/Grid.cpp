@@ -9,8 +9,7 @@ static LPCSTR psz_ygrid   = "ygrid";
 static LPCSTR psz_xstyle = "xstyle";
 static LPCSTR psz_ystyle = "ystyle";
 
-void CGrid::WriteProperties(CObjectOStream & obs)
-{
+void CGrid::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_grid);
     obs.WriteNewline();
 
@@ -23,21 +22,17 @@ void CGrid::WriteProperties(CObjectOStream & obs)
     obs.WriteEndMarker(psz_grid);
 }
 
-BOOL CGrid::ReadProperties(CObjectIStream & obs)
-{
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_grid))
-    {
+BOOL CGrid::ReadProperties(CObjectIStream & obs) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_grid)) {
         return FALSE;
     }
 
-    while (!obs.bAtEnd())
-    {
+    while (!obs.bAtEnd()) {
         if (obs.bReadBool(psz_xgrid, bXGrid));
         else if (obs.bReadBool(psz_ygrid, bYGrid));
         else if (obs.bReadInteger(psz_xstyle, nXStyle));
         else if (obs.bReadInteger(psz_ystyle, nYStyle));
-        else if (obs.bEnd(psz_grid))
-        {
+        else if (obs.bEnd(psz_grid)) {
             break;
         }
     }
@@ -46,8 +41,7 @@ BOOL CGrid::ReadProperties(CObjectIStream & obs)
 }
 
 
-void CGrid::Init()
-{
+void CGrid::Init() {
     // init the gridlines
     bXGrid  = TRUE; // x-grid enabled
     bYGrid  = TRUE; // y-grid enabled

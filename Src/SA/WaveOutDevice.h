@@ -13,8 +13,7 @@ class CPlayMixer;
 
 //###########################################################################
 // CWaveOutDevice
-class CWaveOutDevice : public CWnd
-{
+class CWaveOutDevice : public CWnd {
 
 public:
     CWaveOutDevice();

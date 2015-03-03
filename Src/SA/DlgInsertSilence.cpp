@@ -16,7 +16,7 @@ CDlgInsertSilence::CDlgInsertSilence(CSaDoc * pDoc, CWnd * pParent /*=NULL*/) :
     MIN_NUM_VALUE(0.01),
     MAX_NUM_VALUE(2.00),
     repetitions(0),
-	silence(0.05) {
+    silence(0.05) {
 }
 
 CDlgInsertSilence::~CDlgInsertSilence() {

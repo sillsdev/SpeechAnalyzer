@@ -1,8 +1,7 @@
 #ifndef ARCHIVE_TRANSFER_H
 #define ARCHIVE_TRANSFER_H
 
-class CArchiveTransfer
-{
+class CArchiveTransfer {
 public:
     static int tInt(CArchive & ar, int x=0);
     static short int tShortInt(CArchive & ar, short int x=0);

@@ -3,33 +3,32 @@
 
 // CDlgSelectTranscriptionBars dialog
 
-class CDlgSelectTranscriptionBars : public CDialog
-{
-	DECLARE_DYNAMIC(CDlgSelectTranscriptionBars)
+class CDlgSelectTranscriptionBars : public CDialog {
+    DECLARE_DYNAMIC(CDlgSelectTranscriptionBars)
 
 public:
-	CDlgSelectTranscriptionBars(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CDlgSelectTranscriptionBars();
+    CDlgSelectTranscriptionBars(CWnd * pParent = NULL);  // standard constructor
+    virtual ~CDlgSelectTranscriptionBars();
 
-	// Dialog Data
-	enum { IDD = IDD_SELECT_TRANSCRIPTION_BARS };
+    // Dialog Data
+    enum { IDD = IDD_SELECT_TRANSCRIPTION_BARS };
 
-	BOOL bReference;
-	BOOL bPhonetic;
-	BOOL bTone;
-	BOOL bPhonemic;
-	BOOL bOrthographic;
-	BOOL bGloss;
-	BOOL bGlossNat;
-	BOOL bPhraseList1;
-	BOOL bPhraseList2;
-	BOOL bPhraseList3;
-	BOOL bPhraseList4;
+    BOOL bReference;
+    BOOL bPhonetic;
+    BOOL bTone;
+    BOOL bPhonemic;
+    BOOL bOrthographic;
+    BOOL bGloss;
+    BOOL bGlossNat;
+    BOOL bPhraseList1;
+    BOOL bPhraseList2;
+    BOOL bPhraseList3;
+    BOOL bPhraseList4;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif

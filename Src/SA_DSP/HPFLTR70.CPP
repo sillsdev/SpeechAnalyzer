@@ -203,8 +203,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-char * CHighPassFilter70::Copyright(void)
-{
+char * CHighPassFilter70::Copyright(void) {
     static char Notice[] = {"Highpass Filter Version " VERSION_NUMBER "\n"
                             "Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. "
                             "All rights reserved.\n"
@@ -215,8 +214,7 @@ char * CHighPassFilter70::Copyright(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return version of class.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-float CHighPassFilter70::Version(void)
-{
+float CHighPassFilter70::Version(void) {
     return((float)atof(VERSION_NUMBER));
 }
 
@@ -226,25 +224,21 @@ float CHighPassFilter70::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to construct filter object if parameters are valid.                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CHighPassFilter70::CreateObject(CHighPassFilter70 ** ppoHPFilter, uint32 wSmpRate)
-{
-	// Validate parameters passed.
-    if (!ppoHPFilter)
-    {
+dspError_t CHighPassFilter70::CreateObject(CHighPassFilter70 ** ppoHPFilter, uint32 wSmpRate) {
+    // Validate parameters passed.
+    if (!ppoHPFilter) {
         return(Code(INVALID_PARM_PTR));    //address of pointer to filter object
     }
     //  must not be NULL
     *ppoHPFilter = NULL;
     dspError_t Err = ValidateSignalParms(wSmpRate);       //check signal parameter
-    if (Err)
-    {
+    if (Err) {
         return(Err);
     }
 
 // Construct filter object.
     *ppoHPFilter = new CHighPassFilter70(wSmpRate);
-    if (!*ppoHPFilter)
-    {
+    if (!*ppoHPFilter) {
         return(Code(OUT_OF_MEMORY));
     }
 
@@ -255,14 +249,12 @@ dspError_t CHighPassFilter70::CreateObject(CHighPassFilter70 ** ppoHPFilter, uin
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate signal parameters.                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CHighPassFilter70::ValidateSignalParms( uint16 wSmpRate)
-{
-    if ((wSmpRate != 11025) && 
-		(wSmpRate != 16000) && 
-		(wSmpRate != 22050) &&
-        (wSmpRate != 44100) && 
-		(wSmpRate != 48000))
-    {
+dspError_t CHighPassFilter70::ValidateSignalParms(uint16 wSmpRate) {
+    if ((wSmpRate != 11025) &&
+            (wSmpRate != 16000) &&
+            (wSmpRate != 22050) &&
+            (wSmpRate != 44100) &&
+            (wSmpRate != 48000)) {
         return(Code(UNSUPP_SMP_RATE));    //  valid Microsoft Windows frequencies
     }
 
@@ -327,8 +319,7 @@ dspError_t CHighPassFilter70::ValidateSignalParms( uint16 wSmpRate)
 /* same time maximizing precision.                                                     */
 
 
-CHighPassFilter70::CHighPassFilter70(uint32 wSmpRate)
-{
+CHighPassFilter70::CHighPassFilter70(uint32 wSmpRate) {
 
 // Set filter coefficients and gain for the specified sampling frequency.
     SetFilterParms(wSmpRate);
@@ -345,12 +336,10 @@ CHighPassFilter70::CHighPassFilter70(uint32 wSmpRate)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to set filter coefficients and gain.                               //
 ////////////////////////////////////////////////////////////////////////////////////////
-void CHighPassFilter70::SetFilterParms(uint32 wSmpRate)
-{
-    switch (wSmpRate)
-    {
-										// for 2.30 format, scaling factor s = pow(2.,30)
-    case 11025:							// 70 Hz cut-in high pass at 11025 Hz sampling rate
+void CHighPassFilter70::SetFilterParms(uint32 wSmpRate) {
+    switch (wSmpRate) {
+        // for 2.30 format, scaling factor s = pow(2.,30)
+    case 11025:                         // 70 Hz cut-in high pass at 11025 Hz sampling rate
         m_b11 =  2101293491;            // (int32)Round(-C11025[1][1]*s);
         m_b12 = -1028586461;            // (int32)Round(-C11025[2][1]*s);
         m_f11 = -2147417569;            // (int32)Round(C11025[1][0]/C11025[0][0]*s);
@@ -358,7 +347,7 @@ void CHighPassFilter70::SetFilterParms(uint32 wSmpRate)
         m_g   =  1050921613;            // (int32)Round(C11025[0][0]*s);
         break;
 
-    case 16000:							// 70 Hz cut-in high pass at 16000 Hz sampling rate
+    case 16000:                         // 70 Hz cut-in high pass at 16000 Hz sampling rate
         m_b11 =  2115665567;            // (int32)Round(-C16000[1][1]*s);
         m_b12 = -1042418362;            // (int32)Round(-C16000[2][1]*s);
         m_f11 = -2147452273;            // (int32)Round(C16000[1][0]/C16000[0][0]*s);
@@ -366,7 +355,7 @@ void CHighPassFilter70::SetFilterParms(uint32 wSmpRate)
         m_g   =  1057964167;            // (int32)Round(C16000[0][0]*s);
         break;
 
-    case 22050:							// 70 Hz cut-in high pass at 22050 Hz sampling rate
+    case 22050:                         // 70 Hz cut-in high pass at 22050 Hz sampling rate
         m_b11 =  2124400588;            // (int32)Round(-C22050[1][1]*s);
         m_b12 = -1050920255;            // (int32)Round(-C22050[2][1]*s);
         m_f11 = -2147467128;            // (int32)Round(C22050[1][0]/C22050[0][0]*s);
@@ -374,7 +363,7 @@ void CHighPassFilter70::SetFilterParms(uint32 wSmpRate)
         m_g   =  1062269752;            // (int32)Round(C22050[0][0]*s);
         break;
 
-    case 44100:							// 70 Hz cut-in high pass at 44100 Hz sampling rate
+    case 44100:                         // 70 Hz cut-in high pass at 44100 Hz sampling rate
         m_b11 =  2135945678;            // (int32)Round(-C44100[1][1]*s);
         m_b12 = -1062269579;            // (int32)Round(-C44100[2][1]*s);
         m_f11 = -2147479518;            // (int32)Round(C44100[1][0]/C44100[0][0]*s);
@@ -382,7 +371,7 @@ void CHighPassFilter70::SetFilterParms(uint32 wSmpRate)
         m_g   =  1067990297;            // (int32)Round(C44100[0][0]*s);
         break;
 
-    case 48000:							// 70 Hz cut-in high pass at 48000 Hz sampling rate
+    case 48000:                         // 70 Hz cut-in high pass at 48000 Hz sampling rate
         m_b11 =  2136883419;            // (int32)Round(-C48000[1][1]*s);
         m_b12 = -1063197098;            // (int32)Round(-C48000[2][1]*s);
         m_f11 = -2147480162;            // (int32)Round(C48000[1][0]/C48000[0][0]*s);
@@ -394,19 +383,16 @@ void CHighPassFilter70::SetFilterParms(uint32 wSmpRate)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Filter object destructor.                                                          //
 ////////////////////////////////////////////////////////////////////////////////////////
-CHighPassFilter70::~CHighPassFilter70()
-{
+CHighPassFilter70::~CHighPassFilter70() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to highpass filter sample data in waveform buffer.                 //
 ////////////////////////////////////////////////////////////////////////////////////////
 #pragma optimize( "", off  )
-dspError_t CHighPassFilter70::Filter(uint8 * pProcessBuffer, uint32 dwProcessLength)
-{
+dspError_t CHighPassFilter70::Filter(uint8 * pProcessBuffer, uint32 dwProcessLength) {
     dspError_t Err = ForwardPass(pProcessBuffer, dwProcessLength);
-    if (Err)
-    {
+    if (Err) {
         return(Err);
     }
 
@@ -415,8 +401,7 @@ dspError_t CHighPassFilter70::Filter(uint8 * pProcessBuffer, uint32 dwProcessLen
 #else
     Err = BackwardPass(pProcessBuffer, dwProcessLength);
 #endif
-    if (Err)
-    {
+    if (Err) {
         return(Err);
     }
 
@@ -424,11 +409,9 @@ dspError_t CHighPassFilter70::Filter(uint8 * pProcessBuffer, uint32 dwProcessLen
 }
 
 
-dspError_t CHighPassFilter70::Filter(short * pProcessBuffer, uint32 dwProcessLength)
-{
+dspError_t CHighPassFilter70::Filter(short * pProcessBuffer, uint32 dwProcessLength) {
     dspError_t Err = ForwardPass(pProcessBuffer, dwProcessLength);
-    if (Err)
-    {
+    if (Err) {
         return(Err);
     }
 
@@ -437,8 +420,7 @@ dspError_t CHighPassFilter70::Filter(short * pProcessBuffer, uint32 dwProcessLen
 #else
     Err = BackwardPass(pProcessBuffer, dwProcessLength);
 #endif
-    if (Err)
-    {
+    if (Err) {
         return(Err);
     }
 
@@ -468,21 +450,17 @@ dspError_t CHighPassFilter70::Filter(short * pProcessBuffer, uint32 dwProcessLen
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to perform forward-in-time high pass filtering on data in buffer.  //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CHighPassFilter70::ForwardPass(uint8 * pProcessBuffer, uint32 dwProcessLength)
-{
+dspError_t CHighPassFilter70::ForwardPass(uint8 * pProcessBuffer, uint32 dwProcessLength) {
     /* Validate parameters.                                                                */
-    if (!pProcessBuffer)
-    {
+    if (!pProcessBuffer) {
         return(Code(INVALID_SIG_DATA_PTR));
     }
-    if (!dwProcessLength)
-    {
+    if (!dwProcessLength) {
         return(Code(INVALID_SIG_LEN));
     }
 
     /* If first call, clear object internal registers.                                     */
-    if (m_bFirstForwardPass)
-    {
+    if (m_bFirstForwardPass) {
         m_r11H = 0;
         m_r11L = 0;
         m_r12H = 0;
@@ -511,10 +489,8 @@ dspError_t CHighPassFilter70::ForwardPass(uint8 * pProcessBuffer, uint32 dwProce
     Workspace.pStart = (uint8 *)pProcessBuffer;
     Workspace.pEnd = Workspace.pStart + dwProcessLength - 1;
 
-    for (Workspace.pSig = Workspace.pStart; Workspace.pSig <= Workspace.pEnd; Workspace.pSig++)
-    {
-        __asm
-        {
+    for (Workspace.pSig = Workspace.pStart; Workspace.pSig <= Workspace.pEnd; Workspace.pSig++) {
+        __asm {
 
 //      Calculate r10.
             mov ebx, DWORD PTR [PSIG]    // load pointer to signal sample
@@ -604,21 +580,17 @@ dspError_t CHighPassFilter70::ForwardPass(uint8 * pProcessBuffer, uint32 dwProce
 }
 
 
-dspError_t CHighPassFilter70::ForwardPass(short * pProcessBuffer, uint32 dwProcessLength)
-{
+dspError_t CHighPassFilter70::ForwardPass(short * pProcessBuffer, uint32 dwProcessLength) {
     /* Validate parameters.                                                               */
-    if (!pProcessBuffer)
-    {
+    if (!pProcessBuffer) {
         return(Code(INVALID_SIG_DATA_PTR));
     }
-    if (!dwProcessLength)
-    {
+    if (!dwProcessLength) {
         return(Code(INVALID_SIG_LEN));
     }
 
     /* If first call, clear object internal registers.                                     */
-    if (m_bFirstForwardPass)
-    {
+    if (m_bFirstForwardPass) {
         m_r11H = 0;
         m_r11L = 0;
         m_r12H = 0;
@@ -647,10 +619,8 @@ dspError_t CHighPassFilter70::ForwardPass(short * pProcessBuffer, uint32 dwProce
     Workspace.pStart = (uint8 *)pProcessBuffer;
     Workspace.pEnd = Workspace.pStart + dwProcessLength*2 - 2;
 
-    for (Workspace.pSig = Workspace.pStart; Workspace.pSig <= Workspace.pEnd; Workspace.pSig += 2)
-    {
-        __asm
-        {
+    for (Workspace.pSig = Workspace.pStart; Workspace.pSig <= Workspace.pEnd; Workspace.pSig += 2) {
+        __asm {
 //      Calculate r10.
             mov ebx, DWORD PTR [PSIG]    // load pointer to signal sample
             movsx eax, WORD PTR [ebx]    // get signal sample
@@ -748,18 +718,15 @@ dspError_t CHighPassFilter70::BackwardPass(uint8 * pProcessBuffer, uint32 dwProc
 #endif
 {
     /* Validate parameters.                                                                */
-    if (!pProcessBuffer)
-    {
+    if (!pProcessBuffer) {
         return(Code(INVALID_SIG_DATA_PTR));
     }
-    if (!dwProcessLength)
-    {
+    if (!dwProcessLength) {
         return(Code(INVALID_SIG_LEN));
     }
 
     /* If first call, clear object internal registers.                                     */
-    if (m_bFirstBackwardPass)
-    {
+    if (m_bFirstBackwardPass) {
         m_r11H = 0;
         m_r11L = 0;
         m_r12H = 0;
@@ -788,10 +755,8 @@ dspError_t CHighPassFilter70::BackwardPass(uint8 * pProcessBuffer, uint32 dwProc
     Workspace.pStart = (uint8 *)pProcessBuffer;
     Workspace.pEnd = Workspace.pStart + dwProcessLength - 1;
 
-    for (Workspace.pSig = Workspace.pEnd; Workspace.pSig >= Workspace.pStart; Workspace.pSig--)
-    {
-        __asm
-        {
+    for (Workspace.pSig = Workspace.pEnd; Workspace.pSig >= Workspace.pStart; Workspace.pSig--) {
+        __asm {
 
 //      Calculate r10.
             mov ebx, DWORD PTR [PSIG]    // load pointer to signal sample
@@ -888,18 +853,15 @@ dspError_t CHighPassFilter70::BackwardPass(short * pProcessBuffer, uint32 dwProc
 #endif
 {
     /* Validate parameters.                                                                */
-    if (!pProcessBuffer)
-    {
+    if (!pProcessBuffer) {
         return(Code(INVALID_SIG_DATA_PTR));
     }
-    if (!dwProcessLength)
-    {
+    if (!dwProcessLength) {
         return(Code(INVALID_SIG_LEN));
     }
 
     /* If first call, clear object internal registers.                                     */
-    if (m_bFirstBackwardPass)
-    {
+    if (m_bFirstBackwardPass) {
         m_r11H = 0;
         m_r11L = 0;
         m_r12H = 0;
@@ -928,10 +890,8 @@ dspError_t CHighPassFilter70::BackwardPass(short * pProcessBuffer, uint32 dwProc
     Workspace.pStart = (uint8 *)pProcessBuffer;
     Workspace.pEnd = Workspace.pStart + dwProcessLength*2 - 2;
 
-    for (Workspace.pSig = Workspace.pEnd; Workspace.pSig >= Workspace.pStart; Workspace.pSig -= 2)
-    {
-        __asm
-        {
+    for (Workspace.pSig = Workspace.pEnd; Workspace.pSig >= Workspace.pStart; Workspace.pSig -= 2) {
+        __asm {
 
 //      Calculate r10.
             mov ebx, DWORD PTR [PSIG]    // load pointer to signal sample
@@ -1035,46 +995,35 @@ dspError_t CHighPassFilter70::BackwardPass(short * pProcessBuffer, uint32 dwProc
 #include <math.h>
 #include "mathx.h"
 
-dspError_t CHighPassFilter70::BackwardPass(uint8 * pProcessBuffer, uint32 dwProcessLength)
-{
-    if (m_bFirstTestPass)
-    {
+dspError_t CHighPassFilter70::BackwardPass(uint8 * pProcessBuffer, uint32 dwProcessLength) {
+    if (m_bFirstTestPass) {
         GenTestSuite((void *)pProcessBuffer, dwProcessLength, sizeof(uint8));
-    }
-    else
-    {
+    } else {
         DoBackwardPass((uint8 *)pProcessBuffer, dwProcessLength);
         m_bFirstTestPass = false;
     }
     return(DONE);
 }
 
-dspError_t CHighPassFilter70::BackwardPass(short * pProcessBuffer, uint32 dwProcessLength)
-{
-    if (m_bFirstTestPass)
-    {
+dspError_t CHighPassFilter70::BackwardPass(short * pProcessBuffer, uint32 dwProcessLength) {
+    if (m_bFirstTestPass) {
         GenTestSuite((void *)pProcessBuffer, dwProcessLength, sizeof(short));
-    }
-    else
-    {
+    } else {
         DoBackwardPass((short *)pProcessBuffer, dwProcessLength);
         m_bFirstTestPass = false;
     }
     return DONE;
 }
 
-void CHighPassFilter70::GenTestSuite(void * pProcessBuffer, uint32 dwProcessLength, uint16 wSmpSize)
-{
-	uint32 wSmpRate[5] = { 11025, 16000, 22050, 44100, 48000, 96000};
+void CHighPassFilter70::GenTestSuite(void * pProcessBuffer, uint32 dwProcessLength, uint16 wSmpSize) {
+    uint32 wSmpRate[5] = { 11025, 16000, 22050, 44100, 48000, 96000};
     uint16 wSigFreq[3] = { 7, 70, 700};
     char FileName[13];
     FILE * FltrOut;
 
     uint32 dwBfrSize = dwProcessLength * wSmpSize;
-    for (uint16 i = 0; i < sizeof(wSmpRate)/sizeof(wSmpRate[0]); i++)
-    {
-        for (uint16 j = 0; j < sizeof(wSigFreq)/sizeof(wSigFreq[0]); j++)
-        {
+    for (uint16 i = 0; i < sizeof(wSmpRate)/sizeof(wSmpRate[0]); i++) {
+        for (uint16 j = 0; j < sizeof(wSigFreq)/sizeof(wSigFreq[0]); j++) {
             // Test 8 bit unsigned sample data.
             uint32 dwSineLength = dwBfrSize / sizeof(uint8);
 
@@ -1087,8 +1036,7 @@ void CHighPassFilter70::GenTestSuite(void * pProcessBuffer, uint32 dwProcessLeng
             SetFilterParms(wSmpRate[i]);
             Filter((uint8 *)pProcessBuffer, dwSineLength);
 
-            for (n = 0; n < dwSineLength; n++)
-            {
+            for (n = 0; n < dwSineLength; n++) {
                 fprintf(FltrOut, "%d ", (short)((uint8 *)pProcessBuffer)[n]);
             }
 
@@ -1109,8 +1057,7 @@ void CHighPassFilter70::GenTestSuite(void * pProcessBuffer, uint32 dwProcessLeng
             SetFilterParms(wSmpRate[i]);
             Filter((short *)pProcessBuffer, dwSineLength);
 
-            for (n = 0; n < dwSineLength; n++)
-            {
+            for (n = 0; n < dwSineLength; n++) {
                 fprintf(FltrOut, "%d ", ((short *)pProcessBuffer)[n]);
             }
 
@@ -1121,12 +1068,10 @@ void CHighPassFilter70::GenTestSuite(void * pProcessBuffer, uint32 dwProcessLeng
 
 #endif
 
-short CHighPassFilter70::GetBlockMin()
-{
+short CHighPassFilter70::GetBlockMin() {
     return m_nBlockMin;
 }
 
-short CHighPassFilter70::GetBlockMax()
-{
+short CHighPassFilter70::GetBlockMax() {
     return m_nBlockMax;
 }

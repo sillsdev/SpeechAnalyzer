@@ -26,15 +26,13 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessGlottis::CProcessGlottis Constructor
 /***************************************************************************/
-CProcessGlottis::CProcessGlottis()
-{
+CProcessGlottis::CProcessGlottis() {
 }
 
 /***************************************************************************/
 // CProcessGlottis::~CProcessGlottis Destructor
 /***************************************************************************/
-CProcessGlottis::~CProcessGlottis()
-{
+CProcessGlottis::~CProcessGlottis() {
 }
 
 
@@ -53,31 +51,26 @@ CProcessGlottis::~CProcessGlottis()
 /***************************************************************************/
 #include "lpc.h"
 
-long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
-{
+long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
 
     //TRACE(_T("Process: CProcessGlottis\n"));
-    if (IsCanceled())
-    {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady())
-    {
+    if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
 
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller))   // memory allocation failed
-    {
+    if (!StartProcess(pCaller)) { // memory allocation failed
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
-    if (!CreateTempFile(_T("GLO")))   // creating error
-    {
+    if (!CreateTempFile(_T("GLO"))) { // creating error
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -99,20 +92,17 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int 
     SLPCModel * pLpcModel;
     dspError_t Err;
 
-    if (wSmpSize == 1)
-    {
-        Signal.SmpDataFmt = PCM_UBYTE;			//unsigned 8-bit
-    }
-    else if (wSmpSize == 2)
-    {
-        Signal.SmpDataFmt = PCM_2SSHORT;		//2's complement 16 bit
+    if (wSmpSize == 1) {
+        Signal.SmpDataFmt = PCM_UBYTE;          //unsigned 8-bit
+    } else if (wSmpSize == 2) {
+        Signal.SmpDataFmt = PCM_2SSHORT;        //2's complement 16 bit
     }
     Signal.SmpRate = pDoc->GetSamplesPerSec();  //set sample rate
-    DWORD dwBufferSize = GetBufferSize();		// data buffer size
+    DWORD dwBufferSize = GetBufferSize();       // data buffer size
     Signal.Length = dwBufferSize / wSmpSize;
     LpcSetting.Process.Flags = PRE_EMPHASIS | REFL_COEFF | PRED_COEFF | MEAN_SQ_ERR | RESIDUAL ;
     LpcSetting.nMethod = LPC_COVAR_LATTICE;     //use covariance LPC analysis
-    LpcSetting.nMethod = LPC_AUTOCOR;			//use autocorrelation LPC analysis
+    LpcSetting.nMethod = LPC_AUTOCOR;           //use autocorrelation LPC analysis
     LpcSetting.nOrder = (uint8)(Signal.SmpRate/1000 + 4);  //rule-of-thumb from Markel and Gray
     //!!order for unvoiced speech?
     LpcSetting.nOrder = 44;  // sufficient for modeling unvoiced speech
@@ -127,21 +117,17 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int 
 
     //!!assumes PCM_READ_BUFFER greater than predictor delay
     int nLeadPadding = LpcSetting.nOrder;
-    for (unsigned short i = 0; i < nLeadPadding; i++)
-    {
+    for (unsigned short i = 0; i < nLeadPadding; i++) {
         *pProcData++ = 0;    //pad output to account for predictor delay
         //*pProcData++ = (short)((unsigned char)pFrame[i]-128);
         dwProcDataCount++;
     }
 
-    for (DWORD dwWaveOffset = 0; dwWaveOffset <= dwLastOffset; dwWaveOffset += dwFrameInterval)
-    {
-        if (dwWaveOffset == 0)
-        {
+    for (DWORD dwWaveOffset = 0; dwWaveOffset <= dwLastOffset; dwWaveOffset += dwFrameInterval) {
+        if (dwWaveOffset == 0) {
             dwBlockStart = dwWaveOffset;
             pBlockStart = pDoc->GetWaveData(dwBlockStart, TRUE); // get pointer to data block
-            if (!pBlockStart)   // reading failed
-            {
+            if (!pBlockStart) { // reading failed
                 EndProcess(); // end data processing
                 EndWaitCursor();
                 SetDataInvalid();
@@ -150,14 +136,11 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int 
             Signal.Start = pBlockStart;
             Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, Signal);
             pFrame = pBlockStart;
-        }
-        else if (dwWaveOffset + dwFrameSize + wSmpSize > dwBlockStart + dwBufferSize)
-        {
+        } else if (dwWaveOffset + dwFrameSize + wSmpSize > dwBlockStart + dwBufferSize) {
             dwBlockStart = dwWaveOffset - wSmpSize;
             pBlockStart = pDoc->GetWaveData(dwBlockStart, TRUE); // get pointer to data block
 
-            if (!pBlockStart)   // reading failed
-            {
+            if (!pBlockStart) { // reading failed
                 EndProcess(); // end data processing
                 EndWaitCursor();
                 SetDataInvalid();
@@ -167,8 +150,7 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int 
         }
 
         Err = pLpcObject->GetLpcModel(&pLpcModel, (void *)pFrame);
-        for (int i = 0; i < nFrameIntervalSamples; i++)
-        {
+        for (int i = 0; i < nFrameIntervalSamples; i++) {
             //dwSum += pLpcModel->pResidual[i];
             //*pProcData++ = dwSum;
             //*pProcData = PrevData + pLpcModel->pResidual[i];
@@ -179,23 +161,18 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int 
 
             // set progress bar
             SetProgress(nProgress + (int)(100 * dwWaveOffset / dwWaveSize / (DWORD)nLevel));
-            if (IsCanceled())
-            {
+            if (IsCanceled()) {
                 EndProcess(); // end data processing
                 EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(PROCESS_CANCELED, nProgress);
             }
             if ((dwProcDataCount >= dwBufferSize / 2) ||
-                    (dwWaveOffset == dwLastOffset && (i+1) == pLpcModel->nResiduals))   // processed data buffer is full or processing finished
-            {
+                    (dwWaveOffset == dwLastOffset && (i+1) == pLpcModel->nResiduals)) { // processed data buffer is full or processing finished
                 // write the processed data block
-                try
-                {
+                try {
                     Write(m_lpBuffer, (UINT)dwProcDataCount * 2);
-                }
-                catch (CFileException e)
-                {
+                } catch (CFileException e) {
                     AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0); // display message
                     EndProcess(); // end data processing
                     EndWaitCursor();
@@ -209,25 +186,19 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int 
         }
         pFrame += dwFrameInterval;
     }
-    if (pLpcObject)
-    {
+    if (pLpcObject) {
         delete pLpcObject;
     }
 
     int nTrailPadding = (dwWaveSize - dwLastOffset - dwFrameInterval)/wSmpSize - nLeadPadding;
-    for (int i = 0; i < nTrailPadding; i++)
-    {
+    for (int i = 0; i < nTrailPadding; i++) {
         *pProcData++ = 0;    //pad output to account for predictor delay
         dwProcDataCount++;
     }
-    if (dwProcDataCount)
-    {
-        try
-        {
+    if (dwProcDataCount) {
+        try {
             Write(m_lpBuffer, (UINT)dwProcDataCount * 2);
-        }
-        catch (CFileException e)
-        {
+        } catch (CFileException e) {
             AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0); // display message
             EndProcess(); // end data processing
             EndWaitCursor();

@@ -28,8 +28,7 @@
 //###########################################################################
 // CDlgParametersRawdataPage property page
 
-class CDlgParametersRawdataPage : public CPropertyPage
-{
+class CDlgParametersRawdataPage : public CPropertyPage {
 
     // Construction/destruction/creation
 public:
@@ -55,8 +54,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 };
 
-class CDlgParametersPitchPage : public CPropertyPage
-{
+class CDlgParametersPitchPage : public CPropertyPage {
 
 public:
     CDlgParametersPitchPage(); // standard constructor
@@ -131,8 +129,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 };
 
-class CDlgParametersSpectroPage : public CPropertyPage
-{
+class CDlgParametersSpectroPage : public CPropertyPage {
     DECLARE_DYNAMIC(CDlgParametersSpectroPage)
 
 public:
@@ -198,8 +195,7 @@ protected:
 //###########################################################################
 // CDlgParametersSpectrumPage property page
 
-class CDlgParametersSpectrumPage : public CPropertyPage
-{
+class CDlgParametersSpectrumPage : public CPropertyPage {
 
     // Construction/destruction/creation
 public:
@@ -267,8 +263,7 @@ protected:
 //###########################################################################
 // CDlgParametersFormantsPage property page
 
-class CDlgParametersFormantsPage : public CPropertyPage
-{
+class CDlgParametersFormantsPage : public CPropertyPage {
 
     // Construction/destruction/creation
 public:
@@ -311,8 +306,7 @@ protected:
 //###########################################################################
 // CDlgParametersSDPPage property page
 
-class CDlgParametersSDPPage : public CPropertyPage
-{
+class CDlgParametersSDPPage : public CPropertyPage {
 
     // Construction/destruction/creation
 public:
@@ -358,8 +352,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersMusicPage dialog
 
-class CDlgParametersMusicPage : public CPropertyPage
-{
+class CDlgParametersMusicPage : public CPropertyPage {
     // Construction
 public:
     CDlgParametersMusicPage();  // standard constructor
@@ -417,8 +410,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersIntensityPage dialog
 
-class CDlgParametersIntensityPage : public CPropertyPage
-{
+class CDlgParametersIntensityPage : public CPropertyPage {
     // Construction
 public:
     CDlgParametersIntensityPage();
@@ -455,8 +447,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersResearchPage dialog
 
-class CDlgParametersResearchPage : public CPropertyPage
-{
+class CDlgParametersResearchPage : public CPropertyPage {
     DECLARE_DYNCREATE(CDlgParametersResearchPage)
 
     // Construction
@@ -498,8 +489,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersFormantTracker dialog
 
-class CDlgParametersFormantTracker : public CPropertyPage
-{
+class CDlgParametersFormantTracker : public CPropertyPage {
     DECLARE_DYNCREATE(CDlgParametersFormantTracker)
 
     // Construction
@@ -536,8 +526,7 @@ protected:
 //###########################################################################
 // CDlgGraphsParameters property sheet
 
-class CDlgGraphsParameters : public CPropertySheet
-{
+class CDlgGraphsParameters : public CPropertySheet {
     DECLARE_DYNAMIC(CDlgGraphsParameters)
 
 // Construction/destruction/creation

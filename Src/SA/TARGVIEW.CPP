@@ -22,8 +22,7 @@ CDlgTargView::CDlgTargView(CMainFrame * pMainFrame)
     : CDialog(CDlgTargView::IDD, (CWnd *)pMainFrame) ,
       m_pMainFrame(pMainFrame),
       m_numTargs(0),
-      m_selectionIndex(0)
-{
+      m_selectionIndex(0) {
     CSaDoc * pdoc = (CSaDoc *)m_pMainFrame->GetCurrSaView()->GetDocument();
     CFileStatus * pDocFileStat = pdoc->GetFileStatus();
     TCHAR * pDocFileName = pDocFileStat->m_szFullName;
@@ -31,14 +30,12 @@ CDlgTargView::CDlgTargView(CMainFrame * pMainFrame)
     m_SrcView = pDocFileName;
     TrimPath(&m_SrcView);
 
-    for (int i=0; i<MAX_TARGETS; i++)
-    {
+    for (int i=0; i<MAX_TARGETS; i++) {
         m_targets[i] = NULL;
     }
 }
 
-void CDlgTargView::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgTargView::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_SELECT_TARGVIEW, m_TargView);
     DDX_Text(pDX, IDC_SRCVIEW, m_SrcView);
@@ -51,17 +48,14 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CTargViewDlg::SetupTargViewList
 /***************************************************************************/
-void CDlgTargView::SetupTargViewList()
-{
+void CDlgTargView::SetupTargViewList() {
     CSaDoc * pSrcDoc = (CSaDoc *)m_pMainFrame->GetCurrSaView()->GetDocument();
     CDocList doclst; // list of currently open docs
 
     m_numTargs = 0;
 
-    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext())
-    {
-        if ((pdoc != NULL) && (pdoc != pSrcDoc))
-        {
+    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
+        if ((pdoc != NULL) && (pdoc != pSrcDoc)) {
             m_onlyTarg = pdoc->GetFileStatus()->m_szFullName;
             TrimPath(&m_onlyTarg);
             int index = m_TargView.AddString(m_onlyTarg);
@@ -72,20 +66,16 @@ void CDlgTargView::SetupTargViewList()
         }
     }
 
-    if (m_numTargs!=1)
-    {
+    if (m_numTargs!=1) {
         m_onlyTarg.Empty();
     }
 }
 
-CSaView * CDlgTargView::Targ()
-{
+CSaView * CDlgTargView::Targ() {
     CSaView * target = NULL;
 
-    if (m_selectionIndex >= 0)
-    {
-        if (m_selectionIndex < m_numTargs)
-        {
+    if (m_selectionIndex >= 0) {
+        if (m_selectionIndex < m_numTargs) {
             target = m_targets[m_selectionIndex];
         }
     }
@@ -96,15 +86,13 @@ CSaView * CDlgTargView::Targ()
 /***************************************************************************/
 // CTargViewDlg::OnOK() Button OK hit
 /***************************************************************************/
-void CDlgTargView::OnOK()
-{
+void CDlgTargView::OnOK() {
     UpdateData(TRUE);
     m_selectionIndex = (int)m_TargView.GetItemData(m_TargView.GetCurSel());
     CDialog::OnOK();
 }
 
-BOOL CDlgTargView::OnInitDialog()
-{
+BOOL CDlgTargView::OnInitDialog() {
     CDialog::OnInitDialog();
 
     CenterWindow(); // center dialog on recorder window
@@ -125,12 +113,10 @@ BOOL CDlgTargView::OnInitDialog()
     return TRUE;
 }
 
-void CDlgTargView::TrimPath(CString * pCStr)
-{
+void CDlgTargView::TrimPath(CString * pCStr) {
     // calculate number of characters possible to display and limit the string
     const int nChars = 30;
-    if (pCStr->GetLength() > nChars)   // file path is too long
-    {
+    if (pCStr->GetLength() > nChars) { // file path is too long
         *pCStr = pCStr->Left(3) + "..." + pCStr->Right(nChars - 6); // drive...rest
     }
 }
@@ -138,20 +124,17 @@ void CDlgTargView::TrimPath(CString * pCStr)
 /***************************************************************************/
 // CTargViewDlg::OnHelpEqualize Call Export Table help
 /***************************************************************************/
-void CDlgTargView::OnHelpEqualize()
-{
+void CDlgTargView::OnHelpEqualize() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Graphs/Equalize_Length.htm";
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
-CString CDlgTargView::OnlyTarg()
-{
+CString CDlgTargView::OnlyTarg() {
     return m_onlyTarg;
 }
 
-int CDlgTargView::NumTargs()
-{
+int CDlgTargView::NumTargs() {
     return m_numTargs;
 }

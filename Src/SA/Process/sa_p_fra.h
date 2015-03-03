@@ -13,8 +13,7 @@
 //###########################################################################
 // CProcessFragments data processing
 
-class CProcessFragments : public CProcess
-{
+class CProcessFragments : public CProcess {
 // Construction/destruction/creation
 public:
     CProcessFragments();

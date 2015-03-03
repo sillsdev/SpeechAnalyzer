@@ -13,8 +13,7 @@
 #define kp(sym, type, min, val, max, description, units) \
 { offsetof(TEMPORAL, sym), _T(#sym), _T("%") _T(#type), min, val, max, _T(description) , _T(units)}
 
-static const SParameterDescription temporalDesc[] =
-{
+static const SParameterDescription temporalDesc[] = {
     kp(F0,  lgdddd,     0,  1000,  5000  ,"Fundamental frequency","Hz"),
     kp(AV,  lg,     0,    60,    80  ,"Amplitude of voicing","dB"),
     kp(OQ,  lg,    10,    50,    99  ,"Open quotient (voicing open-time/period)","%"),
@@ -74,8 +73,7 @@ static const SParameterDescription temporalDesc[] =
 #define kp(sym, type, min, val, max, description, units) \
 { offsetof(SPKRDEF, sym), _T(#sym), _T("%") _T(#type), min, val, max, _T(description) , _T(units)}
 
-static const SParameterDescription constDesc[] =
-{
+static const SParameterDescription constDesc[] = {
     kp(DU,   d,    30,   500,  5000,  "Duration of the utterance", "msec"),
     kp(UI,   d,     1,     5,    20,  "Update interval for parameter reset", "msec"),
     kp(SR,   d,  5000, 10000, 20000,  "Output sampling rate", "samples/sec"),
@@ -91,8 +89,7 @@ static const SParameterDescription constDesc[] =
     -1
 };
 
-static const TEMPORAL temporalDefaults =
-{
+static const TEMPORAL temporalDefaults = {
     100,
     60,
     50,
@@ -147,8 +144,7 @@ static const TEMPORAL temporalDefaults =
     0
 };
 
-static SPKRDEF globalDefaults =
-{
+static SPKRDEF globalDefaults = {
     500,
     5,
     10000,
@@ -163,23 +159,19 @@ static SPKRDEF globalDefaults =
     60,
 };
 
-const SParameterDescription * GetTemporalKlattDesc()
-{
+const SParameterDescription * GetTemporalKlattDesc() {
     return temporalDesc;
 }
 
-const SParameterDescription * GetGlobalKlattDesc()
-{
+const SParameterDescription * GetGlobalKlattDesc() {
     return constDesc;
 }
 
 
-const TEMPORAL & GetTemporalKlattDefaults()
-{
+const TEMPORAL & GetTemporalKlattDefaults() {
     return temporalDefaults;
 }
 
-const SPKRDEF & GetGlobalKlattDefaults()
-{
+const SPKRDEF & GetGlobalKlattDefaults() {
     return globalDefaults;
 }

@@ -13,8 +13,7 @@
 //###########################################################################
 // CProcessAdjust data processing
 
-class CProcessAdjust : public CProcessButterworth
-{
+class CProcessAdjust : public CProcessButterworth {
 public:
     CProcessAdjust(ISaDoc * pDoc);
     virtual ~CProcessAdjust();

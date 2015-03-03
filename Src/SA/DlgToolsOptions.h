@@ -23,8 +23,7 @@
 #include "colors.h"
 #include "ToolSettings.h"
 
-typedef struct SColorComboInfo
-{
+typedef struct SColorComboInfo {
     TCHAR   *  pszColorItem;
     COLORREF  cColor;
 } ColorComboInfo;
@@ -35,8 +34,7 @@ typedef struct SColorComboInfo
 /////////////////////////////////////////////////////////////////////////
 // CComboColor defines
 
-class CComboColor : public CComboBox
-{
+class CComboColor : public CComboBox {
 
 private:
     virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
@@ -47,8 +45,7 @@ private:
 //###########################################################################
 // CDlgOptionsViewPage property page
 
-class CDlgOptionsViewPage : public CPropertyPage
-{
+class CDlgOptionsViewPage : public CPropertyPage {
 
 public:
     CDlgOptionsViewPage(); // standard constructor
@@ -100,8 +97,7 @@ private:
 //###########################################################################
 // CDlgOptionsColorPage property page
 
-class CDlgOptionsColorPage : public CPropertyPage
-{
+class CDlgOptionsColorPage : public CPropertyPage {
 
 public:
     CDlgOptionsColorPage(); // standard constructor
@@ -140,8 +136,7 @@ protected:
 //###########################################################################
 // CDlgOptionsFontPage property page
 
-class CDlgOptionsFontPage : public CPropertyPage
-{
+class CDlgOptionsFontPage : public CPropertyPage {
 
 public:
     CDlgOptionsFontPage();  // standard constructor
@@ -173,8 +168,7 @@ private:
 //###########################################################################
 // CDlgOptionsSavePage property page
 
-class CDlgOptionsSavePage : public CPropertyPage
-{
+class CDlgOptionsSavePage : public CPropertyPage {
 
 public:
     CDlgOptionsSavePage(); // standard constructor
@@ -205,8 +199,7 @@ private:
     CFont m_Font;
 };
 
-class CDlgOptionsAudioPage : public CPropertyPage
-{
+class CDlgOptionsAudioPage : public CPropertyPage {
 
 public:
     CDlgOptionsAudioPage(); // standard constructor
@@ -221,8 +214,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 };
 
-class CDlgToolsOptions : public CPropertySheet
-{
+class CDlgToolsOptions : public CPropertySheet {
 
     DECLARE_DYNAMIC(CDlgToolsOptions)
 
@@ -237,7 +229,7 @@ public:
     CDlgOptionsSavePage m_dlgSavePage;
     CDlgOptionsAudioPage m_dlgAudioPage;
 
-    CToolSettings GetSettings( bool fullView);
+    CToolSettings GetSettings(bool fullView);
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
@@ -247,7 +239,7 @@ protected:
     void ChangeButtons();                               // delete Apply button, move other buttons
 
     CButton m_cHelp;
-	bool fullView;
+    bool fullView;
 
     DECLARE_MESSAGE_MAP()
 };

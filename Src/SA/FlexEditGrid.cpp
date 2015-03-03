@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "flexEditGrid.h"
 
-class CFlexEditWnd : public CEdit
-{
+class CFlexEditWnd : public CEdit {
     // Construction
 public:
     CFlexEditWnd(CFlexEditGrid * const parent);
@@ -33,8 +32,7 @@ protected:
 1F3D5522-3F42-11d1-B2FA-00A0C908FB55
 */
 
-WCHAR pwchLicenseKeyMSHFlxGd[] =
-{
+WCHAR pwchLicenseKeyMSHFlxGd[] = {
     0x0031, 0x0046, 0x0033, 0x0044, 0x0035, 0x0035,
     0x0032, 0x0032, 0x002D, 0x0033, 0x0046, 0x0034,
     0x0032, 0x002D, 0x0031, 0x0031, 0x0064, 0x0031,
@@ -46,26 +44,22 @@ WCHAR pwchLicenseKeyMSHFlxGd[] =
 /////////////////////////////////////////////////////////////////////////////
 // CFlexEditGrid
 
-CFlexEditGrid::CFlexEditGrid()
-{
+CFlexEditGrid::CFlexEditGrid() {
     m_pEdit = new CFlexEditWnd(this);
     m_nUndoRow = -1;
     m_nUndoCol = -1;
     m_bFakeArrowKeys = FALSE;
 }
 
-CFlexEditGrid::~CFlexEditGrid()
-{
-    if (m_pEdit)
-    {
+CFlexEditGrid::~CFlexEditGrid() {
+    if (m_pEdit) {
         delete m_pEdit;
     }
 }
 
 
 BOOL CFlexEditGrid::Create(LPCTSTR , LPCTSTR , DWORD dwStyle, const RECT & rect,
-                           CWnd * pParentWnd, UINT nID)
-{
+                           CWnd * pParentWnd, UINT nID) {
     BSTR bstrLicense = ::SysAllocStringLen(pwchLicenseKeyMSHFlxGd, sizeof(pwchLicenseKeyMSHFlxGd)/sizeof(WCHAR));
 
     BOOL bResult = CMSHFlexGrid::Create(NULL, dwStyle, rect, pParentWnd, nID, NULL, FALSE, bstrLicense);
@@ -99,18 +93,15 @@ ON_EVENT_REFLECT(CFlexEditGrid, 73 /* Scroll */, OnUpdateGrid, VTS_NONE)
 // }}AFX_EVENTSINK_MAP
 END_EVENTSINK_MAP()
 
-BOOL CFlexEditGrid::OnDblClickGrid()
-{
+BOOL CFlexEditGrid::OnDblClickGrid() {
     ShowEditBox(GetText(),0,-1);
 
     return TRUE;
 }
 
-BOOL CFlexEditGrid::OnKeyPressGrid(short FAR * KeyAscii)
-{
+BOOL CFlexEditGrid::OnKeyPressGrid(short FAR * KeyAscii) {
 
-    if (!handleSpecialKeys(KeyAscii, 0, FALSE))
-    {
+    if (!handleSpecialKeys(KeyAscii, 0, FALSE)) {
         CString buf;
         buf.Format(_T("%c"), *KeyAscii);
         ShowEditBox(buf,1,-1);
@@ -119,12 +110,10 @@ BOOL CFlexEditGrid::OnKeyPressGrid(short FAR * KeyAscii)
     return TRUE;
 }
 
-BOOL CFlexEditGrid::OnUpdateGrid()
-{
+BOOL CFlexEditGrid::OnUpdateGrid() {
     // Check to see if edit is visible.
     BOOL bVisible = m_pEdit->IsVisible();
-    if (bVisible)
-    {
+    if (bVisible) {
         m_cUndoString = GetText();
         m_nUndoRow = GetRow();
         m_nUndoCol = GetCol();
@@ -140,17 +129,13 @@ BOOL CFlexEditGrid::OnUpdateGrid()
     return FALSE; // allow this message to be fired in the container.
 }
 
-BOOL CFlexEditGrid::OnKeyDownGrid(short FAR * KeyCode, short Shift)
-{
+BOOL CFlexEditGrid::OnKeyDownGrid(short FAR * KeyCode, short Shift) {
     return handleSpecialKeys(KeyCode, Shift);
 }
 
-BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR * KeyCode, short /*Shift*/, BOOL bHandleIt)
-{
-    if (!bHandleIt)
-    {
-        switch (*KeyCode)
-        {
+BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR * KeyCode, short /*Shift*/, BOOL bHandleIt) {
+    if (!bHandleIt) {
+        switch (*KeyCode) {
         case VK_UP:
         case VK_DOWN:
         case VK_LEFT:
@@ -164,35 +149,30 @@ BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR * KeyCode, short /*Shift*
         }
     }
 
-    switch (*KeyCode)
-    {
+    switch (*KeyCode) {
     case VK_UP:
-        if (GetRow() > GetFixedRows())
-        {
+        if (GetRow() > GetFixedRows()) {
             OnUpdateGrid();
             SetRow(GetRow() - 1);
             return TRUE;
         }
         break;
     case VK_DOWN:
-        if (GetRow() < (GetRows() - 1))
-        {
+        if (GetRow() < (GetRows() - 1)) {
             OnUpdateGrid();
             SetRow(GetRow() + 1);
             return TRUE;
         }
         break;
     case VK_LEFT:
-        if (GetCol() > GetFixedCols())
-        {
+        if (GetCol() > GetFixedCols()) {
             OnUpdateGrid();
             SetCol(GetCol() - 1);
             return TRUE;
         }
         break;
     case VK_RIGHT:
-        if (GetCol() < GetCols(0 /* Band */))
-        {
+        if (GetCol() < GetCols(0 /* Band */)) {
             OnUpdateGrid();
             SetCol(GetCol() + 1);
             return TRUE;
@@ -201,12 +181,10 @@ BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR * KeyCode, short /*Shift*
     case VK_RETURN:
         return OnUpdateGrid();
     case VK_ESCAPE:
-    case VK_CANCEL:
-    {
+    case VK_CANCEL: {
         // Check to see if edit is visible.
         BOOL bVisible = m_pEdit->IsVisible();
-        if (bVisible)
-        {
+        if (bVisible) {
             m_pEdit->SetWindowText(_T(""));
             m_pEdit->SetVisible(FALSE);
             return TRUE;
@@ -216,12 +194,9 @@ BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR * KeyCode, short /*Shift*
     return FALSE; // event not consumed here
 }
 
-BOOL CFlexEditGrid::handleSpecialKeys(short FAR * KeyCode, short /*Shift*/, BOOL bHandleIt)
-{
-    if (!bHandleIt)
-    {
-        switch (*KeyCode)
-        {
+BOOL CFlexEditGrid::handleSpecialKeys(short FAR * KeyCode, short /*Shift*/, BOOL bHandleIt) {
+    if (!bHandleIt) {
+        switch (*KeyCode) {
         case VK_UP:
         case VK_DOWN:
         case VK_LEFT:
@@ -236,17 +211,14 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR * KeyCode, short /*Shift*/, BOOL
         }
     }
 
-    switch (*KeyCode)
-    {
+    switch (*KeyCode) {
     case VK_RETURN:
         return OnUpdateGrid();
     case VK_ESCAPE:
-    case VK_CANCEL:
-    {
+    case VK_CANCEL: {
         // Check to see if edit is visible.
         BOOL bVisible = m_pEdit->IsVisible();
-        if (bVisible)
-        {
+        if (bVisible) {
             m_pEdit->SetWindowText(_T(""));
             m_pEdit->SetVisible(FALSE);
             return TRUE;
@@ -254,13 +226,11 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR * KeyCode, short /*Shift*/, BOOL
     }
     }
 
-    if (!m_bFakeArrowKeys)
-    {
+    if (!m_bFakeArrowKeys) {
         return FALSE;
     }
 
-    try
-    {
+    try {
         long row = GetRow();
         long col = GetCol();
         long rows = GetRows();
@@ -268,79 +238,65 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR * KeyCode, short /*Shift*/, BOOL
         long fixedRows = GetFixedRows();
         long fixedCols = GetFixedCols();
 
-        switch (*KeyCode)
-        {
+        switch (*KeyCode) {
         case VK_UP:
-            if (row > fixedRows)
-            {
+            if (row > fixedRows) {
                 OnUpdateGrid();
                 SetRow(--row);
-                while (!GetRowIsVisible(row))
-                {
+                while (!GetRowIsVisible(row)) {
                     SetTopRow(GetTopRow() - 1);
                 }
                 return TRUE;
             }
             break;
         case VK_DOWN:
-            if (row < (rows - 1))
-            {
+            if (row < (rows - 1)) {
                 OnUpdateGrid();
                 SetRow(++row);
 
                 long rowPartial = row + 1;
-                if (rowPartial == rows)
-                {
+                if (rowPartial == rows) {
                     rowPartial--;
                 }
-                while (!GetRowIsVisible(rowPartial))
-                {
+                while (!GetRowIsVisible(rowPartial)) {
                     SetTopRow(GetTopRow() + 1);
                 }
                 return TRUE;
             }
             break;
         case VK_LEFT:
-            if (col > fixedCols)
-            {
+            if (col > fixedCols) {
                 OnUpdateGrid();
                 SetCol(--col);
-                while (!GetColIsVisible(col))
-                {
+                while (!GetColIsVisible(col)) {
                     SetLeftCol(GetLeftCol() - 1);
                 }
                 return TRUE;
             }
             break;
         case VK_RIGHT:
-            if (col < (cols - 1))
-            {
+            if (col < (cols - 1)) {
                 OnUpdateGrid();
                 SetCol(++col);
 
                 long colPartial = col + 1;
-                if (colPartial == cols)
-                {
+                if (colPartial == cols) {
                     colPartial--;
                 }
-                while (!GetColIsVisible(colPartial))
-                {
+                while (!GetColIsVisible(colPartial)) {
                     SetLeftCol(GetLeftCol() + 1);
                 }
                 return TRUE;
             }
             break;
         }
-    }
-    catch (COleException)
-    {
+    } catch (COleException) {
         return TRUE;
     }
     return FALSE; // event not consumed here
 }
 
-void CFlexEditGrid::PreSubclassWindow()
-{
+void CFlexEditGrid::PreSubclassWindow() {
     // Calculate border size.
     long row = GetRow();
     long col = GetCol();
@@ -368,22 +324,18 @@ void CFlexEditGrid::PreSubclassWindow()
 }
 
 
-void CFlexEditGrid::InvalidData()
-{
+void CFlexEditGrid::InvalidData() {
     CString redo;
     Undo(&redo);
 
     ShowEditBox(redo);
 }
 
-BOOL CFlexEditGrid::Undo(CString * redoText)
-{
-    if (m_nUndoRow != -1)
-    {
+BOOL CFlexEditGrid::Undo(CString * redoText) {
+    if (m_nUndoRow != -1) {
         SetRow(m_nUndoRow);
         SetCol(m_nUndoCol);
-        if (redoText)
-        {
+        if (redoText) {
             *redoText = GetText();
         }
         SetText(m_cUndoString);
@@ -392,8 +344,7 @@ BOOL CFlexEditGrid::Undo(CString * redoText)
     return FALSE;
 }
 
-void CFlexEditGrid::ShowEditBox(const CString & boxContents, long selectionStart, long selectionEnd)
-{
+void CFlexEditGrid::ShowEditBox(const CString & boxContents, long selectionStart, long selectionEnd) {
 
     m_pEdit->SetWindowText(boxContents);
     m_cFont.CreatePointFont(int(GetCellFontSize()*10 +0.5), GetCellFontName());
@@ -412,8 +363,7 @@ void CFlexEditGrid::ShowEditBox(const CString & boxContents, long selectionStart
     m_pEdit->SetFocus();
 }
 
-void CFlexEditGrid::SetFont(LPCTSTR face, float pointSize, long startRow, long startCol, long rows,  long cols)
-{
+void CFlexEditGrid::SetFont(LPCTSTR face, float pointSize, long startRow, long startCol, long rows,  long cols) {
     SetRedraw(FALSE);
     long initRow = GetRow();
     long initCol = GetCol();
@@ -421,10 +371,8 @@ void CFlexEditGrid::SetFont(LPCTSTR face, float pointSize, long startRow, long s
     long lastCol = (cols > 0) ? startCol + cols : GetCols(0);
     long lastRow = (rows > 0) ? startRow + rows : GetRows();
 
-    for (long row = startRow; row < lastRow; row++)
-    {
-        for (long col = startCol; col < lastCol; col++)
-        {
+    for (long row = startRow; row < lastRow; row++) {
+        for (long col = startCol; col < lastCol; col++) {
             SetRow(row);
             SetCol(col);
             SetCellFontName(face);
@@ -440,8 +388,7 @@ void CFlexEditGrid::SetFont(LPCTSTR face, float pointSize, long startRow, long s
 
 /////////////////////////////////////////////////////////////////////////////
 // CFlexEditGrid message handlers
-void CFlexEditGrid::OnSetFocus(CWnd * pOldWnd)
-{
+void CFlexEditGrid::OnSetFocus(CWnd * pOldWnd) {
     CMSHFlexGrid::OnSetFocus(pOldWnd);
 
     OnUpdateGrid();
@@ -450,13 +397,11 @@ void CFlexEditGrid::OnSetFocus(CWnd * pOldWnd)
 /////////////////////////////////////////////////////////////////////////////
 // CFlexEditWnd
 
-CFlexEditWnd::CFlexEditWnd(CFlexEditGrid * const parent) : m_pGrid(parent)
-{
+CFlexEditWnd::CFlexEditWnd(CFlexEditGrid * const parent) : m_pGrid(parent) {
     m_bVisible = FALSE;
 }
 
-CFlexEditWnd::~CFlexEditWnd()
-{
+CFlexEditWnd::~CFlexEditWnd() {
 }
 
 BEGIN_MESSAGE_MAP(CFlexEditWnd, CEdit)
@@ -468,46 +413,37 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CFlexEditWnd message handlers
 
-void CFlexEditWnd::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-    if (nChar != VK_RETURN)   // Ignore ENTER key.  we only really want a single line edit control
-    {
+void CFlexEditWnd::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
+    if (nChar != VK_RETURN) { // Ignore ENTER key.  we only really want a single line edit control
         CEdit::OnChar(nChar, nRepCnt, nFlags);
     }
 }
 
-void CFlexEditWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
+void CFlexEditWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
     short KeyCode = short(nChar);
     BOOL result = FALSE;
     int selStart, selEnd;
 
     GetSel(selStart,selEnd);
     if (((KeyCode != VK_LEFT)  || selEnd <= 0) &&
-            ((KeyCode != VK_RIGHT) || selStart >= (GetWindowTextLength() - 1)))
-    {
+            ((KeyCode != VK_RIGHT) || selStart >= (GetWindowTextLength() - 1))) {
         result = m_pGrid->handleEditBoxSpecialKeys(&KeyCode, short(nFlags));
     }
 
-    if (!result)
-    {
+    if (!result) {
         CEdit::OnKeyDown(nChar, nRepCnt, nFlags);
     }
 }
 
 
-BOOL CFlexEditWnd::SetVisible(BOOL bState)
-{
+BOOL CFlexEditWnd::SetVisible(BOOL bState) {
     BOOL bOldState = m_bVisible;
 
     m_bVisible = bState;
 
-    if (bState)
-    {
+    if (bState) {
         ShowWindow(SW_SHOW);
-    }
-    else
-    {
+    } else {
         ShowWindow(SW_HIDE);
     }
 
@@ -515,20 +451,17 @@ BOOL CFlexEditWnd::SetVisible(BOOL bState)
 }
 
 
-BOOL CFlexEditWnd::IsVisible() const
-{
+BOOL CFlexEditWnd::IsVisible() const {
     return m_bVisible;
 }
 
-void CFlexEditWnd::OnKillfocus()
-{
+void CFlexEditWnd::OnKillfocus() {
     short KeyCode = VK_RETURN;
     m_pGrid->handleEditBoxSpecialKeys(&KeyCode, 0);
 }
 
 
-void CFlexEditGrid::OnEditCopy()
-{
+void CFlexEditGrid::OnEditCopy() {
     long row = GetRow();
     long rowSel = GetRowSel();
     long top = (row < rowSel) ? row : rowSel;
@@ -543,12 +476,10 @@ void CFlexEditGrid::OnEditCopy()
 
     HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE, szCopy.GetLength() + 1);
     ASSERT(hData);
-    if (hData)
-    {
+    if (hData) {
         LPTSTR lpData = (TCHAR *)GlobalLock(hData);
         ASSERT(lpData);
-        if (lpData)
-        {
+        if (lpData) {
             int len = szCopy.GetLength();
             TCHAR * str = szCopy.GetBuffer(len+1);
             ASSERT(str);
@@ -559,8 +490,7 @@ void CFlexEditGrid::OnEditCopy()
 
             // Clear the current contents of the clipboard, and set
             // the data handle to the new string.
-            if (OpenClipboard())
-            {
+            if (OpenClipboard()) {
                 EmptyClipboard();
                 SetClipboardData(CF_TEXT, hData);
                 CloseClipboard();
@@ -569,12 +499,10 @@ void CFlexEditGrid::OnEditCopy()
     }
 }
 
-void CFlexEditGrid::OnUpdateEditCopy(CCmdUI *)
-{
+void CFlexEditGrid::OnUpdateEditCopy(CCmdUI *) {
 }
 
-void CFlexEditGrid::OnEditClear()
-{
+void CFlexEditGrid::OnEditClear() {
     long row = GetRow();
     long rowSel = GetRowSel();
     long top = (row < rowSel) ? row : rowSel;
@@ -588,31 +516,24 @@ void CFlexEditGrid::OnEditClear()
     ClearRange(top, left, bottom, right);
 }
 
-void CFlexEditGrid::OnUpdateEditClear(CCmdUI *)
-{
+void CFlexEditGrid::OnUpdateEditClear(CCmdUI *) {
 }
 
-void CFlexEditGrid::OnEditCut()
-{
+void CFlexEditGrid::OnEditCut() {
     OnEditCopy();
     OnEditClear();
 }
 
-void CFlexEditGrid::OnUpdateEditCut(CCmdUI *)
-{
+void CFlexEditGrid::OnUpdateEditCut(CCmdUI *) {
 }
 
-void CFlexEditGrid::OnEditPaste()
-{
-    if (OpenClipboard())
-    {
+void CFlexEditGrid::OnEditPaste() {
+    if (OpenClipboard()) {
         HGLOBAL hClipData = NULL;
         char * lpClipData = NULL;
         // get text from the clipboard
-        if (NULL!=(hClipData = GetClipboardData(CF_TEXT)))
-        {
-            if (NULL!=(lpClipData = (char *)GlobalLock(hClipData)))
-            {
+        if (NULL!=(hClipData = GetClipboardData(CF_TEXT))) {
+            if (NULL!=(lpClipData = (char *)GlobalLock(hClipData))) {
                 CString data(lpClipData);
                 LoadRange(GetRow(),GetCol(),data, TRUE);
                 GlobalUnlock(hClipData);
@@ -623,15 +544,12 @@ void CFlexEditGrid::OnEditPaste()
     }
 }
 
-void CFlexEditGrid::OnUpdateEditPaste(CCmdUI * pCmdUI)
-{
+void CFlexEditGrid::OnUpdateEditPaste(CCmdUI * pCmdUI) {
     BOOL enable = FALSE;
-    if (OpenClipboard())
-    {
-        if (IsClipboardFormatAvailable(CF_TEXT))
-		{
-			enable = TRUE;
-		}
+    if (OpenClipboard()) {
+        if (IsClipboardFormatAvailable(CF_TEXT)) {
+            enable = TRUE;
+        }
 
         CloseClipboard();
     }
@@ -643,40 +561,33 @@ void CFlexEditGrid::OnUpdateEditPaste(CCmdUI * pCmdUI)
 // separates rows by "\r\n" (crlf)
 // allows option of rotating grid contents in strings
 // bottom, right refer to first cell location NOT included in string (+1)
-CString CFlexEditGrid::SaveRange(int top, int left, int bottom, int right, BOOL bRotate)
-{
+CString CFlexEditGrid::SaveRange(int top, int left, int bottom, int right, BOOL bRotate) {
     CString szGrid;
     CString szEmptyCols;
 
-    if (top > GetRows())
-    {
+    if (top > GetRows()) {
         top = GetRows();
     }
-    if (bottom > GetRows())
-    {
+    if (bottom > GetRows()) {
         bottom = GetRows();
     }
 
     int xMin,xMax;
     int yMin,yMax;
 
-    if (bRotate)
-    {
+    if (bRotate) {
         xMin = left;
         xMax = right;
         yMin = top;
         yMax = bottom;
-    }
-    else
-    {
+    } else {
         yMin = left;
         yMax = right;
         xMin = top;
         xMax = bottom;
     }
 
-    for (int x = xMin; x < xMax; x++)
-    {
+    for (int x = xMin; x < xMax; x++) {
         CString szLine;
         CString szField;
         CString szEmptyFields;
@@ -684,18 +595,13 @@ CString CFlexEditGrid::SaveRange(int top, int left, int bottom, int right, BOOL 
         szLine.Empty();
         szEmptyFields.Empty();
 
-        for (int y = yMin; y < yMax; y++)
-        {
-            if (bRotate)
-            {
+        for (int y = yMin; y < yMax; y++) {
+            if (bRotate) {
                 szField = GetTextMatrix(y,x);
-            }
-            else
-            {
+            } else {
                 szField = GetTextMatrix(x,y);
             }
-            if (!szField.IsEmpty())
-            {
+            if (!szField.IsEmpty()) {
                 szLine += szEmptyFields;
                 szLine += szField;
                 szEmptyFields.Empty();
@@ -704,8 +610,7 @@ CString CFlexEditGrid::SaveRange(int top, int left, int bottom, int right, BOOL 
             szEmptyFields += _T("\t");
         }
 
-        if (!szLine.IsEmpty())
-        {
+        if (!szLine.IsEmpty()) {
             szGrid += szEmptyCols;
             szGrid += szLine;
             szEmptyCols.Empty();
@@ -721,31 +626,25 @@ CString CFlexEditGrid::SaveRange(int top, int left, int bottom, int right, BOOL 
 // separates columns by "\t" (tab)
 // separates rows by "\r\n" (crlf)
 // allows option of rotating string contents into grid
-void CFlexEditGrid::LoadRange(int top, int left, CString szGrid, BOOL bRotate)
-{
+void CFlexEditGrid::LoadRange(int top, int left, CString szGrid, BOOL bRotate) {
     int nLineStart = 0;
     int nLength = szGrid.GetLength();
 
     int xMin;
     int yMin;
 
-    if (bRotate)
-    {
+    if (bRotate) {
         xMin = left;
         yMin = top;
-    }
-    else
-    {
+    } else {
         yMin = left;
         xMin = top;
     }
 
-    for (int x = xMin; nLineStart < nLength; x++)
-    {
+    for (int x = xMin; nLineStart < nLength; x++) {
         int nLineEnd = szGrid.Find(_T("\n"),nLineStart);
 
-        if (nLineEnd == -1)
-        {
+        if (nLineEnd == -1) {
             nLineEnd = nLength;
         }
 
@@ -753,25 +652,21 @@ void CFlexEditGrid::LoadRange(int top, int left, CString szGrid, BOOL bRotate)
 
         int nLineLength = szLine.GetLength();
 
-        if (szLine[nLineLength-1] == '\r')
-        {
+        if (szLine[nLineLength-1] == '\r') {
             // usually lines should be terminated by CrLf ("\r\n")
             szLine = szLine.Left(nLineLength - 1);
             nLineLength--;
         }
 
-        if (!bRotate && x >= GetRows())
-        {
+        if (!bRotate && x >= GetRows()) {
             SetRows(x + 1);
         }
-        if (bRotate && x >= GetCols(0))
-        {
+        if (bRotate && x >= GetCols(0)) {
             SetCols(0, x + 1);
         }
 
         int nFieldStart = 0;
-        for (int y = yMin; nFieldStart < nLineLength; y++)
-        {
+        for (int y = yMin; nFieldStart < nLineLength; y++) {
             int nFieldEnd = szLine.Find(_T("\t"), nFieldStart);
 
             if (nFieldEnd == -1)
@@ -782,21 +677,16 @@ void CFlexEditGrid::LoadRange(int top, int left, CString szGrid, BOOL bRotate)
 
             CString szField = szLine.Mid(nFieldStart,nFieldEnd-nFieldStart);
 
-            if (!bRotate && y >= GetCols(0))
-            {
+            if (!bRotate && y >= GetCols(0)) {
                 SetCols(0, y + 1);
             }
-            if (bRotate && y >= GetRows())
-            {
+            if (bRotate && y >= GetRows()) {
                 SetRows(y + 1);
             }
 
-            if (bRotate)
-            {
+            if (bRotate) {
                 SetTextMatrix(y,x,szField);
-            }
-            else
-            {
+            } else {
                 SetTextMatrix(x,y,szField);
             }
 
@@ -806,12 +696,9 @@ void CFlexEditGrid::LoadRange(int top, int left, CString szGrid, BOOL bRotate)
     }
 }
 
-void CFlexEditGrid::ClearRange(int top, int left, int bottom, int right)
-{
-    for (int x = left; x <= right; x++)
-    {
-        for (int y = top; y <= bottom; y++)
-        {
+void CFlexEditGrid::ClearRange(int top, int left, int bottom, int right) {
+    for (int x = left; x <= right; x++) {
+        for (int y = top; y <= bottom; y++) {
             SetTextMatrix(y,x,_T(""));
         }
     }

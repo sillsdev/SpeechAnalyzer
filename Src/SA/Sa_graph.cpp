@@ -337,7 +337,7 @@ BOOL CGraphWnd::DisableAnnotation(int /*nIndex*/) {
 /***************************************************************************/
 // CGraphWnd::ShowAnnotation Show or hide annotation window
 /***************************************************************************/
-void CGraphWnd::ShowAnnotation( EAnnotation nIndex, BOOL bShow, BOOL bRedraw) {
+void CGraphWnd::ShowAnnotation(EAnnotation nIndex, BOOL bShow, BOOL bRedraw) {
 
     m_abAnnWnd[nIndex] = ((bShow) && (!DisableAnnotation(nIndex)));
     if (bRedraw) {
@@ -705,6 +705,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
         CDataStatusBar * pStat = (CDataStatusBar *)pMainWnd->GetDataStatusBar();
         int nPositionMode = pMainWnd->GetStatusPosReadout();
         int nPitchMode = pMainWnd->GetStatusPitchReadout();
+
         TCHAR szText[32];
         int nProcessIndex, nData=0;
         DWORD dwDataPos;
@@ -1419,7 +1420,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 
         // show the number of size in KB/MB/GB
         {
-            double size = (double)pDoc->GetDataSize();
+			double size = (double)pDoc->GetDataSize()*pDoc->GetNumChannels();
             if (size < MB) {
                 size /= KB;
                 swprintf_s(szText,_countof(szText), _T("       %.2f KB"), size);

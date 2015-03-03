@@ -19,8 +19,7 @@
 class CObjectOStream;
 class CObjectIStream;
 
-class CParseParm                // parsing parameters
-{
+class CParseParm {              // parsing parameters
 public:
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -33,14 +32,13 @@ public:
     int nParseMode;             // parsing mode
 };
 
-class CSegmentParm              // segmenting parameters
-{
+class CSegmentParm {            // segmenting parameters
 public:
-    float fSegmentWidth;		// minimum width of peak (ms)
-    int nChThreshold;			// minimum Change threshold (%)
-    int nZCThreshold;			// minimum Zero Crossing threshold (# of crossings)
-    int nSegmentMode;			// segmenting mode
-    BOOL bKeepSegments;			// TRUE if existing segments to keep
+    float fSegmentWidth;        // minimum width of peak (ms)
+    int nChThreshold;           // minimum Change threshold (%)
+    int nZCThreshold;           // minimum Zero Crossing threshold (# of crossings)
+    int nSegmentMode;           // segmenting mode
+    BOOL bKeepSegments;         // TRUE if existing segments to keep
 
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -49,8 +47,7 @@ public:
 };
 
 class CSaDoc;
-class CPitchParm                    // pitch parameters
-{
+class CPitchParm {                  // pitch parameters
 public:
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -71,8 +68,7 @@ public:
     int nManualPitchLower;          // temporary location to save manual pitch lower boundary
 };
 
-class CUttParm
-{
+class CUttParm {
 public:
     void Init(int nBitsPerSample);
     int TruncatedCritLoud(int nBitsPerSample) const;
@@ -85,8 +81,7 @@ public:
     int nMaxInterp;             // maximum gap for interpolation
 };                        // RIFF file header utterance parameters
 
-class CMusicParm                // pitch parameters
-{
+class CMusicParm {              // pitch parameters
 public:
     int nRangeMode;             // frequency range display mode
     int nUpperBound;            // upper frequency display boundary
@@ -109,8 +104,7 @@ public:
     static void GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound);
 };
 
-class CIntensityParm            // pitch parameters
-{
+class CIntensityParm {          // pitch parameters
 public:
     CIntensityParm();
     void WriteProperties(CObjectOStream & obs);
@@ -121,8 +115,7 @@ public:
 };
 
 // ARH 8/1/01 - Added for wavelet scalogram graph
-class CWaveletParm                   // Wavelet parameters
-{
+class CWaveletParm {                 // Wavelet parameters
 public:
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -137,23 +130,22 @@ public:
 };
 
 
-class CSpectrumParm   // spectrum parameters
-{
+class CSpectrumParm { // spectrum parameters
 public:
-    int nScaleMode;				// scale display mode
-    int nPwrUpperBound;			// upper power display boundary
-    int nPwrLowerBound;			// lower power display boundary
-    int nFreqUpperBound;		// upper frequency display boundary
-    int nFreqLowerBound;		// lower frequency display boundary
-    int nFreqScaleRange;		// frequency range: 0 = full scale, 1 = half scale, 2 = third scale, 3 = quarter scale
-    int nSmoothLevel;			// level to control spectral smoothing
-    int nPeakSharpFac;			// factor to control sharpening of formant peaks
+    int nScaleMode;             // scale display mode
+    int nPwrUpperBound;         // upper power display boundary
+    int nPwrLowerBound;         // lower power display boundary
+    int nFreqUpperBound;        // upper frequency display boundary
+    int nFreqLowerBound;        // lower frequency display boundary
+    int nFreqScaleRange;        // frequency range: 0 = full scale, 1 = half scale, 2 = third scale, 3 = quarter scale
+    int nSmoothLevel;           // level to control spectral smoothing
+    int nPeakSharpFac;          // factor to control sharpening of formant peaks
     CWindowSettings cWindow;    // DSP Window settings
-    BOOL bShowLpcSpectrum;		// TRUE = show LPC-smoothed spectrum
-    BOOL bShowCepSpectrum;		// TRUE = show cepstrally-smoothed spectrum
-    BOOL bShowFormantFreq;		// TRUE = show formant frequencies
+    BOOL bShowLpcSpectrum;      // TRUE = show LPC-smoothed spectrum
+    BOOL bShowCepSpectrum;      // TRUE = show cepstrally-smoothed spectrum
+    BOOL bShowFormantFreq;      // TRUE = show formant frequencies
     BOOL bShowFormantBandwidth;  // TRUE = show formant bandwidths
-    BOOL bShowFormantPower;		// TRUE = show formant powers
+    BOOL bShowFormantPower;     // TRUE = show formant powers
 
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -161,11 +153,9 @@ public:
     void Init();
 };
 
-class CFormantParm   // formant chart parameters
-{
+class CFormantParm { // formant chart parameters
 public:
-    CFormantParm()
-    {
+    CFormantParm() {
         Init();
     }
     BOOL bFromLpcSpectrum;       // TRUE = formants extracted from LPC spectrum
@@ -180,13 +170,12 @@ public:
     void Init();
 };
 
-class CRecordingParm   // Recording parameters
-{
+class CRecordingParm { // Recording parameters
 public:
-    int nRate;			// Sampling Rate code (0=11KHz, 1=22KHz, 2=44KHz)
-    int nBits;			// Sample data width in bits
-    BOOL bHighpass;		// User 70KHz highpass filter (0=FALSE, 1=TRUE)
-    int nMode;			// Recording mode (0=mono, 1=stereo)
+    int nRate;          // Sampling Rate code (0=11KHz, 1=22KHz, 2=44KHz)
+    int nBits;          // Sample data width in bits
+    BOOL bHighpass;     // User 70KHz highpass filter (0=FALSE, 1=TRUE)
+    int nMode;          // Recording mode (0=mono, 1=stereo)
 
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -196,11 +185,9 @@ public:
 
 
 // Graph Parameter.cpp for implementation
-class CResearchSettings
-{
+class CResearchSettings {
 public:
-    CResearchSettings()
-    {
+    CResearchSettings() {
         Init();
     }
 
@@ -223,11 +210,9 @@ extern CResearchSettings ResearchSettings;
 
 
 // Graph Parameter.cpp for implementation
-class CFormantTrackerOptions
-{
+class CFormantTrackerOptions {
 public:
-    CFormantTrackerOptions()
-    {
+    CFormantTrackerOptions() {
         Init();
     }
 

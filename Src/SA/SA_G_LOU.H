@@ -10,8 +10,7 @@
 //###########################################################################
 // CPlotLoudness plot window
 
-class CPlotLoudness : public CPlotWnd
-{
+class CPlotLoudness : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotLoudness)
 
 // Construction/destruction/creation

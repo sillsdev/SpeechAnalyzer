@@ -4,8 +4,7 @@
 #ifndef SUPERPITCH_H
 #define SUPERPITCH_H
 
-class CSuperPitch
-{
+class CSuperPitch {
 public:
     CSuperPitch();
     virtual ~CSuperPitch();

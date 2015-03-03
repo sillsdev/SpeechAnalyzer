@@ -28,29 +28,26 @@ enum ESPECTROGRAM_LOC {PENDING=0, END_OF_SPGM=1, END_FMNT_CALC=1};
 
 enum ESPECTROGRAM_STATE {SPGM_NOT_READY=0, SPGM_PENDING=1, SPGM_CALC=2, FORMANTS_CALC=3}; //dspError_t definitions
 
-struct SSpectrogramSettings
-{
-    SSpectrogramSettings()
-    {
+struct SSpectrogramSettings {
+    SSpectrogramSettings() {
         windowType = CWindowSettings::kGaussian;
     }
-    float LwrFreq;				//lowest frequency to calculate in Hz
-    float UprFreq;				//highest frequency to calculate in Hz
-    float Bandwidth;			//spectral resolution in Hz
-    uint16 FreqCnt;				//number of frequency samples from low to high
-    uint16 FFTLength;			//desired length of FFT
-    uint32 SpectCnt;			//number of spectra to calculate
-    bool preEmphSw;				//pre-emphasis switch
-    bool fmntTrackSw;			//formant tracking switch
-    uint32 SigBlkOffset;		//number of samples offset into speech data
-    uint32 SigBlkLength;		//number of speech samples over which spectra will be calculated
-    uint16 SpectBatchLength;	//number of spectra to be calculated at one time
+    float LwrFreq;              //lowest frequency to calculate in Hz
+    float UprFreq;              //highest frequency to calculate in Hz
+    float Bandwidth;            //spectral resolution in Hz
+    uint16 FreqCnt;             //number of frequency samples from low to high
+    uint16 FFTLength;           //desired length of FFT
+    uint32 SpectCnt;            //number of spectra to calculate
+    bool preEmphSw;             //pre-emphasis switch
+    bool fmntTrackSw;           //formant tracking switch
+    uint32 SigBlkOffset;        //number of samples offset into speech data
+    uint32 SigBlkLength;        //number of speech samples over which spectra will be calculated
+    uint16 SpectBatchLength;    //number of spectra to be calculated at one time
     CWindowSettings::Type windowType;
 };
 
 
-class CSpectrogram
-{
+class CSpectrogram {
 public:
     static char * Copyright(void);
     static float Version(void);
@@ -71,14 +68,14 @@ public:
     ~CSpectrogram();
     bool IsAliased();
 
-	uint8  * m_ScreenData;
+    uint8  * m_ScreenData;
 
 private:
     static dspError_t ValidateSignalParms(SSigParms Signal);
     static dspError_t ValidateSettings(SSpectrogramSettings Setting);
     CSpectrogram(SSpectrogramSettings SpgmSetting, uint8 * SpgmData, SFormantFreq * FmntData,
-                CDspWin & Window, CDspWin & NBWindow,
-                SSigParms Signal, uint8 * ScreenData);
+                 CDspWin & Window, CDspWin & NBWindow,
+                 SSigParms Signal, uint8 * ScreenData);
     dspError_t CalcSpectra(uint8 * BlockStart, uint32 NumSpect);
     dspError_t CalcSpectra(short * BlockStart, uint32 NumSpect);
     dspError_t PreProc(short * Frame, CDspWin & Window);

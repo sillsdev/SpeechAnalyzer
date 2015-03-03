@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // <copyright from='2002' to='2004' company='SIL International'>
-//		Copyright © 2002-2004, SIL International. All Rights Reserved.
+//      Copyright © 2002-2004, SIL International. All Rights Reserved.
 //
-//		Distributable under the terms of either the Common Public License or the
-//		GNU Lesser General Public License, as specified in the LICENSING.txt file.
+//      Distributable under the terms of either the Common Public License or the
+//      GNU Lesser General Public License, as specified in the LICENSING.txt file.
 // </copyright>
 //
 // File: SplashScreen.cs
@@ -27,8 +27,7 @@ using Timer = System.Windows.Forms.Timer;
 
 using SIL.SpeechAnalyzer.Utils;
 
-namespace SIL.SpeechAnalyzer.GUI
-{
+namespace SIL.SpeechAnalyzer.GUI {
 
 /// ----------------------------------------------------------------------------------------
 public class SplashScreenForm : Form {
@@ -61,7 +60,7 @@ public class SplashScreenForm : Form {
     const int TICK = 25;
     // delay is how long dialog will be displayed at full opacity (1.3 seconds)
     const int DELAY = 1300/TICK;
-    // opacity ranges from 0 to 1. 
+    // opacity ranges from 0 to 1.
     const float STEP = 0.05f;
 
     /// ------------------------------------------------------------------------------------
@@ -79,7 +78,7 @@ public class SplashScreenForm : Form {
         lblMessage.Font = SystemInformation.MenuFont;
         lblBuildNumber.Font = SystemInformation.MenuFont;
         Opacity = 0.25;
-        phase = 0;        
+        phase = 0;
     }
 
     /// ------------------------------------------------------------------------------------
@@ -88,7 +87,7 @@ public class SplashScreenForm : Form {
     /// </summary>
     /// ------------------------------------------------------------------------------------
     public SplashScreenForm(bool showBuildNum, VersionType versionType)
-    : this() {
+        : this() {
 
         m_showBuildNum = showBuildNum;
         m_versionType = versionType;
@@ -103,12 +102,13 @@ public class SplashScreenForm : Form {
     /// to release only unmanaged resources.</param>
     /// ------------------------------------------------------------------------------------
     protected override void Dispose(bool disposing) {
-        
+
         GUI.Utils.s_splashScreen = null;
 
         if (disposing) {
-            if (m_timer != null)
+            if (m_timer != null) {
                 m_timer.Dispose();
+            }
         }
 
         m_timer = null;
@@ -229,8 +229,8 @@ public class SplashScreenForm : Form {
     /// Shows the splash screen
     /// </summary>
     /// ------------------------------------------------------------------------------------
-    public virtual void RealShow( EventWaitHandle waitHandle, bool useFading) {
-        
+    public virtual void RealShow(EventWaitHandle waitHandle, bool useFading) {
+
         m_waitHandle = waitHandle;
         InitControlLabels();
         m_useFading = useFading;
@@ -260,8 +260,9 @@ public class SplashScreenForm : Form {
     /// ----------------------------------------------------------------------------------------
     public virtual void RealClose() {
 
-        if (m_timer != null)
+        if (m_timer != null) {
             m_timer.Stop();
+        }
 
         Close();
     }
@@ -312,10 +313,11 @@ public class SplashScreenForm : Form {
         }
 
         var verType = string.Empty;
-        if (m_versionType == VersionType.Alpha)
+        if (m_versionType == VersionType.Alpha) {
             verType = "Test Version";
-        else if (m_versionType == VersionType.Beta)
+        } else if (m_versionType == VersionType.Beta) {
             verType = "Beta";
+        }
 
 #if DEBUG
         lblVersion.Text = string.Format(m_versionFmt, version, "(Debug version)", verType);
@@ -333,11 +335,10 @@ public class SplashScreenForm : Form {
     /// AssemblyFileVersion attribute in AssemblyInfo.cs of the executable.
     /// </remarks>
     /// ------------------------------------------------------------------------------------
-    public virtual void SetProdName( string value) {
+    public virtual void SetProdName(string value) {
 
         string name = value;
-        if (string.IsNullOrEmpty(name))
-        {
+        if (string.IsNullOrEmpty(name)) {
             name = Application.ProductName;
         }
 
@@ -373,8 +374,9 @@ public class SplashScreenForm : Form {
     protected override void OnVisibleChanged(EventArgs e) {
 
         base.OnVisibleChanged(e);
-        if (Visible && m_useFading && m_waitHandle != null)
+        if (Visible && m_useFading && m_waitHandle != null) {
             m_waitHandle.Set();
+        }
     }
 
     /// ------------------------------------------------------------------------------------
@@ -382,12 +384,13 @@ public class SplashScreenForm : Form {
     /// Tasks needing to be done when Window is being opened: Set window position.
     /// </summary>
     /// ------------------------------------------------------------------------------------
-    protected override void OnHandleCreated( EventArgs e) {
+    protected override void OnHandleCreated(EventArgs e) {
 
         base.OnHandleCreated(e);
 
-        if (DesignMode)
+        if (DesignMode) {
             return;
+        }
 
         // set build label visibility
         lblBuildNumber.Visible = m_showBuildNum;
@@ -433,8 +436,9 @@ public class SplashScreenForm : Form {
 
             SetProdVersion(null);
 
-            if (assembly == null)
+            if (assembly == null) {
                 assembly = Assembly.GetExecutingAssembly();
+            }
 
             attributes = assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
 
@@ -458,7 +462,7 @@ public class SplashScreenForm : Form {
         var clr1 = m_panel.BackColor;
         var clr2 = ColorHelper.CalculateColor(Color.White, Color.DarkGray, 150);
         var rc = m_panel.ClientRectangle;
-        using (LinearGradientBrush br = new LinearGradientBrush(rc, clr1, clr2, 45))
+        using(LinearGradientBrush br = new LinearGradientBrush(rc, clr1, clr2, 45))
         e.Graphics.FillRectangle(br, rc);
 
         const int dypLineThickness = 2;
@@ -469,7 +473,7 @@ public class SplashScreenForm : Form {
         int x1 = 16;
         int x2 = m_panel.ClientSize.Width - (x1 + 1);
 
-        using (Pen pen = new Pen(Color.FromArgb(128, 128, 128))) {
+        using(Pen pen = new Pen(Color.FromArgb(128, 128, 128))) {
             e.Graphics.DrawLine(pen, x1, nTopOfGrayLine, x2, nTopOfGrayLine);
             e.Graphics.DrawLine(pen, x1, nTopOfGrayLine + 1, x2, nTopOfGrayLine + 1);
             pen.Color = Color.FromArgb(192, 192, 192);
@@ -489,8 +493,9 @@ public class SplashScreenForm : Form {
     /// ------------------------------------------------------------------------------------
     protected virtual void OnUpdateOpacity(object sender, EventArgs e) {
 
-        if (m_timer == null)
+        if (m_timer == null) {
             return;
+        }
 
         // This callback might get called multiple times before the Invoke is finished,
         // which causes some problems. We just ignore any callbacks we get while we are
@@ -502,12 +507,14 @@ public class SplashScreenForm : Form {
                 // timer is still running. It happened to me (EberhardB) when I stopped
                 // debugging while starting up, but it might happen at other times too
                 // - so just be safe.
-                if (!IsDisposed && IsHandleCreated)
+                if (!IsDisposed && IsHandleCreated) {
                     Invoke(new UpdateOpacityDelegate(UpdateOpacity));
+                }
             } catch (Exception ex) {
                 // just ignore any exceptions
                 Debug.WriteLine("Got exception in OnUpdateOpacity: " + ex.Message);
-            } finally {
+            }
+            finally {
                 Monitor.Exit(this);
             }
         }
@@ -520,32 +527,31 @@ public class SplashScreenForm : Form {
         if (currentOpacity == 0.0) {
             Refresh();
         }
-        switch (phase)
-        {
-            case 0:
-                if (currentOpacity < 1.0) {
-                    Opacity = currentOpacity + STEP;
-                } else {
-                    phase = 1;
-                }
-                break;
-            case 1:
-                if (delay<=DELAY) {
-                    delay++;
-                } else {
-                    phase = 2;
-                }
-                break;
-            case 2:
-                if (currentOpacity > 0.0) {
-                    Opacity = currentOpacity - STEP;
-                } else {
-                    // we are done..
-                    m_timer.Stop();
-                    m_timer.Dispose();
-                    m_timer = null;
-                }
-                break;
+        switch (phase) {
+        case 0:
+            if (currentOpacity < 1.0) {
+                Opacity = currentOpacity + STEP;
+            } else {
+                phase = 1;
+            }
+            break;
+        case 1:
+            if (delay<=DELAY) {
+                delay++;
+            } else {
+                phase = 2;
+            }
+            break;
+        case 2:
+            if (currentOpacity > 0.0) {
+                Opacity = currentOpacity - STEP;
+            } else {
+                // we are done..
+                m_timer.Stop();
+                m_timer.Dispose();
+                m_timer = null;
+            }
+            break;
         }
     }
 }

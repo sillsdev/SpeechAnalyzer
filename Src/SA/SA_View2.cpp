@@ -3427,10 +3427,14 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str) {
 /***************************************************************************/
 void CSaView::RemoveSelectedAnnotation() {
     CSegment * pSegment = FindSelectedAnnotation();
-    if (pSegment == NULL) return;
-	int index = pSegment->GetSelection();
-	if (index == -1) return;
-    pSegment->Remove( GetDocument(), index, TRUE);
+    if (pSegment == NULL) {
+        return;
+    }
+    int index = pSegment->GetSelection();
+    if (index == -1) {
+        return;
+    }
+    pSegment->Remove(GetDocument(), index, TRUE);
 }
 
 /***************************************************************************/
@@ -3896,7 +3900,7 @@ void CSaView::OnEditAddSyllable() {
         dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
 
         if (dwStop <= dwMaxStop) { // enough room
-            pSeg->Adjust(pDoc,nSelection,dwStop,pSeg->GetDuration(nSelection)+dwStop-pSeg->GetOffset(nSelection));
+            pSeg->Adjust(pDoc,nSelection,dwStop,pSeg->GetDuration(nSelection)+dwStop-pSeg->GetOffset(nSelection),false);
             pSeg->Insert(nSelection, szString, true, dwStart,dwStop - dwStart);
             pDoc->SetModifiedFlag(TRUE); // document has been modified
             pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
@@ -4091,11 +4095,11 @@ void CSaView::OnEditAddPhonetic() {
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetAnnotation(PHONETIC);
     CPhonemicSegment * pPhonemic = (CPhonemicSegment *)GetAnnotation(PHONEMIC);
-    COrthoSegment * pOrtho = (COrthoSegment*)GetAnnotation(ORTHO);
+    COrthoSegment * pOrtho = (COrthoSegment *)GetAnnotation(ORTHO);
     CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
     CGlossNatSegment * pGlossNat = (CGlossNatSegment *)GetAnnotation(GLOSS_NAT);
     CReferenceSegment * pReference = (CReferenceSegment *) GetAnnotation(REFERENCE);
-    CToneSegment * pTone = (CToneSegment*)GetAnnotation(TONE);
+    CToneSegment * pTone = (CToneSegment *)GetAnnotation(TONE);
 
     pDoc->CheckPoint();
     CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
@@ -4105,7 +4109,7 @@ void CSaView::OnEditAddPhonetic() {
         int nPrevious = pPhonetic->GetPrevious(nInsertAt);
         if ((nPrevious != -1) &&
                 (pPhonetic->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition())) {
-            pPhonetic->Adjust(pDoc, nPrevious, pPhonetic->GetOffset(nPrevious),GetStartCursorPosition() - pPhonetic->GetOffset(nPrevious));
+            pPhonetic->Adjust(pDoc, nPrevious, pPhonetic->GetOffset(nPrevious),GetStartCursorPosition() - pPhonetic->GetOffset(nPrevious),false);
         }
 
         int nNext  = -1;
@@ -4116,7 +4120,7 @@ void CSaView::OnEditAddPhonetic() {
         }
         if ((nNext != -1) &&
                 (pPhonetic->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))) {
-            pPhonetic->Adjust( pDoc, nNext, GetStopCursorPosition(), pPhonetic->GetStop(nNext)-GetStopCursorPosition());
+            pPhonetic->Adjust(pDoc, nNext, GetStopCursorPosition(), pPhonetic->GetStop(nNext)-GetStopCursorPosition(),false);
         }
 
         pPhonetic->Insert(nInsertAt, szString, false, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
@@ -4129,9 +4133,9 @@ void CSaView::OnEditAddPhonetic() {
             int nPrevious = pPhonetic->GetPrevious(nInsertAt);
             int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
             if (nIndex != -1) {
-                pGloss->Adjust( pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex));
-                pGlossNat->Adjust( pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc,nIndex));
-                pReference->Adjust( pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex));
+                pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex),false);
+                pGlossNat->Adjust(pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc,nIndex),false);
+                pReference->Adjust(pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex),false);
             }
         }
 
@@ -4184,19 +4188,19 @@ void CSaView::OnEditAddPhonetic() {
 
                 nInsertAt = pPhonetic->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
                 ASSERT(nInsertAt >= 0);
-                pPhonetic->Insert( nInsertAt, szString, false, dwStart, dwStop - dwStart);
-                pPhonemic->Insert( nInsertAt, L"", false, dwStart, dwStop - dwStart);
-                pOrtho->Insert( nInsertAt, L"", false, dwStart, dwStop - dwStart);
-                pTone->Insert( nInsertAt, L"", false, dwStart, dwStop - dwStart);
+                pPhonetic->Insert(nInsertAt, szString, false, dwStart, dwStop - dwStart);
+                pPhonemic->Insert(nInsertAt, L"", false, dwStart, dwStop - dwStart);
+                pOrtho->Insert(nInsertAt, L"", false, dwStart, dwStop - dwStart);
+                pTone->Insert(nInsertAt, L"", false, dwStart, dwStop - dwStart);
 
                 // Adjust Gloss
                 if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt))) {
                     int nPrevious = pPhonetic->GetPrevious(nInsertAt);
                     int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
                     if (nIndex != -1) {
-                        pGloss->Adjust( pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex));
-                        pGlossNat->Adjust( pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc,nIndex));
-                        pReference->Adjust( pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex));
+                        pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex),false);
+                        pGlossNat->Adjust(pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc,nIndex),false);
+                        pReference->Adjust(pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex),false);
                     }
                 }
 
@@ -4300,7 +4304,7 @@ void CSaView::OnUpdateEditAddPhonetic(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnEditAddPhrase
 /***************************************************************************/
-void CSaView::OnEditAddPhrase( CMusicPhraseSegment * pSeg) {
+void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
 
     pDoc->CheckPoint();
@@ -4312,7 +4316,7 @@ void CSaView::OnEditAddPhrase( CMusicPhraseSegment * pSeg) {
         if (nPrevious != -1) {
             // is the previous segment+jointime overlapping our start?
             if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition()) { // SDM 1.5Test10.2
-                pSeg->Adjust(pDoc,nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition()-pSeg->GetOffset(nPrevious));
+                pSeg->Adjust(pDoc,nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition()-pSeg->GetOffset(nPrevious),false);
             }
         }
 
@@ -4325,18 +4329,18 @@ void CSaView::OnEditAddPhrase( CMusicPhraseSegment * pSeg) {
                 if (nextOffset<(stopPos+byteCount)) { // SDM 1.5Test10.2
                     DWORD stop = pSeg->GetStop(nNext);
                     CURSORPOS stopPos = GetStopCursorPosition();
-                    pSeg->Adjust( pDoc,nNext,stopPos,stop-stopPos);
+                    pSeg->Adjust(pDoc,nNext,stopPos,stop-stopPos,false);
                 }
             }
         }
-        pSeg->Insert( nInsertAt, szString, false, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
+        pSeg->Insert(nInsertAt, szString, false, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
         pDoc->SetModifiedFlag(TRUE);        // document has been modified
         pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
         RefreshGraphs(TRUE);
         pSeg->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), true);
-    } else { 
-		// Can we insert after selected segment
+    } else {
+        // Can we insert after selected segment
         if (pSeg->GetSelection()!=-1) { // Phonetic Segment Selected
             int nSelection = pSeg->GetSelection();
             DWORD dwStart = pSeg->GetStop(nSelection); // Start at current stop
@@ -4535,8 +4539,9 @@ void CSaView::OnEditAddAutoPhraseL2() {
     if (nInsertAt != -1) {
         int nPrevious = pSeg->GetPrevious(nInsertAt);
         if (nPrevious != -1) {
-            if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition()) { // SDM 1.5Test10.2
-                pSeg->Adjust(pDoc, nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition() - pSeg->GetOffset(nPrevious));
+			// SDM 1.5Test10.2
+            if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition()) { 
+                pSeg->Adjust(pDoc, nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition() - pSeg->GetOffset(nPrevious),false);
             }
         }
         int nNext  = -1;
@@ -4546,8 +4551,9 @@ void CSaView::OnEditAddAutoPhraseL2() {
             nNext = nInsertAt;
         }
         if (nNext != -1) {
-            if (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) { // SDM 1.5Test10.2
-                pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
+			// SDM 1.5Test10.2
+            if (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) { 
+                pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition(),false);
             }
         }
         pSeg->Insert(nInsertAt, szString, false, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
@@ -4662,7 +4668,7 @@ void CSaView::OnEditAddGloss() {
 
 void CSaView::OnEditAddMarkup() {
 
-	DWORD start = GetStartCursorPosition();
+    DWORD start = GetStartCursorPosition();
     DWORD stop = GetStopCursorPosition();
     OnEditAddPhonetic();
     OnEditAddGloss();
@@ -4693,8 +4699,8 @@ void CSaView::OnEditAddBookmark() {
 /***************************************************************************/
 void CSaView::EditAddGloss(bool bDelimiter) {
 
-    CSaDoc * pDoc = (CSaDoc *)GetDocument();	// get pointer to document
-    CSaString szString = "";					//Fill new segment with default character
+    CSaDoc * pDoc = (CSaDoc *)GetDocument();    // get pointer to document
+    CSaString szString = "";                    //Fill new segment with default character
     CSaString szEmpty = "";
 
     CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
@@ -4704,13 +4710,13 @@ void CSaView::EditAddGloss(bool bDelimiter) {
     DWORD dwStartR = GetStartCursorPosition();
     DWORD dwStopR = GetStopCursorPosition();
 
-    int nInsertAt = pGloss->CheckPosition( pDoc, dwStartR, dwStopR, CSegment::MODE_ADD);
+    int nInsertAt = pGloss->CheckPosition(pDoc, dwStartR, dwStopR, CSegment::MODE_ADD);
     if (nInsertAt != -1) {
         DWORD dwStart = 0;
         pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
-        pGloss->Add( pDoc, this, dwStart, szString, bDelimiter, TRUE); // add a segment
-        pReference->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
-        pGlossNat->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
+        pGloss->Add(pDoc, this, dwStart, szString, bDelimiter, TRUE);  // add a segment
+        pReference->Add(pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
+        pGlossNat->Add(pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
     } else {
         //SDM 1.5Test8.2
         DWORD dwStart = GetStartCursorPosition();
@@ -4733,15 +4739,15 @@ void CSaView::EditAddGloss(bool bDelimiter) {
             SetStopCursorPosition(dwStop);
             OnEditAddPhonetic();
 
-            pGloss->AdjustCursorsToMaster( pDoc, FALSE, &dwStart);
-            pGloss->Add( pDoc, this, dwStart, szString, bDelimiter, FALSE); // add a segment
-            pReference->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
-            pGlossNat->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
+            pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
+            pGloss->Add(pDoc, this, dwStart, szString, bDelimiter, FALSE);  // add a segment
+            pReference->Add(pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
+            pGlossNat->Add(pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
 
             int i = GetGraphIndexForIDD(IDD_RAWDATA);
             if ((i != -1) && (m_apGraphs[i])) {
                 EAnnotation nAnnot = pGloss->GetAnnotationIndex();
-                m_apGraphs[i]->ShowAnnotation( nAnnot, TRUE, TRUE);
+                m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
             }
         } else if (pGloss->GetSelection()!=-1) { // Set Delimiter
             CSaString szString = GetSelectedAnnotationString();
@@ -4864,7 +4870,7 @@ void CSaView::OnUpdateEditAddGloss(CCmdUI * pCmdUI) {
 // Update handler for AddWord
 /***************************************************************************/
 void CSaView::OnUpdateEditAddMarkup(CCmdUI * pCmdUI) {
-	pCmdUI->Enable(AllowEditAdd(false));
+    pCmdUI->Enable(AllowEditAdd(false));
 }
 
 //SDM 1.06.5
@@ -4914,7 +4920,7 @@ void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI) {
 // CSaView::OnEditRemove
 /***************************************************************************/
 void CSaView::OnEditRemove() {
-	RemoveSelectedAnnotation();
+    RemoveSelectedAnnotation();
 }
 
 /***************************************************************************/
@@ -4930,18 +4936,24 @@ void CSaView::OnUpdateEditSplit(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnEditSplit() {
     CSegment * pSeg = FindSelectedAnnotation();
-    if (pSeg==NULL) return;
+    if (pSeg==NULL) {
+        return;
+    }
     int sel = pSeg->GetSelection();
-    if (sel==-1) return;
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) return;
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
-    bool segmental = GetDocument()->IsSegmental( pPhonetic, sel);
+    if (sel==-1) {
+        return;
+    }
+    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+        return;
+    }
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
+    bool segmental = GetDocument()->IsSegmental(pPhonetic, sel);
     int length = pPhonetic->GetSegmentLength(sel);
     int newsel = pPhonetic->GetNext(sel);
     // if we are splitting at the end, we need to calculate the new segment
     newsel = (newsel==-1)?sel+length:newsel;
 
-    GetDocument()->SplitSegment( this, pPhonetic, sel, segmental);
+    GetDocument()->SplitSegment(this, pPhonetic, sel, segmental);
 
     DWORD newStart = pPhonetic->GetOffset(newsel);
     DWORD newStop = pPhonetic->GetStop(newsel);
@@ -4964,14 +4976,20 @@ void CSaView::OnUpdateEditMerge(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnEditMerge() {
     CSegment * pSeg = FindSelectedAnnotation();
-    if (pSeg==NULL) return;
+    if (pSeg==NULL) {
+        return;
+    }
     int sel = pSeg->GetSelection();
-    if (sel==-1) return;
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) return;
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
+    if (sel==-1) {
+        return;
+    }
+    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+        return;
+    }
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
     int newsel = pSeg->GetPrevious(sel);
 
-    GetDocument()->MergeSegments( this, pPhonetic);
+    GetDocument()->MergeSegments(this, pPhonetic);
 
     DWORD newStart = pPhonetic->GetOffset(newsel);
     DWORD newStop = pPhonetic->GetStop(newsel);
@@ -4994,12 +5012,18 @@ void CSaView::OnUpdateEditMoveLeft(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnEditMoveLeft() {
     CSegment * pSeg = FindSelectedAnnotation();
-    if (pSeg==NULL) return;
+    if (pSeg==NULL) {
+        return;
+    }
     int sel = pSeg->GetSelection();
-    if (sel==-1) return;
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) return;
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
-    bool segmental = GetDocument()->IsSegmental( pPhonetic, sel);
+    if (sel==-1) {
+        return;
+    }
+    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+        return;
+    }
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
+    bool segmental = GetDocument()->IsSegmental(pPhonetic, sel);
     DWORD start = pPhonetic->GetOffset(sel);
     DWORD stop = pPhonetic->GetStop(sel);
 
@@ -5045,12 +5069,18 @@ void CSaView::OnUpdateEditMoveRight(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnEditMoveRight() {
     CSegment * pSeg = FindSelectedAnnotation();
-    if (pSeg==NULL) return;
+    if (pSeg==NULL) {
+        return;
+    }
     int sel = pSeg->GetSelection();
-    if (sel==-1) return;
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) return;
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
-    bool segmental = GetDocument()->IsSegmental( pPhonetic, sel);
+    if (sel==-1) {
+        return;
+    }
+    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+        return;
+    }
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
+    bool segmental = GetDocument()->IsSegmental(pPhonetic, sel);
     DWORD start = pPhonetic->GetOffset(sel);
     DWORD stop = pPhonetic->GetStop(sel);
 

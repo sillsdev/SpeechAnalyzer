@@ -208,7 +208,7 @@ public:
     BOOL IsEditAllowed();
     void SetToolSettings(CToolSettings settings, bool fullView);
 
-	void InitializeAutoSave();
+    void InitializeAutoSave();
     afx_msg void OnAutoSaveOn();
     afx_msg void OnAutoSaveOff();
 

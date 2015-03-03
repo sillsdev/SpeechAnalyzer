@@ -9,7 +9,7 @@ using std::vector;
 namespace XML {
 
 Document::Document() :
-element(NULL) {
+    element(NULL) {
 }
 
 Document::~Document() {

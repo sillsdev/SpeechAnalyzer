@@ -1,10 +1,9 @@
 #ifndef RESULT_H
 #define RESULT_H
 
-class CResult : public CDialog
-{
+class CResult : public CDialog {
 public:
-    CResult( LPCTSTR result, CWnd * pParent = NULL); // standard constructor
+    CResult(LPCTSTR result, CWnd * pParent = NULL);  // standard constructor
 
     enum { IDD = IDD_RESULT };
     CString m_szResult;

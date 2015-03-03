@@ -32,9 +32,11 @@ void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwS
 // For example if we are inserting at the 4 gloss segment but only reference
 // segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
-BOOL CDependentTextSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
-	if (pszString==NULL) return FALSE;
-    InsertAt( nIndex,CString(pszString),dwStart,dwDuration);
+BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+    if (pszString==NULL) {
+        return FALSE;
+    }
+    InsertAt(nIndex,pszString,dwStart,dwDuration);
     return TRUE;
 }
 
@@ -48,8 +50,8 @@ BOOL CDependentTextSegment::Insert( int nIndex, LPCTSTR pszString, bool delimite
 // For example if we are inserting at the 4 gloss segment but only reference
 // segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
-BOOL CDependentTextSegment::Append( LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
-	return Insert( GetOffsetSize(), pszString, delimiter, dwStart, dwDuration);
+BOOL CDependentTextSegment::Append(LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+    return Insert(GetOffsetSize(), pszString, delimiter, dwStart, dwDuration);
 }
 
 // SDM 1.5 Test11.0
@@ -74,9 +76,9 @@ int CDependentTextSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwAligne
 /***************************************************************************/
 // CDependentTextSegment::Add Add dependent annotation segment
 /***************************************************************************/
-void CDependentTextSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
-    
-	// get the offset and duration from master
+void CDependentTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
+
+    // get the offset and duration from master
     int nSegment = pDoc->GetSegment(GLOSS)->FindOffset(dwStart);
     if (nSegment == -1) {
         return; // return on error
@@ -96,13 +98,13 @@ void CDependentTextSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, 
     }
 
     // insert or append the new dependent segment
-    if (!Insert( nPos, szString, 0, dwStart, dwDuration)) {
-        pView->RefreshGraphs(TRUE);									// refresh the graphs between cursors
-        return;														// return on error or not inserted.
+    if (!Insert(nPos, szString, 0, dwStart, dwDuration)) {
+        pView->RefreshGraphs(TRUE);                                 // refresh the graphs between cursors
+        return;                                                     // return on error or not inserted.
     }
 
-    pDoc->SetModifiedFlag(TRUE);									// document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);								// transcription data has been modified
-    pView->ChangeAnnotationSelection( this, nPos, dwStart, dwStop);	// change the selection
-    pView->RefreshGraphs(FALSE);									// refresh the graphs between cursors
+    pDoc->SetModifiedFlag(TRUE);                                    // document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);                               // transcription data has been modified
+    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop);   // change the selection
+    pView->RefreshGraphs(FALSE);                                    // refresh the graphs between cursors
 }

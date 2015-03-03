@@ -32,8 +32,7 @@ BEGIN_MESSAGE_MAP(CDataStatusBar, CStatusBar)
     ON_WM_PAINT()
 END_MESSAGE_MAP()
 
-CDataStatusBar::CDataStatusBar()
-{
+CDataStatusBar::CDataStatusBar() {
     m_pFont = NULL;
     m_bPositionSymbol = m_bScaleSymbol = m_bFrequencySymbol = FALSE;
     m_bLengthSymbol = m_bCepstralSpectrumSymbol = FALSE;
@@ -44,10 +43,8 @@ CDataStatusBar::CDataStatusBar()
 /***************************************************************************/
 // CDataStatusBar::~CDataStatusBar Destructor
 /***************************************************************************/
-CDataStatusBar::~CDataStatusBar()
-{
-    if (m_pFont!=NULL)
-    {
+CDataStatusBar::~CDataStatusBar() {
+    if (m_pFont!=NULL) {
         delete m_pFont;
     }
 }
@@ -56,8 +53,7 @@ CDataStatusBar::~CDataStatusBar()
 // CDataStatusBar::Init Initialisation
 // Setting up the font and the pane sizes of the status bar.
 /***************************************************************************/
-void CDataStatusBar::Init()
-{
+void CDataStatusBar::Init() {
     // statusbar font initialisation
     LOGFONT logFont;
     m_pFont = GetFont(); // get normal used font
@@ -89,16 +85,14 @@ void CDataStatusBar::Init()
 // CDataStatusBar::DoPaint Painting
 // ## Under construction!
 /***************************************************************************/
-void CDataStatusBar::OnPaint()
-{
+void CDataStatusBar::OnPaint() {
     CStatusBar::OnPaint();
     CDC * pDC = GetDC();
     DoPaint(pDC);
     ReleaseDC(pDC);
 }
 
-void CDataStatusBar::DoPaint(CDC * pDC)
-{
+void CDataStatusBar::DoPaint(CDC * pDC) {
     CStatusBar::DoPaint(pDC); // Draw statusbar
     CRect rItem;
 
@@ -108,8 +102,7 @@ void CDataStatusBar::DoPaint(CDC * pDC)
     CPen pen(PS_SOLID, 1, GetSysColor(COLOR_ACTIVECAPTION));
     CPen * pOldPen = pDC->SelectObject(&pen);
 
-    if (m_bScaleSymbol)
-    {
+    if (m_bScaleSymbol) {
         // get item rectangle for scale pane
         GetItemRect(ID_STATUSPANE_POSITION, rItem);
         rItem.right = rItem.left + rItem.Height() + 4; // set right border
@@ -134,8 +127,7 @@ void CDataStatusBar::DoPaint(CDC * pDC)
         pDC->LineTo(nHCenterPos, rItem.bottom - 1);
     }
 
-    if (m_bPositionSymbol)
-    {
+    if (m_bPositionSymbol) {
         // get item rectangle for position pane
         GetItemRect(ID_STATUSPANE_POSITION, rItem);
         rItem.right = rItem.left + rItem.Height() + 4; // set right border
@@ -155,8 +147,7 @@ void CDataStatusBar::DoPaint(CDC * pDC)
         pDC->LineTo(rItem.right - 6, nVCenterPos);
     }
 
-    if (m_bLengthSymbol)
-    {
+    if (m_bLengthSymbol) {
         // get item rectangle for length pane
         GetItemRect(ID_STATUSPANE_LENGTH, rItem);
         rItem.right = rItem.left + rItem.Height() + 4; // set right border
@@ -180,8 +171,7 @@ void CDataStatusBar::DoPaint(CDC * pDC)
         pDC->LineTo(rItem.left + 3, nVCenterPos);
     }
 
-    if (m_bAmplitudeSymbol)
-    {
+    if (m_bAmplitudeSymbol) {
         // get item rectangle for amplitude pane
         GetItemRect(ID_STATUSPANE_AMPLITUDE, rItem);
         rItem.right = rItem.left + rItem.Height() + 4; // set right border
@@ -201,8 +191,7 @@ void CDataStatusBar::DoPaint(CDC * pDC)
     }
 
     // pitch symbol re-instated because of larger status bar panes CLW 12/9/00
-    if (m_bNoteSymbol)
-    {
+    if (m_bNoteSymbol) {
         // get item rectangle for pitch pane
         GetItemRect(ID_STATUSPANE_NOTE, rItem);
         rItem.right = rItem.left + rItem.Height() + 4; // set right border
@@ -218,8 +207,7 @@ void CDataStatusBar::DoPaint(CDC * pDC)
     }
 
     // pitch symbol
-    if (m_bPitchSymbol)
-    {
+    if (m_bPitchSymbol) {
         // get item rectangle for pitch pane
         GetItemRect(ID_STATUSPANE_PITCH, rItem);
         rItem.right = rItem.left + rItem.Height() + 4; // set right border
@@ -245,96 +233,82 @@ void CDataStatusBar::DoPaint(CDC * pDC)
 /***************************************************************************/
 // CDataStatusBar::SetPaneSymbol Show or hide a pane symbol
 /***************************************************************************/
-void CDataStatusBar::SetPaneSymbol(int nPaneID, BOOL bShow)
-{
+void CDataStatusBar::SetPaneSymbol(int nPaneID, BOOL bShow) {
     // Pane #5 Symbols
     if ((nPaneID == ID_STATUSPANE_SAMPLES) ||
-        (nPaneID == ID_STATUSPANE_FORMAT) ||
-        (nPaneID == ID_STATUSPANE_CHANNELS) ||
-        (nPaneID == ID_STATUSPANE_SIZE) ||
-        (nPaneID == ID_STATUSPANE_TLENGTH) ||
-        (nPaneID == ID_STATUSPANE_TYPE) ||
-        (nPaneID == ID_STATUSPANE_BITRATE) ||
-        (nPaneID == ID_STATUSPANE_EMPTY))
-    {
+            (nPaneID == ID_STATUSPANE_FORMAT) ||
+            (nPaneID == ID_STATUSPANE_CHANNELS) ||
+            (nPaneID == ID_STATUSPANE_SIZE) ||
+            (nPaneID == ID_STATUSPANE_TLENGTH) ||
+            (nPaneID == ID_STATUSPANE_TYPE) ||
+            (nPaneID == ID_STATUSPANE_BITRATE) ||
+            (nPaneID == ID_STATUSPANE_EMPTY)) {
         return;
     }
 
-	// Pane #1 symbols
-    if (nPaneID == ID_STATUSPANE_1)
-    {
+    // Pane #1 symbols
+    if (nPaneID == ID_STATUSPANE_1) {
         m_bScaleSymbol = m_bPositionSymbol = m_bFrequencySymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_SCALE)
-    {
+    if (nPaneID == ID_STATUSPANE_SCALE) {
         m_bScaleSymbol = bShow;
         m_bPositionSymbol = m_bFrequencySymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_FREQUENCY)
-    {
+    if (nPaneID == ID_STATUSPANE_FREQUENCY) {
         m_bFrequencySymbol = bShow;
         m_bPositionSymbol = m_bScaleSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_POSITION)
-    {
+    if (nPaneID == ID_STATUSPANE_POSITION) {
         m_bPositionSymbol = bShow;
         m_bScaleSymbol = m_bFrequencySymbol = FALSE;
         return;
     }
 
     // Pane #2 Symbols
-    if (nPaneID == ID_STATUSPANE_2)
-    {
+    if (nPaneID == ID_STATUSPANE_2) {
         m_bCepstralSpectrumSymbol = FALSE;
         m_bLengthSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_CEPSTRALSPECTRUM)
-    {
+    if (nPaneID == ID_STATUSPANE_CEPSTRALSPECTRUM) {
         m_bCepstralSpectrumSymbol = bShow;
         m_bLengthSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_LENGTH)
-    {
+    if (nPaneID == ID_STATUSPANE_LENGTH) {
         m_bLengthSymbol = bShow;
         m_bCepstralSpectrumSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_REL_PITCH)
-    {
+    if (nPaneID == ID_STATUSPANE_REL_PITCH) {
         m_bLengthSymbol = FALSE;
         m_bCepstralSpectrumSymbol = FALSE;
         return;
     }
 
     // Pane #3 Symbols
-    if (nPaneID == ID_STATUSPANE_3)
-    {
+    if (nPaneID == ID_STATUSPANE_3) {
         m_bRawSpectrumSymbol = FALSE;
         m_bAmplitudeSymbol = FALSE;
         m_bNoteSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_RAWSPECTRUM)
-    {
+    if (nPaneID == ID_STATUSPANE_RAWSPECTRUM) {
         m_bRawSpectrumSymbol = bShow;
         m_bAmplitudeSymbol = FALSE;
         m_bNoteSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_AMPLITUDE)
-    {
+    if (nPaneID == ID_STATUSPANE_AMPLITUDE) {
         m_bAmplitudeSymbol = bShow;
         m_bRawSpectrumSymbol = FALSE;
         m_bNoteSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_NOTE)
-    {
+    if (nPaneID == ID_STATUSPANE_NOTE) {
         m_bNoteSymbol = bShow;
         m_bAmplitudeSymbol = FALSE;
         m_bRawSpectrumSymbol = FALSE;
@@ -342,20 +316,17 @@ void CDataStatusBar::SetPaneSymbol(int nPaneID, BOOL bShow)
     }
 
     // Pane #4 Symbols
-    if (nPaneID == ID_STATUSPANE_4)
-    {
+    if (nPaneID == ID_STATUSPANE_4) {
         m_bLpcSpectrumSymbol = FALSE;
         m_bPitchSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_LPCSPECTRUM)
-    {
+    if (nPaneID == ID_STATUSPANE_LPCSPECTRUM) {
         m_bLpcSpectrumSymbol = bShow;
         m_bPitchSymbol = FALSE;
         return;
     }
-    if (nPaneID == ID_STATUSPANE_PITCH)
-    {
+    if (nPaneID == ID_STATUSPANE_PITCH) {
         m_bPitchSymbol = bShow;
         m_bLpcSpectrumSymbol = FALSE;
         return;
@@ -367,12 +338,10 @@ void CDataStatusBar::SetPaneSymbol(int nPaneID, BOOL bShow)
 /***************************************************************************/
 // CDataStatusBar::SetPaneText Set text in status panes
 /***************************************************************************/
-BOOL CDataStatusBar::SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate)
-{
+BOOL CDataStatusBar::SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate) {
     int nPaneIndex = 0;
 
-    switch (nPaneID)
-    {
+    switch (nPaneID) {
     case ID_STATUSPANE_SAMPLES:
     case ID_STATUSPANE_FORMAT:
     case ID_STATUSPANE_CHANNELS:
@@ -418,11 +387,9 @@ BOOL CDataStatusBar::SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate)
 /***************************************************************************/
 // CDataStatusBar::GetItemRect  Get rectangle for status pane
 /***************************************************************************/
-void CDataStatusBar::GetItemRect(int nPaneID, LPRECT lpRect)
-{
+void CDataStatusBar::GetItemRect(int nPaneID, LPRECT lpRect) {
 
-    switch (nPaneID)
-    {
+    switch (nPaneID) {
     case ID_STATUSPANE_SAMPLES:
     case ID_STATUSPANE_FORMAT:
     case ID_STATUSPANE_CHANNELS:
@@ -481,8 +448,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CProgressStatusBar::CProgressStatusBar Constructor
 /***************************************************************************/
-CProgressStatusBar::CProgressStatusBar()
-{
+CProgressStatusBar::CProgressStatusBar() {
     m_pFont = NULL;
     m_pProcessOwner = NULL;
     m_pProcessCaller = NULL;
@@ -493,10 +459,8 @@ CProgressStatusBar::CProgressStatusBar()
 /***************************************************************************/
 // CProgressStatusBar::~CProgressStatusBar Destructor
 /***************************************************************************/
-CProgressStatusBar::~CProgressStatusBar()
-{
-    if (m_pFont)
-    {
+CProgressStatusBar::~CProgressStatusBar() {
+    if (m_pFont) {
         delete m_pFont;
     }
 }
@@ -510,23 +474,19 @@ CProgressStatusBar::~CProgressStatusBar()
 // processing. Each call will allow to do windows key message processing
 // of MFC for this message.
 /***************************************************************************/
-void CProgressStatusBar::MessageLoop()
-{
+void CProgressStatusBar::MessageLoop() {
     static volatile DWORD dwTickLast = 0; // This will allow first call to succeed
     DWORD dwThis = GetTickCount(); // MS since system start
 
-    if (dwThis - dwTickLast > 90)
-    {
+    if (dwThis - dwTickLast > 90) {
         dwTickLast = dwThis; // Update when timer has expired
         MSG msg;
 
         m_nInMessageLoop++;
 
-		// This is risky so only do it if the escape key is pressed
-        if (GetAsyncKeyState(VK_ESCAPE) < 0)   
-        {
-            while (::PeekMessage(&msg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE))
-            {
+        // This is risky so only do it if the escape key is pressed
+        if (GetAsyncKeyState(VK_ESCAPE) < 0) {
+            while (::PeekMessage(&msg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE)) {
                 AfxGetApp()->PumpMessage();
             }
         }
@@ -542,8 +502,7 @@ void CProgressStatusBar::MessageLoop()
 // CProgressStatusBar::Init Initialisation
 // Setting up the font and the pane sizes of the status bar.
 /***************************************************************************/
-void CProgressStatusBar::Init()
-{
+void CProgressStatusBar::Init() {
     // statusbar font initialisation
     LOGFONT logFont;
     m_pFont = GetFont(); // get normal used font
@@ -575,24 +534,19 @@ void CProgressStatusBar::Init()
 /***************************************************************************/
 // CProgressStatusBar::SetProcessOwner Set the owner of the process
 /***************************************************************************/
-void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, int nProcessID)
-{
+void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, int nProcessID) {
 
     m_pProcessOwner = pProcess;
     m_pProcessCaller = pCaller;
 
-    if (GetSafeHwnd())
-    {
+    if (GetSafeHwnd()) {
         CString szText;
 
-        if (nProcessID >= 0)
-        {
+        if (nProcessID >= 0) {
             // display the given text
             szText.LoadString(nProcessID);
             SetPaneText(ID_PROGRESSPANE_LEFTTEXT, szText);
-        }
-        else
-        {
+        } else {
             // display standard text
             szText.LoadString(IDS_STATTXT_PROCESSING);
             SetPaneText(ID_PROGRESSPANE_LEFTTEXT, szText);
@@ -603,8 +557,7 @@ void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, int nP
 /***************************************************************************/
 // CProgressStatusBar::InitProgress Initialisation of the progress bar
 /***************************************************************************/
-void CProgressStatusBar::InitProgress()
-{
+void CProgressStatusBar::InitProgress() {
     // get the pane coordinates for the progress bar
     CRect rWnd;
     GetItemRect(ID_PROGRESSPANE_BAR, rWnd);
@@ -620,17 +573,14 @@ void CProgressStatusBar::InitProgress()
 // calls the windows message loop processing to allow MFC message processing
 // and it sets the progress bar to the new value.
 /***************************************************************************/
-void CProgressStatusBar::SetProgress(int nVal)
-{
-    if (m_ProgressBar.GetProgress() != nVal)
-    {
+void CProgressStatusBar::SetProgress(int nVal) {
+    if (m_ProgressBar.GetProgress() != nVal) {
         m_ProgressBar.SetProgress(nVal); // set the progress bar
 
         static DWORD dwTickLast = 0;
         DWORD dwThis = GetTickCount();
 
-        if (dwThis - dwTickLast > 100)
-        {
+        if (dwThis - dwTickLast > 100) {
             dwTickLast = dwThis;
             CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
             CSaDoc * pDoc = pMainWnd->GetCurrDoc();
@@ -644,11 +594,9 @@ void CProgressStatusBar::SetProgress(int nVal)
 /***************************************************************************/
 // CProgressStatusBar::SetPaneText Set text in status panes
 /***************************************************************************/
-BOOL CProgressStatusBar::SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate)
-{
+BOOL CProgressStatusBar::SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate) {
 
-    switch (nPaneID)
-    {
+    switch (nPaneID) {
     case ID_PROGRESSPANE_1:
     case ID_PROGRESSPANE_LEFTTEXT:
         CStatusBar::SetPaneText(CommandToIndex(ID_PROGRESSPANE_1), lpszText, bUpdate);
@@ -672,10 +620,8 @@ BOOL CProgressStatusBar::SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate
 /***************************************************************************/
 // CProgressStatusBar::GetItemRect  Get rectangle for status pane
 /***************************************************************************/
-void CProgressStatusBar::GetItemRect(int nPaneID, LPRECT lpRect)
-{
-    switch (nPaneID)
-    {
+void CProgressStatusBar::GetItemRect(int nPaneID, LPRECT lpRect) {
+    switch (nPaneID) {
     case ID_PROGRESSPANE_1:
     case ID_PROGRESSPANE_LEFTTEXT:
         CStatusBar::GetItemRect(CommandToIndex(ID_PROGRESSPANE_1), lpRect);
@@ -702,32 +648,26 @@ void CProgressStatusBar::GetItemRect(int nPaneID, LPRECT lpRect)
 // we have two status bars and so it ends up displaying both in preview and
 // then making the progress bar stick in the frame when preview is done.
 // To prevent this, we disable the method.
-void CProgressStatusBar::DelayShow()
-{
+void CProgressStatusBar::DelayShow() {
     // do nothing.
 }
 
-void * CProgressStatusBar::GetProcessOwner()
-{
+void * CProgressStatusBar::GetProcessOwner() {
     return m_pProcessOwner;   // return the process owner
 }
 
-void * CProgressStatusBar::GetProcessCaller()
-{
+void * CProgressStatusBar::GetProcessCaller() {
     return m_pProcessCaller;   // return the process caller
 }
 
-int  CProgressStatusBar::GetProgress()
-{
+int  CProgressStatusBar::GetProgress() {
     return m_ProgressBar.GetProgress();   // get progress
 }
 
-void CProgressStatusBar::SetIsPrintingFlag(BOOL isPrinting)
-{
+void CProgressStatusBar::SetIsPrintingFlag(BOOL isPrinting) {
     m_bIsPrinting = isPrinting;
 }
 
-BOOL CProgressStatusBar::InProcessMessageLoop() const
-{
+BOOL CProgressStatusBar::InProcessMessageLoop() const {
     return m_nInMessageLoop != 0;
 }

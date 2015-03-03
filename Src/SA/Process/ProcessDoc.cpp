@@ -42,8 +42,8 @@ long CProcessDoc::Process(void * /*pCaller*/, ISaDoc * /*pDoc*/, int /*nProgress
 // The data offset contains a byte index.
 /***************************************************************************/
 HPSTR CProcessDoc::GetProcessedWaveData(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin) {
-    
-	if (wcslen(szName)==0) {
+
+    if (wcslen(szName)==0) {
         return NULL;
     }
 
@@ -137,9 +137,9 @@ void * CProcessDoc::GetProcessedObject(LPCTSTR szName, int selectedChannel, int 
 // CProcess::GetProcessedDataBlock returns a pointer to requested data object
 // uses data buffer to optimize requests
 /***************************************************************************/
-void * CProcessDoc::GetProcessedDataBlock( LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse) {
-    
-	//TRACE("read %d %d %d %d %d\n",dwByteOffset,m_dwBufferOffset,sObjectSize,_countof(m_Buffer),bReverse);
+void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse) {
+
+    //TRACE("read %d %d %d %d %d\n",dwByteOffset,m_dwBufferOffset,sObjectSize,_countof(m_Buffer),bReverse);
     //TRACE(L"GetProcessedDataBlock %s\n",szName);
 
     if (dwByteOffset == UNDEFINED_OFFSET) {
@@ -147,8 +147,8 @@ void * CProcessDoc::GetProcessedDataBlock( LPCTSTR szName, int selectedChannel, 
         return NULL;
     }
 
-    if ((dwByteOffset >= m_dwBufferOffset) && 
-		((dwByteOffset+sObjectSize) <= (m_dwBufferOffset + _countof(m_Buffer)))) {
+    if ((dwByteOffset >= m_dwBufferOffset) &&
+            ((dwByteOffset+sObjectSize) <= (m_dwBufferOffset + _countof(m_Buffer)))) {
         // this data is actually in buffer
         // return pointer to data
         return &m_Buffer[dwByteOffset - m_dwBufferOffset];
@@ -179,7 +179,7 @@ void * CProcessDoc::GetProcessedDataBlock( LPCTSTR szName, int selectedChannel, 
     // find the right position in the data
     if (m_dwBufferOffset != 0L) {
         try {
-			size_t seek = m_dwBufferOffset*numChannels;
+            size_t seek = m_dwBufferOffset*numChannels;
             file.Seek(seek, CFile::begin);
         } catch (...) {
             // error seeking file

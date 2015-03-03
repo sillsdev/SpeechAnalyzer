@@ -8,8 +8,7 @@
 #ifndef _SA_W_REV_H
 #define _SA_W_REV_H
 
-class CProcessWbEcho : public CProcess
-{
+class CProcessWbEcho : public CProcess {
 public:
     CProcessWbEcho();
     virtual ~CProcessWbEcho();
@@ -28,8 +27,7 @@ private:
 //###########################################################################
 // CProcessWbReverb data processing
 
-class CProcessWbReverb : public CProcess
-{
+class CProcessWbReverb : public CProcess {
 public:
     CProcessWbReverb();
     virtual ~CProcessWbReverb();

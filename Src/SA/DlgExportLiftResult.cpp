@@ -9,18 +9,15 @@
 IMPLEMENT_DYNAMIC(CDlgExportLiftResult, CDialog)
 
 CDlgExportLiftResult::CDlgExportLiftResult(CWnd * pParent /*=NULL*/)
-    : CDialog(CDlgExportLiftResult::IDD, pParent)
-{
+    : CDialog(CDlgExportLiftResult::IDD, pParent) {
 
     m_DataCount = _T("");
 }
 
-CDlgExportLiftResult::~CDlgExportLiftResult()
-{
+CDlgExportLiftResult::~CDlgExportLiftResult() {
 }
 
-void CDlgExportLiftResult::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgExportLiftResult::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_STATIC_DATA_COUNT, m_DataCount);
     DDX_Text(pDX, IDC_STATIC_SFM_COUNT, m_SFMCount);

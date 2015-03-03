@@ -7,8 +7,7 @@
 
 // Fit a parabola p[0] + p[1] x + p[2] x^2 to the points
 // (-1,y[0]), (0,y[1]), (1,y[2]).
-static void FitParabola(float p[3], const float y[3])
-{
+static void FitParabola(float p[3], const float y[3]) {
     // y[1] == p[0]
     // y[2] == p[0] + p[1] + p[2]
     // y[0] == p[0] - p[1] + p[2]
@@ -23,8 +22,7 @@ static void FitParabola(float p[3], const float y[3])
 // again.
 static const float *
 FindNextPeak(const float *& first, const float * const last,
-             const float concavityThreshold)
-{
+             const float concavityThreshold) {
     assert(first != NULL);
     assert(last != NULL);
     assert(first < last);
@@ -32,8 +30,7 @@ FindNextPeak(const float *& first, const float * const last,
     // Handle degenerate cases:
 
     // If only one or two points, not enough for a peak.
-    if (last - first < 2)
-    {
+    if (last - first < 2) {
         return NULL;
     }
 
@@ -47,14 +44,12 @@ FindNextPeak(const float *& first, const float * const last,
     // go until we first get to a reasonably concave portion.
     y = first;
 
-    while (y+2 < last)
-    {
+    while (y+2 < last) {
         // Fit a parabola to the points at y, y+1, y+2
         FitParabola(p, y);
 
         // The second derivative at y+1 is given by p[2]*2
-        if (p[2]*2.0f < concavityThreshold)
-        {
+        if (p[2]*2.0f < concavityThreshold) {
             break;
         }
 
@@ -63,19 +58,16 @@ FindNextPeak(const float *& first, const float * const last,
 
     // Now that we're on the peak, go until we fall off.
     // Record the point whose derivative is closest to 0.
-    while (y < last)
-    {
+    while (y < last) {
         FitParabola(p, y);
         // If we've passed to a region of convexity, stop
-        if (p[2]*2.0f > concavityThreshold)
-        {
+        if (p[2]*2.0f > concavityThreshold) {
             break;
         }
 
         // The derivative at y+1 is given by p[1].
         // If we've found a flatter spot, save it.
-        if (float(fabs(p[1])) < bestDerivative)
-        {
+        if (float(fabs(p[1])) < bestDerivative) {
             bestDerivative = float(fabs(p[1]));
             bestLocation = y+1;
         }
@@ -83,15 +75,12 @@ FindNextPeak(const float *& first, const float * const last,
         y++;
     }
 
-    if (y+2 < last)
-    {
+    if (y+2 < last) {
         // Means we found a complete peak
         assert(bestDerivative < FLT_MAX);
         first = y+1;
         return bestLocation;
-    }
-    else
-    {
+    } else {
         // Ran out of peaks
         first = last;
         return NULL;
@@ -99,13 +88,11 @@ FindNextPeak(const float *& first, const float * const last,
 }
 
 CQuadraticPeakSource::CQuadraticPeakSource(float threshold)
-    : myThreshold(threshold)
-{
+    : myThreshold(threshold) {
 }
 
 void
-CQuadraticPeakSource::Search(const float * start, const float * end)
-{
+CQuadraticPeakSource::Search(const float * start, const float * end) {
     assert(start);
     assert(end);
     assert(start <= end);
@@ -114,20 +101,16 @@ CQuadraticPeakSource::Search(const float * start, const float * end)
     myEnd = end;
     myMark = start;
 
-    if (start == end)
-    {
+    if (start == end) {
         imDone = 1;
-    }
-    else
-    {
+    } else {
         imDone = 0;
         Next();
     }
 }
 
 void
-CQuadraticPeakSource::Next()
-{
+CQuadraticPeakSource::Next() {
     assert(myStart);
     assert(myMark);
     assert(myEnd);
@@ -136,20 +119,16 @@ CQuadraticPeakSource::Next()
 
     const float * peakLocation = FindNextPeak(myMark, myEnd, myThreshold);
 
-    if (peakLocation)
-    {
+    if (peakLocation) {
         myLocation = float(peakLocation - myStart);
         myValue = *peakLocation;
-    }
-    else
-    {
+    } else {
         imDone = 1;
     }
 }
 
 void
-CQuadraticPeakSource::Get(float & location, float & value) const
-{
+CQuadraticPeakSource::Get(float & location, float & value) const {
     assert(!IsDone());
 
     location = myLocation;
@@ -157,7 +136,6 @@ CQuadraticPeakSource::Get(float & location, float & value) const
 }
 
 int32
-CQuadraticPeakSource::IsDone() const
-{
+CQuadraticPeakSource::IsDone() const {
     return imDone;
 }

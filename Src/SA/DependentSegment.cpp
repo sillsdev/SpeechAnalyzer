@@ -173,7 +173,7 @@ int CDependentSegment::AdjustPositionToMaster(CDocument * pSaDoc, DWORD & dwNewO
     }
 
     // Find Nearest master Stop
-    nIndex = AlignStopToMaster( pDoc, dwAlignStop);
+    nIndex = AlignStopToMaster(pDoc, dwAlignStop);
     if (nIndex == -1) {
         if (GetOffsetSize() > 0) { // SDM 1.5Test11.0 if less than one segment stop is end of file
             dwNewStop = GetStop(0);
@@ -256,7 +256,7 @@ void CDependentSegment::AdjustCursorsToMaster(CDocument * pSaDoc, BOOL bAdjust, 
 // start must not be placed in the range of a segment, where already
 // another segment is aligned to, but there must be a segment to align to.
 /***************************************************************************/
-int CDependentSegment::CheckPositionToMaster( ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EMode nMode) const {
+int CDependentSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EMode nMode) const {
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     CSegment * pMaster = pDoc->GetSegment(m_nMasterIndex);
@@ -332,7 +332,7 @@ int CDependentSegment::CheckPositionToMaster( ISaDoc * pSaDoc, DWORD dwStart, DW
 /***************************************************************************/
 // CDependentSegment::Add Add dependent annotation segment
 /***************************************************************************/
-void CDependentSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
+void CDependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
     // get the offset and duration from master
     int nSegment = pDoc->GetSegment(m_nMasterIndex)->FindOffset(dwStart);
     if (nSegment == -1) {
@@ -353,24 +353,24 @@ void CDependentSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaS
     }
 
     // insert or append the new dependent segment
-    if (!Insert( nPos, szString, 0, dwStart, dwDuration)) {
+    if (!Insert(nPos, szString, 0, dwStart, dwDuration)) {
         return;    // return on error
     }
 
-    pDoc->SetModifiedFlag(TRUE);		// document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
+    pDoc->SetModifiedFlag(TRUE);        // document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
     pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop); // change the selection
-    pView->RefreshGraphs(FALSE);		// refresh the graphs between cursors
+    pView->RefreshGraphs(FALSE);        // refresh the graphs between cursors
 }
 
-int CDependentSegment::CheckPosition( ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL /*bUnused*/) const {
-    return CheckPositionToMaster( pDoc, dwStart, dwStop, nMode);
+int CDependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL /*bUnused*/) const {
+    return CheckPositionToMaster(pDoc, dwStart, dwStop, nMode);
 }
 
 /***************************************************************************/
 // CDependentSegment::Remove Remove dependent annotation segment
 /***************************************************************************/
-void CDependentSegment::Remove( CSaDoc * pDoc, int sel, BOOL bCheck) {
+void CDependentSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
 
     // save state for undo ability
     if (bCheck) {
@@ -384,10 +384,10 @@ void CDependentSegment::Remove( CSaDoc * pDoc, int sel, BOOL bCheck) {
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
     // refresh ui
-    pDoc->SetModifiedFlag(TRUE);						// document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);					// transcription data has been modified
-    pView->ChangeAnnotationSelection(this, sel, 0, 0);	// deselect
-    pView->RefreshGraphs(FALSE);						// refresh the graphs between cursors
+    pDoc->SetModifiedFlag(TRUE);                        // document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
+    pView->ChangeAnnotationSelection(this, sel, 0, 0);  // deselect
+    pView->RefreshGraphs(FALSE);                        // refresh the graphs between cursors
 }
 
 

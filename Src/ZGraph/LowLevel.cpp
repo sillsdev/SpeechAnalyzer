@@ -44,8 +44,7 @@ INT  zLowLevelGraphics::NumFonts     ;   // The Number of Fonts We Support
 ////////////////////// zLowLevelGraphics Class //////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-zLowLevelGraphics::zLowLevelGraphics()
-{
+zLowLevelGraphics::zLowLevelGraphics() {
     //
     // Constructor for zLowLevelGraphics Class.
     //
@@ -53,8 +52,7 @@ zLowLevelGraphics::zLowLevelGraphics()
 
 ////////////////////////////// ~zLowLevelGraphics() ////////////////////////////////
 
-zLowLevelGraphics::~zLowLevelGraphics()
-{
+zLowLevelGraphics::~zLowLevelGraphics() {
     //
     // Destructor for zLowLevelGraphics Class
     //
@@ -63,8 +61,7 @@ zLowLevelGraphics::~zLowLevelGraphics()
 
 ///////////////////////////////// zRectWidth() /////////////////////////////
 
-INT zLowLevelGraphics::zRectWidth(RECT * R)
-{
+INT zLowLevelGraphics::zRectWidth(RECT * R) {
     //
     // Returns the Width of a Rectangle [R]
     //
@@ -73,8 +70,7 @@ INT zLowLevelGraphics::zRectWidth(RECT * R)
 
 //////////////////////////////// zRectHeight() /////////////////////////////
 
-INT zLowLevelGraphics::zRectHeight(RECT * R)
-{
+INT zLowLevelGraphics::zRectHeight(RECT * R) {
     //
     // Returns the Height of a Rectangle [R]
     //
@@ -83,8 +79,7 @@ INT zLowLevelGraphics::zRectHeight(RECT * R)
 
 /////////////////////////////// zRectCenter() //////////////////////////////
 
-POINT zLowLevelGraphics::zRectCenter(RECT * R)
-{
+POINT zLowLevelGraphics::zRectCenter(RECT * R) {
     //
     // Returns the Center Point of a Rectangle
     //
@@ -95,8 +90,7 @@ POINT zLowLevelGraphics::zRectCenter(RECT * R)
 
 ///////////////////////// zCreateShadingBrush() ///////////////////////////
 
-zFILL zLowLevelGraphics::zCreateShadingBrush(zRGB color)
-{
+zFILL zLowLevelGraphics::zCreateShadingBrush(zRGB color) {
     // Takes a Color [color] and Creates a Brush Used For Color Shading.
     // The Shading Brush Will Contain the Same Relative Proportion of
     // Red, Green, and Blue, But Will Be a Darker Hue.
@@ -142,8 +136,7 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
                                    zPATTERN   Pattern,
                                    zFILL      InteriorColor,
                                    zLINE      BoundaryColor,
-                                   BOOL       DrawFullWedge /* = TRUE */)
-{
+                                   BOOL       DrawFullWedge /* = TRUE */) {
     //
     // Draws and Fills in A Wedge-Shaped Region Composed of
     //   Polygon Points P1 thru P6.
@@ -160,8 +153,7 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
     // Draw the Top of the Wedge
     ///////////////////////////////////////////////
 
-    POINT point_2[] =
-    {
+    POINT point_2[] = {
         {P3.x, P3.y},
         {P4.x, P4.y},
         {P5.x, P5.y},
@@ -172,8 +164,7 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
     //
     // Stop Now if We're Only Drawing the Top of the Wedge...
     //
-    if (! DrawFullWedge)
-    {
+    if (! DrawFullWedge) {
         return;
     }
 
@@ -181,8 +172,7 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
     // Draw the Front of the Wedge
     ///////////////////////////////////////////////
 
-    POINT point_1[] =
-    {
+    POINT point_1[] = {
         {P1.x, P1.y},
         {P2.x, P2.y},
         {P3.x, P3.y},
@@ -202,8 +192,7 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
     //
     HBRUSH zOldBrush=NULL, zNewBrush=NULL;
 
-    if (shading_style > 0)
-    {
+    if (shading_style > 0) {
         // Get The R,G,B Color Values From the Current Brush
 
         LOGBRUSH logBrush;
@@ -228,8 +217,7 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
     POINT P7 =
     { P6.x, P6.y + y_ht } ;
 
-    POINT point_3[] =
-    {
+    POINT point_3[] = {
         {P2.x, P2.y},
         {P3.x, P3.y},
         {P6.x, P6.y},
@@ -243,8 +231,7 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
 #ifdef WINDOWS_PLATFORM
     // Restore Old Brush and Destroy Newly-Created One, if Necessary
 
-    if (shading_style > 0)
-    {
+    if (shading_style > 0) {
         SelectObject(hDC, zOldBrush);
         DeleteObject(zNewBrush);
     }
@@ -259,22 +246,19 @@ void zLowLevelGraphics::zDraw3DBar(INT left, INT top,
                                    INT        depth,
                                    zPATTERN   Pattern,
                                    zFILL      InteriorColor,
-                                   zLINE      BoundaryColor)
-{
+                                   zLINE      BoundaryColor) {
     //
     // Draws a 3-D bar with front face (left, top, right, bottom)
     // and depth [depth], using the Fill Colors/Parameters Given
     //
 
-    if (depth > 0)
-    {
+    if (depth > 0) {
 
         ///////////////////////////////////////////////
         // Draw And Fill in the Top of Bar
         ///////////////////////////////////////////////
 
-        POINT point_1[] =
-        {
+        POINT point_1[] = {
             { left         , top       },
             { left  + depth, top-depth },
             { right + depth, top-depth },
@@ -294,8 +278,7 @@ void zLowLevelGraphics::zDraw3DBar(INT left, INT top,
         //
         HBRUSH zOldBrush=NULL, zNewBrush=NULL;
 
-        if (shading_style > 0)
-        {
+        if (shading_style > 0) {
             // Get The R,G,B Color Values From the Current Brush
 
             LOGBRUSH logBrush;
@@ -316,8 +299,7 @@ void zLowLevelGraphics::zDraw3DBar(INT left, INT top,
         zFILL zNewBrush = InteriorColor;
 #endif
 
-        POINT point_2[] =
-        {
+        POINT point_2[] = {
             { right + depth , top-depth      },
             { right         , top            },
             { right         , bottom         },
@@ -332,8 +314,7 @@ void zLowLevelGraphics::zDraw3DBar(INT left, INT top,
         //
         // Restore Old Brush and Destroy Newly-Created One, if Necessary
         //
-        if (shading_style > 0)
-        {
+        if (shading_style > 0) {
             SelectObject(hDC, zOldBrush);
             DeleteObject(zNewBrush);
         }
@@ -344,8 +325,7 @@ void zLowLevelGraphics::zDraw3DBar(INT left, INT top,
     // Draw and Fill in the Front of the Bar
     ///////////////////////////////////////////////
 
-    POINT point_3[] =
-    {
+    POINT point_3[] = {
         { left,  top     },
         { left,  bottom  },
         { right, bottom  },
@@ -357,8 +337,7 @@ void zLowLevelGraphics::zDraw3DBar(INT left, INT top,
 
 /////////////////////////////// zDrawRect() ///////////////////////////
 
-void zLowLevelGraphics::zDrawRect(RECT * R)
-{
+void zLowLevelGraphics::zDrawRect(RECT * R) {
     //
     // This Function Draws an Unfilled Rectangle [R] in the Window
     //   Using the Axis Pen
@@ -387,8 +366,7 @@ void zLowLevelGraphics::zDrawRect(RECT * R)
 
 ///////////////////////////// zMoveTo() /////////////////////////////////
 
-void zLowLevelGraphics::zMoveTo(INT xpos, INT ypos)
-{
+void zLowLevelGraphics::zMoveTo(INT xpos, INT ypos) {
     //
     // This Function is a Just a Quick Wrapper Around a Function
     //   to Move the Pen to [xpos, ypos]
@@ -407,8 +385,7 @@ void zLowLevelGraphics::zMoveTo(INT xpos, INT ypos)
 
 ///////////////////////////// zLineTo() /////////////////////////////////
 
-void zLowLevelGraphics::zLineTo(INT xpos, INT ypos)
-{
+void zLowLevelGraphics::zLineTo(INT xpos, INT ypos) {
     //
     // This Function is a Just a Quick Wrapper Around a Function
     //   to Draw a Line From the Current Pen Position to [xpos, ypos]
@@ -426,8 +403,7 @@ void zLowLevelGraphics::zLineTo(INT xpos, INT ypos)
 
 //////////////////////////// zDrawLine() /////////////////////////////////
 
-void zLowLevelGraphics::zDrawLine(INT x1, INT y1, INT x2, INT y2)
-{
+void zLowLevelGraphics::zDrawLine(INT x1, INT y1, INT x2, INT y2) {
     //
     // This Function is a Just a Quick Wrapper Around a Function
     //   to Draw a Line From (x1, y1) to (x2, y2)
@@ -449,8 +425,7 @@ void zLowLevelGraphics::zDrawLine(INT x1, INT y1, INT x2, INT y2)
 
 ////////////////////////////// zDrawCircle() //////////////////////////////
 
-void zLowLevelGraphics::zDrawCircle(INT x1, INT y1, INT r1, double AspectRatio)
-{
+void zLowLevelGraphics::zDrawCircle(INT x1, INT y1, INT r1, double AspectRatio) {
     //
     // Draws a circle on the screen, with center at (x1, y1),
     // and with radius [r1].  AspectRatio is the device aspect
@@ -459,8 +434,7 @@ void zLowLevelGraphics::zDrawCircle(INT x1, INT y1, INT r1, double AspectRatio)
 
 #ifdef WINDOWS_PLATFORM
     // Code to Draw a Circle in Windows...
-    RECT RBounds =
-    {
+    RECT RBounds = {
         x1 - r1,
         y1 - zRound(AspectRatio * r1),
         x1 + r1,
@@ -477,8 +451,7 @@ void zLowLevelGraphics::zDrawCircle(INT x1, INT y1, INT r1, double AspectRatio)
 
     UNUSED_PARAMETERS(&AspectRatio);
 
-    RECT RBounds =
-    {
+    RECT RBounds = {
         x1 - r1,
         y1 - zRound(AspectRatio * r1),
         x1 + r1,
@@ -498,8 +471,7 @@ void zLowLevelGraphics::zDrawPolygon(POINT * PtArray,
                                      INT      NumPoints,
                                      zPATTERN /*Pattern*/,
                                      zFILL    InteriorColor,
-                                     zLINE    BoundaryColor)
-{
+                                     zLINE    BoundaryColor) {
     //
     // Draws a Polygon Consisting of [NumPoints] Points in the
     //   [PtArray] Array.  This is a KEY Function for Drawing
@@ -539,8 +511,7 @@ void zLowLevelGraphics::zDrawPolygon(POINT * PtArray,
     _xycoord * pPoly = new _xycoord [NumPoints + 2];
 
     // Set Up the Polygon Points Array
-    for (int i = 0; i < NumPoints; i++)
-    {
+    for (int i = 0; i < NumPoints; i++) {
         pPoly[i].xcoord = PtArray[i].x;
         pPoly[i].ycoord = PtArray[i].y;
     }
@@ -569,8 +540,7 @@ void zLowLevelGraphics::zDrawPolygon(POINT * PtArray,
 
 /////////////////////////// zDrawTextString() ///////////////////////////////
 
-void zLowLevelGraphics::zDrawTextString(INT x1, INT y1, PWCHAR Text)
-{
+void zLowLevelGraphics::zDrawTextString(INT x1, INT y1, PWCHAR Text) {
     //
     // This Function is a Just a Quick Wrapper Around
     //  a Function to Draw a Text String [Text] at [x1, y1]...
@@ -588,8 +558,7 @@ void zLowLevelGraphics::zDrawTextString(INT x1, INT y1, PWCHAR Text)
     // Get Width of String In Pixels
     INT TextWidth = _getgtextextent(Text);
 
-    switch (zAlignFormat)
-    {
+    switch (zAlignFormat) {
     case zALIGN_RIGHT_TOP: // Right-Alignment
         _moveto(x1 - TextWidth, y1);
         break;
@@ -614,8 +583,7 @@ void zLowLevelGraphics::zDrawTextString(INT x1, INT y1, PWCHAR Text)
 ///////////////////////// zDrawFilledRect() ///////////////////////////
 
 void zLowLevelGraphics::zDrawFilledRect(INT left, INT top,
-                                        INT right, INT bottom, BYTE Red, BYTE Green, BYTE Blue)
-{
+                                        INT right, INT bottom, BYTE Red, BYTE Green, BYTE Blue) {
     //
     // This Function Draws a Filled Rectangle in the Window, Using
     //   a Fill Color With the Given Red, Green, and Blue Components
@@ -649,8 +617,7 @@ void zLowLevelGraphics::zDrawFilledRect(INT left, INT top,
 
 ////////////////////////// zGetDefaultTextSize() //////////////////////////
 
-void zLowLevelGraphics::zGetDefaultTextSize()
-{
+void zLowLevelGraphics::zGetDefaultTextSize() {
     //
     // This Function Computes the Average Character Width, Height for
     //   the Default Font
@@ -676,8 +643,7 @@ void zLowLevelGraphics::zGetDefaultTextSize()
 
 ///////////////////////////// zActivatePens() /////////////////////////////
 
-void zLowLevelGraphics::zActivatePens()
-{
+void zLowLevelGraphics::zActivatePens() {
     //
     // This Function Sets Up Several Pen Objects for Line Styles, etc.
     //
@@ -688,15 +654,13 @@ void zLowLevelGraphics::zActivatePens()
     //     Graph Borders.  [ hLinePen[i] ] is Used to Draw in the
     //     Graph Lines
     //
-    if (! pens_created)          // Skip if We've Already Created the Pens
-    {
+    if (! pens_created) {        // Skip if We've Already Created the Pens
         //   and They're Already Available
 
         // Set Up Pen for Grid
 
         INT GridType;
-        switch (GridPenStyle)
-        {
+        switch (GridPenStyle) {
         case zDASHED:
             GridType = PS_DASH;
             break;
@@ -725,8 +689,7 @@ void zLowLevelGraphics::zActivatePens()
         hAxisPen = CreatePen(PS_SOLID, 0, AxisColor);
 
         // Set Up Line Pens
-        for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)
-        {
+        for (INT i = 0; i < zMAX_GRAPH_COLORS; i++) {
             hLinePen[i] = CreatePen(PS_SOLID, 0, GraphColor[i]);
         }
     }
@@ -744,14 +707,12 @@ void zLowLevelGraphics::zActivatePens()
     //     Set Up A Mask to Be Used with "_setlinestyle()"
     //     to Draw in the Graph Lines With the Appropriate Look
     //
-    if (! pens_created)          // Skip if We've Already Created the Pens
-    {
+    if (! pens_created) {        // Skip if We've Already Created the Pens
         //   and They're Already Available
 
         // Set Up Mask to Be Used In Drawing Grid
 
-        switch (GridPenStyle)
-        {
+        switch (GridPenStyle) {
         case zDASHED:
             GridMask = 0xFCFC;
             break;
@@ -786,8 +747,7 @@ void zLowLevelGraphics::zActivatePens()
 
 ///////////////////////////// zDeletePens() /////////////////////////////
 
-void zLowLevelGraphics::zDeletePens()
-{
+void zLowLevelGraphics::zDeletePens() {
     //
     // Delete Any Pen Objects That We've Created
     //
@@ -796,8 +756,7 @@ void zLowLevelGraphics::zDeletePens()
     //
     // Deletes Any Windows Pen GDI Objects
     //
-    if (pens_created)
-    {
+    if (pens_created) {
         // Kill Axis Pen
         DeleteObject(hAxisPen);
 
@@ -805,8 +764,7 @@ void zLowLevelGraphics::zDeletePens()
         DeleteObject(hGridPen);
 
         // Kill Line Pens
-        for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)
-        {
+        for (INT i = 0; i < zMAX_GRAPH_COLORS; i++) {
             DeleteObject(hLinePen[i]);
         }
     }
@@ -821,8 +779,7 @@ void zLowLevelGraphics::zDeletePens()
 
 ////////////////////////// zActivateBrushes() ////////////////////////////
 
-void zLowLevelGraphics::zActivateBrushes()
-{
+void zLowLevelGraphics::zActivateBrushes() {
     //
     // This function is used to set up a variety of Solid or Hatch-Filled
     // Styled Brushes, for Filling in Sections of the Pie, Bar, and
@@ -844,8 +801,7 @@ void zLowLevelGraphics::zActivateBrushes()
     //                          Each Fill Region
 
 
-    if (brushes_created)         // Skip if We've Already Created the Brushes
-    {
+    if (brushes_created) {       // Skip if We've Already Created the Brushes
         return;    //   and They're Now Available
     }
 
@@ -854,8 +810,7 @@ void zLowLevelGraphics::zActivateBrushes()
     //
     // Array of Bit Maps for Brushes
     //
-    static WORD zBrushBits[ zMAX_DATA_SETS ][ 8 ] =
-    {
+    static WORD zBrushBits[ zMAX_DATA_SETS ][ 8 ] = {
         { 0xF7, 0xFB, 0xFD, 0xFE,  0x7F, 0xBF, 0xDF, 0xEF },  // Left Diag. Lines
         { 0xFF, 0x99, 0x99, 0xFF,  0xFF, 0x99, 0x99, 0xFF },  // Dot Patt. #1
         { 0xFF, 0xFF, 0xFF, 0xE7,  0xE7, 0xFF, 0xFF, 0xFF },  // Small Dot
@@ -868,10 +823,8 @@ void zLowLevelGraphics::zActivateBrushes()
         { 0xDB, 0xDB, 0x00, 0xDB,  0xDB, 0x00, 0xDB, 0xDB }   // '#' Sign
     } ;
 
-    for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)   // Use 1 Brush for each Item
-    {
-        switch (fill_style)
-        {
+    for (INT i = 0; i < zMAX_GRAPH_COLORS; i++) { // Use 1 Brush for each Item
+        switch (fill_style) {
         case zCOLOR_HATCH_FILL:
             hFillBrush[ i ] = CreateHatchBrush(i % 6, GraphColor[i]) ;
             break;
@@ -893,10 +846,8 @@ void zLowLevelGraphics::zActivateBrushes()
 
 #if defined(MS_DOS_PLATFORM)
 
-    for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)   // Use 1 Pattern for each Item
-    {
-        switch (fill_style)
-        {
+    for (INT i = 0; i < zMAX_GRAPH_COLORS; i++) { // Use 1 Pattern for each Item
+        switch (fill_style) {
         case zMONO_HATCH_FILL :
             // We Want Mono Fills--Ensure All Colors are the Same
             //   By Making Them all the Same as the Axis Color.
@@ -925,8 +876,7 @@ void zLowLevelGraphics::zActivateBrushes()
 
 ////////////////////////// zDeleteBrushes() ////////////////////////////
 
-void zLowLevelGraphics::zDeleteBrushes()
-{
+void zLowLevelGraphics::zDeleteBrushes() {
     //
     // This function is used to delete any brushes created by the
     //   ActivateBrushes() function.  Typically Called When We're Done
@@ -934,10 +884,8 @@ void zLowLevelGraphics::zDeleteBrushes()
     //
 
 #ifdef WINDOWS_PLATFORM
-    if (brushes_created)
-    {
-        for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)
-        {
+    if (brushes_created) {
+        for (INT i = 0; i < zMAX_GRAPH_COLORS; i++) {
             DeleteObject(hFillBrush[ i ]);
         }
     }
@@ -951,8 +899,7 @@ void zLowLevelGraphics::zDeleteBrushes()
 
 //////////////////////////// zSaveGraphics() //////////////////////////////
 
-void zLowLevelGraphics::zSaveGraphics()
-{
+void zLowLevelGraphics::zSaveGraphics() {
     //
     // Initialize Graphics as Necessary, and
     //   Save Any Old Graphics Objects That Will Need to Be Restored Later
@@ -981,8 +928,7 @@ void zLowLevelGraphics::zSaveGraphics()
 
 ////////////////////////// zRestoreGraphics() ////////////////////////////
 
-void zLowLevelGraphics::zRestoreGraphics()
-{
+void zLowLevelGraphics::zRestoreGraphics() {
     //
     // Restores the Old Graphics Objects
     //
@@ -1003,8 +949,7 @@ void zLowLevelGraphics::zRestoreGraphics()
 
 /////////////////////////// zSetUpFonts() ////////////////////////////
 
-void zLowLevelGraphics::zSetUpFonts()
-{
+void zLowLevelGraphics::zSetUpFonts() {
     // Sets Up Fonts
 
     // Set Up a Font for the Axis Titles, Axis Labels, Legend Titles
@@ -1038,8 +983,7 @@ void zLowLevelGraphics::zSetUpFonts()
 
 /////////////////////////// zSelectAxisColor() ////////////////////////////
 
-void zLowLevelGraphics::zSelectAxisColor()
-{
+void zLowLevelGraphics::zSelectAxisColor() {
     // Selects the Axis Color
 
     // Activate Pens, In Case They Haven't Been Activated Already
@@ -1064,18 +1008,14 @@ void zLowLevelGraphics::zSelectAxisColor()
 
 /////////////////////////// zSelectGraphColor() ////////////////////////////
 
-void zLowLevelGraphics::zSelectGraphColor(INT index)
-{
+void zLowLevelGraphics::zSelectGraphColor(INT index) {
     // Selects the Graph Color, Given an Index [index] in the Range
     //  [0, zMAX_GRAPH_COLORS - 1]
 
     // Make Sure Index Is Valid
-    if (index < 0)
-    {
+    if (index < 0) {
         index = 0;
-    }
-    else if (index >= zMAX_GRAPH_COLORS)
-    {
+    } else if (index >= zMAX_GRAPH_COLORS) {
         index = index % zMAX_GRAPH_COLORS;
     }
 
@@ -1088,14 +1028,12 @@ void zLowLevelGraphics::zSelectGraphColor(INT index)
     //
 #ifdef WINDOWS_PLATFORM
     // Select Line Pen
-    if (pens_created)
-    {
+    if (pens_created) {
         SelectObject(hDC, hLinePen[index]);
     }
 
     // Select Brush for Fills
-    if (brushes_created)
-    {
+    if (brushes_created) {
         SelectObject(hDC, hFillBrush[index]);
     }
 
@@ -1115,8 +1053,7 @@ void zLowLevelGraphics::zSelectGraphColor(INT index)
 
 /////////////////////////// zSelectGraphColor() ////////////////////////////
 
-void zLowLevelGraphics::zSetPixel(INT xPos, INT yPos, zRGB color)
-{
+void zLowLevelGraphics::zSetPixel(INT xPos, INT yPos, zRGB color) {
     // Sets the Color of a Pixel at [xPos, yPos] to a Given Color [color]
 
     // Set the Current Color
@@ -1136,8 +1073,7 @@ void zLowLevelGraphics::zSetPixel(INT xPos, INT yPos, zRGB color)
 
 void zLowLevelGraphics::zShowStringInRect(
     PWCHAR      string,
-    RECT    *   RString)
-{
+    RECT    *   RString) {
     //
     // Builds a Font Of Appropriate Size for Displaying A String
     //   [string] Within a Rectangle and Displays the String
@@ -1168,13 +1104,11 @@ void zLowLevelGraphics::zShowStringInRect(
 
 ////////////////////////////// zAlignText() ///////////////////////////////
 
-void zLowLevelGraphics::zAlignText(INT AlignValue)
-{
+void zLowLevelGraphics::zAlignText(INT AlignValue) {
     // This Function Is Used to Set the Alignment of Text
 
 
-    switch (AlignValue)
-    {
+    switch (AlignValue) {
     case zALIGN_RIGHT_TOP:    // Makes Text Right Justified
 
 #ifdef WINDOWS_PLATFORM                                // Windows
@@ -1215,8 +1149,7 @@ void zLowLevelGraphics::zAlignText(INT AlignValue)
 
 ////////////////////////////// zTextWidth() /////////////////////////////
 
-INT zLowLevelGraphics::zTextWidth(PWCHAR string)
-{
+INT zLowLevelGraphics::zTextWidth(PWCHAR string) {
     // Returns the Horizontal Width of a Text String [string]
     //   In Pixels, Using the Current Font
 
@@ -1235,8 +1168,7 @@ INT zLowLevelGraphics::zTextWidth(PWCHAR string)
 
 //////////////////////////// zTextHeight() /////////////////////////////
 
-int zLowLevelGraphics::zTextHeight(PWCHAR string)
-{
+int zLowLevelGraphics::zTextHeight(PWCHAR string) {
     // Returns Height of a Graphics String Using the Current Font
 
 #ifdef WINDOWS_PLATFORM
@@ -1257,20 +1189,16 @@ int zLowLevelGraphics::zTextHeight(PWCHAR string)
 //////////////////////////// zDraw_Symbol() /////////////////////////////
 
 void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
-                                     INT ColorIndex)
-{
+                                     INT ColorIndex) {
     //
     // Displays or Prints a symbol [symbol] at (_x_, _y_) on the DC.
     //   Using Graph Color [ColorIndex]
 
 
     // Make Sure Index Is Valid
-    if (ColorIndex < 0)
-    {
+    if (ColorIndex < 0) {
         ColorIndex = 0;
-    }
-    else if (ColorIndex >= zMAX_GRAPH_COLORS)
-    {
+    } else if (ColorIndex >= zMAX_GRAPH_COLORS) {
         ColorIndex = ColorIndex % zMAX_GRAPH_COLORS;
     }
 
@@ -1287,15 +1215,13 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
 #endif
 
 
-    switch (symbol)                      // List Custom-Drawn Symbols Here
-    {
+    switch (symbol) {                    // List Custom-Drawn Symbols Here
     case zCROSS:
         //
         // A Cross
         //
     {
-        POINT Cross[] =
-        {
+        POINT Cross[] = {
             {_x_ -     charsize/4,  _y_                    },
             {_x_ +     charsize/4,  _y_                    },
             {_x_ +     charsize/4,  _y_ +     charsize/3   },
@@ -1329,8 +1255,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
         // A Circle (Actually a Shape Like a "Stop-Sign")
         //
     {
-        POINT Circle[] =
-        {
+        POINT Circle[] = {
             {_x_ -     charsize/4,  _y_                  },
             {_x_ +     charsize/4,  _y_                  },
             {_x_ + 3 * charsize/5,  _y_ + charsize/3     },
@@ -1361,8 +1286,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
         // A Diamond
         //
     {
-        POINT Diamond[] =
-        {
+        POINT Diamond[] = {
             {_x_                         , _y_                          },
             {_x_ - zRound(0.6 * charsize), _y_ + zRound(0.6 * charsize) },
             {_x_                         , _y_ + zRound(1.2 * charsize) },
@@ -1389,8 +1313,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
         // A Small Triangle
         //
     {
-        POINT Triangle[] =
-        {
+        POINT Triangle[] = {
             {_x_             ,  _y_            },
             {_x_ - charsize/2,  _y_ + charsize },
             {_x_ + charsize/2,  _y_ + charsize }
@@ -1416,8 +1339,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
         // Small Upside-Down Triangle
         //
     {
-        POINT InvertedTriangle[] =
-        {
+        POINT InvertedTriangle[] = {
             {_x_ - charsize/2, _y_             },
             {_x_ + charsize/2, _y_             },
             {_x_             , _y_ + charsize  }
@@ -1487,8 +1409,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
         // Small Box
         //
     {
-        POINT Box[] =
-        {
+        POINT Box[] = {
             {_x_ - charsize/2 + 1, _y_ + 1            },
             {_x_ + charsize/2 - 1, _y_ + 1            },
             {_x_ + charsize/2 - 1, _y_ + charsize - 1 },
@@ -1510,8 +1431,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
     break ;
 
 
-    default:
-    {
+    default: {
 #ifdef WINDOWS_PLATFORM
         // Switch to Font for Drawing Symbols & Save Old Font
         HFONT hOldFont = (HFONT) SelectObject(hDC,
@@ -1540,8 +1460,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
 
 /////////////////////////////// zSetRect() /////////////////////////////////
 
-void zLowLevelGraphics::zSetRect(RECT * R1, INT x1, INT y1, INT x2, INT y2)
-{
+void zLowLevelGraphics::zSetRect(RECT * R1, INT x1, INT y1, INT x2, INT y2) {
     //
     // This Function Is Used To Set a Rectangle From Its Components
     //
@@ -1559,20 +1478,16 @@ void zLowLevelGraphics::zSetRect(RECT * R1, INT x1, INT y1, INT x2, INT y2)
 
 //////////////////////////////// zRound() /////////////////////////////////
 
-INT zLowLevelGraphics::zRound(double d)
-{
+INT zLowLevelGraphics::zRound(double d) {
     //
     // This Function Is Used For Rounding Purposes.  It Returns the closest
     // integer to [d], a double variable
     //
     double LowerLimit = floor(d);
 
-    if ((d - LowerLimit) >= 0.5)
-    {
+    if ((d - LowerLimit) >= 0.5) {
         return ((INT)LowerLimit + 1);
-    }
-    else
-    {
+    } else {
         return ((INT)LowerLimit);
     }
 }
@@ -1584,27 +1499,23 @@ INT zLowLevelGraphics::zRound(double d)
 
 //////////////////////////// zDOSOpenGraphics() ////////////////////////////
 
-void zLowLevelGraphics::zDOSOpenGraphics()
-{
+void zLowLevelGraphics::zDOSOpenGraphics() {
     // Initializes the Graphics Subsystem (Needed for MS-DOS Only)
 
 #ifdef MS_DOS_PLATFORM
 
     // Set the Video Mode (Use VGA 640 x 480, 16 Color)
-    if (!_setvideomode(/* _MAXRESMODE */ _VRES16COLOR))
-    {
+    if (!_setvideomode(/* _MAXRESMODE */ _VRES16COLOR)) {
         exit(1);
     }
 
     // Load the Helvetica Font Set.  User Must Have "HELVB.FON" File!!!
     WCHAR fondir[_MAX_PATH];
-    if ((NumFonts = _registerfonts("HELVB.FON")) <= 0)
-    {
+    if ((NumFonts = _registerfonts("HELVB.FON")) <= 0) {
         _outtext("Enter full path where HELVB.FON files are located: ");
         gets(fondir);
         strcat(fondir, "\\*.FON");
-        if (_registerfonts(fondir) <= 0)
-        {
+        if (_registerfonts(fondir) <= 0) {
             _outtext("Error: can't register fonts");
             exit(1);
         }
@@ -1629,8 +1540,7 @@ void zLowLevelGraphics::zDOSOpenGraphics()
 
 //////////////////////////// zDOSCloseGraphics() /////////////////////////////
 
-void zLowLevelGraphics::zDOSCloseGraphics()
-{
+void zLowLevelGraphics::zDOSCloseGraphics() {
     // Shuts Down the Graphics Subsystem (Needed for MS-DOS Only)
 
 #ifdef MS_DOS_PLATFORM
@@ -1641,8 +1551,7 @@ void zLowLevelGraphics::zDOSCloseGraphics()
 
 //////////////////////////// zDOSClearScreen() ///////////////////////////////
 
-void zLowLevelGraphics::zDOSClearScreen()
-{
+void zLowLevelGraphics::zDOSClearScreen() {
     // Clears the Screen (MS-DOS Only Function)
 
 #ifdef MS_DOS_PLATFORM
@@ -1653,8 +1562,7 @@ void zLowLevelGraphics::zDOSClearScreen()
 
 //////////////////////////// zDOSRectangle() ///////////////////////////////
 
-void zLowLevelGraphics::zDOSRectangle(RECT * R, INT FgColor, INT BgColor)
-{
+void zLowLevelGraphics::zDOSRectangle(RECT * R, INT FgColor, INT BgColor) {
     // Draws a Filled, Outlined Rectangle (MS-DOS Only Function)
     //   Using Specified Foreground [FgColor] and Background Color [BgColor]
 
@@ -1668,16 +1576,14 @@ void zLowLevelGraphics::zDOSRectangle(RECT * R, INT FgColor, INT BgColor)
 
 //////////////////////////// zDOSSelectFont() ///////////////////////////////
 
-void zLowLevelGraphics::zDOSSelectFont(int FontNum)
-{
+void zLowLevelGraphics::zDOSSelectFont(int FontNum) {
     // Selects a Particular Font (MS-DOS Only Function)
 
 #ifdef MS_DOS_PLATFORM
     WCHAR Buf[4];
     sprintf(Buf, "n%d", FontNum);
 
-    if (_setfont(Buf) < 0)
-    {
+    if (_setfont(Buf) < 0) {
         _outtext("Error: Can't Set font");
         exit(1);
     }
@@ -1688,8 +1594,7 @@ void zLowLevelGraphics::zDOSSelectFont(int FontNum)
 /////////////////////////// zDOSShowTextInRect() //////////////////////////
 
 void zLowLevelGraphics::zDOSShowTextInRect(PWCHAR string, RECT R1,
-        BOOL ShowText /* = TRUE */)
-{
+        BOOL ShowText /* = TRUE */) {
     // Displays String [string] Inside Rectangle [R1]
     //  (MS-DOS Only Function)
 
@@ -1701,15 +1606,13 @@ void zLowLevelGraphics::zDOSShowTextInRect(PWCHAR string, RECT R1,
 
     int SmallestDiff = 1000;
     int BestFontIndex = 0;
-    for (int i = 1; i <= NumFonts; i++)
-    {
+    for (int i = 1; i <= NumFonts; i++) {
         // Pick this Next Font, and Figure the Width of the String.
         zDOSSelectFont(i);
         int widthDifference = abs(zDOSTextWidth(string) - RWidth);
 
         // Found A Font That's a Better Fit?
-        if (widthDifference < SmallestDiff)
-        {
+        if (widthDifference < SmallestDiff) {
             SmallestDiff = widthDifference;
             BestFontIndex = i;
         }
@@ -1726,8 +1629,7 @@ void zLowLevelGraphics::zDOSShowTextInRect(PWCHAR string, RECT R1,
 #ifdef MS_DOS_PLATFORM
     _moveto(xPos, yPos);
 
-    if (ShowText)
-    {
+    if (ShowText) {
         _outgtext(string);
     }
 #endif
@@ -1738,8 +1640,7 @@ void zLowLevelGraphics::zDOSShowTextInRect(PWCHAR string, RECT R1,
 
 /////////////////////////// zDOSShowMessage() ////////////////////////////////
 
-void zLowLevelGraphics::zDOSShowMessage(PWCHAR Message)
-{
+void zLowLevelGraphics::zDOSShowMessage(PWCHAR Message) {
     // Displays a Message Onscreen (MS-DOS Only Function)
 
     int MARGIN = 30;
@@ -1748,8 +1649,7 @@ void zLowLevelGraphics::zDOSShowMessage(PWCHAR Message)
     // Show a Rectangle
     int XCenter = ScreenWidth  / 2;
     int YCenter = ScreenHeight / 2;
-    RECT RMessage =
-    {
+    RECT RMessage = {
         XCenter - Width/2 - MARGIN,
         YCenter - MARGIN,
         XCenter + Width/2 + MARGIN,
@@ -1779,22 +1679,19 @@ void zLowLevelGraphics::zDOSShowMessage(PWCHAR Message)
 #endif
 
     // Wait for a Key
-    if (getch() == 0)
-    {
+    if (getch() == 0) {
         getch();
     }
 }
 
 ///////////////////////////// zDOSSelectFill() ///////////////////////////////
 
-void zLowLevelGraphics::zDOSSelectFill(int fill_style, int FillIndex)
-{
+void zLowLevelGraphics::zDOSSelectFill(int fill_style, int FillIndex) {
     // Selects a Given Fill Pattern [FillIndex] From Amongst
     //  the Available Fills for Style [fill_style] (MS-DOS Only Function)
 
 #ifdef MS_DOS_PLATFORM
-    static unsigned char mask[8][8] =
-    {
+    static unsigned char mask[8][8] = {
         { 0x00, 0x00, 0x3C, 0x24, 0x24, 0x3C, 0x00,  0x00 },  // Box
         { 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC,  0xCC },  // Vertical Lines
         { 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,  0x00 },  // Horizontal Lines
@@ -1806,8 +1703,7 @@ void zLowLevelGraphics::zDOSSelectFill(int fill_style, int FillIndex)
     };
 
     // For Solid Fill, We Don't Need to do Anything Special...
-    if (fill_style == zSOLID_FILL)
-    {
+    if (fill_style == zSOLID_FILL) {
         return;
     }
 
@@ -1820,8 +1716,7 @@ void zLowLevelGraphics::zDOSSelectFill(int fill_style, int FillIndex)
 
 /////////////////////////////// zDOSBevel() ///////////////////////////////
 
-void zLowLevelGraphics::zDOSBevel(RECT * bevelR)
-{
+void zLowLevelGraphics::zDOSBevel(RECT * bevelR) {
     // Puts a Bevel Around a Rectangle (MS-DOS Only Function)
 
     // Set Bevel Dimensions, If Necessary
@@ -1829,32 +1724,28 @@ void zLowLevelGraphics::zDOSBevel(RECT * bevelR)
 
     // Calculate Perimeter Rects
 
-    RECT topR =
-    {
+    RECT topR = {
         bevelR->left,
         bevelR->top - bevel,
         bevelR->right,
         bevelR->top - 1
     };
 
-    RECT botR =
-    {
+    RECT botR = {
         bevelR->left,
         bevelR->bottom + 1,
         bevelR->right,
         bevelR->bottom + bevel
     };
 
-    RECT leftR  =
-    {
+    RECT leftR  = {
         bevelR->left - bevel,
         bevelR->top  - bevel,
         bevelR->left -1,
         bevelR->bottom + bevel
     };
 
-    RECT rtR  =
-    {
+    RECT rtR  = {
         bevelR->right + 1,
         bevelR->top    - bevel,
         bevelR->right  + bevel,
@@ -1870,8 +1761,7 @@ void zLowLevelGraphics::zDOSBevel(RECT * bevelR)
 /////////////////////////////// zDOSDrawChar() ////////////////////////////
 
 void zLowLevelGraphics::zDOSDrawChar(INT xPos, INT yPos,
-                                     INT TextColor, INT BgColor, char c)
-{
+                                     INT TextColor, INT BgColor, char c) {
     // Draws In One Character at [xPos, yPos] Using Specified Colors
 
     UNUSED_PARAMETERS(&BgColor);
@@ -1890,8 +1780,7 @@ void zLowLevelGraphics::zDOSDrawChar(INT xPos, INT yPos,
 
 //////////////////////////// zDOSTextHeight() /////////////////////////////
 
-int zLowLevelGraphics::zDOSTextHeight(PWCHAR string)
-{
+int zLowLevelGraphics::zDOSTextHeight(PWCHAR string) {
     // Returns Height of a Graphics String Using the Current Font
     // (MS-DOS Only Function)
 
@@ -1906,8 +1795,7 @@ int zLowLevelGraphics::zDOSTextHeight(PWCHAR string)
 
 ////////////////////////////// zDOSTextWidth() /////////////////////////////
 
-INT zLowLevelGraphics::zDOSTextWidth(PWCHAR string)
-{
+INT zLowLevelGraphics::zDOSTextWidth(PWCHAR string) {
     // Returns the Horizontal Width of a Text String [string]
     //   In Pixels, Using the Current Font (MS-DOS Only Function)
 
@@ -1920,15 +1808,13 @@ INT zLowLevelGraphics::zDOSTextWidth(PWCHAR string)
 }
 
 // Short Helper Functions
-void zDOSShowTextInRect(PWCHAR string, zRECT RString, BOOL ShowText)
-{
+void zDOSShowTextInRect(PWCHAR string, zRECT RString, BOOL ShowText) {
     // Fits String [string] in [RString]
 
     zLowLevelGraphics::zDOSShowTextInRect(string, RString, ShowText);
 }
 
-void zDOSSelectDefaultFont()
-{
+void zDOSSelectDefaultFont() {
     // Selects the Default Font
 
     zLowLevelGraphics::zDOSSelectFont(zDEFAULT_FONT);

@@ -27,8 +27,7 @@ typedef unsigned char UBYTE;
 //**************************************************************************
 // CPlotWavelet Class
 //**************************************************************************
-class CPlotWavelet : public CPlotWnd
-{
+class CPlotWavelet : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotWavelet)
 
 private:
@@ -50,17 +49,13 @@ private:
 public:
     CPlotWavelet();
 
-    void IncreaseDrawingLevel()
-    {
-        if (drawing_level < max_drawing_level)
-        {
+    void IncreaseDrawingLevel() {
+        if (drawing_level < max_drawing_level) {
             drawing_level++;
         }
     }
-    void DecreaseDrawingLevel()
-    {
-        if (drawing_level > 1)
-        {
+    void DecreaseDrawingLevel() {
+        if (drawing_level > 1) {
             drawing_level--;
         }
     }

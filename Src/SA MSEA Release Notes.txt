@@ -1,6 +1,10 @@
+SA - 3.1.0.119 3/2/2015
+-Fixed 'File/SaveAs' bug that occurs when user selects a 'Save Area' choice of something other than 'Entire File'.
+-Fixed bug in display of file length shown on status bar.  Length was not calculate properly for files with more than one channel.
+
 SA - 3.1.0.118 2/16/2015
 -Fixed crash that occurs when using tools-options dialog box before any document is opened.  Crash occurs when existing dialog.
--Fixed crash that occurs when loading user document 44khz-1minute/10second.  Divide by zero was causing crash.
+-Fixed crash that occurs when loading user document 96khz-1 minute/10second.  Divide by zero was causing crash.
 -Fixed errors that occur when using Invert and Normalize functions on stereo data.
 -Modified application to use and deploy VS2010 Microsoft Visual C++ Runtime libraries.
 

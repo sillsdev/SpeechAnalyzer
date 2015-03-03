@@ -10,8 +10,7 @@
 //###########################################################################
 // CProcessPitch data processing
 
-class CProcessPitch : public CProcess
-{
+class CProcessPitch : public CProcess {
 // Construction/destruction/creation
 public:
     CProcessPitch();

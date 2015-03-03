@@ -9,8 +9,7 @@
 
 #define HIGHPASS_CUTIN_FREQ   70
 // Highpass filter class definition.
-class CHighPassFilter70
-{
+class CHighPassFilter70 {
 public:
     static char * Copyright(void);
     static float Version(void);
@@ -53,8 +52,7 @@ private:
 };
 
 // Filter parameter workspace structure.
-struct SHPFWorkspace
-{
+struct SHPFWorkspace {
     int32 f11;
     int32 b11;
     int32 b12;

@@ -10,8 +10,7 @@
 //###########################################################################
 // CLayoutMenu custom menu
 
-class CLayoutMenu : public CMenu
-{
+class CLayoutMenu : public CMenu {
 
     // Construction/destruction/creation
 public:

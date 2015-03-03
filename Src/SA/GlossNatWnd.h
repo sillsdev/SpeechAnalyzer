@@ -11,8 +11,7 @@
 
 #include "SA_Annot.h"
 
-class CGlossNatWnd : public CAnnotationWnd
-{
+class CGlossNatWnd : public CAnnotationWnd {
 public:
     CGlossNatWnd(int nIndex);
     virtual void OnDraw(CDC * pDC, const CRect & printRect);

@@ -166,55 +166,55 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
 
     } else if (bSystem) {
         // use system colors
-        cPlotBkg			= GetSysColor(COLOR_WINDOW);
-        cPlotHiBkg			= GetSysColor(COLOR_HIGHLIGHT);
-        cPlotAxes			= GetSysColor(COLOR_WINDOWTEXT);
-        cPlotData[0]		= GetSysColor(COLOR_WINDOWTEXT);
-        cPlotData[1]		= RGB(255, 160, 0); // orange
-        cPlotData[2]		= RGB(0, 0, 255); // blue. Was GetSysColor(COLOR_ACTIVEBORDER);
-        cPlotData[3]		= GetSysColor(COLOR_WINDOWFRAME);
-        cPlotData[4]		= RGB(0, 0, 255); // blue. Was GetSysColor(COLOR_MENU);
-        cPlotData[5]		= GetSysColor(COLOR_HIGHLIGHT);
-        cPlotHiData			= GetSysColor(COLOR_HIGHLIGHTTEXT);
-        cPlotBoundaries		= GetSysColor(COLOR_GRAYTEXT);
-        cPlotGrid			= GetSysColor(COLOR_BTNSHADOW);
-        cPlotStartCursor	= RGB(0, 128, 0); // dark green
-        cPlotStopCursor		= RGB(255, 0, 0); // red
-        cPlotPrivateCursor	= RGB(0, 0, 255); // blue
+        cPlotBkg            = GetSysColor(COLOR_WINDOW);
+        cPlotHiBkg          = GetSysColor(COLOR_HIGHLIGHT);
+        cPlotAxes           = GetSysColor(COLOR_WINDOWTEXT);
+        cPlotData[0]        = GetSysColor(COLOR_WINDOWTEXT);
+        cPlotData[1]        = RGB(255, 160, 0); // orange
+        cPlotData[2]        = RGB(0, 0, 255); // blue. Was GetSysColor(COLOR_ACTIVEBORDER);
+        cPlotData[3]        = GetSysColor(COLOR_WINDOWFRAME);
+        cPlotData[4]        = RGB(0, 0, 255); // blue. Was GetSysColor(COLOR_MENU);
+        cPlotData[5]        = GetSysColor(COLOR_HIGHLIGHT);
+        cPlotHiData         = GetSysColor(COLOR_HIGHLIGHTTEXT);
+        cPlotBoundaries     = GetSysColor(COLOR_GRAYTEXT);
+        cPlotGrid           = GetSysColor(COLOR_BTNSHADOW);
+        cPlotStartCursor    = RGB(0, 128, 0); // dark green
+        cPlotStopCursor     = RGB(255, 0, 0); // red
+        cPlotPrivateCursor  = RGB(0, 0, 255); // blue
         for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             cAnnotationBkg[nLoop] = GetSysColor(COLOR_BTNFACE);
             cAnnotationFont[nLoop] = GetSysColor(COLOR_BTNTEXT);
         }
-        cScaleBkg			= GetSysColor(COLOR_BTNFACE);
+        cScaleBkg           = GetSysColor(COLOR_BTNFACE);
         cScaleLines         = GetSysColor(COLOR_HIGHLIGHT);
-        cScaleFont			= GetSysColor(COLOR_HIGHLIGHT);
+        cScaleFont          = GetSysColor(COLOR_HIGHLIGHT);
         SetupSystemColors();
     } else {
         // custom set
 
-        cPlotBkg			= RGB(0, 0, 0);		// black
-        cPlotHiBkg			= RGB(0, 0, 128);	// dark blue
-        cPlotAxes			= RGB(255, 255, 255); // white
-        cPlotData[0]		= RGB(0, 255, 0);	// green
-        cPlotData[1]		= RGB(255, 128, 0); // orange
-        cPlotData[2]		= RGB(128,   0, 0);
-        cPlotData[3]		= RGB(192 , 0, 0);
-        cPlotData[4]		= RGB(0, 192, 0);
-        cPlotData[5]		= RGB(128, 0, 128);
-        cPlotHiData			= RGB(255, 255, 0); // yellow
-        cPlotBoundaries		= RGB(128, 0, 64);	// brown
-        cPlotGrid			= RGB(192, 192, 192); // light gray
-        cPlotStartCursor	= RGB(0, 255, 255); // light blue
-        cPlotStopCursor		= RGB(255, 0, 0);	// red
-        cPlotPrivateCursor	= RGB(255, 255, 0); // yellow
+        cPlotBkg            = RGB(0, 0, 0);     // black
+        cPlotHiBkg          = RGB(0, 0, 128);   // dark blue
+        cPlotAxes           = RGB(255, 255, 255); // white
+        cPlotData[0]        = RGB(0, 255, 0);   // green
+        cPlotData[1]        = RGB(255, 128, 0); // orange
+        cPlotData[2]        = RGB(128,   0, 0);
+        cPlotData[3]        = RGB(192 , 0, 0);
+        cPlotData[4]        = RGB(0, 192, 0);
+        cPlotData[5]        = RGB(128, 0, 128);
+        cPlotHiData         = RGB(255, 255, 0); // yellow
+        cPlotBoundaries     = RGB(128, 0, 64);  // brown
+        cPlotGrid           = RGB(192, 192, 192); // light gray
+        cPlotStartCursor    = RGB(0, 255, 255); // light blue
+        cPlotStopCursor     = RGB(255, 0, 0);   // red
+        cPlotPrivateCursor  = RGB(255, 255, 0); // yellow
 
         for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             cAnnotationBkg[nLoop]  = RGB(192, 192, 192); // light gray
             cAnnotationFont[nLoop] = RGB(0, 0, 160); // dark blue
         }
-        cScaleBkg			= RGB(192, 192, 192); // light gray
-        cScaleLines			= RGB(64, 128, 128); // dark green gray
-        cScaleFont			= RGB(64, 128, 128); // dark green gray
+        cScaleBkg           = RGB(192, 192, 192); // light gray
+        cScaleLines         = RGB(64, 128, 128); // dark green gray
+        cScaleFont          = RGB(64, 128, 128); // dark green gray
         SetupSystemColors();
     }
 }
@@ -223,14 +223,14 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
 // Colors::SetupSystemColors Set the system colors
 /***************************************************************************/
 void Colors::SetupSystemColors() {
-    cSysBtnHilite		= GetSysColor(COLOR_BTNHIGHLIGHT);
-    cSysBtnShadow		= GetSysColor(COLOR_BTNSHADOW);
-    cSysBtnFace			= GetSysColor(COLOR_BTNFACE);
-    cSysBtnText			= GetSysColor(COLOR_BTNTEXT);
-    cSysColorHilite		= GetSysColor(COLOR_HIGHLIGHT);
-    cSysColorHiText		= GetSysColor(COLOR_HIGHLIGHTTEXT);
-    cSysActiveCap		= GetSysColor(COLOR_ACTIVECAPTION);
-    cSysCapText			= GetSysColor(COLOR_CAPTIONTEXT);
-    cSysInActiveCap		= GetSysColor(COLOR_INACTIVECAPTION);
+    cSysBtnHilite       = GetSysColor(COLOR_BTNHIGHLIGHT);
+    cSysBtnShadow       = GetSysColor(COLOR_BTNSHADOW);
+    cSysBtnFace         = GetSysColor(COLOR_BTNFACE);
+    cSysBtnText         = GetSysColor(COLOR_BTNTEXT);
+    cSysColorHilite     = GetSysColor(COLOR_HIGHLIGHT);
+    cSysColorHiText     = GetSysColor(COLOR_HIGHLIGHTTEXT);
+    cSysActiveCap       = GetSysColor(COLOR_ACTIVECAPTION);
+    cSysCapText         = GetSysColor(COLOR_CAPTIONTEXT);
+    cSysInActiveCap     = GetSysColor(COLOR_INACTIVECAPTION);
     cSysInActiveCapText = GetSysColor(COLOR_INACTIVECAPTIONTEXT);
 }

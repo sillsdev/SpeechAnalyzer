@@ -203,14 +203,18 @@ bool FileUtils::EndsWith(LPCTSTR path, LPCTSTR extension) {
 }
 
 void FileUtils::RenameFile(LPCTSTR oldname, LPCTSTR newname) {
+	// clear the way!
+	DeleteFile(newname);
     _wrename(oldname, newname);
 }
 
 bool FileUtils::IsReadOnly(LPCTSTR filename) {
-	DWORD dwFileAttributes = GetFileAttributes(filename);
-	// oh no! can't determine attribute
-    if (dwFileAttributes==INVALID_FILE_ATTRIBUTES) return true; 
-    return (dwFileAttributes & FILE_ATTRIBUTE_READONLY); 
+    DWORD dwFileAttributes = GetFileAttributes(filename);
+    // oh no! can't determine attribute
+    if (dwFileAttributes==INVALID_FILE_ATTRIBUTES) {
+        return true;
+    }
+    return (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 }
 
 wstring FileUtils::NormalizePath(LPCTSTR path) {
@@ -222,6 +226,32 @@ wstring FileUtils::NormalizePath(LPCTSTR path) {
         result = buffer;
     }
     return result;
+}
+
+/**
+* Replace existing extension
+* caller must supply '.' in new extension name
+*/
+wstring FileUtils::ReplaceExtension(LPCTSTR path, LPCTSTR extension) {
+	wstring filename = path;
+	size_t index = filename.find_last_of('.');
+	if (index != wstring::npos) {
+		filename = filename.substr(0,index);
+	}
+	filename.append(extension);
+	return filename;
+}
+
+/**
+* Remove existing extension
+*/
+wstring FileUtils::RemoveExtension(LPCTSTR path) {
+	wstring filename = path;
+	size_t index = filename.find_last_of('.');
+	if (index != wstring::npos) {
+		filename = filename.substr(0,index);
+	}
+	return filename;
 }
 
 

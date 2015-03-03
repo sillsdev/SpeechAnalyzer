@@ -22,20 +22,17 @@
 // progress and status of the playing/recording and allowing him to control
 // the process. This object only handles messages between the two classes.
 
-CDlgWaveNotifyObj::CDlgWaveNotifyObj()
-{
+CDlgWaveNotifyObj::CDlgWaveNotifyObj() {
     m_pClient = NULL;
 }
 
 /***************************************************************************/
 // CDlgWaveNotifyObj::~CDlgWaveNotifyObj Destructor
 /***************************************************************************/
-CDlgWaveNotifyObj::~CDlgWaveNotifyObj()
-{
+CDlgWaveNotifyObj::~CDlgWaveNotifyObj() {
 }
 
-void CDlgWaveNotifyObj::Attach( IWaveNotifiable * pClient)
-{
+void CDlgWaveNotifyObj::Attach(IWaveNotifiable * pClient) {
     m_pClient = pClient;
 }
 
@@ -44,19 +41,16 @@ void CDlgWaveNotifyObj::Attach( IWaveNotifiable * pClient)
 // The actually playing data block has been finished. Notify the player or
 // the recorder dialog.
 /***************************************************************************/
-void CDlgWaveNotifyObj::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed)
-{
+void CDlgWaveNotifyObj::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed) {
     ASSERT(m_pClient);
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
-    if (pMainWnd->IsPlayerPlaying())
-    {
+    if (pMainWnd->IsPlayerPlaying()) {
         // call player
         m_pClient->BlockFinished(nLevel, dwPosition, nSpeed);
         return;
     }
-    if (pMainWnd->IsPlayerTestRun())
-    {
+    if (pMainWnd->IsPlayerTestRun()) {
         return;    // no call
     }
     // call recorder
@@ -68,8 +62,7 @@ void CDlgWaveNotifyObj::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed
 // The actually recorded data block has been stored. Notify the recorder
 // dialog.
 /***************************************************************************/
-void CDlgWaveNotifyObj::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride)
-{
+void CDlgWaveNotifyObj::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride) {
     ASSERT(m_pClient);
     m_pClient->BlockStored(nLevel, dwPosition, bSaveOverride);
 }
@@ -79,8 +72,7 @@ void CDlgWaveNotifyObj::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveO
 // The actually recorded data block has been failed storing. Notify the
 // recorder dialog.
 /***************************************************************************/
-void CDlgWaveNotifyObj::StoreFailed()
-{
+void CDlgWaveNotifyObj::StoreFailed() {
     ASSERT(m_pClient);
     m_pClient->StoreFailed();
 }
@@ -89,19 +81,16 @@ void CDlgWaveNotifyObj::StoreFailed()
 // CDlgWaveNotifyObj::EndPlayback Playback finished
 // The playback has been finished. Notify the player or the recorder dialog.
 /***************************************************************************/
-void CDlgWaveNotifyObj::EndPlayback()
-{
+void CDlgWaveNotifyObj::EndPlayback() {
     ASSERT(m_pClient);
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
-    if (pMainWnd->IsPlayerPlaying())
-    {
+    if (pMainWnd->IsPlayerPlaying()) {
         // call player
         m_pClient->EndPlayback();
         return;
     }
-    if (pMainWnd->IsPlayerTestRun())
-    {
+    if (pMainWnd->IsPlayerTestRun()) {
         // call function key dialog (test run)
         m_pClient->EndPlayback();
         return;
@@ -117,39 +106,31 @@ void CDlgWaveNotifyObj::EndPlayback()
 // the document. If the request is coming from the recorder, the recorder will
 // deliver the data.
 /***************************************************************************/
-HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize)
-{
+HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize) {
 
     //TRACE("GetWaveData %d %d\n",dwPlayPosition, dwDataSize);
     ASSERT(m_pClient!=NULL);
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
-    if (pMainWnd->IsPlayerPlaying() || pMainWnd->IsPlayerTestRun())
-    {
+    if (pMainWnd->IsPlayerPlaying() || pMainWnd->IsPlayerTestRun()) {
         // request for data comes from player
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         DWORD dwWaveBufferSize = pDoc->GetWaveDataBufferSize();
-		// if the request is outside of the documents buffer or
+        // if the request is outside of the documents buffer or
         if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize)) ||
-			// the request is greater than the buffer?
-            ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize)))
-        {
+                // the request is greater than the buffer?
+                ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize))) {
             return pDoc->GetWaveData(dwPlayPosition, TRUE);     // get pointer to data block
-        }
-        else
-        {
+        } else {
             HPSTR pData = pDoc->GetWaveData(dwPlayPosition);    // get pointer to data block
-            if (pData == NULL)
-            {
+            if (pData == NULL) {
                 // error while reading data
                 return NULL;
             }
             pData += dwPlayPosition - pDoc->GetWaveBufferIndex();
             return pData;
         }
-    }
-    else
-    {
+    } else {
         // request for data comes from recorder
         return m_pClient->GetWaveData(dwPlayPosition, dwDataSize);
     }

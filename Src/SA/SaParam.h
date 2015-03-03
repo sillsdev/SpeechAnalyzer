@@ -5,11 +5,11 @@
 
 class CSaParam {
 public:
-	CSaParam(void);
-	CSaParam operator=(const CSaParam & right);
-	void Serialize( CArchive & ar);
+    CSaParam(void);
+    CSaParam operator=(const CSaParam & right);
+    void Serialize(CArchive & ar);
 
-    CSaString	szDescription;		// file description
+    CSaString   szDescription;      // file description
     WORD        wFlags;             // 16 bits of flags for chunks
     BYTE        byRecordFileFormat; // wav, utt, mac, etc
     CTime       RecordTimeStamp;    // recording time stamp of wave file

@@ -17,8 +17,7 @@ extern bool CheckIPAHelp();
 //###########################################################################
 // CDlgChartVowelsPage property page
 
-class CDlgChartVowelsPage : public CPropertyPage
-{
+class CDlgChartVowelsPage : public CPropertyPage {
     // Construction/destruction/creation
 public:
     CDlgChartVowelsPage(); // standard constructor
@@ -44,8 +43,7 @@ protected:
 //###########################################################################
 // CDlgChartConsonantsPage property page
 
-class CDlgChartConsonantsPage : public CPropertyPage
-{
+class CDlgChartConsonantsPage : public CPropertyPage {
     // Construction/destruction/creation
 public:
     CDlgChartConsonantsPage(); // standard constructor
@@ -73,8 +71,7 @@ protected:
 //###########################################################################
 // CDlgChartDiacriticsPage property page
 
-class CDlgChartDiacriticsPage : public CPropertyPage
-{
+class CDlgChartDiacriticsPage : public CPropertyPage {
     // Construction/destruction/creation
 public:
     CDlgChartDiacriticsPage();    // standard constructor
@@ -102,8 +99,7 @@ protected:
 //###########################################################################
 // CDlgChartSuprasegsPage property page
 
-class CDlgChartSuprasegsPage : public CPropertyPage
-{
+class CDlgChartSuprasegsPage : public CPropertyPage {
 
     // Construction/destruction/creation
 public:
@@ -144,8 +140,7 @@ enum ETable { IPA=0,};
 enum EDisplayModes { ALL=0,};
 
 //SDM 1.06.6U2 remove unused combobox move buttons
-class CDlgCharChart : public CPropertySheet
-{
+class CDlgCharChart : public CPropertySheet {
     DECLARE_DYNAMIC(CDlgCharChart)
 
 public:
@@ -180,12 +175,10 @@ private:
     // Operations
 public:
     void SetInitialState(CFont * pFont, int nCharTable = IPA, CString * pszText = NULL); // init the dialog
-    CFont * GetTextFont()
-    {
+    CFont * GetTextFont() {
         return &m_TextFont;   // return pointer to text font
     }
-    CCharTable * GetTable(int nIndex)
-    {
+    CCharTable * GetTable(int nIndex) {
         return m_apCharTables[nIndex];   // return pointer to character table
     }
     void OnHelpChart();

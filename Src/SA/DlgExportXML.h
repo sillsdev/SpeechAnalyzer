@@ -6,8 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportXML dialog
 
-class CDlgExportXML : public CDialog
-{
+class CDlgExportXML : public CDialog {
 
 public:
     CDlgExportXML(const CSaString & szDocTitle, CWnd * pParent = NULL);

@@ -67,8 +67,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgGraphsTypesCustom::CDlgGraphsTypesCustom Constructor
 /***************************************************************************/
-CDlgGraphsTypesCustom::CDlgGraphsTypesCustom(CWnd * pParent) : CDialog(CDlgGraphsTypesCustom::IDD, pParent)
-{
+CDlgGraphsTypesCustom::CDlgGraphsTypesCustom(CWnd * pParent) : CDialog(CDlgGraphsTypesCustom::IDD, pParent) {
     m_nLayout = -1;
 }
 
@@ -78,8 +77,7 @@ CDlgGraphsTypesCustom::CDlgGraphsTypesCustom(CWnd * pParent) : CDialog(CDlgGraph
 /***************************************************************************/
 // CDlgGraphsTypesCustom::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgGraphsTypesCustom::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgGraphsTypesCustom::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_LBIndex(pDX, IDC_LAYOUT, m_nLayout);
 }
@@ -87,8 +85,7 @@ void CDlgGraphsTypesCustom::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // 10/12/2000 - DODO
 /***************************************************************************/
-static UINT anGraphIDs[] =
-{
+static UINT anGraphIDs[] = {
     IDD_RAWDATA,          IDD_LOUDNESS,
     IDD_DURATION,         IDD_CHANGE,
     IDD_GLOTWAVE,         IDD_PITCH,
@@ -113,15 +110,11 @@ static UINT anGraphIDs[] =
 // the dialogs private graph ID array will be copied in a graph ID array,
 // which address has been given as parameter.
 /***************************************************************************/
-void CDlgGraphsTypesCustom::GetCheckedGraphs(UINT * pGraphIDs, int * nLayout)
-{
+void CDlgGraphsTypesCustom::GetCheckedGraphs(UINT * pGraphIDs, int * nLayout) {
     m_cGraphs.GetGraphs(pGraphIDs);
-    if (m_nLayout >= 0)
-    {
+    if (m_nLayout >= 0) {
         *nLayout = m_Layout.GetLayoutFromSelection(m_nLayout);
-    }
-    else
-    {
+    } else {
         *nLayout = -1;
     }
 }
@@ -129,10 +122,8 @@ void CDlgGraphsTypesCustom::GetCheckedGraphs(UINT * pGraphIDs, int * nLayout)
 /***************************************************************************/
 // CDlgGraphsTypesCustom::OnGraphCheck, 10/12/2000 - DDO
 /***************************************************************************/
-void CDlgGraphsTypesCustom::OnGraphCheck(UINT nID)
-{
-    if (nID)
-    {
+void CDlgGraphsTypesCustom::OnGraphCheck(UINT nID) {
+    if (nID) {
         m_cGraphs.SelectGraph(nID, IsDlgButtonChecked(nID));
     }
 
@@ -140,14 +131,12 @@ void CDlgGraphsTypesCustom::OnGraphCheck(UINT nID)
     // If more than six graph types were checked tell the user
     // that's a no-no.
     //**********************************************************
-    if (nID && m_cGraphs.GetCount(TRUE) > 6)
-    {
+    if (nID && m_cGraphs.GetCount(TRUE) > 6) {
         TCHAR * szMsg = _T("With the exception of the graphs TWC, music's magnitude and\nposition view, you may only choose six graph types to display.");
         AfxMessageBox(szMsg, MB_OK | MB_ICONEXCLAMATION);
 
         CheckDlgButton(nID, FALSE);
-        if (nID == IDD_MELOGRAM)
-        {
+        if (nID == IDD_MELOGRAM) {
             OnMelogram();
         }
         return;
@@ -156,14 +145,12 @@ void CDlgGraphsTypesCustom::OnGraphCheck(UINT nID)
     m_Layout.SelectLayoutWithCount(m_cGraphs.GetCount(TRUE));
 
     CWnd * pOrder = GetDlgItem(IDC_ORDER);
-    if (pOrder)
-    {
+    if (pOrder) {
         pOrder->EnableWindow(m_cGraphs.GetCount(TRUE) > 1);
     }
 }
 
-void CDlgGraphsTypesCustom::CheckDlgButton(int nIDButton, UINT nCheck, BOOL bDefaultOrder)
-{
+void CDlgGraphsTypesCustom::CheckDlgButton(int nIDButton, UINT nCheck, BOOL bDefaultOrder) {
     CDialog::CheckDlgButton(nIDButton, nCheck);
 
     m_cGraphs.SelectGraph(nIDButton, nCheck, bDefaultOrder);
@@ -172,15 +159,13 @@ void CDlgGraphsTypesCustom::CheckDlgButton(int nIDButton, UINT nCheck, BOOL bDef
 /***************************************************************************/
 // CDlgGraphsTypesCustom::OnMelogram - TCJ 4/12/2000
 /***************************************************************************/
-void CDlgGraphsTypesCustom::OnMelogram()
-{
+void CDlgGraphsTypesCustom::OnMelogram() {
     BOOL bMelChecked = (BOOL)IsDlgButtonChecked(IDD_MELOGRAM);
     GetDlgItem(IDD_TWC)->EnableWindow(bMelChecked);
     GetDlgItem(IDD_MAGNITUDE)->EnableWindow(bMelChecked);
     CheckDlgButton(IDD_TWC, bMelChecked);
     CheckDlgButton(IDD_MAGNITUDE, bMelChecked);
-    if (bMelChecked)
-    {
+    if (bMelChecked) {
         OnGraphCheck(IDD_MELOGRAM);
     }
 }
@@ -193,8 +178,7 @@ void CDlgGraphsTypesCustom::OnMelogram()
 // The dialog is centered on the main frame and then the graphs from the
 // graph ID array are checked on the dialog.
 /***************************************************************************/
-BOOL CDlgGraphsTypesCustom::OnInitDialog()
-{
+BOOL CDlgGraphsTypesCustom::OnInitDialog() {
     CDialog::OnInitDialog();
 
     // subclass the control
@@ -214,17 +198,14 @@ BOOL CDlgGraphsTypesCustom::OnInitDialog()
 
     // check the used graph checkboxes
     UINT nID;
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         nID = pGraphID[nLoop];
-        if (nID == ID_GRAPHS_OVERLAY)
-        {
+        if (nID == ID_GRAPHS_OVERLAY) {
             // If overlay present check the base graph type...
             CMultiPlotWnd * pPlot = (CMultiPlotWnd *)pView->GetGraph(nLoop)->GetPlot();
             nID = pPlot->GetBasePlotID();
         }
-        if (nID)
-        {
+        if (nID) {
             CheckDlgButton(nID, TRUE, FALSE);
         }
     }
@@ -233,8 +214,7 @@ BOOL CDlgGraphsTypesCustom::OnInitDialog()
     // If the melogram graph is not initially checked
     // then disable the TWC and magnitude check boxes.
     //**************************************************
-    if (!(BOOL)IsDlgButtonChecked(IDD_MELOGRAM))
-    {
+    if (!(BOOL)IsDlgButtonChecked(IDD_MELOGRAM)) {
         GetDlgItem(IDD_TWC)->EnableWindow(FALSE);
         GetDlgItem(IDD_MAGNITUDE)->EnableWindow(FALSE);
     }
@@ -244,16 +224,13 @@ BOOL CDlgGraphsTypesCustom::OnInitDialog()
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CDlgGraphsTypesCustom::OnSelchangeLayout()
-{
+void CDlgGraphsTypesCustom::OnSelchangeLayout() {
     UpdateData(TRUE);
 }
 
-void CDlgGraphsTypesCustom::OnOrder()
-{
+void CDlgGraphsTypesCustom::OnOrder() {
     CDlgGraphTypesOrder cOrder(m_cGraphs, m_Layout.GetLayoutFromSelection(m_nLayout), this);
-    if (cOrder.DoModal() == IDOK)
-    {
+    if (cOrder.DoModal() == IDOK) {
         EndDialog(IDOK);
     }
 }
@@ -262,10 +239,8 @@ void CDlgGraphsTypesCustom::OnOrder()
 // CDlgGraphsTypesCustom::OnOK OK button pressed
 //   Ensure at least one graph type is selected before closing
 /***************************************************************************/
-void CDlgGraphsTypesCustom::OnOK()
-{
-    if (m_cGraphs.GetCount(TRUE) == 0)
-    {
+void CDlgGraphsTypesCustom::OnOK() {
+    if (m_cGraphs.GetCount(TRUE) == 0) {
         m_cGraphs.SelectGraph(IDD_RAWDATA);    // no graph selected: set raw data
     }
     EndDialog(IDOK);
@@ -274,8 +249,7 @@ void CDlgGraphsTypesCustom::OnOK()
 /***************************************************************************/
 // CDlgGraphsTypesCustom::OnHelpGraphsTypes Call Graphs Types help
 /***************************************************************************/
-void CDlgGraphsTypesCustom::OnHelpGraphsTypes()
-{
+void CDlgGraphsTypesCustom::OnHelpGraphsTypes() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Graphs/Graph_Types/Custom_Graph_Types.htm";
@@ -288,14 +262,10 @@ void CDlgGraphsTypesCustom::OnHelpGraphsTypes()
 //**********************************************************
 // CGraphList::CGraphList
 //**********************************************************
-CGraphList::CGraphList(const UINT * pGraphIDs)
-{
-    if (pGraphIDs)
-    {
+CGraphList::CGraphList(const UINT * pGraphIDs) {
+    if (pGraphIDs) {
         SetGraphs(pGraphIDs);
-    }
-    else
-    {
+    } else {
         ClearGraphs();
     }
 }
@@ -303,8 +273,7 @@ CGraphList::CGraphList(const UINT * pGraphIDs)
 //**********************************************************
 // CGraphList::CGraphList
 //**********************************************************
-CGraphList::CGraphList(const CGraphList & src)
-{
+CGraphList::CGraphList(const CGraphList & src) {
     SetGraphs(src.m_nGraphID);
 }
 
@@ -313,15 +282,12 @@ CGraphList::CGraphList(const CGraphList & src)
 // Count all checked graph types optionally excluding
 // graphs which do not consume layout positions.
 //**********************************************************
-int CGraphList::GetCount(BOOL bLayoutOnly) const
-{
+int CGraphList::GetCount(BOOL bLayoutOnly) const {
     int nGraphCount = 0;
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         UINT nID = m_nGraphID[nLoop];
         if (nID)
-            if (!bLayoutOnly || IsLayoutGraph(nID))
-            {
+            if (!bLayoutOnly || IsLayoutGraph(nID)) {
                 nGraphCount++;
             }
     }
@@ -332,29 +298,22 @@ int CGraphList::GetCount(BOOL bLayoutOnly) const
 //**********************************************************
 // CGraphList::ClearGraphs
 //**********************************************************
-void CGraphList::ClearGraphs(BOOL bFilter, BOOL bLayout)
-{
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+void CGraphList::ClearGraphs(BOOL bFilter, BOOL bLayout) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         BOOL bLayoutGraph = IsLayoutGraph(m_nGraphID[nLoop]);
         BOOL bClear = !bFilter || (bLayout ? bLayoutGraph : !bLayoutGraph);
-        if (bClear)
-        {
+        if (bClear) {
             m_nGraphID[nLoop] = 0;
         }
     }
     CompactList();
 }
 
-void CGraphList::CompactList()
-{
+void CGraphList::CompactList() {
     int nFound = 0;
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
-        if (m_nGraphID[nLoop] != 0)
-        {
-            if (nLoop != nFound)
-            {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        if (m_nGraphID[nLoop] != 0) {
+            if (nLoop != nFound) {
                 m_nGraphID[nFound] = m_nGraphID[nLoop];
                 m_nGraphID[nLoop] = 0;
             }
@@ -365,15 +324,12 @@ void CGraphList::CompactList()
 //**********************************************************
 // CGraphList::SetGraphs
 //**********************************************************
-void CGraphList::SetGraphs(const UINT * pGraphIDs, BOOL bClear)
-{
-    if (bClear)
-    {
+void CGraphList::SetGraphs(const UINT * pGraphIDs, BOOL bClear) {
+    if (bClear) {
         ClearGraphs();
     }
 
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         SelectGraph(pGraphIDs[nLoop], TRUE, FALSE); // Copy order intact
     }
 }
@@ -381,10 +337,8 @@ void CGraphList::SetGraphs(const UINT * pGraphIDs, BOOL bClear)
 //**********************************************************
 // CGraphList::GetGraphs
 //**********************************************************
-void CGraphList::GetGraphs(UINT * pGraphIDs) const
-{
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+void CGraphList::GetGraphs(UINT * pGraphIDs) const {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         *(pGraphIDs + nLoop) = m_nGraphID[nLoop]; // return own graph ID array
     }
 }
@@ -392,19 +346,15 @@ void CGraphList::GetGraphs(UINT * pGraphIDs) const
 //**********************************************************
 // CGraphList::SelectGraph
 //**********************************************************
-void CGraphList::SelectGraph(UINT nID, BOOL bSelect, BOOL bDefaultOrder)
-{
-    if (bSelect)
-    {
+void CGraphList::SelectGraph(UINT nID, BOOL bSelect, BOOL bDefaultOrder) {
+    if (bSelect) {
         int nIndex = IsSelected(nID);
 
-        if (nIndex >= 0)
-        {
+        if (nIndex >= 0) {
             return;
         }
 
-        if (!IsLayoutGraph(nID))
-        {
+        if (!IsLayoutGraph(nID)) {
             // non-layout graphs are grouped before layout so as not to
             // interfere with layout order comparison
             InsertAt(nID, 0);
@@ -412,78 +362,59 @@ void CGraphList::SelectGraph(UINT nID, BOOL bSelect, BOOL bDefaultOrder)
         }
 
         int nOrder = GraphDefaultOrder(nID);
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-        {
-            if (m_nGraphID[nLoop] == 0)
-            {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+            if (m_nGraphID[nLoop] == 0) {
                 m_nGraphID[nLoop] = nID;
                 return;
             }
-            if (bDefaultOrder && nOrder < GraphDefaultOrder(m_nGraphID[nLoop]))
-            {
+            if (bDefaultOrder && nOrder < GraphDefaultOrder(m_nGraphID[nLoop])) {
                 InsertAt(nID, nLoop);
                 return;
             }
         }
-    }
-    else
-    {
+    } else {
         int nIndex = IsSelected(nID);
 
-        if (nIndex < 0)
-        {
+        if (nIndex < 0) {
             return;
         }
 
-        for (int nLoop = nIndex + 1; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-        {
+        for (int nLoop = nIndex + 1; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
             m_nGraphID[nLoop - 1] = m_nGraphID[nLoop];
         }
     }
 }
 
-void CGraphList::InsertAt(UINT nID, int nIndex)
-{
+void CGraphList::InsertAt(UINT nID, int nIndex) {
     ASSERT(nIndex >= 0 && nIndex < MAX_GRAPHS_NUMBER);
 
-    for (int nLoop = MAX_GRAPHS_NUMBER - 1; nLoop > nIndex; nLoop--)
-    {
+    for (int nLoop = MAX_GRAPHS_NUMBER - 1; nLoop > nIndex; nLoop--) {
         m_nGraphID[nLoop] = m_nGraphID[nLoop - 1];
     }
     m_nGraphID[nIndex] = nID;
 }
 
-int CGraphList::IsSelected(UINT nID) const
-{
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
-        if (m_nGraphID[nLoop] == nID)
-        {
+int CGraphList::IsSelected(UINT nID) const {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        if (m_nGraphID[nLoop] == nID) {
             return nLoop;
         }
     }
     return -1;
 }
 
-bool CGraphList::operator==(const CGraphList & compare) const
-{
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+bool CGraphList::operator==(const CGraphList & compare) const {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         UINT nID = m_nGraphID[nLoop];
-        if (IsLayoutGraph(nID))
-        {
-            if (m_nGraphID[nLoop] != compare.m_nGraphID[nLoop])
-            {
+        if (IsLayoutGraph(nID)) {
+            if (m_nGraphID[nLoop] != compare.m_nGraphID[nLoop]) {
                 return FALSE;
             }
-        }
-        else
-        {
+        } else {
             // order of non-layout graphs does not effect equality
             // non-layout graphs are grouped before layout so as not to
             // interfere with layout order comparison
-            if (compare.IsSelected(nID) == -1)
-            {
+            if (compare.IsSelected(nID) == -1) {
                 return FALSE;
             }
         }
@@ -492,15 +423,12 @@ bool CGraphList::operator==(const CGraphList & compare) const
 }
 
 
-int CGraphList::GraphDefaultOrder(UINT nID)
-{
-    if (!IsLayoutGraph(nID))
-    {
+int CGraphList::GraphDefaultOrder(UINT nID) {
+    if (!IsLayoutGraph(nID)) {
         return -1;
     }
 
-    switch (nID)
-    {
+    switch (nID) {
     case IDD_RAWDATA:
         return 0;
     case IDD_MELOGRAM:
@@ -511,38 +439,30 @@ int CGraphList::GraphDefaultOrder(UINT nID)
     return 999;  // large number
 }
 
-CSaString CGraphList::GetDescription() const
-{
+CSaString CGraphList::GetDescription() const {
     const CGraphList & cLayout = *this;
     CSaString szDescription;
 
-    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
-    {
+    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
         UINT nID = cLayout[i];
 
-        if (!nID)
-        {
+        if (!nID) {
             continue;
         }
 
-        if (IsLayoutGraph(nID) || nID == IDD_RECORDING)
-        {
-            if (!szDescription.IsEmpty())
-            {
+        if (IsLayoutGraph(nID) || nID == IDD_RECORDING) {
+            if (!szDescription.IsEmpty()) {
                 szDescription += _T(", ");
             }
 
             szDescription += CSaView::GetGraphTitle(nID);
 
-            if (nID == IDD_MELOGRAM)
-            {
-                if (cLayout.IsSelected(IDD_TWC) >= 0)
-                {
+            if (nID == IDD_MELOGRAM) {
+                if (cLayout.IsSelected(IDD_TWC) >= 0) {
                     szDescription += _T(", ");
                     szDescription += CSaView::GetGraphTitle(IDD_TWC);
                 }
-                if (cLayout.IsSelected(IDD_MAGNITUDE) >= 0)
-                {
+                if (cLayout.IsSelected(IDD_MAGNITUDE) >= 0) {
                     szDescription += _T(", ");
                     szDescription += CSaView::GetGraphTitle(IDD_MAGNITUDE);
                 }
@@ -558,14 +478,12 @@ CSaString CGraphList::GetDescription() const
 
 
 CDlgGraphTypesOrder::CDlgGraphTypesOrder(CGraphList & cOrder, int nLayout, CWnd * pParent)
-    : CDialog(CDlgGraphTypesOrder::IDD, pParent), m_cResultOrder(cOrder), m_nLayout(nLayout)
-{
+    : CDialog(CDlgGraphTypesOrder::IDD, pParent), m_cResultOrder(cOrder), m_nLayout(nLayout) {
     m_cLayoutOrder = GetLayoutOrder(cOrder);
 }
 
 
-void CDlgGraphTypesOrder::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgGraphTypesOrder::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST, m_cList);
 }
@@ -582,12 +500,10 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgGraphTypesOrder message handlers
 
-void CDlgGraphTypesOrder::OnDown()
-{
+void CDlgGraphTypesOrder::OnDown() {
     int nSelection = m_cList.GetCurSel();
 
-    if (nSelection >= m_cList.GetCount() - 1)
-    {
+    if (nSelection >= m_cList.GetCount() - 1) {
         return;    // can not move down
     }
 
@@ -599,12 +515,10 @@ void CDlgGraphTypesOrder::OnDown()
     OnSelchangeList();  // Update buttons enables
 }
 
-void CDlgGraphTypesOrder::OnUp()
-{
+void CDlgGraphTypesOrder::OnUp() {
     int nSelection = m_cList.GetCurSel();
 
-    if (nSelection <= 0)
-    {
+    if (nSelection <= 0) {
         return;    // Can not move up
     }
 
@@ -616,24 +530,20 @@ void CDlgGraphTypesOrder::OnUp()
     OnSelchangeList();  // Update buttons enables
 }
 
-void CDlgGraphTypesOrder::OnSelchangeList()
-{
+void CDlgGraphTypesOrder::OnSelchangeList() {
     int nSelection = m_cList.GetCurSel();
 
     CWnd * pUp = GetDlgItem(IDC_UP);
-    if (pUp)
-    {
+    if (pUp) {
         pUp->EnableWindow(nSelection > 0);
     }
     CWnd * pDown = GetDlgItem(IDC_DOWN);
-    if (pDown)
-    {
+    if (pDown) {
         pDown->EnableWindow(nSelection < m_cList.GetCount() - 1);
     }
 }
 
-BOOL CDlgGraphTypesOrder::OnInitDialog()
-{
+BOOL CDlgGraphTypesOrder::OnInitDialog() {
     CDialog::OnInitDialog();
 
     OnSelchangeList();
@@ -643,8 +553,7 @@ BOOL CDlgGraphTypesOrder::OnInitDialog()
     return TRUE;  // return TRUE unless you set the focus to a control
 }
 
-void CDlgGraphTypesOrder::OnOK()
-{
+void CDlgGraphTypesOrder::OnOK() {
     ApplyLayoutOrder();  // Apply changes
 
     CDialog::OnOK();
@@ -653,23 +562,20 @@ void CDlgGraphTypesOrder::OnOK()
 /***************************************************************************/
 // CDlgGraphTypesOrder::OnHelpGraphTypesOrder Call Graph Types Order help
 /***************************************************************************/
-void CDlgGraphTypesOrder::OnHelpGraphTypesOrder()
-{
+void CDlgGraphTypesOrder::OnHelpGraphTypesOrder() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Graphs/Graph_Types/Graph_Types_Order.htm";
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
-void CDlgGraphTypesOrder::OnGraphListChanged()
-{
+void CDlgGraphTypesOrder::OnGraphListChanged() {
     OnPopulateList();
     // The shape of the layout could be affected by the graph order
     OnDrawLayout();
 }
 
-void CDlgGraphTypesOrder::OnDrawLayout()
-{
+void CDlgGraphTypesOrder::OnDrawLayout() {
     CWnd * pWnd = GetDlgItem(IDC_PICTURE);
 
     ASSERT(pWnd);
@@ -684,8 +590,7 @@ void CDlgGraphTypesOrder::OnDrawLayout()
     // Erase
     pDC->FillSolidRect(rDraw, pDC->GetBkColor());
 
-    for (int nGraph = 0; nGraph < CSaView::GetNumberOfGraphsInLayout(m_nLayout); nGraph++)
-    {
+    for (int nGraph = 0; nGraph < CSaView::GetNumberOfGraphsInLayout(m_nLayout); nGraph++) {
         CRect rGraph;
 
         CSaView::GetGraphSubRect(m_nLayout, &rDraw, &rGraph, nGraph, m_cLayoutOrder.GetGraphs());
@@ -702,29 +607,24 @@ void CDlgGraphTypesOrder::OnDrawLayout()
     }
 }
 
-void CDlgGraphTypesOrder::OnPopulateList()
-{
+void CDlgGraphTypesOrder::OnPopulateList() {
     int nCount = m_cLayoutOrder.GetCount();
 
     m_cList.ResetContent();
 
-    for (int i = 0; i < nCount; i++)
-    {
+    for (int i = 0; i < nCount; i++) {
         CString szDescription;
         UINT nID = m_cLayoutOrder[i];
 
         szDescription.Format(_T("%d. "), i+1);
         szDescription += CSaView::GetGraphTitle(nID);
 
-        if (nID == IDD_MELOGRAM)
-        {
-            if (m_cResultOrder.IsSelected(IDD_TWC) >= 0)
-            {
+        if (nID == IDD_MELOGRAM) {
+            if (m_cResultOrder.IsSelected(IDD_TWC) >= 0) {
                 szDescription += _T(", ");
                 szDescription += CSaView::GetGraphTitle(IDD_TWC);
             }
-            if (m_cResultOrder.IsSelected(IDD_MAGNITUDE) >= 0)
-            {
+            if (m_cResultOrder.IsSelected(IDD_MAGNITUDE) >= 0) {
                 szDescription += _T(", ");
                 szDescription += CSaView::GetGraphTitle(IDD_MAGNITUDE);
             }
@@ -734,15 +634,12 @@ void CDlgGraphTypesOrder::OnPopulateList()
     }
 }
 
-void CDlgGraphTypesOrder::ApplyLayoutOrder()
-{
+void CDlgGraphTypesOrder::ApplyLayoutOrder() {
     // remove layout graphs from result list
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         int nID = m_cResultOrder[nLoop];
 
-        if (nID && CGraphList::IsLayoutGraph(nID))
-        {
+        if (nID && CGraphList::IsLayoutGraph(nID)) {
             m_cResultOrder.SelectGraph(nID, FALSE);  // remove graph
             nLoop--; // We removed a graph
         }
@@ -752,16 +649,13 @@ void CDlgGraphTypesOrder::ApplyLayoutOrder()
     m_cResultOrder.SetGraphs(m_cLayoutOrder.GetGraphs(), FALSE);
 }
 
-CGraphList CDlgGraphTypesOrder::GetLayoutOrder(const CGraphList & src)
-{
+CGraphList CDlgGraphTypesOrder::GetLayoutOrder(const CGraphList & src) {
     CGraphList cResult;
 
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         UINT nID = src[nLoop];
 
-        if (nID && CGraphList::IsLayoutGraph(nID))
-        {
+        if (nID && CGraphList::IsLayoutGraph(nID)) {
             cResult.SelectGraph(nID, TRUE, FALSE);    // Copy Order intact.
         }
     }
@@ -769,12 +663,10 @@ CGraphList CDlgGraphTypesOrder::GetLayoutOrder(const CGraphList & src)
     return cResult;
 }
 
-void CDlgGraphTypesOrder::SwapLayoutGraphs(int nFirst, int nSecond)
-{
+void CDlgGraphTypesOrder::SwapLayoutGraphs(int nFirst, int nSecond) {
     ASSERT(nFirst >= 0 && nFirst < MAX_GRAPHS_NUMBER);
 
-    if (nSecond < 0)
-    {
+    if (nSecond < 0) {
         nSecond = nFirst +  1;
     }
 
@@ -789,14 +681,10 @@ void CDlgGraphTypesOrder::SwapLayoutGraphs(int nFirst, int nSecond)
     m_cLayoutOrder.SetGraphs(nGraphs);
 }
 
-void CDlgGraphTypesOrder::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
-{
-    if (nIDCtl == IDC_PICTURE)
-    {
+void CDlgGraphTypesOrder::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct) {
+    if (nIDCtl == IDC_PICTURE) {
         OnDrawLayout();
-    }
-    else
-    {
+    } else {
         CDialog::OnDrawItem(nIDCtl, lpDrawItemStruct);
     }
 }
@@ -808,20 +696,17 @@ static LPCSTR psz_OtherGraph = "OtherGraph";
 static LPCSTR psz_Predefined = "Predefined";
 
 // Write spectrumParm properties to stream
-void CGraphConfiguration::WriteProperties(CObjectOStream & obs, BOOL bPredefined) const
-{
+void CGraphConfiguration::WriteProperties(CObjectOStream & obs, BOOL bPredefined) const {
 
     UNUSED_ALWAYS(bPredefined);
     obs.WriteBeginMarker(psz_Configuration, GetDescription().utf8().c_str());
     // write out properties
     obs.WriteInteger(psz_Layout, m_nLayout);
     // obs.WriteBool(psz_Predefined, bPredefined);
-    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
-    {
+    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
         UINT nID = operator[](i);
 
-        if (nID)
-        {
+        if (nID) {
             obs.WriteUInt(IsLayoutGraph(nID) ? psz_LayoutGraph : psz_OtherGraph, nID, CSaView::GetGraphTitle(nID).utf8().c_str());
         }
     }
@@ -830,10 +715,8 @@ void CGraphConfiguration::WriteProperties(CObjectOStream & obs, BOOL bPredefined
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CGraphConfiguration::ReadProperties(CObjectIStream & obs, BOOL & bPredefined)
-{
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Configuration))
-    {
+BOOL CGraphConfiguration::ReadProperties(CObjectIStream & obs, BOOL & bPredefined) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Configuration)) {
         return FALSE;
     }
 
@@ -842,79 +725,57 @@ BOOL CGraphConfiguration::ReadProperties(CObjectIStream & obs, BOOL & bPredefine
 
     bPredefined = false;
 
-    while (!obs.bAtEnd())
-    {
+    while (!obs.bAtEnd()) {
         if (obs.bReadInteger(psz_Layout, m_nLayout));
         else if (obs.bReadBool(psz_Predefined, bPredefined));  // Read a boolean. The presence of the marker means TRUE
-        else if (obs.bReadUInt(psz_LayoutGraph, nID) || obs.bReadUInt(psz_LayoutGraph, nID))
-        {
+        else if (obs.bReadUInt(psz_LayoutGraph, nID) || obs.bReadUInt(psz_LayoutGraph, nID)) {
             InsertAt((UINT)nID, nIndex++);
-        }
-        else if (obs.bEnd(psz_Configuration))
-        {
+        } else if (obs.bEnd(psz_Configuration)) {
             break;
         }
     }
     return TRUE;
 }
 
-BOOL CGraphConfigurationVector::Load(LPCTSTR szFilename, int nTaskType)
-{
+BOOL CGraphConfigurationVector::Load(LPCTSTR szFilename, int nTaskType) {
     reserve(16); // reserve room for 16 sets to minimize copying
 
     m_nPredefinedSets = 0; // Consider all graph layouts user preferences
     int nSkip = size();
 
-    if (szFilename  != NULL)
-    {
-        try
-        {
+    if (szFilename  != NULL) {
+        try {
             CSaString filename(szFilename);
             CObjectIStream obs(filename.utf8().c_str());
-            while (!obs.bAtEnd())
-            {
+            while (!obs.bAtEnd()) {
                 CGraphConfiguration newSet;
                 BOOL bPredefined;
-                if (newSet.ReadProperties(obs, bPredefined))
-                {
-                    if (!bPredefined && nSkip == 0)
-                    {
+                if (newSet.ReadProperties(obs, bPredefined)) {
+                    if (!bPredefined && nSkip == 0) {
                         push_back(newSet);
-                    }
-                    else if (bPredefined)     // early files did not mark predefined configurations so we had to count
-                    {
+                    } else if (bPredefined) { // early files did not mark predefined configurations so we had to count
                         nSkip = 0;    // This is not an early file.
-                    }
-                    else
-                    {
+                    } else {
                         nSkip--;
                     }
-                }
-                else
-                {
+                } else {
                     obs.ReadMarkedString();    // Skip unexpected field
                 }
             }
-        }
-        catch (...)
-        {
+        } catch (...) {
         }
     }
 
     BOOL bSuccess = (size() > 0);  // Not an empty list.
 
-    if (!bSuccess && nTaskType == 0)   // Speech
-    {
-        for (int i=0; i < 6; i++)
-        {
+    if (!bSuccess && nTaskType == 0) { // Speech
+        for (int i=0; i < 6; i++) {
             push_back(CDlgGraphsTypes::GetStandardCheckedGraphs(i));
         }
     }
 
-    if (!bSuccess && nTaskType == 1)   // Music
-    {
-        for (int i=0; i < 6; i++)
-        {
+    if (!bSuccess && nTaskType == 1) { // Music
+        for (int i=0; i < 6; i++) {
             push_back(CDlgGraphsTypes::GetStandardCheckedGraphs(i + 6));
         }
     }
@@ -922,67 +783,52 @@ BOOL CGraphConfigurationVector::Load(LPCTSTR szFilename, int nTaskType)
     return TRUE;
 }
 
-BOOL CGraphConfigurationVector::Save(LPCTSTR szFilename) const
-{
-    if (szFilename == NULL)
-    {
+BOOL CGraphConfigurationVector::Save(LPCTSTR szFilename) const {
+    if (szFilename == NULL) {
         return FALSE;
     }
 
-    try
-    {
+    try {
         CSaString filename(szFilename);
         CObjectOStream obs(filename.utf8().c_str());
-        for (int i = 0; i < (int)size(); i++)
-        {
+        for (int i = 0; i < (int)size(); i++) {
             operator[](i).WriteProperties(obs, i < GetCountPredefinedSets());
         }
-    }
-    catch (...)
-    {
+    } catch (...) {
         return FALSE;
     }
 
     return TRUE;
 }
 
-int CGraphConfigurationVector::find(const CGraphConfiguration & data) const
-{
+int CGraphConfigurationVector::find(const CGraphConfiguration & data) const {
     iterator pFound;
     CGraphConfigurationVector & unconstThis = *const_cast<CGraphConfigurationVector *>(this);
 
     pFound = std::find(unconstThis.begin(), unconstThis.end(), data);
 
-    if (pFound != end())
-    {
+    if (pFound != end()) {
         return pFound - begin();
-    }
-    else
-    {
+    } else {
         return -1;
     }
 }
 
-CGraphConfigurationVector & GetGraphConfigurationVector(int nTaskType)
-{
+CGraphConfigurationVector & GetGraphConfigurationVector(int nTaskType) {
     CSaString szPath(AfxGetApp()->GetProfileString(_T(""), _T("DataLocation")));
 
-    switch (nTaskType)
-    {
-    case 0:   // speech
-    {
+    switch (nTaskType) {
+    case 0: { // speech
         CString szSpeechPath = szPath + _T("\\g-speech.psa");
         static CGraphConfigurationVector theSpeechConfiguration(szSpeechPath, 0);
         return theSpeechConfiguration;
     }
-    case 1:
-    {
+    case 1: {
         CString szMusicPath = szPath + _T("\\g-music.psa");
         static CGraphConfigurationVector theMusicConfiguration(szMusicPath, 1);
         return theMusicConfiguration;
     }
-    default:
-    {
+    default: {
         static CGraphConfigurationVector theEmptyConfiguration;
         return theEmptyConfiguration;
     }
@@ -994,28 +840,23 @@ CGraphConfigurationVector & GetGraphConfigurationVector(int nTaskType)
 
 
 CDlgGraphsTypes::CDlgGraphsTypes(CWnd * pParent, const UINT * pGraphIDs ,int nLayout)
-    : CDialog(CDlgGraphsTypes::IDD, pParent), cCurrentConfig(pGraphIDs, nLayout)
-{
+    : CDialog(CDlgGraphsTypes::IDD, pParent), cCurrentConfig(pGraphIDs, nLayout) {
     bCustom = FALSE;
     m_nConfiguration = -1;
 
-    for (int nTaskType = 0; nTaskType < 2; nTaskType++)
-    {
+    for (int nTaskType = 0; nTaskType < 2; nTaskType++) {
         GetGraphConfigurationVector(nTaskType) = ::GetGraphConfigurationVector(nTaskType);
     }
 
-    if (pGraphIDs)
-    {
-        for (int i = 0; i < 2; i++)
-        {
+    if (pGraphIDs) {
+        for (int i = 0; i < 2; i++) {
             int nTaskType = (RecentTaskType() + i) % 2;  // Start with MRU first
 
             CGraphConfigurationVector & cGraphs = GetGraphConfigurationVector(nTaskType);
 
             m_nConfiguration = cGraphs.find(cCurrentConfig);
 
-            if (m_nConfiguration != -1)
-            {
+            if (m_nConfiguration != -1) {
                 RecentTaskType() = m_nTaskType = nTaskType;
                 break;
             }
@@ -1023,8 +864,7 @@ CDlgGraphsTypes::CDlgGraphsTypes(CWnd * pParent, const UINT * pGraphIDs ,int nLa
     }
 }
 
-void CDlgGraphsTypes::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgGraphsTypes::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST, m_cList);
     DDX_Control(pDX, IDC_TASKTYPE, m_cTaskType);
@@ -1044,10 +884,8 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgGraphsTypes message handlers
 
-void CDlgGraphsTypes::OnCustom()
-{
-    if (m_cCustom.DoModal() == IDOK)
-    {
+void CDlgGraphsTypes::OnCustom() {
+    if (m_cCustom.DoModal() == IDOK) {
         bCustom = TRUE;
         OnOK();
     }
@@ -1059,15 +897,11 @@ void CDlgGraphsTypes::OnCustom()
 // the dialogs private graph ID array will be copied in a graph ID array,
 // which address has been given as parameter.
 /***************************************************************************/
-void CDlgGraphsTypes::GetCheckedGraphs(UINT * pGraphIDs, int * nLayout)
-{
-    if (bCustom)
-    {
+void CDlgGraphsTypes::GetCheckedGraphs(UINT * pGraphIDs, int * nLayout) {
+    if (bCustom) {
         m_cCustom.GetCheckedGraphs(pGraphIDs, nLayout);
         return;
-    }
-    else
-    {
+    } else {
         CGraphConfigurationVector & cGraphs = ::GetGraphConfigurationVector(m_nTaskType);
 
         CGraphConfiguration & cConfig = cGraphs[m_nConfiguration];
@@ -1080,8 +914,7 @@ void CDlgGraphsTypes::GetCheckedGraphs(UINT * pGraphIDs, int * nLayout)
 }
 
 
-CGraphConfiguration CDlgGraphsTypes::GetStandardCheckedGraphs(int nConfiguration)
-{
+CGraphConfiguration CDlgGraphsTypes::GetStandardCheckedGraphs(int nConfiguration) {
     int nLayout;
     UINT pGraphIDs[MAX_GRAPHS_NUMBER];
 
@@ -1090,21 +923,18 @@ CGraphConfiguration CDlgGraphsTypes::GetStandardCheckedGraphs(int nConfiguration
     return CGraphConfiguration(pGraphIDs, nLayout);
 }
 
-void CDlgGraphsTypes::GetStandardCheckedGraphs(int nConfiguration, UINT * pGraphIDs, int * nLayout, CString * pLabelOut, CString * pTipOut)
-{
+void CDlgGraphsTypes::GetStandardCheckedGraphs(int nConfiguration, UINT * pGraphIDs, int * nLayout, CString * pLabelOut, CString * pTipOut) {
     *nLayout = -1;
 
     LPCSTR pLabel = "No label";
 
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         *(pGraphIDs + nLoop) = 0; // return own graph ID array
     }
 
     int nIndex = 0;
 
-    switch (nConfiguration)
-    {
+    switch (nConfiguration) {
     case 0: // Waveform
         pLabel = "Waveform";
         pGraphIDs[nIndex++] = IDD_RAWDATA;
@@ -1180,8 +1010,7 @@ void CDlgGraphsTypes::GetStandardCheckedGraphs(int nConfiguration, UINT * pGraph
         pGraphIDs[0] = IDD_RAWDATA;
     }
 
-    if (*nLayout == -1)
-    {
+    if (*nLayout == -1) {
         // nLayout not set use default value
         *nLayout = CSaView::SetLayout(pGraphIDs);
     }
@@ -1191,82 +1020,66 @@ void CDlgGraphsTypes::GetStandardCheckedGraphs(int nConfiguration, UINT * pGraph
 
     int nCount = szLabel.Find('\n');
 
-    if (nCount != -1)
-    {
+    if (nCount != -1) {
         szTip = szLabel.Mid(nCount + 1);
         szLabel = szLabel.Left(nCount);
-    }
-    else
-    {
+    } else {
         szTip = szLabel;
     }
 
-    if (pLabelOut)
-    {
+    if (pLabelOut) {
         *pLabelOut = szLabel;
     }
-    if (pTipOut)
-    {
+    if (pTipOut) {
         *pTipOut = szTip;
     }
 }
 
 
-void CDlgGraphsTypes::OnOK()
-{
+void CDlgGraphsTypes::OnOK() {
     UpdateData(TRUE);
 
-    for (int nTaskType = 0; nTaskType < 2; nTaskType++)
-    {
+    for (int nTaskType = 0; nTaskType < 2; nTaskType++) {
         CGraphConfigurationVector & cGlobal = ::GetGraphConfigurationVector(nTaskType);
-        if (!cGlobal.IsEqual(GetGraphConfigurationVector(nTaskType)))
-        {
+        if (!cGlobal.IsEqual(GetGraphConfigurationVector(nTaskType))) {
             cGlobal = GetGraphConfigurationVector(nTaskType);
             cGlobal.Save();
         }
     }
 
-    if (bCustom || m_nConfiguration != -1)
-    {
+    if (bCustom || m_nConfiguration != -1) {
         CDialog::OnOK();
-    }
-    else
-    {
+    } else {
         CDialog::OnCancel();
     }
 }
 
 
-void CDlgGraphsTypes::OnAdd()
-{
+void CDlgGraphsTypes::OnAdd() {
     CGraphConfigurationVector & cGraphs = GetGraphConfigurationVector(m_nTaskType);
     cGraphs.push_back(cCurrentConfig);
     OnTaskTypeChange();
 }
 
-void CDlgGraphsTypes::OnRemove()
-{
+void CDlgGraphsTypes::OnRemove() {
     CGraphConfigurationVector & cGraphs = GetGraphConfigurationVector(m_nTaskType);
     cGraphs.Remove(m_nConfiguration);
     OnTaskTypeChange();
 }
 
-void CDlgGraphsTypes::OnSelchangeGraphTypes()
-{
+void CDlgGraphsTypes::OnSelchangeGraphTypes() {
     UpdateData();
 
 
     m_nConfiguration = m_cList.GetCurSel();
     CWnd * pWnd = GetDlgItem(IDC_REMOVE);
     const CGraphConfigurationVector & cGraphs = GetGraphConfigurationVector(m_nTaskType);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->EnableWindow(m_cList.GetCurSel()>= cGraphs.GetCountPredefinedSets());
     }
 }
 
-BOOL CDlgGraphsTypes::OnInitDialog()
-{
+BOOL CDlgGraphsTypes::OnInitDialog() {
     CDialog::OnInitDialog();
 
     CString szTab;
@@ -1284,8 +1097,7 @@ BOOL CDlgGraphsTypes::OnInitDialog()
     return TRUE;  // return TRUE unless you set the focus to a control
 }
 
-void CDlgGraphsTypes::OnTaskTypeChange(NMHDR * pNMHDR, LRESULT * pResult)
-{
+void CDlgGraphsTypes::OnTaskTypeChange(NMHDR * pNMHDR, LRESULT * pResult) {
     UNUSED_ALWAYS(pNMHDR);
     UNUSED_ALWAYS(pResult);
 
@@ -1301,14 +1113,12 @@ void CDlgGraphsTypes::OnTaskTypeChange(NMHDR * pNMHDR, LRESULT * pResult)
     OnSelchangeGraphTypes();
 
     CWnd * pWnd = GetDlgItem(IDC_ADD);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->EnableWindow(m_cList.GetCurSel()==-1);
     }
 
     pWnd = GetDlgItem(IDC_REMOVE);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->EnableWindow(m_cList.GetCurSel()>= cGraphs.GetCountPredefinedSets());
     }
 }
@@ -1316,27 +1126,23 @@ void CDlgGraphsTypes::OnTaskTypeChange(NMHDR * pNMHDR, LRESULT * pResult)
 /***************************************************************************/
 // CDlgGraphsTypes::OnHelpGraphsTypes Call Graphs Types help
 /***************************************************************************/
-void CDlgGraphsTypes::OnHelpGraphsTypes()
-{
+void CDlgGraphsTypes::OnHelpGraphsTypes() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Graphs/Graph_Types/Graph_Types.htm";
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
-void CDlgGraphsTypes::PopulateList(CListBox & cList, const CGraphConfigurationVector & cVector, BOOL bAlphaHotKey)
-{
+void CDlgGraphsTypes::PopulateList(CListBox & cList, const CGraphConfigurationVector & cVector, BOOL bAlphaHotKey) {
     cList.SetCurSel(-1);
 
     cList.ResetContent();
 
-    for (int i = 0; i < (int) cVector.size(); i++)
-    {
+    for (int i = 0; i < (int) cVector.size(); i++) {
         CString szDescription;
         CString szHotKey;
 
-        if (i < 10)
-        {
+        if (i < 10) {
             szHotKey.Format(_T("%hc: "), i + (bAlphaHotKey ? 'A' : '1'));
         }
 
@@ -1348,28 +1154,23 @@ void CDlgGraphsTypes::PopulateList(CListBox & cList, const CGraphConfigurationVe
     }
 }
 
-int & CDlgGraphsTypes::RecentTaskType()
-{
+int & CDlgGraphsTypes::RecentTaskType() {
     static int nTaskType = 0; // Speech by default
 
     return nTaskType;
 }
 
-BOOL CDlgGraphsTypes::PreTranslateMessage(MSG * pMsg)
-{
+BOOL CDlgGraphsTypes::PreTranslateMessage(MSG * pMsg) {
     return CDialog::PreTranslateMessage(pMsg);
 }
 
-CGraphConfigurationVector & CDlgGraphsTypes::GetGraphConfigurationVector(int nTaskType)
-{
-    switch (nTaskType)
-    {
+CGraphConfigurationVector & CDlgGraphsTypes::GetGraphConfigurationVector(int nTaskType) {
+    switch (nTaskType) {
     case 0: // speech
         return m_cSpeech;
     case 1:
         return m_cMusic;
-    default:
-    {
+    default: {
         static CGraphConfigurationVector theEmptyConfiguration;
         return theEmptyConfiguration;
     }

@@ -8,12 +8,10 @@
 
 CDlgAlignTranscriptionDataAlignByPage::CDlgAlignTranscriptionDataAlignByPage() :
     CPropertyPage(CDlgAlignTranscriptionDataAlignByPage::IDD),
-    m_nAlignBy(IDC_CHARACTER)
-{
+    m_nAlignBy(IDC_CHARACTER) {
 }
 
-CDlgAlignTranscriptionDataAlignByPage::~CDlgAlignTranscriptionDataAlignByPage()
-{
+CDlgAlignTranscriptionDataAlignByPage::~CDlgAlignTranscriptionDataAlignByPage() {
 }
 
 
@@ -23,8 +21,7 @@ BEGIN_MESSAGE_MAP(CDlgAlignTranscriptionDataAlignByPage, CPropertyPage)
     ON_BN_CLICKED(IDC_CHARACTER, &CDlgAlignTranscriptionDataAlignByPage::OnClicked)
 END_MESSAGE_MAP()
 
-BOOL CDlgAlignTranscriptionDataAlignByPage::OnSetActive()
-{
+BOOL CDlgAlignTranscriptionDataAlignByPage::OnSetActive() {
     CheckRadioButton(IDC_NONE, IDC_CHARACTER, m_nAlignBy);
     OnClicked();
     CPropertySheet * pSheet = reinterpret_cast<CPropertySheet *>(GetParent());
@@ -32,11 +29,9 @@ BOOL CDlgAlignTranscriptionDataAlignByPage::OnSetActive()
     return CPropertyPage::OnSetActive();
 }
 
-void CDlgAlignTranscriptionDataAlignByPage::OnClicked()
-{
+void CDlgAlignTranscriptionDataAlignByPage::OnClicked() {
     m_nAlignBy = GetCheckedRadioButton(IDC_NONE,IDC_CHARACTER);
-    switch (m_nAlignBy)
-    {
+    switch (m_nAlignBy) {
     case IDC_NONE:
         SetText(IDC_DETAILS, IDS_AWIZ_DTL_NONE);
         break;
@@ -49,20 +44,17 @@ void CDlgAlignTranscriptionDataAlignByPage::OnClicked()
     }
 }
 
-void CDlgAlignTranscriptionDataAlignByPage::SetText(int nItem, UINT nIDS)
-{
+void CDlgAlignTranscriptionDataAlignByPage::SetText(int nItem, UINT nIDS) {
     CWnd * pWnd = GetDlgItem(nItem);
     CSaString szText;
     szText.LoadString(nIDS);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->SetWindowText(szText);
     }
 }
 
 
-LRESULT CDlgAlignTranscriptionDataAlignByPage::OnWizardBack()
-{
+LRESULT CDlgAlignTranscriptionDataAlignByPage::OnWizardBack() {
     CDlgAlignTranscriptionDataSheet * pSheet = reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(GetParent());
     return pSheet->CalculateBack(IDD);
 }

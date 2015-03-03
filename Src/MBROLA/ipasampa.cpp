@@ -27,11 +27,11 @@ extern "C" char * IpaToSampa(const TCHAR * IpaString) {
 
     switch (strlen(IpaString)) {
 
-    // Indicate IPA string is invalid if there are no characters.
+        // Indicate IPA string is invalid if there are no characters.
     case 0:
         return (NULL);
 
-    // If IPA string consists of only one character, do a simple table lookup.
+        // If IPA string consists of only one character, do a simple table lookup.
     case 1:
         if (*BaseIpa[(unsigned char)IpaString[0]] == 0) {
             return (NULL);
@@ -39,7 +39,7 @@ extern "C" char * IpaToSampa(const TCHAR * IpaString) {
             return (BaseIpa[(unsigned char)IpaString[0]]);
         }
 
-    // Otherwise, do a binary search through the multi-byte table.
+        // Otherwise, do a binary search through the multi-byte table.
     default:
         Found = (char *)bsearch((void *)IpaString, (void *)xIpa,
                                 sizeof(xIpa)/sizeof(xIpa[0]),

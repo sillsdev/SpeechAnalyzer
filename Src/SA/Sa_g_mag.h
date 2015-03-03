@@ -10,8 +10,7 @@
 //###########################################################################
 // CPlotMagnitude plot window
 
-class CPlotMagnitude : public CPlotWnd
-{
+class CPlotMagnitude : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotMagnitude)
 
 // Construction/destruction/creation

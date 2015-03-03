@@ -13,15 +13,13 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CProcess3dPitch::CProcess3dPitch()
-{
+CProcess3dPitch::CProcess3dPitch() {
     m_dFilterUpperFrequency = 1000.;
     m_dFilterLowerFrequency = 70.;
     m_nFilterOrder = 5;
 }
 
-CProcess3dPitch::~CProcess3dPitch()
-{
+CProcess3dPitch::~CProcess3dPitch() {
 }
 
 BEGIN_MESSAGE_MAP(CProcess3dPitch, CProcess)
@@ -32,29 +30,22 @@ static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwSt
 /***************************************************************************/
 // CProcess3dPitch::Process
 /***************************************************************************/
-long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int nLevel)
-{
-    if (IsCanceled())
-    {
+long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int nLevel) {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
     ISaDoc * pDoc = (ISaDoc *)pSaDoc; // cast pointer
     // check if nested workbench processes
     int nOldLevel = nLevel; // save original level
 
-    if ((nLevel == nOldLevel) && (IsDataReady()))
-    {
+    if ((nLevel == nOldLevel) && (IsDataReady())) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
-    }
-    else
-    {
+    } else {
         SetDataInvalid();
     }
 
-    if (nLevel < 0)   // previous processing error
-    {
-        if ((nLevel == PROCESS_CANCELED))
-        {
+    if (nLevel < 0) { // previous processing error
+        if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -63,15 +54,13 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
     // start process
     BeginWaitCursor(); // wait cursor
     // memory allocation failed or previous processing error
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP))
-    {
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("PCC")))   // creating error
-    {
+    if (!CreateTempFile(_T("PCC"))) { // creating error
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -89,16 +78,14 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
     // first do forward pass
     long lResult = butterworth.Process(pCaller, pSaDoc, nProgress, ++nLevel);
     nLevel = (short int)LOWORD(lResult);
-    if ((nLevel == PROCESS_CANCELED))
-    {
+    if ((nLevel == PROCESS_CANCELED)) {
         nProgress = HIWORD(lResult);
         CancelProcess(); // set your own cancel flag
         return MAKELONG(nLevel, nProgress);
     }
 
     // start processing loop
-    for (DWORD dwIntegerPitchPeriod = 22; dwIntegerPitchPeriod < 480; dwIntegerPitchPeriod+= 5 /*dwIntegerPitchPeriod/16*/)
-    {
+    for (DWORD dwIntegerPitchPeriod = 22; dwIntegerPitchPeriod < 480; dwIntegerPitchPeriod+= 5 /*dwIntegerPitchPeriod/16*/) {
         double sumXnXnt = 0.;
         // initialize to ~ -30dB noise to mask low amplitude signals (& kill divide by 0)
         double sumXnXn = 1024*1024*10;
@@ -107,19 +94,16 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
         DWORD dwCorrelationLength = dwIntegerPitchPeriod > 40 ? dwIntegerPitchPeriod : 70;
         DWORD dwDataSamples = dwDataSize/wSmpSize;
 
-        for (DWORD dwDataPos = 0; dwDataPos < dwDataSamples; dwDataPos+= 4)
-        {
+        for (DWORD dwDataPos = 0; dwDataPos < dwDataSamples; dwDataPos+= 4) {
             // set progress bar
-            if (IsCanceled())
-            {
+            if (IsCanceled()) {
                 return Exit(PROCESS_CANCELED); // process canceled
             }
 
             DWORD dwBlockEnd = dwDataPos + dwIntegerPitchPeriod + dwCorrelationLength - 1;
             DWORD dwBlockStart = dwDataPos;
 
-            if (dwBlockEnd < dwDataSamples)
-            {
+            if (dwBlockEnd < dwDataSamples) {
                 double Xn = ReadDataBlock(butterworth, dwBlockStart, dwBlockEnd, dwDataPos + dwCorrelationLength - 1, wSmpSize);
                 double Xnt = ReadDataBlock(butterworth, dwBlockStart, dwBlockEnd, dwDataPos + dwIntegerPitchPeriod + dwCorrelationLength - 1, wSmpSize);
 
@@ -130,8 +114,7 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
 
             short sResult = 0;
 
-            if (dwDataPos > dwCorrelationLength)
-            {
+            if (dwDataPos > dwCorrelationLength) {
                 double crossCorrelation = sumXnXnt/sqrt(sumXnXn*sumXntXnt);
 
                 sResult = crossCorrelation > 0 ? short(crossCorrelation*1000. + 0.5) : short(0);
@@ -157,15 +140,12 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
     return MAKELONG(nLevel, nProgress);
 }
 
-static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize)
-{
+static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize) {
     BYTE * pSourceData = (BYTE *) source.GetProcessedDataBlock(dwStart*wSmpSize, (dwStop - dwStart + 1)*wSmpSize);
     pSourceData += (dwPos - dwStart)*wSmpSize;
     int nData;
-    if (wSmpSize == 1)   // 8 bit data
-    {
-        if (!pSourceData)
-        {
+    if (wSmpSize == 1) { // 8 bit data
+        if (!pSourceData) {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
             return 0;
@@ -174,11 +154,8 @@ static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwSt
         bData = *((BYTE *)pSourceData); // data range is 0...255 (128 is center)
         nData = bData - 128;
         nData *= 256;
-    }
-    else                  // 16 bit data
-    {
-        if (!pSourceData)
-        {
+    } else {              // 16 bit data
+        if (!pSourceData) {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
             return 0;

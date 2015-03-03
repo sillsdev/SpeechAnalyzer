@@ -19,8 +19,7 @@
 
 int GetWindowsVersion();
 
-class CMixer
-{
+class CMixer {
 public:
     CMixer(DWORD dwComponentType);
     virtual ~CMixer();

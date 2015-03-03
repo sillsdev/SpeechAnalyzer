@@ -12,25 +12,49 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CDlgSaveAsOptions dialog
 
-CDlgSaveAsOptions::CDlgSaveAsOptions( LPCTSTR lpszDefExt, LPCTSTR lpszFileName, DWORD dwFlags, LPCTSTR lpszFilter, CWnd * pParentWnd, bool saveAs, bool stereo) : 
-CFileDialog(FALSE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE),
-m_eSaveArea(saveEntire),
-m_eShowFiles(showNew),
-m_eFileFormat(formatMono)
-{
+CDlgSaveAsOptions::CDlgSaveAsOptions( LPCTSTR lpszDefExt, 
+									  LPCTSTR lpszFileName, 
+									  LPCTSTR lpszDefaultDir,
+									  DWORD dwFlags, 
+									  LPCTSTR lpszFilter, 
+									  CWnd * pParentWnd, 
+									  bool saveAs, 
+									  bool stereo) :
+    CFileDialog(FALSE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE),
+    mSaveArea(saveEntire),
+    mShowFiles(showNew),
+    mFileFormat(((stereo)?formatStereo:formatMono)),
+	mOriginalPath( lpszFileName),
+	mStereo(stereo),
+	mSaveAs(saveAs) {
     SetTemplate(IDD, IDD);
     m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
-	CDlgSaveAsOptions::stereo = stereo;
-	CDlgSaveAsOptions::saveAs = saveAs;
-	m_eFileFormat = ((stereo)?formatStereo:formatMono);
+	m_ofn.lpstrInitialDir = lpszDefaultDir;
 }
 
-void CDlgSaveAsOptions::DoDataExchange(CDataExchange * pDX)
-{
+INT_PTR CDlgSaveAsOptions::DoModal() {
+	return CFileDialog::DoModal();
+}
+
+/**
+* returns true if the current file is the same
+* as the file that was used to initialize the 
+* dialog box
+*/
+bool CDlgSaveAsOptions::IsSameFile() {
+	CString selected = GetPathName();
+    return (selected.CompareNoCase(mOriginalPath)==0);
+}
+
+CString CDlgSaveAsOptions::GetSelectedPath() {
+	return GetPathName();
+}
+
+void CDlgSaveAsOptions::DoDataExchange(CDataExchange * pDX) {
     CFileDialog::DoDataExchange(pDX);
-    DDX_Radio(pDX, IDC_SAVEAS_ENTIRE, (int&)m_eSaveArea);
-    DDX_Radio(pDX, IDC_SAVEAS_OPEN, (int&)m_eShowFiles);
-    DDX_Radio(pDX, IDC_SAVEAS_STEREO, (int&)m_eFileFormat);
+    DDX_Radio(pDX, IDC_SAVEAS_ENTIRE, (int &)mSaveArea);
+    DDX_Radio(pDX, IDC_SAVEAS_OPEN, (int &)mShowFiles);
+    DDX_Radio(pDX, IDC_SAVEAS_STEREO, (int &)mFileFormat);
 }
 
 BEGIN_MESSAGE_MAP(CDlgSaveAsOptions, CFileDialog)
@@ -45,35 +69,27 @@ BEGIN_MESSAGE_MAP(CDlgSaveAsOptions, CFileDialog)
     ON_BN_CLICKED(IDC_SAVEAS_RIGHT, OnClicked)
 END_MESSAGE_MAP()
 
-void CDlgSaveAsOptions::OnClicked()
-{
+void CDlgSaveAsOptions::OnClicked() {
     UpdateData(); // retrieve modified data
 }
 
-BOOL CDlgSaveAsOptions::OnInitDialog()
-{
+BOOL CDlgSaveAsOptions::OnInitDialog() {
     CFileDialog::OnInitDialog();
-	if (saveAs) 
-	{
-		if (stereo) 
-		{
-			GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(TRUE);
-			GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(TRUE);
-			GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(TRUE);
-		} 
-		else 
-		{
-			GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(FALSE);
-			GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(FALSE);
-			GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(FALSE);
-		}
-	} 
-	else 
-	{
-		GetDlgItem(IDC_SAVEAS_STEREO)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_SAVEAS_MONO)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_SAVEAS_RIGHT)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_GROUP_FILE_STATIC)->ShowWindow(SW_HIDE);
-	}
+    if (mSaveAs) {
+        if (mStereo) {
+            GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(TRUE);
+            GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(TRUE);
+            GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(TRUE);
+        } else {
+            GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(FALSE);
+            GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(FALSE);
+            GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(FALSE);
+        }
+    } else {
+        GetDlgItem(IDC_SAVEAS_STEREO)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_SAVEAS_MONO)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_SAVEAS_RIGHT)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_GROUP_FILE_STATIC)->ShowWindow(SW_HIDE);
+    }
     return TRUE;
 }

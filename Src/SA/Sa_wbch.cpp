@@ -64,8 +64,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CSaWorkbenchView::CSaWorkbenchView Constructor
 /***************************************************************************/
-CSaWorkbenchView::CSaWorkbenchView() : CFormView(CSaWorkbenchView::IDD)
-{
+CSaWorkbenchView::CSaWorkbenchView() : CFormView(CSaWorkbenchView::IDD) {
     m_hWndFocus = NULL;
     m_brBkg.CreateSolidBrush(GetSysColor(COLOR_BTNFACE)); // create the background brush
 }
@@ -76,8 +75,7 @@ CSaWorkbenchView::CSaWorkbenchView() : CFormView(CSaWorkbenchView::IDD)
 /***************************************************************************/
 // CSaWorkbenchView::DoDataExchange Data exchange
 /***************************************************************************/
-void CSaWorkbenchView::DoDataExchange(CDataExchange * pDX)
-{
+void CSaWorkbenchView::DoDataExchange(CDataExchange * pDX) {
     CFormView::DoDataExchange(pDX);
 }
 
@@ -85,10 +83,8 @@ void CSaWorkbenchView::DoDataExchange(CDataExchange * pDX)
 // CSaWorkbenchView::CreateWbProcess Creates a workbench process
 // The function returns NULL if the process could not create.
 //***************************************************************************/
-CProcess * CSaWorkbenchView::CreateWbProcess(int nFilterNumber)
-{
-    switch (nFilterNumber)
-    {
+CProcess * CSaWorkbenchView::CreateWbProcess(int nFilterNumber) {
+    switch (nFilterNumber) {
     case 1: // highpass
         return new CProcessWbHighpass;
     case 2: // lowpass
@@ -112,10 +108,8 @@ CProcess * CSaWorkbenchView::CreateWbProcess(int nFilterNumber)
 // CSaWorkbenchView::GetFilterResource Returns the filter resource (bitmap)
 // The function returns the empty "IDB_FILTERU" resource on default.
 //***************************************************************************/
-LPCTSTR CSaWorkbenchView::GetFilterResource(int nFilterNumber)
-{
-    switch (nFilterNumber)
-    {
+LPCTSTR CSaWorkbenchView::GetFilterResource(int nFilterNumber) {
+    switch (nFilterNumber) {
     case 1: // highpass
         return _T("IDB_HPU");
     case 2: // lowpass
@@ -140,27 +134,22 @@ LPCTSTR CSaWorkbenchView::GetFilterResource(int nFilterNumber)
 // The function acsesses the data of a CWbDlgProcesses dialog and creates
 // and sets up the choosen filters for the given process.
 /***************************************************************************/
-void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog)
-{
+void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog) {
     CWbDlgProcesses * pDlg = (CWbDlgProcesses *)pDialog; // cast pointer
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // make local copy of existing processes and filters and clear originals
     CProcess * apWbLocalProcess[MAX_FILTER_NUMBER];
     int anLocalID[MAX_FILTER_NUMBER];
-    for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++) {
         apWbLocalProcess[nLoop] = pMain->SetWbProcess(pDlg->m_nProcess, nLoop, NULL);
         anLocalID[nLoop] = pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, 0);
     }
     // first delete all the processes not longer needed
-    for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++) {
         int nOldFilterID = anLocalID[nLoop];
-        if ((nOldFilterID != pDlg->m_nFilter1) && (nOldFilterID != pDlg->m_nFilter2) && (nOldFilterID != pDlg->m_nFilter3))
-        {
+        if ((nOldFilterID != pDlg->m_nFilter1) && (nOldFilterID != pDlg->m_nFilter2) && (nOldFilterID != pDlg->m_nFilter3)) {
             // filter no longer needed, delete it
-            if (apWbLocalProcess[nLoop])
-            {
+            if (apWbLocalProcess[nLoop]) {
                 delete apWbLocalProcess[nLoop];
             }
             apWbLocalProcess[nLoop] = NULL;
@@ -168,15 +157,11 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog)
         }
     }
     // now copy or create the new filter IDs and processes
-    for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
-    {
-        if (pDlg->m_nFilter3)
-        {
+    for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++) {
+        if (pDlg->m_nFilter3) {
             // filter 3 is not plain, get it
-            for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++)
-            {
-                if (pDlg->m_nFilter3 == anLocalID[nFilterLoop])
-                {
+            for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++) {
+                if (pDlg->m_nFilter3 == anLocalID[nFilterLoop]) {
                     // filter already exists, copy it
                     pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, anLocalID[nFilterLoop]);
                     pMain->SetWbProcess(pDlg->m_nProcess, nLoop, apWbLocalProcess[nFilterLoop]);
@@ -186,40 +171,28 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog)
                     break;
                 }
             }
-            if (pDlg->m_nFilter3)
-            {
-                if (pDlg->m_pWbProcessFilter3)
-                {
+            if (pDlg->m_nFilter3) {
+                if (pDlg->m_pWbProcessFilter3) {
                     // process exists, copy it
                     pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pDlg->m_pWbProcessFilter3);
                     pDlg->m_pWbProcessFilter3 = NULL;
-                }
-                else
-                {
+                } else {
                     // filter has to be created
                     CProcess * pProcess = CreateWbProcess(pDlg->m_nFilter3);
-                    if (pProcess)
-                    {
-                        pMain->SetWbProcess( pDlg->m_nProcess, nLoop, pProcess);
-                    }
-                    else
-                    {
+                    if (pProcess) {
+                        pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pProcess);
+                    } else {
                         pDlg->m_nFilter3 = 0;
                     }
                 }
                 pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, pDlg->m_nFilter3);
                 pDlg->m_nFilter3 = 0;
             }
-        }
-        else
-        {
-            if (pDlg->m_nFilter2)
-            {
+        } else {
+            if (pDlg->m_nFilter2) {
                 // filter 2 is not plain, get it
-                for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++)
-                {
-                    if (pDlg->m_nFilter2 == anLocalID[nFilterLoop])
-                    {
+                for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++) {
+                    if (pDlg->m_nFilter2 == anLocalID[nFilterLoop]) {
                         // filter already exists, copy it
                         pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, anLocalID[nFilterLoop]);
                         pMain->SetWbProcess(pDlg->m_nProcess, nLoop, apWbLocalProcess[nFilterLoop]);
@@ -229,40 +202,28 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog)
                         break;
                     }
                 }
-                if (pDlg->m_nFilter2)
-                {
-                    if (pDlg->m_pWbProcessFilter2)
-                    {
+                if (pDlg->m_nFilter2) {
+                    if (pDlg->m_pWbProcessFilter2) {
                         // process exists, copy it
                         pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pDlg->m_pWbProcessFilter2);
                         pDlg->m_pWbProcessFilter2 = NULL;
-                    }
-                    else
-                    {
+                    } else {
                         // filter has to be created
                         CProcess * pProcess = CreateWbProcess(pDlg->m_nFilter2);
-                        if (pProcess)
-                        {
+                        if (pProcess) {
                             pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pProcess);
-                        }
-                        else
-                        {
+                        } else {
                             pDlg->m_nFilter2 = 0;
                         }
                     }
                     pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, pDlg->m_nFilter2);
                     pDlg->m_nFilter2 = 0;
                 }
-            }
-            else
-            {
-                if (pDlg->m_nFilter1)
-                {
+            } else {
+                if (pDlg->m_nFilter1) {
                     // filter 1 is not plain, get it
-                    for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++)
-                    {
-                        if (pDlg->m_nFilter1 == anLocalID[nFilterLoop])
-                        {
+                    for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++) {
+                        if (pDlg->m_nFilter1 == anLocalID[nFilterLoop]) {
                             // filter already exists, copy it
                             pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, anLocalID[nFilterLoop]);
                             pMain->SetWbProcess(pDlg->m_nProcess, nLoop, apWbLocalProcess[nFilterLoop]);
@@ -272,24 +233,17 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog)
                             break;
                         }
                     }
-                    if (pDlg->m_nFilter1)
-                    {
-                        if (pDlg->m_pWbProcessFilter1)
-                        {
+                    if (pDlg->m_nFilter1) {
+                        if (pDlg->m_pWbProcessFilter1) {
                             // process exists, copy it
                             pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pDlg->m_pWbProcessFilter1);
                             pDlg->m_pWbProcessFilter1 = NULL;
-                        }
-                        else
-                        {
+                        } else {
                             // filter has to be created
                             CProcess * pProcess = CreateWbProcess(pDlg->m_nFilter1);
-                            if (pProcess)
-                            {
+                            if (pProcess) {
                                 pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pProcess);
-                            }
-                            else
-                            {
+                            } else {
                                 pDlg->m_nFilter1 = 0;
                             }
                         }
@@ -306,41 +260,29 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog)
 /***************************************************************************/
 // CSaWorkbenchView::CallPropertiesDialog Calls the properties dialog of a process
 /***************************************************************************/
-void CSaWorkbenchView::CallPropertiesDialog(int nProcess, int nFilter)
-{
+void CSaWorkbenchView::CallPropertiesDialog(int nProcess, int nFilter) {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // get the process
-    if (!nFilter)
-    {
-        if (pMain->GetWbFilterID(nProcess, nFilter + 1))
-        {
+    if (!nFilter) {
+        if (pMain->GetWbFilterID(nProcess, nFilter + 1)) {
             nFilter++;
         }
-        if (pMain->GetWbFilterID(nProcess, nFilter + 1))
-        {
+        if (pMain->GetWbFilterID(nProcess, nFilter + 1)) {
             nFilter++;
         }
-    }
-    else
-    {
-        if (nFilter == 1)
-        {
-            if (!pMain->GetWbFilterID(nProcess, nFilter + 1))
-            {
+    } else {
+        if (nFilter == 1) {
+            if (!pMain->GetWbFilterID(nProcess, nFilter + 1)) {
                 nFilter--;
             }
-        }
-        else
-        {
+        } else {
             nFilter = 0;
         }
     }
     CProcess * pProcess = pMain->GetWbProcess(nProcess, nFilter);
     // if process ready call process properties dialog
-    if (pProcess)
-    {
-        if (pProcess->PropertiesDialog() == IDOK)
-        {
+    if (pProcess) {
+        if (pProcess->PropertiesDialog() == IDOK) {
             GetDocument()->SetModifiedFlag();    // documents data has been modified
         }
     }
@@ -352,23 +294,19 @@ void CSaWorkbenchView::CallPropertiesDialog(int nProcess, int nFilter)
 // TRUE.
 /***************************************************************************/
 void CSaWorkbenchView::LoadAndSortFilter(int nProcess, int * pnFilter1, int * pnFilter2,
-        int * pnFilter3, BOOL bLoad)
-{
-    if (bLoad)
-    {
+        int * pnFilter3, BOOL bLoad) {
+    if (bLoad) {
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
         *pnFilter1 = pMain->GetWbFilterID(nProcess, 2);
         *pnFilter2 = pMain->GetWbFilterID(nProcess, 1);
         *pnFilter3 = pMain->GetWbFilterID(nProcess, 0);
     }
-    if (!*pnFilter1)
-    {
+    if (!*pnFilter1) {
         *pnFilter1 = *pnFilter2;
         *pnFilter2 = *pnFilter3;
         *pnFilter3 = 0;
     }
-    if (!*pnFilter1)
-    {
+    if (!*pnFilter1) {
         *pnFilter1 = *pnFilter2;
         *pnFilter2 = 0;
     }
@@ -380,8 +318,7 @@ void CSaWorkbenchView::LoadAndSortFilter(int nProcess, int * pnFilter1, int * pn
 /***************************************************************************/
 // CSaWorkbenchView::OnInitialUpdate Initialisation
 /***************************************************************************/
-void CSaWorkbenchView::OnInitialUpdate()
-{
+void CSaWorkbenchView::OnInitialUpdate() {
     CFormView::OnInitialUpdate();
     // build and place the static text windows
     m_aProcText[0].Init(IDC_PROCTEXT0, this);
@@ -432,117 +369,81 @@ void CSaWorkbenchView::OnInitialUpdate()
     int nFilter1, nFilter2, nFilter3;
     LoadAndSortFilter(0, &nFilter1, &nFilter2, &nFilter3);
     m_aFilterButton[0][0].LoadBitmaps(GetFilterResource(nFilter1));
-    if (nFilter1)
-    {
+    if (nFilter1) {
         GetDlgItem(IDC_FILTER10)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[0][0].ShowWindow(SW_HIDE);
     }
     m_aFilterButton[0][1].LoadBitmaps(GetFilterResource(nFilter2));
-    if (nFilter2)
-    {
+    if (nFilter2) {
         GetDlgItem(IDC_FILTER20)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[0][1].ShowWindow(SW_HIDE);
     }
     m_aFilterButton[0][2].LoadBitmaps(GetFilterResource(nFilter3));
-    if (nFilter3)
-    {
+    if (nFilter3) {
         GetDlgItem(IDC_FILTER30)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[0][2].ShowWindow(SW_HIDE);
     }
     // now initialize the filters for process 1
     LoadAndSortFilter(1, &nFilter1, &nFilter2, &nFilter3);
     m_aFilterButton[1][0].LoadBitmaps(GetFilterResource(nFilter1));
-    if (nFilter1)
-    {
+    if (nFilter1) {
         GetDlgItem(IDC_FILTER11)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[1][0].ShowWindow(SW_HIDE);
     }
     m_aFilterButton[1][1].LoadBitmaps(GetFilterResource(nFilter2));
-    if (nFilter2)
-    {
+    if (nFilter2) {
         GetDlgItem(IDC_FILTER21)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[1][1].ShowWindow(SW_HIDE);
     }
     m_aFilterButton[1][2].LoadBitmaps(GetFilterResource(nFilter3));
-    if (nFilter3)
-    {
+    if (nFilter3) {
         GetDlgItem(IDC_FILTER31)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[1][2].ShowWindow(SW_HIDE);
     }
     // now initialize the filters for process 2
     LoadAndSortFilter(2, &nFilter1, &nFilter2, &nFilter3);
     m_aFilterButton[2][0].LoadBitmaps(GetFilterResource(nFilter1));
-    if (nFilter1)
-    {
+    if (nFilter1) {
         GetDlgItem(IDC_FILTER12)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[2][0].ShowWindow(SW_HIDE);
     }
     m_aFilterButton[2][1].LoadBitmaps(GetFilterResource(nFilter2));
-    if (nFilter2)
-    {
+    if (nFilter2) {
         GetDlgItem(IDC_FILTER22)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[2][1].ShowWindow(SW_HIDE);
     }
     m_aFilterButton[2][2].LoadBitmaps(GetFilterResource(nFilter3));
-    if (nFilter3)
-    {
+    if (nFilter3) {
         GetDlgItem(IDC_FILTER32)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[2][2].ShowWindow(SW_HIDE);
     }
     // now initialize the filters for process 3
     LoadAndSortFilter(3, &nFilter1, &nFilter2, &nFilter3);
     m_aFilterButton[3][0].LoadBitmaps(GetFilterResource(nFilter1));
-    if (nFilter1)
-    {
+    if (nFilter1) {
         GetDlgItem(IDC_FILTER13)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[3][0].ShowWindow(SW_HIDE);
     }
     m_aFilterButton[3][1].LoadBitmaps(GetFilterResource(nFilter2));
-    if (nFilter2)
-    {
+    if (nFilter2) {
         GetDlgItem(IDC_FILTER23)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[3][1].ShowWindow(SW_HIDE);
     }
     m_aFilterButton[3][2].LoadBitmaps(GetFilterResource(nFilter3));
-    if (nFilter3)
-    {
+    if (nFilter3) {
         GetDlgItem(IDC_FILTER33)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_aFilterButton[3][2].ShowWindow(SW_HIDE);
     }
     // set up the documents title
@@ -555,8 +456,7 @@ void CSaWorkbenchView::OnInitialUpdate()
 /***************************************************************************/
 // CSaWorkbenchView::OnCtlColor Changes the background of the workbench view
 /***************************************************************************/
-HBRUSH CSaWorkbenchView::OnCtlColor(CDC * pDC, CWnd * pWnd, UINT nWhich)
-{
+HBRUSH CSaWorkbenchView::OnCtlColor(CDC * pDC, CWnd * pWnd, UINT nWhich) {
     return ((nWhich == CTLCOLOR_DLG)
             || (nWhich == CTLCOLOR_EDIT)
             || (nWhich == CTLCOLOR_LISTBOX)
@@ -570,11 +470,9 @@ HBRUSH CSaWorkbenchView::OnCtlColor(CDC * pDC, CWnd * pWnd, UINT nWhich)
 // In case of disactivating, the application will be informed about the
 // file name of the workbench document.
 /***************************************************************************/
-void CSaWorkbenchView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDeactivateView)
-{
+void CSaWorkbenchView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDeactivateView) {
     CView::OnActivateView(bActivate, pActivateView, pDeactivateView);
-    if (!bActivate)   // disactivating
-    {
+    if (!bActivate) { // disactivating
         CSaString szPath;
         szPath = GetDocument()->GetPathName();
         ((CSaApp *)AfxGetApp())->SetWorkbenchPath(&szPath);
@@ -585,8 +483,7 @@ void CSaWorkbenchView::OnActivateView(BOOL bActivate, CView * pActivateView, CVi
 // CSaWorkbenchView::OnDestroy Destroying the workbench view
 // The application will be informed about the closing workbench.
 /***************************************************************************/
-void CSaWorkbenchView::OnDestroy()
-{
+void CSaWorkbenchView::OnDestroy() {
     CFormView::OnDestroy();
     ((CSaApp *)AfxGetApp())->WorkbenchClosed();
 }
@@ -594,46 +491,35 @@ void CSaWorkbenchView::OnDestroy()
 /***************************************************************************/
 // CSaWorkbenchView::OnProcess0 Configure process 0
 /***************************************************************************/
-void CSaWorkbenchView::OnProcess0()
-{
+void CSaWorkbenchView::OnProcess0() {
     CWbDlgProcesses dlg;
     dlg.m_nProcess = 0; // set process number
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         SetupFilterProcesses(&dlg);
         // load appropriate bitmaps for filter bitmap buttons
         int nFilter1, nFilter2, nFilter3;
         LoadAndSortFilter(dlg.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
         m_aFilterButton[0][0].LoadBitmaps(GetFilterResource(nFilter1));
-        if (nFilter1)
-        {
+        if (nFilter1) {
             GetDlgItem(IDC_FILTER10)->EnableWindow(TRUE);
             m_aFilterButton[0][0].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER10)->EnableWindow(FALSE);
             m_aFilterButton[0][0].ShowWindow(SW_HIDE);
         }
         m_aFilterButton[0][1].LoadBitmaps(GetFilterResource(nFilter2));
-        if (nFilter2)
-        {
+        if (nFilter2) {
             GetDlgItem(IDC_FILTER20)->EnableWindow(TRUE);
             m_aFilterButton[0][1].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER20)->EnableWindow(FALSE);
             m_aFilterButton[0][1].ShowWindow(SW_HIDE);
         }
         m_aFilterButton[0][2].LoadBitmaps(GetFilterResource(nFilter3));
-        if (nFilter3)
-        {
+        if (nFilter3) {
             GetDlgItem(IDC_FILTER30)->EnableWindow(TRUE);
             m_aFilterButton[0][2].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER30)->EnableWindow(FALSE);
             m_aFilterButton[0][2].ShowWindow(SW_HIDE);
         }
@@ -644,46 +530,35 @@ void CSaWorkbenchView::OnProcess0()
 /***************************************************************************/
 // CSaWorkbenchView::OnProcess1 Configure process 1
 /***************************************************************************/
-void CSaWorkbenchView::OnProcess1()
-{
+void CSaWorkbenchView::OnProcess1() {
     CWbDlgProcesses dlg;
     dlg.m_nProcess = 1; // set process number
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         SetupFilterProcesses(&dlg);
         // load appropriate bitmaps for filter bitmap buttons
         int nFilter1, nFilter2, nFilter3;
         LoadAndSortFilter(dlg.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
         m_aFilterButton[1][0].LoadBitmaps(GetFilterResource(nFilter1));
-        if (nFilter1)
-        {
+        if (nFilter1) {
             GetDlgItem(IDC_FILTER11)->EnableWindow(TRUE);
             m_aFilterButton[1][0].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER11)->EnableWindow(FALSE);
             m_aFilterButton[1][0].ShowWindow(SW_HIDE);
         }
         m_aFilterButton[1][1].LoadBitmaps(GetFilterResource(nFilter2));
-        if (nFilter2)
-        {
+        if (nFilter2) {
             GetDlgItem(IDC_FILTER21)->EnableWindow(TRUE);
             m_aFilterButton[1][1].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER21)->EnableWindow(FALSE);
             m_aFilterButton[1][1].ShowWindow(SW_HIDE);
         }
         m_aFilterButton[1][2].LoadBitmaps(GetFilterResource(nFilter3));
-        if (nFilter3)
-        {
+        if (nFilter3) {
             GetDlgItem(IDC_FILTER31)->EnableWindow(TRUE);
             m_aFilterButton[1][2].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER31)->EnableWindow(FALSE);
             m_aFilterButton[1][2].ShowWindow(SW_HIDE);
         }
@@ -694,46 +569,35 @@ void CSaWorkbenchView::OnProcess1()
 /***************************************************************************/
 // CSaWorkbenchView::OnProcess2 Configure process 2
 /***************************************************************************/
-void CSaWorkbenchView::OnProcess2()
-{
+void CSaWorkbenchView::OnProcess2() {
     CWbDlgProcesses dlg;
     dlg.m_nProcess = 2; // set process number
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         SetupFilterProcesses(&dlg);
         // load appropriate bitmaps for filter bitmap buttons
         int nFilter1, nFilter2, nFilter3;
         LoadAndSortFilter(dlg.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
         m_aFilterButton[2][0].LoadBitmaps(GetFilterResource(nFilter1));
-        if (nFilter1)
-        {
+        if (nFilter1) {
             GetDlgItem(IDC_FILTER12)->EnableWindow(TRUE);
             m_aFilterButton[2][0].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER12)->EnableWindow(FALSE);
             m_aFilterButton[2][0].ShowWindow(SW_HIDE);
         }
         m_aFilterButton[2][1].LoadBitmaps(GetFilterResource(nFilter2));
-        if (nFilter2)
-        {
+        if (nFilter2) {
             GetDlgItem(IDC_FILTER22)->EnableWindow(TRUE);
             m_aFilterButton[2][1].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER22)->EnableWindow(FALSE);
             m_aFilterButton[2][1].ShowWindow(SW_HIDE);
         }
         m_aFilterButton[2][2].LoadBitmaps(GetFilterResource(nFilter3));
-        if (nFilter3)
-        {
+        if (nFilter3) {
             GetDlgItem(IDC_FILTER32)->EnableWindow(TRUE);
             m_aFilterButton[2][2].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER32)->EnableWindow(FALSE);
             m_aFilterButton[2][2].ShowWindow(SW_HIDE);
         }
@@ -744,46 +608,35 @@ void CSaWorkbenchView::OnProcess2()
 /***************************************************************************/
 // CSaWorkbenchView::OnProcess3 Configure process 3
 /***************************************************************************/
-void CSaWorkbenchView::OnProcess3()
-{
+void CSaWorkbenchView::OnProcess3() {
     CWbDlgProcesses dlg;
     dlg.m_nProcess = 3; // set process number
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         SetupFilterProcesses(&dlg);
         // load appropriate bitmaps for filter bitmap buttons
         int nFilter1, nFilter2, nFilter3;
         LoadAndSortFilter(dlg.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
         m_aFilterButton[3][0].LoadBitmaps(GetFilterResource(nFilter1));
-        if (nFilter1)
-        {
+        if (nFilter1) {
             GetDlgItem(IDC_FILTER13)->EnableWindow(TRUE);
             m_aFilterButton[3][0].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER13)->EnableWindow(FALSE);
             m_aFilterButton[3][0].ShowWindow(SW_HIDE);
         }
         m_aFilterButton[3][1].LoadBitmaps(GetFilterResource(nFilter2));
-        if (nFilter2)
-        {
+        if (nFilter2) {
             GetDlgItem(IDC_FILTER23)->EnableWindow(TRUE);
             m_aFilterButton[3][1].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER23)->EnableWindow(FALSE);
             m_aFilterButton[3][1].ShowWindow(SW_HIDE);
         }
         m_aFilterButton[3][2].LoadBitmaps(GetFilterResource(nFilter3));
-        if (nFilter3)
-        {
+        if (nFilter3) {
             GetDlgItem(IDC_FILTER33)->EnableWindow(TRUE);
             m_aFilterButton[3][2].ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             GetDlgItem(IDC_FILTER33)->EnableWindow(FALSE);
             m_aFilterButton[3][2].ShowWindow(SW_HIDE);
         }
@@ -794,96 +647,84 @@ void CSaWorkbenchView::OnProcess3()
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter10 Configure filter 10
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter10()
-{
+void CSaWorkbenchView::OnFilter10() {
     CallPropertiesDialog(0, 0);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter11 Configure filter 11
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter11()
-{
+void CSaWorkbenchView::OnFilter11() {
     CallPropertiesDialog(1, 0);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter12 Configure filter 12
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter12()
-{
+void CSaWorkbenchView::OnFilter12() {
     CallPropertiesDialog(2, 0);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter13 Configure filter 13
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter13()
-{
+void CSaWorkbenchView::OnFilter13() {
     CallPropertiesDialog(3, 0);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter20 Configure filter 20
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter20()
-{
+void CSaWorkbenchView::OnFilter20() {
     CallPropertiesDialog(0, 1);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter21 Configure filter 21
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter21()
-{
+void CSaWorkbenchView::OnFilter21() {
     CallPropertiesDialog(1, 1);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter22 Configure filter 22
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter22()
-{
+void CSaWorkbenchView::OnFilter22() {
     CallPropertiesDialog(2, 1);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter23 Configure filter 23
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter23()
-{
+void CSaWorkbenchView::OnFilter23() {
     CallPropertiesDialog(3, 1);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter30 Configure filter 30
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter30()
-{
+void CSaWorkbenchView::OnFilter30() {
     CallPropertiesDialog(0, 2);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter31 Configure filter 31
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter31()
-{
+void CSaWorkbenchView::OnFilter31() {
     CallPropertiesDialog(1, 2);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter32 Configure filter 32
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter32()
-{
+void CSaWorkbenchView::OnFilter32() {
     CallPropertiesDialog(2, 2);
 }
 
 /***************************************************************************/
 // CSaWorkbenchView::OnFilter33 Configure filter 33
 /***************************************************************************/
-void CSaWorkbenchView::OnFilter33()
-{
+void CSaWorkbenchView::OnFilter33() {
     CallPropertiesDialog(3, 2);
 }
 
@@ -897,8 +738,7 @@ static LPCSTR psz_filterID     = "filterID";
 /***************************************************************************/
 // CSaWorkbenchView::WriteProperties Write workbench properties
 /***************************************************************************/
-void CSaWorkbenchView::WriteProperties(CObjectOStream & obs)
-{
+void CSaWorkbenchView::WriteProperties(CObjectOStream & obs) {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     obs.WriteBeginMarker(psz_wbview);
 
@@ -907,14 +747,11 @@ void CSaWorkbenchView::WriteProperties(CObjectOStream & obs)
     obs.WriteWindowPlacement(psz_placement, wpl);
 
     obs.WriteBeginMarker(psz_processlist);
-    for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++) {
         obs.WriteBeginMarker(psz_filterlist);
-        for (int nInnerLoop = 0; nInnerLoop < MAX_FILTER_NUMBER; nInnerLoop++)
-        {
+        for (int nInnerLoop = 0; nInnerLoop < MAX_FILTER_NUMBER; nInnerLoop++) {
             obs.WriteInteger(psz_filterID, pMain->GetWbFilterID(nLoop, nInnerLoop));
-            if (pMain->GetWbProcess(nLoop, nInnerLoop))
-            {
+            if (pMain->GetWbProcess(nLoop, nInnerLoop)) {
                 pMain->GetWbProcess(nLoop, nInnerLoop)->WriteProperties(obs);
             }
         }
@@ -927,22 +764,18 @@ void CSaWorkbenchView::WriteProperties(CObjectOStream & obs)
 /***************************************************************************/
 // CSaWorkbenchView::ReadProperties Read workbench properties
 /***************************************************************************/
-BOOL CSaWorkbenchView::ReadProperties(CObjectIStream & obs)
-{
+BOOL CSaWorkbenchView::ReadProperties(CObjectIStream & obs) {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // clear all old processes first if you are loading a new file
-    if (((CWorkbenchDoc *)GetDocument())->IsDifferentFile())
-    {
+    if (((CWorkbenchDoc *)GetDocument())->IsDifferentFile()) {
         pMain->DeleteWbProcesses();
     }
-    if (!obs.bReadBeginMarker(psz_wbview))
-    {
+    if (!obs.bReadBeginMarker(psz_wbview)) {
         return FALSE;
     }
 
     WINDOWPLACEMENT wpl;
-    if (!obs.bReadWindowPlacement(psz_placement, wpl))
-    {
+    if (!obs.bReadWindowPlacement(psz_placement, wpl)) {
         return FALSE;
     }
     int eInitialShowCmd = wpl.showCmd;
@@ -953,83 +786,62 @@ BOOL CSaWorkbenchView::ReadProperties(CObjectIStream & obs)
     int nFilterID;
     CProcess * pProcess;
     BOOL bRet = obs.bReadBeginMarker(psz_processlist);
-    while (!obs.bAtEnd() && bRet)
-    {
+    while (!obs.bAtEnd() && bRet) {
         bRet = obs.bReadBeginMarker(psz_filterlist);
         int nInnerLoop = 0;
-        while (!obs.bAtEnd() && bRet)
-        {
+        while (!obs.bAtEnd() && bRet) {
             bRet = obs.bReadInteger(psz_filterID, nFilterID);
-            if (!nFilterID)
-            {
-                if (pMain->GetWbProcess(nLoop, nInnerLoop))
-                {
+            if (!nFilterID) {
+                if (pMain->GetWbProcess(nLoop, nInnerLoop)) {
                     delete pMain->GetWbProcess(nLoop, nInnerLoop);
                     pMain->SetWbProcess(nLoop, nInnerLoop, NULL);
                     pMain->SetWbFilterID(nLoop, nInnerLoop, 0);
                 }
             }
-            if (bRet && nFilterID)
-            {
+            if (bRet && nFilterID) {
                 // delete old and create new process if different
-                if (pMain->GetWbFilterID(nLoop, nInnerLoop) != nFilterID)
-                {
-                    if (pMain->GetWbProcess(nLoop, nInnerLoop))
-                    {
+                if (pMain->GetWbFilterID(nLoop, nInnerLoop) != nFilterID) {
+                    if (pMain->GetWbProcess(nLoop, nInnerLoop)) {
                         delete pMain->GetWbProcess(nLoop, nInnerLoop);
                     }
                     pProcess = CreateWbProcess(nFilterID);
                     pMain->SetWbProcess(nLoop, nInnerLoop, pProcess);
                     pMain->SetWbFilterID(nLoop, nInnerLoop, nFilterID);
-                }
-                else
-                {
+                } else {
                     pProcess = pMain->GetWbProcess(nLoop, nInnerLoop);
                 }
-                if (pProcess)
-                {
+                if (pProcess) {
                     bRet = pProcess->ReadProperties(obs);
-                }
-                else
-                {
+                } else {
                     bRet = FALSE;
                 }
             }
             nInnerLoop++;
-            if (nInnerLoop >= MAX_FILTER_NUMBER)
-            {
+            if (nInnerLoop >= MAX_FILTER_NUMBER) {
                 break;
             }
         }
-        if (bRet)
-        {
+        if (bRet) {
             bRet = obs.bReadEndMarker(psz_filterlist);
         }
         nLoop++;
-        if (nLoop >= MAX_PROCESS_NUMBER)
-        {
+        if (nLoop >= MAX_PROCESS_NUMBER) {
             break;
         }
     }
-    if (bRet)
-    {
+    if (bRet) {
         bRet = obs.bReadEndMarker(psz_processlist);
     }
-    if (bRet)
-    {
+    if (bRet) {
         bRet = obs.bReadEndMarker(psz_wbview);
     }
     // if read fails, clear processes again and switch pack to plain
-    if (!bRet)
-    {
+    if (!bRet) {
         pMain->DeleteWbProcesses();
     }
-    if ((eInitialShowCmd == SW_SHOWMINIMIZED) || (eInitialShowCmd == SW_SHOWMAXIMIZED))
-    {
+    if ((eInitialShowCmd == SW_SHOWMINIMIZED) || (eInitialShowCmd == SW_SHOWMAXIMIZED)) {
         GetParent()->ShowWindow(eInitialShowCmd);
-    }
-    else
-    {
+    } else {
         GetParent()->ShowWindow(SW_SHOW);
     }
     return bRet;

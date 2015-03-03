@@ -16,8 +16,7 @@ static char THIS_FILE[]=__FILE__;
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-CProcessButterworth::CProcessButterworth(BOOL bWorkbenchOutput) : CProcessIIRFilter(bWorkbenchOutput)
-{
+CProcessButterworth::CProcessButterworth(BOOL bWorkbenchOutput) : CProcessIIRFilter(bWorkbenchOutput) {
     m_bFilterFilter = false;
     m_bReverse = FALSE;
     m_nOrder = 0;
@@ -28,8 +27,7 @@ CProcessButterworth::CProcessButterworth(BOOL bWorkbenchOutput) : CProcessIIRFil
     m_dScale = 1;
 }
 
-CProcessButterworth::~CProcessButterworth()
-{
+CProcessButterworth::~CProcessButterworth() {
 }
 
 // ButterworthPole()
@@ -38,15 +36,13 @@ CProcessButterworth::~CProcessButterworth()
 // left plane.  The poles are symmetric about the Real axis, and
 // are not placed on the imaginary axis.  Function returns a pole.
 // The poles are numbered counter clockwise (90-270 degrees)
-inline static std::complex<double> ButterworthPole(int nOrder, int nPole)
-{
+inline static std::complex<double> ButterworthPole(int nOrder, int nPole) {
     double dSpacing = pi/ nOrder;
     double dAngle = (pi + dSpacing)/2. + dSpacing*nPole;
     return std::complex<double>(cos(dAngle), sin(dAngle));
 }
 
-void CProcessButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau)
-{
+void CProcessButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau) {
     double numerator[3];
     double denominator[3];
 
@@ -55,8 +51,7 @@ void CProcessButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, d
 
     double tauSq = tau*tau;
 
-    for (int i = 0; i < (nOrder+1)/2; i++)
-    {
+    for (int i = 0; i < (nOrder+1)/2; i++) {
         std::complex<double> pole = ButterworthPole(nOrder, i);
 
         // Since the Butterworth pole is normalized to 1
@@ -64,8 +59,7 @@ void CProcessButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, d
         pole *= dAnalogCutoffFreq;
 
         // Generate digital filter
-        if ((i * 2 + 1) == nOrder)   // last one is single real pole
-        {
+        if ((i * 2 + 1) == nOrder) { // last one is single real pole
             // each first order analog filter takes the general form
             //
             //               -pole/(s - pole)
@@ -84,9 +78,7 @@ void CProcessButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, d
             double lp = fabs(denominator[1]) > 1e-6 ? log(fabs(denominator[1])) : log(1e-6);
             tauSq += 1/(lp*lp) + 1;
             break;
-        }
-        else     // conjugate pole pairs
-        {
+        } else { // conjugate pole pairs
             // each second order analog filter takes the general form
             //
             //               -pole      -pole*
@@ -123,8 +115,7 @@ void CProcessButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, d
 }
 
 // Cascades a highpass nOrder butterworth filter to current working filter
-void CProcessButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau)
-{
+void CProcessButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau) {
     double numerator[3];
     double denominator[3];
 
@@ -133,8 +124,7 @@ void CProcessButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, 
 
     double tauSq = tau*tau;
 
-    for (int i = 0; i < (nOrder+1)/2; i++)
-    {
+    for (int i = 0; i < (nOrder+1)/2; i++) {
         std::complex<double> pole = ButterworthPole(nOrder, i);
 
         // Since the Butterworth pole is normalized to 1
@@ -150,8 +140,7 @@ void CProcessButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, 
         //              s = 0.5 (1 + z  ) / (1 - z  )
         //
         // and substitute into the low pass equations, yielding the following coefficients
-        if ((i * 2 + 1) == nOrder)   // last one is single real pole
-        {
+        if ((i * 2 + 1) == nOrder) { // last one is single real pole
             // first order section
             denominator[0] = 1.;
             denominator[1] = (1. + 2.*pole.real()) / (1. - 2.*pole.real());
@@ -162,9 +151,7 @@ void CProcessButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, 
             double lp = fabs(denominator[1]) > 1e-6 ? log(fabs(denominator[1])) : log(1e-6);
             tauSq += 1/(lp*lp) + 1;
             break;
-        }
-        else
-        {
+        } else {
             // second order section, taking complex conjugate pole pairs
             double dPoleMagSquared = (pole.real()*pole.real() + pole.imag()*pole.imag());
             double dNormFactor = 1. - 4.* pole.real() + 4.* dPoleMagSquared;
@@ -184,26 +171,20 @@ void CProcessButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, 
 }
 
 // Cascades a scale term to scale output
-void CProcessButterworth::CascadeScale(CZTransform & zTransform, double dScale)
-{
+void CProcessButterworth::CascadeScale(CZTransform & zTransform, double dScale) {
     zTransform *= CZTransform(0, &dScale, NULL);
 }
 
 
-void CProcessButterworth::ClearFilter()
-{
+void CProcessButterworth::ClearFilter() {
     m_zForwardTransform = CZTransform(0, NULL, NULL);
     m_zReverseTransform = CZTransform(0, NULL, NULL);
 }
 
-double CProcessButterworth::FilterFilterNorm(int nOrder) const
-{
-    if (m_bFilterFilter)
-    {
+double CProcessButterworth::FilterFilterNorm(int nOrder) const {
+    if (m_bFilterFilter) {
         return exp(log(sqrt(2.) - 1.)/(2*nOrder));
-    }
-    else
-    {
+    } else {
         return 1.;
     }
 }
@@ -223,16 +204,13 @@ double CProcessButterworth::FilterFilterNorm(int nOrder) const
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessButterworth::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
-{
-    if (IsCanceled())
-    {
+long CProcessButterworth::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
     // check if nested workbench processes
 
-    if (IsDataReady())
-    {
+    if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
@@ -241,10 +219,8 @@ long CProcessButterworth::Process(void * pCaller, ISaDoc * pDoc, int nProgress, 
 }
 
 
-void CProcessButterworth::HighPass(int nOrder, double dFrequency, double dScale)
-{
-    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftHighPass)
-    {
+void CProcessButterworth::HighPass(int nOrder, double dFrequency, double dScale) {
+    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftHighPass) {
         SetDataInvalid();
     }
 
@@ -254,10 +230,8 @@ void CProcessButterworth::HighPass(int nOrder, double dFrequency, double dScale)
     m_dScale = dScale;
 }
 
-void CProcessButterworth::LowPass(int nOrder, double dFrequency, double dScale)
-{
-    if ((m_nOrder != nOrder) || (m_dFrequency != dFrequency) || (m_dScale != dScale) || (m_ftFilterType != kftLowPass))
-    {
+void CProcessButterworth::LowPass(int nOrder, double dFrequency, double dScale) {
+    if ((m_nOrder != nOrder) || (m_dFrequency != dFrequency) || (m_dScale != dScale) || (m_ftFilterType != kftLowPass)) {
         SetDataInvalid();
     }
 
@@ -267,10 +241,8 @@ void CProcessButterworth::LowPass(int nOrder, double dFrequency, double dScale)
     m_dScale = dScale;
 }
 
-void CProcessButterworth::BandPass(int nOrder, double dFrequency, double dBandwidth, double dScale)
-{
-    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dBandwidth != dBandwidth || m_dScale != dScale || m_ftFilterType != kftBandPass)
-    {
+void CProcessButterworth::BandPass(int nOrder, double dFrequency, double dBandwidth, double dScale) {
+    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dBandwidth != dBandwidth || m_dScale != dScale || m_ftFilterType != kftBandPass) {
         SetDataInvalid();
     }
 
@@ -281,15 +253,12 @@ void CProcessButterworth::BandPass(int nOrder, double dFrequency, double dBandwi
     m_dScale = dScale;
 }
 
-void CProcessButterworth::ConfigureProcess( double dSampling)
-{
+void CProcessButterworth::ConfigureProcess(double dSampling) {
     double tau = 0;
     ClearFilter();
-    if (m_bReverse)
-    {
+    if (m_bReverse) {
         double rTau = 0;
-        switch (m_ftFilterType)
-        {
+        switch (m_ftFilterType) {
         case kftHighPass:
             CascadeHighPass(m_zReverseTransform, m_nOrder, m_dFrequency*FilterFilterNorm(m_nOrder), dSampling, rTau);
             break;
@@ -308,8 +277,7 @@ void CProcessButterworth::ConfigureProcess( double dSampling)
             TRACE(_T("Filter not configured\n"));
         }
     }
-    switch (m_ftFilterType)
-    {
+    switch (m_ftFilterType) {
     case kftHighPass:
         CascadeHighPass(m_zForwardTransform, m_nOrder, m_dFrequency*FilterFilterNorm(m_nOrder), dSampling, tau);
         CascadeScale(m_zForwardTransform, m_dScale);
@@ -333,24 +301,20 @@ void CProcessButterworth::ConfigureProcess( double dSampling)
     SetFilterFilterSilenceSamples(int(tau*11 + 1));
 }
 
-void CProcessButterworth::SetFilterFilter(bool bSet)
-{
+void CProcessButterworth::SetFilterFilter(bool bSet) {
     m_bFilterFilter = bSet;
     SetReverse(bSet);
 }
 
-double CProcessButterworth::ForwardTick(double data)
-{
+double CProcessButterworth::ForwardTick(double data) {
     return m_zForwardTransform.Tick(data);
 }
 
-void CProcessButterworth::SetReverse(BOOL bSet)
-{
+void CProcessButterworth::SetReverse(BOOL bSet) {
     m_bReverse = bSet;
 }
 
-int CProcessButterworth::round(double value)
-{
+int CProcessButterworth::round(double value) {
     return (value >= 0.) ? int(value + 0.5) : int(value - 0.5);
 }
 

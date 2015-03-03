@@ -11,8 +11,7 @@
 //###########################################################################
 // CPlotCustomPitch plot window
 
-class CPlotCustomPitch : public CPlotWnd
-{
+class CPlotCustomPitch : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotCustomPitch)
 
 // Construction/destruction/creation

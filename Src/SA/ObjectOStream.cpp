@@ -18,35 +18,28 @@ using std::ofstream;
 using std::ifstream;
 using std::ios;
 
-CObjectOStream::CObjectOStream(LPCSTR filename) : m_ios()
-{
+CObjectOStream::CObjectOStream(LPCSTR filename) : m_ios() {
     m_ios.open(filename);
 }
 
-CObjectOStream::~CObjectOStream()
-{
+CObjectOStream::~CObjectOStream() {
 }
 
-ofstream & CObjectOStream::getIos()
-{
+ofstream & CObjectOStream::getIos() {
     return m_ios;
 }
 
-void CObjectOStream::WriteBeginMarker(LPCSTR pszMarker, LPCSTR pszName)
-{
+void CObjectOStream::WriteBeginMarker(LPCSTR pszMarker, LPCSTR pszName) {
     assert(pszName);
     m_ios << "\\+" << pszMarker << ' ' << pszName << '\n';
 }
 
-void CObjectOStream::WriteEndMarker(LPCSTR pszMarker)
-{
+void CObjectOStream::WriteEndMarker(LPCSTR pszMarker) {
     m_ios << "\\-" << pszMarker << '\n';
 }
 
-void CObjectOStream::WriteBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier, LPCSTR pszName)
-{
-    if (!pszQualifier)
-    {
+void CObjectOStream::WriteBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier, LPCSTR pszName) {
+    if (!pszQualifier) {
         WriteBeginMarker(pszMarker, pszName);
         return;
     }
@@ -54,10 +47,8 @@ void CObjectOStream::WriteBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQ
     m_ios << "\\+" << pszMarker << pszQualifier << ' ' << pszName << '\n';
 }
 
-void CObjectOStream::WriteEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier)
-{
-    if (!pszQualifier)
-    {
+void CObjectOStream::WriteEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier) {
+    if (!pszQualifier) {
         WriteEndMarker(pszMarker);
         return;
     }
@@ -65,11 +56,9 @@ void CObjectOStream::WriteEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQua
     m_ios << "\\-" << pszMarker << pszQualifier << '\n';
 }
 
-void CObjectOStream::WriteString(LPCSTR pszMarker, LPCSTR pszQualifier, LPCSTR psz)
-{
+void CObjectOStream::WriteString(LPCSTR pszMarker, LPCSTR pszQualifier, LPCSTR psz) {
     assert(psz);
-    if (!*psz)
-    {
+    if (!*psz) {
         return;
     }
 
@@ -78,11 +67,9 @@ void CObjectOStream::WriteString(LPCSTR pszMarker, LPCSTR pszQualifier, LPCSTR p
     m_ios << '\n';
 }
 
-void CObjectOStream::WriteString(LPCSTR pszMarker, LPCSTR psz)
-{
+void CObjectOStream::WriteString(LPCSTR pszMarker, LPCSTR psz) {
     assert(psz);
-    if (!*psz)
-    {
+    if (!*psz) {
         return;
     }
 
@@ -91,13 +78,11 @@ void CObjectOStream::WriteString(LPCSTR pszMarker, LPCSTR psz)
     m_ios << '\n';
 }
 
-void CObjectOStream::WriteContents(LPCSTR pszContents)
-{
+void CObjectOStream::WriteContents(LPCSTR pszContents) {
     LPCSTR psz = pszContents;
     assert(psz);
     LPCSTR pszBackslashAtBOL = NULL;
-    while ((pszBackslashAtBOL = strstr(psz, "\n\\")) != NULL)
-    {
+    while ((pszBackslashAtBOL = strstr(psz, "\n\\")) != NULL) {
         pszBackslashAtBOL += 1;  // Point to the backslash;
         // Write the substring up to and including the newline
         m_ios.write(psz, pszBackslashAtBOL - psz);
@@ -108,29 +93,24 @@ void CObjectOStream::WriteContents(LPCSTR pszContents)
     m_ios << psz;  // Write the rest of the field
 }
 
-void CObjectOStream::WriteBool(LPCSTR pszMarker, BOOL b)
-{
+void CObjectOStream::WriteBool(LPCSTR pszMarker, BOOL b) {
     m_ios << '\\' << pszMarker << ' ' << ((b) ? 1 : 0) << '\n';
 }
 
-void CObjectOStream::WriteCOLORREF(LPCSTR pszMarker, COLORREF rgb)
-{
+void CObjectOStream::WriteCOLORREF(LPCSTR pszMarker, COLORREF rgb) {
     m_ios << '\\' << pszMarker << ' ' <<
           (int)GetRValue(rgb) << ',' << (int)GetGValue(rgb) << ',' << (int)GetBValue(rgb) << '\n';
 }
 
-void CObjectOStream::WriteInteger(LPCSTR pszMarker, int i, LPCSTR pszComment)
-{
+void CObjectOStream::WriteInteger(LPCSTR pszMarker, int i, LPCSTR pszComment) {
     m_ios << '\\' << pszMarker << ' ' << i;
-    if (pszComment)
-    {
+    if (pszComment) {
         m_ios << " // " << pszComment;
     }
     m_ios << '\n';
 }
 
-void CObjectOStream::WriteDouble(LPCSTR pszMarker, double i)
-{
+void CObjectOStream::WriteDouble(LPCSTR pszMarker, double i) {
 
     // Use as many digits as necessary, 20 is the most we should see
     std::streamsize oldPrecision = m_ios.precision(20);
@@ -142,26 +122,21 @@ void CObjectOStream::WriteDouble(LPCSTR pszMarker, double i)
     oldFlags = m_ios.flags(oldFlags);
 }
 
-void CObjectOStream::WriteUInt(LPCSTR pszMarker, UINT u, LPCSTR pszComment)
-{
+void CObjectOStream::WriteUInt(LPCSTR pszMarker, UINT u, LPCSTR pszComment) {
     m_ios << '\\' << pszMarker << ' ' << u;
-    if (pszComment)
-    {
+    if (pszComment) {
         m_ios << " //" << pszComment;
     }
     m_ios << '\n';
 }
 
-void CObjectOStream::WriteNewline()
-{
+void CObjectOStream::WriteNewline() {
     m_ios << '\n';
 }
 
-void CObjectOStream::WriteWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wpl)
-{
+void CObjectOStream::WriteWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wpl) {
     char * pszState = "max";
-    switch (wpl.showCmd)
-    {
+    switch (wpl.showCmd) {
     case SW_SHOWNORMAL:
         pszState = "normal";
         break;

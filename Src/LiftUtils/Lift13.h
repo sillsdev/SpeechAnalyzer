@@ -43,14 +43,14 @@ public:
         _span(SPAN) {
     };
 
-	span( LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) :
+    span(LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) :
         lift_base(_name),
         lang(L"lang"),
         href(L"href"),
         clazz(L"clazz"),
         _span(SPAN) {
-		lang = wstring(_lang);
-		pcdata = _data;
+        lang = wstring(_lang);
+        pcdata = _data;
     };
 
     void load(Element * in) {
@@ -92,7 +92,7 @@ public:
 
     text(LPCTSTR _name, LPCTSTR _content) :
         lift_base(_name) {
-		pcdata = _content;
+        pcdata = _content;
     };
 
     void load(Element * in) {
@@ -244,8 +244,8 @@ public:
         lang(L"lang"),
         text(L"text"),
         annotation(ANNOTATION) {
-			lang = wstring(_lang);
-			text = _text;
+        lang = wstring(_lang);
+        text = _text;
     };
 
     void load(Element * in) {
@@ -355,18 +355,18 @@ public:
         annotation(ANNOTATION) {
     };
 
-	field( LPCTSTR _name, key _type) : 
-    multitext(_name),
-    type(L"type"),
-    datecreated(DATE_CREATED),
-    datemodified(DATE_MODIFIED),
-    //trait(L"trait"),
-    form(L"form"),
-    annotation(ANNOTATION) 	{
-		type = _type;
-		datecreated = createDate();
-		datemodified = createDate();
-	}
+    field(LPCTSTR _name, key _type) :
+        multitext(_name),
+        type(L"type"),
+        datecreated(DATE_CREATED),
+        datemodified(DATE_MODIFIED),
+        //trait(L"trait"),
+        form(L"form"),
+        annotation(ANNOTATION)  {
+        type = _type;
+        datecreated = createDate();
+        datemodified = createDate();
+    }
 
     void load(Element * in) {
         expect(in,multitext::name);
@@ -649,9 +649,9 @@ public:
             }
             // we if don't have anything, just append the external data
             if (range_element.size()==0) {
-				for (size_t j=0;j<right.range_element.size();j++) {
-					range_element.append(right.range_element[j]);
-				}
+                for (size_t j=0; j<right.range_element.size(); j++) {
+                    range_element.append(right.range_element[j]);
+                }
                 continue;
             }
             // we already have something?
@@ -1322,17 +1322,17 @@ public:
         producer(L"producer"),
         header(L"header"),
         entry(L"entry") {
-		version = wstring(L"0.13");
+        version = wstring(L"0.13");
     };
 
-	lift( LPCTSTR _producer) :
+    lift(LPCTSTR _producer) :
         lift_base(L"lift"),
         version(L"version"),
         producer(L"producer"),
         header(L"header"),
         entry(L"entry") {
-		version = wstring(L"0.13");
-		producer = wstring(_producer);
+        version = wstring(L"0.13");
+        producer = wstring(_producer);
     };
 
 

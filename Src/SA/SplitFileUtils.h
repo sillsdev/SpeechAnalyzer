@@ -11,7 +11,7 @@ class CMusicPhraseSegment;
 class CReferenceSegment;
 
 // split file feature methods
-wstring FilterName( LPCTSTR text);
+wstring FilterName(LPCTSTR text);
 
 wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameConvention convention, int index, LPCTSTR prefix, LPCTSTR suffix);
 bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGloss, LPCTSTR prefix, LPCTSTR suffix);

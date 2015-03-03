@@ -20,10 +20,9 @@
 class CObjectOStream;
 class CObjectIStream;
 
-class CFnKeys
-{
+class CFnKeys {
 public:
-    //		SDM increased array size by one to allow use of
+    //      SDM increased array size by one to allow use of
     //      [24] by batch command processing 1.5Test8.3
     //      [25] by SlowReplay processing 1.5Test10.2
     BOOL  bRepeat[26];    // TRUE, if playback repeat enabled

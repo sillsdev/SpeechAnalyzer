@@ -14,10 +14,9 @@
 #ifndef _GRAPHS_MAGNIFY_H
 #define _GRAPHS_MAGNIFY_H
 
-class CDlgMagnify : public CDialog
-{
+class CDlgMagnify : public CDialog {
 public:
-    CDlgMagnify(CWnd * pParent = NULL);					// standard constructor
+    CDlgMagnify(CWnd * pParent = NULL);                 // standard constructor
 
     enum { IDD = IDD_MAGNIFY };
     double   m_fMagnify;
@@ -28,7 +27,7 @@ protected:
     // Generated message map functions
     virtual BOOL OnInitDialog();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif

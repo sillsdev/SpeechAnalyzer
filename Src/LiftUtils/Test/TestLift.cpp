@@ -18,16 +18,16 @@ using namespace Lift13;
 #endif
 
 TEST(Lift, LiftBadFile) {
-	try {
-		lift document = load(buildSourcePath(L"neverfindit.lift").c_str());
-		ASSERT_TRUE(false);
-	} catch (exception & e) {
-	}
+    try {
+        lift document = load(buildSourcePath(L"neverfindit.lift").c_str());
+        ASSERT_TRUE(false);
+    } catch (exception & e) {
+    }
 }
 
 TEST(Lift, LiftCreateDate) {
-	wstring result = Lift::createDate();
-	wprintf(L"date=%s\n",result.c_str());
+    wstring result = Lift::createDate();
+    wprintf(L"date=%s\n",result.c_str());
 }
 
 TEST(Lift, LiftSimple_01) {
@@ -48,6 +48,6 @@ TEST(Lift, LiftSimple_04) {
 };
 
 TEST(Lift, LiftUUID_01) {
-	wstring uuid = Lift::createUUID();
-	ASSERT_TRUE(uuid.length()>0);
+    wstring uuid = Lift::createUUID();
+    ASSERT_TRUE(uuid.length()>0);
 };

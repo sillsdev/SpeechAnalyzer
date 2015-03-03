@@ -1704,7 +1704,7 @@ void CAnnotationWnd::OnPaint() {
 // CAnnotationWnd::AnnotationStandardPaint Standard painting of annotation
 // This function may be used for classic non text annotation windows.
 /***************************************************************************/
-void CAnnotationWnd::OnDraw( CDC * pDC, const CRect & printRect) {
+void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 
     // get window coordinates
     CRect rWnd;
@@ -1796,29 +1796,29 @@ void CAnnotationWnd::OnDraw( CDC * pDC, const CRect & printRect) {
     double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
     // get pointer to annotation offset and duration arrays
-	CSegment * pSegment = pDoc->GetSegment(m_nIndex);
+    CSegment * pSegment = pDoc->GetSegment(m_nIndex);
 
     // get pointer to annotation string
-    if (pSegment->GetOffsetSize()>0) { 
+    if (pSegment->GetOffsetSize()>0) {
 
-		// string is not empty
+        // string is not empty
         // position prepare loop. Find first char to display in clipping rect
         double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
-        
-		int nLoop = 0;
+
+        int nLoop = 0;
         if ((fStart > 0) && (pSegment->GetOffsetSize() > 1)) {
             for (nLoop = 1; nLoop < pSegment->GetOffsetSize(); nLoop++) {
                 // SDM 1.06.6U2
-                if ((double)(pSegment->GetStop(nLoop)) > fStart) { 
-					// first char must be at lower position
+                if ((double)(pSegment->GetStop(nLoop)) > fStart) {
+                    // first char must be at lower position
                     nLoop--; // this is it
                     break;
                 }
             }
         }
-        
-		if (nLoop < pSegment->GetOffsetSize()) {  
-			// there is something to display
+
+        if (nLoop < pSegment->GetOffsetSize()) {
+            // there is something to display
             // display loop
             int nDisplayPos; // start position in pixels to display character(s)
             // Create Font For "*"
@@ -1841,7 +1841,7 @@ void CAnnotationWnd::OnDraw( CDC * pDC, const CRect & printRect) {
                 // calculate duration
                 int nDisplayStop = round((pSegment->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
 
-				nLoop++;
+                nLoop++;
 
                 // SDM 1.5Test8.1
                 if (m_bHintUpdateBoundaries) { // Show New Boundaries
@@ -1896,10 +1896,10 @@ void CAnnotationWnd::OnDraw( CDC * pDC, const CRect & printRect) {
                         pDC->DrawText(_T("."), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                     }
                     //SDM 1.06.4
-					// reselect specific annotation font
-                    pDC->SelectObject(GetFont()); 
-                } else { 
-					// enough space to display character(s), draw the string
+                    // reselect specific annotation font
+                    pDC->SelectObject(GetFont());
+                } else {
+                    // enough space to display character(s), draw the string
                     pDC->DrawText(szAnnot, szAnnot.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                 }
                 if (bSelect) {
@@ -1950,9 +1950,9 @@ void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dw
     }
 
     if ((m_bHintUpdateBoundaries != bHint) ||
-        (m_dwHintStart!=dwStart) ||
-        (m_dwHintStop != dwStop) ||
-        (bOverlap != m_bOverlap)) { // If change
+            (m_dwHintStart!=dwStart) ||
+            (m_dwHintStop != dwStop) ||
+            (bOverlap != m_bOverlap)) { // If change
         if ((bHint) || (m_bHintUpdateBoundaries)) {
             InvalidateRect(NULL);    // If hint drawn or will be drawn
         }
@@ -2108,8 +2108,8 @@ void CAnnotationWnd::OnMouseMove(UINT nFlags, CPoint point) {
 // disable slow click after dblClk
 //###########################################################################
 void CAnnotationWnd::OnLButtonDblClk(UINT nFlags, CPoint point) {
-    
-	CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     if (pGraph->IsPlotID(IDD_TWC)) {
         CWnd::OnLButtonDblClk(nFlags, point);
         return;
@@ -2346,8 +2346,8 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 }
             }
         }
-        if (nLoop < pGloss->GetOffsetSize()) { 
-			// there is something to display
+        if (nLoop < pGloss->GetOffsetSize()) {
+            // there is something to display
             // display loop
             int nDisplayPos = 0;
             int nDisplayStop = 0;

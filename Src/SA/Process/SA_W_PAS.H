@@ -14,8 +14,7 @@
 //###########################################################################
 // CProcessWbHighpass data processing
 
-class CProcessWbHighpass : public CProcessButterworth
-{
+class CProcessWbHighpass : public CProcessButterworth {
 // Construction/destruction/creation
 public:
     CProcessWbHighpass();
@@ -38,8 +37,7 @@ public:
 //###########################################################################
 // CProcessWbLowpass data processing
 
-class CProcessWbLowpass : public CProcessButterworth
-{
+class CProcessWbLowpass : public CProcessButterworth {
 // Construction/destruction/creation
 public:
     CProcessWbLowpass();
@@ -62,8 +60,7 @@ public:
 //###########################################################################
 // CProcessWbBandpass data processing
 
-class CProcessWbBandpass : public CProcessButterworth
-{
+class CProcessWbBandpass : public CProcessButterworth {
 // Construction/destruction/creation
 public:
     CProcessWbBandpass();

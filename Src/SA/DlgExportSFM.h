@@ -7,8 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportSFM dialog
 
-class CDlgExportSFM : public CDialog
-{
+class CDlgExportSFM : public CDialog {
     // Construction
 public:
     CDlgExportSFM(const CSaString & szDocTitle, CWnd * pParent = NULL);
@@ -18,7 +17,7 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
     void ExportDefault();
-	void ExportColumnar();
+    void ExportColumnar();
     void ExportInterlinear();
     void ExportMultiRecord();
     void ExportFile(CSaDoc * pDoc, CFile & file);
@@ -62,7 +61,7 @@ protected:
     BOOL m_bHighPass;
     //BOOL m_bInterlinear;
     //BOOL m_bMultiRecord;
-	int m_nExportFormat;
+    int m_nExportFormat;
     BOOL m_bLanguage;
     BOOL m_bLastModified;
     BOOL m_bLength;
@@ -92,9 +91,9 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 public:
-	CComboBox m_ctlExportType;
-	afx_msg void OnSelchangeExSfmExportType();
-	CButton m_btnOK;
+    CComboBox m_ctlExportType;
+    afx_msg void OnSelchangeExSfmExportType();
+    CButton m_btnOK;
 };
 
 #endif DLGEXPORTSFM_H

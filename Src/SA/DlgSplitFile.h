@@ -4,8 +4,7 @@
 #include "appdefs.h"
 
 // CDlgSplitFile dialog
-class CDlgSplitFile : public CDialog
-{
+class CDlgSplitFile : public CDialog {
 
     DECLARE_DYNAMIC(CDlgSplitFile)
 public:
@@ -26,8 +25,8 @@ public:
     CString m_szFolderName;
     CString m_szPhraseFolderName;
     CString m_szGlossFolderName;
-	CString m_szFilenamePrefix;
-	CString m_szFilenameSuffix;
+    CString m_szFilenamePrefix;
+    CString m_szFilenameSuffix;
     BOOL m_bSkipGlossEmpty;
     BOOL m_bOverwriteData;
 
@@ -38,7 +37,7 @@ public:
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
 
-	void DDX_Filename( CDataExchange* pDX, int nIDC, CString& value, UINT msgID);
+    void DDX_Filename(CDataExchange * pDX, int nIDC, CString & value, UINT msgID);
 
 private:
     int m_nWordConvention;

@@ -27,8 +27,7 @@
 #undef CTPQueue
 #undef CTVector
 
-struct rpair_float_float : public pair_float_float
-{
+struct rpair_float_float : public pair_float_float {
 };
 
 // This is defined the opposite of what it looks like so we can get a

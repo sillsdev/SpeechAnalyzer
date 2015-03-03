@@ -20,8 +20,7 @@
 
 class CSaApp;
 
-class CStartModeDlg : public CDialog
-{
+class CStartModeDlg : public CDialog {
     // Construction
 public:
     CStartModeDlg(CWnd * pParent = NULL); // standard constructor

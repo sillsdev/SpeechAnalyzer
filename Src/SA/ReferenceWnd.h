@@ -40,8 +40,7 @@
 
 #include "SA_Annot.h"
 
-class CReferenceWnd : public CAnnotationWnd
-{
+class CReferenceWnd : public CAnnotationWnd {
 public:
     CReferenceWnd(int nIndex);
     virtual void OnDraw(CDC * pDC, const CRect & printRect);

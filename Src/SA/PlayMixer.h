@@ -18,8 +18,7 @@
 #include "Mixer.h"
 #include "SaString.h"
 
-class CPlayMixer : public CMixer
-{
+class CPlayMixer : public CMixer {
 public:
     CPlayMixer();;
     ~CPlayMixer();

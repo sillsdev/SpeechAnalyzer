@@ -3,8 +3,7 @@
 
 #include "Colors.h"
 
-class CToolSettings
-{
+class CToolSettings {
 
 public:
     CToolSettings();

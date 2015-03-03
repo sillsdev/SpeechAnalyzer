@@ -38,8 +38,7 @@ class CObjectOStream;
 class CObjectIStream;
 class CProgressStatusBar;
 
-class CProcess : public CCmdTarget, public IProcess
-{
+class CProcess : public CCmdTarget, public IProcess {
 
 public:
     CProcess();
@@ -125,8 +124,7 @@ private:
 //###########################################################################
 // CAreaDataProcess
 
-class CProcessAreaData : public CProcess
-{
+class CProcessAreaData : public CProcess {
     // Construction/destruction/creation
 public:
     CProcessAreaData();
@@ -151,32 +149,26 @@ protected:
 };
 
 
-class CProcessSDP : public CProcessAreaData
-{
+class CProcessSDP : public CProcessAreaData {
 };
 
 template<class _Ty>
-class CProcessIterator
-{
+class CProcessIterator {
 public:
     typedef CProcessIterator<_Ty> CIter;
 
     CProcessIterator(CProcess & process, unsigned int index = 0, BOOL bReverse=FALSE)
-        :  m_process(process), m_pData(0), m_bReverse(bReverse)
-    {
+        :  m_process(process), m_pData(0), m_bReverse(bReverse) {
         m_nCurrentIndex = index;
         m_nBeginIndex = m_nEndIndex = 0;
         m_nLength = process.GetProcessBufferSize()/sizeof(_Ty);
     }
 
-    _Ty & operator*()
-    {
-        if ((m_nCurrentIndex < m_nBeginIndex) || (m_nCurrentIndex >= m_nEndIndex))
-        {
+    _Ty & operator*() {
+        if ((m_nCurrentIndex < m_nBeginIndex) || (m_nCurrentIndex >= m_nEndIndex)) {
             loadData();
         }
-        if (m_pData == NULL)
-        {
+        if (m_pData == NULL) {
             throw 0;
         }
         return
@@ -184,13 +176,11 @@ public:
     }
 
     // prefix operators
-    CIter & operator++()
-    {
+    CIter & operator++() {
         m_nCurrentIndex++;
         return *this;
     }
-    CIter & operator--()
-    {
+    CIter & operator--() {
         m_nCurrentIndex--;
         return *this;
     }
@@ -204,14 +194,10 @@ private:
     unsigned int m_nEndIndex;
     unsigned int m_nLength;
 
-    void loadData()
-    {
-        if (m_bReverse)
-        {
+    void loadData() {
+        if (m_bReverse) {
             m_nBeginIndex = m_nCurrentIndex > m_nLength ? m_nCurrentIndex + 1 - m_nLength : 0;
-        }
-        else
-        {
+        } else {
             m_nBeginIndex = m_nCurrentIndex;
         }
         m_nEndIndex = m_nBeginIndex + m_nLength;

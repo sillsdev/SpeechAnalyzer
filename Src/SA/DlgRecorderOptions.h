@@ -7,13 +7,12 @@
 #include "fnkeys.h"
 #include "DlgRecorder.h"
 
-class CDlgRecorderOptions : public CDialog
-{
+class CDlgRecorderOptions : public CDialog {
 
 public:
     CDlgRecorderOptions(CDlgRecorder * pParent);
 
-	void SetSamplingRate(int nRate);
+    void SetSamplingRate(int nRate);
     unsigned int GetSamplingRate();
     void SetBitDepth(int nBits);
     short GetBitDepth();
@@ -41,7 +40,7 @@ protected:
     afx_msg void OnSource();
     afx_msg void OnSourceAuto();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif

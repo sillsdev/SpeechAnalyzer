@@ -23,8 +23,7 @@ class CSaString;
 // special class to allow selection of empty dependent segments.  Should also
 // provide a interface independent of data storage representation
 /***************************************************************************/
-class CSegmentSelection
-{
+class CSegmentSelection {
 public:
     CSegmentSelection();
     BOOL SelectFromPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, bool bFindExact);
@@ -32,10 +31,10 @@ public:
     void Update(CSaView * pView, BOOL bClearVirtual = FALSE); //Update Selection Record
     CString GetSelectedAnnotationString(CSaView * pView, BOOL bRemoveDelimiter = TRUE) const;
     BOOL SetSelectedAnnotationString(CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
-	DWORD GetSelectionStart();
-	DWORD GetSelectionStop();
-	int GetSelectionIndex();
-	bool IsSelectionVirtual();
+    DWORD GetSelectionStart();
+    DWORD GetSelectionStop();
+    int GetSelectionIndex();
+    bool IsSelectionVirtual();
 
 protected:
     DWORD m_dwStart;

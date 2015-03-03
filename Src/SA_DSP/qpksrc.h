@@ -7,8 +7,7 @@
 // The peaks are returned in order of increasing location.
 // See class CPeakSource for more documentation.
 
-class CQuadraticPeakSource : public CPeakSource
-{
+class CQuadraticPeakSource : public CPeakSource {
 public:
 
     // Construct a Quadratic peak source with the given concavity

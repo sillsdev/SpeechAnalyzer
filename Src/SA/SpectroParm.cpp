@@ -21,19 +21,16 @@ static LPCSTR psz_MaxThreshold         = "nMaxThreshold";
 static LPCSTR psz_MinThreshold         = "nMinThreshold";
 static LPCSTR psz_Overlay              = "nOverlay";
 
-void CSpectroParm::WritePropertiesA(CObjectOStream & obs)
-{
+void CSpectroParm::WritePropertiesA(CObjectOStream & obs) {
     WriteProperties(psz_spectroA, obs);
 }
 
-void CSpectroParm::WritePropertiesB(CObjectOStream & obs)
-{
+void CSpectroParm::WritePropertiesB(CObjectOStream & obs) {
     WriteProperties(psz_spectroB, obs);
 }
 
 // Write spectroParm properties to *.psa file.
-void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs)
-{
+void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs) {
     obs.WriteBeginMarker(pszMarker);
 
     // write out properties
@@ -50,40 +47,33 @@ void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs)
     obs.WriteInteger(psz_MinThreshold, nMinThreshold);
     obs.WriteInteger(psz_Overlay, nOverlay);
     obs.WriteBool(psz_ShowPitch, bShowPitch);
-	obs.WriteBool(psz_ShowFormants, bShowFormants);
+    obs.WriteBool(psz_ShowFormants, bShowFormants);
 
     obs.WriteEndMarker(pszMarker);
 }
 
-BOOL CSpectroParm::ReadPropertiesA(CObjectIStream & obs)
-{
+BOOL CSpectroParm::ReadPropertiesA(CObjectIStream & obs) {
     return ReadProperties(psz_spectroA, obs);
 }
 
-BOOL CSpectroParm::ReadPropertiesB(CObjectIStream & obs)
-{
+BOOL CSpectroParm::ReadPropertiesB(CObjectIStream & obs) {
     return ReadProperties(psz_spectroB, obs);
 }
 
 // Read spectroParm properties from *.psa file.
-BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs)
-{
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(pszMarker))
-    {
+BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(pszMarker)) {
         return FALSE;
     }
 
-	bool showFormants = false;
+    bool showFormants = false;
 
-    while (!obs.bAtEnd())
-    {
+    while (!obs.bAtEnd()) {
         if (obs.bReadInteger(psz_Resolution, nResolution));
         // This is temporary until *.psa files are built with this version
-        else if (obs.bReadInteger(psz_ResolutionOld, nResolution))
-        {
+        else if (obs.bReadInteger(psz_ResolutionOld, nResolution)) {
             nResolution *= 2;    // map 0->0 & 1->2
-        }
-        else if (obs.bReadInteger(psz_Color, nColor));
+        } else if (obs.bReadInteger(psz_Color, nColor));
         else if (obs.bReadBool(psz_ShowF1, bShowF1));
         else if (obs.bReadBool(psz_ShowF2, bShowF2));
         else if (obs.bReadBool(psz_ShowF3, bShowF3));
@@ -95,32 +85,30 @@ BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs)
         else if (obs.bReadInteger(psz_MinThreshold, nMinThreshold));
         else if (obs.bReadInteger(psz_Overlay, nOverlay));
         else if (obs.bReadBool(psz_ShowPitch, bShowPitch));
-		else if (obs.bReadBool(psz_ShowFormants, bShowFormants)) showFormants=true;
-        else if (obs.bEnd(pszMarker))
-        {
+        else if (obs.bReadBool(psz_ShowFormants, bShowFormants)) {
+            showFormants=true;
+        } else if (obs.bEnd(pszMarker)) {
             break;
         }
     }
 
-	/*
-	* model old behaviour.  Previously if any of the items were checked, than formants were shown.
-	* this has now changed.
-	* if the global is off, nothing is shown - but the formant booleans and the pitch boolean will retain
-	* their previous setting.
-	* - so - if we don't find it in the settings file, we will assume this is a 'old' settings file, and
-	* and use the settings for the formant and pitch booleans to set the 'showFormants' member.
-	*/
-	if ((!showFormants) && ((bShowF1) || (bShowF2) || (bShowF3) || (bShowF4) || (bShowF5andUp) || (bShowPitch))) 
-	{
-		bShowFormants = TRUE;
-	}
+    /*
+    * model old behaviour.  Previously if any of the items were checked, than formants were shown.
+    * this has now changed.
+    * if the global is off, nothing is shown - but the formant booleans and the pitch boolean will retain
+    * their previous setting.
+    * - so - if we don't find it in the settings file, we will assume this is a 'old' settings file, and
+    * and use the settings for the formant and pitch booleans to set the 'showFormants' member.
+    */
+    if ((!showFormants) && ((bShowF1) || (bShowF2) || (bShowF3) || (bShowF4) || (bShowF5andUp) || (bShowPitch))) {
+        bShowFormants = TRUE;
+    }
     return TRUE;
 }
 
 const float CSpectroParm::DspWinBandwidth[] = {(float)NARROW_BW, (float)MEDIUM_BW, (float)WIDE_BW};
 
-void CSpectroParm::Init()
-{
+void CSpectroParm::Init() {
     nResolution = 2;
     nColor = 1; // Monochrome
     nOverlay = 0;
@@ -128,7 +116,7 @@ void CSpectroParm::Init()
     bShowF2 = TRUE;
     bShowF3 = TRUE;
     bShowF4 = FALSE;
-	bShowFormants = FALSE;
+    bShowFormants = FALSE;
     bShowF5andUp = FALSE;
     bSmoothFormantTracks = TRUE;
     nFrequency = 3200;

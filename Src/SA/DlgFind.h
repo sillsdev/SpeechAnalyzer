@@ -10,17 +10,16 @@
 
 class CMainFrame;
 
-class CDlgFind : public CDialog
-{
+class CDlgFind : public CDialog {
     // Construction
 public:
-    CDlgFind( CWnd * pParent,
-              LPCTSTR pszFieldsToSearch,
-              const CString & strToFind,
-              bool bFindOnly,
-              const CString & strToReplace,
-              int idxDefaultField,
-              CMainFrame * pMainFrame);
+    CDlgFind(CWnd * pParent,
+             LPCTSTR pszFieldsToSearch,
+             const CString & strToFind,
+             bool bFindOnly,
+             const CString & strToReplace,
+             int idxDefaultField,
+             CMainFrame * pMainFrame);
 
     BOOL Created() const;
     int AnnotationSetID();
@@ -72,8 +71,8 @@ protected:
     BOOL m_bCreated;
     CString m_sFieldsToSearch;
     int m_annotWndIndex;
-    int m_beginFind;		// where we began the search
-    int m_curPos;			// our current position
+    int m_beginFind;        // where we began the search
+    int m_curPos;           // our current position
     bool m_bFindOnly;
     CMainFrame * m_pMainFrame;
     bool m_wrapped;

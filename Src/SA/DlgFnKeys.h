@@ -8,8 +8,7 @@
 #include "DlgWaveNotifyObj.h"
 #include "IWaveNotifiable.h"
 
-class CDlgFnKeys : public CDialog, public IWaveNotifiable
-{
+class CDlgFnKeys : public CDialog, public IWaveNotifiable {
 public:
     CDlgFnKeys(CWnd * pParent = NULL); // standard constructor
 

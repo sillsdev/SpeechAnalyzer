@@ -21,14 +21,12 @@ enum EPEAK_FOLLOWING {UNKNOWN_TREND=-1, RISING_TREND=0, LEVEL_TREND=1, FALLING_T
 /***********************************************************************************/
 #define CURVATURE_THD  0.F
 
-struct SBumpTableEntry
-{
+struct SBumpTableEntry {
     float Distance;
     float Amplitude;
 };
 
-class CPeakPicker
-{
+class CPeakPicker {
 public:
     static char * Copyright(void);
     static float Version(void);

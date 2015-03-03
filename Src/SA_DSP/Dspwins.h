@@ -7,8 +7,7 @@
 using std::vector;
 
 // Graph Parameter.cpp for implementation
-class CWindowSettings
-{
+class CWindowSettings {
 public:
     CWindowSettings();
 
@@ -31,8 +30,7 @@ public:
     int32 m_nReplication;
 };
 
-class CDspWin
-{
+class CDspWin {
 public:
     CDspWin(const CDspWin & from);
     CDspWin & operator=(const CDspWin & from);
@@ -45,16 +43,14 @@ public:
     int32 Length() const;
     double Bandwidth() const;
     int32 Type() const;
-	void Dump(const char * ofilename);
+    void Dump(const char * ofilename);
 
 public:
     enum { kRect=0, kHanning=1, kHann=1, kHamming=2, kBlackman=3, kBlackmanHarris=4, kGaussian=5 };
 
-    class CWindowParms
-    {
+    class CWindowParms {
     public:
-        CWindowParms(double bandwidthProduct, int32 terms, const double * coefficients) : m_bandwidthProduct(bandwidthProduct) , m_terms(terms) , m_coefficients(coefficients)
-        {
+        CWindowParms(double bandwidthProduct, int32 terms, const double * coefficients) : m_bandwidthProduct(bandwidthProduct) , m_terms(terms) , m_coefficients(coefficients) {
         }
 
         const double m_bandwidthProduct;
@@ -62,13 +58,12 @@ public:
         const double * const m_coefficients;
     private:
         // Not used
-        const CWindowParms & operator=(const CWindowParms &)
-        {
+        const CWindowParms & operator=(const CWindowParms &) {
         }
     };
 
 private:
-    CDspWin( int32 nLength, uint32 smpRate, int32 windowType);
+    CDspWin(int32 nLength, uint32 smpRate, int32 windowType);
 
     int32 m_windowType;
     uint32 m_smpRate;
@@ -81,12 +76,11 @@ private:
     static CWindowParms WindowParms(int32 windowType);
 };
 
-class CHanningWin
-{
+class CHanningWin {
 public:
     static dspError_t FromLength(CHanningWin ** Hanning, int32 Length, uint32 smpRate);
     static dspError_t FromBandwidth(CHanningWin ** Hanning, float Bandwidth, uint32 smpRate);
-    static int32 CalcLength( float Bandwidth, uint32 smpRate);
+    static int32 CalcLength(float Bandwidth, uint32 smpRate);
     int32 Length();
     float Bandwidth();
     float Data(uint32 i);
@@ -99,10 +93,9 @@ private:
     float m_Bandwidth;
 };
 
-class CKaiserWin
-{
+class CKaiserWin {
 public:
-    static dspError_t Setup( CKaiserWin ** Kaiser, float Bandwidth, float Gain, float Atten, float SmpRate);
+    static dspError_t Setup(CKaiserWin ** Kaiser, float Bandwidth, float Gain, float Atten, float SmpRate);
     ~CKaiserWin();
     float CalcCoeff(int32 i);
     float Coeff(uint32 i);
@@ -110,7 +103,7 @@ public:
 
 private:
     CKaiserWin(float * Coeff, bool * CoeffSet, float Bandwidth, float Gain, float Atten,
-              float Transition, int32 GroupDelay, float SmpRate);
+               float Transition, int32 GroupDelay, float SmpRate);
     float m_Bandwidth;
     float m_Gain;
     float m_Atten;

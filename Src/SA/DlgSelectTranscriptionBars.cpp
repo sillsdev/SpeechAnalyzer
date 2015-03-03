@@ -8,15 +8,15 @@
 
 IMPLEMENT_DYNAMIC(CDlgSelectTranscriptionBars, CDialog)
 
-CDlgSelectTranscriptionBars::CDlgSelectTranscriptionBars(CWnd* pParent /*=NULL*/)
-	: CDialog(CDlgSelectTranscriptionBars::IDD, pParent) {
+CDlgSelectTranscriptionBars::CDlgSelectTranscriptionBars(CWnd * pParent /*=NULL*/)
+    : CDialog(CDlgSelectTranscriptionBars::IDD, pParent) {
 }
 
 CDlgSelectTranscriptionBars::~CDlgSelectTranscriptionBars() {
 }
 
-void CDlgSelectTranscriptionBars::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void CDlgSelectTranscriptionBars::DoDataExchange(CDataExchange * pDX) {
+    CDialog::DoDataExchange(pDX);
     DDX_Check(pDX, ID_POPUPGRAPH_REFERENCE, bReference);
     DDX_Check(pDX, ID_POPUPGRAPH_PHONETIC, bPhonetic);
     DDX_Check(pDX, ID_POPUPGRAPH_TONE, bTone);

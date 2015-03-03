@@ -10,9 +10,9 @@ class CCmdTarget;
 */
 class CScopedCursor {
 public:
-	CScopedCursor(CCmdTarget * parent);
-	~CScopedCursor();
+    CScopedCursor(CCmdTarget * parent);
+    ~CScopedCursor();
 private:
-	CCmdTarget * parent;
+    CCmdTarget * parent;
 };
 

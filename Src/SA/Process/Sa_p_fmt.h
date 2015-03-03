@@ -12,8 +12,7 @@
 
 #define MAX_FILTERS 5
 
-class CProcessFormants : public CProcess
-{
+class CProcessFormants : public CProcess {
 
 public:
     CProcessFormants();

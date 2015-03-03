@@ -13,8 +13,7 @@ using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SIL.SpeechAnalyzer.GUI
-{
+namespace SIL.SpeechAnalyzer.GUI {
 
 public static class Utils {
 
@@ -83,7 +82,7 @@ public static class Utils {
     public static extern void SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
 #else
     public static void SendMessage(IntPtr hWnd, int msg, int wParam, int lParam) {
-        if(msg != PaintingHelper.WM_NCPAINT) { // repaint
+        if (msg != PaintingHelper.WM_NCPAINT) { // repaint
             Console.WriteLine("Warning--using unimplemented method SendMessage"); // FIXME Linux
         }
         return;
@@ -162,14 +161,17 @@ public static class Utils {
     /// ------------------------------------------------------------------------------------
     public static void CenterFormInScreen(Form frm) {
         Rectangle rc = Screen.GetWorkingArea(frm);
-        if (rc == Rectangle.Empty)
+        if (rc == Rectangle.Empty) {
             rc = Screen.PrimaryScreen.WorkingArea;
+        }
 
-        if (frm.Width > rc.Width)
+        if (frm.Width > rc.Width) {
             frm.Width = rc.Width;
+        }
 
-        if (frm.Height > rc.Height)
+        if (frm.Height > rc.Height) {
             frm.Height = rc.Height;
+        }
 
         frm.Location = new Point((rc.Width - frm.Width) / 2, (rc.Height - frm.Height) / 2);
     }
@@ -189,7 +191,7 @@ public static class Utils {
         moQuery = string.Format(moQuery, drive.Replace("\\", string.Empty));
         ManagementObjectSearcher searcher = new ManagementObjectSearcher(moQuery);
         ManagementObjectCollection moc = searcher.Get();
-        return (from ManagementObject mo in moc select (ulong)mo.Properties["FreeSpace"].Value).FirstOrDefault();
+        return (from ManagementObject mo in moc select(ulong)mo.Properties["FreeSpace"].Value).FirstOrDefault();
     }
 
     /// ------------------------------------------------------------------------------------
@@ -198,14 +200,17 @@ public static class Utils {
     /// </summary>
     /// ------------------------------------------------------------------------------------
     public static string MakeRelativePath(string fixedPath, string relPath) {
-        if (!Path.IsPathRooted(fixedPath))
+        if (!Path.IsPathRooted(fixedPath)) {
             throw new ArgumentException("Fixed path is not rooted.", "fixedPath");
+        }
 
-        if (!Path.IsPathRooted(relPath))
+        if (!Path.IsPathRooted(relPath)) {
             throw new ArgumentException("Relative path is not rooted.", "relPath");
+        }
 
-        if (relPath.IndexOf(fixedPath, StringComparison.Ordinal) != 0)
+        if (relPath.IndexOf(fixedPath, StringComparison.Ordinal) != 0) {
             return relPath;
+        }
 
         relPath = relPath.Remove(0, fixedPath.Length);
         return relPath.TrimStart(Path.DirectorySeparatorChar);
@@ -238,8 +243,9 @@ public static class Utils {
     /// </summary>
     /// ------------------------------------------------------------------------------------
     public static string PrepFilePathForMsgBox(string filepath) {
-        if (filepath == null)
+        if (filepath == null) {
             return string.Empty;
+        }
 
         filepath = filepath.Replace(Environment.NewLine, kObjReplacementChar.ToString(CultureInfo.InvariantCulture));
         return filepath.Replace("\\n", kObjReplacementChar.ToString(CultureInfo.InvariantCulture));
@@ -271,12 +277,13 @@ public static class Utils {
     public static DialogResult MsgBox(string msg, MessageBoxButtons buttons) {
         MessageBoxIcon icon;
 
-        if (buttons == MessageBoxButtons.YesNo || buttons == MessageBoxButtons.YesNoCancel)
+        if (buttons == MessageBoxButtons.YesNo || buttons == MessageBoxButtons.YesNoCancel) {
             icon = MessageBoxIcon.Question;
-        else if (buttons == MessageBoxButtons.AbortRetryIgnore || buttons == MessageBoxButtons.RetryCancel)
+        } else if (buttons == MessageBoxButtons.AbortRetryIgnore || buttons == MessageBoxButtons.RetryCancel) {
             icon = MessageBoxIcon.Exclamation;
-        else
+        } else {
             icon = MessageBoxIcon.Information;
+        }
 
         return MsgBox(msg, buttons, icon);
     }
@@ -287,8 +294,9 @@ public static class Utils {
     /// </summary>
     /// ------------------------------------------------------------------------------------
     public static DialogResult MsgBox(string msg, MessageBoxButtons buttons, MessageBoxIcon icon) {
-        if (SuppressMsgBoxInteractions)
+        if (SuppressMsgBoxInteractions) {
             return DialogResult.None;
+        }
 
         // If there a splash screen showing, then close it. Otherwise,
         // the message box will popup behind the splash screen.
@@ -371,17 +379,19 @@ public static class Utils {
                 string userDataRootPath = key.GetValue("UserDataLocationRoot") as string;
 
                 // If the registry value was not found, then create it.
-                if (string.IsNullOrEmpty(userDataRootPath))
+                if (string.IsNullOrEmpty(userDataRootPath)) {
                     key.SetValue("UserDataLocationRoot", silSwPath);
-                else
+                } else {
                     silSwPath = userDataRootPath;
+                }
 
                 key.Close();
             }
 
             // Create the folder if it doesn't exist.
-            if (!Directory.Exists(silSwPath))
+            if (!Directory.Exists(silSwPath)) {
                 Directory.CreateDirectory(silSwPath);
+            }
 
             return silSwPath;
         }
@@ -405,17 +415,19 @@ public static class Utils {
                 string userDataCommonPath = key.GetValue("UserDataCommonFilesLocation") as string;
 
                 // If the registry value was not found, then create it.
-                if (string.IsNullOrEmpty(userDataCommonPath))
+                if (string.IsNullOrEmpty(userDataCommonPath)) {
                     key.SetValue("UserDataCommonFilesLocation", silSwCommonFilesPath);
-                else
+                } else {
                     silSwCommonFilesPath = userDataCommonPath;
+                }
 
                 key.Close();
             }
 
             // Create the folder if it doesn't exist.
-            if (!Directory.Exists(silSwCommonFilesPath))
+            if (!Directory.Exists(silSwCommonFilesPath)) {
                 Directory.CreateDirectory(silSwCommonFilesPath);
+            }
 
             return silSwCommonFilesPath;
         }
@@ -480,7 +492,7 @@ public static class Utils {
     public static bool SerializeData(string filename, object data) {
         try {
             string filepath = GetLocalPath(filename, false);
-            using (TextWriter writer = new StreamWriter(filepath)) {
+            using(TextWriter writer = new StreamWriter(filepath)) {
                 XmlSerializerNamespaces nameSpace = new XmlSerializerNamespaces();
                 nameSpace.Add(string.Empty, string.Empty);
                 XmlSerializer serializer = new XmlSerializer(data.GetType());
@@ -502,7 +514,7 @@ public static class Utils {
     public static string SerializeToString<T>(T data) {
         try {
             StringBuilder output = new StringBuilder();
-            using (StringWriter writer = new StringWriter(output)) {
+            using(StringWriter writer = new StringWriter(output)) {
                 XmlSerializerNamespaces nameSpace = new XmlSerializerNamespaces();
                 nameSpace.Add(string.Empty, string.Empty);
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
@@ -539,10 +551,11 @@ public static class Utils {
 
         try {
             string filepath = GetLocalPath(filename, true);
-            if (!File.Exists(filepath))
+            if (!File.Exists(filepath)) {
                 return null;
+            }
 
-            using (TextReader reader = new StreamReader(filepath)) {
+            using(TextReader reader = new StreamReader(filepath)) {
                 XmlSerializer deserializer = new XmlSerializer(type);
                 data = deserializer.Deserialize(reader);
                 reader.Close();
@@ -560,7 +573,8 @@ public static class Utils {
     /// Deserializes XML from the specified string to an object of the specified type.
     /// </summary>
     /// ------------------------------------------------------------------------------------
-    public static T DeserializeFromString<T>(string input) where T : class {
+public static T DeserializeFromString<T>(string input) where T :
+    class {
         Exception e;
         return (DeserializeFromString<T>(input, out e));
     }
@@ -570,18 +584,20 @@ public static class Utils {
     /// Deserializes XML from the specified string to an object of the specified type.
     /// </summary>
     /// ------------------------------------------------------------------------------------
-    public static T DeserializeFromString<T>(string input, out Exception e) where T : class {
+public static T DeserializeFromString<T>(string input, out Exception e) where T :
+    class {
         e = null;
 
         try {
-            if (string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(input)) {
                 return null;
+            }
 
             // Whitespace is not allowed before the XML declaration,
             // so get rid of any that exists.
             input = input.TrimStart();
 
-            using (TextReader reader = new StringReader(input)) {
+            using(TextReader reader = new StringReader(input)) {
                 XmlSerializer deserializer = new XmlSerializer(typeof(T));
                 return (T)deserializer.Deserialize(reader);
             }
@@ -618,8 +634,9 @@ public static class Utils {
     /// ------------------------------------------------------------------------------------
     public static bool TryFloatParse(string input, CultureInfo ci, out float output) {
         if (ci == null) {
-            if (float.TryParse(input, out output))
+            if (float.TryParse(input, out output)) {
                 return true;
+            }
 
             // The first attempt failed so now try parsing with a culture whose number
             // system decimal separator is known to be a period.
@@ -633,8 +650,8 @@ public static class Utils {
     public static void WaitCursors(bool turnOn) {
         Application.UseWaitCursor = turnOn;
 
-        foreach (var frm in Application.OpenForms.Cast<Form>().Where(frm => !frm.InvokeRequired))
-            frm.Cursor = (turnOn ? Cursors.WaitCursor : Cursors.Default);
+        foreach(var frm in Application.OpenForms.Cast<Form>().Where(frm => !frm.InvokeRequired))
+        frm.Cursor = (turnOn ? Cursors.WaitCursor : Cursors.Default);
 
         try {
             // I hate doing this, but setting the cursor property in .Net
@@ -662,13 +679,15 @@ public static class Utils {
 #if !__MonoCS__
             SendMessage(ctrl.Handle, WM_SETREDRAW, (turnOn ? 1 : 0), 0);
 #else
-            if (turnOn)
+            if (turnOn) {
                 ctrl.ResumeLayout(invalidateAfterTurningOn);
-            else
+            } else {
                 ctrl.SuspendLayout();
+            }
 #endif
-            if (turnOn && invalidateAfterTurningOn)
+            if (turnOn && invalidateAfterTurningOn) {
                 ctrl.Invalidate(true);
+            }
         }
     }
 
@@ -677,10 +696,10 @@ public static class Utils {
     /// If the splash screen is showing, this will force it to be closed.
     /// </summary>
     /// ------------------------------------------------------------------------------------
-    public static void ForceCloseOfSplashScreen()
-    {
-        if (s_splashScreen != null)
+    public static void ForceCloseOfSplashScreen() {
+        if (s_splashScreen != null) {
             s_splashScreen.Close();
+        }
     }
 }
 }

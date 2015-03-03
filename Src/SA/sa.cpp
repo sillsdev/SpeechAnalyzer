@@ -299,7 +299,14 @@ BOOL CSaApp::InitInstance() {
     }
 
 #ifdef DEBUG_MEMORY_OVERWRITE
-    afxMemDF |= checkAlwaysMemDF;  // check for memory overwrites in debug version (see MSDN)
+	// check for memory overwrites in debug version (see MSDN)
+    afxMemDF |= checkAlwaysMemDF;  
+#endif
+
+#ifdef _DEBUG
+	// this allows us to use wchar for trace statements
+	// you should set the country code of yours
+	_tsetlocale(LC_ALL, _T("English")); 
 #endif
 
     m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
@@ -356,63 +363,60 @@ BOOL CSaApp::InitInstance() {
 
     // check if SA runs in batchmode
     m_nBatchMode = CheckForBatchMode(m_lpCmdLine);
-	if (!GetBatchMode()) {
+    if (!GetBatchMode()) {
 
-		ISplashScreenPtr splash(NULL);
-		CSaString szSplashText;
+        ISplashScreenPtr splash(NULL);
+        CSaString szSplashText;
 
-		// display splash screen
-		//CoInitialize(NULL);
-		HRESULT createResult = splash.CreateInstance(__uuidof(SplashScreen));
-		if (createResult) 
-		{
-			CSaString szCreateResult;
-			szCreateResult.Format(_T("%x"), createResult);
-			CSaString szText;
-			AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE,  _T("SplashScreen.CreateInstance()"), szCreateResult);
-			AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
-		}
-		else
-		{
-			splash->ShowWithoutFade();
-			//splash->Show();
-			szSplashText.LoadString(IDS_SPLASH_LOADING);
-			splash->Message = (_bstr_t)szSplashText;
-			szSplashText.LoadString(IDR_MAINFRAME);
-			splash->ProdName = (_bstr_t)szSplashText;
-			// load version info
-			CSaString szVersion((LPCTSTR)VS_VERSION);
-			szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
-			// Beta version display
-			int nBuildIndex = szVersion.Find(_T("Build"));
-			if (nBuildIndex > 0) {
-				szVersion = szVersion.Left(nBuildIndex - 2);
-			}
-			// RC version display
-			int nRCIndex = szVersion.Find(_T("RC"));
-			if (nRCIndex > 0) {
-				szVersion = szVersion.Left(nRCIndex - 1);
-			}
-			splash->ProdVersion = (_bstr_t)szVersion;
-			// load version info
-			CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
-			splash->Copyright = (_bstr_t)szCopyright;
+        // display splash screen
+        //CoInitialize(NULL);
+        HRESULT createResult = splash.CreateInstance(__uuidof(SplashScreen));
+        if (createResult) {
+            CSaString szCreateResult;
+            szCreateResult.Format(_T("%x"), createResult);
+            CSaString szText;
+            AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE,  _T("SplashScreen.CreateInstance()"), szCreateResult);
+            AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
+        } else {
+            splash->ShowWithoutFade();
+            //splash->Show();
+            szSplashText.LoadString(IDS_SPLASH_LOADING);
+            splash->Message = (_bstr_t)szSplashText;
+            szSplashText.LoadString(IDR_MAINFRAME);
+            splash->ProdName = (_bstr_t)szSplashText;
+            // load version info
+            CSaString szVersion((LPCTSTR)VS_VERSION);
+            szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
+            // Beta version display
+            int nBuildIndex = szVersion.Find(_T("Build"));
+            if (nBuildIndex > 0) {
+                szVersion = szVersion.Left(nBuildIndex - 2);
+            }
+            // RC version display
+            int nRCIndex = szVersion.Find(_T("RC"));
+            if (nRCIndex > 0) {
+                szVersion = szVersion.Left(nRCIndex - 1);
+            }
+            splash->ProdVersion = (_bstr_t)szVersion;
+            // load version info
+            CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
+            splash->Copyright = (_bstr_t)szCopyright;
 
-			// Perform setup new user, if needed
-			if (m_bNewUser) {
-				szSplashText.LoadString(IDS_SPLASH_NEW_USER_SETUP);
-				splash->Message = (_bstr_t)szSplashText;
-			}
-	
-			splash->Activate();
+            // Perform setup new user, if needed
+            if (m_bNewUser) {
+                szSplashText.LoadString(IDS_SPLASH_NEW_USER_SETUP);
+                splash->Message = (_bstr_t)szSplashText;
+            }
 
-			::Sleep(1000);
+            splash->Activate();
 
-			splash->Close();
-			splash->Release();
-			splash = NULL;
-		}
-	}
+            ::Sleep(1000);
+
+            splash->Close();
+            splash->Release();
+            splash = NULL;
+        }
+    }
 
     // create main MDI Frame window
     CMainFrame * pMainFrame = new CMainFrame();
@@ -425,7 +429,7 @@ BOOL CSaApp::InitInstance() {
     }
 
     m_pMainWnd = pMainFrame;
-	m_pMainWnd->ShowWindow(SW_SHOW);
+    m_pMainWnd->ShowWindow(SW_SHOW);
 
     // update help file path
     //      m_pszHelpFilePath;
@@ -463,8 +467,8 @@ BOOL CSaApp::InitInstance() {
         BOOL bSettingSuccess = ReadSettings();
 
         // Dispatch commands specified on the command line
-        if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) && 
-			(!ProcessShellCommand(cmdInfo))) {
+        if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) &&
+                (!ProcessShellCommand(cmdInfo))) {
             return FALSE;
         }
 
@@ -486,7 +490,7 @@ BOOL CSaApp::InitInstance() {
 
         CAutoSave::Check(this);
 
-		pMainFrame->InitializeAutoSave();
+        pMainFrame->InitializeAutoSave();
 
         // Show startup dialog
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
@@ -494,7 +498,7 @@ BOOL CSaApp::InitInstance() {
             ShowStartupDialog(TRUE);
         }
 
-	} else {
+    } else {
         if (!ReadSettings()) {
             // settings read failed.  at least show the window correctly.
             pMainFrame->ShowWindow(m_nCmdShow + 3);
@@ -1074,15 +1078,15 @@ void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument * pDoc
 /***************************************************************************/
 CDocument * CSaApp::IsFileOpened(LPCTSTR pszFileName) {
     CSaString szFileName = pszFileName;
-    szFileName.MakeUpper();
     POSITION position = m_pDocTemplate->GetFirstDocPosition();
     while (position != NULL) {
-        CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
-        CSaString szComparisonFile = pDoc->GetPathName();
-        szComparisonFile.MakeUpper();
-        TRACE(_T(":IsFileOpened %s %s\n"),szComparisonFile,szFileName);
-        if (szComparisonFile == szFileName) {
-            return pDoc; // match
+		// get pointer to document
+        CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); 
+        CString szComparisonFile = pDoc->GetPathName();
+        TRACE(_T(":IsFileOpened %s %s\n"),(LPCTSTR)szComparisonFile,(LPCTSTR)szFileName);
+		if (szComparisonFile.CompareNoCase(szFileName)==0) {
+			// match
+            return pDoc;
         }
     }
     return NULL;
@@ -1367,11 +1371,11 @@ void CSaApp::OnFileRecord() {
 /***************************************************************************/
 void CSaApp::FileOpen() {
     int id = GetOpenAsID();
-    CDocument * pDoc = OpenBlankView(true);					// uses auto naming
+    CDocument * pDoc = OpenBlankView(true);                 // uses auto naming
 
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);	// give editor a chance to close
+    pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   // give editor a chance to close
 
     SetOpenAsID(id);
 
@@ -1936,7 +1940,7 @@ int CSaApp::SaDoPrintDialog(CPrintDialog * pPD, BOOL landscape) {
     // if OK or Cancel is selected we need to update cached devMode/Names
     while (nResponse != IDOK && nResponse != IDCANCEL) {
         switch (::CommDlgExtendedError()) {
-        // CommDlg cannot give these errors after NULLing these handles
+            // CommDlg cannot give these errors after NULLing these handles
         case PDERR_PRINTERNOTFOUND:
         case PDERR_DNDMMISMATCH:
             if (pPD->m_pd.hDevNames != NULL) {
@@ -2219,17 +2223,17 @@ BOOL CSaApp::ReadSettings() {
         szPath = szPath.Left(szPath.GetLength() - 1);
     }
 
-	if (!FileUtils::FolderExists(szPath)) {
-		// it doesn't exist...
+    if (!FileUtils::FolderExists(szPath)) {
+        // it doesn't exist...
         if (!CreateDirectory(szPath, NULL)) {
-			// and we can't create it.
-			CString error = FormatGetLastError(GetLastError());
-			CString msg;
-			AfxFormatString2( msg, IDS_ERROR_NO_SETTING_DIR, szPath, error);
-			AfxMessageBox(msg,MB_OK|MB_ICONEXCLAMATION,0);
-			return FALSE;
-		}
-	}
+            // and we can't create it.
+            CString error = FormatGetLastError(GetLastError());
+            CString msg;
+            AfxFormatString2(msg, IDS_ERROR_NO_SETTING_DIR, szPath, error);
+            AfxMessageBox(msg,MB_OK|MB_ICONEXCLAMATION,0);
+            return FALSE;
+        }
+    }
 
     szPath += "\\";
 

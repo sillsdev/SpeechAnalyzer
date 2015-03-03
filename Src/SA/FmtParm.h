@@ -3,8 +3,7 @@
 
 #include <MMSystem.h>
 
-class CFmtParm
-{
+class CFmtParm {
 
 public:
     CFmtParm();
@@ -13,7 +12,7 @@ public:
     DWORD GetSampleSize() const;
     // create a WAVEFORMATEX structure from this object
     WAVEFORMATEX GetWaveFormatEX();
-	void Trace();
+    void Trace();
 
     WORD wTag;                      // format tag
     WORD wChannels;                 // number of channels

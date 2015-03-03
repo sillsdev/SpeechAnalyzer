@@ -10,12 +10,10 @@
 CDlgAlignTranscriptionDataInitPage::CDlgAlignTranscriptionDataInitPage() :
     CPropertyPage(CDlgAlignTranscriptionDataInitPage::IDD),
     m_bReference(true),
-    m_bPhonetic(true)
-{
+    m_bPhonetic(true) {
 }
 
-CDlgAlignTranscriptionDataInitPage::~CDlgAlignTranscriptionDataInitPage()
-{
+CDlgAlignTranscriptionDataInitPage::~CDlgAlignTranscriptionDataInitPage() {
 }
 
 BEGIN_MESSAGE_MAP(CDlgAlignTranscriptionDataInitPage, CWnd)
@@ -28,21 +26,18 @@ BEGIN_MESSAGE_MAP(CDlgAlignTranscriptionDataInitPage, CWnd)
     ON_BN_CLICKED(IDC_GLOSS_NAT, &CDlgAlignTranscriptionDataInitPage::OnBnClicked)
 END_MESSAGE_MAP()
 
-void CDlgAlignTranscriptionDataInitPage::OnBnClicked()
-{
+void CDlgAlignTranscriptionDataInitPage::OnBnClicked() {
     UpdateNext();
 }
 
 
-BOOL CDlgAlignTranscriptionDataInitPage::OnSetActive()
-{
+BOOL CDlgAlignTranscriptionDataInitPage::OnSetActive() {
     UpdateNext();
     return CPropertyPage::OnSetActive();
 }
 
 
-void CDlgAlignTranscriptionDataInitPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgAlignTranscriptionDataInitPage::DoDataExchange(CDataExchange * pDX) {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_GLOSS, m_bGloss);
     DDX_Check(pDX, IDC_GLOSS_NAT, m_bGlossNat);
@@ -53,45 +48,35 @@ void CDlgAlignTranscriptionDataInitPage::DoDataExchange(CDataExchange * pDX)
     DDX_Check(pDX, IDC_USE_REFERENCE, m_bUseReference);
 }
 
-void CDlgAlignTranscriptionDataInitPage::UpdateNext()
-{
+void CDlgAlignTranscriptionDataInitPage::UpdateNext() {
     bool enable = ((IsDlgButtonChecked(IDC_PHONETIC)!=0)||
                    (IsDlgButtonChecked(IDC_PHONEMIC)!=0)||
                    (IsDlgButtonChecked(IDC_GLOSS)!=0)||
                    (IsDlgButtonChecked(IDC_GLOSS_NAT)!=0)||
                    (IsDlgButtonChecked(IDC_ORTHOGRAPHIC)!=0));
     CPropertySheet * pSheet = reinterpret_cast<CPropertySheet *>(GetParent());
-    if (enable)
-    {
+    if (enable) {
         pSheet->SetWizardButtons(PSWIZB_NEXT);
-    }
-    else
-    {
+    } else {
         pSheet->SetWizardButtons(0);
     }
 
     enable = (IsDlgButtonChecked(IDC_USE_REFERENCE)!=0);
-    if (enable)
-    {
+    if (enable) {
         CButton * pButton = (CButton *)GetDlgItem(IDC_REFERENCE);
-        if (pButton)
-        {
+        if (pButton) {
             pButton->EnableWindow(!enable);
             pButton->SetCheck(enable);
         }
-    }
-    else
-    {
+    } else {
         CButton * pButton = (CButton *)GetDlgItem(IDC_REFERENCE);
-        if (pButton)
-        {
+        if (pButton) {
             pButton->EnableWindow(!enable);
         }
     }
 }
 
-LRESULT CDlgAlignTranscriptionDataInitPage::OnWizardNext()
-{
+LRESULT CDlgAlignTranscriptionDataInitPage::OnWizardNext() {
     UpdateData(TRUE);
     CDlgAlignTranscriptionDataSheet * pSheet = reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(GetParent());
     return pSheet->CalculateNext(IDD);

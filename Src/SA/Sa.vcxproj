@@ -284,6 +284,7 @@
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
     <ClCompile Include="ScopedCursor.cpp" />
+    <ClCompile Include="SegmentOps.cpp" />
     <ClCompile Include="SelfTest.cpp" />
     <ClCompile Include="SFMHelper.cpp" />
     <ClCompile Include="SpectroParm.cpp" />
@@ -497,6 +498,7 @@
     <ClInclude Include="SA_Annot.h" />
     <ClInclude Include="sa_resource.h" />
     <ClInclude Include="ScopedCursor.h" />
+    <ClInclude Include="SegmentOps.h" />
     <ClInclude Include="SegmentSelection.h" />
     <ClInclude Include="SA_Asert.h" />
     <ClInclude Include="SA_CDib.h" />

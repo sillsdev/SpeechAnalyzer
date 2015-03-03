@@ -16,17 +16,15 @@
 #define MAX_FRAME_DUR    2.0F       //maximum frame duration (in sec) allowed
 
 
-struct SSpectrumSettings
-{
-    short nScaleSelect;				//scale, either LINEAR or DB
-    uint16 wLength;					//number of spectral values to calculate
-    float fSmoothFreq;				//max frequency allowed for smoothing
-    float fFFTRadius;				//radius for evaluating FFT in z-plane
-    int32 nWindowType;				//DSP window switch:  ON = apply window
+struct SSpectrumSettings {
+    short nScaleSelect;             //scale, either LINEAR or DB
+    uint16 wLength;                 //number of spectral values to calculate
+    float fSmoothFreq;              //max frequency allowed for smoothing
+    float fFFTRadius;               //radius for evaluating FFT in z-plane
+    int32 nWindowType;              //DSP window switch:  ON = apply window
 };
 
-struct SSpectrumParms
-{
+struct SSpectrumParms {
     uint16 wSpectLength;
     float fFreqScale;
     float fdBRef;
@@ -36,8 +34,7 @@ struct SSpectrumParms
     SFormantValues * pstFormant;
 };
 
-class CSpectrum
-{
+class CSpectrum {
 public:
     static char * Copyright(void);
     static float Version(void);

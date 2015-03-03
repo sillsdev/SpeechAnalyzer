@@ -2,12 +2,10 @@
 #include "ScopedCursor.h"
 
 CScopedCursor::CScopedCursor(CCmdTarget * aParent) :
-parent(aParent) 
-{
-	parent->BeginWaitCursor();
+    parent(aParent) {
+    parent->BeginWaitCursor();
 }
 
-CScopedCursor::~CScopedCursor() 
-{
-	parent->EndWaitCursor();
+CScopedCursor::~CScopedCursor() {
+    parent->EndWaitCursor();
 }

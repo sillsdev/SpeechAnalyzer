@@ -44,21 +44,18 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotLoudness::CPlotLoudness Constructor
 /***************************************************************************/
-CPlotLoudness::CPlotLoudness()
-{
+CPlotLoudness::CPlotLoudness() {
 }
 
 
 
-void  CPlotLoudness::CopyTo(CPlotWnd * pT)
-{
+void  CPlotLoudness::CopyTo(CPlotWnd * pT) {
     CPlotWnd::CopyTo(pT);
 }
 
 
 
-CPlotWnd * CPlotLoudness::NewCopy(void)
-{
+CPlotWnd * CPlotLoudness::NewCopy(void) {
     CPlotWnd * pRet = new CPlotLoudness();
 
     CopyTo(pRet);
@@ -71,8 +68,7 @@ CPlotWnd * CPlotLoudness::NewCopy(void)
 /***************************************************************************/
 // CPlotLoudness::~CPlotLoudness Destructor
 /***************************************************************************/
-CPlotLoudness::~CPlotLoudness()
-{
+CPlotLoudness::~CPlotLoudness() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -86,8 +82,7 @@ CPlotLoudness::~CPlotLoudness()
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
+void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to main frame, graph, and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc * pDoc = pView->GetDocument();
@@ -95,15 +90,12 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     CProcessLoudness * pLoudness = (CProcessLoudness *)pDoc->GetLoudness(); // get pointer to loudness object
     short int nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
     nResult = CheckResult(nResult, pLoudness); // chaeck the process result
-    if (nResult == PROCESS_ERROR)
-    {
+    if (nResult == PROCESS_ERROR) {
         return;
     }
-    if (nResult != PROCESS_CANCELED)
-    {
+    if (nResult != PROCESS_CANCELED) {
         BOOL bPercent = pDoc->GetCIntensityParm().nScaleMode == 1;
-        if (bPercent)
-        {
+        if (bPercent) {
             double dLoudToPercent = 32767/2/100.0;
             double dMaxPercent = 103.;
 
@@ -111,9 +103,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
             SetProcessMultiplier(dLoudToPercent);
-        }
-        else
-        {
+        } else {
             // dB
             pGraph->SetLegendScale(SCALE | NUMBERS , -31, 3, _T("Relative Intensity (dB)")); // set legend scale
             // do common plot paint jobs
@@ -123,28 +113,22 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 
         PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pDoc, bPercent ? 0 : PAINT_DB); // do standard data paint
     }
-    if (ResearchSettings.m_bShowInstantaneousPower)
-    {
+    if (ResearchSettings.m_bShowInstantaneousPower) {
         // create raw data
         CProcessInstantaneousPower power;
         CProcessInstantaneousPower * pPower = &power;
         nResult = LOWORD(pPower->Process(this, pDoc)); // process data
         nResult = CheckResult(nResult, pPower); // check the process result
-        if (nResult == PROCESS_ERROR)
-        {
+        if (nResult == PROCESS_ERROR) {
             return;
         }
-        if (nResult != PROCESS_CANCELED)
-        {
+        if (nResult != PROCESS_CANCELED) {
             BOOL bPercent = pDoc->GetCIntensityParm().nScaleMode == 1;
-            if (bPercent)
-            {
+            if (bPercent) {
                 double dLoudToPercent = 32767/4/100.0;
 
                 SetProcessMultiplier(dLoudToPercent);
-            }
-            else
-            {
+            } else {
                 // dB
                 SetProcessMultiplier(32768);
             }

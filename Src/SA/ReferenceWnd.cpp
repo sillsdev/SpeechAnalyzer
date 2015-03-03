@@ -148,8 +148,8 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 }
             }
         }
-        if (nLoop < pReference->GetOffsetSize()) { 
-			// there is something to display
+        if (nLoop < pReference->GetOffsetSize()) {
+            // there is something to display
             // display loop
             int nDisplayPos = 0;
             int nDisplayStop = 0;
@@ -231,7 +231,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 
     // Show virtual selection (No text just highlight)
     if ((pView->IsSelectionVirtual()) &&
-        (pView->GetSelectionIndex() == m_nIndex)) {
+            (pView->GetSelectionIndex() == m_nIndex)) {
         int nStart = int(((double)pView->GetSelectionStart() - fDataStart)/ fBytesPerPix);
         int nStop = int(((double)pView->GetSelectionStop() - fDataStart)/ fBytesPerPix + 1);
         rWnd.SetRect(nStart, rWnd.top, nStop, rWnd.bottom);

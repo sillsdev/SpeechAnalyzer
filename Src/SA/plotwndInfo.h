@@ -1,17 +1,14 @@
 #ifndef PLOTWNDINFO_H
 #define PLOTWNDINFO_H
 
-class CPlotWndInfo
-{
+class CPlotWndInfo {
 public:
-    CPlotWndInfo(CPlotWnd * pPlot, UINT Id, const CSaDoc * pDoc)
-    {
+    CPlotWndInfo(CPlotWnd * pPlot, UINT Id, const CSaDoc * pDoc) {
         m_pPlot = pPlot;
         m_uPlotID = Id;
         m_pDoc = pDoc;
     };
-    ~CPlotWndInfo()
-    {
+    ~CPlotWndInfo() {
         delete m_pPlot;
     };
     CPlotWnd * m_pPlot;

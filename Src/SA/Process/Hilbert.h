@@ -6,11 +6,10 @@
 
 #include "IIRFilter.h"
 
-class CProcessHilbert : public CProcessIIRFilter
-{
+class CProcessHilbert : public CProcessIIRFilter {
 public:
     CProcessHilbert(CProcess * pSourceProcess = NULL, BOOL bWBenchProcess = FALSE);
-	void Dump( LPCSTR ofilename);
+    void Dump(LPCSTR ofilename);
 
 private:
     static const double Pole1000x96dB[];

@@ -11,15 +11,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgKlattAll dialog
 
-struct SIpaChar
-{
-    SIpaChar()
-    {
+struct SIpaChar {
+    SIpaChar() {
         ;
     }
 
-    SIpaChar(const CString & r_ipa, const TEMPORAL & r_parameters, double r_duration = -1)
-    {
+    SIpaChar(const CString & r_ipa, const TEMPORAL & r_parameters, double r_duration = -1) {
         ipa = r_ipa;
         duration = r_duration;
         parameters = r_parameters;
@@ -30,15 +27,13 @@ struct SIpaChar
     TEMPORAL parameters;
 };
 
-class CIpaCharVector : public std::vector<SIpaChar>
-{
+class CIpaCharVector : public std::vector<SIpaChar> {
 public:
     void Load(CString szPath);
     void Save(CString szPath);
 };
 
-class  CIpaCharMap : public std::map<CString, TEMPORAL>
-{
+class  CIpaCharMap : public std::map<CString, TEMPORAL> {
 public:
     CIpaCharMap(CIpaCharVector & vector);
 };
@@ -46,8 +41,7 @@ public:
 
 typedef SPKRDEF CKlattConstants;
 
-class CDlgKlattAll : public CFrameWnd
-{
+class CDlgKlattAll : public CFrameWnd {
     // Construction
 private:
     CDlgKlattAll(CWnd * pParent = NULL, int nSelectedView = -1);  // standard constructor
@@ -69,8 +63,7 @@ private:
 
     enum {rowHeading = 0, rowFirst = 1, rowIpa = 1, rowDuration = 2, rowPitchIn =3, rowParameters = 5};
     enum {columnDescription = 0, columnDef = 1, columnSym = 2, columnFirst = 3};
-    enum
-    {
+    enum {
         rowF0 = rowParameters,
         rowAV,
         rowOQ,
@@ -130,16 +123,13 @@ private:
     void PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaCharVector & cChars, BOOL bDuration = FALSE);
     void PopulateParameterGrid(CFlexEditGrid & cGrid, const SIpaChar & cChar, int nColumn, BOOL bDuration = TRUE);
     void PopulateParameterGrid(CFlexEditGrid & cGrid, const TEMPORAL * pParameters, int nColumn);
-    void PopulateParameterGrid(int nGrid, const CIpaCharVector & cChars, BOOL bDuration = FALSE)
-    {
+    void PopulateParameterGrid(int nGrid, const CIpaCharVector & cChars, BOOL bDuration = FALSE) {
         PopulateParameterGrid(m_cGrid[nGrid], cChars, bDuration);
     }
-    void PopulateParameterGrid(int nGrid, const SIpaChar & cChar, int nColumn, BOOL bDuration = TRUE)
-    {
+    void PopulateParameterGrid(int nGrid, const SIpaChar & cChar, int nColumn, BOOL bDuration = TRUE) {
         PopulateParameterGrid(m_cGrid[nGrid], cChar, nColumn, bDuration);
     }
-    void PopulateParameterGrid(int nGrid, const TEMPORAL * pParameters, int nColumn)
-    {
+    void PopulateParameterGrid(int nGrid, const TEMPORAL * pParameters, int nColumn) {
         PopulateParameterGrid(m_cGrid[nGrid], pParameters, nColumn);
     }
     void ParseConstantsGrid(int nGrid, CKlattConstants & cConstants);
@@ -217,8 +207,7 @@ protected:
     afx_msg void OnUpdateEditCopy(CCmdUI * pCmdUI);
     afx_msg void OnUpdateEditCut(CCmdUI * pCmdUI);
     afx_msg void OnUpdateEditClear(CCmdUI * pCmdUI);
-    afx_msg void OnUpdateEditSmoothe(CCmdUI * pCmdUI)
-    {
+    afx_msg void OnUpdateEditSmoothe(CCmdUI * pCmdUI) {
         pCmdUI->Enable();
     }
     afx_msg void OnUpdateClose(CCmdUI * pCmdUI);
@@ -249,8 +238,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////////
 // CDlgSynthesisAdjustCells dialog
 
-class CDlgSynthesisAdjustCells : public CDialog
-{
+class CDlgSynthesisAdjustCells : public CDialog {
 public:
     CDlgSynthesisAdjustCells(CWnd * pParent = NULL, double dScale = 1.0, double dOffset = 0);  // standard constructor
 

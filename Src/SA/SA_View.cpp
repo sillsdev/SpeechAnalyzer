@@ -231,12 +231,12 @@ void CSaView::CreateOneGraphStepOne(UINT nID,
 
     (*pGraph)->SetCaptionStyle(pViewMainFrame->GetCaptionStyle());     // set caption style
     (*pGraph)->SetMagnify(m_fMagnify);                                 // set the magnify factor
-	(*pGraph)->ShowTranscriptionBoundaries(m_bTranscriptionBoundaries);
+    (*pGraph)->ShowTranscriptionBoundaries(m_bTranscriptionBoundaries);
 
     switch (nID) {
-    //****************************************************
-    // Set properties for raw data graphs
-    //****************************************************
+        //****************************************************
+        // Set properties for raw data graphs
+        //****************************************************
     case IDD_RAWDATA:
         (*pGraph)->ShowGrid(TRUE);
         (*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
@@ -249,9 +249,9 @@ void CSaView::CreateOneGraphStepOne(UINT nID,
         }
         break;
 
-    //****************************************************
-    // Do this for all graphs but RAW and POA.
-    //****************************************************
+        //****************************************************
+        // Do this for all graphs but RAW and POA.
+        //****************************************************
     default:
         if (nID != IDD_POA) {
             (*pGraph)->ShowGrid(TRUE);
@@ -297,8 +297,8 @@ DWORD CSaView::OnPlaybackSegment() {
     DWORD dwStop = GetStopCursorPosition();
 
     CSegment * pSelected = FindSelectedAnnotation();
-    if (pSelected!=NULL) { 
-		// Adjust Cursors to Current Boundaries
+    if (pSelected!=NULL) {
+        // Adjust Cursors to Current Boundaries
         int nSelection = pSelected->GetSelection();
         // set cursor to segment boundaries
         SetStartCursorPosition(pSelected->GetOffset(nSelection));
@@ -325,7 +325,7 @@ DWORD CSaView::OnPlaybackWord() {
     if (pDoc==NULL) {
         return 0;    //no document
     }
-    CGlossSegment * pGloss = (CGlossSegment*)GetAnnotation(GLOSS);
+    CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
     CSegment * pSelected = FindSelectedAnnotation();
     int nActualGloss = -1;
     int nSelection = -1;
@@ -731,7 +731,7 @@ void CSaView::OnExportFW() {
     BOOL gloss = pDoc->HasSegmentData(GLOSS);
     BOOL glossNat = pDoc->HasSegmentData(GLOSS_NAT);
     BOOL ortho = pDoc->HasSegmentData(ORTHO);
-	BOOL tone = pDoc->HasSegmentData(TONE);
+    BOOL tone = pDoc->HasSegmentData(TONE);
     BOOL phonemic = pDoc->HasSegmentData(PHONEMIC);
     BOOL phonetic = pDoc->HasSegmentData(PHONETIC);
     BOOL reference = pDoc->HasSegmentData(REFERENCE);
@@ -805,8 +805,8 @@ void CSaView::OnExportMIDI() {
 /***************************************************************************/
 void CSaView::OnImportSFM() {
     // Get Export File Type and Name
-    CSaString szTitle;
-    szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str(); // load file name
+	// load file name
+    CSaString szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str(); 
     int nFind = szTitle.ReverseFind('.');
     if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0)) {
         szTitle = szTitle.Left(nFind);    // remove extension
@@ -860,12 +860,14 @@ void CSaView::OnImportELAN() {
 // CSaView::ImportSFT Import wave file data
 /***************************************************************************/
 void CSaView::OnImportSFT() {
-    // Get Export File Type and Name
-    CSaString szTitle;
-    szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str();     // load file name
+
+	// Get Export File Type and Name
+	// load file name
+    CSaString szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str();     
     int nFind = szTitle.ReverseFind('.');
     if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0)) {
-        szTitle = szTitle.Left(nFind);    // remove extension
+		// remove extension
+        szTitle = szTitle.Left(nFind);    
     }
 
     CSaString szFilter = "Standard Format (*.sft) |*.sft||";
@@ -1209,9 +1211,9 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     const UINT * anGraphID = cList.GetGraphs();
 
     switch (nLayout) {
-    //**************************************************************
-    // One graph on top of another
-    //**************************************************************
+        //**************************************************************
+        // One graph on top of another
+        //**************************************************************
     case ID_LAYOUT_2A:
         if (STAFF_IS_SECOND) {
             double dHeightOfStaff = min(dThirdHeight,MAXIMUM_STAFF_HEIGHT);
@@ -1227,25 +1229,25 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
         return (nPos == 1);
         break;
 
-    //**************************************************************
-    // Two graphs side-by-side
-    //**************************************************************
+        //**************************************************************
+        // Two graphs side-by-side
+        //**************************************************************
     case ID_LAYOUT_2B:
         ((nPos == 0) ? pSubRect->right : pSubRect->left) = pSubRect->left + nHalfWidth;
         return (nPos == 1);
         break;
 
-    //**************************************************************
-    // Two graphs stacked vertically the bottom graph larger
-    //**************************************************************
+        //**************************************************************
+        // Two graphs stacked vertically the bottom graph larger
+        //**************************************************************
     case ID_LAYOUT_2C:
         ((nPos == 0) ? pSubRect->bottom : pSubRect->top) = pSubRect->top + int(dThirdHeight + 0.5);
         return (nPos == 1);
         break;
 
-    //**************************************************************
-    // Three graphs stacked horizontally
-    //**************************************************************
+        //**************************************************************
+        // Three graphs stacked horizontally
+        //**************************************************************
     case ID_LAYOUT_3A:
         if (STAFF_IS_THIRD) {
             double dHeightOfStaff = min(dThirdHeight * 2/3, MAXIMUM_STAFF_HEIGHT);
@@ -1291,9 +1293,9 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
         return (nPos == 2);
         break;
 
-    //**************************************************************
-    // Three graphs, one on top with two below aligned side-by-side
-    //**************************************************************
+        //**************************************************************
+        // Three graphs, one on top with two below aligned side-by-side
+        //**************************************************************
     case ID_LAYOUT_3B:
         ((nPos == 0) ? pSubRect->bottom : pSubRect->top) = pSubRect->top + int(dHalfHeight + 0.5);
         if (nPos > 0) {
@@ -1302,9 +1304,9 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
         return (nPos == 2);
         break;
 
-    //**************************************************************
-    // Three graphs, one on top with two below aligned side-by-side
-    //**************************************************************
+        //**************************************************************
+        // Three graphs, one on top with two below aligned side-by-side
+        //**************************************************************
     case ID_LAYOUT_3C:
         ((nPos == 0) ? pSubRect->bottom : pSubRect->top) = pSubRect->top + int(dThirdHeight + 0.5);
         if (nPos > 0) {
@@ -1313,9 +1315,9 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
         return (nPos == 2);
         break;
 
-    //**************************************************************
-    // Four graphs stacked horizonatally
-    //**************************************************************
+        //**************************************************************
+        // Four graphs stacked horizonatally
+        //**************************************************************
     case ID_LAYOUT_4A:
         if (nPos < 3) {
             pSubRect->bottom = pSubRect->top + int(pWndRect->Height() / 4. * (nPos + 1) + 0.5);
@@ -1326,18 +1328,18 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
         return (nPos == 3);
         break;
 
-    //**************************************************************
-    // Four graphs, two side-by-side stacked on two side-by-side
-    //**************************************************************
+        //**************************************************************
+        // Four graphs, two side-by-side stacked on two side-by-side
+        //**************************************************************
     case ID_LAYOUT_4B:
         ((nPos < 2) ? pSubRect->bottom : pSubRect->top) = pSubRect->top + int(dHalfHeight + 0.5);
         ((nPos == 0 || nPos == 2) ? pSubRect->right : pSubRect->left) = pSubRect->left + nHalfWidth;
         return (nPos == 3);
         break;
 
-    //**************************************************************
-    // Four graphs, three horizontal slices w/ two in the bottom slice
-    //**************************************************************
+        //**************************************************************
+        // Four graphs, three horizontal slices w/ two in the bottom slice
+        //**************************************************************
     case ID_LAYOUT_4C:
         pSubRect->bottom = pSubRect->top + int(dThirdHeight*(nPos > 2 ? 3 : nPos + 1) + 0.5);
         pSubRect->top = pSubRect->top + int(dThirdHeight*(nPos > 2 ? 2 : nPos) + 0.5);
@@ -1347,10 +1349,10 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
         return (nPos == 3);
         break;
 
-    //**************************************************************
-    // Five graphs, one across the top and four below it arranged
-    // like layout 4b
-    //**************************************************************
+        //**************************************************************
+        // Five graphs, one across the top and four below it arranged
+        // like layout 4b
+        //**************************************************************
     case ID_LAYOUT_5:
         if (nPos == 0) {
             pSubRect->bottom = pSubRect->top + int(dThirdHeight + 0.5);
@@ -1364,9 +1366,9 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
         return (nPos == 4);
         break;
 
-    //**************************************************************
-    // Six graphs stacked horizontally
-    //**************************************************************
+        //**************************************************************
+        // Six graphs stacked horizontally
+        //**************************************************************
     case ID_LAYOUT_6A:
         if (nPos < 5) {
             pSubRect->bottom = pSubRect->top + int(pWndRect->Height() / 6. * (nPos + 1) + 0.5);
@@ -1377,9 +1379,9 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
         return (nPos == 5);
         break;
 
-    //**************************************************************
-    // Six graphs in a 3 x 2 grid (three rows by two cols.)
-    //**************************************************************
+        //**************************************************************
+        // Six graphs in a 3 x 2 grid (three rows by two cols.)
+        //**************************************************************
     case ID_LAYOUT_6B:
         if (nPos > 1) {
             pSubRect->top = pSubRect->top + int(dThirdHeight * ((nPos < 4) ? 1 : 2) + 0.5);
@@ -1527,7 +1529,7 @@ void CSaView::OnUpdateXScaleNone(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // 09/24/2000 - DDO
 /***************************************************************************/
-void CSaView::ToggleAnnotation( int nAnnot, BOOL bShow, BOOL bRawDataOnly) {
+void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly) {
     if (!bRawDataOnly) {
         m_abAnnAll[nAnnot]  = bShow;  //Show annotation in all graphs
         m_abAnnNone[nAnnot] = !bShow;
@@ -1675,7 +1677,7 @@ void CSaView::OnUpdateBoundariesAll(CCmdUI * pCmdUI) {
 // CSaView::OnBoundariesRawdata Show the boundaries on raw data graph only
 /***************************************************************************/
 void CSaView::OnBoundariesRawdata() {
-	m_bSegmentBoundaries = FALSE;
+    m_bSegmentBoundaries = FALSE;
     // hide boundaries except for raw data
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if (m_apGraphs[nLoop]) {
@@ -4011,9 +4013,9 @@ void CSaView::EnableScrolling(bool value) {
     bEnableScrolling = value;
 }
 
-void CSaView::SelectSegment( CSegment * pSegment, int index) {
+void CSaView::SelectSegment(CSegment * pSegment, int index) {
     DWORD dwStart = pSegment->GetOffset(index);
     DWORD dwEnd = pSegment->GetStop(index);
-    ChangeAnnotationSelection( pSegment, index, dwStart, dwEnd);
+    ChangeAnnotationSelection(pSegment, index, dwStart, dwEnd);
     RefreshGraphs(FALSE); // refresh the graphs between cursors
 }

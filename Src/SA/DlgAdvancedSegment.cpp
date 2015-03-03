@@ -27,33 +27,28 @@ IMPLEMENT_DYNAMIC(CDlgAdvancedSegment, CDialog)
 // CDlgAdvancedSegment::CDlgAdvancedSegment Constructor
 /***************************************************************************/
 CDlgAdvancedSegment::CDlgAdvancedSegment(CSaDoc * pDoc) :
-    CDialog(CDlgAdvancedSegment::IDD,NULL)
-{
+    CDialog(CDlgAdvancedSegment::IDD,NULL) {
     m_nSegmentWidth = 20;
     m_nChMinThreshold = 17;
     m_nZCMinThreshold = 50;
     m_pDoc = pDoc;
 }
 
-BOOL CDlgAdvancedSegment::Create()
-{
+BOOL CDlgAdvancedSegment::Create() {
     return CDialog::Create(CDlgAdvancedSegment::IDD);
 }
 
-CDlgAdvancedSegment::~CDlgAdvancedSegment()
-{
+CDlgAdvancedSegment::~CDlgAdvancedSegment() {
     DestroyWindow();
 }
 
-void CDlgAdvancedSegment::Show(LPCTSTR title)
-{
+void CDlgAdvancedSegment::Show(LPCTSTR title) {
     CString text;
     GetWindowTextW(text);
     text.Append(L" - ");
     CString a(title);
     int mark = a.Find(L":");
-    if (mark!=-1)
-    {
+    if (mark!=-1) {
         a.Truncate(mark);
     }
     text.Append(a);
@@ -67,8 +62,7 @@ void CDlgAdvancedSegment::Show(LPCTSTR title)
 /***************************************************************************/
 // CDlgAdvancedSegment::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgAdvancedSegment::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgAdvancedSegment::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_SEGMENTWIDTHEDIT, m_nSegmentWidth);
     DDV_MinMaxInt(pDX, m_nSegmentWidth, 1, 999);
@@ -80,8 +74,7 @@ void CDlgAdvancedSegment::DoDataExchange(CDataExchange * pDX)
     DDX_Control(pDX, IDC_APPLY, m_ApplyButton);
 }
 
-BOOL CDlgAdvancedSegment::OnInitDialog()
-{
+BOOL CDlgAdvancedSegment::OnInitDialog() {
     CDialog::OnInitDialog();
 
     // build and place the peak width spin control
@@ -103,8 +96,7 @@ BOOL CDlgAdvancedSegment::OnInitDialog()
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CDlgAdvancedSegment::Apply()
-{
+void CDlgAdvancedSegment::Apply() {
     UpdateData(TRUE);
 
     // get segment parameters data
@@ -116,14 +108,12 @@ void CDlgAdvancedSegment::Apply()
     pSegmentParm->nChThreshold = m_nChMinThreshold;
     pSegmentParm->nZCThreshold = m_nZCMinThreshold;
 
-    if (!m_pDoc->AdvancedSegment())
-    {
+    if (!m_pDoc->AdvancedSegment()) {
         Undo();
     }
 }
 
-void CDlgAdvancedSegment::Undo()
-{
+void CDlgAdvancedSegment::Undo() {
     POSITION pos = m_pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)m_pDoc->GetNextView(pos);
     pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
@@ -135,27 +125,20 @@ void CDlgAdvancedSegment::Undo()
 // CLW 10/12/98 was OnSegmentWidthScroll. Changed to reflect change in
 // segment parameters page.
 /***************************************************************************/
-void CDlgAdvancedSegment::OnSegmentWidthScroll()
-{
+void CDlgAdvancedSegment::OnSegmentWidthScroll() {
     int nData = GetDlgItemInt(IDC_SEGMENTWIDTHEDIT, NULL, TRUE);
-    if (m_SpinSegment.UpperButtonClicked())
-    {
+    if (m_SpinSegment.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 999)
-    {
+    if (nData > 999) {
         nData = 999;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nSegmentWidth)
-    {
+    if (nData != m_nSegmentWidth) {
         m_nSegmentWidth = nData;
     }
     SetDlgItemInt(IDC_SEGMENTWIDTHEDIT, m_nSegmentWidth, TRUE);
@@ -166,27 +149,20 @@ void CDlgAdvancedSegment::OnSegmentWidthScroll()
 // CLW 10/12/98 was OnMinThresholdScroll. Changed to reflect change in
 // segment parameters page.
 /***************************************************************************/
-void CDlgAdvancedSegment::OnChangeMinScroll()
-{
+void CDlgAdvancedSegment::OnChangeMinScroll() {
     int nData = GetDlgItemInt(IDC_CHANGEMINEDIT, NULL, TRUE);
-    if (m_SpinChangeMin.UpperButtonClicked())
-    {
+    if (m_SpinChangeMin.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 99)
-    {
+    if (nData > 99) {
         nData = 99;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nChMinThreshold)
-    {
+    if (nData != m_nChMinThreshold) {
         m_nChMinThreshold = nData;
     }
     SetDlgItemInt(IDC_CHANGEMINEDIT, m_nChMinThreshold, TRUE);
@@ -196,27 +172,20 @@ void CDlgAdvancedSegment::OnChangeMinScroll()
 // CDlgAdvancedSegment::OnZeroCrossMinScroll Zero Crossing Min spin cntrl hit
 // Added CLW 10/12/98
 /***************************************************************************/
-void CDlgAdvancedSegment::OnZeroCrossMinScroll()
-{
+void CDlgAdvancedSegment::OnZeroCrossMinScroll() {
     int nData = GetDlgItemInt(IDC_ZEROCROSSINGMINEDIT, NULL, TRUE);
-    if (m_SpinZeroCrossingMin.UpperButtonClicked())
-    {
+    if (m_SpinZeroCrossingMin.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 99)
-    {
+    if (nData > 99) {
         nData = 99;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nZCMinThreshold)
-    {
+    if (nData != m_nZCMinThreshold) {
         m_nZCMinThreshold = nData;
     }
     SetDlgItemInt(IDC_ZEROCROSSINGMINEDIT, m_nZCMinThreshold, TRUE);
@@ -229,19 +198,16 @@ BEGIN_MESSAGE_MAP(CDlgAdvancedSegment, CDialog)
     ON_BN_CLICKED(IDC_APPLY, &CDlgAdvancedSegment::OnBnClickedApply)
 END_MESSAGE_MAP()
 
-void CDlgAdvancedSegment::OnOK()
-{
+void CDlgAdvancedSegment::OnOK() {
     Apply();
     CDialog::OnOK();
 }
 
-void CDlgAdvancedSegment::OnCancel()
-{
+void CDlgAdvancedSegment::OnCancel() {
     Undo();
     CDialog::OnCancel();
 }
 
-void CDlgAdvancedSegment::OnBnClickedApply()
-{
+void CDlgAdvancedSegment::OnBnClickedApply() {
     Apply();
 }

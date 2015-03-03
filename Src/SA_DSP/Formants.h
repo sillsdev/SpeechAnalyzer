@@ -18,32 +18,27 @@ using std::string;
 
 #define NUM_EXTRA_PEAKS_ALLOWED  MAX_NUM_FORMANTS
 
-struct SFormantFreq
-{
+struct SFormantFreq {
     float F[MAX_NUM_FORMANTS+1];  //F[0] = pitch, F[1]... = formant frequencies
 
-	string Dump()
-	{
-		string result;
-		for (int i=0;i<_countof(F);i++)
-		{
-			char buffer[128];
-			sprintf_s(buffer,_countof(buffer),"%f, ",F[i]);
-			result.append(buffer);
-		}
-		return result;
-	}
+    string Dump() {
+        string result;
+        for (int i=0; i<_countof(F); i++) {
+            char buffer[128];
+            sprintf_s(buffer,_countof(buffer),"%f, ",F[i]);
+            result.append(buffer);
+        }
+        return result;
+    }
 };
 
-struct SFormantValues
-{
+struct SFormantValues {
     float FrequencyInHertz;
     float BandwidthInHertz;
     float PowerInDecibels;
 };
 
-struct SRange
-{
+struct SRange {
     float Low;
     float High;
 };
@@ -52,8 +47,7 @@ struct SRange
 #include "Error.h"
 #include "PeakPick.h"
 
-class CFormantPicker: public CPeakPicker
-{
+class CFormantPicker: public CPeakPicker {
 public:
     static char * Copyright(void);
     static float Version(void);

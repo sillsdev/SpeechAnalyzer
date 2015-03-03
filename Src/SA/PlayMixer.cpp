@@ -2,49 +2,40 @@
 #include "PlayMixer.h"
 #include <mmsystem.h>
 
-CPlayMixer::CPlayMixer() : CMixer(MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT)
-{
+CPlayMixer::CPlayMixer() : CMixer(MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) {
 }
 
-CPlayMixer::~CPlayMixer()
-{
+CPlayMixer::~CPlayMixer() {
 }
 
-MMRESULT CPlayMixer::Connect(HWAVEOUT hPlayer, HWND hCallback)
-{
+MMRESULT CPlayMixer::Connect(HWAVEOUT hPlayer, HWND hCallback) {
     return CMixer::Connect((UINT) hPlayer, MIXER_OBJECTF_HWAVEOUT, hCallback);
 }
 
-MMRESULT CPlayMixer::SetVolume(HWAVEOUT hPlayer, DWORD dwVolume)
-{
+MMRESULT CPlayMixer::SetVolume(HWAVEOUT hPlayer, DWORD dwVolume) {
 
     MMRESULT result = CMixer::SetVolume((UINT) hPlayer, MIXER_OBJECTF_HWAVEOUT, dwVolume);
-    if (result != MMSYSERR_NOERROR)
-    {
+    if (result != MMSYSERR_NOERROR) {
         result = waveOutSetVolume(hPlayer, dwVolume);
     }
 
     return result;
 }
 
-MMRESULT CPlayMixer::GetVolume(HWAVEOUT hPlayer, DWORD * dwVolume)
-{
+MMRESULT CPlayMixer::GetVolume(HWAVEOUT hPlayer, DWORD * dwVolume) {
 
     MMRESULT result = CMixer::GetVolume((UINT) hPlayer, MIXER_OBJECTF_HWAVEOUT, dwVolume);
-    if (result != MMSYSERR_NOERROR)
-    {
+    if (result != MMSYSERR_NOERROR) {
         result = waveOutGetVolume(hPlayer, dwVolume);
     }
 
     return result;
 }
 
-BOOL CPlayMixer::CanShowMixerControls(HWAVEOUT hPlayer)
-{
+BOOL CPlayMixer::CanShowMixerControls(HWAVEOUT hPlayer) {
 
     BOOL result = TRUE;
-    if (!m_hMixerCallback)
-    {
+    if (!m_hMixerCallback) {
         // try to open mixer
         result = Connect(hPlayer, NULL);
         Disconnect();
@@ -52,14 +43,11 @@ BOOL CPlayMixer::CanShowMixerControls(HWAVEOUT hPlayer)
     return IsSndVolInstalled() && result;
 }
 
-BOOL CPlayMixer::ShowMixerControls(HWAVEOUT hPlayer)
-{
-    if (CanShowMixerControls(hPlayer))
-    {
+BOOL CPlayMixer::ShowMixerControls(HWAVEOUT hPlayer) {
+    if (CanShowMixerControls(hPlayer)) {
         UINT uDevID;
         MMRESULT result = mixerGetID((HMIXEROBJ)hPlayer, &uDevID, MIXER_OBJECTF_HWAVEOUT);
-        if (result == MMSYSERR_NOERROR)
-        {
+        if (result == MMSYSERR_NOERROR) {
             STARTUPINFO si;
             PROCESS_INFORMATION pi;
 
@@ -69,8 +57,7 @@ BOOL CPlayMixer::ShowMixerControls(HWAVEOUT hPlayer)
 
             CSaString command;
             CSaString args;
-            if (GetWindowsVersion()<6)
-            {
+            if (GetWindowsVersion()<6) {
                 args.Format(_T("%d"), uDevID);
             }
             command = m_szPlayMixerCmd + args;

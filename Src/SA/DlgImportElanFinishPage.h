@@ -4,8 +4,7 @@
 class CDlgImportElanSheet;
 class CSaDoc;
 
-class CDlgImportElanFinishPage : public CPropertyPage
-{
+class CDlgImportElanFinishPage : public CPropertyPage {
 
 public:
     CDlgImportElanFinishPage();

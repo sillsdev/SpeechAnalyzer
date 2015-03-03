@@ -51,16 +51,14 @@ static const SRange ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700
 /***************************************************************************/
 // CProcessFormants::CProcessFormants Constructor
 /***************************************************************************/
-CProcessFormants::CProcessFormants()
-{
+CProcessFormants::CProcessFormants() {
     m_bTrack = FALSE;
     m_dwValidFrameCount = 0;
     m_dwFormantFrameCount = 0;
     m_dwFrameStart = UNDEFINED_OFFSET;   // to force processing first time
     m_dwProcStart = UNDEFINED_OFFSET;
     m_dwProcEnd = 0;
-    for (int n = 0; n <= MAX_NUM_FORMANTS; n++)
-    {
+    for (int n = 0; n <= MAX_NUM_FORMANTS; n++) {
         m_F[n].Mean = m_F[n].StdDev = (float)UNDEFINED_DATA;    // initialize formant statistics
     }
 }
@@ -68,8 +66,7 @@ CProcessFormants::CProcessFormants()
 /***************************************************************************/
 // CProcessFormants::~CProcessFormants Destructor
 /***************************************************************************/
-CProcessFormants::~CProcessFormants()
-{
+CProcessFormants::~CProcessFormants() {
 
 }
 
@@ -81,8 +78,7 @@ CProcessFormants::~CProcessFormants()
 // CProcessFormants::Exit Exit on Error
 // Standard exit function if an error occured.
 /***************************************************************************/
-long CProcessFormants::Exit(int nError)
-{
+long CProcessFormants::Exit(int nError) {
     return CProcess::Exit(nError);
 }
 
@@ -94,12 +90,10 @@ long CProcessFormants::Exit(int nError)
 long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
                                DWORD dwFrameStart, DWORD dwFrameSize,
                                SSpectProcSelect SpectraSelected,
-                               int nProgress, int nLevel)
-{
+                               int nProgress, int nLevel) {
     //TRACE(_T("Process: CProcessFormants\n"));
     // Check if canceled.
-    if (IsCanceled())
-    {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
 
@@ -108,8 +102,7 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
             dwFrameSize != m_dwFrameSize ||
             SpectraSelected.bCepstralSpectrum != m_stSpectraProc.bCepstralSpectrum  ||
             SpectraSelected.bLpcSpectrum != m_stSpectraProc.bLpcSpectrum ||
-            bTrack != m_bTrack)
-    {
+            bTrack != m_bTrack) {
         // must reprocess
         SetDataReady(FALSE);
         m_dwFrameStart = dwFrameStart;
@@ -118,8 +111,7 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
         m_stSpectraProc.bLpcSpectrum = SpectraSelected.bLpcSpectrum;
     }
 
-    if (IsDataReady() && !m_bTrack)
-    {
+    if (IsDataReady() && !m_bTrack) {
         return MAKELONG(PROCESS_UNNECESSARY, 100);    // data is already ready
     }
 
@@ -131,11 +123,9 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
     short int nResult = LOWORD(pSpectrum->Process(this, pDoc, dwFrameStart, dwFrameSize, SpectraSelected, nProgress, nLevel+1)); // process data
 
     // Exit if error has occurred or the spectrum process has been canceled.
-    if (nResult < 0)
-    {
+    if (nResult < 0) {
         SetDataReady(FALSE);
-        if (nResult == PROCESS_CANCELED)
-        {
+        if (nResult == PROCESS_CANCELED) {
             CancelProcess();
         }
         return Exit(nResult);
@@ -146,8 +136,7 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
 
     // Start formant processing, allocating a process buffer for formant frame data.
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSFMT))   // memory allocation failed
-    {
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSFMT)) { // memory allocation failed
         SetDataReady(FALSE);
         EndProcess(); // end data processing
         EndWaitCursor();
@@ -160,29 +149,23 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
                         pFormantFrame->Formant[3].Lpc.FrequencyInHertz != UNDEFINED_DATA);
 
     // Reset the formant frame index and count, and initialize formant statistics.
-    if (!bTrack || !m_bTrack)
-    {
+    if (!bTrack || !m_bTrack) {
         m_bTrack = FALSE;
         m_dwProcStart = UNDEFINED_OFFSET;
         m_dwProcEnd = 0;
         m_dwFormantFrame = 0;
         m_dwFormantFrameCount = 0;
         m_dwValidFrameCount = 0;
-        if (bValidFrame)
-        {
-            for (int n = 1; n <= 3; n++)
-            {
+        if (bValidFrame) {
+            for (int n = 1; n <= 3; n++) {
                 // initialize mean with each formant frequency
                 m_F[n].Mean = pFormantFrame->Formant[n].Lpc.FrequencyInHertz;
                 m_F[n].StdDev = 0;
             }
             m_dwValidFrameCount++;
-        }
-        else
-        {
+        } else {
             // indicate mean is undefined
-            for (int n = 1; n <= 3; n++)
-            {
+            for (int n = 1; n <= 3; n++) {
                 m_F[n].Mean = (float)UNDEFINED_DATA;
                 m_F[n].StdDev = (float)UNDEFINED_DATA;
             }
@@ -198,17 +181,14 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
     // Store the formant frame data.
     BOOL bUpdate = ((dwFrameStart < m_dwProcStart) || (dwFrameStart + dwFrameSize - nSmpSize > m_dwProcEnd));
 
-    if (bUpdate || m_bTrack)
-    {
+    if (bUpdate || m_bTrack) {
         // new frame has been processed
-        if (m_bTrack)
-        {
+        if (m_bTrack) {
             m_dwFormantFrame++;
         }
         // store it
         BOOL bWriteThru = bTrack;  // always write formant tracks to disk
-        if (!StoreFormantFrame(m_dwFormantFrame, pFormantFrame, bWriteThru))
-        {
+        if (!StoreFormantFrame(m_dwFormantFrame, pFormantFrame, bWriteThru)) {
             SetDataReady(FALSE);
             EndProcess();
             EndWaitCursor();
@@ -219,15 +199,12 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
         m_dwProcEnd = max(dwFrameStart + dwFrameSize - nSmpSize, m_dwProcEnd);
         // update total number of frames
         m_dwFormantFrameCount = m_dwFormantFrame + 1;
-        if (bValidFrame)
-        {
+        if (bValidFrame) {
             // it is valid
-            if (m_bTrack)
-            {
+            if (m_bTrack) {
                 // calculate running statistics
                 m_dwValidFrameCount++;
-                for (int n = 1; n <= 3; n++)
-                {
+                for (int n = 1; n <= 3; n++) {
                     double FormantFreq = pFormantFrame->Formant[n].Lpc.FrequencyInHertz;
                     m_F[n].Mean = (m_F[n].Mean*(m_dwValidFrameCount-1)/m_dwValidFrameCount) + FormantFreq/m_dwValidFrameCount;
                     //!!update standard deviation
@@ -245,8 +222,7 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
     EndProcess((nProgress >= 100)); // end data processing
     EndWaitCursor();
 
-    if (IsCanceled())
-    {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);
     }
 
@@ -268,12 +244,10 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
 // This function should only be called for voiced sections
 // of speech after formants have been processed with formant tracking requested.
 /***************************************************************************/
-void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
-{
+void CProcessFormants::SmoothMedian(ISaDoc * pDoc) {
 
     // Try to find pole frequency within valid formant frequency range nearest current median value
-    if (m_dwFormantFrameCount >= 3)
-    {
+    if (m_dwFormantFrameCount >= 3) {
         EGender nGender = pDoc->GetGender();
 
         SFormant * FormantFrame[3];
@@ -281,8 +255,7 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
         m_dwValidFrameCount = 0;
 
         DWORD dwFrame = 0;
-        for (; dwFrame < m_dwFormantFrameCount - 2; dwFrame++)
-        {
+        for (; dwFrame < m_dwFormantFrameCount - 2; dwFrame++) {
             // Set pointers to each frame.
             FormantFrame[0] = GetFormantFrame(dwFrame)->Formant;     // frame to update with median
             FormantFrame[1] = GetFormantFrame(dwFrame+1)->Formant;   // frame to median smooth
@@ -290,52 +263,38 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
 
             unsigned short nFormant = 1;
             unsigned short nPole = 1;
-            for (; nFormant < MAX_NUM_FORMANTS; nFormant++)
-            {
+            for (; nFormant < MAX_NUM_FORMANTS; nFormant++) {
                 // look for nearest formant from previous frame
-                if (dwFrame == 0)
-                {
+                if (dwFrame == 0) {
                     MedianFreq[nFormant].Lpc.FrequencyInHertz = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
                 }
                 float fMinDistance = FLT_MAX;
-				for (; nPole < MAX_NUM_FORMANTS; nPole++)   //!!number of formants
-                {
-                    if (FormantFrame[2][nPole].Lpc.FrequencyInHertz == (float)NA)
-                    {
+                for (; nPole < MAX_NUM_FORMANTS; nPole++) { //!!number of formants
+                    if (FormantFrame[2][nPole].Lpc.FrequencyInHertz == (float)NA) {
                         continue;
                     }
-                    if (!CFormantPicker::BandwidthInRange(nGender, nFormant, FormantFrame[2][nPole].Lpc.BandwidthInHertz))
-                    {
+                    if (!CFormantPicker::BandwidthInRange(nGender, nFormant, FormantFrame[2][nPole].Lpc.BandwidthInHertz)) {
                         continue;
                     }
-                    if (FormantFrame[2][nPole].Lpc.FrequencyInHertz > CFormantPicker::FormantRange(nGender, nFormant).High)
-                    {
+                    if (FormantFrame[2][nPole].Lpc.FrequencyInHertz > CFormantPicker::FormantRange(nGender, nFormant).High) {
                         break;
                     }
 
-                    if (FormantFrame[2][nPole].Lpc.FrequencyInHertz >= CFormantPicker::FormantRange(nGender, nFormant).Low)
-                    {
+                    if (FormantFrame[2][nPole].Lpc.FrequencyInHertz >= CFormantPicker::FormantRange(nGender, nFormant).Low) {
                         float fDistance = (float)fabs(FormantFrame[2][nPole].Lpc.FrequencyInHertz - MedianFreq[nFormant].Lpc.FrequencyInHertz);
-                        if (fDistance < fMinDistance)
-                        {
+                        if (fDistance < fMinDistance) {
                             fMinDistance = fDistance;
-                        }
-                        else
-                        {
+                        } else {
                             break;
                         }
                     }
                 }
-                if (fMinDistance != FLT_MAX)
-                {
+                if (fMinDistance != FLT_MAX) {
                     FormantFrame[2][nFormant].Lpc.FrequencyInHertz = FormantFrame[2][nPole-1].Lpc.FrequencyInHertz;
-                }
-                else
-                {
+                } else {
                     // none found
                     // shift pole frequencies to allow formant to be inserted
-                    for (UINT n = MAX_NUM_FORMANTS; n > nFormant; n--)
-                    {
+                    for (UINT n = MAX_NUM_FORMANTS; n > nFormant; n--) {
                         FormantFrame[2][n].Lpc.FrequencyInHertz = FormantFrame[2][n-1].Lpc.FrequencyInHertz;
                     }
                     // repeat formant from last frame
@@ -346,13 +305,11 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
                 // Perform median smoothing
                 if (FormantFrame[0][nFormant].Lpc.FrequencyInHertz != (float)NA &&
                         FormantFrame[1][nFormant].Lpc.FrequencyInHertz != (float)NA &&
-                        FormantFrame[2][nFormant].Lpc.FrequencyInHertz != (float)NA)
-                {
+                        FormantFrame[2][nFormant].Lpc.FrequencyInHertz != (float)NA) {
                     if ((FormantFrame[0][nFormant].Lpc.FrequencyInHertz <= FormantFrame[1][nFormant].Lpc.FrequencyInHertz &&
                             FormantFrame[0][nFormant].Lpc.FrequencyInHertz >= FormantFrame[2][nFormant].Lpc.FrequencyInHertz) ||
                             (FormantFrame[0][nFormant].Lpc.FrequencyInHertz <= FormantFrame[2][nFormant].Lpc.FrequencyInHertz &&
-                             FormantFrame[0][nFormant].Lpc.FrequencyInHertz >= FormantFrame[1][nFormant].Lpc.FrequencyInHertz))
-                    {
+                             FormantFrame[0][nFormant].Lpc.FrequencyInHertz >= FormantFrame[1][nFormant].Lpc.FrequencyInHertz)) {
                         // previous frame contains median value
                         float CurrMedian = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;    // temp placeholder to keep from obliterating FormantFrame[0]
                         FormantFrame[0][nFormant].Lpc.FrequencyInHertz = MedianFreq[nFormant].Lpc.FrequencyInHertz;  // set previous frame's formant frequency to median value
@@ -362,8 +319,7 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
                     else if ((FormantFrame[1][nFormant].Lpc.FrequencyInHertz <= FormantFrame[0][nFormant].Lpc.FrequencyInHertz &&
                               FormantFrame[1][nFormant].Lpc.FrequencyInHertz >= FormantFrame[2][nFormant].Lpc.FrequencyInHertz) ||
                              (FormantFrame[1][nFormant].Lpc.FrequencyInHertz <= FormantFrame[2][nFormant].Lpc.FrequencyInHertz &&
-                              FormantFrame[1][nFormant].Lpc.FrequencyInHertz >= FormantFrame[0][nFormant].Lpc.FrequencyInHertz))
-                    {
+                              FormantFrame[1][nFormant].Lpc.FrequencyInHertz >= FormantFrame[0][nFormant].Lpc.FrequencyInHertz)) {
                         // current frame contains median value
                         FormantFrame[0][nFormant].Lpc.FrequencyInHertz = MedianFreq[nFormant].Lpc.FrequencyInHertz; // set previous frame's formant frequency to median value
                         MedianFreq[nFormant].Lpc.FrequencyInHertz = FormantFrame[1][nFormant].Lpc.FrequencyInHertz; // update median value for current frame
@@ -372,8 +328,7 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
                     else if ((FormantFrame[2][nFormant].Lpc.FrequencyInHertz <= FormantFrame[0][nFormant].Lpc.FrequencyInHertz &&
                               FormantFrame[2][nFormant].Lpc.FrequencyInHertz >= FormantFrame[1][nFormant].Lpc.FrequencyInHertz) ||
                              (FormantFrame[2][nFormant].Lpc.FrequencyInHertz <= FormantFrame[1][nFormant].Lpc.FrequencyInHertz &&
-                              FormantFrame[2][nFormant].Lpc.FrequencyInHertz >= FormantFrame[0][nFormant].Lpc.FrequencyInHertz))
-                    {
+                              FormantFrame[2][nFormant].Lpc.FrequencyInHertz >= FormantFrame[0][nFormant].Lpc.FrequencyInHertz)) {
                         // next frame contains median value
                         FormantFrame[0][nFormant].Lpc.FrequencyInHertz = MedianFreq[nFormant].Lpc.FrequencyInHertz; // set previous frame's formant frequency to median value
                         MedianFreq[nFormant].Lpc.FrequencyInHertz = FormantFrame[2][nFormant].Lpc.FrequencyInHertz; // update median value for current frame
@@ -383,18 +338,15 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
             BOOL bValidF1F2F3 = (FormantFrame[0][1].Lpc.FrequencyInHertz != (float)NA &&
                                  FormantFrame[0][2].Lpc.FrequencyInHertz != (float)NA &&
                                  FormantFrame[0][3].Lpc.FrequencyInHertz != (float)NA);
-            if (bValidF1F2F3)
-            {
+            if (bValidF1F2F3) {
                 m_dwValidFrameCount++;
                 if (dwFrame == 0)
-                    for (nFormant = 1; nFormant <= 3; nFormant++)
-                    {
+                    for (nFormant = 1; nFormant <= 3; nFormant++) {
                         m_F[nFormant].Mean = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
                         m_F[nFormant].StdDev = 0.;  //!!update
                     }
                 else
-                    for (nFormant = 1; nFormant <= 3; nFormant++)
-                    {
+                    for (nFormant = 1; nFormant <= 3; nFormant++) {
                         double FormantFreq = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
                         m_F[nFormant].Mean = (m_F[nFormant].Mean*(m_dwValidFrameCount-1)/m_dwValidFrameCount) + FormantFreq/m_dwValidFrameCount;
                         //!!update standard deviation
@@ -403,8 +355,7 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
 
             // Manage buffer.
             DWORD dwBlockEnd = (dwFrame + 3) * m_nFormantFrameSize;
-            if (dwBlockEnd >= m_dwBufferOffset + GetProcessBufferSize())
-            {
+            if (dwBlockEnd >= m_dwBufferOffset + GetProcessBufferSize()) {
                 // all 3 frames not in buffer
                 DWORD dwBlockStart = (dwFrame + 1) * m_nFormantFrameSize;
                 SaveBuffer((UINT)(dwBlockStart - m_dwBufferOffset));  // save buffer
@@ -415,19 +366,16 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
         // Update next to last frame.
         FormantFrame[0] = GetFormantFrame(dwFrame)->Formant;
         UINT nFormant = 1;
-        for (; nFormant <= MAX_NUM_FORMANTS; nFormant++)
-        {
+        for (; nFormant <= MAX_NUM_FORMANTS; nFormant++) {
             FormantFrame[0][nFormant].Lpc.FrequencyInHertz = MedianFreq[nFormant].Lpc.FrequencyInHertz;
         }
 
         BOOL bValidF1F2F3 = (FormantFrame[0][1].Lpc.FrequencyInHertz != (float)NA &&
                              FormantFrame[0][2].Lpc.FrequencyInHertz != (float)NA &&
                              FormantFrame[0][3].Lpc.FrequencyInHertz != (float)NA);
-        if (bValidF1F2F3)
-        {
+        if (bValidF1F2F3) {
             m_dwValidFrameCount++;
-            for (nFormant = 1; nFormant <= 3; nFormant++)
-            {
+            for (nFormant = 1; nFormant <= 3; nFormant++) {
                 double FormantFreq = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
                 m_F[nFormant].Mean = (m_F[nFormant].Mean*(m_dwValidFrameCount-1)/m_dwValidFrameCount) +
                                      FormantFreq/m_dwValidFrameCount;
@@ -450,19 +398,16 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
 // order they are received.  Thus, formant frames should be passed to this function
 // sequentially, starting with 0 and proceeding to the highest frame index.
 /***************************************************************************/
-BOOL CProcessFormants::StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * pFormant, BOOL bWriteThru)
-{
+BOOL CProcessFormants::StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * pFormant, BOOL bWriteThru) {
     // Calculate beginning and end of the frame in bytes.
     DWORD dwFormantFrameStart = dwFormantFrame * m_nFormantFrameSize;
     DWORD dwFormantFrameEnd = dwFormantFrameStart + m_nFormantFrameSize;
 
     // Reset the data buffer byte offset into the frame data.
-    if (dwFormantFrame == 0)
-    {
+    if (dwFormantFrame == 0) {
         m_dwBufferOffset = 0;    // to zero if first frame
     }
-    if (dwFormantFrameStart < m_dwBufferOffset || dwFormantFrameEnd > m_dwBufferOffset + GetProcessBufferSize())
-    {
+    if (dwFormantFrameStart < m_dwBufferOffset || dwFormantFrameEnd > m_dwBufferOffset + GetProcessBufferSize()) {
         m_dwBufferOffset = dwFormantFrameStart;    // to beginning of the frame if any frame data would fall outside buffer
     }
 
@@ -471,11 +416,9 @@ BOOL CProcessFormants::StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * p
     memcpy(pFormantFrame, (HPSTR)pFormant, m_nFormantFrameSize);  // copy frame into buffer
 
     // If requested, write the frame data to disk.
-    if (bWriteThru)
-    {
+    if (bWriteThru) {
         BOOL bAppend = (dwFormantFrame != 0);
-        if (!WriteData(pFormantFrame, m_nFormantFrameSize, bAppend))
-        {
+        if (!WriteData(pFormantFrame, m_nFormantFrameSize, bAppend)) {
             return FALSE;
         };
     }
@@ -488,34 +431,27 @@ BOOL CProcessFormants::StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * p
 // If the append flag is true, the data is appended to the file; otherwise,
 // a new file is created.
 /***************************************************************************/
-BOOL CProcessFormants::WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend)
-{
+BOOL CProcessFormants::WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend) {
     // If not appending, delete the current file and create a new one.
-    if (!bAppend)
-    {
+    if (!bAppend) {
         DWORD dwBufferOffset = m_dwBufferOffset;   // save buffer offset (destroyed by CreateTempFile)
-        if (!CreateTempFile(_T("FMT")))   // creating error
-        {
+        if (!CreateTempFile(_T("FMT"))) { // creating error
             return FALSE;
         }
         m_dwBufferOffset = dwBufferOffset;  // restore buffer offset
     }
 
     // Otherwise, open the existing file containing formant frame data.
-    else if (!OpenFileToAppend())
-    {
+    else if (!OpenFileToAppend()) {
         // error opening file
         ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
         return FALSE;
     }
 
     // Write the data to the file.
-    try
-    {
+    try {
         Write(pData, nDataSize);
-    }
-    catch (CFileException e)
-    {
+    } catch (CFileException e) {
         // error writing file
         ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
         return FALSE; // error, writing failed
@@ -530,8 +466,7 @@ BOOL CProcessFormants::WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend)
 /***************************************************************************/
 // CProcessFormants::SaveBuffer  Save buffer contents to disk
 /***************************************************************************/
-BOOL CProcessFormants::SaveBuffer(UINT nDataSize)
-{
+BOOL CProcessFormants::SaveBuffer(UINT nDataSize) {
     return WriteDataBlock(m_dwBufferOffset, m_lpBuffer, nDataSize, sizeof(char));
 }
 
@@ -541,12 +476,10 @@ BOOL CProcessFormants::SaveBuffer(UINT nDataSize)
 // temporary file, into the buffer, returning a pointer to formant frame at the
 // specified index.
 /***************************************************************************/
-SFormantFrame * CProcessFormants::GetFormantFrame(DWORD dwIndex)
-{
+SFormantFrame * CProcessFormants::GetFormantFrame(DWORD dwIndex) {
     // Check to see if frame data is in process buffer.
     DWORD dwFormantFrameStart = dwIndex * m_nFormantFrameSize;    // calculate byte offset
-    if (dwFormantFrameStart >= m_dwBufferOffset && dwFormantFrameStart + m_nFormantFrameSize <= m_dwBufferOffset + GetProcessBufferSize())
-    {
+    if (dwFormantFrameStart >= m_dwBufferOffset && dwFormantFrameStart + m_nFormantFrameSize <= m_dwBufferOffset + GetProcessBufferSize()) {
         return (SFormantFrame *)(m_lpBuffer + dwFormantFrameStart - m_dwBufferOffset);    // return pointer to frame data
     }
 
@@ -558,8 +491,7 @@ SFormantFrame * CProcessFormants::GetFormantFrame(DWORD dwIndex)
 /***************************************************************************/
 // CProcessFormants::LoadBuffer  Loads buffer with formant data
 /***************************************************************************/
-SFormantFrame * CProcessFormants::LoadBuffer(DWORD dwFormantBlockStart)
-{
+SFormantFrame * CProcessFormants::LoadBuffer(DWORD dwFormantBlockStart) {
     return (SFormantFrame *)GetProcessedWaveData(dwFormantBlockStart, TRUE);
 }
 
@@ -568,23 +500,19 @@ SFormantFrame * CProcessFormants::LoadBuffer(DWORD dwFormantBlockStart)
 // The frequencies of F1, F2, and F3 are returned in the formants structure.
 // The frequencies are returned in Hertz.
 /***************************************************************************/
-SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bMelScale) const
-{
+SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bMelScale) const {
     const CVowelFormantsVector & vowelVector = GetVowelVector(nGender);
 
     // get frequency range
     SFormantFreq formants;
 
-    if (nIndex >= 0 && nIndex < (int)vowelVector.size())
-    {
+    if (nIndex >= 0 && nIndex < (int)vowelVector.size()) {
         const CVowelFormants & vowel = vowelVector[nIndex];
         formants.F[1] = (float)vowel.F1;
         formants.F[2] = (float)vowel.F2;
         formants.F[3] = (float)vowel.F3;
         formants.F[4] = (float)vowel.F4;
-    }
-    else
-    {
+    } else {
         formants.F[1] = (float)UNDEFINED_DATA;
         formants.F[2] = (float)UNDEFINED_DATA;
         formants.F[3] = (float)UNDEFINED_DATA;
@@ -592,30 +520,24 @@ SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bM
     }
 
     // convert to mel scale, if requested
-    if (bMelScale)
-    {
-        if (formants.F[1] != (float)UNDEFINED_DATA)
-        {
+    if (bMelScale) {
+        if (formants.F[1] != (float)UNDEFINED_DATA) {
             formants.F[1] = (float)Scale::ToMels((double)formants.F[1]);
         }
-        if (formants.F[2] != (float)UNDEFINED_DATA)
-        {
+        if (formants.F[2] != (float)UNDEFINED_DATA) {
             formants.F[2] = (float)Scale::ToMels((double)formants.F[2]);
         }
-        if (formants.F[3] != (float)UNDEFINED_DATA)
-        {
+        if (formants.F[3] != (float)UNDEFINED_DATA) {
             formants.F[3] = (float)Scale::ToMels((double)formants.F[3]);
         }
-        if (formants.F[4] != (float)UNDEFINED_DATA)
-        {
+        if (formants.F[4] != (float)UNDEFINED_DATA) {
             formants.F[4] = (float)Scale::ToMels((double)formants.F[4]);
         }
     }
 
     // clear out rest of formant array
     formants.F[0] = (float)UNDEFINED_DATA;
-    for (int n = 5; n < sizeof(formants)/sizeof(formants.F[0]); n++)
-    {
+    for (int n = 5; n < sizeof(formants)/sizeof(formants.F[0]); n++) {
         formants.F[n] = (float)UNDEFINED_DATA;
     }
 
@@ -625,17 +547,13 @@ SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bM
 /***************************************************************************/
 // CProcessFormants::GetVowel Returns vowel
 /***************************************************************************/
-CSaString CProcessFormants::GetVowel(int nIndex, EGender nGender) const
-{
+CSaString CProcessFormants::GetVowel(int nIndex, EGender nGender) const {
     const CVowelFormantsVector & vowelVector = GetVowelVector(nGender);
 
-    if (nIndex >= 0 && nIndex < (int)vowelVector.size())
-    {
+    if (nIndex >= 0 && nIndex < (int)vowelVector.size()) {
         const CVowelFormants & vowel = vowelVector[nIndex];
         return vowel.m_szVowel;
-    }
-    else
-    {
+    } else {
         return CSaString(_T(""));
     }
 }
@@ -643,8 +561,7 @@ CSaString CProcessFormants::GetVowel(int nIndex, EGender nGender) const
 /***************************************************************************/
 // CProcessFormants::GetVowelCount Returns number of vowels for gender
 /***************************************************************************/
-int CProcessFormants::GetVowelCount(EGender nGender) const
-{
+int CProcessFormants::GetVowelCount(EGender nGender) const {
     const CVowelFormantsVector & vowelVector = GetVowelVector(nGender);
     return vowelVector.size();
 }
@@ -652,19 +569,16 @@ int CProcessFormants::GetVowelCount(EGender nGender) const
 /***************************************************************************/
 // CProcessFormants::FindNearestVowel Returns vowel closest to F1, F2, and F3
 /***************************************************************************/
-CSaString CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * pDoc) const
-{
+CSaString CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * pDoc) const {
     EGender nGender = pDoc->GetGender();
     double dMinDistanceSquared = FLT_MAX;
     int nNearestVowel = -1;
 
     SRange FormantScale[4];
 
-    for (int nFormant = 1; nFormant <= 3; nFormant++)
-    {
+    for (int nFormant = 1; nFormant <= 3; nFormant++) {
         FormantScale[nFormant] = CPlot3D::GetChartRange(nFormant, nGender);
-        if (m_FormantParms.bMelScale)
-        {
+        if (m_FormantParms.bMelScale) {
             FormantScale[nFormant].High = (float)Scale::ToMels((double)FormantScale[nFormant].High);
             FormantScale[nFormant].Low = (float)Scale::ToMels((double)FormantScale[nFormant].Low);
         }
@@ -673,16 +587,13 @@ CSaString CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * 
     //!! should use F2 + F1 v F2 - F1 normalized to axis ranges to eliminate correlation between F1 and F2
     //!! what about correlation with F3?
     //!! also aspect ratio should be maintained for each chart so as not to confuse user
-    for (int nVowel = 0; nVowel < GetVowelCount(nGender); nVowel++)
-    {
+    for (int nVowel = 0; nVowel < GetVowelCount(nGender); nVowel++) {
         double dDistanceSquared = 0.;
         SFormantFreq VowelFreq = GetVowelFreq(nVowel, nGender);
-        for (int nFormant = 1; nFormant <= 3; nFormant++)
-        {
+        for (int nFormant = 1; nFormant <= 3; nFormant++) {
             // compute Euclidean distance squared
             double dClusterMean = (double)FormantFreq.F[nFormant];
-            if (m_FormantParms.bMelScale)
-            {
+            if (m_FormantParms.bMelScale) {
                 VowelFreq.F[nFormant] = (float)Scale::ToMels((double)VowelFreq.F[nFormant]);
                 dClusterMean = Scale::ToMels(dClusterMean);
             }
@@ -690,8 +601,7 @@ CSaString CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * 
             double dDifference = (dClusterMean - VowelFreq.F[nFormant])/(FormantScale[nFormant].High - FormantScale[nFormant].Low);
             dDistanceSquared += (dDifference * dDifference);
         }
-        if (dDistanceSquared < dMinDistanceSquared)
-        {
+        if (dDistanceSquared < dMinDistanceSquared) {
             nNearestVowel = nVowel;
             dMinDistanceSquared = dDistanceSquared;
         }
@@ -700,13 +610,11 @@ CSaString CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * 
 }
 
 
-CSaString CProcessFormants::FindNearestVowel(ISaDoc * pDoc) const
-{
+CSaString CProcessFormants::FindNearestVowel(ISaDoc * pDoc) const {
     BOOL bValidMeans = (m_F[1].Mean != (float)UNDEFINED_DATA &&
                         m_F[2].Mean != (float)UNDEFINED_DATA &&
                         m_F[3].Mean != (float)UNDEFINED_DATA);
-    if (!bValidMeans)
-    {
+    if (!bValidMeans) {
         return 0x20;    // return a blank in the IPA font if no valid means
     }
     SFormantFreq FormantFreq;
@@ -716,38 +624,31 @@ CSaString CProcessFormants::FindNearestVowel(ISaDoc * pDoc) const
     return FindNearestVowel(FormantFreq, pDoc);
 }
 
-void CProcessFormants::SetFormantParms(CFormantParm * pFormantParms)
-{
+void CProcessFormants::SetFormantParms(CFormantParm * pFormantParms) {
     m_FormantParms = *pFormantParms;
 }
 
-void CProcessFormants::SetDataInvalid()
-{
+void CProcessFormants::SetDataInvalid() {
     SetDataReady(FALSE);
 }
 
-CFormantParm * CProcessFormants::GetFormantParms()
-{
+CFormantParm * CProcessFormants::GetFormantParms() {
     return &m_FormantParms;
 }
 
-DWORD CProcessFormants::GetFormantFrameCount()
-{
+DWORD CProcessFormants::GetFormantFrameCount() {
     return m_dwFormantFrameCount;
 }
 
-unsigned short CProcessFormants::GetFormantFrameSize()
-{
+unsigned short CProcessFormants::GetFormantFrameSize() {
     return m_nFormantFrameSize;
 }
 
-SStatistic CProcessFormants::GetFormantStats(int nFormant)
-{
+SStatistic CProcessFormants::GetFormantStats(int nFormant) {
     return m_F[nFormant];
 }
 
-void CProcessFormants::ResetTracking()
-{
+void CProcessFormants::ResetTracking() {
     m_bTrack = FALSE;
     m_dwFormantFrameCount = 0;
     SetDataReady(FALSE);

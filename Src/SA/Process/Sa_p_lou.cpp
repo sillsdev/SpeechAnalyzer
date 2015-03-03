@@ -52,15 +52,13 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessLoudness::CProcessLoudness Constructor
 /***************************************************************************/
-CProcessLoudness::CProcessLoudness()
-{
+CProcessLoudness::CProcessLoudness() {
 }
 
 /***************************************************************************/
 // CProcessLoudness::~CProcessLoudness Destructor
 /***************************************************************************/
-CProcessLoudness::~CProcessLoudness()
-{
+CProcessLoudness::~CProcessLoudness() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -79,14 +77,11 @@ CProcessLoudness::~CProcessLoudness()
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                               int nLevel)
-{
-    if (IsCanceled())
-    {
+                               int nLevel) {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady())
-    {
+    if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
@@ -94,15 +89,13 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     //TRACE(_T("Process: CProcessLoudness\n"));
 
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSLOU))   // memory allocation failed
-    {
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSLOU)) { // memory allocation failed
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("LOU")))   // creating error
-    {
+    if (!CreateTempFile(_T("LOU"))) { // creating error
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -113,8 +106,7 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD nSmpSize = pDoc->GetSampleSize();
     // Finish pitch processing if necessary.
     UINT nCalcDataLength = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec());  //!!this should be based on sampling frequency
-    if (nResult >= 0 && pAutoPitch->GetMaxValue())
-    {
+    if (nResult >= 0 && pAutoPitch->GetMaxValue()) {
         nCalcDataLength = (UINT)(2*pDoc->GetSamplesPerSec() / (pAutoPitch->GetMaxValue() / PRECISION_MULTIPLIER));
     }
     UINT nCalcInterval = nCalcDataLength / 3;   // more than 2 x bandwidth
@@ -126,14 +118,12 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD dwDataPos, dwLoudStart;
     dwLoudStart = static_cast<DWORD>(ceil(nCalcDataLength / 2. / nCalcInterval));
     dwDataPos = dwLoudStart * nCalcInterval - nCalcDataLength / 2;
-    if (nSmpSize > 1)
-    {
+    if (nSmpSize > 1) {
         dwDataPos *= 2;    // 16 bit data
     }
     // prepare loudness loop
     DWORD dwLoudCount = 0;
-    for (; dwLoudCount < dwLoudStart; dwLoudCount++)
-    {
+    for (; dwLoudCount < dwLoudStart; dwLoudCount++) {
         *pLoudData++ = 0; // initialize buffer
     }
     /**************************************************************************/
@@ -145,29 +135,23 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     double dOldResult[3] = {-1,-1,-1};
     UINT nCalcLoop = 0; // calculation loop counter
     DWORD dwNextBlock = 0;
-    while (dwDataPos < dwDataSize)   // processing loop
-    {
-        if (dwNextBlock <= dwDataPos)
-        {
+    while (dwDataPos < dwDataSize) { // processing loop
+        if (dwNextBlock <= dwDataPos) {
             pBlockStart = pDoc->GetWaveData(dwDataPos); // get pointer to data block
-            if (!pBlockStart)
-            {
+            if (!pBlockStart) {
                 return Exit(PROCESS_ERROR);    // error, reading failed
             }
             UINT nFirstOffset = (UINT)(dwDataPos % GetProcessBufferSize()); // Find offset into block CLW 10/28/98
             pRawData = pBlockStart + nFirstOffset;
             dwNextBlock = dwDataPos + GetProcessBufferSize() - nFirstOffset;
         }
-        if (nSmpSize == 1)   // 8 bit data
-        {
+        if (nSmpSize == 1) { // 8 bit data
             // process a byte
             double dRes = ((unsigned char)*pRawData - 128)*256.;
             dResult += dRes*dRes;
             pRawData += 1; // increment position in raw data
             dwDataPos += 1;
-        }
-        else     // 16 bit data
-        {
+        } else { // 16 bit data
             // process a word
             short * pTemp = (short *)pRawData;
             double dRes = *pTemp;
@@ -176,8 +160,7 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             dwDataPos += 2;
         }
         // if loudness result ready, store it
-        if ((++nCalcLoop >= nCalcInterval) || (dwDataPos >= dwDataSize))
-        {
+        if ((++nCalcLoop >= nCalcInterval) || (dwDataPos >= dwDataSize)) {
             dOldResult[2] = dOldResult[1];
             dOldResult[1] = dOldResult[0];
             dOldResult[0] = dResult;
@@ -187,28 +170,21 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
             // set progress bar
             SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
-            if (IsCanceled())
-            {
+            if (IsCanceled()) {
                 return Exit(PROCESS_CANCELED);    // process canceled
             }
 
-            if (dOldResult[2] >= 0)
-            {
+            if (dOldResult[2] >= 0) {
                 *pLoudData++ = (short)(sqrt(dResult) + 0.5); // rms magnitude
-                if ((++dwLoudCount == GetProcessBufferSize() / 2) || (dwDataPos + nCalcDataLength/2 >= dwDataSize))   // loudness buffer is full or processing finished
-                {
+                if ((++dwLoudCount == GetProcessBufferSize() / 2) || (dwDataPos + nCalcDataLength/2 >= dwDataSize)) { // loudness buffer is full or processing finished
                     // write the processed data block
-                    try
-                    {
+                    try {
                         Write(m_lpBuffer, dwLoudCount * 2);
                         *m_lpBuffer = 0;
-                        if (dwDataPos >= dwDataSize)
-                        {
+                        if (dwDataPos >= dwDataSize) {
                             Write(m_lpBuffer, 2);
                         }
-                    }
-                    catch (CFileException e)
-                    {
+                    } catch (CFileException e) {
                         // error writing file
                         ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                         return Exit(PROCESS_ERROR); // error, writing failed
@@ -224,20 +200,16 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     nProgress = nProgress + (int)(100 / nLevel);
     // close the temporary file and read the status
     CloseTempFile(); // close the file
-    if (GetDataSize() < 2)
-    {
+    if (GetDataSize() < 2) {
         return Exit(PROCESS_ERROR);    // error, not enough data
     }
     BOOL bResult = SmoothData(2); // smooth data two times
     EndProcess(((bResult) && (nProgress >= 95))); // end data processing
     EndWaitCursor();
     SetDataReady(bResult);
-    if (bResult)
-    {
+    if (bResult) {
         return MAKELONG(nLevel, nProgress);
-    }
-    else
-    {
+    } else {
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, 100);
     }
@@ -267,8 +239,7 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 /***************************************************************************/
 // CProcessSmoothLoudness::CProcessSmoothLoudness Constructor
 /***************************************************************************/
-CProcessSmoothLoudness::CProcessSmoothLoudness()
-{
+CProcessSmoothLoudness::CProcessSmoothLoudness() {
     m_pSRDfile = new CFile();
     m_SRDfileStatus.m_szFullName[0] = 0; // no file name
     m_hSRDdata = NULL;
@@ -279,18 +250,15 @@ CProcessSmoothLoudness::CProcessSmoothLoudness()
 /***************************************************************************/
 // CProcessSmoothLoudness::~CProcessSmoothLoudness Destructor
 /***************************************************************************/
-CProcessSmoothLoudness::~CProcessSmoothLoudness()
-{
+CProcessSmoothLoudness::~CProcessSmoothLoudness() {
     // delete the temporary file
     FileUtils::RemoveFile(m_SRDfileStatus.m_szFullName);
-    if (m_pSRDfile)
-    {
+    if (m_pSRDfile) {
         delete m_pSRDfile;
         m_pSRDfile = NULL;
     }
     // free the buffer memory
-    if (m_hSRDdata)
-    {
+    if (m_hSRDdata) {
         ::GlobalUnlock(m_hSRDdata);
         ::GlobalFree(m_hSRDdata);
     }
@@ -303,10 +271,8 @@ CProcessSmoothLoudness::~CProcessSmoothLoudness()
 // CProcessSmoothLoudness::Exit Exit on Error
 // Standard exit function if an error occured.
 /***************************************************************************/
-long CProcessSmoothLoudness::Exit(int nError, HANDLE hSmoothBlock)
-{
-    if (m_pSRDfile)
-    {
+long CProcessSmoothLoudness::Exit(int nError, HANDLE hSmoothBlock) {
+    if (m_pSRDfile) {
         m_pSRDfile->Abort();
     }
 
@@ -346,42 +312,33 @@ long CProcessSmoothLoudness::Exit(int nError, HANDLE hSmoothBlock)
 /***************************************************************************/
 HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT nSmpSize,
         int nOldBlock, int nBlock, int * pnLastDone,
-        DWORD dwSmplPerSec, DWORD dwStart, UINT * nAverage, long * lAverage)
-{
-    if (nOldBlock > nBlock)
-    {
+        DWORD dwSmplPerSec, DWORD dwStart, UINT * nAverage, long * lAverage) {
+    if (nOldBlock > nBlock) {
         return pTarget;    // old data needed, just give back the buffer pointer
     }
-    if (*pnLastDone >= nBlock)
-    {
+    if (*pnLastDone >= nBlock) {
         return pTarget + GetProcessBufferSize();    // this block is ready in buffer
     }
     *pnLastDone = nBlock;
     int nSmoothWidth = (int)(dwSmplPerSec / (2 * MAX_CALCULATION_FREQUENCY));
     int nSmoothSamp = nSmoothWidth; // smooth width in samples CLW 12/31/98
     DWORD dwBufferSamp = GetProcessBufferSize() / nSmpSize; // buffer size in samples CLW 12/31/98
-    if (nSmpSize > 1)   // 16 bit data
-    {
+    if (nSmpSize > 1) { // 16 bit data
         nSmoothWidth *= 2;
         dwStart *= 2;
     }
-    if (nOldBlock == -1)   // first call
-    {
+    if (nOldBlock == -1) { // first call
         // clean up buffer
         char * lpTarget = pTarget;
         DWORD dwLoopEnd = GetProcessBufferSize() + (long)nSmoothWidth + 2;
-        for (DWORD dwLoop = 0; dwLoop < dwLoopEnd; dwLoop++)
-        {
+        for (DWORD dwLoop = 0; dwLoop < dwLoopEnd; dwLoop++) {
             *lpTarget++ = 0;
         }
-    }
-    else     // not first call
-    {
+    } else { // not first call
         // copy upper half of target buffer into lower half
         short int * lpTargetUpper = (short int *)(pTarget + GetProcessBufferSize());
         short int * lpTargetLower = (short int *)pTarget;
-        for (DWORD dwLoop = 0; dwLoop < (GetProcessBufferSize() / 2); dwLoop++)
-        {
+        for (DWORD dwLoop = 0; dwLoop < (GetProcessBufferSize() / 2); dwLoop++) {
             *lpTargetLower++ = *lpTargetUpper++;
         }
     }
@@ -394,91 +351,71 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT n
     // nBufferSamp to eliminate 'if (nSmpSize > 1)' tests.
     // References to dwStart have also been removed. CLW 1/6/98
     DWORD dwDataSize = pDoc->GetDataSize();
-    if (nBlock == 0)   // First block, so no overlap into previous block
-    {
+    if (nBlock == 0) { // First block, so no overlap into previous block
         if ((((long)nBlock + 1) * GetProcessBufferSize()) < dwDataSize)
             // not last block, so overlap into next block
         {
             dwEnd = dwBufferSamp - (long)nSmoothSamp / 2;
-        }
-        else     // last block
-        {
+        } else { // last block
             dwEnd = dwDataSize / nSmpSize - nSmoothSamp + 1;
         }
         dwReloadPos = dwEnd - (long)nSmoothSamp + (long)nSmoothSamp / 2;
-    }
-    else     // not first block, so overlap into previous block
-    {
+    } else { // not first block, so overlap into previous block
         dwDataPos -= nSmoothWidth / 2; // not first processing
         if ((((long)nBlock + 1) * GetProcessBufferSize()) < dwDataSize)
             // not last block, so overlap into next block
         {
             dwEnd = dwBufferSamp;    // we can process every sample in this block
-        }
-        else   // last block
+        } else // last block
             dwEnd = (dwDataSize - (long)nBlock * GetProcessBufferSize()) / nSmpSize
                     - nSmoothSamp + nSmoothSamp / 2 + 1;
         dwReloadPos = dwEnd - (long)nSmoothSamp;
     }
     // check end of data
-    if ((dwDataPos + nSmoothWidth) >= dwDataSize)
-    {
+    if ((dwDataPos + nSmoothWidth) >= dwDataSize) {
         return pTarget + GetProcessBufferSize();    // end of data
     }
     // load new raw data block
     HPSTR pBlockStart = pDoc->GetWaveData(dwDataPos, TRUE); // get data
-    if (!pBlockStart)
-    {
+    if (!pBlockStart) {
         return NULL;    // reading failed
     }
-    if (nOldBlock == -1)   // first call
-    {
+    if (nOldBlock == -1) { // first call
         // form the moving average seed
         int nSeed = 0;
         *lAverage = 0;
-        if (nSmpSize > 1)   // 16 bit data
-        {
+        if (nSmpSize > 1) { // 16 bit data
             short int * lpSource = (short int *)pBlockStart; // cast pointer
             int nLoopEnd = nSmoothWidth / 2;
-            for (int i = 0; i < nLoopEnd; i++)
-            {
+            for (int i = 0; i < nLoopEnd; i++) {
                 *lAverage += *lpSource++;    // get data
             }
-        }
-        else     // 8 bit data
-        {
+        } else { // 8 bit data
             unsigned char * lpSource = (unsigned char *)pBlockStart; // cast pointer
-            for (int i = 0; i < nSmoothWidth; i++)
-            {
+            for (int i = 0; i < nSmoothWidth; i++) {
                 nSeed += *lpSource++;    // get data
             }
             *nAverage = nSeed; // save the result
         }
     }
     // process data
-    if (nSmpSize > 1)   // 16 bit data
-    {
+    if (nSmpSize > 1) { // 16 bit data
         short int * lpSource = (short int *)pBlockStart; // cast pointer
         short int * lpTarget;
-        if (nBlock > 0)
-        {
+        if (nBlock > 0) {
             lpTarget = (short int *)(pTarget + GetProcessBufferSize());
         }
         // CLW 12/3/98
         // else lpTarget = (short int *)(pTarget + GetProcessBufferSize() + nSmoothWidth + 2);
-        else
-        {
+        else {
             lpTarget = (short int *)(pTarget + GetProcessBufferSize() + nSmoothWidth / 2);
         }
         int nDisplacement = nSmoothWidth / 2;
-        do
-        {
-            if (dwEnd == dwReloadPos)   // new data block has to be reloaded
-            {
+        do {
+            if (dwEnd == dwReloadPos) { // new data block has to be reloaded
                 DWORD dwNewDataPos = (DWORD)nBlock * GetProcessBufferSize() + nSmoothWidth / 2; // CLW 12/31/98
                 pBlockStart = pDoc->GetWaveData(dwNewDataPos, TRUE); // get data
-                if (!pBlockStart)
-                {
+                if (!pBlockStart) {
                     return NULL;    // reading failed
                 }
                 lpSource = (short int *)pBlockStart;
@@ -488,38 +425,26 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT n
             // drop first point and add next point to moving average
             *lAverage += (long)*(lpSource + nDisplacement) - (long)*lpSource;
             lpSource++; // CLW 12/3/98 Was included on previous line
-        }
-        while (--dwEnd);
+        } while (--dwEnd);
         // fill zeroes at end of last block CLW 1/5/98
-        if ((((long)nBlock + 1) * GetProcessBufferSize()) >= dwDataSize)   // is this the last block?
-        {
+        if ((((long)nBlock + 1) * GetProcessBufferSize()) >= dwDataSize) { // is this the last block?
             dwEnd = (long)nSmoothSamp - (long)nSmoothSamp / 2 - 1;
-            do
-            {
+            do {
                 *lpTarget++ = 0L;
-            }
-            while (--dwEnd);
+            } while (--dwEnd);
         }
-    }
-    else     // 8 bit data
-    {
+    } else { // 8 bit data
         unsigned char * lpSource = (unsigned char *)pBlockStart; // cast pointer
         unsigned char * lpTarget;
-        if (nBlock > 0)
-        {
+        if (nBlock > 0) {
             lpTarget = (unsigned char *)(pTarget + GetProcessBufferSize());
-        }
-        else
-        {
+        } else {
             lpTarget = (unsigned char *)(pTarget + GetProcessBufferSize() + nSmoothWidth + 1);
         }
-        do
-        {
-            if (dwEnd == dwReloadPos)   // new data block has to be reloaded
-            {
+        do {
+            if (dwEnd == dwReloadPos) { // new data block has to be reloaded
                 pBlockStart = pDoc->GetWaveData((DWORD)nBlock * GetProcessBufferSize(), TRUE); // get data
-                if (!pBlockStart)
-                {
+                if (!pBlockStart) {
                     return NULL;    // reading failed
                 }
                 lpSource = (unsigned char *)pBlockStart;
@@ -529,21 +454,16 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT n
             // drop first point and add next point to moving average
             *nAverage += *(lpSource + nSmoothWidth) - *lpSource;
             lpSource++; // CLW 12/3/98 Was included on previous line
-        }
-        while (--dwEnd);
+        } while (--dwEnd);
     }
     // write the processed data block into the smoothed raw data temporary file
     DWORD dwAmount = GetProcessBufferSize();
-    if (((DWORD)(nBlock + 1) * GetProcessBufferSize()) > pDoc->GetDataSize())
-    {
+    if (((DWORD)(nBlock + 1) * GetProcessBufferSize()) > pDoc->GetDataSize()) {
         dwAmount = pDoc->GetDataSize() - ((DWORD)nBlock * GetProcessBufferSize());
     }
-    try
-    {
+    try {
         m_pSRDfile->Write((HPSTR)(pTarget + GetProcessBufferSize()), dwAmount);
-    }
-    catch (CFileException e)
-    {
+    } catch (CFileException e) {
         // error writing file
         ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_SRDfileStatus.m_szFullName);
         return NULL; // writing failed
@@ -554,8 +474,7 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT n
 /***************************************************************************/
 // CProcessSmoothLoudness::SetDataInvalid Delete processed data
 /***************************************************************************/
-void CProcessSmoothLoudness::SetDataInvalid()
-{
+void CProcessSmoothLoudness::SetDataInvalid() {
     CProcess::SetDataInvalid();
     FileUtils::RemoveFile(m_SRDfileStatus.m_szFullName);
     m_SRDfileStatus.m_szFullName[0] = 0;
@@ -575,28 +494,23 @@ void CProcessSmoothLoudness::SetDataInvalid()
 // word.
 /***************************************************************************/
 long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
-                                     int nProgress, int nLevel)
-{
+                                     int nProgress, int nLevel) {
     //TRACE(_T("Process: CProcessSmoothLoudness\n"));
-    if (IsCanceled())
-    {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady())
-    {
+    if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSLO))   // memory allocation failed
-    {
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSLO)) { // memory allocation failed
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // alocate the temporary global buffer for the smoothed raw data
     HANDLE hSmoothBlock = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, 2 * GetProcessBufferSize());
-    if (!hSmoothBlock)
-    {
+    if (!hSmoothBlock) {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
         EndProcess(); // end data processing
@@ -604,8 +518,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     HPSTR lpSmoothBlock = (HPSTR)::GlobalLock(hSmoothBlock); // lock memory
-    if (!lpSmoothBlock)
-    {
+    if (!lpSmoothBlock) {
         // memory lock error
         ErrorMessage(IDS_ERROR_MEMLOCK);
         EndProcess(); // end data processing
@@ -614,8 +527,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file for smoothed loudness
-    if (!CreateTempFile(_T("SLO")))   // creating error
-    {
+    if (!CreateTempFile(_T("SLO"))) { // creating error
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -626,8 +538,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
     }
 
     // create the temporary file for smoothed raw data
-    if (!CreateAuxTempFile(_T("SRD"), m_pSRDfile, m_SRDfileStatus))
-    {
+    if (!CreateAuxTempFile(_T("SRD"), m_pSRDfile, m_SRDfileStatus)) {
         return Exit(PROCESS_ERROR, NULL);
     }
 
@@ -647,22 +558,19 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
     short int * pLoudData = (short int *)m_lpBuffer; // pointer to loudness data
     // calculate current processing position (copied but not understood from WINCECIL)
     DWORD dwDataPos, dwLoudStart;
-    if (pUttParm->nMinFreq == 0)
-    {
+    if (pUttParm->nMinFreq == 0) {
         pUttParm->nMinFreq = 50;    // to prevent 0 divisions
     }
     dwLoudStart = ((pDoc->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
                     + pDoc->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
                    + nCalcDataLength / 2 + 5) / nCalcInterval + 1;
     dwDataPos = dwLoudStart * nCalcInterval - nCalcDataLength / 2;
-    if (nSmpSize > 1)
-    {
+    if (nSmpSize > 1) {
         dwDataPos *= 2;    // 16 bit data
     }
     // prepare loudness loop
     DWORD dwLoudCount = 0;
-    for (; dwLoudCount < dwLoudStart; dwLoudCount++)
-    {
+    for (; dwLoudCount < dwLoudStart; dwLoudCount++) {
         *pLoudData++ = 0; // initialize buffer
     }
     UINT nFirstOffset = (UINT)dwDataPos; // raw data pointer offset for start
@@ -672,38 +580,31 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
     int nCalculatedBlock = -1; // actual calculated block in memory
     UINT nAverage; // smoothing average values
     long lAverage;
-    while (dwDataPos < dwDataSize)   // processing loop
-    {
+    while (dwDataPos < dwDataSize) { // processing loop
         pBlockStart = pDoc->GetWaveData(dwDataPos); // get pointer to data block
-        if (!pBlockStart)
-        {
+        if (!pBlockStart) {
             return Exit(PROCESS_ERROR, hSmoothBlock);    // error, reading failed
         }
-        if ((dwDataPos / GetProcessBufferSize()) != (UINT)nBlockNumber)
-        {
+        if ((dwDataPos / GetProcessBufferSize()) != (UINT)nBlockNumber) {
             int nOldBlockNumber = nBlockNumber;
             nBlockNumber = (int)(dwDataPos / GetProcessBufferSize()); // new block loaded
             // smooth the raw data
             pSmoothData = SmoothRawData(pDoc, lpSmoothBlock, nSmpSize, nOldBlockNumber,
                                         nBlockNumber, &nCalculatedBlock, pDoc->GetSamplesPerSec(),
                                         dwLoudStart, &nAverage, &lAverage);
-            if (!pSmoothData)
-            {
+            if (!pSmoothData) {
                 return Exit(PROCESS_ERROR, hSmoothBlock);    // error, reading failed
             }
             pSmoothData += nFirstOffset;
             nFirstOffset = 0;
         }
-        if (nSmpSize == 1)   // 8 bit data
-        {
+        if (nSmpSize == 1) { // 8 bit data
             // process a byte
             int nRes = (unsigned char)*pSmoothData - 128;
             nResult += (nRes >= 0 ? nRes : -nRes);
             pSmoothData += 4; // increment position in raw data
             dwDataPos += 4;
-        }
-        else     // 16 bit data
-        {
+        } else { // 16 bit data
             // process a word
             short * pTemp = (short *)pSmoothData;
             int nRes = (unsigned char)((*pTemp / 256) + 128) - 128;
@@ -712,47 +613,35 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
             dwDataPos += 8;
         }
         // if loudness result ready, store it
-        if ((++nCalcLoop > nCalcDataLength / 4) || (dwDataPos >= dwDataSize))
-        {
+        if ((++nCalcLoop > nCalcDataLength / 4) || (dwDataPos >= dwDataSize)) {
             nCalcLoop = 0; // reset loop counter
             nResult = (UINT)((DWORD)nResult * PRECISION_MULTIPLIER / (nCalcDataLength / 4)); // correct result
             *pLoudData++ = (short)nResult; // save result
-            if ((int)nResult > m_nMaxValue)
-            {
+            if ((int)nResult > m_nMaxValue) {
                 m_nMaxValue = (int)nResult;    // save maximum value
             }
             nResult = 0;
-            if (nSmpSize == 1)   // 8 bit data
-            {
+            if (nSmpSize == 1) { // 8 bit data
                 pSmoothData -= (nCalcDataLength + 4) - nCalcInterval; // reset position in raw data
-                if (dwDataPos < dwDataSize)
-                {
+                if (dwDataPos < dwDataSize) {
                     dwDataPos -= (nCalcDataLength + 4) - nCalcInterval;
                 }
-            }
-            else     // 16 bit data
-            {
+            } else { // 16 bit data
                 pSmoothData -= ((nCalcDataLength + 4) - nCalcInterval) * 2; // reset position in raw data
-                if (dwDataPos < dwDataSize)
-                {
+                if (dwDataPos < dwDataSize) {
                     dwDataPos -= ((nCalcDataLength + 4) - nCalcInterval) * 2;
                 }
             }
             // set progress bar
             SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
-            if (IsCanceled())
-            {
+            if (IsCanceled()) {
                 return Exit(PROCESS_CANCELED, hSmoothBlock);    // process canceled
             }
-            if ((++dwLoudCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataSize))   // loudness buffer is full or processing finished
-            {
+            if ((++dwLoudCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataSize)) { // loudness buffer is full or processing finished
                 // write the processed data block
-                try
-                {
+                try {
                     Write(m_lpBuffer, dwLoudCount * 2);
-                }
-                catch (CFileException e)
-                {
+                } catch (CFileException e) {
                     // error writing file
                     ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                     return Exit(PROCESS_ERROR, hSmoothBlock); // error, writing failed
@@ -767,15 +656,13 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     // close the smoothed raw data temp file and read the status
-    if (m_pSRDfile)
-    {
+    if (m_pSRDfile) {
         m_pSRDfile->Abort();
     }
 
     CString szFullName = m_SRDfileStatus.m_szFullName;
     CFile::GetStatus(szFullName, m_SRDfileStatus); // read the status
-    if (GetDataSize() < 2)
-    {
+    if (GetDataSize() < 2) {
         return Exit(PROCESS_ERROR, hSmoothBlock);    // error, not enough data
     }
     EndProcess((nProgress >= 95)); // end data processing
@@ -784,11 +671,9 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
     ::GlobalUnlock(hSmoothBlock);
     ::GlobalFree(hSmoothBlock);
     // allocate permanent global buffer for the processed smoothed raw data
-    if (!m_hSRDdata)   // not yet allocated
-    {
+    if (!m_hSRDdata) { // not yet allocated
         m_hSRDdata = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize()); // allocate memory
-        if (!m_hSRDdata)
-        {
+        if (!m_hSRDdata) {
             // memory allocation error
             ErrorMessage(IDS_ERROR_MEMALLOC);
             FileUtils::RemoveFile(m_SRDfileStatus.m_szFullName);
@@ -797,8 +682,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
             return MAKELONG(PROCESS_ERROR, 100);
         }
         m_lpSRDdata = (HPSTR)::GlobalLock(m_hSRDdata); // lock memory
-        if (!m_lpSRDdata)
-        {
+        if (!m_lpSRDdata) {
             // memory lock error
             ErrorMessage(IDS_ERROR_MEMLOCK);
             ::GlobalFree(m_hSRDdata);
@@ -825,42 +709,30 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
 // pointer to the data block will be returned. This smooth raw data is either
 // 8 or 16bit data, like its source the raw data.
 /***************************************************************************/
-HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
-{
+HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin) {
     if (((!bBlockBegin && !m_bSRDBlockBegin) && ((dwOffset >= m_dwSRDBufferOffset) && (dwOffset < m_dwSRDBufferOffset + GetProcessBufferSize())))
-            || ((bBlockBegin) && (m_dwSRDBufferOffset == dwOffset)))
-    {
+            || ((bBlockBegin) && (m_dwSRDBufferOffset == dwOffset))) {
         // this data is actually in buffer
         return m_lpSRDdata; // return pointer to data
-    }
-    else     // new data block has to be read
-    {
+    } else { // new data block has to be read
         m_bSRDBlockBegin = bBlockBegin;
-        if (bBlockBegin)
-        {
+        if (bBlockBegin) {
             m_dwSRDBufferOffset = dwOffset;    // given offset ist first sample in data block
-        }
-        else
-        {
+        } else {
             m_dwSRDBufferOffset = dwOffset - (dwOffset % GetProcessBufferSize());    // new block offset
         }
         // open the temporary file
-        if (!m_pSRDfile->Open(m_SRDfileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive))
-        {
+        if (!m_pSRDfile->Open(m_SRDfileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive)) {
             // error opening file
             ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_SRDfileStatus.m_szFullName);
             m_pSRDfile->Abort();
             return NULL;
         }
         // find the right position in the data
-        if (m_dwSRDBufferOffset != 0L)
-        {
-            try
-            {
+        if (m_dwSRDBufferOffset != 0L) {
+            try {
                 m_pSRDfile->Seek(m_dwSRDBufferOffset, CFile::begin);
-            }
-            catch (CFileException e)
-            {
+            } catch (CFileException e) {
                 // error seeking file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, m_SRDfileStatus.m_szFullName);
                 m_pSRDfile->Abort();
@@ -868,12 +740,9 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
             }
         }
         // read the processed data block
-        try
-        {
+        try {
             m_pSRDfile->Read((HPSTR)m_lpSRDdata, GetProcessBufferSize());
-        }
-        catch (CFileException e)
-        {
+        } catch (CFileException e) {
             // error reading file
             ErrorMessage(IDS_ERROR_READTEMPFILE, m_SRDfileStatus.m_szFullName);
             m_pSRDfile->Abort();
@@ -881,8 +750,7 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
         }
 
         // close the temporary file
-        if (m_pSRDfile)
-        {
+        if (m_pSRDfile) {
             m_pSRDfile->Abort();
         }
 
@@ -891,8 +759,7 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
     }
 }
 
-DWORD CProcessSmoothLoudness::GetSmoothRawDataSize()
-{
+DWORD CProcessSmoothLoudness::GetSmoothRawDataSize() {
     // return processed data size in words (16 bit)
     return (DWORD)m_SRDfileStatus.m_size;
 }

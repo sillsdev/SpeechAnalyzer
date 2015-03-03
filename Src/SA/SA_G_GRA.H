@@ -10,8 +10,7 @@
 //###########################################################################
 // CPlotGrappl plot window
 
-class CPlotGrappl : public CPlotWnd
-{
+class CPlotGrappl : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotGrappl)
 
 // Construction/destruction/creation

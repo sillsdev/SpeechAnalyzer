@@ -46,15 +46,13 @@
 #define MAX_SCREEN_WIDTH                2048        // maximum width of screen in pixels
 
 // data processing defines
-enum ESearchOptions
-{
+enum ESearchOptions {
     // search options
     LINEAR_SEARCH,
     BINARY_SEARCH
 };
 
-enum EUpdateMode
-{
+enum EUpdateMode {
     // graph update mode
     STATIC_UPDATE =  0,
     DYNAMIC_UPDATE = 1
@@ -125,23 +123,20 @@ enum EUpdateMode
 #define PROGRESSPANE_3_WIDTH            150
 
 // cursor definitions
-enum ECursorSelect
-{
+enum ECursorSelect {
     // selection
-	UNDEFINED_CURSOR = -1,
+    UNDEFINED_CURSOR = -1,
     START_CURSOR = 1,
     STOP_CURSOR = 2
 };
 
-enum ESnapDirection
-{
+enum ESnapDirection {
     // direction:
     SNAP_BOTH  = 0x0000,  //  snaps in both directions (must be 0)
     SNAP_RIGHT = 0x0001,  //  snaps only to the right
     SNAP_LEFT  = 0x0002,  //  snaps only to the left
 };
-enum ECursorAlignment
-{
+enum ECursorAlignment {
     // alignment
     ALIGN_AT_SAMPLE         =  0,
     ALIGN_AT_ZERO_CROSSING  =  1,
@@ -151,31 +146,30 @@ enum ECursorAlignment
 };
 
 // used by saveas dialog
-enum ESaveArea 
-{ 
-	saveEntire = 0, 
-	saveView = 1, 
-	saveCursors = 2 
+enum ESaveArea {
+    saveEntire = 0,
+    saveView = 1,
+    saveCursors = 2
 };
 
 // used by saveas dialog
-enum EShowFiles { 
-	showNew = 0, 
-	showOriginal = 1, 
-	showBoth = 2
+enum EShowFiles {
+    showNew = 0,
+    showOriginal = 1,
+    showBoth = 2
 };
 
 // used by saveas dialog
-enum EFileFormat { 
-	formatStereo = 0, 
-	formatMono = 1, 
-	formatRight = 2
+enum EFileFormat {
+    formatStereo = 0,
+    formatMono = 1,
+    formatRight = 2
 };
 
 enum EGender {
-	male = 0, 
-	female = 1, 
-	child = 2
+    male = 0,
+    female = 1,
+    child = 2
 };
 
 // RIFF header definitions
@@ -190,10 +184,10 @@ enum EGender {
 #define FILE_DESCRIPTION_SIZE           256         // file description string length
 // user windows messages
 #define WM_USER_SPEECHAPPLICATION       0x7FF0
-#define SPEECH_WPARAM_SHOWSA            0xE001		// startup SA in batch mode with a list
+#define SPEECH_WPARAM_SHOWSA            0xE001      // startup SA in batch mode with a list
 #define SPEECH_WPARAM_SHOWSM            0xE002
 #define SPEECH_WPARAM_CLOSE             0xE003
-#define SPEECH_WPARAM_SHOWSAREC         0xE004		// start up SA in batch mode in recording mode
+#define SPEECH_WPARAM_SHOWSAREC         0xE004      // start up SA in batch mode in recording mode
 #define WM_USER_CURSOR_IN_FRAGMENT      WM_USER + 5
 #define WM_USER_APPLY_TOOLSOPTIONS      WM_USER + 6
 #define WM_USER_RECORDER                WM_USER + 7
@@ -220,7 +214,7 @@ enum EGender {
 #define WM_USER_AUTO_RESTART            WM_USER + 27
 #define WM_USER_AUTOSAVE                WM_USER + 28
 
-#define WM_USER_UPDATE_PLAYER			WM_USER + 29
+#define WM_USER_UPDATE_PLAYER           WM_USER + 29
 
 #define HINT_APP_DOC_LIST_CHANGED       0x123
 
@@ -242,13 +236,12 @@ typedef UINT MMRESULT;                  // MMIO function call results
 
 // timer IDs
 #define ID_TIMER_AUTOSAVE               0x1000
-#define ID_TIMER_PLAYBACK				0x1001
-#define ID_TIMER_DELAY					0x1002
-#define ID_TIMER_MIDI					0x1003
-#define ID_TIMER_FLASH					0x1004
+#define ID_TIMER_PLAYBACK               0x1001
+#define ID_TIMER_DELAY                  0x1002
+#define ID_TIMER_MIDI                   0x1003
+#define ID_TIMER_FLASH                  0x1004
 
-struct SDPParm
-{
+struct SDPParm {
     UINT         nPanes;            // number of mirror panes
     UINT         nUpperBound;       // upper display boundary
     int          nStepMode;         // steps mode
@@ -256,14 +249,13 @@ struct SDPParm
     BOOL         bAverage;          // TRUE, if average used
 };                                  // SDP parameters
 
-enum EAnnotation                    // annotation windows
-{
+enum EAnnotation {                  // annotation windows
     PHONETIC=0,
     TONE,
     PHONEMIC,
     ORTHO,
     GLOSS,
-	GLOSS_NAT,
+    GLOSS_NAT,
     REFERENCE,
     MUSIC_PL1,
     MUSIC_PL2,
@@ -272,21 +264,18 @@ enum EAnnotation                    // annotation windows
     ANNOT_WND_NUMBER                    // number of annotation windows
 };
 
-enum EPositionReadout                   // status bar position readout mode
-{
+enum EPositionReadout {                 // status bar position readout mode
     TIME,
     SAMPLES,
     BYTES,
 };
 
-enum EPitchReadout                      // status bar pitch readout mode
-{
+enum EPitchReadout {                    // status bar pitch readout mode
     HERTZ,
     HALFTONES,
 };
 
-enum EGraphCaption                       // graph caption style
-{
+enum EGraphCaption {                     // graph caption style
     NoneThin,
     None,
     Mini,
@@ -294,37 +283,32 @@ enum EGraphCaption                       // graph caption style
     Normal,
 };
 
-enum EOpenMode
-{
+enum EOpenMode {
     DEFAULT,
     PHONANALYSIS,
     MUSIANALYSIS,
 };
 
-enum EBoundary
-{
+enum EBoundary {
     BOUNDARIES_EDIT_NULL = 0,
     BOUNDARIES_EDIT_SEGMENT_SIZE = 1,
     BOUNDARIES_EDIT_BOUNDARIES = 2
 };
 
-enum EWordFilenameConvention
-{
+enum EWordFilenameConvention {
     WFC_REF,
     WFC_GLOSS,
     WFC_REF_GLOSS
 };
 
-enum EPhraseFilenameConvention
-{
+enum EPhraseFilenameConvention {
     PFC_REF,
     PFC_GLOSS,
     PFC_REF_GLOSS,
     PFC_PHRASE
 };
 
-struct RGB
-{
+struct RGB {
     long r;
     long g;
     long b;
@@ -333,9 +317,9 @@ struct RGB
 /**
 * used to represt a wave file length or length in seconds
 */
-typedef double WAVETIME;	// location in seconds
-typedef DWORD WAVESAMP;		// location in samples
-typedef DWORD CURSORPOS;	// location in bytes
+typedef double WAVETIME;    // location in seconds
+typedef DWORD WAVESAMP;     // location in samples
+typedef DWORD CURSORPOS;    // location in bytes
 
 #include "grid.h"
 #include "param.h"

@@ -27,23 +27,20 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessInstantaneousPower::CProcessInstantaneousPower Constructor
 /***************************************************************************/
-CProcessInstantaneousPower::CProcessInstantaneousPower()
-{
+CProcessInstantaneousPower::CProcessInstantaneousPower() {
 }
 
 /***************************************************************************/
 // CProcessInstantaneousPower::~CProcessInstantaneousPower Destructor
 /***************************************************************************/
-CProcessInstantaneousPower::~CProcessInstantaneousPower()
-{
+CProcessInstantaneousPower::~CProcessInstantaneousPower() {
 }
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
 // Cascade a zero/pole of the form (s-a)/(s+a) or (s+a)/(s-a) which has a A(w) response = 1
 // but a non constant phase response
-void CascadeAllPass(CZTransform & zTransform, double dCenterFrequency, double dSamplingRate)
-{
+void CascadeAllPass(CZTransform & zTransform, double dCenterFrequency, double dSamplingRate) {
     double dRelativeFrequency = pi*dCenterFrequency/dSamplingRate;
     double d = (1 - (dRelativeFrequency))/(1 + (dRelativeFrequency));
     double numerator[2];
@@ -60,21 +57,17 @@ void CascadeAllPass(CZTransform & zTransform, double dCenterFrequency, double dS
 // CProcessInstantaneousPower::Process
 /***************************************************************************/
 long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
-        int nProgress, int nLevel)
-{
-    if (IsCanceled())
-    {
+        int nProgress, int nLevel) {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady())
-    {
+    if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     //TRACE(_T("Process: CProcessInstantaneousPower\n"));
 
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller))   // memory allocation failed
-    {
+    if (!StartProcess(pCaller)) { // memory allocation failed
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -85,30 +78,26 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
 
     short nResult = LOWORD(pRaw->Process(this, pDoc, nLevel));
     // Exit if error has occurred or the spectrum process has been canceled.
-    if (nResult < 0)
-    {
+    if (nResult < 0) {
         SetDataReady(FALSE);
-        if (nResult == PROCESS_CANCELED)
-        {
+        if (nResult == PROCESS_CANCELED) {
             CancelProcess();
         }
         return Exit(nResult);
     }
 
-    CProcessIIRFilter * phaseFilter = (CProcessIIRFilter*)pDoc->GetHilbert();
+    CProcessIIRFilter * phaseFilter = (CProcessIIRFilter *)pDoc->GetHilbert();
 
     long lResult = phaseFilter->Process(pCaller, pDoc, nProgress, ++nLevel);
     nLevel = (short int)LOWORD(lResult);
-    if ((nLevel == PROCESS_CANCELED))
-    {
+    if ((nLevel == PROCESS_CANCELED)) {
         nProgress = HIWORD(lResult);
         CancelProcess(); // set your own cancel flag
         return MAKELONG(nLevel, nProgress);
     }
 
     // create the temporary file
-    if (!CreateTempFile(_T("TEA")))   // creating error
-    {
+    if (!CreateTempFile(_T("TEA"))) { // creating error
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -130,12 +119,10 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
     double dLastData = 0.;
     double dLastPhasedData = 0.;
 
-    for (DWORD dwWaveOffset = 1; dwWaveOffset < dwWaveSize - 1; dwWaveOffset++)
-    {
+    for (DWORD dwWaveOffset = 1; dwWaveOffset < dwWaveSize - 1; dwWaveOffset++) {
         short * pData = (short *)pRaw->GetProcessedDataBlock((dwWaveOffset-1)*sizeof(short),3*sizeof(short));
         short * pDataPhased = (short *)phaseFilter->GetProcessedDataBlock((dwWaveOffset-1)*sizeof(short),3*sizeof(short));
-        if (!pData || !pDataPhased)   // reading failed
-        {
+        if (!pData || !pDataPhased) { // reading failed
             EndProcess(); // end data processing
             EndWaitCursor();
             SetDataInvalid();
@@ -163,15 +150,11 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
         *pProcData++ = nValue;
         dwProcDataCount++;
 
-        if (dwProcDataCount >= dwBufferSize / sizeof(short))
-        {
+        if (dwProcDataCount >= dwBufferSize / sizeof(short)) {
             // write the processed data block
-            try
-            {
+            try {
                 Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
-            }
-            catch (CFileException e)
-            {
+            } catch (CFileException e) {
                 AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0); // display message
                 EndProcess(); // end data processing
                 EndWaitCursor();
@@ -182,8 +165,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
             pProcData = (short *)m_lpBuffer; // reset pointer to begin of processed data buffer
             // set progress bar
             SetProgress(nProgress + (int)(100 * dwWaveOffset / dwWaveSize / (DWORD)nLevel));
-            if (IsCanceled())
-            {
+            if (IsCanceled()) {
                 EndProcess(); // end data processing
                 EndWaitCursor();
                 SetDataInvalid();
@@ -196,14 +178,10 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
     *pProcData++ = 0;
     dwProcDataCount++;
 
-    if (dwProcDataCount)
-    {
-        try
-        {
+    if (dwProcDataCount) {
+        try {
             Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
-        }
-        catch (CFileException e)
-        {
+        } catch (CFileException e) {
             AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0); // display message
             EndProcess(); // end data processing
             EndWaitCursor();

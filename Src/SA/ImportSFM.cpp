@@ -595,14 +595,14 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
         int nIndex = nPhonetic;
         while ((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) < dwStop)) {
             if (nCount >= nSegments) {
-				// no checkpoint
-                pPhonetic->Remove(pDoc, nIndex, FALSE); 
+                // no checkpoint
+                pPhonetic->Remove(pDoc, nIndex, FALSE);
                 if (nIndex >= pPhonetic->GetOffsetSize()) {
                     break;
                 }
             } else {
                 DWORD dwBegin = dwStart + nCount;
-                pPhonetic->Adjust(pDoc, nIndex, dwBegin, 1);
+                pPhonetic->Adjust(pDoc, nIndex, dwBegin, 1, false);
                 nIndex = pPhonetic->GetNext(nIndex);
                 nCount++;
             }
@@ -638,7 +638,7 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
             if ((dwBegin + dwDuration) > dwStop) {
                 dwDuration = dwStop - dwBegin;
             }
-            pPhonetic->Adjust(pDoc, nIndex, dwBegin, dwDuration);
+            pPhonetic->Adjust(pDoc, nIndex, dwBegin, dwDuration, false);
             nIndex = pPhonetic->GetPrevious(nIndex);
         }
     }
@@ -759,19 +759,19 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
         while (nWordCurr < nWords || nIndex != -1) {
             if (nWordCurr < nWords) {
                 dwDuration = (DWORD)((float)dwFileLength * (float)(nSegmentToBeginWord[nWordCurr + 1] - nSegmentToBeginWord[nWordCurr]) / (float)nSegmentCount);
-                if (nIndex != -1) { 
-					// adjust existing segments
-                    pPhonetic->Adjust(pDoc, nWordCurr, dwStart, dwDuration);
-                } else { 
-					// add segments
+                if (nIndex != -1) {
+                    // adjust existing segments
+                    pPhonetic->Adjust(pDoc, nWordCurr, dwStart, dwDuration, false);
+                } else {
+                    // add segments
                     pPhonetic->Insert(nWordCurr, szEmpty, false, dwStart, dwDuration);
                 }
                 pGloss->Insert(nWordCurr, szEmptyGloss, false, dwStart, dwDuration);
                 nIndex = nWordCurr;
                 nWordCurr++;
                 dwStart += dwDuration;
-            } else { 
-				// remove extra segments
+            } else {
+                // remove extra segments
                 pPhonetic->Remove(pDoc, nIndex, FALSE);
                 nIndex--;
             }
@@ -784,8 +784,8 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
     }
 
     if (nMode == MANUAL) {
-		// save top of file position
-        streampos pos = stream.TellG();  
+        // save top of file position
+        streampos pos = stream.TellG();
 
         int nSegmentCount = 0;
         int nWordCount = -1;
@@ -914,10 +914,7 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
             bAppendPhonetic = FALSE;
         }
     }
-    // deselect everything // SDM 1.5Test10.1
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-        pDoc->GetSegment(nLoop)->SetSelection(-1);
-    }
+	pDoc->DeselectAll();
     return TRUE;
 }
 

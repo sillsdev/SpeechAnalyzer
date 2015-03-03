@@ -107,12 +107,10 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CGraphWnd::SetMagnify Set new magnify factor, redraw plot and legend
 /***************************************************************************/
-void CGraphWnd::SetMagnify(double bFactor, BOOL bRedraw)
-{
+void CGraphWnd::SetMagnify(double bFactor, BOOL bRedraw) {
     // set magnify in plot
     m_pPlot->SetMagnify(bFactor, bRedraw);
-    if (m_bLegend && bRedraw)
-    {
+    if (m_bLegend && bRedraw) {
         RedrawGraph(TRUE, TRUE);    // redraw whole graph
     }
 }
@@ -120,24 +118,20 @@ void CGraphWnd::SetMagnify(double bFactor, BOOL bRedraw)
 /***************************************************************************/
 // CGraphWnd::SetStartCursor Position the start cursor
 /***************************************************************************/
-void CGraphWnd::SetStartCursor(CSaView * pView)
-{
+void CGraphWnd::SetStartCursor(CSaView * pView) {
     m_pPlot->SetStartCursor(pView);
-    if (!m_pPlot->HaveCursors())
-    {
+    if (!m_pPlot->HaveCursors()) {
         m_pPlot->Invalidate();
     }
-    UpdateStatusBar( pView->GetStartCursorPosition(), pView->GetStopCursorPosition()); // update the status bar
+    UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition());  // update the status bar
 }
 
 /***************************************************************************/
 // CGraphWnd::SetStopCursor Position the stop cursor
 /***************************************************************************/
-void CGraphWnd::SetStopCursor(CSaView * pView)
-{
+void CGraphWnd::SetStopCursor(CSaView * pView) {
     m_pPlot->SetStopCursor(pView);
-    if (!m_pPlot->HaveCursors())
-    {
+    if (!m_pPlot->HaveCursors()) {
         m_pPlot->Invalidate();
     }
     UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition()); // update the status bar
@@ -146,11 +140,9 @@ void CGraphWnd::SetStopCursor(CSaView * pView)
 /***************************************************************************/
 // CGraphWnd::SetPlaybackCursor Position the playback cursor
 /***************************************************************************/
-void CGraphWnd::SetPlaybackCursor(CSaView * pView)
-{
+void CGraphWnd::SetPlaybackCursor(CSaView * pView) {
     m_pPlot->SetPlaybackCursor(pView,false);
-    if (!m_pPlot->HaveCursors())
-    {
+    if (!m_pPlot->HaveCursors()) {
         m_pPlot->Invalidate();
     }
 }
@@ -159,27 +151,22 @@ void CGraphWnd::SetPlaybackCursor(CSaView * pView)
 /***************************************************************************/
 // CGraphWnd::SetPlaybackPosition
 /***************************************************************************/
-void CGraphWnd::SetPlaybackPosition( CSaView * pView, bool scroll)
-{
-    if (m_pPlot->HaveCursors())
-    {
-        m_pPlot->SetPlaybackCursor( pView, scroll);
+void CGraphWnd::SetPlaybackPosition(CSaView * pView, bool scroll) {
+    if (m_pPlot->HaveCursors()) {
+        m_pPlot->SetPlaybackCursor(pView, scroll);
     }
 }
 
-void CGraphWnd::SetPlaybackFlash( bool on)
-{
-	if (m_pPlot->HaveCursors())
-	{
-		m_pPlot->SetPlaybackFlash(on);
-	}
+void CGraphWnd::SetPlaybackFlash(bool on) {
+    if (m_pPlot->HaveCursors()) {
+        m_pPlot->SetPlaybackFlash(on);
+    }
 }
 
 /***************************************************************************/
 // CGraphWnd::CreateAnnotationWindows Creates the annotation windows
 //**************************************************************************/
-void CGraphWnd::CreateAnnotationWindows()
-{
+void CGraphWnd::CreateAnnotationWindows() {
     m_apAnnWnd[PHONETIC] = new CPhoneticWnd(PHONETIC);
     m_apAnnWnd[TONE] = new CToneWnd(TONE);
     m_apAnnWnd[PHONEMIC] = new CPhonemicWnd(PHONEMIC);
@@ -192,10 +179,8 @@ void CGraphWnd::CreateAnnotationWindows()
     m_apAnnWnd[MUSIC_PL3] = new CMusicPhraseWnd(MUSIC_PL3);
     m_apAnnWnd[MUSIC_PL4] = new CMusicPhraseWnd(MUSIC_PL4);
     CRect rWnd(0, 0, 0, 0);
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-    {
-        if (!m_apAnnWnd[nLoop]->Create(NULL, _T("Transcription"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
-        {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        if (!m_apAnnWnd[nLoop]->Create(NULL, _T("Transcription"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
             delete m_apAnnWnd[nLoop];
             m_apAnnWnd[nLoop] = NULL;
         }
@@ -205,12 +190,10 @@ void CGraphWnd::CreateAnnotationWindows()
 /***************************************************************************/
 // CGraphWnd::SetLegendScale Set the scale of the legend window
 //**************************************************************************/
-BOOL CGraphWnd::SetLegendScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension, int nDivisions, double d3dOffset)
-{
+BOOL CGraphWnd::SetLegendScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension, int nDivisions, double d3dOffset) {
     // set legend scale
     BOOL bNewScale = m_pLegend->SetScale(nMode, dMinValue, dMaxValue, pszDimension, nDivisions, d3dOffset);
-    if (bNewScale && m_nPlotID != ID_GRAPHS_OVERLAY)
-    {
+    if (bNewScale && m_nPlotID != ID_GRAPHS_OVERLAY) {
         RedrawGraph(TRUE, m_bLegend, FALSE);    // redraw whole graph
     }
 
@@ -220,13 +203,10 @@ BOOL CGraphWnd::SetLegendScale(int nMode, double dMinValue, double dMaxValue, TC
 /***************************************************************************/
 // CGraphWnd::SetXScale Set the scale of the x-scale window
 //**************************************************************************/
-void CGraphWnd::SetXScale(int nMode, int nMinValue, int nMaxValue, TCHAR * pszDimension, int nDivisions, double d3dOffset)
-{
-    if (m_bXScale)
-    {
+void CGraphWnd::SetXScale(int nMode, int nMinValue, int nMaxValue, TCHAR * pszDimension, int nDivisions, double d3dOffset) {
+    if (m_bXScale) {
         // set x-scale scale
-        if (m_pXScale->SetScale(nMode, nMinValue, nMaxValue, pszDimension, nDivisions, d3dOffset) && m_nPlotID != ID_GRAPHS_OVERLAY)   // set x-scale scale
-        {
+        if (m_pXScale->SetScale(nMode, nMinValue, nMaxValue, pszDimension, nDivisions, d3dOffset) && m_nPlotID != ID_GRAPHS_OVERLAY) { // set x-scale scale
             RedrawGraph(TRUE, TRUE);    // redraw whole graph
         }
     }
@@ -235,10 +215,8 @@ void CGraphWnd::SetXScale(int nMode, int nMinValue, int nMaxValue, TCHAR * pszDi
 /***************************************************************************/
 // CGraphWnd::ChangeAnnotationSelection Change the annotation selection
 //**************************************************************************/
-void CGraphWnd::ChangeAnnotationSelection(int nIndex)
-{
-    if (m_abAnnWnd[nIndex])
-    {
+void CGraphWnd::ChangeAnnotationSelection(int nIndex) {
+    if (m_abAnnWnd[nIndex]) {
         m_apAnnWnd[nIndex]->Invalidate(TRUE);    // redraw
     }
 }
@@ -249,10 +227,8 @@ void CGraphWnd::ChangeAnnotationSelection(int nIndex)
 /***************************************************************************/
 // CGraphWnd::OnCreate Window creation
 /***************************************************************************/
-int CGraphWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-    if (CMiniCaptionWnd::OnCreate(lpCreateStruct) == -1)
-    {
+int CGraphWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
+    if (CMiniCaptionWnd::OnCreate(lpCreateStruct) == -1) {
         return -1;
     }
 
@@ -262,21 +238,18 @@ int CGraphWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
     m_pXScale = new CXScaleWnd();
     CRect rWnd(0, 0, 0, 0);
     // create the plot window
-    if (!m_pPlot->Create(NULL, _T("Plot"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
-    {
+    if (!m_pPlot->Create(NULL, _T("Plot"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
         delete m_pPlot;
         m_pPlot = NULL;
     }
     m_pPlot->SetPlotName(lpCreateStruct->lpszName);
     // create the legend window
-    if (!m_pLegend->Create(NULL, _T("Legend"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
-    {
+    if (!m_pLegend->Create(NULL, _T("Legend"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
         delete m_pLegend;
         m_pLegend = NULL;
     }
     // create the x-scale window
-    if (!m_pXScale->Create(NULL, _T("XScale"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
-    {
+    if (!m_pXScale->Create(NULL, _T("XScale"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
         delete m_pXScale;
         m_pXScale = NULL;
     }
@@ -288,8 +261,7 @@ int CGraphWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 /***************************************************************************/
 // CGraphWnd::OnSize Window sizing
 /***************************************************************************/
-void CGraphWnd::OnSize(UINT nType, int cx, int cy)
-{
+void CGraphWnd::OnSize(UINT nType, int cx, int cy) {
     CMiniCaptionWnd::OnSize(nType, cx, cy);
     ResizeGraph(TRUE, TRUE); // repaint whole graph
 }
@@ -299,19 +271,15 @@ void CGraphWnd::OnSize(UINT nType, int cx, int cy)
 // only used for printing.
 /***************************************************************************/
 void CGraphWnd::OnDraw(CDC * pDC, const CRect * printRect,
-                       int originX, int originY)
-{
-    if (pDC->IsPrinting())
-    {
-        if (m_pPlot != NULL)
-        {
+                       int originX, int originY) {
+    if (pDC->IsPrinting()) {
+        if (m_pPlot != NULL) {
             PrintHiResGraph(pDC, printRect, originX, originY);
         }
     }
 }
 
-void ScaleRect(CRect & rct, double scaleX, double scaleY)
-{
+void ScaleRect(CRect & rct, double scaleX, double scaleY) {
     rct.left   = (int)(scaleX * rct.left);
     rct.right  = (int)(scaleX * rct.right);
     rct.top    = (int)(scaleY * rct.top);
@@ -323,8 +291,7 @@ void ScaleRect(CRect & rct, double scaleX, double scaleY)
 // for every window object contained within this window.
 /***************************************************************************/
 void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
-                                int originX, int originY)
-{
+                                int originX, int originY) {
     int nLoop = 0;
     CRect graphRect, plotRect;
     CRect xScaleRect(0,0,0,0);
@@ -335,8 +302,7 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     CRect scaledAnnotRect[ANNOT_WND_NUMBER];
     int height = m_iNCHeight * 2;
 
-    for (; nLoop < ANNOT_WND_NUMBER; nLoop++)
-    {
+    for (; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         annotRect[nLoop] = CRect(0,0,0,0);
         scaledAnnotRect[nLoop] = CRect(0,0,0,0);
     }
@@ -352,23 +318,19 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     CRect scaledPlotRect(0,0,(int)(scaleX * plotRect.Width()),
                          (int)(scaleY * plotRect.Height()));
 
-    for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-    {
-        if (m_abAnnWnd[nLoop])
-        {
+    for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        if (m_abAnnWnd[nLoop]) {
             m_apAnnWnd[nLoop]->GetWindowRect(&(annotRect[nLoop]));
             scaledAnnotRect[nLoop].right  = (int)(scaleX * annotRect[nLoop].Width());
             scaledAnnotRect[nLoop].bottom = (int)(scaleY * annotRect[nLoop].Height());
         }
     }
-    if (m_pXScale)
-    {
+    if (m_pXScale) {
         m_pXScale->GetWindowRect(&xScaleRect);
         scaledXscaleRect.right  = (int)(scaleX * xScaleRect.Width());
         scaledXscaleRect.bottom = (int)(scaleY * xScaleRect.Height());
     }
-    if (m_pLegend)
-    {
+    if (m_pLegend) {
         m_pLegend->GetWindowRect(&legendRect);
         scaledLegendRect.right  = (int)(scaleX * legendRect.Width());
         scaledLegendRect.bottom = (int)(scaleY * legendRect.Height());
@@ -395,18 +357,15 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
 
     CRect A[ANNOT_WND_NUMBER];
 
-    for (nLoop=0; nLoop<ANNOT_WND_NUMBER; nLoop++)
-    {
-        if (m_abAnnWnd[nLoop])
-        {
+    for (nLoop=0; nLoop<ANNOT_WND_NUMBER; nLoop++) {
+        if (m_abAnnWnd[nLoop]) {
             break;
         }
     }
 
     int Abottom=T.bottom;
 
-    if (nLoop < ANNOT_WND_NUMBER)
-    {
+    if (nLoop < ANNOT_WND_NUMBER) {
         A[nLoop].top = T.bottom + Graph_Inset;
         A[nLoop].left = L.right;
         A[nLoop].right = printRect->right - Graph_Inset;
@@ -415,10 +374,8 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
 
         int prev = nLoop;
 
-        for (int nLoop2=nLoop+1; nLoop2<ANNOT_WND_NUMBER; nLoop2++)
-        {
-            if (m_abAnnWnd[nLoop2])
-            {
+        for (int nLoop2=nLoop+1; nLoop2<ANNOT_WND_NUMBER; nLoop2++) {
+            if (m_abAnnWnd[nLoop2]) {
                 A[nLoop2].top = A[prev].bottom;
                 A[nLoop2].left = L.right;
                 A[nLoop2].right = printRect->right - Graph_Inset;
@@ -436,10 +393,8 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     scaledXscaleRect.right = B.Width();
     scaledXscaleRect.bottom = B.Height();
 
-    for (nLoop=0; nLoop<ANNOT_WND_NUMBER; nLoop++)
-    {
-        if (m_abAnnWnd[nLoop])
-        {
+    for (nLoop=0; nLoop<ANNOT_WND_NUMBER; nLoop++) {
+        if (m_abAnnWnd[nLoop]) {
             scaledAnnotRect[nLoop].right = A[nLoop].Width();
             scaledAnnotRect[nLoop].bottom = A[nLoop].Height();
         }
@@ -451,21 +406,17 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
 
     // phase 3 - draw it
 
-    for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-    {
-        if (m_abAnnWnd[nLoop])
-        {
+    for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        if (m_abAnnWnd[nLoop]) {
             pDC->SetWindowOrg(CPoint(originX - A[nLoop].left,originY - A[nLoop].top));
             m_apAnnWnd[nLoop]->OnDraw(pDC,scaledAnnotRect[nLoop]);
         }
     }
-    if (m_pXScale)
-    {
+    if (m_pXScale) {
         pDC->SetWindowOrg(CPoint(originX - B.left,originY - B.top));
         m_pXScale->OnDraw(pDC,scaledXscaleRect,scaledPlotRect);
     }
-    if (m_pLegend)
-    {
+    if (m_pLegend) {
         pDC->SetWindowOrg(CPoint(originX - L.left,originY - L.top));
 
         m_pLegend->OnDraw(pDC,scaledLegendRect,scaledPlotRect,scaledXscaleRect,
@@ -479,8 +430,7 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     CRect clipRect(scaledPlotRect);
     pDC->LPtoDP(clipRect);
     //clipRect.OffsetRect(-newOrg.x, -newOrg.y);
-    if (pView->PrintPreviewInProgress())
-    {
+    if (pView->PrintPreviewInProgress()) {
         clipRect.OffsetRect(2000, 198);
         // transform to preview DP
         CPreviewDC * pPrevDC = static_cast<CPreviewDC *>(pDC);
@@ -495,8 +445,7 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     double scaleCurY = (double)((scaledPlotRect.Height() * 1.0) / plotRect.Height());
 
     // if there are cursors to print, print cursors
-    if (m_pPlot->HaveCursors())
-    {
+    if (m_pPlot->HaveCursors()) {
         // print the start cursor
         CStartCursorWnd * pStartCur = m_pPlot->GetStartCursorWnd();
         pStartCur->GetWindowRect(&rctCur);
@@ -524,10 +473,9 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
 
 
     // if there is a private cursor to print, print it.
-    if (m_pPlot->HavePrivateCursor())
-    {
+    if (m_pPlot->HavePrivateCursor()) {
         // print the private cursor
-		m_pPlot->GetPrivateCursorWindowRect( &rctCur);
+        m_pPlot->GetPrivateCursorWindowRect(&rctCur);
         rctCur.left += CURSOR_WINDOW_HALFWIDTH;
         rctCur.OffsetRect(-plotRect.left, -plotRect.top);
         ScaleRect(rctCur, scaleCurX, scaleCurY);
@@ -538,8 +486,7 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     } // end of if there is a private cursor to print, print it.
 }
 
-BOOL CGraphWnd::IsIDincluded(UINT id)
-{
+BOOL CGraphWnd::IsIDincluded(UINT id) {
     return (m_nPlotID == ID_GRAPHS_OVERLAY) ?
            ((CMultiPlotWnd *)m_pPlot)->IsIDincluded(id)
            : (m_nPlotID == id);
@@ -551,8 +498,7 @@ CPlotWnd  * CGraphWnd::NewPlotFromID(UINT plotID)
     CPlotWnd * pPlot = NULL;
 
     // create plot window object depending on which type of graph it is
-    switch (plotID)
-    {
+    switch (plotID) {
     case IDD_RAWDATA:
         pPlot = new CPlotRawData();
         break;
@@ -617,8 +563,7 @@ CPlotWnd  * CGraphWnd::NewPlotFromID(UINT plotID)
         break;
     case IDD_MAGNITUDE:
         pPlot = new CPlotMagnitude();
-        if (pPlot)
-        {
+        if (pPlot) {
             pPlot->SetLineDraw(FALSE);
         }
         break;     // 09/29/2000 - DDO
@@ -663,24 +608,20 @@ CPlotWnd  * CGraphWnd::NewPlotFromID(UINT plotID)
         break;
     }
 
-    if (pPlot)
-    {
+    if (pPlot) {
         pPlot->SetParent(this);
     }
 
     return pPlot;
 }
 
-void CGraphWnd::MergeInGraph(CGraphWnd * pGraphToMerge, CSaView * pView, bool bRtOverlay)
-{
+void CGraphWnd::MergeInGraph(CGraphWnd * pGraphToMerge, CSaView * pView, bool bRtOverlay) {
     ASSERT(pGraphToMerge);
     TRACE(_T("Merge %lp\n"),pGraphToMerge);
 
     if ((IsMergeableGraph(pGraphToMerge)) &&
-            (IsMergeableGraph(this, TRUE)))
-    {
-        if (m_nPlotID != ID_GRAPHS_OVERLAY)
-        {
+            (IsMergeableGraph(this, TRUE))) {
+        if (m_nPlotID != ID_GRAPHS_OVERLAY) {
             //the very first time, we convert the target graph from something (raw,etc..)
             //into an overlay graph and add the graph back into it.
             CPlotWnd * pPlot = m_pPlot->NewCopy();
@@ -690,16 +631,14 @@ void CGraphWnd::MergeInGraph(CGraphWnd * pGraphToMerge, CSaView * pView, bool bR
 
             m_pPlot = NewPlotFromID(ID_GRAPHS_OVERLAY);
             ASSERT(m_nPlotID != IDD_BLANK);
-            if (m_nPlotID != IDD_BLANK)
-            {
+            if (m_nPlotID != IDD_BLANK) {
                 ((CMultiPlotWnd *)m_pPlot)->AddPlot(pPlot,m_nPlotID, (CSaView *)GetParent());
             }
             m_nPlotID = ID_GRAPHS_OVERLAY;
 
             // create the plot window
             CRect rWnd(0, 0, 0, 0);
-            if (!m_pPlot->Create(NULL, _T("Plot"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
-            {
+            if (!m_pPlot->Create(NULL, _T("Plot"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
                 delete m_pPlot;
                 m_pPlot = NULL;
             }
@@ -708,23 +647,18 @@ void CGraphWnd::MergeInGraph(CGraphWnd * pGraphToMerge, CSaView * pView, bool bR
 
         //now that we have an overlay graph, we add the new graph into it,
         //but first, if we are in "realtime autopitch mode, we need to remove previous overlay graphs.
-        if (m_pPlot)
-        {
+        if (m_pPlot) {
             CMultiPlotWnd * pMPlot = (CMultiPlotWnd *)m_pPlot;
 
             pMPlot->RemoveRtPlots();
 
-            if (pGraphToMerge->m_nPlotID == ID_GRAPHS_OVERLAY)
-            {
+            if (pGraphToMerge->m_nPlotID == ID_GRAPHS_OVERLAY) {
                 CMultiPlotWnd * pMPlot2 = (CMultiPlotWnd *)pGraphToMerge->m_pPlot;
                 pMPlot->MergeInOverlayPlot(pMPlot2);
-            }
-            else
-            {
+            } else {
                 CPlotWnd * pPlot2 = pGraphToMerge->m_pPlot->NewCopy();
                 pPlot2->SetParent(this);
-                if (bRtOverlay)
-                {
+                if (bRtOverlay) {
                     pPlot2->SetRtOverlay();
                 }
                 pMPlot->AddPlot(pPlot2,pGraphToMerge->m_nPlotID, pView);
@@ -733,22 +667,18 @@ void CGraphWnd::MergeInGraph(CGraphWnd * pGraphToMerge, CSaView * pView, bool bR
     }
 }
 
-void CGraphWnd::RemoveOverlayItem(const CPlotWnd * pPlot)
-{
-    if (m_nPlotID == ID_GRAPHS_OVERLAY)
-    {
+void CGraphWnd::RemoveOverlayItem(const CPlotWnd * pPlot) {
+    if (m_nPlotID == ID_GRAPHS_OVERLAY) {
         CMultiPlotWnd * pMPlot = (CMultiPlotWnd *)m_pPlot;
         pMPlot->RemovePlot(pPlot);
     }
 }
 
-BOOL CGraphWnd::IsMergeableGraph(CGraphWnd * pGraphToMerge, BOOL bBaseGraph)
-{
+BOOL CGraphWnd::IsMergeableGraph(CGraphWnd * pGraphToMerge, BOOL bBaseGraph) {
     CSaView * pView = (CSaView *)pGraphToMerge->GetParent(); // get pointer to parent view
     BOOL ret = FALSE;
 
-    switch (pGraphToMerge->m_nPlotID)
-    {
+    switch (pGraphToMerge->m_nPlotID) {
     case IDD_SPECTROGRAM:
         ret = bBaseGraph;  // Should be true only if graph is the base graph
         break;
@@ -799,8 +729,7 @@ static LPCSTR psz_showxscale   = "showxscale";
 static LPCSTR psz_annotwnd     = "annotwnd";
 static LPCSTR psz_showwnd      = "showwnd";
 
-void CGraphWnd::WriteProperties(CObjectOStream & obs)
-{
+void CGraphWnd::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_sagraph);
 
     // save the window placement.
@@ -810,8 +739,7 @@ void CGraphWnd::WriteProperties(CObjectOStream & obs)
     obs.WriteBool(psz_showlegend, m_bLegend);
     obs.WriteBool(psz_showxscale, m_bXScale);
     obs.WriteBeginMarker(psz_annotwnd);
-    for (int i=0; i< ANNOT_WND_NUMBER; i++)
-    {
+    for (int i=0; i< ANNOT_WND_NUMBER; i++) {
         obs.WriteBool(psz_showwnd, m_abAnnWnd[i]);
     }
     obs.WriteEndMarker(psz_annotwnd);
@@ -819,34 +747,24 @@ void CGraphWnd::WriteProperties(CObjectOStream & obs)
     obs.WriteEndMarker(psz_sagraph);
 }
 
-BOOL CGraphWnd::ReadProperties(CObjectIStream & obs)
-{
-    if (!obs.bReadBeginMarker(psz_sagraph))
-    {
+BOOL CGraphWnd::ReadProperties(CObjectIStream & obs) {
+    if (!obs.bReadBeginMarker(psz_sagraph)) {
         return FALSE;
     }
 
-    while (!obs.bAtEnd())
-    {
+    while (!obs.bAtEnd()) {
         if (obs.bReadBool(psz_showlegend, m_bLegend));
         else if (obs.bReadBool(psz_showxscale, m_bXScale));
-        else if (obs.bReadBeginMarker(psz_annotwnd))
-        {
-            for (int i = 0; i < ANNOT_WND_NUMBER; i++)
-            {
-                if (!obs.bReadBool(psz_showwnd, m_abAnnWnd[i]))
-                {
+        else if (obs.bReadBeginMarker(psz_annotwnd)) {
+            for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
+                if (!obs.bReadBool(psz_showwnd, m_abAnnWnd[i])) {
                     break;
                 }
             }
             obs.SkipToEndMarker(psz_annotwnd);
-        }
-        else if (obs.bReadEndMarker(psz_sagraph))
-        {
+        } else if (obs.bReadEndMarker(psz_sagraph)) {
             break;
-        }
-        else
-        {
+        } else {
             obs.ReadMarkedString();  // Skip unexpected field
         }
     }
@@ -860,8 +778,7 @@ BOOL CGraphWnd::ReadProperties(CObjectIStream & obs)
 // Set default properties for specified graph
 // (needed for "FileOpenAs->Phonetic/Music Analysis")
 /***************************************************************************/
-BOOL CGraphWnd::bSetProperties(int nID)
-{
+BOOL CGraphWnd::bSetProperties(int nID) {
     m_bXScale = !(nID == IDD_MAGNITUDE || nID == IDD_STAFF || nID == IDD_POA);
     m_bLegend = !(nID == IDD_POA);
 
@@ -871,30 +788,23 @@ BOOL CGraphWnd::bSetProperties(int nID)
     // then the melogram's legend is on by default.
     //**********************************************************************
     CSaView * pView = ((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
-    if (pView)
-    {
-        if ((nID == IDD_MELOGRAM) && (pView->GetGraphIndexForIDD(IDD_TWC) == -1))
-        {
+    if (pView) {
+        if ((nID == IDD_MELOGRAM) && (pView->GetGraphIndexForIDD(IDD_TWC) == -1)) {
             m_bLegend = TRUE;
-        }
-        else if ((nID == IDD_MAGNITUDE) && (pView->GetGraphIndexForIDD(IDD_TWC) == -1))
-        {
+        } else if ((nID == IDD_MAGNITUDE) && (pView->GetGraphIndexForIDD(IDD_TWC) == -1)) {
             CGraphWnd * pGraph = (CGraphWnd *)pView->GraphIDtoPtr(IDD_MELOGRAM);
-            if (pGraph)
-            {
+            if (pGraph) {
                 m_bLegend = pGraph->HaveLegend();
             }
         }
     }
 
-    if ((nID == IDD_TWC) || (nID == IDD_STAFF))
-    {
+    if ((nID == IDD_TWC) || (nID == IDD_STAFF)) {
         ShowCursors(false,false);
     }
     SetLineDraw(nID != IDD_MAGNITUDE);
 
-    for (int i = 0; i < ANNOT_WND_NUMBER; i++)
-    {
+    for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
         m_abAnnWnd[i] = ((nID == IDD_RAWDATA) && (i == 0));
     }
 
@@ -905,8 +815,7 @@ BOOL CGraphWnd::bSetProperties(int nID)
 // CGraphWnd::SetGraphFocus Set/reset focus for the graph and propagate
 // to the plot window.
 /***************************************************************************/
-void CGraphWnd::SetGraphFocus(BOOL bFocus)
-{
+void CGraphWnd::SetGraphFocus(BOOL bFocus) {
     CMiniCaptionWnd::SetGraphFocus(bFocus);
     m_pPlot->GraphHasFocus(bFocus);
 }
@@ -915,10 +824,8 @@ void CGraphWnd::SetGraphFocus(BOOL bFocus)
 // CGraphWnd::AnimateFrame  Call on plot to animate one frame if graph
 // contains a plot that can be animated.
 /***************************************************************************/
-void CGraphWnd::AnimateFrame(DWORD dwFrameIndex)
-{
-    if (m_pPlot->IsAnimationPlot())
-    {
+void CGraphWnd::AnimateFrame(DWORD dwFrameIndex) {
+    if (m_pPlot->IsAnimationPlot()) {
         m_pPlot->AnimateFrame(dwFrameIndex);
         //!! update annotation here
     }
@@ -928,10 +835,8 @@ void CGraphWnd::AnimateFrame(DWORD dwFrameIndex)
 // CGraphWnd::EndAnimation  Call on plot to terminate animation if graph
 // contains a plot that can be animated.
 /***************************************************************************/
-void CGraphWnd::EndAnimation()
-{
-    if (m_pPlot->IsAnimationPlot())
-    {
+void CGraphWnd::EndAnimation() {
+    if (m_pPlot->IsAnimationPlot()) {
         m_pPlot->EndAnimation();
     }
 }
@@ -940,8 +845,7 @@ IMPLEMENT_DYNCREATE(CRecGraphWnd, CGraphWnd)
 
 /***************************************************************************/
 /***************************************************************************/
-CRecGraphWnd::CRecGraphWnd() : CGraphWnd(IDD_RECORDING)
-{
+CRecGraphWnd::CRecGraphWnd() : CGraphWnd(IDD_RECORDING) {
 }
 
 /***************************************************************************/
@@ -951,8 +855,7 @@ CRecGraphWnd::CRecGraphWnd() : CGraphWnd(IDD_RECORDING)
 //
 // 09/22/2000 - DDO Created
 /***************************************************************************/
-BOOL CRecGraphWnd::PreCreateWindow(CREATESTRUCT & cs)
-{
+BOOL CRecGraphWnd::PreCreateWindow(CREATESTRUCT & cs) {
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0,
                                        LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_SA_ANNTYPE)));
@@ -962,18 +865,14 @@ BOOL CRecGraphWnd::PreCreateWindow(CREATESTRUCT & cs)
     return bRet;
 }
 
-void CGraphWnd::HideCursors()
-{
-	if (m_pPlot!=NULL)
-	{
-		m_pPlot->HideCursors();
-	}
+void CGraphWnd::HideCursors() {
+    if (m_pPlot!=NULL) {
+        m_pPlot->HideCursors();
+    }
 }
 
-void CGraphWnd::ShowCursors()
-{
-	if (m_pPlot!=NULL)
-	{
-		m_pPlot->ShowCursors();
-	}
+void CGraphWnd::ShowCursors() {
+    if (m_pPlot!=NULL) {
+        m_pPlot->ShowCursors();
+    }
 }

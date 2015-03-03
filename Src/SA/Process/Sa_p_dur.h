@@ -8,8 +8,7 @@
 #ifndef _SA_P_DUR_H
 #define _SA_P_DUR_H
 
-class CProcessDurations : public CProcess
-{
+class CProcessDurations : public CProcess {
 public:
     CProcessDurations();
     virtual ~CProcessDurations();

@@ -11,8 +11,7 @@ class CSaView;
 
 #define MAX_TARGETS 256
 
-class CDlgTargView : public CDialog
-{
+class CDlgTargView : public CDialog {
 
 public:
     CDlgTargView(CMainFrame * pMainFrame);  // standard constructor

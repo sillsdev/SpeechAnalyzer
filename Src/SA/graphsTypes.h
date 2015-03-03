@@ -27,8 +27,7 @@ class CObjectIStream;
 class CSaDoc;
 class CSaString;
 
-class CGraphList
-{
+class CGraphList {
 public:
     CGraphList(const UINT * pGraphIDs = NULL);
     CGraphList(const CGraphList & src);
@@ -39,19 +38,16 @@ public:
     int IsSelected(UINT nID) const;
     void ClearGraphs(BOOL bFilter = FALSE, BOOL bLayout = FALSE);
     void GetGraphs(UINT * pGraphIDs) const; // return checked graphs
-    const UINT * GetGraphs() const
-    {
+    const UINT * GetGraphs() const {
         return m_nGraphID;   // return checked graphs
     }
     void SetGraphs(const UINT * pGraphIDs, BOOL bClear=TRUE);
-    static bool IsLayoutGraph(UINT nID)
-    {
+    static bool IsLayoutGraph(UINT nID) {
         return nID != IDD_RECORDING && nID != IDD_TWC && nID != IDD_MAGNITUDE;
     }
     void InsertAt(UINT nID, int nIndex);
     bool operator==(const CGraphList & compare) const;
-    UINT operator[](int nIndex) const
-    {
+    UINT operator[](int nIndex) const {
         return (nIndex >= 0 && nIndex  < MAX_GRAPHS_NUMBER) ? m_nGraphID[nIndex] : 0;
     }
     CSaString GetDescription() const;
@@ -62,8 +58,7 @@ private:
     UINT  m_nGraphID[MAX_GRAPHS_NUMBER];  // array of graph IDs
 };
 
-class CDlgGraphsTypesCustom : public CDialog
-{
+class CDlgGraphsTypesCustom : public CDialog {
 
     // Construction/destruction/creation
 public:
@@ -107,24 +102,19 @@ protected:
 /////////////////////////////////////////////////////////////////////////////
 // CDlgGraphsTypes dialog
 
-class CGraphConfiguration : public CGraphList
-{
+class CGraphConfiguration : public CGraphList {
 public:
-    CGraphConfiguration(const UINT * pGraphIDs = NULL, int nLayout = -1) : CGraphList(pGraphIDs), m_nLayout(nLayout)
-    {
+    CGraphConfiguration(const UINT * pGraphIDs = NULL, int nLayout = -1) : CGraphList(pGraphIDs), m_nLayout(nLayout) {
         ;
     }
-    CGraphConfiguration(const CGraphList & src, int nLayout = -1) : CGraphList(src), m_nLayout(nLayout)
-    {
+    CGraphConfiguration(const CGraphList & src, int nLayout = -1) : CGraphList(src), m_nLayout(nLayout) {
         ;
     }
-    CGraphConfiguration(const CGraphConfiguration & src) : CGraphList(src), m_nLayout(src.m_nLayout)
-    {
+    CGraphConfiguration(const CGraphConfiguration & src) : CGraphList(src), m_nLayout(src.m_nLayout) {
         ;
     }
 
-    bool operator==(const CGraphConfiguration & compare) const
-    {
+    bool operator==(const CGraphConfiguration & compare) const {
         return compare.m_nLayout == m_nLayout ? CGraphList::operator ==(compare) : FALSE;
     }
 
@@ -134,11 +124,9 @@ public:
     int     m_nLayout;
 };
 
-class CGraphConfigurationVector : private std::vector<CGraphConfiguration>
-{
+class CGraphConfigurationVector : private std::vector<CGraphConfiguration> {
 public:
-    CGraphConfigurationVector(LPCTSTR szFilename = NULL, int nTaskType = -1)
-    {
+    CGraphConfigurationVector(LPCTSTR szFilename = NULL, int nTaskType = -1) {
         SetFilename(szFilename);
         Load(szFilename, nTaskType);
     }
@@ -150,44 +138,35 @@ private:
 public:
     BOOL Load(LPCTSTR szFilename, int nTaskType);
     BOOL Save(const LPCTSTR szFilename) const;
-    BOOL Save() const
-    {
+    BOOL Save() const {
         return Save(m_szFilename);
     }
-    void Remove(int nIndex)
-    {
+    void Remove(int nIndex) {
         erase(begin()+nIndex);
     }
-    CString SetFilename(const LPCTSTR szFilename)
-    {
+    CString SetFilename(const LPCTSTR szFilename) {
         CString szOld(m_szFilename);
         m_szFilename = szFilename;
         return szOld;
     }
-    int GetCountPredefinedSets() const
-    {
+    int GetCountPredefinedSets() const {
         return m_nPredefinedSets;
     }
 
     // publicize some vector member functions
-    const CGraphConfiguration & operator[](size_type _P) const
-    {
+    const CGraphConfiguration & operator[](size_type _P) const {
         return static_cast<const BaseClass *>(this)->operator[](_P);
     }
-    CGraphConfiguration & operator[](size_type _P)
-    {
+    CGraphConfiguration & operator[](size_type _P) {
         return static_cast<BaseClass *>(this)->operator[](_P);
     }
-    size_type size() const
-    {
+    size_type size() const {
         return static_cast<const BaseClass *>(this)->size();
     }
-    void push_back(const CGraphConfiguration & entry)
-    {
+    void push_back(const CGraphConfiguration & entry) {
         static_cast<BaseClass *>(this)->push_back(entry);
     }
-    inline bool IsEqual(const CGraphConfigurationVector & operand2) const
-    {
+    inline bool IsEqual(const CGraphConfigurationVector & operand2) const {
         return *this == operand2;
     }
 
@@ -199,8 +178,7 @@ private:
 };
 
 
-class CDlgGraphsTypes : public CDialog
-{
+class CDlgGraphsTypes : public CDialog {
     // Construction
 public:
     CDlgGraphsTypes(CWnd * pParent, const UINT * pGraphIDs, int nLayout); // standard constructor
@@ -249,8 +227,7 @@ private:
 /////////////////////////////////////////////////////////////////////////////
 // CDlgGraphTypesOrder dialog
 
-class CDlgGraphTypesOrder : public CDialog
-{
+class CDlgGraphTypesOrder : public CDialog {
     // Construction
 public:
     CDlgGraphTypesOrder(CGraphList & cOrder, int nLayout, CWnd * pParent = NULL); // standard constructor

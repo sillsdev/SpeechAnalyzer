@@ -44,20 +44,17 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotDuration::CPlotDuration Constructor
 /***************************************************************************/
-CPlotDurations::CPlotDurations()
-{
+CPlotDurations::CPlotDurations() {
 }
 
 
-void  CPlotDurations::CopyTo(CPlotWnd * pT)
-{
+void  CPlotDurations::CopyTo(CPlotWnd * pT) {
     CPlotWnd::CopyTo(pT);
 }
 
 
 
-CPlotWnd * CPlotDurations::NewCopy(void)
-{
+CPlotWnd * CPlotDurations::NewCopy(void) {
     CPlotWnd * pRet = new CPlotDurations();
 
     CopyTo(pRet);
@@ -69,8 +66,7 @@ CPlotWnd * CPlotDurations::NewCopy(void)
 /***************************************************************************/
 // CPlotDurations::~CPlotDurations Destructor
 /***************************************************************************/
-CPlotDurations::~CPlotDurations()
-{
+CPlotDurations::~CPlotDurations() {
 }
 
 
@@ -83,26 +79,21 @@ CPlotDurations::~CPlotDurations()
 // function PlotPaintFinish at the end of the drawing to let the plot base
 // class do common jobs like drawing the cursors.
 /***************************************************************************/
-void CPlotDurations::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
+void CPlotDurations::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to main frame, graph, and document
     CSaDoc * pDoc = pView->GetDocument();
     // create loudness data
     CProcessDurations * pDurations = (CProcessDurations *)pDoc->GetDurations(); // get pointer to loudness object
     short int nResult = LOWORD(pDurations->Process(this, pDoc)); // process data
     nResult = CheckResult(nResult, pDurations); // check the process result
-    if (nResult == PROCESS_ERROR)
-    {
+    if (nResult == PROCESS_ERROR) {
         return;
     }
-    if (nResult != PROCESS_CANCELED)
-    {
+    if (nResult != PROCESS_CANCELED) {
         SetBold(FALSE);
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         DurationsPaint(0, pDurations->GetMaxDuration(), pDC, rWnd, rClip, pDurations); // do standard data paint
-    }
-    else
-    {
+    } else {
         PlotPaintFinish(pDC, rWnd, rClip);
     }
 }
@@ -113,8 +104,7 @@ void CPlotDurations::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 //**************************************************************************/
 void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration, CDC * pDC,
                                     CRect rWnd, CRect rClip,
-                                    CProcess * pProcess, int nFlags)
-{
+                                    CProcess * pProcess, int nFlags) {
     UNUSED_ALWAYS(nFlags);
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
@@ -124,8 +114,7 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
 
     // get pointer to phonetic string
     CSegment * pSegment = pDoc->GetSegment(PHONETIC);
-    if (!pSegment->IsEmpty())   // string is not empty
-    {
+    if (!pSegment->IsEmpty()) { // string is not empty
         m_HelperWnd.SetMode(MODE_HIDDEN);
 
         // get pointer to phonetic offset and duration arrays
@@ -133,18 +122,15 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
 
         // get necessary data from document and from view
         DWORD dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
-        if (dwDataFrame == 0)
-        {
+        if (dwDataFrame == 0) {
             return;    // nothing to draw
         }
 
         // Conditionally inflate drawing area
-        if (rDraw.left > 0)
-        {
+        if (rDraw.left > 0) {
             rDraw.left--;
         }
-        if (rDraw.right < rWnd.Width())
-        {
+        if (rDraw.right < rWnd.Width()) {
             rDraw.right++;
         }
 
@@ -153,18 +139,15 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
         DWORD dwDataStart = DWORD(fDataPos + (rDraw.left / fHPixPerByte));
 
         DWORD dwDataEnd = (DWORD)(fDataPos + rDraw.right / fHPixPerByte + 0.5);
-        if (dwDataEnd >= fDataPos + dwDataFrame)
-        {
+        if (dwDataEnd >= fDataPos + dwDataFrame) {
             dwDataEnd = DWORD(fDataPos + int(dwDataFrame) - nSmpSize);
         }
 
         // find first segment in clip region
         int nSymbol = 0;
         DWORD dwSegOffset = 0;
-        for (int nSegStart = 0; nSegStart != -1; nSegStart = pSegment->GetNext(nSegStart))
-        {
-            if ((DWORD)pSegment->GetStop(nSegStart) >= dwDataStart)
-            {
+        for (int nSegStart = 0; nSegStart != -1; nSegStart = pSegment->GetNext(nSegStart)) {
+            if ((DWORD)pSegment->GetStop(nSegStart) >= dwDataStart) {
                 break;    // quit at segment just beyond start of clip region
             }
             nSymbol = nSegStart;  // index to first symbol of segment
@@ -198,14 +181,12 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
         rBar.bottom = rWnd.bottom;   //!!-3 like other plots?
         rBar.top = rBar.bottom;
 
-        if (nSymbol > 0)
-        {
+        if (nSymbol > 0) {
             DWORD dwPrevDuration = pProcess->GetProcessedData(nSymbol-1);
             rBar.top = rBar.bottom - round(dwPrevDuration * m_fVScale);
         }
 
-        while (pSegment->GetOffset(nSymbol) <= dwDataEnd)
-        {
+        while (pSegment->GetOffset(nSymbol) <= dwDataEnd) {
             DWORD dwDuration = pProcess->GetProcessedData(nSymbol);
 
             rBar.left = round((pSegment->GetOffset(nSymbol) - fDataPos) *
@@ -221,8 +202,7 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
             pDC->LineTo(rBar.right, rBar.bottom);  // right side of bar
 
             nSymbol = pSegment->GetNext(nSymbol);
-            if (nSymbol == -1)
-            {
+            if (nSymbol == -1) {
                 break;
             }
         }
@@ -234,9 +214,7 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
         // do common plot paint jobs
         PlotPaintFinish(pDC, rWnd, rClip);
 
-    }
-    else
-    {
+    } else {
         CRect rClient;
         GetClientRect(rClient);
         CDC * pDC = GetDC();

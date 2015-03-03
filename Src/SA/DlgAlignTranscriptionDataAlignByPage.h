@@ -1,8 +1,7 @@
 #ifndef DLGALIGNTRANSCRIPTIONDATAALIGNBYPAGE_H
 #define DLGALIGNTRANSCRIPTIONDATAALIGNBYPAGE_H
 
-class CDlgAlignTranscriptionDataAlignByPage : public CPropertyPage
-{
+class CDlgAlignTranscriptionDataAlignByPage : public CPropertyPage {
 public:
     CDlgAlignTranscriptionDataAlignByPage();
     virtual ~CDlgAlignTranscriptionDataAlignByPage();

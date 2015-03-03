@@ -15,8 +15,7 @@
 // This is an instance of the Strategy design pattern, implemented as
 // an Iterator.
 
-class CPeakSource
-{
+class CPeakSource {
 public:
     virtual ~CPeakSource() {};
 

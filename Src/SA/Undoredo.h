@@ -11,20 +11,17 @@
 
 // Undo/Redo for MFC by Keith Rule
 
-class CUndoRedoDoc : public CDocument
-{
+class CUndoRedoDoc : public CDocument {
     DECLARE_DYNCREATE(CUndoRedoDoc)
 public:
     CUndoRedoDoc(long undolevels = 100, UINT growsize = 32768);
     ~CUndoRedoDoc();
 
     // properties
-    BOOL CanUndo() const
-    {
+    BOOL CanUndo() const {
         return (m_undolist.GetCount() > 0);
     };
-    BOOL CanRedo() const
-    {
+    BOOL CanRedo() const {
         return (m_redolist.GetCount() > 0);
     };
 
@@ -36,8 +33,7 @@ public:
     // the user of this class should inherit from it and
     // define this method in their class.  It should act
     // like Serialize() (or call it if Serialize is defined)
-    virtual void SerializeForUndoRedo(CArchive & /*ar*/)
-    {
+    virtual void SerializeForUndoRedo(CArchive & /*ar*/) {
         ASSERT(FALSE);
     };
     virtual void Serialize(CArchive & ar);  // overridden for document i/o

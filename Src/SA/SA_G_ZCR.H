@@ -10,8 +10,7 @@
 //###########################################################################
 // CPlotZCross plot window
 
-class CPlotZCross : public CPlotWnd
-{
+class CPlotZCross : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotZCross)
 
 // Construction/destruction/creation

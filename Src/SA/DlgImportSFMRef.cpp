@@ -71,10 +71,9 @@ static LPCSTR psz_Orthographic = "or";
 static LPCSTR psz_Reference = "ref";
 
 CDlgImportSFMRef::CDlgImportSFMRef(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, BOOL bGloss, BOOL bGlossNat, CWnd * pParent /*=NULL*/)
-    : CDialog(CDlgImportSFMRef::IDD, pParent)
-{
+    : CDialog(CDlgImportSFMRef::IDD, pParent) {
     m_bGloss = bGloss;
-	m_bGlossNat = bGlossNat;
+    m_bGlossNat = bGlossNat;
     m_bPhonemic = bPhonemic;
     m_bPhonetic = bPhonetic;
     m_bOrthographic = bOrtho;
@@ -86,8 +85,7 @@ CDlgImportSFMRef::CDlgImportSFMRef(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, 
     m_szReference = psz_Reference;
 }
 
-void CDlgImportSFMRef::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgImportSFMRef::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
     DDX_Check(pDX, IDC_GLOSS_NAT_ENABLED, m_bGlossNat);
@@ -110,11 +108,9 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgAnnotation::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgImportSFMRef::SetEnable(int nItem, BOOL bEnable)
-{
+void CDlgImportSFMRef::SetEnable(int nItem, BOOL bEnable) {
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->EnableWindow(bEnable);
     }
 }
@@ -122,16 +118,14 @@ void CDlgImportSFMRef::SetEnable(int nItem, BOOL bEnable)
 /***************************************************************************/
 // CDlgAnnotation::OnImportPlainText Plain Text Button hit
 /***************************************************************************/
-void CDlgImportSFMRef::OnImportPlainText()
-{
+void CDlgImportSFMRef::OnImportPlainText() {
     EndDialog(IDC_IMPORT_PLAIN_TEXT);
 }
 
 /***************************************************************************/
 // CDlgAnnotation::OnInitDialog
 /***************************************************************************/
-BOOL CDlgImportSFMRef::OnInitDialog()
-{
+BOOL CDlgImportSFMRef::OnInitDialog() {
     CDialog::OnInitDialog();
 
     SetEnable(IDC_GLOSS, m_bGloss);

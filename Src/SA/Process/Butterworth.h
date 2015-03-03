@@ -7,8 +7,7 @@
 #include "IIRFilter.h"
 #include "Process.h"
 
-class CProcessButterworth : public CProcessIIRFilter
-{
+class CProcessButterworth : public CProcessIIRFilter {
 public:
     CProcessButterworth(BOOL bWorkBenchOutput = TRUE);
     virtual ~CProcessButterworth();
@@ -29,8 +28,7 @@ public:
     static int round(double value);
 
 private:
-    enum FilterType
-    {
+    enum FilterType {
         kftUndefined,
         kftHighPass,
         kftLowPass,

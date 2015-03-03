@@ -11,8 +11,7 @@ typedef short INT16;
 
 #include <tchar.h>
 
-struct SParameterDescription
-{
+struct SParameterDescription {
     size_t parameterOffset;
     TCHAR const * symbolDescription;
     TCHAR const * typeScanf;
@@ -23,8 +22,7 @@ struct SParameterDescription
     TCHAR const * units;
 };
 
-struct SPKRDEF
-{
+struct SPKRDEF {
     int DU;//UtteranceDuration;
     int UI;//UpdateInterval;
     int SR;//SamplingRate;
@@ -39,8 +37,7 @@ struct SPKRDEF
     Float GF;//FricationGain;
 } ;
 
-struct TEMPORAL
-{
+struct TEMPORAL {
     Float F0;
     Float AV;
     Float OQ;

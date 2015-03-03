@@ -4,8 +4,7 @@
 #include "Process\TrackState.h"
 #include "AnalyticLpcAnalysis.h"
 
-class CAnalyticLpcAnalysis
-{
+class CAnalyticLpcAnalysis {
 public:
     typedef std::complex<double> CDBL;
     typedef std::vector<CDBL> VECTOR_CDBL;

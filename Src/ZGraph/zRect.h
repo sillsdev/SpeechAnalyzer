@@ -19,60 +19,51 @@
 //   Rectangles
 ///////////////////////////////////////////////////////////////
 
-class zRECT : public tagRECT
-{
+class zRECT : public tagRECT {
 public:
     //
     // Constructor
     //
-    inline zRECT()
-    {
+    inline zRECT() {
         left = 0;
         top = 0;
         right = 0;
         bottom = 0;
     }
 
-    inline zRECT(int l, int t, int r, int b)
-    {
+    inline zRECT(int l, int t, int r, int b) {
         left = l;
         top = t;
         right = r;
         bottom = b;
     }
 
-    inline zRECT(const RECT & RSource)
-    {
+    inline zRECT(const RECT & RSource) {
         zCopyRect(this, &RSource);
     }
 
-    inline zRECT(const RECT * lpRSource)
-    {
+    inline zRECT(const RECT * lpRSource) {
         zCopyRect(this, lpRSource);
     }
 
-    inline zRECT(POINT topLeft, POINT bottomRight)
-    {
+    inline zRECT(POINT topLeft, POINT bottomRight) {
         left   = topLeft.x;
         top    = topLeft.y;
         right  = bottomRight.x;
         bottom = bottomRight.y;
     }
 
-    inline INT Height() const
-    {
+    inline INT Height() const {
         // Height of Rectangle
         return (abs(top - bottom));
     }
 
-    inline INT Width() const
-    {
+    inline INT Width() const {
         // Width of Rectangle
         return (abs(left - right));
     }
 
-    inline POINT Center()
-    {
+    inline POINT Center() {
         // Gets Center Point of Rectangle
         POINT ptCenter;
 
@@ -83,66 +74,54 @@ public:
     }
 
 
-    inline operator RECT * ()
-    {
+    inline operator RECT * () {
         return this;
     }
 
-    inline operator const RECT * () const
-    {
+    inline operator const RECT * () const {
         return this;
     }
 
-    inline BOOL PtInRect(POINT point) const
-    {
+    inline BOOL PtInRect(POINT point) const {
         return (left < point.x)  && (right  > point.x)  &&
                (top  < point.y)  && (bottom > point.y);
     }
 
-    inline void SetRect(int x1, int y1, int x2, int y2)
-    {
+    inline void SetRect(int x1, int y1, int x2, int y2) {
         zSetRect(this, x1, y1, x2, y2);
     }
 
-    inline void SetRect(POINT topLeft, POINT bottomRight)
-    {
+    inline void SetRect(POINT topLeft, POINT bottomRight) {
         zSetRect(this, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
     }
 
-    inline void CopyRect(const RECT * lpRect)
-    {
+    inline void CopyRect(const RECT * lpRect) {
         zCopyRect(this, lpRect);
     }
 
-    inline BOOL EqualRect(const RECT * lpRect)
-    {
+    inline BOOL EqualRect(const RECT * lpRect) {
         return zEqualRect(this, lpRect);
     }
 
-    inline void operator=(const RECT & srcRECT)
-    {
+    inline void operator=(const RECT & srcRECT) {
         zCopyRect(this, &srcRECT);
     }
 
-    inline BOOL operator==(const RECT & rect)
-    {
+    inline BOOL operator==(const RECT & rect) {
         return zEqualRect(this, &rect);
     }
 
-    inline BOOL operator!=(const RECT & rect)
-    {
+    inline BOOL operator!=(const RECT & rect) {
         return ! zEqualRect(this, &rect);
     }
 
-    inline BOOL IsValid()
-    {
+    inline BOOL IsValid() {
         // Returns TRUE for a Good Rectangle
 
         return ((right != 0) ? TRUE : FALSE);
     }
 
-    void SetComponents(INT & x1, INT & y1, INT & x2, INT & y2)
-    {
+    void SetComponents(INT & x1, INT & y1, INT & x2, INT & y2) {
         // Sets the Four Component Values from a Rectangle
 
         x1 = left;
@@ -151,19 +130,16 @@ public:
         y2 = bottom;
     }
 
-    void Normalize()
-    {
+    void Normalize() {
         //
         // Normalizes a Rectangle, so that
         //   [left] <= [right]  and  [top] <= [bottom]
         //
-        if (right < left)
-        {
+        if (right < left) {
             SWAP(left, right);
         }
 
-        if (top > bottom)
-        {
+        if (top > bottom) {
             SWAP(top, bottom);
         }
     }
@@ -172,8 +148,7 @@ public:
                                    double LeftPercent,
                                    double TopPercent,
                                    double RightPercent,
-                                   double BottomPercent)
-    {
+                                   double BottomPercent) {
         // Scales a Rectangle Down By An Amount
         //   Based Upon the Percentage of the Rectangle Components Given
 
@@ -187,8 +162,7 @@ public:
                                  double Left,
                                  double Top,
                                  double Right,
-                                 double Bottom)
-    {
+                                 double Bottom) {
         // Scales a Rectangle Down By Absolute Offsets
 
         left   = RInput.left + zRound(Left);
@@ -198,16 +172,14 @@ public:
     }
 
     void SetTo(double x1, double y1,
-               double x2, double y2)
-    {
+               double x2, double y2) {
         left   = zRound(x1);
         top    = zRound(y1);
         right  = zRound(x2);
         bottom = zRound(y2);
     }
 
-    void FromCenterPt(POINT ptCenter, INT w, INT h)
-    {
+    void FromCenterPt(POINT ptCenter, INT w, INT h) {
         // Sets a Rectangle from a Center Point, and
         //   Height, Width Measurements
 
@@ -217,8 +189,7 @@ public:
         bottom = ptCenter.y + h/2;
     }
 
-    void FromCenterXY(INT xCenter, INT yCenter, INT w, INT h)
-    {
+    void FromCenterXY(INT xCenter, INT yCenter, INT w, INT h) {
         // Sets a Rectangle from a Center Point, and
         //   Height, Width Measurements
 
@@ -228,16 +199,14 @@ public:
         bottom = yCenter + h/2;
     }
 
-    void OffsetBy(RECT R1)
-    {
+    void OffsetBy(RECT R1) {
         left   += R1.left;
         right  += R1.right;
         top    += R1.top;
         bottom += R1.bottom;
     }
 
-    void Shrink(INT delta_x, INT delta_y)
-    {
+    void Shrink(INT delta_x, INT delta_y) {
         // Shrinks a Rectangle by [delta_x] in the
         //  X-direction and [delta_y] in the Y-direction
         //  Expands Rectangle if the delta values are negative
@@ -248,43 +217,36 @@ public:
         bottom -= delta_y;
     }
 
-    static INT zRound(double d)
-    {
+    static INT zRound(double d) {
         //
         // This Function Is Used For Rounding Purposes.  It Returns the closest
         // integer to [d], a double variable
         //
         double LowerLimit = floor(d);
 
-        if ((d - LowerLimit) >= 0.5)
-        {
+        if ((d - LowerLimit) >= 0.5) {
             return ((INT)LowerLimit + 1);
-        }
-        else
-        {
+        } else {
             return ((INT)LowerLimit);
         }
     }
 
 private:
-    inline void zCopyRect(RECT * RDest, const RECT * RSource)
-    {
+    inline void zCopyRect(RECT * RDest, const RECT * RSource) {
         RDest->left    = RSource->left  ;
         RDest->top     = RSource->top   ;
         RDest->right   = RSource->right ;
         RDest->bottom  = RSource->bottom;
     }
 
-    inline void zSetRect(RECT * RDest, INT l, INT t, INT r, INT b)
-    {
+    inline void zSetRect(RECT * RDest, INT l, INT t, INT r, INT b) {
         RDest->left    = l ;
         RDest->top     = t ;
         RDest->right   = r ;
         RDest->bottom  = b ;
     }
 
-    inline BOOL zEqualRect(const RECT * R1, const RECT * R2)
-    {
+    inline BOOL zEqualRect(const RECT * R1, const RECT * R2) {
         return (R1->left  == R2->left)   && (R1->top    == R2->top)  &&
                (R1->right == R2->right)  && (R1->bottom == R2->bottom);
     }

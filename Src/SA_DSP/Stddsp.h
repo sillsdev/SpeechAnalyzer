@@ -27,8 +27,7 @@ using std::ios_base;
 
 #define UNDEFINED_DATA                  -1          // data not yet defined
 
-inline static int32 round(double value)
-{
+inline static int32 round(double value) {
     return (int32)floor(value + 0.5);
 }
 

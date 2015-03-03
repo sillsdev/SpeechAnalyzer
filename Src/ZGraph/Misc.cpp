@@ -53,11 +53,9 @@
 //
 // Structures (Used In this Module Only)
 //
-struct TOKENREC                     // Token Structure for Parsing Algorithm
-{
+struct TOKENREC {                   // Token Structure for Parsing Algorithm
     INT state;
-    union
-    {
+    union {
         double value;
         WCHAR funcname[MAXFUNCNAMELEN + 1];
     } x;
@@ -92,8 +90,7 @@ void   shift(INT state);
 // Feel Free to Modify Or Extend This List...
 ////////////////////////////////////////////////////////////////////////////
 
-static zRGB zColorTable[ 64 ] =
-{
+static zRGB zColorTable[ 64 ] = {
     //
     // Note:  First 2 Rows Are the "Pure" Windows VGA Colors,
     //        Remaining 48 Colors are "Dithered" Variations
@@ -116,8 +113,7 @@ static zRGB zColorTable[ 64 ] =
 
 //////////////////////////////// zMakeColor() ///////////////////////////////
 
-zRGB zMakeColor(BYTE red, BYTE green, BYTE blue)
-{
+zRGB zMakeColor(BYTE red, BYTE green, BYTE blue) {
     // Makes a Full 32-Bit Color From Individual R, G, B Components.
     //   Returns the Color
 
@@ -141,15 +137,13 @@ zRGB zMakeColor(BYTE red, BYTE green, BYTE blue)
 
 ///////////////////////////////// RGB_color() ///////////////////////////////
 
-zRGB RGB_color(INT color)
-{
+zRGB RGB_color(INT color) {
     //
     // Converts an Integer Color Value In the Range (0-63)
     //   to an RGB color In the Table Above
     //
 
-    if (color < 0  ||  color > 63)
-    {
+    if (color < 0  ||  color > 63) {
         color = 0;
     }
 
@@ -169,21 +163,17 @@ zRGB RGB_color(INT color)
 
 ///////////////////////////////// HOURGLASS() ////////////////////////////////
 
-void HOURGLASS(INT mode)
-{
+void HOURGLASS(INT mode) {
     // This Function May Be Used to Display The Hourglass Windows Cursor
     //   During Periods of Massive CPU Activity
 
 #ifdef WINDOWS_PLATFORM
     static HCURSOR hCursor;
 
-    if (mode == ON)            // Display the Hourglass Cursor
-    {
+    if (mode == ON) {          // Display the Hourglass Cursor
         hCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
         ShowCursor(TRUE);
-    }
-    else if (mode == OFF)      // Switch back to the Regular (Mouse) Cursor
-    {
+    } else if (mode == OFF) {  // Switch back to the Regular (Mouse) Cursor
         ShowCursor(FALSE);
         SetCursor(hCursor);
     }
@@ -199,8 +189,7 @@ void HOURGLASS(INT mode)
 
 /////////////////////////// zDisplayMessage() ///////////////////////////////
 
-void zDisplayMessage(PWCHAR title, PWCHAR message)
-{
+void zDisplayMessage(PWCHAR title, PWCHAR message) {
     //
     // Displays message [message] in a Message Box onscreen;
     //   [title] is the message box title
@@ -223,8 +212,7 @@ void zDisplayMessage(PWCHAR title, PWCHAR message)
 
 //////////////////////////// zDisplayError() /////////////////////////////
 
-void zDisplayError(PWCHAR message)
-{
+void zDisplayError(PWCHAR message) {
     //
     // Displays error message [message] in a Message Box onscreen;
     //
@@ -245,8 +233,7 @@ RECT GetPercentOfRect(RECT  R,
                       double LeftPercent,
                       double TopPercent,
                       double RightPercent,
-                      double BottomPercent)
-{
+                      double BottomPercent) {
     // This is Just a "RECT" Function Equivalent to
     //   zRECT::ScaleViaPercentageOffsets() That We Can Call From Anywhere...
 
@@ -265,8 +252,7 @@ RECT GetPercentOfRect(RECT  R,
 
 /////////////////////////// UNUSED_PARAMETERS() //////////////////////////
 
-void UNUSED_PARAMETERS(void *, ...)
-{
+void UNUSED_PARAMETERS(void *, ...) {
     // This Function Is Used to Kill Compiler "Unused Parameter" Warnings
     //   It Doesn't Do Anything!
 }
@@ -275,13 +261,11 @@ void UNUSED_PARAMETERS(void *, ...)
 // The Following Functions are Used for the Function-Parser Algorithm
 ///////////////////////////////////////////////////////////////////////////
 
-INT isfunc(WCHAR * s)       // Returns TRUE if the string is a legal function,
-{
+INT isfunc(WCHAR * s) {     // Returns TRUE if the string is a legal function,
     // or FALSE otherwise
     INT len = _tcslen(s);
 
-    if (_tcsncmp(s, input, len) == 0)
-    {
+    if (_tcsncmp(s, input, len) == 0) {
         wcsncpy_s(curtoken.x.funcname, 6, input, len);
         curtoken.x.funcname[len] = 0;
         input += len;
@@ -292,62 +276,50 @@ INT isfunc(WCHAR * s)       // Returns TRUE if the string is a legal function,
 
 // *************************************************************************
 
-INT nexttoken(void)              // Gets the next token from the input stream
-{
+INT nexttoken(void) {            // Gets the next token from the input stream
     WCHAR * start, numstring[180];
     INT decimal, len, numlen;
 
-    while (*input == ' ')
-    {
+    while (*input == ' ') {
         input++;
     }
-    if (*input == 0)
-    {
+    if (*input == 0) {
         return (EOLN);
     }
-    if (*input == 'X')           // Added code here to handle the 'X' variable
-    {
+    if (*input == 'X') {         // Added code here to handle the 'X' variable
         input++;
         curtoken.x.value = XValue;
         return (NUM);
     }
-    if (*input == 'Y')           // Added code here to handle the 'Y' variable
-    {
+    if (*input == 'Y') {         // Added code here to handle the 'Y' variable
         input++;
         curtoken.x.value = YValue;
         return (NUM);
     }
 
-    if (strchr("0123456789.", *input))
-    {
+    if (strchr("0123456789.", *input)) {
         start = input;
         len = 0;
         decimal = FALSE;
-        while ((isdigit(*input)) || ((*input == '.') && (!decimal)))
-        {
-            if (*input == '.')
-            {
+        while ((isdigit(*input)) || ((*input == '.') && (!decimal))) {
+            if (*input == '.') {
                 decimal = TRUE;
             }
             input++;
             len++;
         }
-        if ((len == 1) && (start[0] == '.'))
-        {
+        if ((len == 1) && (start[0] == '.')) {
             return (BAD);
         }
-        if (*input == 'E')
-        {
+        if (*input == 'E') {
             input++;
             len++;
-            if (strchr("+-", *input) != NULL)
-            {
+            if (strchr("+-", *input) != NULL) {
                 input++;
                 len++;
             }
             numlen = 0;
-            while ((isdigit(*input)) && (++numlen <= 3))
-            {
+            while ((isdigit(*input)) && (++numlen <= 3)) {
                 input++;
                 len++;
             }
@@ -359,9 +331,7 @@ INT nexttoken(void)              // Gets the next token from the input stream
         //    if (errno == ERANGE)
         //       return (BAD);
         return (NUM);
-    }
-    else if (isalpha(*input))
-    {
+    } else if (isalpha(*input)) {
         if
         (isfunc(_T("ABS")) ||
                 isfunc(_T("ACOS")) ||
@@ -380,18 +350,14 @@ INT nexttoken(void)              // Gets the next token from the input stream
                 isfunc(_T("SQR")) ||
                 isfunc(_T("TANH")) ||
                 isfunc(_T("TAN")) ||
-                isfunc(_T("TRUNC")))
-        {
+                isfunc(_T("TRUNC"))) {
             return (FUNC);
         }
 
-        else
-        {
+        else {
             return (BAD);
         }
-    }
-    else switch (*(input++))
-        {
+    } else switch (*(input++)) {
         case '+' :
             return (PLUS);
         case '-' :
@@ -415,23 +381,18 @@ INT nexttoken(void)              // Gets the next token from the input stream
 
 // **************************************************************************
 
-void push(struct TOKENREC * token)      // Pushes a new token onto the stack
-{
-    if (stacktop == PARSERSTACKSIZE - 1)
-    {
+void push(struct TOKENREC * token) {    // Pushes a new token onto the stack
+    if (stacktop == PARSERSTACKSIZE - 1) {
         // printf(zSTACK_ERROR);
         error = TRUE;
-    }
-    else
-    {
+    } else {
         stack[++stacktop] = *token;
     }
 }
 
 // ***************************************************************************
 
-struct TOKENREC pop(void)       // Pops the top token off of the stack
-{
+struct TOKENREC pop(void) {     // Pops the top token off of the stack
     return (stack[stacktop--]);
 }
 
@@ -442,10 +403,8 @@ INT gotostate(INT production)   // Finds the new state based on the last
 {
     INT state = stack[stacktop].state;
 
-    if (production <= 3)
-    {
-        switch (state)
-        {
+    if (production <= 3) {
+        switch (state) {
         case 0 :
             return (1);
         case 9 :
@@ -453,11 +412,8 @@ INT gotostate(INT production)   // Finds the new state based on the last
         case 20 :
             return (28);
         }
-    }
-    else if (production <= 6)
-    {
-        switch (state)
-        {
+    } else if (production <= 6) {
+        switch (state) {
         case 0 :
         case 9 :
         case 20 :
@@ -467,11 +423,8 @@ INT gotostate(INT production)   // Finds the new state based on the last
         case 13 :
             return (22);
         }
-    }
-    else if (production <= 8)
-    {
-        switch (state)
-        {
+    } else if (production <= 8) {
+        switch (state) {
         case 0  :
         case 9  :
         case 12 :
@@ -485,11 +438,8 @@ INT gotostate(INT production)   // Finds the new state based on the last
         case 16 :
             return (25);
         }
-    }
-    else if (production <= 10)
-    {
-        switch (state)
-        {
+    } else if (production <= 10) {
+        switch (state) {
         case 0  :
         case 9  :
         case 12 :
@@ -500,11 +450,8 @@ INT gotostate(INT production)   // Finds the new state based on the last
         case 20 :
             return (4);
         }
-    }
-    else if (production <= 12)
-    {
-        switch (state)
-        {
+    } else if (production <= 12) {
+        switch (state) {
         case 0  :
         case 9  :
         case 12 :
@@ -517,11 +464,8 @@ INT gotostate(INT production)   // Finds the new state based on the last
         case 5  :
             return (17);
         }
-    }
-    else
-    {
-        switch (state)
-        {
+    } else {
+        switch (state) {
         case 0  :
         case 5  :
         case 9  :
@@ -539,8 +483,7 @@ INT gotostate(INT production)   // Finds the new state based on the last
 
 // *************************************************************************
 
-void shift(INT state)                       // Shifts a token onto the stack
-{
+void shift(INT state) {                     // Shifts a token onto the stack
     curtoken.state = state;
     push(&curtoken);
     tokentype = nexttoken();
@@ -548,12 +491,10 @@ void shift(INT state)                       // Shifts a token onto the stack
 
 // *************************************************************************
 
-void reduce(INT reduction)                  // Completes a reduction
-{
+void reduce(INT reduction) {                // Completes a reduction
     struct TOKENREC token1, token2;
 
-    switch (reduction)
-    {
+    switch (reduction) {
     case 1 :
         token1 = pop();
         pop();
@@ -576,12 +517,9 @@ void reduce(INT reduction)                  // Completes a reduction
         token1 = pop();
         pop();
         token2 = pop();
-        if (token1.x.value == 0)
-        {
+        if (token1.x.value == 0) {
             curtoken.x.value = HUGE_VAL;
-        }
-        else
-        {
+        } else {
             curtoken.x.value = token2.x.value / token1.x.value;
         }
         break;
@@ -610,76 +548,41 @@ void reduce(INT reduction)                  // Completes a reduction
         curtoken = pop();
         pop();
         token1 = pop();
-        if (_tcscmp(token1.x.funcname, _T("ABS")) == 0)
-        {
+        if (_tcscmp(token1.x.funcname, _T("ABS")) == 0) {
             curtoken.x.value = fabs(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("ACOS")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("ACOS")) == 0) {
             curtoken.x.value = acos(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("ASIN")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("ASIN")) == 0) {
             curtoken.x.value = asin(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("ATAN")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("ATAN")) == 0) {
             curtoken.x.value = atan(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("COSH")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("COSH")) == 0) {
             curtoken.x.value = cosh(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("COS")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("COS")) == 0) {
             curtoken.x.value = cos(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("EXP")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("EXP")) == 0) {
             curtoken.x.value = exp(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("LOG10")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("LOG10")) == 0) {
             curtoken.x.value = log10(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("LOG")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("LOG")) == 0) {
             curtoken.x.value = log(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("ROUND")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("ROUND")) == 0) {
             curtoken.x.value = (INT)(curtoken.x.value + 0.5);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("POW10")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("POW10")) == 0) {
             curtoken.x.value = pow(10.0, curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("SINH")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("SINH")) == 0) {
             curtoken.x.value = sinh(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("SIN")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("SIN")) == 0) {
             curtoken.x.value = sin(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("SQRT")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("SQRT")) == 0) {
             curtoken.x.value = sqrt(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("SQR")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("SQR")) == 0) {
             curtoken.x.value *= curtoken.x.value;
-        }
-        else if (_tcscmp(token1.x.funcname, _T("TANH")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("TANH")) == 0) {
             curtoken.x.value = tanh(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("TAN")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("TAN")) == 0) {
             curtoken.x.value = tan(curtoken.x.value);
-        }
-        else if (_tcscmp(token1.x.funcname, _T("TRUNC")) == 0)
-        {
+        } else if (_tcscmp(token1.x.funcname, _T("TRUNC")) == 0) {
             curtoken.x.value = (INT)curtoken.x.value;
         }
         break;
@@ -698,8 +601,7 @@ void reduce(INT reduction)                  // Completes a reduction
 
 // ***************************************************************************
 
-double parse(LPCSTR s, INT * att, double X, double Y)
-{
+double parse(LPCSTR s, INT * att, double X, double Y) {
     //
     // Parses the string s - and evaluates the function at (X) or
     // at (X, Y).  Note:  [Y] is a default Argument (defaults to 0.0).
@@ -740,10 +642,8 @@ double parse(LPCSTR s, INT * att, double X, double Y)
     firsttoken.x.value = 0;
     push(&firsttoken);
     tokentype = nexttoken();
-    do
-    {
-        switch (stack[stacktop].state)
-        {
+    do {
+        switch (stack[stacktop].state) {
         case 0 :
         case 9 :
         case 12 :
@@ -752,60 +652,37 @@ double parse(LPCSTR s, INT * att, double X, double Y)
         case 15 :
         case 16 :
         case 20 :
-            if (tokentype == NUM)
-            {
+            if (tokentype == NUM) {
                 shift(10);
-            }
-            else if (tokentype == CELL)
-            {
+            } else if (tokentype == CELL) {
                 shift(7);
-            }
-            else if (tokentype == FUNC)
-            {
+            } else if (tokentype == FUNC) {
                 shift(11);
-            }
-            else if (tokentype == MINUS)
-            {
+            } else if (tokentype == MINUS) {
                 shift(5);
-            }
-            else if (tokentype == OPAREN)
-            {
+            } else if (tokentype == OPAREN) {
                 shift(9);
-            }
-            else
-            {
+            } else {
                 error = TRUE;
             }
             break;
         case 1 :
-            if (tokentype == EOLN)
-            {
+            if (tokentype == EOLN) {
                 accepted = TRUE;
-            }
-            else if (tokentype == PLUS)
-            {
+            } else if (tokentype == PLUS) {
                 shift(12);
-            }
-            else if (tokentype == MINUS)
-            {
+            } else if (tokentype == MINUS) {
                 shift(13);
-            }
-            else
-            {
+            } else {
                 error = TRUE;
             }
             break;
         case 2 :
-            if (tokentype == TIMES)
-            {
+            if (tokentype == TIMES) {
                 shift(14);
-            }
-            else if (tokentype == DIVIDE)
-            {
+            } else if (tokentype == DIVIDE) {
                 shift(15);
-            }
-            else
-            {
+            } else {
                 reduce(3);
             }
             break;
@@ -813,34 +690,22 @@ double parse(LPCSTR s, INT * att, double X, double Y)
             reduce(6);
             break;
         case 4 :
-            if (tokentype == EXP)
-            {
+            if (tokentype == EXP) {
                 shift(16);
-            }
-            else
-            {
+            } else {
                 reduce(8);
             }
             break;
         case 5 :
-            if (tokentype == NUM)
-            {
+            if (tokentype == NUM) {
                 shift(10);
-            }
-            else if (tokentype == CELL)
-            {
+            } else if (tokentype == CELL) {
                 shift(7);
-            }
-            else if (tokentype == FUNC)
-            {
+            } else if (tokentype == FUNC) {
                 shift(11);
-            }
-            else if (tokentype == OPAREN)
-            {
+            } else if (tokentype == OPAREN) {
                 shift(9);
-            }
-            else
-            {
+            } else {
                 error = TRUE;
             }
             break;
@@ -848,12 +713,9 @@ double parse(LPCSTR s, INT * att, double X, double Y)
             reduce(10);
             break;
         case 7 :
-            if (tokentype == COLON)
-            {
+            if (tokentype == COLON) {
                 shift(18);
-            }
-            else
-            {
+            } else {
                 reduce(13);
             }
             break;
@@ -864,12 +726,9 @@ double parse(LPCSTR s, INT * att, double X, double Y)
             reduce(15);
             break;
         case 11 :
-            if (tokentype == OPAREN)
-            {
+            if (tokentype == OPAREN) {
                 shift(20);
-            }
-            else
-            {
+            } else {
                 error = TRUE;
             }
             break;
@@ -877,58 +736,38 @@ double parse(LPCSTR s, INT * att, double X, double Y)
             reduce(9);
             break;
         case 18 :
-            if (tokentype == CELL)
-            {
+            if (tokentype == CELL) {
                 shift(26);
-            }
-            else
-            {
+            } else {
                 error = TRUE;
             }
             break;
         case 19 :
-            if (tokentype == PLUS)
-            {
+            if (tokentype == PLUS) {
                 shift(12);
-            }
-            else if (tokentype == MINUS)
-            {
+            } else if (tokentype == MINUS) {
                 shift(13);
-            }
-            else if (tokentype == CPAREN)
-            {
+            } else if (tokentype == CPAREN) {
                 shift(27);
-            }
-            else
-            {
+            } else {
                 error = TRUE;
             }
             break;
         case 21 :
-            if (tokentype == TIMES)
-            {
+            if (tokentype == TIMES) {
                 shift(14);
-            }
-            else if (tokentype == DIVIDE)
-            {
+            } else if (tokentype == DIVIDE) {
                 shift(15);
-            }
-            else
-            {
+            } else {
                 reduce(1);
             }
             break;
         case 22 :
-            if (tokentype == TIMES)
-            {
+            if (tokentype == TIMES) {
                 shift(14);
-            }
-            else if (tokentype == DIVIDE)
-            {
+            } else if (tokentype == DIVIDE) {
                 shift(15);
-            }
-            else
-            {
+            } else {
                 reduce(2);
             }
             break;
@@ -948,20 +787,13 @@ double parse(LPCSTR s, INT * att, double X, double Y)
             reduce(14);
             break;
         case 28 :
-            if (tokentype == PLUS)
-            {
+            if (tokentype == PLUS) {
                 shift(12);
-            }
-            else if (tokentype == MINUS)
-            {
+            } else if (tokentype == MINUS) {
                 shift(13);
-            }
-            else if (tokentype == CPAREN)
-            {
+            } else if (tokentype == CPAREN) {
                 shift(29);
-            }
-            else
-            {
+            } else {
                 error = TRUE;
             }
             break;
@@ -972,19 +804,14 @@ double parse(LPCSTR s, INT * att, double X, double Y)
             error = TRUE;
             break;
         }
-    }
-    while ((!accepted) && (!error));
-    if (error)
-    {
+    } while ((!accepted) && (!error));
+    if (error) {
         *att = 0;     /* TEXT */
         return (0);
     }
-    if (isformula)
-    {
+    if (isformula) {
         *att = 2   ;    /*  FORMULA */
-    }
-    else
-    {
+    } else {
         *att = 1   ;    /*  VALUE */
     }
 
@@ -993,8 +820,7 @@ double parse(LPCSTR s, INT * att, double X, double Y)
 
 // *************************** formulastart() *****************************
 
-INT formulastart(WCHAR ** input, INT * col, INT * row)
-{
+INT formulastart(WCHAR ** input, INT * col, INT * row) {
     //
     // Returns TRUE if the string is the start of a formula, FALSE otherwise.
     // Also returns the column and row of the formula
@@ -1005,39 +831,32 @@ INT formulastart(WCHAR ** input, INT * col, INT * row)
     INT len, maxlen = 20;                       // Added some variables here
     WCHAR * start, numstring[10];
 
-    if (!isalpha(**input))
-    {
+    if (!isalpha(**input)) {
         return (FALSE);
     }
     *col = *((*input)++) - 'A';
-    if (isalpha(**input))
-    {
+    if (isalpha(**input)) {
         *col *= 26;
         *col += *((*input)++) - 'A' + 26;
     }
-    if (*col >= MAXCOLS)
-    {
+    if (*col >= MAXCOLS) {
         return (FALSE);
     }
     start = *input;
-    for (len = 0; len < maxlen; len++)
-    {
-        if (!isdigit(*((*input)++)))
-        {
+    for (len = 0; len < maxlen; len++) {
+        if (!isdigit(*((*input)++))) {
             (*input)--;
             break;
         }
     }
-    if (len == 0)
-    {
+    if (len == 0) {
         return (FALSE);
     }
     wcsncpy_s(numstring, _countof(numstring), start, len);
     numstring[len] = 0;
     *row = _ttoi(numstring) - 1;
 
-    if ((*row >= MAXROWS) || (*row == -1))
-    {
+    if ((*row >= MAXROWS) || (*row == -1)) {
         return (FALSE);
     }
     return (TRUE);

@@ -3,14 +3,13 @@
 
 #include "SaString.h"
 
-class CExportFWSettings
-{
+class CExportFWSettings {
 
 public:
     BOOL bGloss;
-	BOOL bGlossNat;
+    BOOL bGlossNat;
     BOOL bOrtho;
-	BOOL bTone;
+    BOOL bTone;
     BOOL bPhonemic;
     BOOL bPhonetic;
     BOOL bReference;

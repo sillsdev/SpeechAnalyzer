@@ -7,8 +7,7 @@
 #ifndef _SA_P_GRA_H
 #define _SA_P_GRA_H
 
-class CProcessGrappl : public CProcess
-{
+class CProcessGrappl : public CProcess {
 public:
     CProcessGrappl();
     virtual ~CProcessGrappl();
@@ -18,7 +17,7 @@ public:
     double GetAveragePitch();
     double GetUncertainty(double fPitch);
     virtual void SetDataInvalid();
-	void Dump( LPCSTR ofilename);
+    void Dump(LPCSTR ofilename);
 
 private:
     SGrapplParms m_CalcParm;

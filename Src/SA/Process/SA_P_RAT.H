@@ -10,8 +10,7 @@
 //###########################################################################
 // CProcessRatio data processing
 
-class CProcessRatio : public CProcess
-{
+class CProcessRatio : public CProcess {
 // Construction/destruction/creation
 public:
     CProcessRatio();

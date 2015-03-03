@@ -175,8 +175,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-char * CSpectrum::Copyright(void)
-{
+char * CSpectrum::Copyright(void) {
     static char Notice[] = {"Spectrum Version " VERSION_NUMBER "\n"
                             "Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. "
                             "All rights reserved.\n"
@@ -187,8 +186,7 @@ char * CSpectrum::Copyright(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return version of class.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-float CSpectrum::Version(void)
-{
+float CSpectrum::Version(void) {
     return((float)atof(VERSION_NUMBER));
 }
 
@@ -198,57 +196,47 @@ float CSpectrum::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to construct spectrum object if parameters are valid.               //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum, SSpectrumSettings & stSpectSetting, SSigParms & stFrameParm, uint16 wFFTLength)
-{
+dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum, SSpectrumSettings & stSpectSetting, SSigParms & stFrameParm, uint16 wFFTLength) {
 // Validate requested spectrum settings and signal parameters.
-    if (!ppoSpectrum)
-    {
+    if (!ppoSpectrum) {
         return(Code(INVALID_PARM_PTR));    //address of pointer to spectrum object
     }
     //  must not be NULL
     *ppoSpectrum = NULL;
     dspError_t Err = ValidateSettings(stSpectSetting);        //check settings
-    if (Err)
-    {
+    if (Err) {
         return(Err);
     }
     Err = ValidateSignalParms(stFrameParm);            //check signal parameters
-    if (Err)
-    {
+    if (Err) {
         return(Err);
     }
-    if (stSpectSetting.fSmoothFreq >= (float)stFrameParm.SmpRate/2.F)
-    {
+    if (stSpectSetting.fSmoothFreq >= (float)stFrameParm.SmpRate/2.F) {
         return(Code(INVALID_FREQ));
     }
     if (wFFTLength > MAX_FFT_LENGTH ||
-            !IsSingleBitOn(wFFTLength))   //must be power of 2 for FFT
-    {
+            !IsSingleBitOn(wFFTLength)) { //must be power of 2 for FFT
         return(Code(INVALID_FFT_LENGTH));
     }
-    if (stSpectSetting.wLength == 0 || stSpectSetting.wLength > wFFTLength/2)
-    {
+    if (stSpectSetting.wLength == 0 || stSpectSetting.wLength > wFFTLength/2) {
         return(Code(INVALID_SPECT_LEN));    //requested length must not be zero or greater than
     }
     //FFT length which may cause divide by zero
 
 // Allocate memory to contain raw and smoothed power spectra.
     float * pfRawSpectrum = new float[stSpectSetting.wLength];
-    if (!pfRawSpectrum)
-    {
+    if (!pfRawSpectrum) {
         return(Code(OUT_OF_MEMORY));
     }
     float * pfSmoothSpectrum = new float[stSpectSetting.wLength];
-    if (!pfSmoothSpectrum)
-    {
+    if (!pfSmoothSpectrum) {
         delete [] pfRawSpectrum;
         return(Code(OUT_OF_MEMORY));
     }
 
 // Allocate memory to contain FFT values.
     float * pfFFTBuffer = new float[wFFTLength];
-    if (!pfFFTBuffer)
-    {
+    if (!pfFFTBuffer) {
         delete [] pfRawSpectrum;
         delete [] pfSmoothSpectrum;
         return(Code(OUT_OF_MEMORY));
@@ -260,8 +248,7 @@ dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum, SSpectrumSettings &
 // Construct spectrum object.
     CSpectrum * poSpectrum = new CSpectrum(stSpectSetting, stFrameParm, oDSPWindow,
                                            wFFTLength, pfFFTBuffer, pfRawSpectrum, pfSmoothSpectrum);
-    if (!poSpectrum)
-    {
+    if (!poSpectrum) {
         delete [] pfRawSpectrum;
         delete [] pfSmoothSpectrum;
         delete [] pfFFTBuffer;
@@ -277,26 +264,21 @@ dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum, SSpectrumSettings &
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate signal parameters.                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrum::ValidateSignalParms(SSigParms & stFrame)
-{
-    if (!stFrame.Start)
-    {
+dspError_t CSpectrum::ValidateSignalParms(SSigParms & stFrame) {
+    if (!stFrame.Start) {
         return(Code(INVALID_PARM_PTR));
     }
-    if (!stFrame.Length)
-    {
+    if (!stFrame.Length) {
         return(Code(INVALID_SIG_LEN));
     }
 
-    if (stFrame.SmpRate < 1)
-    {
+    if (stFrame.SmpRate < 1) {
         return(Code(UNSUPP_SMP_RATE));
     }
 
     if (stFrame.SmpDataFmt != PCM_UBYTE &&   //sample data format should be unsigned byte PCM, or
             stFrame.SmpDataFmt != PCM_2SBYTE &&  //  2's complement signed byte PCM, or
-            stFrame.SmpDataFmt != PCM_2SSHORT)   //  2's complement signed 16-bit PCM
-    {
+            stFrame.SmpDataFmt != PCM_2SSHORT) { //  2's complement signed 16-bit PCM
         return(Code(UNSUPP_SMP_DATA_FMT));
     }
 
@@ -306,22 +288,18 @@ dspError_t CSpectrum::ValidateSignalParms(SSigParms & stFrame)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate requested spectrum settings.                            //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrum::ValidateSettings(SSpectrumSettings & stSpectSetting)
-{
+dspError_t CSpectrum::ValidateSettings(SSpectrumSettings & stSpectSetting) {
     if (stSpectSetting.nScaleSelect != LINEAR &&
-            stSpectSetting.nScaleSelect != DB)
-    {
+            stSpectSetting.nScaleSelect != DB) {
         return(Code(INVALID_SCALE));    //requested scale must be linear or decibel
     }
 
-    if (stSpectSetting.fSmoothFreq < 0.F)
-    {
+    if (stSpectSetting.fSmoothFreq < 0.F) {
         return(Code(INVALID_FREQ));    //smoothing freq must not be negative
     }
 
     if (stSpectSetting.fFFTRadius <= 0.F ||
-            stSpectSetting.fFFTRadius > 1.F)
-    {
+            stSpectSetting.fFFTRadius > 1.F) {
         return(Code(INVALID_RESOLUTION));    //requested peak resolution must be > 0 and <= 1
     }
 
@@ -334,8 +312,7 @@ dspError_t CSpectrum::ValidateSettings(SSpectrumSettings & stSpectSetting)
 CSpectrum::CSpectrum(SSpectrumSettings & stSpectSetting,
                      SSigParms & stFrameParm, CDspWin & oDSPWindow,
                      uint16 wFFTLength, float * pfFFTBuffer,
-                     float * pfRawSpectrum, float * pfSmoothSpectrum) : m_oDSPWindow(oDSPWindow)
-{
+                     float * pfRawSpectrum, float * pfSmoothSpectrum) : m_oDSPWindow(oDSPWindow) {
 // Update object member variables.
     m_bReplicate = false;
     m_pFrameStart = stFrameParm.Start;
@@ -376,8 +353,7 @@ CSpectrum::CSpectrum(SSpectrumSettings & stSpectSetting,
 ////////////////////////////////////////////////////////////////////////////////////////
 // Spectrum object destructor.                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////
-CSpectrum::~CSpectrum()
-{
+CSpectrum::~CSpectrum() {
 // Free allocated memory
     delete [] m_pfRawSpectrum;
     delete [] m_pfSmoothSpectrum;
@@ -387,8 +363,7 @@ CSpectrum::~CSpectrum()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Public object function to retrieve spectral parameters.                            //
 ////////////////////////////////////////////////////////////////////////////////////////
-SSpectrumParms CSpectrum::GetSpectParms(void)
-{
+SSpectrumParms CSpectrum::GetSpectParms(void) {
     SSpectrumParms stSpectParm;
 
     stSpectParm.wSpectLength = m_wSpectLength;
@@ -406,37 +381,31 @@ SSpectrumParms CSpectrum::GetSpectParms(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private object function to calculate raw and smoothed spectra.                     //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrum::GetPwrSpectrum(void)
-{
+dspError_t CSpectrum::GetPwrSpectrum(void) {
     dspError_t Err;
 
-    switch (m_sbSmpFormat)
-    {
+    switch (m_sbSmpFormat) {
     case PCM_UBYTE:
         Err = Preprocess((uint8 *)m_pFrameStart);
-        if (Err)
-        {
+        if (Err) {
             return(Err);
         }
         break;
     case PCM_2SBYTE:
         Err = Preprocess((int8 *)m_pFrameStart);
-        if (Err)
-        {
+        if (Err) {
             return(Err);
         }
         break;
     case PCM_2SSHORT:
         Err = Preprocess((short *)m_pFrameStart);
-        if (Err)
-        {
+        if (Err) {
             return(Err);
         }
         break;
     }
     Err = CalcPwrFFT();
-    if (Err)
-    {
+    if (Err) {
         return(Err);
     }
 
@@ -452,19 +421,16 @@ dspError_t CSpectrum::GetPwrSpectrum(void)
 // 0.74 and a SD of 0.14.  (tested with Hann window)
 static double WindowWeight = 1./0.74;
 
-dspError_t CSpectrum::Preprocess(uint8 * pubFrame)
-{
+dspError_t CSpectrum::Preprocess(uint8 * pubFrame) {
     uint16 i;
     uint32 j;
     const float * WData = m_oDSPWindow.WindowFloat();
     uint32 dwWinLength = m_oDSPWindow.Length();
 
     double dFftScale = WindowWeight*double(m_wFFTLength)/CDspWin::CalcEquivalentLength(m_dwFrameLength, CDspWin::kHanning, m_oDSPWindow.Type());
-    for (i = 0; i < m_wFFTLength; i++)
-    {
+    for (i = 0; i < m_wFFTLength; i++) {
         m_pfFFTBuffer[i] = 0.F;
-        for (j = (uint32)i; (j < m_dwFrameLength) && (j < dwWinLength); j += (uint32)m_wFFTLength)
-        {
+        for (j = (uint32)i; (j < m_dwFrameLength) && (j < dwWinLength); j += (uint32)m_wFFTLength) {
             m_pfFFTBuffer[i] += WData[j] * (float)((int8)(pubFrame[j] - 128) * dFftScale);
         }
         // pre-alias to prevent overlapping bands
@@ -473,19 +439,16 @@ dspError_t CSpectrum::Preprocess(uint8 * pubFrame)
     return(DONE);
 }
 
-dspError_t CSpectrum::Preprocess(int8 * psbFrame)
-{
+dspError_t CSpectrum::Preprocess(int8 * psbFrame) {
     uint16 i;
     uint32 j;
     const float * WData = m_oDSPWindow.WindowFloat();
     uint32 dwWinLength = m_oDSPWindow.Length();
 
     double dFftScale = WindowWeight*double(m_wFFTLength)/m_dwFrameLength;
-    for (i = 0; i < m_wFFTLength; i++)
-    {
+    for (i = 0; i < m_wFFTLength; i++) {
         m_pfFFTBuffer[i] = 0.F;
-        for (j = (uint32)i; (j < m_dwFrameLength) && (j < dwWinLength); j += (uint32)m_wFFTLength)
-        {
+        for (j = (uint32)i; (j < m_dwFrameLength) && (j < dwWinLength); j += (uint32)m_wFFTLength) {
             m_pfFFTBuffer[i] += WData[j] * (float)(psbFrame[j] * dFftScale);
         }
         // pre-alias to prevent overlapping bands
@@ -494,19 +457,16 @@ dspError_t CSpectrum::Preprocess(int8 * psbFrame)
     return(DONE);
 }
 
-dspError_t CSpectrum::Preprocess(short * psFrame)
-{
+dspError_t CSpectrum::Preprocess(short * psFrame) {
     uint16 i;
     uint32 j;
     const float * WData = m_oDSPWindow.WindowFloat();
     uint32 dwWinLength = m_oDSPWindow.Length();
 
     double dFftScale = WindowWeight*double(m_wFFTLength)/m_dwFrameLength;
-    for (i = 0; i < m_wFFTLength; i++)
-    {
+    for (i = 0; i < m_wFFTLength; i++) {
         m_pfFFTBuffer[i] = 0.F;
-        for (j = (uint32)i; j < m_dwFrameLength, j < dwWinLength; j += (uint32)m_wFFTLength)
-        {
+        for (j = (uint32)i; j < m_dwFrameLength, j < dwWinLength; j += (uint32)m_wFFTLength) {
             m_pfFFTBuffer[i] += WData[j] * (float)(psFrame[j] * dFftScale);
         }
         // pre-alias to prevent overlapping bands
@@ -533,8 +493,7 @@ dspError_t CSpectrum::Preprocess(short * psFrame)
 #endif
 
 
-dspError_t CSpectrum::CalcPwrFFT(void)
-{
+dspError_t CSpectrum::CalcPwrFFT(void) {
     // Reference location where complex spectral values will be returned.
     SComplexRectFloat * pfSpectCoeff = (SComplexRectFloat *)m_pfFFTBuffer;
 
@@ -562,15 +521,13 @@ dspError_t CSpectrum::CalcPwrFFT(void)
     double dTotalRawEnergy = 0;
     pfSpectCoeff[0].real = (dPower == 0.) ? MIN_LOG_MAG : (float)(0.5*log10(dPower));
 
-    if (dFFTFreq > dSpectBand)
-    {
+    if (dFFTFreq > dSpectBand) {
         m_pfRawSpectrum[j++] = (float)dAccumPower;
         dTotalRawEnergy += dAccumPower;
         dAccumPower = 0.;
         dSpectBand += dSpectScale;
     }
-    for (i = 1; i < m_wFFTLength/2; i++)
-    {
+    for (i = 1; i < m_wFFTLength/2; i++) {
         dPower = pfSpectCoeff[i].real*pfSpectCoeff[i].real +
                  pfSpectCoeff[i].imag*pfSpectCoeff[i].imag;
 #ifdef FFT_DUMP
@@ -578,8 +535,7 @@ dspError_t CSpectrum::CalcPwrFFT(void)
 #endif
         dAccumPower += dPower;
         dFFTFreq += dFFTScale;
-        if (dFFTFreq > dSpectBand)
-        {
+        if (dFFTFreq > dSpectBand) {
             m_pfRawSpectrum[j++] = (float)(dAccumPower / (double)(i - wBandStart));
             dTotalRawEnergy += dAccumPower;
             dAccumPower = 0.;
@@ -620,43 +576,29 @@ dspError_t CSpectrum::CalcPwrFFT(void)
     short nDirection;
     short nPeakLoc;
     uint16 wCorner = 0;
-    for (i = (uint16)(m_wMaxPitchPeriod-1); i >= m_wMinPitchPeriod-1; i--)    //!!>1 and <SpectLen
-    {
-        if (pfCepstralCoeff[i] > pfCepstralCoeff[i+1])
-        {
+    for (i = (uint16)(m_wMaxPitchPeriod-1); i >= m_wMinPitchPeriod-1; i--) {  //!!>1 and <SpectLen
+        if (pfCepstralCoeff[i] > pfCepstralCoeff[i+1]) {
             nDirection = FALLING_TREND;
-        }
-        else if (pfCepstralCoeff[i] < pfCepstralCoeff[i+1])
-        {
+        } else if (pfCepstralCoeff[i] < pfCepstralCoeff[i+1]) {
             nDirection = RISING_TREND;
-        }
-        else
-        {
+        } else {
             nDirection = LEVEL_TREND;
         }
-        if (nDirection != nTrend[0])
-        {
+        if (nDirection != nTrend[0]) {
             nTrend[2] = nTrend[1];
             nTrend[1] = nTrend[0];
             nTrend[0] = nDirection;
-            if (nTrend[0] == LEVEL_TREND)
-            {
+            if (nTrend[0] == LEVEL_TREND) {
                 wCorner = (uint16)(i + 1);
-            }
-            else if (nTrend[0] == RISING_TREND && nTrend[1] == FALLING_TREND)
-            {
+            } else if (nTrend[0] == RISING_TREND && nTrend[1] == FALLING_TREND) {
                 nPeakLoc = (short)(i + 1);
-                if (pfCepstralCoeff[nPeakLoc] > fHiPeakVal)
-                {
+                if (pfCepstralCoeff[nPeakLoc] > fHiPeakVal) {
                     fHiPeakVal = pfCepstralCoeff[nPeakLoc];
                     nHiPeakLoc = nPeakLoc;
                 }
-            }
-            else if (nTrend[0] == RISING_TREND  &&  nTrend[1] == LEVEL_TREND  &&  nTrend[2] == FALLING_TREND)
-            {
+            } else if (nTrend[0] == RISING_TREND  &&  nTrend[1] == LEVEL_TREND  &&  nTrend[2] == FALLING_TREND) {
                 nPeakLoc = (short)((i + 1 + wCorner)/2);                   //!!PeakLoc float?
-                if (pfCepstralCoeff[nPeakLoc] > fHiPeakVal)
-                {
+                if (pfCepstralCoeff[nPeakLoc] > fHiPeakVal) {
                     fHiPeakVal = pfCepstralCoeff[nPeakLoc];
                     nHiPeakLoc = nPeakLoc;
                 }
@@ -668,18 +610,14 @@ dspError_t CSpectrum::CalcPwrFFT(void)
     short & nPitchPeakLoc = nHiPeakLoc;
     float & fPitchPeakVal = fHiPeakVal;
 
-    if (fPitchPeakVal > MIN_PITCHPEAK_THD)   //!!MIN_PEAK_THD > FLT_MIN_NEG
-    {
+    if (fPitchPeakVal > MIN_PITCHPEAK_THD) { //!!MIN_PEAK_THD > FLT_MIN_NEG
         m_pstFormant[0].FrequencyInHertz = (float)m_wSmpRate/(float)nPitchPeakLoc;
-    }
-    else
-    {
+    } else {
         m_pstFormant[0].FrequencyInHertz = UNVOICED;
     }
     m_pstFormant[0].PowerInDecibels = LOG_MAG_NA;
 
-    if (m_fSmoothFreq == AUTO_SET && m_pstFormant[0].FrequencyInHertz != UNVOICED)
-    {
+    if (m_fSmoothFreq == AUTO_SET && m_pstFormant[0].FrequencyInHertz != UNVOICED) {
         m_fSmoothFreq = m_pstFormant[0].FrequencyInHertz;
     }
     uint16 wSmoothPeriod = (uint16)((float)m_wSmpRate/m_fSmoothFreq + 0.5F);
@@ -687,23 +625,20 @@ dspError_t CSpectrum::CalcPwrFFT(void)
     // Divide low time cesptral coefficients by decaying exponential to sharpen formant
     // peaks.
     double r = m_fSpectCalcRadius;
-    for (i = 1; i < wSmoothPeriod*2; i++, r*=m_fSpectCalcRadius)
-    {
+    for (i = 1; i < wSmoothPeriod*2; i++, r*=m_fSpectCalcRadius) {
         pfCepstralCoeff[i] = pfCepstralCoeff[m_wFFTLength-i] = (float)(pfCepstralCoeff[i]/r);
     }
 
     // Remove excitation characteristic from high time portion
     const double power = 4.; // Theoretical is 2.0-6.0 traditional is infinity (approximately a rectangle)
 
-    for (i = 1; i < wSmoothPeriod*2; i++)
-    {
+    for (i = 1; i < wSmoothPeriod*2; i++) {
         double snr = double(wSmoothPeriod*2-i)/i;
         double weight = 1./(1. + pow(snr,-power));
         pfCepstralCoeff[i] = pfCepstralCoeff[m_wFFTLength-i] = float(weight*pfCepstralCoeff[i]);     //!!i > 0
     }
 
-    for (i = wSmoothPeriod*2; i <= m_wFFTLength/2; i++)
-    {
+    for (i = wSmoothPeriod*2; i <= m_wFFTLength/2; i++) {
         pfCepstralCoeff[i] = pfCepstralCoeff[m_wFFTLength-i] = 0.F;     //!!i > 0
     }
 
@@ -719,8 +654,7 @@ dspError_t CSpectrum::CalcPwrFFT(void)
     dFFTFreq = dFFTScale;
     uint16 k = 0;
     double dTotalCepEnergy = 0.;
-    if (dFFTFreq > dSpectBand)
-    {
+    if (dFFTFreq > dSpectBand) {
         m_pfSmoothSpectrum[k++] = (float)dAccumPower;
         // Don't count DC...
         // dTotalCepEnergy += dAccumPower;
@@ -728,40 +662,27 @@ dspError_t CSpectrum::CalcPwrFFT(void)
         dSpectBand += dSpectScale;
     }
     nTrend[0] = nTrend[1] = nTrend[2] = UNKNOWN_TREND;
-    for (i = 1, j = 1; i < m_wFFTLength/2; i++)
-    {
-        if (j <= m_wNumFormants)
-        {
-            if (pfSpectCoeff[i].real > pfSpectCoeff[i-1].real)
-            {
+    for (i = 1, j = 1; i < m_wFFTLength/2; i++) {
+        if (j <= m_wNumFormants) {
+            if (pfSpectCoeff[i].real > pfSpectCoeff[i-1].real) {
                 nDirection = RISING_TREND;
-            }
-            else if (pfSpectCoeff[i].real < pfSpectCoeff[i-1].real)
-            {
+            } else if (pfSpectCoeff[i].real < pfSpectCoeff[i-1].real) {
                 nDirection = FALLING_TREND;
-            }
-            else
-            {
+            } else {
                 nDirection = LEVEL_TREND;
             }
-            if (nDirection != nTrend[0])
-            {
+            if (nDirection != nTrend[0]) {
                 nTrend[2] = nTrend[1];
                 nTrend[1] = nTrend[0];
                 nTrend[0] = nDirection;
-                if (nTrend[0] == LEVEL_TREND)
-                {
+                if (nTrend[0] == LEVEL_TREND) {
                     wCorner = (uint16)(i - 1);
-                }
-                else if (nTrend[1] == RISING_TREND && nTrend[0] == FALLING_TREND)
-                {
+                } else if (nTrend[1] == RISING_TREND && nTrend[0] == FALLING_TREND) {
                     m_pstFormant[j].FrequencyInHertz = (float)((i - 1)*dFFTScale);
                     m_pstFormant[j++].PowerInDecibels = (float)pfSpectCoeff[i-1].real;
-                }
-                else if ((nTrend[2] == RISING_TREND && nTrend[1] == LEVEL_TREND && nTrend[0] == FALLING_TREND) ||
-                         (nTrend[2] == FALLING_TREND && nTrend[1] == LEVEL_TREND && nTrend[0] == FALLING_TREND) ||
-                         (nTrend[2] == RISING_TREND && nTrend[1] == LEVEL_TREND && nTrend[0] == RISING_TREND))
-                {
+                } else if ((nTrend[2] == RISING_TREND && nTrend[1] == LEVEL_TREND && nTrend[0] == FALLING_TREND) ||
+                           (nTrend[2] == FALLING_TREND && nTrend[1] == LEVEL_TREND && nTrend[0] == FALLING_TREND) ||
+                           (nTrend[2] == RISING_TREND && nTrend[1] == LEVEL_TREND && nTrend[0] == RISING_TREND)) {
                     uint16 wMidPoint = (uint16)((i - 1 + wCorner)/2);
                     m_pstFormant[j].FrequencyInHertz = (float)(wMidPoint*dFFTScale);
                     m_pstFormant[j++].PowerInDecibels = (float)pfSpectCoeff[wMidPoint].real;
@@ -772,8 +693,7 @@ dspError_t CSpectrum::CalcPwrFFT(void)
         dAccumPower += pow(10.,2.*(double)pfSpectCoeff[i].real);
 
         dFFTFreq += dFFTScale;
-        if (dFFTFreq > dSpectBand)
-        {
+        if (dFFTFreq > dSpectBand) {
             m_pfSmoothSpectrum[k++] = (float)(dAccumPower / (double)(i - wBandStart));
             dTotalCepEnergy += dAccumPower;
             dAccumPower = 0.;
@@ -782,8 +702,7 @@ dspError_t CSpectrum::CalcPwrFFT(void)
         }
     }
 
-    for (m_wNumFormants = j; j <= MAX_NUM_FORMANTS; j++)   //clear out rest of formant positions
-    {
+    for (m_wNumFormants = j; j <= MAX_NUM_FORMANTS; j++) { //clear out rest of formant positions
         m_pstFormant[j].FrequencyInHertz = 0.F;
         m_pstFormant[j].PowerInDecibels = 0.F;
     }
@@ -797,13 +716,11 @@ dspError_t CSpectrum::CalcPwrFFT(void)
     //!!Select largest peak within 0 to 1000 Hz, 500 to 2000 Hz, 1500 to 3000 Hz, etc. heuristic goes here.
 
     // Convert spectral values to dB if requested.
-    if (m_nScaleSelect == DB)
-    {
+    if (m_nScaleSelect == DB) {
         uint16 wSmpSize = (uint16)abs(m_sbSmpFormat);
         double dCepScaleDB = 10*log10(dTotalRawEnergy/dTotalCepEnergy);
 
-        for (i = 0; i < m_wSpectLength; i++)
-        {
+        for (i = 0; i < m_wSpectLength; i++) {
             m_pfRawSpectrum[i] = (m_pfRawSpectrum[i]==0.F) ? MIN_LOG_MAG :
                                  (float)(10.*log10((double)m_pfRawSpectrum[i])) -
                                  m_fPwrDbRef[wSmpSize];
@@ -811,12 +728,9 @@ dspError_t CSpectrum::CalcPwrFFT(void)
                                     (float)(10.*log10((double)m_pfSmoothSpectrum[i]) -
                                             m_fPwrDbRef[wSmpSize] + dCepScaleDB);
         }
-    }
-    else
-    {
+    } else {
         double dCepScale = dTotalRawEnergy/dTotalCepEnergy;
-        for (i = 0; i < m_wSpectLength; i++)
-        {
+        for (i = 0; i < m_wSpectLength; i++) {
             m_pfSmoothSpectrum[i] *= float(dCepScale);
         }
     }

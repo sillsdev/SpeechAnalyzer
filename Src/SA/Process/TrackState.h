@@ -9,28 +9,27 @@ typedef std::deque<CDBL> DEQUE_CDBL;
 typedef double DBL;
 typedef std::vector<DBL> VECTOR_DBL;
 
-class STrackState
-{
+class STrackState {
 public:
-	DEQUE_CDBL data;
-	// the filter window
-	VECTOR_DBL window;
+    DEQUE_CDBL data;
+    // the filter window
+    VECTOR_DBL window;
 
     // Previous track position
-	VECTOR_CDBL trackIn;
+    VECTOR_CDBL trackIn;
 
     // the results
-	VECTOR_CDBL trackOut;
+    VECTOR_CDBL trackOut;
 
     // Working intermediates to eliminate memory thrashing
-	VECTOR_CDBL windowed;
-	VECTOR_CDBL filtered;
-	VECTOR_CDBL zeroFilterCDBL;
-	VECTOR_DBL zeroFilterDBL;
+    VECTOR_CDBL windowed;
+    VECTOR_CDBL filtered;
+    VECTOR_CDBL zeroFilterCDBL;
+    VECTOR_DBL zeroFilterDBL;
 
-	void DumpWindowed( LPCSTR ofilename);
-	void DumpFiltered( LPCSTR ofilename);
-	void DumpZeroFilterDBL( LPCSTR ofilename);
+    void DumpWindowed(LPCSTR ofilename);
+    void DumpFiltered(LPCSTR ofilename);
+    void DumpZeroFilterDBL(LPCSTR ofilename);
 };
 
 #endif

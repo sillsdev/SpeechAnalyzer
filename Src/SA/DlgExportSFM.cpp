@@ -604,12 +604,12 @@ void CDlgExportSFM::ExportMultiRecord() {
         if (!TryExportSegmentsBy(GLOSS,pDoc,file)) {
             if (!TryExportSegmentsBy(GLOSS_NAT,pDoc,file)) {
                 if (!TryExportSegmentsBy(ORTHO,pDoc,file)) {
-	                if (!TryExportSegmentsBy(TONE,pDoc,file)) {
-		                if (!TryExportSegmentsBy(PHONEMIC,pDoc,file)) {
-			                if (!TryExportSegmentsBy(TONE,pDoc,file)) {
-				                TryExportSegmentsBy(PHONETIC,pDoc,file);
-					        }
-						}
+                    if (!TryExportSegmentsBy(TONE,pDoc,file)) {
+                        if (!TryExportSegmentsBy(PHONEMIC,pDoc,file)) {
+                            if (!TryExportSegmentsBy(TONE,pDoc,file)) {
+                                TryExportSegmentsBy(PHONETIC,pDoc,file);
+                            }
+                        }
                     }
                 }
             }
@@ -795,7 +795,7 @@ bool CDlgExportSFM::TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile 
     return true;
 }
 
-CSaString CDlgExportSFM::BuildRecord( EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain) {
+CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain) {
     CSaString szTag = GetTag(target);
     CSegment * pSegment = pDoc->GetSegment(target);
     CSaString szText = pSegment->GetContainedText(dwStart,dwStop);
@@ -1039,7 +1039,7 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file) {
     }
     if (m_bLength) { // \len  Length
         // create and write length text
-        double fDataSec = pDoc->GetTimeFromBytes( pDoc->GetDataSize()); // get sampled data size in seconds
+        double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());  // get sampled data size in seconds
         int nMinutes = (int)fDataSec / 60;
 
         if (nMinutes == 0) { // length is less than one minute

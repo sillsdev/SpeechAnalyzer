@@ -14,7 +14,7 @@ class CAutoSave {
 public:
     // per-document methods
     CAutoSave();
-    void Save( CSaDoc & document);
+    void Save(CSaDoc & document);
     bool IsSaving();
     bool IsUpdating();
 
@@ -24,7 +24,7 @@ public:
     static wstring GetDirectory();
 
     // the user is closing the file and we don't need to track it
-    void Close( LPCTSTR filename);
+    void Close(LPCTSTR filename);
 
 private:
     void WriteInfo(LPCTSTR path, bool isTempFile, LPCTSTR aswave, LPCTSTR asxml, LPCTSTR restorewave, LPCTSTR root, LPCTSTR folder);

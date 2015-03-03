@@ -21,8 +21,7 @@ CDlgFileOpen::CDlgFileOpen(LPCTSTR lpszDefExt,
                            DWORD dwFlags,
                            LPCTSTR lpszFilter,
                            CWnd * pParentWnd) :
-    CFileDialog(TRUE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE)
-{
+    CFileDialog(TRUE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE) {
     SetTemplate(IDD, IDD);
     m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
 }
@@ -31,7 +30,6 @@ BEGIN_MESSAGE_MAP(CDlgFileOpen, CFileDialog)
     ON_BN_CLICKED(IDC_PLAY, OnPlay)
 END_MESSAGE_MAP()
 
-void CDlgFileOpen::OnPlay()
-{
+void CDlgFileOpen::OnPlay() {
     PlaySound(GetPathName(), 0, SND_ASYNC | SND_NODEFAULT | SND_FILENAME);
 }

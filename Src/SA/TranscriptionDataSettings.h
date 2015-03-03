@@ -5,15 +5,14 @@
 #include "TranscriptionHelper.h"
 #include "TranscriptionData.h"
 
-class CTranscriptionDataSettings
-{
+class CTranscriptionDataSettings {
 public:
     bool m_bPhoneticModified;
     bool m_bPhonemicModified;
     bool m_bOrthographicModified;
     bool m_bGlossModified;
     bool m_bGlossNatModified;
-	bool m_bReferenceModified;
+    bool m_bReferenceModified;
 
     int m_nAlignBy;
     int m_nSegmentBy;
@@ -24,10 +23,10 @@ public:
     bool m_bPhonemic;
     bool m_bPhonetic;
     bool m_bGloss;
-	bool m_bGlossNat;
-    
-	CSaString m_szReference;
-	CSaString m_szPhonetic;
+    bool m_bGlossNat;
+
+    CSaString m_szReference;
+    CSaString m_szPhonetic;
     CSaString m_szPhonemic;
     CSaString m_szOrthographic;
     CSaString m_szGloss;

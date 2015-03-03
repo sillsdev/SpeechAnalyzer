@@ -43,8 +43,7 @@ END_MESSAGE_MAP()
 // CDlgSynthesis::CDlgSynthesis Constructor
 /***************************************************************************/
 CDlgSynthesis::CDlgSynthesis(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage)
-    : CPropertySheet(pszCaption, pParent, iSelectPage)
-{
+    : CPropertySheet(pszCaption, pParent, iSelectPage) {
     m_pDlgMbrolaPage = new CDlgMbrola;
     AddPage(m_pDlgMbrolaPage);
 }
@@ -53,10 +52,8 @@ CDlgSynthesis::CDlgSynthesis(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPag
 /***************************************************************************/
 // CDlgSynthesis::~CDlgSynthesis Destructor
 /***************************************************************************/
-CDlgSynthesis::~CDlgSynthesis()
-{
-    if (m_pDlgMbrolaPage)
-    {
+CDlgSynthesis::~CDlgSynthesis() {
+    if (m_pDlgMbrolaPage) {
         delete m_pDlgMbrolaPage;
     }
 }
@@ -68,8 +65,7 @@ CDlgSynthesis::~CDlgSynthesis()
 /***************************************************************************/
 // CDlgSynthesis::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgSynthesis::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgSynthesis::DoDataExchange(CDataExchange * pDX) {
     CPropertySheet::DoDataExchange(pDX);
 }
 
@@ -79,8 +75,7 @@ void CDlgSynthesis::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // CDlgSynthesis::OnInitDialog
 /***************************************************************************/
-BOOL CDlgSynthesis::OnInitDialog()
-{
+BOOL CDlgSynthesis::OnInitDialog() {
     CPropertySheet::OnInitDialog();
 
     CRect rect;
@@ -88,15 +83,12 @@ BOOL CDlgSynthesis::OnInitDialog()
 
     CRect newRect(0,0,75,23);
     CWnd * pWnd = GetDlgItem(IDOK);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->GetWindowRect(newRect);
         // this button is already on the form, but MFC has hidden and disabled it
         pWnd->ShowWindow(SW_SHOW);
         pWnd->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_cOK.Create(_T("OK"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, newRect, this, IDOK);
         pWnd = & m_cOK;
     }
@@ -124,8 +116,7 @@ BOOL CDlgSynthesis::OnInitDialog()
 /***************************************************************************/
 // CDlgSynthesis::OnHelpSynthesis Call Synthesis help
 /***************************************************************************/
-void CDlgSynthesis::OnHelpSynthesis()
-{
+void CDlgSynthesis::OnHelpSynthesis() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath = szPath.Left(szPath.ReverseFind('\\'));

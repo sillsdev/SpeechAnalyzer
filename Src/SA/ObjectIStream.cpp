@@ -22,13 +22,12 @@ using std::ios;
 #define maxsizMString 32000
 
 // ==========================================================================
-CObjectIStream::CObjectIStream( LPCSTR filename) :
-m_ios(),
-string_buffer()
-{
+CObjectIStream::CObjectIStream(LPCSTR filename) :
+    m_ios(),
+    string_buffer() {
     m_ios.open(filename);
-	DWORD file_length = FileUtils::GetFileSize( filename);
-	string_buffer.reallocate(file_length+1);
+    DWORD file_length = FileUtils::GetFileSize(filename);
+    string_buffer.reallocate(file_length+1);
     m_pszEnd = NULL;
     m_pszMarker = NULL;
     m_pszString = NULL;
@@ -36,34 +35,26 @@ string_buffer()
     m_chEndOfLine = '\n';  // Default for Mac and Windows
 }
 
-CObjectIStream::~CObjectIStream()
-{
+CObjectIStream::~CObjectIStream() {
 }
 
-size_t CObjectIStream::GetBufferSize() const
-{
-	return string_buffer.size();
+size_t CObjectIStream::GetBufferSize() const {
+    return string_buffer.size();
 }
 
-void CObjectIStream::SkipBOM()
-{
+void CObjectIStream::SkipBOM() {
     char nextChar;
 
-    for (int i = 0; i < 3; i++)
-    {
-        if (bAtBackslash())
-        {
+    for (int i = 0; i < 3; i++) {
+        if (bAtBackslash()) {
             return;
-        }
-        else
-        {
+        } else {
             m_ios.get(nextChar);
         }
     }
 }
 
-bool CObjectIStream::bAtEnd()
-{
+bool CObjectIStream::bAtEnd() {
     // MRP: TO DO!!! Check whether the following (and bReadField) is right...
     // 1. If marker or contents at EOF with no newline;
     // 2. If explicit Ctrl-Z (code 26) in file.
@@ -74,15 +65,13 @@ bool CObjectIStream::bAtEnd()
     return ((!m_bUnRead) && (m_ios.peek() == EOF));
 }
 
-bool CObjectIStream::bAtBackslash()
-{
+bool CObjectIStream::bAtBackslash() {
     // Stream represents Standard Format if a field has already been read
     // successfully, or if the first char of the stream is a backslash.
     return ((m_bUnRead) || (m_ios.peek() == '\\'));
 }
 
-bool CObjectIStream::bAtBeginMarker()
-{
+bool CObjectIStream::bAtBeginMarker() {
 
     LPCSTR pszMarkerRead = NULL;
     LPCSTR pszStringRead = NULL;
@@ -92,8 +81,7 @@ bool CObjectIStream::bAtBeginMarker()
     return bBeginMarker;
 }
 
-bool CObjectIStream::bAtBeginOrEndMarker()
-{
+bool CObjectIStream::bAtBeginOrEndMarker() {
     LPCSTR pszMarkerRead = NULL;
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
@@ -104,13 +92,11 @@ bool CObjectIStream::bAtBeginOrEndMarker()
     return bBeginOrEndMarker;
 }
 
-bool CObjectIStream::bAtBeginMarker(LPCSTR pszMarker, LPCSTR pszName)
-{
+bool CObjectIStream::bAtBeginMarker(LPCSTR pszMarker, LPCSTR pszName) {
 
     LPCSTR pszMarkerRead = NULL;
     LPCSTR pszStringRead = NULL;
-    if (!bReadBeginMarker(pszMarker))
-    {
+    if (!bReadBeginMarker(pszMarker)) {
         return FALSE;
     }
     UnReadMarkedString();
@@ -120,10 +106,8 @@ bool CObjectIStream::bAtBeginMarker(LPCSTR pszMarker, LPCSTR pszName)
     return b;
 }
 
-bool CObjectIStream::bAtEndMarker(LPCSTR pszMarker)
-{
-    if (!bReadEndMarker(pszMarker))
-    {
+bool CObjectIStream::bAtEndMarker(LPCSTR pszMarker) {
+    if (!bReadEndMarker(pszMarker)) {
         return false;
     }
 
@@ -132,16 +116,14 @@ bool CObjectIStream::bAtEndMarker(LPCSTR pszMarker)
 }
 
 
-bool CObjectIStream::bReadBeginMarker(LPCSTR pszMarker, LPSTR psName, size_t size)
-{
+bool CObjectIStream::bReadBeginMarker(LPCSTR pszMarker, LPSTR psName, size_t size) {
 
     LPCSTR pszMarkerRead = NULL;
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
     BOOL bBeginMarker = (*pszMarkerRead == '+') && (strcmp(pszMarker, pszMarkerRead+1)==0);
-    if (!bBeginMarker)
-    {
+    if (!bBeginMarker) {
         UnReadMarkedString();
         return FALSE;
     }
@@ -151,15 +133,13 @@ bool CObjectIStream::bReadBeginMarker(LPCSTR pszMarker, LPSTR psName, size_t siz
     return TRUE;
 }
 
-bool CObjectIStream::bReadMarker(char cFirstChar, LPCSTR pszMarker)
-{
+bool CObjectIStream::bReadMarker(char cFirstChar, LPCSTR pszMarker) {
     LPCSTR pszMarkerRead = NULL;
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
     BOOL bMarkerFound = (*pszMarkerRead == cFirstChar) && (strcmp(pszMarker, pszMarkerRead+1)==0);
-    if (!bMarkerFound)
-    {
+    if (!bMarkerFound) {
         UnReadMarkedString();
         return FALSE;
     }
@@ -169,10 +149,8 @@ bool CObjectIStream::bReadMarker(char cFirstChar, LPCSTR pszMarker)
 
 #define MAXMKRSIZE 50
 
-bool CObjectIStream::bReadBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier)
-{
-    if (!pszQualifier)
-    {
+bool CObjectIStream::bReadBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier) {
+    if (!pszQualifier) {
         return bReadBeginMarker(pszMarker);
     }
 
@@ -183,10 +161,8 @@ bool CObjectIStream::bReadBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQ
     return bReadMarker('+', buf);
 }
 
-bool CObjectIStream::bReadEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier)
-{
-    if (!pszQualifier)
-    {
+bool CObjectIStream::bReadEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier) {
+    if (!pszQualifier) {
         return bReadEndMarker(pszMarker);
     }
 
@@ -197,26 +173,22 @@ bool CObjectIStream::bReadEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQua
     return bReadMarker('-', buf);
 }
 
-bool CObjectIStream::bReadString( LPCSTR pszMarker, LPSTR szResult, size_t size)
-{
+bool CObjectIStream::bReadString(LPCSTR pszMarker, LPSTR szResult, size_t size) {
     LPCSTR read = NULL;
     bool result = bReadString(pszMarker, &read);
-    if (result)
-    {
-		size_t sz = strlen(read);
+    if (result) {
+        size_t sz = strlen(read);
         strcpy_s(szResult, size, read);
     }
     return result;
 }
 
-bool CObjectIStream::bReadString(LPCSTR pszMarker, LPCSTR * s)
-{
+bool CObjectIStream::bReadString(LPCSTR pszMarker, LPCSTR * s) {
     LPCSTR pszMarkerRead = NULL;
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
-    if (strcmp(pszMarker, pszMarkerRead)!=0)
-    {
+    if (strcmp(pszMarker, pszMarkerRead)!=0) {
         UnReadMarkedString();
         return false;
     }
@@ -225,11 +197,9 @@ bool CObjectIStream::bReadString(LPCSTR pszMarker, LPCSTR * s)
     return true;
 }
 
-bool CObjectIStream::bReadBool(LPCSTR pszMarker, BOOL & b)
-{
+bool CObjectIStream::bReadBool(LPCSTR pszMarker, BOOL & b) {
     LPCSTR s = NULL;
-    if (!bReadString(pszMarker, &s))
-    {
+    if (!bReadString(pszMarker, &s)) {
         return FALSE;
     }
 
@@ -237,11 +207,9 @@ bool CObjectIStream::bReadBool(LPCSTR pszMarker, BOOL & b)
     return TRUE;
 }
 
-bool CObjectIStream::bReadCOLORREF(LPCSTR pszMarker, COLORREF & rgb)
-{
+bool CObjectIStream::bReadCOLORREF(LPCSTR pszMarker, COLORREF & rgb) {
     LPCSTR s = NULL;
-    if (!bReadString(pszMarker, &s))
-    {
+    if (!bReadString(pszMarker, &s)) {
         return FALSE;
     }
 
@@ -249,8 +217,7 @@ bool CObjectIStream::bReadCOLORREF(LPCSTR pszMarker, COLORREF & rgb)
     short int g = 0;
     short int b = 0;
     // 1997-05-17 MRP: sscanf not defined in DLLs -- reimplement
-    if (sscanf_s(s, "%hd,%hd,%hd", &r, &g, &b) == 0)
-    {
+    if (sscanf_s(s, "%hd,%hd,%hd", &r, &g, &b) == 0) {
         return FALSE;
     }
 
@@ -258,11 +225,9 @@ bool CObjectIStream::bReadCOLORREF(LPCSTR pszMarker, COLORREF & rgb)
     return TRUE;
 }
 
-bool CObjectIStream::bReadInteger(LPCSTR pszMarker, int & i)
-{
+bool CObjectIStream::bReadInteger(LPCSTR pszMarker, int & i) {
     LPCSTR s = NULL;
-    if (!bReadString(pszMarker, &s))
-    {
+    if (!bReadString(pszMarker, &s)) {
         return FALSE;
     }
 
@@ -270,11 +235,9 @@ bool CObjectIStream::bReadInteger(LPCSTR pszMarker, int & i)
     return TRUE;
 }
 
-bool CObjectIStream::bReadDouble(LPCSTR pszMarker, double & i)
-{
+bool CObjectIStream::bReadDouble(LPCSTR pszMarker, double & i) {
     LPCSTR s = NULL;
-    if (!bReadString(pszMarker, &s))
-    {
+    if (!bReadString(pszMarker, &s)) {
         return FALSE;
     }
 
@@ -282,42 +245,32 @@ bool CObjectIStream::bReadDouble(LPCSTR pszMarker, double & i)
     return TRUE;
 }
 
-bool CObjectIStream::bReadNumberOf(LPCSTR pszMarker, unsigned long & num)
-{
+bool CObjectIStream::bReadNumberOf(LPCSTR pszMarker, unsigned long & num) {
     LPCSTR s = NULL;
-    if (!bReadString(pszMarker, &s))
-    {
+    if (!bReadString(pszMarker, &s)) {
         return FALSE;
     }
 
-    if (sscanf_s(s, "%lu", &num) == 0)
-    {
+    if (sscanf_s(s, "%lu", &num) == 0) {
         return FALSE;
     }
 
     return TRUE;
 }
 
-void CObjectIStream::ReadMarkedString()   // Generic eat of one marker and its string
-{
+void CObjectIStream::ReadMarkedString() { // Generic eat of one marker and its string
     LPCSTR pszMarkerRead = NULL;
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 }
 
 // Read given end marker, stop any begin marker, for error recovery on objects with unrecognized names AB 1-18-95
-bool CObjectIStream::bEnd(LPCSTR pszMarker)
-{
-    if (bReadEndMarker(pszMarker))     // If desired end marker, return true for successfully found end
-    {
+bool CObjectIStream::bEnd(LPCSTR pszMarker) {
+    if (bReadEndMarker(pszMarker)) {   // If desired end marker, return true for successfully found end
         return TRUE;
-    }
-    else if (bAtBeginMarker())     // If somebody else's begin marker, return true for found end
-    {
+    } else if (bAtBeginMarker()) { // If somebody else's begin marker, return true for found end
         return TRUE;
-    }
-    else     // Else, unrecognized marker, eat marker and return false for not at end yet
-    {
+    } else { // Else, unrecognized marker, eat marker and return false for not at end yet
         LPCSTR pszMarkerRead = NULL;
         LPCSTR pszStringRead = NULL;
         ReadMarkedString(&pszMarkerRead, &pszStringRead);
@@ -325,10 +278,8 @@ bool CObjectIStream::bEnd(LPCSTR pszMarker)
     }
 }
 
-bool CObjectIStream::bEndWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier)
-{
-    if (!pszQualifier)
-    {
+bool CObjectIStream::bEndWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier) {
+    if (!pszQualifier) {
         return bEnd(pszMarker);
     }
 
@@ -340,11 +291,9 @@ bool CObjectIStream::bEndWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier)
 }
 
 #ifndef NO_INTERFACE
-bool CObjectIStream::bReadWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wpl)
-{
+bool CObjectIStream::bReadWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wpl) {
     LPCSTR sPlacement = NULL;
-    if (!bReadString(pszMarker, &sPlacement))
-    {
+    if (!bReadString(pszMarker, &sPlacement)) {
         return FALSE;
     }
 
@@ -363,25 +312,17 @@ bool CObjectIStream::bReadWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wp
                           &wpl.rcNormalPosition.right,
                           &wpl.rcNormalPosition.bottom);
 
-    if (nItems != 9)
-    {
+    if (nItems != 9) {
         return FALSE;
     }
 
-    if (strcmp(pszShowState, "normal")==0)
-    {
+    if (strcmp(pszShowState, "normal")==0) {
         wpl.showCmd = SW_SHOWNORMAL;
-    }
-    else if (strcmp(pszShowState, "min")==0)
-    {
+    } else if (strcmp(pszShowState, "min")==0) {
         wpl.showCmd = SW_SHOWMINIMIZED;
-    }
-    else if (strcmp(pszShowState, "max")==0)
-    {
+    } else if (strcmp(pszShowState, "max")==0) {
         wpl.showCmd = SW_SHOWMAXIMIZED;
-    }
-    else
-    {
+    } else {
         wpl.showCmd = SW_SHOWNORMAL;
     };
 
@@ -389,10 +330,8 @@ bool CObjectIStream::bReadWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wp
 }
 #endif  // not NO_INTERFACE
 
-void CObjectIStream::ReadMarkedString( LPCSTR * ppszMarker, LPCSTR * ppszString, BOOL bTrimWhiteSpace)
-{
-    if (m_bUnRead)
-    {
+void CObjectIStream::ReadMarkedString(LPCSTR * ppszMarker, LPCSTR * ppszString, BOOL bTrimWhiteSpace) {
+    if (m_bUnRead) {
         *ppszMarker = m_pszMarker;
         *ppszString = m_pszString;
         m_bUnRead = FALSE;
@@ -403,29 +342,23 @@ void CObjectIStream::ReadMarkedString( LPCSTR * ppszMarker, LPCSTR * ppszString,
 
     // Read any additional lines of the marked string
     int ich;
-    while (((ich = m_ios.peek()) != EOF) && (ich != '\\'))
-    {
+    while (((ich = m_ios.peek()) != EOF) && (ich != '\\')) {
         *m_pszEnd++ = '\n';
         ReadLine();
     }
 
-    if (bTrimWhiteSpace)
-    {
+    if (bTrimWhiteSpace) {
         // 1995-10-02 MRP: Clean this up and separate out for use of
         // settings properties but *not* Standard Format data fields.
         // Trim white space from the beginning and end of the string
-        for (; Shw_bAtWhiteSpace(m_pszString); m_pszString += 1)
-        {
-            if (*m_pszString == 0)
-            {
+        for (; Shw_bAtWhiteSpace(m_pszString); m_pszString += 1) {
+            if (*m_pszString == 0) {
                 break;
             }
         }
-        if (*m_pszString)    // string contains non-ws
-        {
+        if (*m_pszString) {  // string contains non-ws
             char * psz = m_pszString + strlen(m_pszString) - 1; // last char
-            for (; Shw_bAtWhiteSpace(psz); psz -= 1)
-            {
+            for (; Shw_bAtWhiteSpace(psz); psz -= 1) {
                 assert(psz != m_pszString);    // have not moved past beginning
                 *psz = '\0';  // remove last char
             }
@@ -435,15 +368,13 @@ void CObjectIStream::ReadMarkedString( LPCSTR * ppszMarker, LPCSTR * ppszString,
     *ppszString = m_pszString;
 }
 
-void CObjectIStream::UnReadMarkedString()
-{
+void CObjectIStream::UnReadMarkedString() {
     assert(!m_bUnRead);
     m_bUnRead = TRUE;
 }
 
 
-void CObjectIStream::ReadMarkedLine(LPCSTR * ppszMarker, LPCSTR * ppszString)
-{
+void CObjectIStream::ReadMarkedLine(LPCSTR * ppszMarker, LPCSTR * ppszString) {
     assert(!m_bUnRead);
     char * psz = m_pszEnd = string_buffer.get();
     *psz = '\0';
@@ -462,14 +393,11 @@ void CObjectIStream::ReadMarkedLine(LPCSTR * ppszMarker, LPCSTR * ppszString)
     // ASSERT( lenMarker != 0 ); // RECOVERY
     psz += lenMarker;
 
-    if (*psz == ' ')
-    {
+    if (*psz == ' ') {
         // A space delimiting the marker is not considered part of the string
         *psz = '\0'; // so the marker's null termination can take its place
         psz += 1;
-    }
-    else
-    {
+    } else {
         // 1995-10-04 MRP: At first I thought this shifting was redundant
         // if no white space followed the marker. If the field consisted
         // of just that one line that would be true. If, however, the
@@ -486,59 +414,50 @@ void CObjectIStream::ReadMarkedLine(LPCSTR * ppszMarker, LPCSTR * ppszString)
     *ppszString = m_pszString = psz; // beginning of string
 }
 
-void CObjectIStream::ReadLine()
-{
+void CObjectIStream::ReadLine() {
     assert(!m_bUnRead);
     // 1995-04-12 MRP: use get in order to detect line longer than buffer
     size_t sizRemaining = maxsizMString - (m_pszEnd - string_buffer.get());
-    m_ios.get( m_pszEnd, sizRemaining, m_chEndOfLine);
+    m_ios.get(m_pszEnd, sizRemaining, m_chEndOfLine);
     m_ios.clear(); // if get encounters an empty line it will set fail bit, must be cleared
     size_t lenLine = strlen(m_pszEnd);
     m_pszEnd += lenLine;
     int ichNext = m_ios.get();
-    if ((ichNext != m_chEndOfLine) && (ichNext != std::char_traits<char>::eof()))
-    {
+    if ((ichNext != m_chEndOfLine) && (ichNext != std::char_traits<char>::eof())) {
         assert(FALSE);    // at end of input buffer-- RECOVERY
     }
 }
 
 // **************************************************************************
 
-bool CObjectIStream::bReadUInt(LPCSTR pszMarker, UINT & ui)   // Read an unsigned integer (unsigned short)
-{
+bool CObjectIStream::bReadUInt(LPCSTR pszMarker, UINT & ui) { // Read an unsigned integer (unsigned short)
     LPCSTR s;
-    if (!bReadString(pszMarker, &s))
-    {
+    if (!bReadString(pszMarker, &s)) {
         return false;
     }
 
-    if (sscanf_s(s, "%hu", &ui) == 0)
-    {
+    if (sscanf_s(s, "%hu", &ui) == 0) {
         return false;
     }
 
     return true;
 }
 
-void CObjectIStream::SkipToEndMarker(LPCSTR pszMarker)
-{
-    while (!bAtEnd())
-    {
-        if (bReadEndMarker(pszMarker))
-        {
+void CObjectIStream::SkipToEndMarker(LPCSTR pszMarker) {
+    while (!bAtEnd()) {
+        if (bReadEndMarker(pszMarker)) {
             break;
         }
         ReadMarkedString();  // Skip unexpected field
     }
 }
 
-void CObjectIStream::Rewind()
-{
-	m_ios.clear();
+void CObjectIStream::Rewind() {
+    m_ios.clear();
     m_ios.seekg(0);
-	m_ios.clear();
+    m_ios.clear();
     // reset all internal data
-	size_t length = string_buffer.size();
+    size_t length = string_buffer.size();
     string_buffer.reallocate(length);
     m_pszEnd = NULL;
     m_pszMarker = NULL;
@@ -547,76 +466,63 @@ void CObjectIStream::Rewind()
     m_chEndOfLine = '\n';  // Default for Mac and Windows
 }
 
-bool CObjectIStream::bReadBeginMarker(LPCSTR pszMarker)
-{
+bool CObjectIStream::bReadBeginMarker(LPCSTR pszMarker) {
     // Read the desired begin marker (pszMarker with a plus sign)
     return bReadMarker('+', pszMarker);
 }
 
-bool CObjectIStream::bReadEndMarker(LPCSTR pszMarker)
-{
+bool CObjectIStream::bReadEndMarker(LPCSTR pszMarker) {
     // Read the desired end marker (pszMarker with a minus sign)
     return bReadMarker('-', pszMarker);
 }
 
-bool CObjectIStream::bReadDWord(LPCSTR pszMarker, DWORD & dw)
-{
+bool CObjectIStream::bReadDWord(LPCSTR pszMarker, DWORD & dw) {
     // Read a DWORD (long unsigned integer)
     return bReadNumberOf(pszMarker, dw);
 }
 
-void CObjectIStream::PeekMarkedString( LPCSTR * ppszMarker, LPSTR pszString, size_t len, BOOL bTrimWhiteSpace)
-{
+void CObjectIStream::PeekMarkedString(LPCSTR * ppszMarker, LPSTR pszString, size_t len, BOOL bTrimWhiteSpace) {
     LPCSTR read = 0;
-    peekMarkedString( ppszMarker, &read, bTrimWhiteSpace);
-    strcpy_s( pszString, len, read);
+    peekMarkedString(ppszMarker, &read, bTrimWhiteSpace);
+    strcpy_s(pszString, len, read);
 }
 
-void CObjectIStream::peekMarkedString( LPCSTR * ppszMarker, LPCSTR * ppszString, BOOL bTrimWhiteSpace)
-{
+void CObjectIStream::peekMarkedString(LPCSTR * ppszMarker, LPCSTR * ppszString, BOOL bTrimWhiteSpace) {
     // Read any marked string
-    ReadMarkedString( ppszMarker, ppszString, bTrimWhiteSpace);
+    ReadMarkedString(ppszMarker, ppszString, bTrimWhiteSpace);
     // Store most recently read marked string for next read
     UnReadMarkedString();
 }
 
-bool CObjectIStream::bFail() 
-{
-	return m_ios.fail();
+bool CObjectIStream::bFail() {
+    return m_ios.fail();
 }
 
-void CObjectIStream::Close() 
-{
-	m_ios.close();
+void CObjectIStream::Close() {
+    m_ios.close();
 }
 
-void CObjectIStream::GetLine( char * buffer, size_t size) 
-{
-  m_ios.getline( buffer, size);
+void CObjectIStream::GetLine(char * buffer, size_t size) {
+    m_ios.getline(buffer, size);
 }
 
-int CObjectIStream::Peek()
-{
-	return m_ios.peek();
+int CObjectIStream::Peek() {
+    return m_ios.peek();
 }
 
-streampos CObjectIStream::TellG()
-{
-	return m_ios.tellg();
+streampos CObjectIStream::TellG() {
+    return m_ios.tellg();
 }
 
-void CObjectIStream::Clear()
-{
-	return m_ios.clear();
+void CObjectIStream::Clear() {
+    return m_ios.clear();
 }
 
-void CObjectIStream::SeekG( streampos pos)
-{
-	m_ios.seekg(pos);
+void CObjectIStream::SeekG(streampos pos) {
+    m_ios.seekg(pos);
 }
 
-bool CObjectIStream::Shw_bAtWhiteSpace(const char * psz)
-{
+bool CObjectIStream::Shw_bAtWhiteSpace(const char * psz) {
     return (strchr(" \t\n", *psz) != NULL);
 }
 

@@ -2,35 +2,28 @@
 #include <mmsystem.h>
 #include "RecMixer.h"
 
-CRecMixer::CRecMixer() : CMixer(MIXERLINE_COMPONENTTYPE_DST_WAVEIN)
-{
+CRecMixer::CRecMixer() : CMixer(MIXERLINE_COMPONENTTYPE_DST_WAVEIN) {
 }
 
-CRecMixer::~CRecMixer()
-{
+CRecMixer::~CRecMixer() {
 }
 
-MMRESULT CRecMixer::Connect( HWAVEIN hRecorder, HWND hCallback)
-{
+MMRESULT CRecMixer::Connect(HWAVEIN hRecorder, HWND hCallback) {
     return CMixer::Connect((UINT) hRecorder, MIXER_OBJECTF_HWAVEIN, hCallback);
 }
 
-MMRESULT CRecMixer::SetVolume(HWAVEIN hRecorder, DWORD dwVolume)
-{
+MMRESULT CRecMixer::SetVolume(HWAVEIN hRecorder, DWORD dwVolume) {
     return CMixer::SetVolume((UINT) hRecorder, MIXER_OBJECTF_HWAVEIN, dwVolume);
 }
 
-MMRESULT CRecMixer::GetVolume(HWAVEIN hRecorder, DWORD * dwVolume)
-{
+MMRESULT CRecMixer::GetVolume(HWAVEIN hRecorder, DWORD * dwVolume) {
     return CMixer::GetVolume((UINT) hRecorder, MIXER_OBJECTF_HWAVEIN, dwVolume);
 }
 
-BOOL CRecMixer::CanShowMixerControls(HWAVEIN hRecorder)
-{
+BOOL CRecMixer::CanShowMixerControls(HWAVEIN hRecorder) {
     BOOL result = TRUE;
 
-    if (!m_hMixerCallback)
-    {
+    if (!m_hMixerCallback) {
         // try to open mixer
         result = Connect(hRecorder, NULL);
         Disconnect();
@@ -39,14 +32,11 @@ BOOL CRecMixer::CanShowMixerControls(HWAVEIN hRecorder)
     return IsSndVolInstalled() && result;
 }
 
-BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder)
-{
-    if (CanShowMixerControls(hRecorder))
-    {
+BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder) {
+    if (CanShowMixerControls(hRecorder)) {
         UINT uDevID;
         MMRESULT result = mixerGetID((HMIXEROBJ)hRecorder, &uDevID, MIXER_OBJECTF_HWAVEIN);
-        if (result == MMSYSERR_NOERROR)
-        {
+        if (result == MMSYSERR_NOERROR) {
             STARTUPINFO si;
             PROCESS_INFORMATION pi;
 
@@ -56,8 +46,7 @@ BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder)
 
             CSaString command;
             CSaString args;
-            if (GetWindowsVersion() < 6)
-            {
+            if (GetWindowsVersion() < 6) {
                 args.Format(_T("%d"), uDevID);
             }
             command = m_szRecMixerCmd + args;

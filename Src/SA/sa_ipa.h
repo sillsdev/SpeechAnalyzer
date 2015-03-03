@@ -14,8 +14,7 @@
 #ifndef INCLUDED_SA_IPA
 #define INCLUDED_SA_IPA
 
-class CFontTable : public CFont
-{
+class CFontTable : public CFont {
     // Constructor/Destructor
 public:
     CFontTable();
@@ -23,8 +22,7 @@ public:
 
     // Attributes
 public:
-    enum tUnit
-    {
+    enum tUnit {
         BYTE,
         CHARACTER,
         DELIMITEDWORD,
@@ -43,8 +41,7 @@ public:
     virtual BOOL IsIPA() const = 0;
 };
 
-class CFontTableIPA : public CFontTable
-{
+class CFontTableIPA : public CFontTable {
     // Constructor/Destructor
 public:
     CFontTableIPA();
@@ -53,8 +50,7 @@ public:
 public:
 
 private:
-    enum tGlyphType
-    {
+    enum tGlyphType {
         ENDofSTRING,
         INDEPENDENT,
         PREFIX,
@@ -63,8 +59,7 @@ private:
         LINK
     };
 
-    enum tPhoneticClassification
-    {
+    enum tPhoneticClassification {
         UNDEFINED,
         CONSONANT,
         VOWEL,
@@ -73,8 +68,7 @@ private:
         PUNCTUATION
     };
 
-    class
-    {
+    class {
     public:
         tGlyphType glyphType;
         tPhoneticClassification phoneticType;
@@ -83,8 +77,7 @@ private:
     // Operations
 public:
     CString GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const;
-    virtual BOOL IsIPA() const
-    {
+    virtual BOOL IsIPA() const {
         return TRUE;
     };
 
@@ -99,22 +92,17 @@ private:
                  char * szClassSub4,
                  tGlyphType nType);
 
-    tGlyphType GlyphType(int nAccessCode) const
-    {
-        if ((nAccessCode < 256)&&(nAccessCode >=0))
-        {
+    tGlyphType GlyphType(int nAccessCode) const {
+        if ((nAccessCode < 256)&&(nAccessCode >=0)) {
             return m_pChar[nAccessCode].glyphType;
-        }
-        else
-        {
+        } else {
             return INDEPENDENT;
         }
     };
 };
 
 
-class CFontTableANSI : public CFontTable
-{
+class CFontTableANSI : public CFontTable {
     // Constructor/Destructor
 public:
     CFontTableANSI() {};
@@ -128,8 +116,7 @@ private:
 public:
     int GetLength(tUnit nInUnits, const CString & szString) const;
     CString GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const;
-    virtual BOOL IsIPA() const
-    {
+    virtual BOOL IsIPA() const {
         return FALSE;
     };
 

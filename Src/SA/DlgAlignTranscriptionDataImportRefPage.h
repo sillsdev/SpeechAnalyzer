@@ -9,8 +9,7 @@
 class CSaDoc;
 class CDlgAlignTranscriptionDataSheet;
 
-class CDlgAlignTranscriptionDataImportRefPage : public CPropertyPage
-{
+class CDlgAlignTranscriptionDataImportRefPage : public CPropertyPage {
 
 public:
     CDlgAlignTranscriptionDataImportRefPage(CSaDoc * pSaDoc);

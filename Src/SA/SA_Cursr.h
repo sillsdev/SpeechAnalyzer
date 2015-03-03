@@ -16,8 +16,7 @@
 #ifndef SA_CURSR_DEF
 #define SA_CURSR_DEF
 
-class CCursorWnd : public CWnd
-{
+class CCursorWnd : public CWnd {
 public:
     CCursorWnd();
     BOOL bDrawn;

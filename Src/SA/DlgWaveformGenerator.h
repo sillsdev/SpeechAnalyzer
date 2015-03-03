@@ -13,8 +13,7 @@
 //###########################################################################
 // CDlgWaveformGenerator dialog
 
-class CDlgWaveformGenerator : public CDialog
-{
+class CDlgWaveformGenerator : public CDialog {
 
 public:
     CDlgWaveformGenerator(CWnd * pParent = NULL);

@@ -6,8 +6,7 @@
 class CObjectOStream;
 class CObjectIStream;
 
-class CGrid
-{
+class CGrid {
 public:
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);

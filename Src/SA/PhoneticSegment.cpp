@@ -43,9 +43,9 @@ long CPhoneticSegment::Exit(int nError) {
 // CPhoneticSegment::ReplaceSelectedSegment
 // Replaces the selected segment with the string passes in.
 /***************************************************************************/
-void CPhoneticSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace) {
-    
-	// get pointer to view
+void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) {
+
+    // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
@@ -61,8 +61,8 @@ void CPhoneticSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
         return;
     }
 
-    pDoc->SetModifiedFlag(TRUE);		// document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
+    pDoc->SetModifiedFlag(TRUE);        // document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
 
     // insert or append the new segment
     if (!Insert(m_nSelection, replace, 0, dwStart, dwStop - dwStart)) {
@@ -70,23 +70,23 @@ void CPhoneticSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
     }
 
     int nSaveSelection = m_nSelection;
-    pView->ChangeAnnotationSelection(this, m_nSelection, dwStart, dwStop);		// deselect
-    pView->ChangeAnnotationSelection(this, nSaveSelection, dwStart, dwStop);	// select again
-    pView->RefreshGraphs(FALSE);	// refresh the graphs between cursors
+    pView->ChangeAnnotationSelection(this, m_nSelection, dwStart, dwStop);      // deselect
+    pView->ChangeAnnotationSelection(this, nSaveSelection, dwStart, dwStop);    // select again
+    pView->RefreshGraphs(FALSE);    // refresh the graphs between cursors
 
     // adjust the aligned annotation offsets and durations
-    for (int nLoop = 1; nLoop <= GLOSS; nLoop++) { 
-		//SDM 1.5Test8.1 Segments after gloss dependent on gloss
+    for (int nLoop = 1; nLoop <= GLOSS; nLoop++) {
+        //SDM 1.5Test8.1 Segments after gloss dependent on gloss
         CSegment * pSegment = pDoc->GetSegment(nLoop);
         if (pSegment) {
             int nIndex = pSegment->FindOffset(dwOldOffset);
             if (nIndex != -1) {
-                pSegment->Adjust(pDoc, nIndex, dwStart, dwStop - dwStart);
+                pSegment->Adjust( pDoc, nIndex, dwStart, dwStop - dwStart, false);
             }
         }
     }
 
-    pView->RefreshGraphs(TRUE);	// refresh the graphs between cursors
+    pView->RefreshGraphs(TRUE); // refresh the graphs between cursors
 }
 
 /***************************************************************************/
@@ -94,7 +94,7 @@ void CPhoneticSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
 // All the dependent segments that are aligned to the removed master
 // segment have to be removed too. The user will be informed before.
 /***************************************************************************/
-void CPhoneticSegment::Remove( CSaDoc * pDoc, int sel, BOOL bCheck) {
+void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
 
     // save state for undo ability
     if (bCheck) {
@@ -104,81 +104,83 @@ void CPhoneticSegment::Remove( CSaDoc * pDoc, int sel, BOOL bCheck) {
     DWORD dwOldOffset = GetOffset(sel);
     DWORD dwOldStop = GetStop(sel);
 
-	// handle dependent gloss separately
-	CGlossSegment * pGloss = (CGlossSegment*)pDoc->GetSegment(GLOSS);
+    // handle dependent gloss separately
+    CGlossSegment * pGloss = (CGlossSegment *)pDoc->GetSegment(GLOSS);
     if (pGloss != NULL) {
         int gindex = pGloss->FindOffset(dwOldOffset);
         if (gindex != -1) {
             if (pGloss->GetStop(gindex) == dwOldStop) {
-				// stop and start match
-				pGloss->Remove( pDoc, gindex, FALSE);
+                // stop and start match
+                pGloss->Remove(pDoc, gindex, FALSE);
             } else {
-				// stop doesn't match
-				int refcount = GetReferenceCount( pGloss, gindex);
-				if (refcount<=1) {
-					// this is the last segment, delete it
-					pGloss->Remove( pDoc, gindex, FALSE);
-				} else {
-					// start matches, stop doesn't
-					int next = GetNext(sel);
-					if (next!=-1) {
-						DWORD offset = GetOffset(next);
-						DWORD stop = pGloss->GetStop(gindex);
-						pGloss->Adjust( pDoc, gindex, offset, stop - offset);
-					}
-				}
+                // stop doesn't match
+                int refcount = GetReferenceCount(pGloss, gindex);
+                if (refcount<=1) {
+                    // this is the last segment, delete it
+                    pGloss->Remove(pDoc, gindex, FALSE);
+                } else {
+                    // start matches, stop doesn't
+                    int next = GetNext(sel);
+                    if (next!=-1) {
+                        DWORD offset = GetOffset(next);
+                        DWORD stop = pGloss->GetStop(gindex);
+                        pGloss->Adjust(pDoc, gindex, offset, stop - offset, false);
+                    }
+                }
             }
         } else {
-			// start doesn't match
-			// are we deleting the last master segment?
-			gindex = pGloss->FindStop(dwOldStop);
-			if (gindex != -1) {
-				// stop matches
-				int refcount = GetReferenceCount( pGloss, gindex);
-				if (refcount<=1) {
-					// this is the last segment, delete it
-					pGloss->Remove( pDoc, gindex, FALSE);
-				} else {
-					// find the previous phonetic segment
-					// adjust gloss to match the prevous segment.
-					int prev = GetPrevious(sel);
-					if (prev!=-1) {
-						DWORD offset = pGloss->GetOffset(gindex);
-						DWORD stop = GetStop(prev);
-						pGloss->Adjust(pDoc, gindex, offset, stop - offset);
-					}
-				}
-			}
-		}
+            // start doesn't match
+            // are we deleting the last master segment?
+            gindex = pGloss->FindStop(dwOldStop);
+            if (gindex != -1) {
+                // stop matches
+                int refcount = GetReferenceCount(pGloss, gindex);
+                if (refcount<=1) {
+                    // this is the last segment, delete it
+                    pGloss->Remove(pDoc, gindex, FALSE);
+                } else {
+                    // find the previous phonetic segment
+                    // adjust gloss to match the prevous segment.
+                    int prev = GetPrevious(sel);
+                    if (prev!=-1) {
+                        DWORD offset = pGloss->GetOffset(gindex);
+                        DWORD stop = GetStop(prev);
+                        pGloss->Adjust(pDoc, gindex, offset, stop - offset, false);
+                    }
+                }
+            }
+        }
     }
 
     // delete aligned dependent segments and gloss
-    for (int nLoop = 1; nLoop < GLOSS; nLoop++) { 
-		//SDM 1.5Test8.1 segments after gloss are dependent on gloss
+    for (int nLoop = 1; nLoop < GLOSS; nLoop++) {
+        //SDM 1.5Test8.1 segments after gloss are dependent on gloss
         CSegment * pSegment = pDoc->GetSegment(nLoop);
-        if (pSegment == NULL) continue;
+        if (pSegment == NULL) {
+            continue;
+        }
         int nIndex = pSegment->FindOffset(dwOldOffset);
         if (nIndex != -1) {
-			// start matches
+            // start matches
             if (pSegment->GetStop(nIndex) == dwOldStop) {
-				// stop and start match
-                pSegment->RemoveAt(nIndex,true);	
+                // stop and start match
+                pSegment->RemoveAt(nIndex,true);
             } else {
-				// start matches, stop doesn't
+                // start matches, stop doesn't
                 DWORD offset = GetOffset(sel);
-				DWORD stop = pSegment->GetStop(nIndex);
-                pSegment->Adjust( pDoc, nIndex, offset, stop - offset);
+                DWORD stop = pSegment->GetStop(nIndex);
+                pSegment->Adjust(pDoc, nIndex, offset, stop - offset, false);
             }
         } else {
-			// start doesn't match
-			nIndex = pSegment->FindStop(dwOldStop);
-			if (nIndex != -1) {
-				DWORD offset = pSegment->GetOffset(nIndex);
-				int prev = GetPrevious(sel);
-				DWORD stop = GetStop(prev);
-				pSegment->Adjust(pDoc, nIndex, offset, stop - offset);
-			}
-		}
+            // start doesn't match
+            nIndex = pSegment->FindStop(dwOldStop);
+            if (nIndex != -1) {
+                DWORD offset = pSegment->GetOffset(nIndex);
+                int prev = GetPrevious(sel);
+                DWORD stop = GetStop(prev);
+                pSegment->Adjust(pDoc, nIndex, offset, stop - offset, false);
+            }
+        }
     }
 
     RemoveAt(sel,true);
@@ -187,9 +189,9 @@ void CPhoneticSegment::Remove( CSaDoc * pDoc, int sel, BOOL bCheck) {
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
-	pDoc->SetModifiedFlag(TRUE);		// document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
-    pView->ChangeAnnotationSelection( this, sel, 0, 0);	// deselect
+    pDoc->SetModifiedFlag(TRUE);        // document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
+    pView->ChangeAnnotationSelection(this, sel, 0, 0);   // deselect
     pView->RefreshGraphs(TRUE,FALSE);
 }
 
@@ -388,7 +390,8 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
                     dwOldZCStop = dwZCStop; // fast forward end of old segment to end of current
                     dwSegmentStart = (DWORD)(((float)dwZCStart + 0.5F) * fFactor); // CLW 1/20/98
                     dwSegmentStop = (DWORD)(((float)dwZCStop + 0.5F) * fFactor); // CLW 1/20/98
-                    Adjust(pDoc, nSegmentIndex - 1, dwSegmentStart, dwSegmentStop - dwSegmentStart); // store it
+					// store it
+                    Adjust(pDoc, nSegmentIndex - 1, dwSegmentStart, dwSegmentStop - dwSegmentStart, false); 
                     dwSegmentStart = dwSegmentStop;
                     dwSegmentStop = 0;
                     dwShortZCStart = dwShortZCStop = 0; // reset short segment start and end
@@ -560,11 +563,13 @@ bool CPhoneticSegment::Filter() {
     return changed;
 }
 
-bool CPhoneticSegment::Filter( CString & text) {
-    TCHAR cIPASpaceReplace = 0xFFFD;		// Box Character
+bool CPhoneticSegment::Filter(CString & text) {
+    TCHAR cIPASpaceReplace = 0xFFFD;        // Box Character
     bool bChanged = false;
     for (int i=0; i<text.GetLength(); i++) {
-        if (text[i]==0) break;
+        if (text[i]==0) {
+            break;
+        }
         if (text[i] < 0x20) {
             text.SetAt(i, cIPASpaceReplace);
             bChanged = true;

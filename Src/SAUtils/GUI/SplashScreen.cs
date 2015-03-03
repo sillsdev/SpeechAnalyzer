@@ -1,10 +1,10 @@
 // --------------------------------------------------------------------------------------------
 #region // Copyright © 2002-2004, SIL International. All Rights Reserved.
 // <copyright from='2002' to='2004' company='SIL International'>
-//		Copyright © 2002-2004, SIL International. All Rights Reserved.
+//      Copyright © 2002-2004, SIL International. All Rights Reserved.
 //
-//		Distributable under the terms of either the Common Public License or the
-//		GNU Lesser General Public License, as specified in the LICENSING.txt file.
+//      Distributable under the terms of either the Common Public License or the
+//      GNU Lesser General Public License, as specified in the LICENSING.txt file.
 // </copyright>
 #endregion
 //
@@ -26,8 +26,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using SIL.SpeechAnalyzer.Utils;
 
-namespace SIL.SpeechAnalyzer.GUI
-{
+namespace SIL.SpeechAnalyzer.GUI {
 
 /// ----------------------------------------------------------------------------------------
 [ProgId("SpeechAnalyzer.SplashScreen")]
@@ -65,7 +64,7 @@ public class SplashScreen : ISplashScreen {
     }
 
     /// ------------------------------------------------------------------------------------
-    void ISplashScreen.Show( bool showBuildDate, bool isBetaVersion) {
+    void ISplashScreen.Show(bool showBuildDate, bool isBetaVersion) {
         m_showBuildNum = showBuildDate;
         m_versionType = (isBetaVersion ? VersionType.Beta : VersionType.Production);
         InternalShow();
@@ -87,13 +86,15 @@ public class SplashScreen : ISplashScreen {
     /// ------------------------------------------------------------------------------------
     private void InternalShow() {
 
-        if (m_thread != null)
+        if (m_thread != null) {
             return;
+        }
 
-        m_waitHandle = new EventWaitHandle( false, EventResetMode.AutoReset);
+        m_waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
 
-        if (Thread.CurrentThread.Name == null)
+        if (Thread.CurrentThread.Name == null) {
             Thread.CurrentThread.Name = "Main";
+        }
 
         GUI.Utils.s_splashScreen = this;
 
@@ -120,8 +121,9 @@ public class SplashScreen : ISplashScreen {
         GUI.Utils.s_splashScreen = this;
 
         // Wait until the splash screen is actually up
-        while (m_splashScreen == null || !m_splashScreen.Visible)
+        while (m_splashScreen == null || !m_splashScreen.Visible) {
             Thread.Sleep(50);
+        }
     }
 
     /// ----------------------------------------------------------------------------------------
@@ -139,7 +141,7 @@ public class SplashScreen : ISplashScreen {
         }
 
         Debug.Assert(m_splashScreen != null);
-        lock (m_splashScreen) {
+        lock(m_splashScreen) {
             m_splashScreen.Invoke(new MethodInvoker(m_splashScreen.Activate));
         }
     }
@@ -153,8 +155,9 @@ public class SplashScreen : ISplashScreen {
 
         GUI.Utils.s_splashScreen = null;
 
-        if (m_splashScreen == null)
+        if (m_splashScreen == null) {
             return;
+        }
 
         if (!m_useFading) {
             m_splashScreen.Hide();
@@ -162,16 +165,17 @@ public class SplashScreen : ISplashScreen {
             return;
         }
 
-        lock (m_splashScreen) {
+        lock(m_splashScreen) {
             try {
-                if (!m_splashScreen.IsDisposed)
+                if (!m_splashScreen.IsDisposed) {
                     m_splashScreen.Invoke(new MethodInvoker(m_splashScreen.RealClose));
+                }
             } catch { }
         }
 
         try {
             m_thread.Join();
-            lock (m_splashScreen) {
+            lock(m_splashScreen) {
                 m_splashScreen.Dispose();
             }
         } catch { }
@@ -193,7 +197,7 @@ public class SplashScreen : ISplashScreen {
         }
 
         Debug.Assert(m_splashScreen != null);
-        lock (m_splashScreen) {
+        lock(m_splashScreen) {
             m_splashScreen.Invoke(new MethodInvoker(m_splashScreen.Refresh));
         }
     }
@@ -218,7 +222,7 @@ public class SplashScreen : ISplashScreen {
     string ISplashScreen.Message {
         set {
             Debug.Assert(m_splashScreen != null);
-            lock (m_splashScreen) {
+            lock(m_splashScreen) {
                 m_splashScreen.Invoke(new MethodWithStringDelegate(m_splashScreen.SetMessage), value);
             }
         }
@@ -236,7 +240,7 @@ public class SplashScreen : ISplashScreen {
     string ISplashScreen.ProdVersion {
         set {
             Debug.Assert(m_splashScreen != null);
-            lock (m_splashScreen) {
+            lock(m_splashScreen) {
                 m_splashScreen.Invoke(new MethodWithStringDelegate(m_splashScreen.SetProdVersion), value);
             }
         }
@@ -254,7 +258,7 @@ public class SplashScreen : ISplashScreen {
     string ISplashScreen.ProdName {
         set {
             Debug.Assert(m_splashScreen != null);
-            lock (m_splashScreen) {
+            lock(m_splashScreen) {
                 m_splashScreen.Invoke(new MethodWithStringDelegate(m_splashScreen.SetProdName), value);
             }
         }
@@ -272,7 +276,7 @@ public class SplashScreen : ISplashScreen {
     string ISplashScreen.Copyright {
         set {
             Debug.Assert(m_splashScreen != null);
-            lock (m_splashScreen) {
+            lock(m_splashScreen) {
                 m_splashScreen.Invoke(new MethodWithStringDelegate(m_splashScreen.SetCopyright), value);
             }
         }
@@ -285,9 +289,10 @@ public class SplashScreen : ISplashScreen {
     /// ------------------------------------------------------------------------------------
     protected virtual void StartSplashScreen() {
         m_splashScreen = GetSplashScreenForm();
-        m_splashScreen.RealShow( m_waitHandle, m_useFading);
-        if (m_useFading)
+        m_splashScreen.RealShow(m_waitHandle, m_useFading);
+        if (m_useFading) {
             m_splashScreen.ShowDialog();
+        }
     }
 
     /// ------------------------------------------------------------------------------------

@@ -3,33 +3,31 @@
 //  THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
 //  KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 //  IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
-//  PURPOSE. IT CAN BE DISTRIBUTED FREE OF CHARGE AS LONG AS THIS HEADER 
+//  PURPOSE. IT CAN BE DISTRIBUTED FREE OF CHARGE AS LONG AS THIS HEADER
 //  REMAINS UNCHANGED.
 //
 //  Email:  yetiicb@hotmail.com
 //
-//  Copyright (C) 2002-2004 Idael Cardoso. 
+//  Copyright (C) 2002-2004 Idael Cardoso.
 //
 
 using System;
 
-namespace Yeti.WMFSdk
-{
-	/// <summary>
-	/// Media types used to define the format of media used with 
-	/// the Windows Media Format SDK
-	/// </summary>
-  public sealed class MediaTypes
-  {
-    private MediaTypes(){}
+namespace Yeti.WMFSdk {
+/// <summary>
+/// Media types used to define the format of media used with
+/// the Windows Media Format SDK
+/// </summary>
+public sealed class MediaTypes {
+    private MediaTypes() {}
 
     public static Guid MEDIASUBTYPE_I420 { get { return new Guid("30323449-0000-0010-8000-00AA00389B71"); } }
     public static Guid MEDIASUBTYPE_IYUV { get { return new Guid("56555949-0000-0010-8000-00AA00389B71"); } }
     public static Guid MEDIASUBTYPE_RGB1 { get { return new Guid("E436EB78-524F-11CE-9F53-0020AF0BA770"); } }
     public static Guid MEDIASUBTYPE_RGB24 { get { return new Guid("E436EB7D-524F-11CE-9F53-0020AF0BA770"); } }
     public static Guid MEDIASUBTYPE_RGB32 { get { return new Guid("E436EB7E-524F-11CE-9F53-0020AF0BA770"); } }
-    public static Guid MEDIASUBTYPE_RGB4 { get { return new Guid("E436EB79-524F-11CE-9F53-0020AF0BA770"); } }  
-    public static Guid MEDIASUBTYPE_RGB555 { get { return new Guid("E436EB7C-524F-11CE-9F53-0020AF0BA770"); } }    
+    public static Guid MEDIASUBTYPE_RGB4 { get { return new Guid("E436EB79-524F-11CE-9F53-0020AF0BA770"); } }
+    public static Guid MEDIASUBTYPE_RGB555 { get { return new Guid("E436EB7C-524F-11CE-9F53-0020AF0BA770"); } }
     public static Guid MEDIASUBTYPE_RGB565 { get { return new Guid("E436EB7B-524F-11CE-9F53-0020AF0BA770"); } }
 
     public static Guid MEDIASUBTYPE_RGB8 { get { return new Guid("E436EB7A-524F-11CE-9F53-0020AF0BA770"); } }
@@ -72,5 +70,5 @@ namespace Yeti.WMFSdk
     public static Guid WMMEDIATYPE_Text { get { return new Guid("9BBA1EA7-5AB2-4829-BA57-0940209BCF3E"); } }
     public static Guid WMMEDIATYPE_Video { get { return new Guid("73646976-0000-0010-8000-00AA00389B71"); } }
     public static Guid WMSCRIPTTYPE_TwoStrings { get { return new Guid("82F38A70-C29F-11D1-97AD-00A0C95EA850"); } }
-	}
+}
 }

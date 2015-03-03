@@ -3,8 +3,7 @@
 
 __interface ISaDoc;
 
-__interface IProcess
-{
+__interface IProcess {
 
     long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     // return processed data pointer to object staring at dwOffset

@@ -39,7 +39,6 @@
 #undef CTPQueue
 #undef CTVector
 
-int32 operator <(const rpair_float_float & x, const rpair_float_float & y)
-{
+int32 operator <(const rpair_float_float & x, const rpair_float_float & y) {
     return x.first > y.first;
 }

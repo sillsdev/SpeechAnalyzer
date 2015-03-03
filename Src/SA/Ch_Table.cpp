@@ -28,8 +28,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CCharTable::CCharTable Constructor
 /***************************************************************************/
-CCharTable::CCharTable()
-{
+CCharTable::CCharTable() {
 
     m_pFont = NULL;
     m_pCaller = NULL;
@@ -42,8 +41,7 @@ CCharTable::CCharTable()
 /***************************************************************************/
 // CCharTable::~CCharTable Destructor
 /***************************************************************************/
-CCharTable::~CCharTable()
-{
+CCharTable::~CCharTable() {
 
     CleanUp();
 }
@@ -54,15 +52,12 @@ CCharTable::~CCharTable()
 /***************************************************************************/
 // CCharTable::CleanUp
 /***************************************************************************/
-void CCharTable::CleanUp()
-{
+void CCharTable::CleanUp() {
 
     // delete all the objects in the array and empty the array
     int nArraySize = m_CharOb.GetUpperBound() + 1;
-    for (int nLoop = 0; nLoop < nArraySize; nLoop++)
-    {
-        if (m_CharOb.GetAt(nLoop))
-        {
+    for (int nLoop = 0; nLoop < nArraySize; nLoop++) {
+        if (m_CharOb.GetAt(nLoop)) {
             delete m_CharOb.GetAt(nLoop);
         }
     }
@@ -72,8 +67,7 @@ void CCharTable::CleanUp()
 /***************************************************************************/
 // CCharTable::AddChar Adds a character to the table
 /***************************************************************************/
-void CCharTable::AddChar(LPSTR pszChar, LPSTR pszSoundFile, UINT nID, int nType, int nMode)
-{
+void CCharTable::AddChar(LPSTR pszChar, LPSTR pszSoundFile, UINT nID, int nType, int nMode) {
 
     CChartChar * pChar = new CChartChar;
     CSaString szTemp, szTemp2;
@@ -91,39 +85,30 @@ void CCharTable::AddChar(LPSTR pszChar, LPSTR pszSoundFile, UINT nID, int nType,
 // ICH_DISABLED will change their mode. If pszChars contains NULL, all the
 // characters (but not the ICH_DISABLED ones) will changes the mode.
 /***************************************************************************/
-void CCharTable::SelectChars(CString * pszChars, int nMode, int nType)
-{
+void CCharTable::SelectChars(CString * pszChars, int nMode, int nType) {
 
     int nSearchLoopLimit = 0;
-    if (pszChars)
-    {
+    if (pszChars) {
         nSearchLoopLimit = pszChars->GetLength();
     }
     int nArraySize = m_CharOb.GetCount();
-    for (int nLoop = 0; nLoop < nArraySize; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < nArraySize; nLoop++) {
         CChartChar * pChar = (CChartChar *)m_CharOb.GetAt(nLoop);
-        if (pChar)
-        {
+        if (pChar) {
             // check if type correct
-            if ((nType == -1) || (pChar->GetType() == nType))
-            {
+            if ((nType == -1) || (pChar->GetType() == nType)) {
                 // check if character disabled
-                if ((pChar->GetMode() & ICH_DISABLED) == 0)
-                {
+                if ((pChar->GetMode() & ICH_DISABLED) == 0) {
                     // check character string against search string
                     CString * pszChar = pChar->GetChar();
                     int nSearchLoop = 0;
-                    for (nSearchLoop; nSearchLoop < nSearchLoopLimit; nSearchLoop++)
-                    {
+                    for (nSearchLoop; nSearchLoop < nSearchLoopLimit; nSearchLoop++) {
                         CString szSearch = pszChars->Mid(nSearchLoop, 1);
-                        if (*pszChar == szSearch)
-                        {
+                        if (*pszChar == szSearch) {
                             break;    // this is it
                         }
                     }
-                    if ((nSearchLoop < nSearchLoopLimit) || (!nSearchLoopLimit))
-                    {
+                    if ((nSearchLoop < nSearchLoopLimit) || (!nSearchLoopLimit)) {
                         pChar->ChangeMode(nMode);
                     }
                 }
@@ -135,15 +120,12 @@ void CCharTable::SelectChars(CString * pszChars, int nMode, int nType)
 /***************************************************************************/
 // CCharTable::InitPage Initializes a page of characters
 /***************************************************************************/
-void CCharTable::InitPage(int nType)
-{
+void CCharTable::InitPage(int nType) {
 
     int nArraySize = m_CharOb.GetCount();
-    for (int nLoop = 0; nLoop < nArraySize; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < nArraySize; nLoop++) {
         CChartChar * pChar = (CChartChar *)m_CharOb.GetAt(nLoop);
-        if (pChar->GetType() == nType)
-        {
+        if (pChar->GetType() == nType) {
             pChar->Init();
         }
     }
@@ -160,16 +142,14 @@ void CCharTable::InitPage(int nType)
 /***************************************************************************/
 // CIPATable::CIPATable Constructor
 /***************************************************************************/
-CIPATable::CIPATable()
-{
+CIPATable::CIPATable() {
 
 }
 
 /***************************************************************************/
 // CIPATable::~CIPATable Destructor
 /***************************************************************************/
-CIPATable::~CIPATable()
-{
+CIPATable::~CIPATable() {
 
 }
 
@@ -186,11 +166,9 @@ CIPATable::~CIPATable()
 #define _AC(a,b) b
 
 void CIPATable::SetupTable(CFont * pFont, CDlgCharChart * pCaller, CWnd * pVowelPage,
-                           CWnd * pConsPage, CWnd * pDiacPage, CWnd * pSupraPage)
-{
+                           CWnd * pConsPage, CWnd * pDiacPage, CWnd * pSupraPage) {
 
-    if (pFont && pCaller && pVowelPage && pConsPage && pDiacPage)
-    {
+    if (pFont && pCaller && pVowelPage && pConsPage && pDiacPage) {
         m_pFont = pFont;
         m_pCaller = pCaller;
         m_apParent[VOWEL] = pVowelPage;

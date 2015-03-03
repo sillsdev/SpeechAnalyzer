@@ -9,8 +9,7 @@
 
 #include "Process\Process.h"
 
-class CProcessMelogram : public CProcess
-{
+class CProcessMelogram : public CProcess {
 public:
     CProcessMelogram();
     virtual ~CProcessMelogram();

@@ -1,8 +1,7 @@
 #ifndef ALIGNINFO_H
 #define ALIGNINFO_H
 
-class CAlignInfo
-{
+class CAlignInfo {
 public:
     CAlignInfo();
     bool bValid;

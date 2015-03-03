@@ -28,8 +28,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgRecorderOptions construction/destruction/creation
 
-CDlgRecorderOptions::CDlgRecorderOptions(CDlgRecorder * pParent) : CDialog(CDlgRecorderOptions::IDD, pParent), m_pRecorder(pParent)
-{
+CDlgRecorderOptions::CDlgRecorderOptions(CDlgRecorder * pParent) : CDialog(CDlgRecorderOptions::IDD, pParent), m_pRecorder(pParent) {
     m_bSourceAuto = CDlgRecorder::GetStaticSourceInfo().bEnable;
     m_nMode = 0;
     m_nRate = -1;
@@ -40,8 +39,7 @@ CDlgRecorderOptions::CDlgRecorderOptions(CDlgRecorder * pParent) : CDialog(CDlgR
 /***************************************************************************/
 // CDlgRecorderOptions::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgRecorderOptions::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgRecorderOptions::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Radio(pDX, IDC_11KHZ, m_nRate);
     DDX_Radio(pDX, IDC_8BIT, m_nBits);
@@ -54,8 +52,7 @@ void CDlgRecorderOptions::DoDataExchange(CDataExchange * pDX)
 // CDlgRecorderOptions::OnInitDialog Dialog initialization
 // The dialog is centered over the main frame window.
 /***************************************************************************/
-BOOL CDlgRecorderOptions::OnInitDialog()
-{
+BOOL CDlgRecorderOptions::OnInitDialog() {
     CDialog::OnInitDialog();
     CenterWindow(); // center dialog on recorder window
     return TRUE;
@@ -64,8 +61,7 @@ BOOL CDlgRecorderOptions::OnInitDialog()
 /***************************************************************************/
 // CDlgRecorderOptions::OnDefault Default button hit
 /***************************************************************************/
-void CDlgRecorderOptions::OnDefault()
-{
+void CDlgRecorderOptions::OnDefault() {
     // set defaults
     m_nRate = 1;
     m_nBits = 1;
@@ -77,10 +73,8 @@ void CDlgRecorderOptions::OnDefault()
 /***************************************************************************/
 // CDlgRecorderOptions::SetSamplingRate(int nRate)
 /***************************************************************************/
-void CDlgRecorderOptions::SetSamplingRate(int nRate)
-{
-    switch (nRate)
-    {
+void CDlgRecorderOptions::SetSamplingRate(int nRate) {
+    switch (nRate) {
     case 11025:
         m_nRate = 0;
         break;
@@ -99,12 +93,10 @@ void CDlgRecorderOptions::SetSamplingRate(int nRate)
 /***************************************************************************/
 // CDlgRecorderOptions::GetSamplingRate()
 /***************************************************************************/
-unsigned int CDlgRecorderOptions::GetSamplingRate()
-{
+unsigned int CDlgRecorderOptions::GetSamplingRate() {
     int nRate = 22050;
 
-    switch (m_nRate)
-    {
+    switch (m_nRate) {
     case 0:
         nRate = 11025;
         break;
@@ -121,10 +113,8 @@ unsigned int CDlgRecorderOptions::GetSamplingRate()
 /***************************************************************************/
 // CDlgRecorderOptions::SetBitDepth(int nBits)
 /***************************************************************************/
-void CDlgRecorderOptions::SetBitDepth(int nBits)
-{
-    switch (nBits)
-    {
+void CDlgRecorderOptions::SetBitDepth(int nBits) {
+    switch (nBits) {
     case 8:
         m_nBits = 0;
         break;
@@ -140,11 +130,9 @@ void CDlgRecorderOptions::SetBitDepth(int nBits)
 /***************************************************************************/
 // CDlgRecorderOptions::GetBitDepth()
 /***************************************************************************/
-short int CDlgRecorderOptions::GetBitDepth()
-{
+short int CDlgRecorderOptions::GetBitDepth() {
     short int nBits = 16;
-    switch (m_nBits)
-    {
+    switch (m_nBits) {
     case 0:
         nBits = 8;
         break;
@@ -157,45 +145,39 @@ short int CDlgRecorderOptions::GetBitDepth()
 /***************************************************************************/
 // CDlgRecorderOptions::SetHighpass(BOOL bHighpass)
 /***************************************************************************/
-void CDlgRecorderOptions::SetHighpass(BOOL bHighpass)
-{
+void CDlgRecorderOptions::SetHighpass(BOOL bHighpass) {
     m_bHighpass = bHighpass;
 }
 
 /***************************************************************************/
 // CDlgRecorderOptions::GetHighpass()
 /***************************************************************************/
-BOOL CDlgRecorderOptions::GetHighpass()
-{
+BOOL CDlgRecorderOptions::GetHighpass() {
     return m_bHighpass;
 }
 
 /***************************************************************************/
 // CDlgRecorderOptions::SetChannels(int nChannels)
 /***************************************************************************/
-void CDlgRecorderOptions::SetChannels(int nChannels)
-{
+void CDlgRecorderOptions::SetChannels(int nChannels) {
     UNUSED(nChannels);
     ASSERT(nChannels == 1);
 }
 /***************************************************************************/
 // CDlgRecorderOptions::GetChannels()
 /***************************************************************************/
-short CDlgRecorderOptions::GetChannels()
-{
+short CDlgRecorderOptions::GetChannels() {
     return 1;
 }
 
 /***************************************************************************/
 // CDlgRecorderOptions::GetRecorder()
 /***************************************************************************/
-CDlgRecorder & CDlgRecorderOptions::GetRecorder()
-{
+CDlgRecorder & CDlgRecorderOptions::GetRecorder() {
     return *m_pRecorder;
 }
 
-void CDlgRecorderOptions::OnSourceAuto()
-{
+void CDlgRecorderOptions::OnSourceAuto() {
     UpdateData(TRUE);
     CDlgRecorder::GetStaticSourceInfo().bEnable = m_bSourceAuto;
 }
@@ -203,14 +185,12 @@ void CDlgRecorderOptions::OnSourceAuto()
 /***************************************************************************/
 // CDlgRecorderOptions::OnSource
 /***************************************************************************/
-void CDlgRecorderOptions::OnSource()
-{
+void CDlgRecorderOptions::OnSource() {
     UpdateData(TRUE);
     CSaDoc * pDoc = GetRecorder().GetDocument(); // cast document pointer
     SourceParm * pSourceParm = pDoc->GetSourceParm();
     CDlgRecorder::sourceInfo & m_source = CDlgRecorder::GetStaticSourceInfo();
-    if (m_source.bEnable)
-    {
+    if (m_source.bEnable) {
         pSourceParm->szCountry = m_source.source.szCountry;
         pSourceParm->szDialect = m_source.source.szDialect;
         pSourceParm->szEthnoID = m_source.source.szEthnoID.Left(3);
@@ -230,16 +210,14 @@ void CDlgRecorderOptions::OnSource()
     // set file description string
     dlg.m_dlgUserPage.m_szFileDesc = pSourceParm->szDescription;
     dlg.m_dlgUserPage.m_szFreeTranslation = pSourceParm->szFreeTranslation;
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         // get new file description string
         pDoc->SetDescription(dlg.m_dlgUserPage.m_szFileDesc);
         pSourceParm->szDescription = dlg.m_dlgUserPage.m_szFileDesc;
         pSourceParm->szFreeTranslation = dlg.m_dlgUserPage.m_szFreeTranslation;
         pSourceParm->szCountry = dlg.m_dlgSourcePage.m_szCountry;
         pSourceParm->szDialect = dlg.m_dlgSourcePage.m_szDialect;
-        if (dlg.m_dlgSourcePage.m_szEthnoID.GetLength() < 3)
-        {
+        if (dlg.m_dlgSourcePage.m_szEthnoID.GetLength() < 3) {
             dlg.m_dlgSourcePage.m_szEthnoID += "   ";
         }
         pSourceParm->szEthnoID = dlg.m_dlgSourcePage.m_szEthnoID.Left(3);
@@ -269,8 +247,7 @@ void CDlgRecorderOptions::OnSource()
 /***************************************************************************/
 // CDlgRecorderOptions::OnHelpRecorderOptions Call Recorder Settings help
 /***************************************************************************/
-void CDlgRecorderOptions::OnHelpRecorderOptions()
-{
+void CDlgRecorderOptions::OnHelpRecorderOptions() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/File/Recorder_Settings.htm";

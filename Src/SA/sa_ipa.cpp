@@ -18,19 +18,15 @@
 #include "appdefs.h"
 
 
-CFontTable::CFontTable()
-{
+CFontTable::CFontTable() {
     m_wordDelimiter = SPACE_DELIMITER; //SDM 1.06.8
 };
 
-void CFontTable::RemoveWordDelimiters(CString & szString) const
-{
+void CFontTable::RemoveWordDelimiters(CString & szString) const {
     CString szProcessed = "";
 
-    for (int nIndex = 0; nIndex < szString.GetLength(); nIndex++)
-    {
-        if (szString[nIndex]!=m_wordDelimiter)
-        {
+    for (int nIndex = 0; nIndex < szString.GetLength(); nIndex++) {
+        if (szString[nIndex]!=m_wordDelimiter) {
             szProcessed += szString[nIndex];
         }
     }
@@ -40,25 +36,20 @@ void CFontTable::RemoveWordDelimiters(CString & szString) const
 /***************************************************************************/
 // CFontTable::GetLength Get length of string in words, characters, bytes
 /***************************************************************************/
-int CFontTable::GetLength(tUnit nInUnits, const CString & szString) const
-{
+int CFontTable::GetLength(tUnit nInUnits, const CString & szString) const {
     int nCount = 0;
     int nIndex = 0;
 
-    switch (nInUnits)
-    {
+    switch (nInUnits) {
     case BYTE:
         return szString.GetLength();
         break;
-    case CHARACTER:
-    {
+    case CHARACTER: {
         CString szWorking = szString;
         // Don't include Word Delimiters
         RemoveWordDelimiters(szWorking);
-        while (nIndex < szWorking.GetLength())
-        {
-            if (GetNext(CHARACTER,nIndex,szWorking).GetLength() > 0)
-            {
+        while (nIndex < szWorking.GetLength()) {
+            if (GetNext(CHARACTER,nIndex,szWorking).GetLength() > 0) {
                 nCount++;
             }
         }
@@ -66,8 +57,7 @@ int CFontTable::GetLength(tUnit nInUnits, const CString & szString) const
         break;
     }
     case DELIMITEDWORD:
-        while (nIndex < szString.GetLength())
-        {
+        while (nIndex < szString.GetLength()) {
             nCount++;
             GetNext(DELIMITEDWORD,nIndex,szString).GetLength();
         }
@@ -84,28 +74,23 @@ int CFontTable::GetLength(tUnit nInUnits, const CString & szString) const
 /***************************************************************************/
 // CFontTable::GetRemainder Get remainder of string in words, characters, bytes
 /***************************************************************************/
-CString CFontTable::GetRemainder(tUnit nInUnits, int nStringIndex, const CString & szString) const
-{
+CString CFontTable::GetRemainder(tUnit nInUnits, int nStringIndex, const CString & szString) const {
     int nIndex = 0;
     CString szReturn = "";
 
-    switch (nInUnits)
-    {
+    switch (nInUnits) {
     case BYTE:
         return szString.Mid(nStringIndex);
         break;
-    case CHARACTER:
-    {
+    case CHARACTER: {
         CString szWorking = szString.Mid(nStringIndex);
-        if (nStringIndex != 0)
-        {
+        if (nStringIndex != 0) {
             // Prepend a dummy character to properly handle mid string processing
             szWorking = "a" + szWorking;
             nIndex = 1;
             RemoveWordDelimiters(szWorking);
         }
-        while (nIndex < szWorking.GetLength())
-        {
+        while (nIndex < szWorking.GetLength()) {
             szReturn += GetNext(CHARACTER,nIndex,szWorking);
         }
         return szReturn;
@@ -113,8 +98,7 @@ CString CFontTable::GetRemainder(tUnit nInUnits, int nStringIndex, const CString
     }
     case DELIMITEDWORD:
         nIndex = nStringIndex;
-        while (nIndex < szString.GetLength())
-        {
+        while (nIndex < szString.GetLength()) {
             szReturn += GetNext(DELIMITEDWORD,nIndex,szString);
         }
         return szReturn;
@@ -130,20 +114,16 @@ CString CFontTable::GetRemainder(tUnit nInUnits, int nStringIndex, const CString
 };
 
 void CFontTableIPA::AddChar(int nAccessCode, int , char * , tPhoneticClassification nClassification,
-                            char * , char * , char * , char * ,tGlyphType nType)
-{
-    if ((nAccessCode <= 255)&&(nAccessCode>=0))
-    {
+                            char * , char * , char * , char * ,tGlyphType nType) {
+    if ((nAccessCode <= 255)&&(nAccessCode>=0)) {
         m_pChar[nAccessCode].phoneticType = nClassification;
         m_pChar[nAccessCode].glyphType = nType;
     }
 }
 
-CFontTableIPA::CFontTableIPA()
-{
+CFontTableIPA::CFontTableIPA() {
     // Initialize Table
-    for (int nIndex=0; nIndex<256; nIndex++)
-    {
+    for (int nIndex=0; nIndex<256; nIndex++) {
         m_pChar[nIndex].phoneticType = UNDEFINED;
         m_pChar[nIndex].glyphType = INDEPENDENT;
     }
@@ -411,22 +391,18 @@ CFontTableIPA::CFontTableIPA()
 // CFontTableIPA::GetNext Get next unit of string in words, characters, bytes
 // updates nIndex to point to remainder of string for ASAP IPA fonts
 /***************************************************************************/
-CString CFontTableIPA::GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const
-{
+CString CFontTableIPA::GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const {
     CString szReturn = "";
 
-    if ((nIndex < 0) || (nIndex >= szString.GetLength()))
-    {
+    if ((nIndex < 0) || (nIndex >= szString.GetLength())) {
         return szReturn;
     }
 
-    switch (nInUnits)
-    {
+    switch (nInUnits) {
     case BYTE:
         return szString[nIndex++];
         break;
-    case CHARACTER:
-    {
+    case CHARACTER: {
         CString szWorking = "";
         CString szPostfix = "";
         CString szPrefix = "";
@@ -436,22 +412,16 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int & nIndex, const CString & szS
 
         int nIndependent = 0;
         int nWrkIndex;
-        for (nWrkIndex = nIndex; nWrkIndex < szString.GetLength(); nWrkIndex++)
-        {
-            switch (GlyphType(szString[nWrkIndex]))
-            {
+        for (nWrkIndex = nIndex; nWrkIndex < szString.GetLength(); nWrkIndex++) {
+            switch (GlyphType(szString[nWrkIndex])) {
             case ENDofSTRING:
-                if (bIndependent==FALSE)
-                {
-                    if (nIndex == 0)
-                    {
+                if (bIndependent==FALSE) {
+                    if (nIndex == 0) {
                         szWorking+=szPostfix;
                     }
                     nIndex = nWrkIndex;
                     return szWorking;
-                }
-                else
-                {
+                } else {
                     nIndex = nIndependent + 1;
                     szWorking += szPostfix;
                     return szWorking;
@@ -459,39 +429,30 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int & nIndex, const CString & szS
                 break;
             case INDEPENDENT:
             case BREAK:
-                if ((bIndependent == FALSE) && (szPostfix.IsEmpty() || (nIndex>0)))
-                {
+                if ((bIndependent == FALSE) && (szPostfix.IsEmpty() || (nIndex>0))) {
                     bIndependent = TRUE;
                     nIndependent = nWrkIndex;
                     szWorking += szString[nWrkIndex];
                     szPostfix = "";
                     bAppendPostfix = TRUE;
                     bAppendPrefix = FALSE;
-                }
-                else
-                {
+                } else {
                     nIndex = nIndependent + 1;
                     szWorking += szPostfix;
                     return szWorking;
                 }
                 break;
             case PREFIX:
-                if (bAppendPrefix)
-                {
+                if (bAppendPrefix) {
                     szWorking += szString[nWrkIndex];
-                }
-                else
-                {
+                } else {
                     szPrefix += szString[nWrkIndex];
                 }
                 break;
             case POSTFIX:
-                if (bAppendPostfix)
-                {
+                if (bAppendPostfix) {
                     szWorking += szString[nWrkIndex];
-                }
-                else
-                {
+                } else {
                     szPostfix += szString[nWrkIndex];
                 }
                 break;
@@ -505,17 +466,13 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int & nIndex, const CString & szS
             }
         }
 
-        if (bIndependent==FALSE)
-        {
-            if (nIndex == 0)
-            {
+        if (bIndependent==FALSE) {
+            if (nIndex == 0) {
                 szWorking+=szPostfix;
             }
             nIndex = nWrkIndex;
             return szWorking;
-        }
-        else
-        {
+        } else {
             nIndex = nIndependent + 1;
             szWorking += szPostfix;
             return szWorking;
@@ -523,18 +480,14 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int & nIndex, const CString & szS
         return szString[nIndex++];
     }
     break;
-    case DELIMITEDWORD:
-    {
+    case DELIMITEDWORD: {
         szReturn = szString.Mid(nIndex);
         int nDelimiter = szReturn.Find(m_wordDelimiter);
 
-        if (nDelimiter != -1)
-        {
+        if (nDelimiter != -1) {
             szReturn = szReturn.Mid(0, nDelimiter);
             nIndex += nDelimiter + 1;
-        }
-        else
-        {
+        } else {
             nIndex = szString.GetLength();
         }
         return szReturn;
@@ -553,34 +506,27 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int & nIndex, const CString & szS
 // CFontTableANSI::GetNext Get next unit of string in words, characters, bytes
 // updates nIndex to point to remainder of string for ANSI access codes
 /***************************************************************************/
-CString CFontTableANSI::GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const
-{
+CString CFontTableANSI::GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const {
     CString szReturn = "";
 
-    if ((nIndex < 0) || (nIndex >= szString.GetLength()))
-    {
+    if ((nIndex < 0) || (nIndex >= szString.GetLength())) {
         return szReturn;
     }
 
-    switch (nInUnits)
-    {
+    switch (nInUnits) {
     case BYTE:
         return szString[nIndex++];
         break;
     case CHARACTER:
         return szString[nIndex++];
         break;
-    case DELIMITEDWORD:
-    {
+    case DELIMITEDWORD: {
         szReturn = szString.Mid(nIndex);
         int nDelimiter = szReturn.Find(m_wordDelimiter);
-        if (nDelimiter != -1)
-        {
+        if (nDelimiter != -1) {
             szReturn = szReturn.Mid(0, nDelimiter);
             nIndex += nDelimiter + 1;
-        }
-        else
-        {
+        } else {
             nIndex = szString.GetLength();
         }
         return szReturn;

@@ -548,7 +548,6 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    BOOL bSuccess = FALSE;
     DWORD dwStart = seg->GetOffset(index);
     DWORD dwStop = dwStart + seg->GetDuration(index);
     TRACE("dwStart=%d dwStop=%d\n",dwStart,dwStop);
@@ -567,8 +566,7 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
     // copy the audio portion
     WAVETIME start = pDoc->toTime(dwStart, true);
     WAVETIME stop = pDoc->toTime(dwStop, true);
-    bSuccess = pDoc->CopySectionToNewWavFile(start, stop-start, filename, FALSE);
-    if (!bSuccess) {
+    if (!pDoc->CopySectionToNewWavFile(start, stop-start, filename, false)) {
         // be sure to delete the file
         FileUtils::RemoveFile(filename);
         CSaApp * pApp = (CSaApp *)AfxGetApp();
@@ -653,8 +651,7 @@ int ExportPhraseSegment(CMusicPhraseSegment * seg, int index, wstring & filename
 
     WAVETIME start = pDoc->toTime(dwStart, true);
     WAVETIME stop = pDoc->toTime(dwStop, true);
-    BOOL bSuccess = pDoc->CopySectionToNewWavFile(start,stop-start,filename.c_str(),FALSE);
-    if (!bSuccess) {
+    if (!pDoc->CopySectionToNewWavFile(start,stop-start,filename.c_str(),false)) {
         // be sure to delete the file
         FileUtils::RemoveFile(filename.c_str());
         CSaApp * pApp = (CSaApp *)AfxGetApp();

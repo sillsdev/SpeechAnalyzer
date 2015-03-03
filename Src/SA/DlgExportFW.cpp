@@ -97,7 +97,7 @@ BOOL CDlgExportFW::OnInitDialog() {
         found = false;
     }
 
-    ctlEditFieldWorksFolder.SetWindowTextW( dir);
+    ctlEditFieldWorksFolder.SetWindowTextW(dir);
     SetCheck(IDC_EXTAB_ANNOTATIONS, TRUE);
     CString tags;
     tags.LoadString(IDS_SFM_TAGS);
@@ -159,8 +159,12 @@ void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
             BOOL more = TRUE;
             do {
                 more = finder.FindNextFile();
-                if (finder.IsDots()) continue;
-                if (!finder.IsDirectory()) continue;
+                if (finder.IsDots()) {
+                    continue;
+                }
+                if (!finder.IsDirectory()) {
+                    continue;
+                }
                 TRACE(L"Found %s\n", finder.GetFileName());
                 ctlComboFieldWorksProject.AddString((LPCTSTR) finder.GetFileName());
             } while (more);
@@ -395,13 +399,13 @@ CSaString CDlgExportFW::GetFieldWorksProjectDirectory() {
     wstring value;
     HKEY hRootKey = HKEY_LOCAL_MACHINE;
     wstring keyName = _T("Software\\SIL\\FieldWorks");
-    if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
+    if (SearchForValue(hRootKey, sam, keyName, L"ProjectsDir", value)) {
         if (FileUtils::FolderExists(value.c_str())) {
             return CSaString(value.c_str());
         }
     }
     hRootKey = HKEY_CURRENT_USER;
-    if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
+    if (SearchForValue(hRootKey, sam, keyName, L"ProjectsDir", value)) {
         if (FileUtils::FolderExists(value.c_str())) {
             return CSaString(value.c_str());
         }
@@ -410,13 +414,13 @@ CSaString CDlgExportFW::GetFieldWorksProjectDirectory() {
     // now try the 64-bit registry hive
     sam = KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE | KEY_READ;
     hRootKey = HKEY_LOCAL_MACHINE;
-    if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
+    if (SearchForValue(hRootKey, sam, keyName, L"ProjectsDir", value)) {
         if (FileUtils::FolderExists(value.c_str())) {
             return CSaString(value.c_str());
         }
     }
     hRootKey = HKEY_CURRENT_USER;
-    if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
+    if (SearchForValue(hRootKey, sam, keyName, L"ProjectsDir", value)) {
         if (FileUtils::FolderExists(value.c_str())) {
             return CSaString(value.c_str());
         }
@@ -468,35 +472,35 @@ CSaString CDlgExportFW::GetFieldWorksProjectDirectory() {
 #define MAX_KEY_LENGTH 255
 #define MAX_VALUE_NAME 16383
 
-bool CDlgExportFW::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value) {
+bool CDlgExportFW::SearchForValue(HKEY hRootKey, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value) {
     TRACE(L"Trying %s\n", keyName.c_str());
 
     HKEY hKey = NULL;
-    DWORD retCode = RegOpenKeyEx( hRootKey, keyName.c_str(), 0, sam, &hKey);
+    DWORD retCode = RegOpenKeyEx(hRootKey, keyName.c_str(), 0, sam, &hKey);
     if (retCode!=ERROR_SUCCESS) {
         TRACE(L"Unable to open %s because of %d\n", keyName.c_str(), retCode);
         return false;
     }
 
-    TCHAR achKey[MAX_KEY_LENGTH];		// buffer for subkey name
-    DWORD cbName;						// size of name string
+    TCHAR achKey[MAX_KEY_LENGTH];       // buffer for subkey name
+    DWORD cbName;                       // size of name string
     TCHAR achClass[MAX_PATH] = TEXT("");  // buffer for class name
-    DWORD cchClassName = MAX_PATH;		// size of class string
-    DWORD cSubKeys=0;					// number of subkeys
-    DWORD cbMaxSubKey;					// longest subkey size
-    DWORD cchMaxClass;					// longest class string
-    DWORD cValues;						// number of values for key
-    DWORD cchMaxValue;					// longest value name
-    DWORD cbMaxValueData;				// longest value data
-    DWORD cbSecurityDescriptor;			// size of security descriptor
-    FILETIME ftLastWriteTime;			// last write time
+    DWORD cchClassName = MAX_PATH;      // size of class string
+    DWORD cSubKeys=0;                   // number of subkeys
+    DWORD cbMaxSubKey;                  // longest subkey size
+    DWORD cchMaxClass;                  // longest class string
+    DWORD cValues;                      // number of values for key
+    DWORD cchMaxValue;                  // longest value name
+    DWORD cbMaxValueData;               // longest value data
+    DWORD cbSecurityDescriptor;         // size of security descriptor
+    FILETIME ftLastWriteTime;           // last write time
     TCHAR achValue[MAX_VALUE_NAME];
     DWORD cchValue = MAX_VALUE_NAME;
 
     // Get the class name and the value count.
-    retCode = RegQueryInfoKey( hKey, achClass, &cchClassName, NULL, &cSubKeys, &cbMaxSubKey, &cchMaxClass, &cValues, &cchMaxValue, &cbMaxValueData, &cbSecurityDescriptor, &ftLastWriteTime);
+    retCode = RegQueryInfoKey(hKey, achClass, &cchClassName, NULL, &cSubKeys, &cbMaxSubKey, &cchMaxClass, &cValues, &cchMaxValue, &cbMaxValueData, &cbSecurityDescriptor, &ftLastWriteTime);
     if (retCode!=ERROR_SUCCESS) {
-        RegCloseKey( hKey);
+        RegCloseKey(hKey);
         TRACE(L"unable to query key info %s because of %d\n", keyName.c_str(), retCode);
         return false;
     }
@@ -507,14 +511,14 @@ bool CDlgExportFW::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, LP
         for (DWORD i=0; i<cSubKeys; i++) {
             cbName = MAX_KEY_LENGTH;
             memset(achKey,0,sizeof(achKey));
-            retCode = RegEnumKeyEx( hKey, i, achKey, &cbName, NULL, NULL, NULL, &ftLastWriteTime);
+            retCode = RegEnumKeyEx(hKey, i, achKey, &cbName, NULL, NULL, NULL, &ftLastWriteTime);
             if (retCode == ERROR_SUCCESS) {
                 wstring childKey;
                 childKey = keyName;
                 childKey.append(L"\\");
                 childKey.append(achKey);
-                if (SearchForValue( hRootKey, sam, childKey, valueName, value)) {
-                    RegCloseKey( hKey);
+                if (SearchForValue(hRootKey, sam, childKey, valueName, value)) {
+                    RegCloseKey(hKey);
                     return true;
                 }
             }
@@ -529,19 +533,19 @@ bool CDlgExportFW::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, LP
         for (DWORD i=0, retCode=ERROR_SUCCESS; i<cValues; i++) {
             cchValue = MAX_VALUE_NAME;
             wmemset(achValue,0,_countof(achValue));
-            retCode = RegEnumValue( hKey, i, achValue, &cchValue, NULL, NULL, NULL, NULL);
-            if (retCode == ERROR_SUCCESS ) {
+            retCode = RegEnumValue(hKey, i, achValue, &cchValue, NULL, NULL, NULL, NULL);
+            if (retCode == ERROR_SUCCESS) {
                 TRACE(L"considering value %s\n",achValue);
                 // is this the correct value?
-                if (_wcsicmp( achValue, valueName)==0) {
+                if (_wcsicmp(achValue, valueName)==0) {
                     TCHAR szValue[1024];
                     wmemset(szValue,0,_countof(szValue));
                     DWORD dwBufLen = sizeof(szValue);
-                    retCode = RegQueryValueEx( hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE)szValue, &dwBufLen);
+                    retCode = RegQueryValueEx(hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE)szValue, &dwBufLen);
                     if (retCode==ERROR_SUCCESS) {
                         value = szValue;
                         TRACE(L"success at %s : %s\n", keyName.c_str(), value.c_str());
-                        RegCloseKey( hKey);
+                        RegCloseKey(hKey);
                         return true;
                     }
                 }
@@ -551,7 +555,7 @@ bool CDlgExportFW::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, LP
         TRACE(L"No values found\n");
     }
     TRACE(L"no joy\n");
-    RegCloseKey( hKey);
+    RegCloseKey(hKey);
     return false;
 }
 

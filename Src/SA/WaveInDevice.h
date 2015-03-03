@@ -11,8 +11,7 @@ class CRecMixer;
 class CPlayMixer;
 class CWaveOutDevice;
 
-class CWaveInDevice : public CWnd
-{
+class CWaveInDevice : public CWnd {
 
 public:
     CWaveInDevice();
@@ -23,7 +22,7 @@ public:
     void WaveInDone(CWave * pWave, WAVEHDR * pHdr);
     void Reset();
     BOOL Record(int nBuffer, CWave * pWave, BOOL bStart=FALSE);
-    BOOL AttachHighPassFilter( uint32 wSmpRate);
+    BOOL AttachHighPassFilter(uint32 wSmpRate);
     CHighPassFilter70 * GetHighPassFilter();
     void DetachHighPassFilter();
     MMRESULT GetVolume(UINT & volume);

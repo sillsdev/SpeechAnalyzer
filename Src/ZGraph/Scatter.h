@@ -29,8 +29,7 @@
 #include "zgraph.h"                              // Basic Graph Class
 
 
-class CScatterGraph : public zGraph
-{
+class CScatterGraph : public zGraph {
 protected:
     double Multiplier1;                  // Used In Mapping 3-D to 2-D
     double Multiplier2;                  //   Coordinates

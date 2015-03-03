@@ -14,8 +14,7 @@
 
 
 #pragma pack(1)
-struct SFragParms
-{
+struct SFragParms {
     uint32 dwOffset;                    // sample offset into waveform
     uint16 wLength;                     // length of fragment in samples
     short  nPitch;                      // pitch value for fragment
@@ -23,8 +22,7 @@ struct SFragParms
 };
 #pragma pack()
 
-struct SPitchParms
-{
+struct SPitchParms {
     uint16      wSmpIntvl;              // calculation interval in waveform samples
     uint16      wScaleFac;              // scale factor
     uint16      wCalcRangeMin;          // min pitch allowed
@@ -33,8 +31,7 @@ struct SPitchParms
     short    *   psContour;             // pointer to pitch data
 };
 
-class CFragment
-{
+class CFragment {
 public:
     static char * Copyright(void);
     static float Version(void);

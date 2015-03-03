@@ -25,18 +25,17 @@ class CSaDoc;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportLift dialog
-class CDlgExportLift : public CDialog
-{
+class CDlgExportLift : public CDialog {
 public:
     CDlgExportLift(LPCTSTR szDocTitle,
-                 BOOL gloss,
-				 BOOL glossNat,
-                 BOOL ortho,
-                 BOOL phonemic,
-                 BOOL phonetic,
-                 BOOL reference,
-				 list<wstring> iso,
-                 CWnd * pParent = NULL);
+                   BOOL gloss,
+                   BOOL glossNat,
+                   BOOL ortho,
+                   BOOL phonemic,
+                   BOOL phonetic,
+                   BOOL reference,
+                   list<wstring> iso,
+                   CWnd * pParent = NULL);
 
     CExportLiftSettings settings;
 
@@ -49,7 +48,7 @@ protected:
     void UpdateButtonState();
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
     CSaString GetFieldWorksProjectDirectory();
-	bool SearchForValue( HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
+    bool SearchForValue(HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
 
     afx_msg void OnClickedExSfmInterlinear();
     afx_msg void OnClickedExSfmMultirecord();
@@ -64,31 +63,31 @@ protected:
     CComboBox ctlComboFieldWorksProject;
     CStatic ctlStaticFieldWorksProject;
     CButton ctlButtonOK;
-    
+
     BOOL bGlossDflt;
-	BOOL bGlossNatDflt;
+    BOOL bGlossNatDflt;
     BOOL bOrthoDflt;
-	BOOL bToneDflt;
+    BOOL bToneDflt;
     BOOL bPhonemicDflt;
     BOOL bPhoneticDflt;
     BOOL bPOSDflt;
     BOOL bReferenceDflt;
 
-	CComboBox ctlReferenceList;
-	CComboBox ctlPhonemicList;
-	CComboBox ctlPhoneticList;
-	CComboBox ctlGlossList;
-	CComboBox ctlGlossNatList;
-	CComboBox ctlOrthoList;
+    CComboBox ctlReferenceList;
+    CComboBox ctlPhonemicList;
+    CComboBox ctlPhoneticList;
+    CComboBox ctlGlossList;
+    CComboBox ctlGlossNatList;
+    CComboBox ctlOrthoList;
 
-	wstring refLang;
-	wstring phonemicLang;
-	wstring phoneticLang;
-	wstring glossLang;
-	wstring orthoLang;
-	wstring posLang;
+    wstring refLang;
+    wstring phonemicLang;
+    wstring phoneticLang;
+    wstring glossLang;
+    wstring orthoLang;
+    wstring posLang;
 
-	list<wstring> iso;
+    list<wstring> iso;
 
     DECLARE_MESSAGE_MAP()
 };

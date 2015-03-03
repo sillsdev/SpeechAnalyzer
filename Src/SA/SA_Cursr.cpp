@@ -45,17 +45,14 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CCursorWnd::CCursorWnd()
-{
+CCursorWnd::CCursorWnd() {
     bDrawn = FALSE;
 }
 
-BOOL CCursorWnd::IsDrawn()
-{
+BOOL CCursorWnd::IsDrawn() {
     return bDrawn;
 }
 
-void CCursorWnd::SetDrawn(BOOL bNewDrawn)
-{
+void CCursorWnd::SetDrawn(BOOL bNewDrawn) {
     bDrawn = bNewDrawn;
 }

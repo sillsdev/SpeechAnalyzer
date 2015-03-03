@@ -35,11 +35,10 @@ class CProcessTonalWeightChart;
 class CSaParam;
 enum EGender;
 
-__interface ISaDoc
-{
+__interface ISaDoc {
 
 public:
-	EGender GetGender();
+    EGender GetGender();
     int GetWbProcess();
     const CMusicParm * GetMusicParm() const;
     const CUttParm * GetUttParm();
@@ -47,7 +46,7 @@ public:
     void GetFmtParm(CFmtParm & format, bool processed);
 
     DWORD GetDataSize() const;
-	DWORD GetRawDataSize() const;
+    DWORD GetRawDataSize() const;
     HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
     int GetWaveData(DWORD dwOffset, BOOL *);
     void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
@@ -92,17 +91,17 @@ public:
     DWORD GetSelectedChannel();
     double GetTimeFromBytes(DWORD dwSize);
     DWORD GetBytesFromTime(double fSize);
-	// this is bytes per sample
+    // this is bytes per sample
     DWORD GetSampleSize() const;
     DWORD GetSamplesPerSec();
     WORD GetBitsPerSample();
-    WORD GetBlockAlign( bool singleChannel=false);
+    WORD GetBlockAlign(bool singleChannel=false);
     bool Is16Bit();
     bool IsPCM();
     DWORD GetAvgBytesPerSec();
     DWORD GetNumChannels() const;
     DWORD GetNumSamples() const;
-	DWORD GetSignalBandWidth();
+    DWORD GetSignalBandWidth();
 };
 
 #endif

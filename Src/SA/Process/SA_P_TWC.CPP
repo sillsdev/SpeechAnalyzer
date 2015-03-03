@@ -48,8 +48,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessTonalWeightChart::CProcessTonalWeightChart Constructor
 /***************************************************************************/
-CProcessTonalWeightChart::CProcessTonalWeightChart()
-{
+CProcessTonalWeightChart::CProcessTonalWeightChart() {
     m_dwFrameSize = 0;
     // CLW 10/24/00 removed SaveCursorPosition code
     // Set_m_bSaveCursorPositions(TRUE);
@@ -58,8 +57,7 @@ CProcessTonalWeightChart::CProcessTonalWeightChart()
 /***************************************************************************/
 // CProcessTonalWeightChart::~CProcessTonalWeightChart Destructor
 /***************************************************************************/
-CProcessTonalWeightChart::~CProcessTonalWeightChart()
-{
+CProcessTonalWeightChart::~CProcessTonalWeightChart() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -78,10 +76,8 @@ CProcessTonalWeightChart::~CProcessTonalWeightChart()
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessTonalWeightChart::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart, DWORD dwFrameSize, short nMinSemitone,
-                                       short nMaxSemitone, int nProgress, int nLevel)
-{
-    if (IsCanceled())
-    {
+                                       short nMaxSemitone, int nProgress, int nLevel) {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
 
@@ -89,41 +85,34 @@ long CProcessTonalWeightChart::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFr
     CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
     long lResult = pMelogram->Process(pCaller, pDoc, nProgress, ++nLevel); // process data
     nLevel = (short int)LOWORD(lResult);
-    if (nLevel == PROCESS_CANCELED)
-    {
+    if (nLevel == PROCESS_CANCELED) {
         return Exit(PROCESS_CANCELED);
     }
     nProgress = HIWORD(lResult);
     DWORD dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
-    if (!dwMelDataSize)
-    {
+    if (!dwMelDataSize) {
         return Exit(PROCESS_NO_DATA);    // error, no valid data
     }
 
     // check if data needs to be recalculated
     if (dwFrameStart != m_dwFrameStart || dwFrameSize != m_dwFrameSize
-            || m_dMinSemitone != nMinSemitone || m_dMaxSemitone != nMaxSemitone)   //check if cursors moved, requiring new spectrum
-    {
+            || m_dMinSemitone != nMinSemitone || m_dMaxSemitone != nMaxSemitone) { //check if cursors moved, requiring new spectrum
         // invalidate data
-        if (IsDataReady())
-        {
+        if (IsDataReady()) {
             SetDataInvalid();
         }
         // save current cursor positions
         m_dwFrameStart = dwFrameStart;
         m_dwFrameSize = dwFrameSize;
     }
-    if (IsDataReady())
-    {
+    if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
     //TRACE(_T("Process: CProcessTonalWeightChart\n"));
 
-    if (nLevel < 0)   // previous processing error
-    {
-        if ((nLevel == PROCESS_CANCELED))
-        {
+    if (nLevel < 0) { // previous processing error
+        if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -132,16 +121,14 @@ long CProcessTonalWeightChart::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFr
     // start tonal weighting chart process
     BeginWaitCursor(); // wait cursor
     // to do: need new status bar text for TWC
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSTWC))   // memory allocation failed
-    {
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSTWC)) { // memory allocation failed
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
-    if (!CreateTempFile(_T("TWC")))   // creating error
-    {
+    if (!CreateTempFile(_T("TWC"))) { // creating error
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -157,44 +144,35 @@ long CProcessTonalWeightChart::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFr
     m_dMaxSemitone = nMaxSemitone;
 
     CHistogram * ppoHist = MakeTwcHistogram(pMelogram, m_nBinsPerSemitone, m_dMinSemitone, m_dMaxSemitone, dwFrameStart/2, dwFrameSize/2);
-    if (!ppoHist)
-    {
+    if (!ppoHist) {
         ProcessFreeMem;
         return Exit(PROCESS_ERROR); // error, reading failed
     }
 
     // set progress bar
     SetProgress(nProgress + (int)(100 * (dwDataPos - dwFrameStart) / dwFrameSize / (DWORD)nLevel));
-    if (IsCanceled())
-    {
+    if (IsCanceled()) {
         ProcessFreeMem;
         return Exit(PROCESS_CANCELED); // process canceled
     }
 
     double fCoeff = .001;
     dspError_t Err = ppoHist->GetHistogram((short int *)m_lpBuffer, fCoeff, PDF);
-    if (Err)
-    {
+    if (Err) {
         ProcessFreeMem;
         return Exit(PROCESS_ERROR); // error, reading failed
     }
     // Make max value 0 if the total number of counts is 0. CLW 9/26/00
-    if (ppoHist->GetTotalCounts(this))
-    {
+    if (ppoHist->GetTotalCounts(this)) {
         m_nMaxValue = (int)((double)ppoHist->GetMaxValue(this) / fCoeff / (double)ppoHist->GetTotalCounts(this));
-    }
-    else
-    {
+    } else {
         m_nMaxValue = 0;
     }
 
     // write the processed data block
-    try
-    {
+    try {
         Write(m_lpBuffer, ppoHist->GetHistogramParms().nBins * 2);
-    }
-    catch (CFileException e)
-    {
+    } catch (CFileException e) {
         // error writing file
         ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
         ProcessFreeMem;
@@ -214,8 +192,7 @@ long CProcessTonalWeightChart::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFr
 // Reusable function to make a CHistogram of a section of a wave file
 // Assumes the CProcessMelogram data is ready (callers responsibility
 // Creates a new CHistogram object, callers responsibility to delete
-CHistogram * CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram * pMelogram, int nBinsPerSemitone, double dMinSemitone, double dMaxSemitone, DWORD dwFrameStart, DWORD dwFrameSize)
-{
+CHistogram * CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram * pMelogram, int nBinsPerSemitone, double dMinSemitone, double dMaxSemitone, DWORD dwFrameStart, DWORD dwFrameSize) {
     // prepare histogram parameters
     CHistogram * ppoHist = NULL;
     SHistogramParms stHistParms;
@@ -223,14 +200,12 @@ CHistogram * CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram * pMelo
 
     stHistParms.nBins = short((dMaxSemitone - dMinSemitone) * (double)nBinsPerSemitone);
     stHistParms.pBinDivs = (short *)new short[stHistParms.nBins + 1];
-    if (!stHistParms.pBinDivs)
-    {
+    if (!stHistParms.pBinDivs) {
         return NULL;
     }
     double fSemitone;
     USHORT nBin;
-    for (nBin = 0; nBin <= stHistParms.nBins; nBin++)
-    {
+    for (nBin = 0; nBin <= stHistParms.nBins; nBin++) {
         fSemitone = dMinSemitone + (double)nBin / (double)nBinsPerSemitone;
         stHistParms.pBinDivs[nBin] = (short)(fSemitone * MEL_MULT + 0.5);
     }
@@ -248,29 +223,24 @@ CHistogram * CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram * pMelo
     stProcParms.stSigParms.SmpRate = 0; // not applicable
     dspError_t Err = CHistogram::CreateObject(&ppoHist, stHistParms, stProcParms); // create histogram object
     delete [] stHistParms.pBinDivs;
-    if (Err)
-    {
+    if (Err) {
         return NULL;
     }
     // process histogram
-    while (dwDataPos < dwFrameStart + dwFrameSize - 1)
-    {
+    while (dwDataPos < dwFrameStart + dwFrameSize - 1) {
         // load buffer with next block of melogram data
         DWORD dwBatchSize = stProcParms.dwBufferSize;
-        if (dwDataPos + dwBatchSize > dwFrameStart + dwFrameSize)
-        {
+        if (dwDataPos + dwBatchSize > dwFrameStart + dwFrameSize) {
             dwBatchSize = dwFrameSize + dwFrameStart - dwDataPos;
         }
         short int * pMelogramData = (short int *)pMelogram->GetProcessedData(dwDataPos, TRUE); // read melogram data block
-        if (!pMelogramData)
-        {
+        if (!pMelogramData) {
             delete ppoHist;
             return NULL;
         }
         Err = ppoHist->GenerateHistogram();// process data in buffer
         dwDataPos += dwBatchSize;
-        switch (Err)
-        {
+        switch (Err) {
         case DONE:
             break;
 

@@ -22,8 +22,7 @@ class CSaDoc;
 //###########################################################################
 // CDlgAdvancedSegment property page
 
-class CDlgAdvancedSegment : public CDialog
-{
+class CDlgAdvancedSegment : public CDialog {
     DECLARE_DYNAMIC(CDlgAdvancedSegment)
 public:
     CDlgAdvancedSegment(CSaDoc * pDoc); // standard constructor

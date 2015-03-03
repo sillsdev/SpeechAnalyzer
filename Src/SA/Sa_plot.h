@@ -64,8 +64,7 @@ class CProcessAreaData;
 #define POS_VCENTER     0x2000  // window vertically centered
 #define POS_VBOTTOM     0x4000  // window vertically bottom aligned
 
-class CPlotHelperWnd : public CWnd
-{
+class CPlotHelperWnd : public CWnd {
     DECLARE_DYNCREATE(CPlotHelperWnd)
 
 // Construction/destruction/creation
@@ -112,8 +111,7 @@ protected:
 #define PAINT_DB        64 // take linear amplitude data and plot as dB
 #define PAINT_MIN       128
 
-class CPlotWnd : public CWnd
-{
+class CPlotWnd : public CWnd {
 
     DECLARE_DYNCREATE(CPlotWnd)
 
@@ -139,8 +137,8 @@ public:
     virtual void RemoveRtPlots();
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
-    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);	// show or hide boundaries
-    virtual void SetMagnify(double, BOOL bRedraw = FALSE);			// set magnify factor
+    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide boundaries
+    virtual void SetMagnify(double, BOOL bRedraw = FALSE);          // set magnify factor
     double GetMagnify();
     BOOL HaveBoundaries();
     BOOL HaveDrawingStyleLine();
@@ -157,7 +155,7 @@ public:
     virtual void SetStartCursor(CSaView * pView);           // position the start cursor window
     virtual void SetStopCursor(CSaView * pView);            // position the stop cursor window
     virtual void SetPlaybackCursor(CSaView * pView, bool scroll);// position the stop cursor window
-	void SetPlaybackFlash( bool val);
+    void SetPlaybackFlash(bool val);
     void MoveStartCursor(CSaView * pView, DWORD dwNewPositon); // move the start cursor window
     void MoveStopCursor(CSaView * pView, DWORD dwNewPositon); // move the stop cursor window
     CStartCursorWnd * GetStartCursorWnd();
@@ -181,11 +179,11 @@ public:
     virtual void AnimateFrame(DWORD dwFrameIndex);          // animate a single frame (fragment)
     virtual void EndAnimation();                            // terminate animation and return to resting state
     virtual BOOL IsAreaGraph() const;
-	void ChangePrivateCursorPosition( CPoint point);
-	void GetPrivateCursorWindowRect( CRect * rect);
-	void OnPrivateCursorDraw( CDC * pDC, CRect rect);
-	void HideCursors();
-	void ShowCursors();
+    void ChangePrivateCursorPosition(CPoint point);
+    void GetPrivateCursorWindowRect(CRect * rect);
+    void OnPrivateCursorDraw(CDC * pDC, CRect rect);
+    void HideCursors();
+    void ShowCursors();
 
 protected:
     virtual void PostNcDestroy();
@@ -230,8 +228,8 @@ protected:
     CPlotHelperWnd m_HelperWnd;             // helper window embedded object
     CStartCursorWnd * m_pStartCursor;       // start cursor window embedded object
     CStopCursorWnd * m_pStopCursor;         // stop cursor window embedded object
-    CPrivateCursorWnd m_PrivateCursor;		// private cursor window embedded object
-    CPrivateCursorWnd m_PlaybackCursor;		// private cursor window embedded object
+    CPrivateCursorWnd m_PrivateCursor;      // private cursor window embedded object
+    CPrivateCursorWnd m_PlaybackCursor;     // private cursor window embedded object
     CProcess * m_pLastProcess;              // pointer to MRU process
     CProcessAreaData * m_pAreaProcess;      // pointer to area process (needs deleting)
     bool m_bBoundaries;                     // TRUE = boundaries shown
@@ -245,7 +243,7 @@ protected:
     double m_dProcessMultiplier;
     DWORD m_dwHighLightPosition;            // highlighted area position
     DWORD m_dwHighLightLength;              // highlighted area length
-    BOOL m_bAnimationPlot;					// TRUE = plot can be animated (defaults to FALSE)
+    BOOL m_bAnimationPlot;                  // TRUE = plot can be animated (defaults to FALSE)
     DWORD m_dwAnimationFrame;               // animation frame index
     CPoint m_MousePointerPosn;              // mouse pointer position
     UINT m_MouseButtonState;                // mouse button flags
@@ -266,12 +264,10 @@ private:
 
 // Classes designed to support standard drawing
 
-class CDataSource
-{
+class CDataSource {
 public:
     virtual ~CDataSource();
-    struct SValues
-    {
+    struct SValues {
         int nFirst;
         int nMax;
         int nMin;
@@ -280,8 +276,7 @@ public:
     virtual void GetValues(int & nFirstSample, int nLastSample, SValues & values, BOOL & bValid)=0;
 };
 
-class CDataSourceSimple : public CDataSource
-{
+class CDataSourceSimple : public CDataSource {
 public:
     CDataSourceSimple(CProcess & cProcess);
     virtual ~CDataSourceSimple();
@@ -292,8 +287,7 @@ private:
     DWORD m_nSamples;
 };
 
-class CDataSourceValidate : public CDataSource
-{
+class CDataSourceValidate : public CDataSource {
 public:
     CDataSourceValidate(CProcess & cProcess, BOOL bUnset, BOOL bMissing);
     virtual ~CDataSourceValidate();
@@ -306,41 +300,32 @@ private:
     BOOL m_bSkipMissing; // Values of -2 are "Missing"
 };
 
-class CXScale
-{
+class CXScale {
 public:
-    virtual ~CXScale()
-    {
+    virtual ~CXScale() {
         ;
     }
 
-    virtual int GetX(double fSample) const
-    {
+    virtual int GetX(double fSample) const {
         return round(fSample);
     }
-    virtual double GetSample(int x) const
-    {
+    virtual double GetSample(int x) const {
         return x;
     }
 };
 
-class CXScaleLinear : public CXScale
-{
+class CXScaleLinear : public CXScale {
 public:
     CXScaleLinear(double fSamplesPerX, double fSampleAtZero)
-        : m_fSamplesPerX(fSamplesPerX),m_fSampleAtZero(fSampleAtZero),m_fXPerSample(fSamplesPerX ? 1/fSamplesPerX : 0)
-    {
+        : m_fSamplesPerX(fSamplesPerX),m_fSampleAtZero(fSampleAtZero),m_fXPerSample(fSamplesPerX ? 1/fSamplesPerX : 0) {
     }
-    virtual ~CXScaleLinear()
-    {
+    virtual ~CXScaleLinear() {
     }
 
-    virtual int GetX(double fSamples) const
-    {
+    virtual int GetX(double fSamples) const {
         return round((fSamples - m_fSampleAtZero)*m_fXPerSample);
     }
-    virtual double GetSample(int x) const
-    {
+    virtual double GetSample(int x) const {
         return x*m_fSamplesPerX + m_fSampleAtZero;
     }
 
@@ -350,41 +335,32 @@ private:
     const double m_fXPerSample;
 };
 
-class CYScale
-{
+class CYScale {
 public:
-    virtual ~CYScale()
-    {
+    virtual ~CYScale() {
         ;
     }
 
-    virtual int GetY(double fPos) const
-    {
+    virtual int GetY(double fPos) const {
         return round(fPos);
     }
-    virtual double GetValue(int y) const
-    {
+    virtual double GetValue(int y) const {
         return y;
     }
 };
 
-class CYScaleLinear : public CYScale
-{
+class CYScaleLinear : public CYScale {
 public:
     CYScaleLinear(double fYPerValue, double fYAtZero)
-        : m_fYPerValue(fYPerValue),m_fYAtZero(fYAtZero),m_fValuePerY(fYPerValue ? 1/fYPerValue : 0)
-    {
+        : m_fYPerValue(fYPerValue),m_fYAtZero(fYAtZero),m_fValuePerY(fYPerValue ? 1/fYPerValue : 0) {
     }
-    virtual ~CYScaleLinear()
-    {
+    virtual ~CYScaleLinear() {
     }
 
-    virtual int GetY(double fValue) const
-    {
+    virtual int GetY(double fValue) const {
         return round(fValue*m_fYPerValue + m_fYAtZero);
     }
-    virtual double GetValue(int y) const
-    {
+    virtual double GetValue(int y) const {
         return (y-m_fYAtZero)*m_fValuePerY;
     }
 
@@ -394,23 +370,18 @@ private:
     const double m_fYPerValue;
 };
 
-class CYScaleLog : public CYScale
-{
+class CYScaleLog : public CYScale {
 public:
     CYScaleLog(double fLogScale, double fLogOffset)
-        : m_fLogScale(fLogScale),m_fLogOffset(fLogOffset),m_fLogInvScale(fLogScale ? 1/fLogScale : 0)
-    {
+        : m_fLogScale(fLogScale),m_fLogOffset(fLogOffset),m_fLogInvScale(fLogScale ? 1/fLogScale : 0) {
     }
-    virtual ~CYScaleLog()
-    {
+    virtual ~CYScaleLog() {
     }
 
-    virtual int GetY(double fValue) const
-    {
+    virtual int GetY(double fValue) const {
         return round(fValue > 0 ? log10(fValue)*m_fLogScale + m_fLogOffset : m_fLogScale*100.);
     }
-    virtual double GetValue(int y) const
-    {
+    virtual double GetValue(int y) const {
         return pow(10,(y-m_fLogOffset)*m_fLogInvScale);
     }
 
@@ -420,27 +391,21 @@ private:
     const double m_fLogInvScale;
 };
 
-class CYScaleDB : public CYScaleLog
-{
+class CYScaleDB : public CYScaleLog {
 public:
     CYScaleDB(double fYPerValue, double fYAtZero, double fdBReference, double fdBScale=20.)
-        : CYScaleLog(fdBScale * fYPerValue, fYAtZero + fdBReference * fYPerValue)
-    {
+        : CYScaleLog(fdBScale * fYPerValue, fYAtZero + fdBReference * fYPerValue) {
     }
-    virtual ~CYScaleDB()
-    {
+    virtual ~CYScaleDB() {
     }
 };
 
-class CYScaleSemitones : public CYScaleLog
-{
+class CYScaleSemitones : public CYScaleLog {
 public:
     CYScaleSemitones(double fYPerValue, double fYAtZero, double fPitchScale)
-        : CYScaleLog(dSemitoneScale * fYPerValue, fYAtZero + dSemitoneReference*fYPerValue - log10(fPitchScale)*dSemitoneScale * fYPerValue)
-    {
+        : CYScaleLog(dSemitoneScale * fYPerValue, fYAtZero + dSemitoneReference*fYPerValue - log10(fPitchScale)*dSemitoneScale * fYPerValue) {
     }
-    virtual ~CYScaleSemitones()
-    {
+    virtual ~CYScaleSemitones() {
     }
 
 private:
@@ -448,20 +413,16 @@ private:
     static const double dSemitoneReference;
 };
 
-class CDrawSegment
-{
+class CDrawSegment {
 public:
-    CDrawSegment(CDC & cDC) : m_cDC(cDC)
-    {
+    CDrawSegment(CDC & cDC) : m_cDC(cDC) {
     }
-    virtual ~CDrawSegment()
-    {
+    virtual ~CDrawSegment() {
     }
 
     // draw scaling y values
     virtual void DrawTo(int x, CDataSource::SValues & value, const CYScale & cYScale, BOOL bValid = TRUE);
-    virtual void DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid = TRUE)
-    {
+    virtual void DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid = TRUE) {
         UNUSED_ALWAYS(x);
         UNUSED_ALWAYS(value);
         UNUSED_ALWAYS(cYScale);
@@ -470,16 +431,14 @@ public:
 
     // draw scaling x values
     virtual void DrawTo(CDataSource::SValues & xValues, const CXScale & cXScale, int y, BOOL bValid = TRUE);
-    virtual void DrawTo(int x, const CXScale & cXScale, int y, BOOL bValid = TRUE)
-    {
+    virtual void DrawTo(int x, const CXScale & cXScale, int y, BOOL bValid = TRUE) {
         UNUSED_ALWAYS(x);
         UNUSED_ALWAYS(cXScale);
         UNUSED_ALWAYS(y);
         UNUSED_ALWAYS(bValid);
     }
 
-    void SetColor(COLORREF clr)
-    {
+    void SetColor(COLORREF clr) {
         m_clr = clr;
     }
 
@@ -488,19 +447,16 @@ protected:
     COLORREF m_clr;
 };
 
-class CDrawSegmentSolid : public CDrawSegment
-{
+class CDrawSegmentSolid : public CDrawSegment {
 public:
     CDrawSegmentSolid(CDC & cDC, int nReferenceY) :
-        CDrawSegment(cDC), m_nReferenceY(nReferenceY)
-    {
+        CDrawSegment(cDC), m_nReferenceY(nReferenceY) {
         m_nOldX = m_nCurrentX = 0;
         m_nMaxValue = INT_MIN;
         m_nMinValue = INT_MAX;
     }
 
-    virtual ~CDrawSegmentSolid()
-    {
+    virtual ~CDrawSegmentSolid() {
         ;
     }
 
@@ -513,17 +469,14 @@ protected:
     int m_nMinValue;
 };
 
-class CDrawSegmentLine : public CDrawSegment
-{
+class CDrawSegmentLine : public CDrawSegment {
 public:
-    CDrawSegmentLine(CDC & cDC) : CDrawSegment(cDC)
-    {
+    CDrawSegmentLine(CDC & cDC) : CDrawSegment(cDC) {
         m_pPoints = new POINT[kSpace+1];
         m_nSize = 0;
         Flush();
     }
-    virtual ~CDrawSegmentLine()
-    {
+    virtual ~CDrawSegmentLine() {
         delete [] m_pPoints;
     }
 
@@ -540,28 +493,22 @@ private:
     void Flush();
 };
 
-class CDrawSegmentSample : public CDrawSegmentLine
-{
+class CDrawSegmentSample : public CDrawSegmentLine {
 public:
-    CDrawSegmentSample(CDC & cDC) : CDrawSegmentLine(cDC)
-    {
+    CDrawSegmentSample(CDC & cDC) : CDrawSegmentLine(cDC) {
     }
-    virtual ~CDrawSegmentSample()
-    {
+    virtual ~CDrawSegmentSample() {
     }
 
     virtual void DrawTo(int x, CDataSource::SValues & value, const CYScale & cYScale, BOOL bValid = TRUE);
     virtual void DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid = TRUE);
 };
 
-class CDrawSegmentDotOnly : public CDrawSegmentLine
-{
+class CDrawSegmentDotOnly : public CDrawSegmentLine {
 public:
-    CDrawSegmentDotOnly(CDC & cDC) : CDrawSegmentLine(cDC)
-    {
+    CDrawSegmentDotOnly(CDC & cDC) : CDrawSegmentLine(cDC) {
     }
-    virtual ~CDrawSegmentDotOnly()
-    {
+    virtual ~CDrawSegmentDotOnly() {
     }
 
     virtual void DrawTo(int x, CDataSource::SValues & value, const CYScale & cYScale, BOOL bValid = TRUE);

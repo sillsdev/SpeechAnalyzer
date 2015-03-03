@@ -22,17 +22,14 @@ CDlgSplitFile::CDlgSplitFile(CWnd * pParent /*=NULL*/) :
     m_szFolderName(_T("")),
     m_szPhraseFolderName(_T("")),
     m_szGlossFolderName(_T("")),
-	m_szFilenamePrefix(_T("")),
-	m_szFilenameSuffix(_T(""))
-{
+    m_szFilenamePrefix(_T("")),
+    m_szFilenameSuffix(_T("")) {
 }
 
-CDlgSplitFile::~CDlgSplitFile()
-{
+CDlgSplitFile::~CDlgSplitFile() {
 }
 
-BOOL CDlgSplitFile::OnInitDialog()
-{
+BOOL CDlgSplitFile::OnInitDialog() {
     CDialog::OnInitDialog();
     GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(FALSE);
     GetDlgItem(IDC_SPLIT_PHRASE_SUBFOLDER_NAME)->EnableWindow(FALSE);
@@ -41,8 +38,7 @@ BOOL CDlgSplitFile::OnInitDialog()
     return TRUE;
 }
 
-void CDlgSplitFile::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgSplitFile::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_nWordConvention);
     DDX_CBIndex(pDX, IDC_SPLIT_PHRASE_CONVENTION, m_nPhraseConvention);
@@ -52,7 +48,7 @@ void CDlgSplitFile::DoDataExchange(CDataExchange * pDX)
     DDX_Filename(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_szGlossFolderName, IDS_ERROR_BADFILENAME_CHARS);
     DDX_Check(pDX, IDC_CHECK_GLOSS_EMPTY, m_bSkipGlossEmpty);
     DDX_Check(pDX, IDC_CHECK_OVERWRITE, m_bOverwriteData);
-	DDX_Filename(pDX, IDC_FILENAME_PREFIX, m_szFilenamePrefix, IDS_ERROR_BADFILENAME_CHARS);
+    DDX_Filename(pDX, IDC_FILENAME_PREFIX, m_szFilenamePrefix, IDS_ERROR_BADFILENAME_CHARS);
     DDX_Filename(pDX, IDC_FILENAME_SUFFIX, m_szFilenameSuffix, IDS_ERROR_BADFILENAME_CHARS);
 }
 
@@ -62,17 +58,13 @@ BEGIN_MESSAGE_MAP(CDlgSplitFile, CDialog)
     ON_BN_CLICKED(IDC_EDIT_GLOSS_FOLDER, &CDlgSplitFile::OnBnClickedEditGlossFolder)
 END_MESSAGE_MAP()
 
-static int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg, LPARAM /*lParam*/, LPARAM lpData)
-{
+static int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg, LPARAM /*lParam*/, LPARAM lpData) {
 
     // If the BFFM_INITIALIZED message is received
     // set the path to the start path.
-    switch (uMsg)
-    {
-    case BFFM_INITIALIZED:
-    {
-        if (NULL != lpData)
-        {
+    switch (uMsg) {
+    case BFFM_INITIALIZED: {
+        if (NULL != lpData) {
             SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
         }
     }
@@ -80,8 +72,7 @@ static int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg, LPARAM /*lParam*/, L
     return 0;
 }
 
-void CDlgSplitFile::OnBnClickedBrowseFolder()
-{
+void CDlgSplitFile::OnBnClickedBrowseFolder() {
     // szCurrent is an optional start folder. Can be NULL.
     // szPath receives the selected path on success. Must be MAX_PATH characters in length.
 
@@ -93,37 +84,32 @@ void CDlgSplitFile::OnBnClickedBrowseFolder()
     TCHAR szPath[MAX_PATH];
     memset(szPath,0,sizeof(szPath));
 
-	CString msg;
-	msg.LoadStringW(IDS_CHOOSE_FOLDER);
+    CString msg;
+    msg.LoadStringW(IDS_CHOOSE_FOLDER);
 
     BROWSEINFO bi = { 0 };
     bi.hwndOwner = this->m_hWnd;
     bi.pszDisplayName = szDisplay;
-	bi.lpszTitle = msg.GetBuffer(msg.GetLength());
+    bi.lpszTitle = msg.GetBuffer(msg.GetLength());
     bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
     bi.lpfn = BrowseCallbackProc;
     bi.lParam = (LPARAM)(LPCTSTR)m_szFolderLocation;
     LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-    if (pidl==NULL)
-    {
+    if (pidl==NULL) {
         // they cancelled...
-		msg.ReleaseBuffer();
+        msg.ReleaseBuffer();
         CoUninitialize();
         return;
     }
-	msg.ReleaseBuffer();
+    msg.ReleaseBuffer();
 
     BOOL retval = SHGetPathFromIDList(pidl, szPath);
     CoTaskMemFree(pidl);
-    if (!retval)
-    {
+    if (!retval) {
         szPath[0] = TEXT('\0');
-    }
-    else
-    {
+    } else {
         wstring temp(szPath);
-        if (temp[temp.length()-1]!='\\')
-        {
+        if (temp[temp.length()-1]!='\\') {
             temp.append(L"\\");
         }
         GetDlgItem(IDC_SPLIT_FOLDER_LOCATION)->SetWindowText(temp.c_str());
@@ -132,10 +118,8 @@ void CDlgSplitFile::OnBnClickedBrowseFolder()
     CoUninitialize();
 }
 
-enum EWordFilenameConvention CDlgSplitFile::GetWordFilenameConvention()
-{
-    switch (m_nWordConvention)
-    {
+enum EWordFilenameConvention CDlgSplitFile::GetWordFilenameConvention() {
+    switch (m_nWordConvention) {
     case 0:
         return WFC_REF;
     case 1:
@@ -147,10 +131,8 @@ enum EWordFilenameConvention CDlgSplitFile::GetWordFilenameConvention()
     return WFC_REF_GLOSS;
 }
 
-enum EPhraseFilenameConvention CDlgSplitFile::GetPhraseFilenameConvention()
-{
-    switch (m_nPhraseConvention)
-    {
+enum EPhraseFilenameConvention CDlgSplitFile::GetPhraseFilenameConvention() {
+    switch (m_nPhraseConvention) {
     case 0:
         return PFC_REF;
     case 1:
@@ -163,20 +145,16 @@ enum EPhraseFilenameConvention CDlgSplitFile::GetPhraseFilenameConvention()
     }
 }
 
-void CDlgSplitFile::OnBnClickedEditPhraseFolder()
-{
+void CDlgSplitFile::OnBnClickedEditPhraseFolder() {
     GetDlgItem(IDC_SPLIT_PHRASE_SUBFOLDER_NAME)->EnableWindow(TRUE);
 }
 
-void CDlgSplitFile::OnBnClickedEditGlossFolder()
-{
+void CDlgSplitFile::OnBnClickedEditGlossFolder() {
     GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(TRUE);
 }
 
-void CDlgSplitFile::SetWordFilenameConvention(int value)
-{
-    switch (value)
-    {
+void CDlgSplitFile::SetWordFilenameConvention(int value) {
+    switch (value) {
     case 0:
     case 1:
     case 2:
@@ -188,10 +166,8 @@ void CDlgSplitFile::SetWordFilenameConvention(int value)
     }
 }
 
-void CDlgSplitFile::SetPhraseFilenameConvention(int value)
-{
-    switch (value)
-    {
+void CDlgSplitFile::SetPhraseFilenameConvention(int value) {
+    switch (value) {
     case 0:
     case 1:
     case 2:
@@ -208,26 +184,23 @@ void CDlgSplitFile::SetPhraseFilenameConvention(int value)
 * performs validation on a filename for the following characters.
 * IDS_ERROR_BADFILENAME_CHARS
 **/
-void CDlgSplitFile::DDX_Filename( CDataExchange* pDX, int nIDC, CString& value, UINT msgID) 
-{
+void CDlgSplitFile::DDX_Filename(CDataExchange * pDX, int nIDC, CString & value, UINT msgID) {
 
-	//  \ / : * ? “ < > |
-   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
-	if (pDX->m_bSaveAndValidate) 
-	{
-		CString temp;
-        int nLen = ::GetWindowTextLength( hWndCtrl);
-        ::GetWindowText( hWndCtrl, temp.GetBufferSetLength(nLen), nLen+1);
+    //  \ / : * ? “ < > |
+    HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
+    if (pDX->m_bSaveAndValidate) {
+        CString temp;
+        int nLen = ::GetWindowTextLength(hWndCtrl);
+        ::GetWindowText(hWndCtrl, temp.GetBufferSetLength(nLen), nLen+1);
         temp.ReleaseBuffer();
-		if (temp.FindOneOf(L"/\\:*?\"<>|")!=-1)
-		{
-            pDX->PrepareEditCtrl( nIDC);
+        if (temp.FindOneOf(L"/\\:*?\"<>|")!=-1) {
+            pDX->PrepareEditCtrl(nIDC);
             CString msg;
             msg.FormatMessage(msgID);
             AfxMessageBox(msg, MB_OK|MB_ICONEXCLAMATION, 0);
             pDX->Fail();
-		}
+        }
     }
-	DDX_Text(pDX, nIDC, value);
+    DDX_Text(pDX, nIDC, value);
 }
 

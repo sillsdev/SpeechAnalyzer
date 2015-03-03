@@ -39,6 +39,8 @@
 #include <string>
 #include <vector>
 
+#include <locale.h>
+
 using std::auto_ptr;
 using std::char_traits;
 using std::distance;
@@ -62,8 +64,7 @@ using std::wofstream;
 using std::wstring;
 using std::wstringstream;
 
-inline static int round(double value) 
-{
+inline static int round(double value) {
     return (int)floor(value + 0.5);
 }
 

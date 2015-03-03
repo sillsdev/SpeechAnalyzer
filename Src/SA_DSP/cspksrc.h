@@ -7,8 +7,7 @@
 // A CCountedSortedPeakSource reads peaks from another peak source up to
 // a specified maximum number.  It returns the peaks in increasing order of location.
 // This is an instance of the Decorator design pattern.
-class CCountedSortedPeakSource : public CPeakSource
-{
+class CCountedSortedPeakSource : public CPeakSource {
 public:
     // Construct this peak source as a wrapper around the given peak
     // source.  The maximum number of peaks to find is specified by

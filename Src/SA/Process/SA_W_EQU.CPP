@@ -28,16 +28,14 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessWbEquation::CProcessWbEquation Constructor
 /***************************************************************************/
-CProcessWbEquation::CProcessWbEquation()
-{
+CProcessWbEquation::CProcessWbEquation() {
     m_szEquation.Empty();
 }
 
 /***************************************************************************/
 // CProcessWbEquation::~CProcessWbEquation Destructor
 /***************************************************************************/
-CProcessWbEquation::~CProcessWbEquation()
-{
+CProcessWbEquation::~CProcessWbEquation() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -46,14 +44,11 @@ CProcessWbEquation::~CProcessWbEquation()
 /***************************************************************************/
 // CProcessWbEquation::CheckFunction Check validity of equation
 /***************************************************************************/
-BOOL CProcessWbEquation::CheckFunction(CSaString * pszFunction)
-{
-    if (pszFunction && !pszFunction->IsEmpty())
-    {
+BOOL CProcessWbEquation::CheckFunction(CSaString * pszFunction) {
+    if (pszFunction && !pszFunction->IsEmpty()) {
         int nType = 0;
         ParseUtf8(*pszFunction, &nType, 1.0);
-        if (nType)
-        {
+        if (nType) {
             return TRUE;
         }
     }
@@ -73,45 +68,35 @@ BOOL CProcessWbEquation::CheckFunction(CSaString * pszFunction)
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                                 int nLevel)
-{
+                                 int nLevel) {
     //  TRACE(_T("Process: CProcessWbEquation\n"));
-    if (IsCanceled())
-    {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // check if nested workbench processes
     int nOldLevel = nLevel; // save original level
     CProcess * pLowerProcess = NULL;
-    if (nLevel < MAX_FILTER_NUMBER)
-    {
+    if (nLevel < MAX_FILTER_NUMBER) {
         pLowerProcess = ((CProcess *)pMain->GetWbProcess(pDoc->GetWbProcess() - 1, nLevel));
-        if (pLowerProcess)
-        {
+        if (pLowerProcess) {
             // there is at least one more workbench processes to process first
             long lResult = pLowerProcess->Process(pCaller, pDoc, nProgress, ++nLevel);
             nLevel = (short int)LOWORD(lResult);
             nProgress = HIWORD(lResult);
         }
     }
-    if ((nLevel == nOldLevel) && (IsDataReady()))
-    {
+    if ((nLevel == nOldLevel) && (IsDataReady())) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
-    }
-    else
-    {
-        if ((nLevel == PROCESS_CANCELED))
-        {
+    } else {
+        if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
         SetDataInvalid();
     }
 
-    if (nLevel < 0)   // previous processing error
-    {
-        if ((nLevel == PROCESS_CANCELED))
-        {
+    if (nLevel < 0) { // previous processing error
+        if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -119,15 +104,13 @@ long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
     // start process
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBEQU))   // memory allocation failed
-    {
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBEQU)) { // memory allocation failed
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("EQU")))   // creating error
-    {
+    if (!CreateTempFile(_T("EQU"))) { // creating error
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -135,12 +118,9 @@ long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
     // get source data size
     DWORD dwDataSize;
-    if (pLowerProcess)
-    {
+    if (pLowerProcess) {
         dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
-    }
-    else
-    {
+    } else {
         dwDataSize = pDoc->GetDataSize();// size of raw data
     }
     DWORD dwBufferSize = GetBufferSize();
@@ -152,113 +132,85 @@ long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD dwRangeEnd = dwDataSize - wSmpSize;
 
     // start processing loop
-    while (dwDataPos < dwDataSize)
-    {
+    while (dwDataPos < dwDataSize) {
         // load source data
-        if (pLowerProcess)
-        {
+        if (pLowerProcess) {
             pBlockStart = pLowerProcess->GetProcessedWaveData(dwDataPos);
-        }
-        else
-        {
+        } else {
             pBlockStart = pDoc->GetAdjustedUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
         }
-        if (!pBlockStart)
-        {
+        if (!pBlockStart) {
             return Exit(PROCESS_ERROR);    // error, reading failed
         }
         pSourceData = pBlockStart;
         pTargetData = m_lpBuffer;
         DWORD dwBlockEnd = dwDataPos + dwBufferSize;
-        if (dwBlockEnd > dwDataSize)
-        {
+        if (dwBlockEnd > dwDataSize) {
             dwBlockEnd = dwDataSize;
             dwBufferSize = dwDataSize - dwDataPos;
         }
         int nData;
         BYTE bData;
-        while (dwDataPos < dwBlockEnd)
-        {
+        while (dwDataPos < dwBlockEnd) {
             // read data
-            if (wSmpSize == 1)   // 8 bit data
-            {
+            if (wSmpSize == 1) { // 8 bit data
                 bData = *pSourceData++; // data range is 0...255 (128 is center)
                 nData = bData - 128;
-            }
-            else                  // 16 bit data
-            {
+            } else {              // 16 bit data
                 nData = *((short int *)pSourceData++);
                 pSourceData++;
                 dwDataPos++;
             }
             dwDataPos++;
             // process this data point with the function parser from Z-Graph
-            if (!m_szEquation.IsEmpty() && (dwDataPos >= dwRangeStart) && (dwDataPos <= dwRangeEnd))
-            {
+            if (!m_szEquation.IsEmpty() && (dwDataPos >= dwRangeStart) && (dwDataPos <= dwRangeEnd)) {
                 int nType = 0;
                 double dData = (double)nData;
-                if (!nData)
-                {
+                if (!nData) {
                     dData = 1.7E-12;    // to protect parser from crashing
                 }
                 dData = (int)ParseUtf8(m_szEquation, &nType, dData);
-                if (!nType)
-                {
+                if (!nType) {
                     return Exit(PROCESS_ERROR);    // error, parsing failed
                 }
                 nData = (int)dData;
                 // do boundary check
-                if (wSmpSize == 1)   // 8 bit data
-                {
-                    if (dData > 127)
-                    {
+                if (wSmpSize == 1) { // 8 bit data
+                    if (dData > 127) {
                         nData = 127;
                     }
-                    if (dData < -128)
-                    {
+                    if (dData < -128) {
                         nData = -128;
                     }
-                }
-                else                  // 16 bit data
-                {
-                    if (dData > (double)32767)
-                    {
+                } else {              // 16 bit data
+                    if (dData > (double)32767) {
                         nData = 0x7FFF;
                     }
-                    if (dData < (double)-32767)
-                    {
+                    if (dData < (double)-32767) {
                         nData = 0xFFFF;
                     }
                 }
             }
             // save data
-            if (wSmpSize == 1)   // 8 bit data
-            {
+            if (wSmpSize == 1) { // 8 bit data
                 bData = BYTE(nData + 128);
                 *pTargetData++ = bData;
-            }
-            else                  // 16 bit data
-            {
+            } else {              // 16 bit data
                 *pTargetData++ = (BYTE)nData;
                 *pTargetData++ = (BYTE)(nData >> 8);
             }
             // set progress bar
             SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
-            if (IsCanceled())
-            {
+            if (IsCanceled()) {
                 return Exit(PROCESS_CANCELED); // process canceled
             }
         }
         // result block is ready, store it
-        if (dwDataPos >= dwBlockEnd)
-        {
+        if (dwDataPos >= dwBlockEnd) {
             // write the processed data block
-            try
-            {
+            try {
                 Write(m_lpBuffer, dwBufferSize);
-            }
-            catch (CFileException e)
-            {
+            } catch (CFileException e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                 return Exit(PROCESS_ERROR); // error, writing failed
@@ -277,12 +229,10 @@ long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 /***************************************************************************/
 // CProcessWbEquation::PropertiesDialog Calls the properties dialog for this process
 /***************************************************************************/
-int CProcessWbEquation::PropertiesDialog()
-{
+int CProcessWbEquation::PropertiesDialog() {
     CWbDlgFilterEquation dlg;
     dlg.m_szEquation = m_szEquation;
-    if (dlg.DoModal() == IDOK)
-    {
+    if (dlg.DoModal() == IDOK) {
         m_szEquation = dlg.m_szEquation;
         SetDataInvalid();
         return IDOK;
@@ -296,8 +246,7 @@ static LPCSTR psz_text = "text";
 /***************************************************************************/
 // CProcessWbEquation::WriteProperties Write equation properties
 /***************************************************************************/
-void CProcessWbEquation::WriteProperties(CObjectOStream & obs)
-{
+void CProcessWbEquation::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_equation);
     obs.WriteString(psz_text, m_szEquation.utf8().c_str());
     obs.WriteEndMarker(psz_equation);
@@ -306,24 +255,19 @@ void CProcessWbEquation::WriteProperties(CObjectOStream & obs)
 /***************************************************************************/
 // CProcessWbEquation::ReadProperties Read equation properties
 /***************************************************************************/
-BOOL CProcessWbEquation::ReadProperties(CObjectIStream & obs)
-{
+BOOL CProcessWbEquation::ReadProperties(CObjectIStream & obs) {
     CString szSafe = m_szEquation;
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_equation))
-    {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_equation)) {
         return FALSE;
     }
-    while (!obs.bAtEnd())
-    {
+    while (!obs.bAtEnd()) {
         if (ReadStreamString(obs,psz_text,m_szEquation));
-        else if (obs.bEnd(psz_equation))
-        {
+        else if (obs.bEnd(psz_equation)) {
             break;
         }
     }
     // check if properties changed
-    if (szSafe != m_szEquation)
-    {
+    if (szSafe != m_szEquation) {
         SetDataInvalid();
     }
     return TRUE;

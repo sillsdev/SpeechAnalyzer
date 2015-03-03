@@ -11,8 +11,7 @@
 //###########################################################################
 // CPlotChange plot window
 
-class CPlotChange : public CPlotWnd
-{
+class CPlotChange : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotChange)
 
 // Construction/destruction/creation

@@ -16,22 +16,18 @@
 class CHistogram;
 class CProcessMelogram;
 
-class CProcessTonalWeightChart : public CProcess
-{
+class CProcessTonalWeightChart : public CProcess {
 // Construction/destruction/creation
 public:
     CProcessTonalWeightChart();
     virtual ~CProcessTonalWeightChart();
-    double GetMinSemitone()
-    {
+    double GetMinSemitone() {
         return m_dMinSemitone;   // return Min Semitone
     }
-    double GetMaxSemitone()
-    {
+    double GetMaxSemitone() {
         return m_dMaxSemitone;   // return Max Semitone
     }
-    short GetBinsPerSemitone()
-    {
+    short GetBinsPerSemitone() {
         return m_nBinsPerSemitone;   // return # of Histogram Bins per Semitone
     }
     CHistogram * MakeTwcHistogram(CProcessMelogram * pMelogram, int nBinsPerSemitone, double nMinSemitone, double nMaxSemitone, DWORD dwFrameStart, DWORD dwFrameSize);

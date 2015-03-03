@@ -6,8 +6,7 @@ class CMainFrame;
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayPlot window
 
-class CDisplayPlot
-{
+class CDisplayPlot {
 public:
     CDisplayPlot(CString & szPlot);
     virtual ~CDisplayPlot();

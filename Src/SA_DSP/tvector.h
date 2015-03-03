@@ -1,5 +1,4 @@
-class CTVector
-{
+class CTVector {
 public:
 
     CTVector();

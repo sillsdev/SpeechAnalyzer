@@ -10,8 +10,7 @@
 //###########################################################################
 // CPlotSpectrum plot window
 
-class CPlotSpectrum : public CPlotWnd
-{
+class CPlotSpectrum : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotSpectrum)
 
 // Construction/destruction/creation

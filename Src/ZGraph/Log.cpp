@@ -26,19 +26,16 @@
 //                          zLogGraph Class
 ////////////////////////////////////////////////////////////////////////////
 
-class zLogGraph : public zGraph
-{
+class zLogGraph : public zGraph {
 protected:
     WCHAR zbuf[ 256 ];
     double  xlow                ;   // Used by Log Graph
     double  ylow                ;   // Used by Log Graph
 
 public:
-    zLogGraph(SGraph * zG) : zGraph(zG)
-    {
+    zLogGraph(SGraph * zG) : zGraph(zG) {
     }
-    ~zLogGraph()
-    {
+    ~zLogGraph() {
     }
 
     BOOL zCheckForLegalData();    // Checks For Legal Data (Base-Class Override)
@@ -50,27 +47,22 @@ public:
     INT  zLogger(double, double); // To Calc. Log. Divisions
 };
 
-INT zLogGraph::zLogger(double X, double Y)
-{
+INT zLogGraph::zLogger(double X, double Y) {
     //
     // This Function Is Used in Conjunction with the Log Graph
     //   to Calculate Logarithmic Divisions
     //
     INT i;
 
-    if (X > 0)
-    {
+    if (X > 0) {
         i = zRound(log10(X) * Y) ;
-    }
-    else
-    {
+    } else {
         i = 0;
     }
     return (i);
 }
 
-void zLogGraph::zShowXAxisNumbers()
-{
+void zLogGraph::zShowXAxisNumbers() {
     //
     // Put Number Values in Place Along the Graph's X-Axis.  Both
     //   Logarithmic and Linear Scales are Allowed, as Controlled by the
@@ -81,28 +73,20 @@ void zLogGraph::zShowXAxisNumbers()
     INT j = X_LEFT - charsize ;
 
 
-    if (x_axis_style == zLOG)
-    {
+    if (x_axis_style == zLOG) {
         x_value = pow(10.0, xmin);
     }
 
-    for (INT i = 0; i <= x_axis_divisions; i++)
-    {
-        if (x_axis_style == zLINEAR)              // For Linear Scales
-        {
+    for (INT i = 0; i <= x_axis_divisions; i++) {
+        if (x_axis_style == zLINEAR) {            // For Linear Scales
             x_value = xmin + (double)i * x_inc;
-        }
-        else                                      // For Log Scales
-        {
+        } else {                                  // For Log Scales
             x_value *= 10.0;
         }
         // Set Last Value to [xmax]
-        if (i == x_axis_divisions  &&  x_axis_style == zLINEAR)
-        {
+        if (i == x_axis_divisions  &&  x_axis_style == zLINEAR) {
             zConvertValue(xmax, zbuf, _countof(zbuf));
-        }
-        else
-        {
+        } else {
             zConvertValue(x_value, zbuf, _countof(zbuf));
         }
 
@@ -131,8 +115,7 @@ void zLogGraph::zShowYAxisNumbers()
     // We Need to Consider the Special Case Where Y-data is
     //   Single-Valued.  In this Case Only One Axis Value Label is Needed!
     //
-    if (ymin == ymax)
-    {
+    if (ymin == ymax) {
         zConvertValue(ymin, zbuf, _countof(zbuf));
 
         // Use Right Justification For Y-Axis Numbers--It Looks Cleaner
@@ -147,30 +130,22 @@ void zLogGraph::zShowYAxisNumbers()
     //
     // Otherwise, For the Regular Case, Where Y-Data is Multi-Valued...
     //
-    if (y_axis_style == zLOG)
-    {
+    if (y_axis_style == zLOG) {
         y_value = pow(10.0, ymin);
     }
 
 
-    for (j = y_bottom; j >= (y_top - ystep/2);  k++, j -= ystep)
-    {
-        if (y_axis_style == zLINEAR)      // For Linear Scales
-        {
+    for (j = y_bottom; j >= (y_top - ystep/2);  k++, j -= ystep) {
+        if (y_axis_style == zLINEAR) {    // For Linear Scales
             y_value = ymin + (double)k * y_inc;
-        }
-        else
-        {
+        } else {
             y_value *= 10.0 ;    // For Log Scales
         }
 
         // Set Last Value to [ymax]
-        if (k >= y_axis_divisions  &&  y_axis_style == zLINEAR)
-        {
+        if (k >= y_axis_divisions  &&  y_axis_style == zLINEAR) {
             zConvertValue(ymax, zbuf, _countof(zbuf));
-        }
-        else
-        {
+        } else {
             zConvertValue(y_value, zbuf, _countof(zbuf));
         }
 
@@ -183,8 +158,7 @@ void zLogGraph::zShowYAxisNumbers()
 }
 
 
-BOOL zLogGraph::zCheckForLegalData()
-{
+BOOL zLogGraph::zCheckForLegalData() {
     //
     // Returns TRUE if User Entered Valid Data for a Log Graph,
     //
@@ -203,8 +177,7 @@ BOOL zLogGraph::zCheckForLegalData()
     //
     // Make Sure User Specified At Least One Logarithmic Axis!
     //
-    if (x_axis_style != zLOG  &&  y_axis_style != zLOG)
-    {
+    if (x_axis_style != zLOG  &&  y_axis_style != zLOG) {
         zDisplayError(zNO_LOG_SCALE_DEFINED);
         return (FALSE);
     }
@@ -213,41 +186,28 @@ BOOL zLogGraph::zCheckForLegalData()
     // Check Data to See if Illegal Values Occur In Data For Logarithmic
     //  Graphs
     //
-    if (x_axis_style == zLINEAR  &&  y_axis_style == zLOG)
-    {
+    if (x_axis_style == zLINEAR  &&  y_axis_style == zLOG) {
         xlow = xmin;
-        if (ymin > 0.0)
-        {
+        if (ymin > 0.0) {
             ylow = pow(10.0, floor(log10(ymin)));
-        }
-        else
-        {
+        } else {
             zDisplayError(zILLEGAL_Y_COORDINATE);
             return (FALSE);
         }
-    }
-    else if (y_axis_style == zLINEAR  &&  x_axis_style == zLOG)
-    {
+    } else if (y_axis_style == zLINEAR  &&  x_axis_style == zLOG) {
         ylow = ymin;
-        if (xmin > 0.0)
-        {
+        if (xmin > 0.0) {
             xlow = pow(10.0, floor(log10(xmin)));
-        }
-        else
-        {
+        } else {
             zDisplayError(zILLEGAL_X_COORDINATE);
             return (FALSE);
         }
-    }
-    else
-    {
-        if (xmin <= 0.0)
-        {
+    } else {
+        if (xmin <= 0.0) {
             zDisplayError(zILLEGAL_X_COORDINATE);
             return (FALSE);
         }
-        if (ymin <= 0.0)
-        {
+        if (ymin <= 0.0) {
             zDisplayError(zILLEGAL_Y_COORDINATE);
             return (FALSE);
         }
@@ -259,8 +219,7 @@ BOOL zLogGraph::zCheckForLegalData()
 }
 
 
-void zLogGraph::zDrawGrid()
-{
+void zLogGraph::zDrawGrid() {
     //
     // Puts a 2-D Flat Graph Grid in Place.  Note:  It is Assumed
     //   that [x_axis_style] and [y_axis_style] are set to either
@@ -272,8 +231,7 @@ void zLogGraph::zDrawGrid()
     //
     // Return Now If We're Not Supposed to Draw the Grid
     //
-    if (! zIsGridVisible())
-    {
+    if (! zIsGridVisible()) {
         return;
     }
 
@@ -282,22 +240,17 @@ void zLogGraph::zDrawGrid()
     //
     double tmp1 = (double) GridWidth / x_axis_divisions;
 
-    for (j = 0; j < x_axis_divisions; j++)
-    {
+    for (j = 0; j < x_axis_divisions; j++) {
         i = X_LEFT + zRound((double)GridWidth * j / x_axis_divisions) ;
 
-        if (x_axis_style == zLINEAR)                  // For Linear Case
-        {
+        if (x_axis_style == zLINEAR) {                // For Linear Case
             zDrawLine(i, Y_TOP, i, Y_BOTTOM);
-        }
-        else                                          // For Logarithmic Case
-        {
+        } else {                                      // For Logarithmic Case
             if (j == 0)
                 zDrawLine((i + zLogger(1.0, tmp1)), Y_TOP,
                           (i + zLogger(1.0, tmp1)), Y_BOTTOM) ;
 
-            for (k = 2; k <= 10; k++)
-            {
+            for (k = 2; k <= 10; k++) {
                 zDrawLine((i + zLogger((double)k, tmp1)), Y_TOP,
                           (i + zLogger((double)k, tmp1)), Y_BOTTOM);
             }
@@ -308,26 +261,20 @@ void zLogGraph::zDrawGrid()
     // Draw Horizontal Grid Lines In
     //
     tmp1 = (double) GridHeight / y_axis_divisions;
-    for (j = 0; j < y_axis_divisions; j++)
-    {
+    for (j = 0; j < y_axis_divisions; j++) {
         i = Y_BOTTOM - zY_ADJUST *
             zRound((double)GridHeight * j / y_axis_divisions) ;
 
-        if (y_axis_style == zLINEAR)              // For Linear Case
-        {
+        if (y_axis_style == zLINEAR) {            // For Linear Case
             zDrawLine(X_LEFT, i, X_RIGHT, i);
-        }
-        else                                      // For Logarithmic Case
-        {
+        } else {                                  // For Logarithmic Case
             INT y_Val = (i - zY_ADJUST * zLogger(1.0, tmp1));
 
-            if (j == 0)
-            {
+            if (j == 0) {
                 zDrawLine(X_LEFT, y_Val, X_RIGHT, y_Val) ;
             }
 
-            for (k = 2; k <= 10; k++)
-            {
+            for (k = 2; k <= 10; k++) {
                 y_Val = (i - zY_ADJUST * zLogger((double)k, tmp1));
 
                 zDrawLine(X_LEFT, y_Val, X_RIGHT, y_Val);
@@ -336,8 +283,7 @@ void zLogGraph::zDrawGrid()
     }
 }
 
-BOOL zLogGraph::zScaleData()
-{
+BOOL zLogGraph::zScaleData() {
     //
     // Scales Values of X and Y coordinates to Fit an X/Y or Log Style Graph.
     //      For Linear Scaling We Use the Linear Translation:
@@ -364,15 +310,13 @@ BOOL zLogGraph::zScaleData()
     // Dynamically Allocate Some Arrays to Hold the Transformed Data
     //
     xnew = new INT[ n + 1 ];
-    if (!xnew)
-    {
+    if (!xnew) {
         zDisplayError(zLOW_MEMORY_SCALE_XY);
         return FALSE;
     }
 
     ynew = new INT[ n + 1 ];
-    if (!ynew)
-    {
+    if (!ynew) {
         zDisplayError(zLOW_MEMORY_SCALE_XY);
         return FALSE;
     }
@@ -383,8 +327,7 @@ BOOL zLogGraph::zScaleData()
     //    and Compute the X- or Y- Upper Bound Based Upon the Number of
     //    Axis Divisions the User Wants in the Graph
     //
-    if (y_axis_style == zLOG)
-    {
+    if (y_axis_style == zLOG) {
         ymin = ylow / 10.0;
         ymax = ymin * pow(10.0, (double)y_axis_divisions);
 
@@ -392,8 +335,7 @@ BOOL zLogGraph::zScaleData()
         y_inc = (double)(abs(Y_BOTTOM - Y_TOP)) / y_axis_divisions;
 
     }
-    if (x_axis_style == zLOG)
-    {
+    if (x_axis_style == zLOG) {
         xmin = xlow / 10.0;
         xmax = xmin * pow(10.0, (double) x_axis_divisions);
 
@@ -405,17 +347,13 @@ BOOL zLogGraph::zScaleData()
     // Note:  We Skip the Data Scaling/Translation for the Single-Valued
     //        Y-Data Case [where ymax = ymin]
     //
-    if (ymax == ymin)
-    {
-        for (j = 0; j < n; j++)
-        {
+    if (ymax == ymin) {
+        for (j = 0; j < n; j++) {
             xnew[ j ] = X_LEFT;
             ynew[ j ] = (Y_TOP + Y_BOTTOM) / 2 ;
         }
         xnew[ n - 1 ] = X_RIGHT;
-    }
-    else
-    {
+    } else {
         //
         // Otherwise, We Translate the Data
         //
@@ -425,8 +363,7 @@ BOOL zLogGraph::zScaleData()
         //
         // If Single-Valued X-Coordinate Data, Tell the User...
         //
-        if (xmax == xmin)
-        {
+        if (xmax == xmin) {
             zDisplayError(zCANNOT_SCALE_X);
             return (FALSE);
         }
@@ -439,29 +376,22 @@ BOOL zLogGraph::zScaleData()
 
         double d = (double) Y_TOP - c * ymax ;
 
-        for (j = 0; j < n; j++)
-        {
+        for (j = 0; j < n; j++) {
             //
             // Scale X-Coordinate
             //
-            if (x_axis_style == zLINEAR)
-            {
+            if (x_axis_style == zLINEAR) {
                 xnew[ j ] = (INT)(a * Xdata[ j ] + b) ;
-            }
-            else
-            {
+            } else {
                 xnew[ j ] = X_LEFT + zRound(x_inc * log10(Xdata[ j ] / xlow));
             }
 
             //
             // Scale Y-Coordinate
             //
-            if (y_axis_style == zLINEAR)
-            {
+            if (y_axis_style == zLINEAR) {
                 ynew[ j ] = (INT)(c * Ydata[ j ] + d) ;
-            }
-            else
-            {
+            } else {
                 ynew[ j ] = Y_BOTTOM - zRound(y_inc * log10(Ydata[ j ] / ylow));
             }
 
@@ -479,16 +409,14 @@ BOOL zLogGraph::zScaleData()
     return (TRUE);
 }
 
-void zLogGraph::zDraw()
-{
+void zLogGraph::zDraw() {
     //
     // Draws a Log Graph
     //
 
     zInitGraph();                                 // Setup For Graphing
 
-    if (zCheckForLegalData())                     // If Valid Data Exists
-    {
+    if (zCheckForLegalData()) {                   // If Valid Data Exists
         zScaleData();                              // Scale the X,Y Data
         zDrawGraphAxes();                          // Draw Graph Axes
         zDrawGrid();                               // Draw the Graph Grid
@@ -507,8 +435,7 @@ void zLogGraph::zDraw()
 //  LOG X - LINEAR Y, or LOG Y - LINEAR X
 ////////////////////////////////////////////////////////////////////////////
 
-void LogGraph(SGraph * zG)
-{
+void LogGraph(SGraph * zG) {
     // Declare an Instance of the Log Graph
     zLogGraph zLog(zG);
 

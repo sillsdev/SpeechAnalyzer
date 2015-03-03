@@ -338,7 +338,7 @@ CPlotWnd::CPlotWnd() {
 }
 
 
-void CPlotWnd::CopyTo( CPlotWnd * pTarg) {
+void CPlotWnd::CopyTo(CPlotWnd * pTarg) {
     // copies don't have any cursors.
     pTarg->m_pStartCursor = NULL;
     pTarg->m_pStopCursor = NULL;
@@ -512,7 +512,7 @@ DWORD CPlotWnd::AdjustDataFrame(int iWidth) {
 // redrawn. If the cursor is not visible on the new position (out of the
 // plot), its window size will be 0.
 /***************************************************************************/
-void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, bool /*bMove*/, bool scroll) {
+void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, bool /*bMove*/, bool scroll) {
     UNUSED_ALWAYS(pView);
 
     CGraphWnd * pGraph = (CGraphWnd *)GetParent(); // get pointer to parent graph
@@ -535,8 +535,8 @@ void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCurs
         dwDataFrame = GetAreaLength(&rWnd);
     } else {
         // get necessary data from view
-        fDataPos = GetDataPosition(rNewWnd.Width());		// data index of first sample to display
-        dwDataFrame = AdjustDataFrame(rNewWnd.Width());		// number of data points to display
+        fDataPos = GetDataPosition(rNewWnd.Width());        // data index of first sample to display
+        dwDataFrame = AdjustDataFrame(rNewWnd.Width());     // number of data points to display
     }
 
     CRect rNewLine;
@@ -556,8 +556,8 @@ void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCurs
         rNewWnd.SetRect(nPixelPos - CURSOR_WINDOW_HALFWIDTH, 0, nPixelPos + CURSOR_WINDOW_HALFWIDTH, rNewWnd.bottom);
     } else {
         if (scroll) {
-            DWORD start = (DWORD)GetDataPosition(rNewWnd.Width());		// data index of first sample to display
-            DWORD size = pView->GetDataFrame();							// number of data points to display
+            DWORD start = (DWORD)GetDataPosition(rNewWnd.Width());      // data index of first sample to display
+            DWORD size = pView->GetDataFrame();                         // number of data points to display
             DWORD margin = size/4;
             if (dwNewPosition>margin) {
                 DWORD newStart = dwNewPosition-margin;
@@ -654,33 +654,35 @@ void CPlotWnd::ShowCursors() {
 /***************************************************************************/
 void CPlotWnd::SetStopCursor(CSaView * pView) {
     if (m_pStopCursor) {
-        ChangeCursorPosition( pView, pView->GetStopCursorPosition(), m_pStopCursor);
+        ChangeCursorPosition(pView, pView->GetStopCursorPosition(), m_pStopCursor);
     }
 }
 
 /***************************************************************************/
 // CPlotWnd::SetPlaybackCursor
 /***************************************************************************/
-void CPlotWnd::SetPlaybackCursor( CSaView * pView, bool scroll) {
+void CPlotWnd::SetPlaybackCursor(CSaView * pView, bool scroll) {
     if (m_PlaybackCursor.IsCreated()) {
-        ChangeCursorPosition( pView, pView->GetPlaybackCursorPosition(), &m_PlaybackCursor, false, scroll);
+        ChangeCursorPosition(pView, pView->GetPlaybackCursorPosition(), &m_PlaybackCursor, false, scroll);
     }
 }
 
-void CPlotWnd::SetPlaybackFlash( bool val) {
+void CPlotWnd::SetPlaybackFlash(bool val) {
     if (m_PlaybackCursor.IsCreated()) {
-        m_PlaybackCursor.Flash( val);
+        m_PlaybackCursor.Flash(val);
     }
 }
 
 /***************************************************************************/
 // CPlotWnd::MoveStartCursor Move the start cursor
 /***************************************************************************/
-void CPlotWnd::MoveStartCursor( CSaView * pView, DWORD dwNewPosition) {
+void CPlotWnd::MoveStartCursor(CSaView * pView, DWORD dwNewPosition) {
     // no cursors visible?
-    if (!m_bCursors) return;
+    if (!m_bCursors) {
+        return;
+    }
 
-    ChangeCursorPosition( pView, dwNewPosition, m_pStartCursor, true);
+    ChangeCursorPosition(pView, dwNewPosition, m_pStartCursor, true);
 }
 
 /***************************************************************************/
@@ -688,7 +690,9 @@ void CPlotWnd::MoveStartCursor( CSaView * pView, DWORD dwNewPosition) {
 /***************************************************************************/
 void CPlotWnd::MoveStopCursor(CSaView * pView, DWORD dwNewPosition) {
     // no cursors visible
-    if (!m_bCursors) return;
+    if (!m_bCursors) {
+        return;
+    }
 
     ChangeCursorPosition(pView, dwNewPosition, m_pStopCursor, true);
 }
@@ -1014,7 +1018,7 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
         return;    // no grid to draw
     }
 
-    ShowCursors( bPrivateCursor, bShowCursors);
+    ShowCursors(bPrivateCursor, bShowCursors);
 
     // prepare to get color from main frame
     Colors * pColors = pMainWnd->GetColors();
@@ -1451,8 +1455,8 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip) {
             dwDataFrame = GetAreaLength(&rWnd);
         } else {
             // get necessary data from document and from view
-            fDataStart = GetDataPosition(rWnd.Width());		// data index of first sample to display
-            dwDataFrame = AdjustDataFrame(rWnd.Width());	// number of data points to display
+            fDataStart = GetDataPosition(rWnd.Width());     // data index of first sample to display
+            dwDataFrame = AdjustDataFrame(rWnd.Width());    // number of data points to display
         }
         if ((dwDataFrame>0) && (rWnd.Width()>0)) {
             // calculate the number of data samples per pixel
@@ -1640,8 +1644,8 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
             // calculate the actual and the new highlighted rectangles
             CRect rWnd;
             GetClientRect(rWnd);
-            double fDataPos = GetDataPosition(rWnd.Width());	// data index of first sample to display
-            DWORD dwDataFrame = AdjustDataFrame(rWnd.Width());	// number of data points to display
+            double fDataPos = GetDataPosition(rWnd.Width());    // data index of first sample to display
+            DWORD dwDataFrame = AdjustDataFrame(rWnd.Width());  // number of data points to display
             ASSERT(rWnd.Width());
             double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
@@ -2164,22 +2168,28 @@ void CDataSourceSimple::GetValues(int & nFirstSample, int nLastSample, SValues &
     int nLastIndex = (nLastSample < m_nSamples ? nLastSample : m_nSamples - 1) - nFirstIndexOffset;
 
     short int * pData = reinterpret_cast<short *>(m_cProcess.GetProcessedDataBlock(nFirstIndexOffset*sizeof(short int), (nLastIndex+1)*sizeof(short int)));
-
-    for (int nSampleIndex = 0; nSampleIndex <= nLastIndex; nSampleIndex++) {
-        int nLast = pData[nSampleIndex];
-        if (nLast > nMax) {
-            nMax = nLast;
-        }
-        if (nLast < nMin) {
-            nMin = nLast;
-        }
-    }
+	if (pData!=NULL) {
+		for (int nSampleIndex = 0; nSampleIndex <= nLastIndex; nSampleIndex++) {
+			int nLast = pData[nSampleIndex];
+			if (nLast > nMax) {
+				nMax = nLast;
+			}
+			if (nLast < nMin) {
+				nMin = nLast;
+			}
+		}
+	}
 
     nFirstSample = nLastSample + 1;
     values.nMax = nMax;
     values.nMin = nMin;
-    values.nLast = pData[nLastIndex];
-    values.nFirst = pData[0];
+	if (pData!=NULL) {
+		values.nLast = pData[nLastIndex];
+		values.nFirst = pData[0];
+	} else {
+		values.nLast = 0;
+		values.nFirst = 0;
+	}
 }
 
 CDataSourceValidate::CDataSourceValidate(CProcess & cProcess, BOOL bUnset, BOOL bMissing) :
@@ -2534,16 +2544,16 @@ CDataSourceSimple::~CDataSourceSimple() {
 CDataSourceValidate::~CDataSourceValidate() {
 }
 
-void CPlotWnd::ChangePrivateCursorPosition( CPoint point) {
-    m_PrivateCursor.ChangeCursorPosition( point);
+void CPlotWnd::ChangePrivateCursorPosition(CPoint point) {
+    m_PrivateCursor.ChangeCursorPosition(point);
 }
 
-void CPlotWnd::GetPrivateCursorWindowRect( CRect * rect) {
+void CPlotWnd::GetPrivateCursorWindowRect(CRect * rect) {
     m_PrivateCursor.GetWindowRect(rect);
 }
 
-void CPlotWnd::OnPrivateCursorDraw( CDC * pDC, CRect rect) {
-    m_PrivateCursor.OnDraw( pDC, rect);
+void CPlotWnd::OnPrivateCursorDraw(CDC * pDC, CRect rect) {
+    m_PrivateCursor.OnDraw(pDC, rect);
 }
 
 

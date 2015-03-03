@@ -39,8 +39,7 @@ class CAnnotationWnd;
 class CObjectOStream;
 class CObjectIStream;
 
-class CGraphWnd : public CMiniCaptionWnd
-{
+class CGraphWnd : public CMiniCaptionWnd {
     DECLARE_DYNCREATE(CGraphWnd)
 
     // Construction/destruction/creation
@@ -155,14 +154,12 @@ protected:
 
 //###########################################################################
 // CGraphWnd
-class CRecGraphWnd : public CGraphWnd
-{
+class CRecGraphWnd : public CGraphWnd {
     DECLARE_DYNCREATE(CRecGraphWnd)
 
 public:
     CRecGraphWnd();
-    virtual ~CRecGraphWnd()
-    {
+    virtual ~CRecGraphWnd() {
     };
 
 protected:

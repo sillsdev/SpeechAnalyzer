@@ -3,8 +3,7 @@
 
 #include <time.h>
 
-class CStopwatch
-{
+class CStopwatch {
 public:
     static BOOL CreateObject(CStopwatch ** ppStopwatch);
     void Reset(void);

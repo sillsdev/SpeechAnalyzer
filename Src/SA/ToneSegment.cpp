@@ -2,12 +2,10 @@
 #include "ToneSegment.h"
 
 CToneSegment::CToneSegment(EAnnotation index, int master) :
-    CDependentSegment(index,master)
-{
+    CDependentSegment(index,master) {
 }
 
-CFontTable * CToneSegment::NewFontTable() const
-{
+CFontTable * CToneSegment::NewFontTable() const {
     return new CFontTableANSI;
 }
 

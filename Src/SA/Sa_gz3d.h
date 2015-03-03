@@ -23,8 +23,7 @@ class CScatterGraph;
 
 #define zNUM_POINTS  (65536 / sizeof(double))    // max number of points that can be contained in a memory segment
 
-class CFormantChart : public CPlotWnd
-{
+class CFormantChart : public CPlotWnd {
     DECLARE_DYNCREATE(CFormantChart)
 
 public:
@@ -43,8 +42,7 @@ protected:
                       SGraph & GraphSettings, BOOL bFlipChart = FALSE, BOOL bShowAxes = FALSE, BOOL bValidData = TRUE);
     POINT GetXYCoordinates(void * pG, double x , double y, BOOL bFlip = FALSE);
     virtual POINT MapVowelsToChart(CDC * /*pDC*/, SFormantFreq & /*VowelFormant*/, int /*VowelSymbolHeight*/, CScatterGraph * /*pFormantChart*/,
-                                   SGraph & /*FormantChartParms*/, BOOL /*bFlip*/ = FALSE)
-    {
+                                   SGraph & /*FormantChartParms*/, BOOL /*bFlip*/ = FALSE) {
         POINT p = {0,0};
         return p;
     }
@@ -64,8 +62,7 @@ protected:
 
 #define MAX_NUMBER_VOWELS 12 // number of vowels shown in graphs
 
-class CPlot3D : public CFormantChart
-{
+class CPlot3D : public CFormantChart {
     DECLARE_DYNCREATE(CPlot3D)
 
 // Construction/destruction/creation
@@ -93,8 +90,7 @@ protected:
 //###########################################################################
 // CPlotF1F2 plot window
 
-class CPlotF1F2 : public CFormantChart
-{
+class CPlotF1F2 : public CFormantChart {
     DECLARE_DYNCREATE(CPlotF1F2)
 
 // Construction/destruction/creation
@@ -122,8 +118,7 @@ protected:
 //###########################################################################
 // CPlotF2F1 plot window
 
-class CPlotF2F1 : public CFormantChart
-{
+class CPlotF2F1 : public CFormantChart {
     DECLARE_DYNCREATE(CPlotF2F1)
 
 // Construction/destruction/creation
@@ -151,8 +146,7 @@ protected:
 //###########################################################################
 // CPlotF2F1F1 plot window
 
-class CPlotF2F1F1 : public CFormantChart
-{
+class CPlotF2F1F1 : public CFormantChart {
     DECLARE_DYNCREATE(CPlotF2F1F1)
 
 // Construction/destruction/creation
@@ -175,8 +169,7 @@ protected:
 // CPlotInvSDP plot window
 
 class CProcessSDP;
-class CPlotInvSDP : public CFormantChart
-{
+class CPlotInvSDP : public CFormantChart {
     DECLARE_DYNCREATE(CPlotInvSDP)
 
 // Construction/destruction/creation

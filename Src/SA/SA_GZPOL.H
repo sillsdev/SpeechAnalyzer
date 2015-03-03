@@ -10,8 +10,7 @@
 //###########################################################################
 // CZPlotPolar plot window
 
-class CZPlotPolar : public CPlotWnd
-{
+class CZPlotPolar : public CPlotWnd {
     // Construction/destruction/creation
 public:
     CZPlotPolar(int nIndexSDP);

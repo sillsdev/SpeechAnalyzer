@@ -10,8 +10,7 @@
 //###########################################################################
 // CPlotRatio plot window
 
-class CPlotRatio : public CPlotWnd
-{
+class CPlotRatio : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotRatio)
 
 // Construction/destruction/creation

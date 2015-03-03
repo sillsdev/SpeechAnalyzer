@@ -18,12 +18,10 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessDurations::CProcessDurations()
-{
+CProcessDurations::CProcessDurations() {
 }
 
-CProcessDurations::~CProcessDurations()
-{
+CProcessDurations::~CProcessDurations() {
 }
 
 /***************************************************************************/
@@ -38,21 +36,17 @@ CProcessDurations::~CProcessDurations()
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
-{
+long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
 
     //TRACE(_T("Process: CProcessDurations\n"));
-    if (IsCanceled())
-    {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady())
-    {
+    if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSDUR))   // memory allocation failed
-    {
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSDUR)) { // memory allocation failed
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -61,17 +55,15 @@ long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     // set pointer to segment durations
     CSegment * pSegment = pDoc->GetSegment(PHONETIC);
     CString pPhonetic = pSegment->GetContent();
-	m_Durations.RemoveAll();
-	for (int i=0;i<pSegment->GetDurationSize();i++) 
-	{
-		m_Durations.Add(pSegment->GetDuration(i));
-	}
+    m_Durations.RemoveAll();
+    for (int i=0; i<pSegment->GetDurationSize(); i++) {
+        m_Durations.Add(pSegment->GetDuration(i));
+    }
 
     // find min and max durations
     m_dwMaxValue = 0;
     m_dwMinValue = ULONG_MAX;
-    for (int i = 0; i < pPhonetic.GetLength(); i++)
-    {
+    for (int i = 0; i < pPhonetic.GetLength(); i++) {
         m_dwMaxValue = max(m_dwMaxValue, pSegment->GetDurationAt(i));
         m_dwMinValue = min(m_dwMinValue, pSegment->GetDurationAt(i));
     }
@@ -82,28 +74,23 @@ long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     return MAKELONG(nLevel, 100);
 }
 
-DWORD CProcessDurations::GetProcessedData(int nSegmentIndex)
-{
+DWORD CProcessDurations::GetProcessedData(int nSegmentIndex) {
     return m_Durations.GetAt(nSegmentIndex);
 }
 
-DWORD CProcessDurations::GetDataSize()
-{
+DWORD CProcessDurations::GetDataSize() {
     return (DWORD)m_Durations.GetSize();   //return number of durations
 }
 
-void CProcessDurations::SetDataInvalid()
-{
+void CProcessDurations::SetDataInvalid() {
     CProcess::SetDataInvalid();
 }
 
-DWORD CProcessDurations::GetMaxDuration()
-{
+DWORD CProcessDurations::GetMaxDuration() {
     return m_dwMaxValue;   // return maximum value
 }
 
-DWORD CProcessDurations::GetMinDuration()
-{
+DWORD CProcessDurations::GetMinDuration() {
     return m_dwMinValue;   // return minimum value
 }
 

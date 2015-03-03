@@ -7,8 +7,7 @@
 #include "fnkeys.h"
 #include "IWaveNotifiable.h"
 
-class CDlgWaveNotifyObj : public CWaveNotifyObj
-{
+class CDlgWaveNotifyObj : public CWaveNotifyObj {
 public:
     CDlgWaveNotifyObj();
     ~CDlgWaveNotifyObj();

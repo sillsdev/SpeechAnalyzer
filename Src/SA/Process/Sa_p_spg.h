@@ -18,8 +18,7 @@
 class CSpectroParm;
 class CProcessSpectroFormants;
 
-class CProcessSpectrogram : public CProcessAreaData
-{
+class CProcessSpectrogram : public CProcessAreaData {
 public:
     CProcessSpectrogram(const CSpectroParm & cParm, ISaDoc * pDoc, BOOL bRealTime = TRUE);
     virtual ~CProcessSpectrogram();
