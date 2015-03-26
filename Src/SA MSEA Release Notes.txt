@@ -1,3 +1,10 @@
+SA - 3.1.0.120 3/25/2015
+-Fixed bug that was calculating from gloss duration value for gloss segments when import ELAN files.
+-Fixed problems with ELAN import feature in that SA wasn't using correct tier name selected in ELAN import dialog box.
+-Fixed problems with ELAN import feature where SA was not correctly processing tiers when adding dependent segment types.  SA allows you to now use any tier type to import ELAN data into a SA segment.  If the SA segment type is a dependent segment type (PHONEMIC,ORTHO,REF or GLOSS_NAT), it's parent type will be automatically created if it is not selected in the import process.
+-Fixed multirecord import problem that causes extra data to be added to some segments when copying segments.
+-Fixed playback bug that occurs when zooming in and playing a segment for the first time after SA is opened.
+
 SA - 3.1.0.119 3/2/2015
 -Fixed 'File/SaveAs' bug that occurs when user selects a 'Save Area' choice of something other than 'Entire File'.
 -Fixed bug in display of file length shown on status bar.  Length was not calculate properly for files with more than one channel.

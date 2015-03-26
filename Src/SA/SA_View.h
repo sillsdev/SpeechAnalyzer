@@ -120,31 +120,47 @@ public:
                                     ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);// set new start/stop cursor position
     void SetStartStopCursorPosition(WAVETIME startTime, WAVETIME stopTime, ESnapDirection nSnapDirection = SNAP_BOTH,
                                     ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);// set new start/stop cursor position
-    void SetPlaybackPosition(DWORD dwPos = ~0,int nSpeed = 0, BOOL bEstimate = FALSE);       // default hide playback position indicators
-    void StopPlaybackTimer();                                                               // stop the cursor from advancing
+	// default hide playback position indicators
+    void SetPlaybackPosition(DWORD dwPos,int nSpeed = 0, BOOL bEstimate = FALSE);       
+    // stop the cursor from advancing
+	void StopPlaybackTimer();
     void SetPlaybackFlash(bool on);
     int iGetStartCursorSegment(int iSegment);
     int iGetStopCursorSegment(int iSegment);
-    void MoveStartCursor(DWORD);        // move start cursor
-    void MoveStopCursor(DWORD);         // move stop cursor
+	// move start cursor
+    void MoveStartCursor(DWORD);
+	// move stop cursor
+    void MoveStopCursor(DWORD);         
     void GraphsZoomCursors(DWORD dwStart, DWORD dwStop, DWORD percent = 80);
-    void GetDataFrame(DWORD & dwStart, DWORD & dwFrame); // set view frame start and width of data to display
-    void SetDataFrame(DWORD dwStart, DWORD dwFrame); // set view frame start and width of data to display
-    void ChangeAnnotationSelection(CSegment *, int nIndex, DWORD dwStart, DWORD dwStop); // change the annotation selection
-    void ChangeAnnotationSelection(CSegment *, int nIndex); // change the annotation selection
+	// set view frame start and width of data to display
+    void GetDataFrame(DWORD & dwStart, DWORD & dwFrame);
+	// set view frame start and width of data to display
+    void SetDataFrame(DWORD dwStart, DWORD dwFrame); 
+	// change the annotation selection
+    void ChangeAnnotationSelection(CSegment *, int nIndex, DWORD dwStart, DWORD dwStop); 
+	// change the annotation selection
+    void ChangeAnnotationSelection(CSegment *, int nIndex); 
     void DeselectAnnotations(void);
-    void SetFocusedGraph(CGraphWnd *);  // sets the focused graph pointer
+	// sets the focused graph pointer
+    void SetFocusedGraph(CGraphWnd *);  
     CGraphWnd * GetFocusedGraphWnd();
     UINT GetFocusedGraphID();
-    void ResetFocusedGraph();           // resets the focused graph pointer
-    BOOL ViewIsActive();                // returns TRUE, if view is active
+	// resets the focused graph pointer
+    void ResetFocusedGraph();
+	// returns TRUE, if view is active
+    BOOL ViewIsActive();
     BOOL IsUpdateBoundaries();
     void SetUpdateBoundaries(BOOL bUpdate);
-    void ZoomIn(double fZoomAmount, BOOL bZoom = TRUE); // zoom in
-    void ZoomOut(double fZoomAmount);     // zoom out
-    void SetScrolling();                 // set scrolling parameters
-    void SetInitialCursors();            // set initial cursor positions
-    void AdjustCursors(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bShrink); // adjust cursor positions to new file size
+	// zoom in
+    void ZoomIn(double fZoomAmount, BOOL bZoom = TRUE); 
+	// zoom out
+    void ZoomOut(double fZoomAmount);
+	// set scrolling parameters
+    void SetScrolling();
+	// set initial cursor positions
+    void SetInitialCursors();
+	// adjust cursor positions to new file size
+    void AdjustCursors(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bShrink); 
     BOOL IsAnyAnnotationSelected(void);
     BOOL IsCutAllowed();
     void OnUpdateHasSel(CCmdUI * pCmdUI);
@@ -180,25 +196,31 @@ public:
     CMDIChildWnd * pwndChildFrame() const;
     void ShowInitialStateAndZ();
     void ShowInitialTopState();
-    void WriteProperties(CObjectOStream & obs); // Save (Project) Settings
-    BOOL ReadProperties(CObjectIStream & obs, BOOL createGraphs); // Autoloading
-    BOOL ReadGraphListProperties(CObjectIStream & obs, BOOL createGraphs); // Autoloading
+	// Save (Project) Settings
+    void WriteProperties(CObjectOStream & obs); 
+	// Autoloading
+    BOOL ReadProperties(CObjectIStream & obs, BOOL createGraphs); 
+	// Autoloading
+    BOOL ReadGraphListProperties(CObjectIStream & obs, BOOL createGraphs); 
     static void s_SetObjectStream(CObjectIStream & obs);
     static void s_ClearObjectStream();
     BOOL ReadGraphListProperties(const CSaView & fromThis);
-    void InitialUpdate(BOOL bTemp=FALSE); // called first time after construct and when applying new wave
+	// called first time after construct and when applying new wave
+    void InitialUpdate(BOOL bTemp=FALSE); 
     void CreateOpenAsGraphs(UINT OpenAsID);
     BOOL GetStaticTWC();
     void SetStaticTWC(BOOL bChecked);
     BOOL GetNormalMelogram();
     void SetNormalMelogram(BOOL bChecked);
     EBoundary GetEditBoundaries(bool checkKeys = true);
-    BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);             // change graph type
+	// change graph type
+    BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);             
     void RemoveRtPlots();
     virtual ~CSaView();
     CMainFrame * MainFrame();
     LRESULT OnFrameAnimationDone(WPARAM wParam = 0, LPARAM lParam = 0L);
-    virtual void OnDraw(CDC * pDC); // overridden to draw this view
+	// overridden to draw this view
+    virtual void OnDraw(CDC * pDC); 
     void OnGraphsTypesPostProcess(const UINT * GraphIDs, int nLayout = -1);
 #ifdef _DEBUG
     virtual void AssertValid() const;
@@ -207,7 +229,7 @@ public:
     CSaDoc * GetDocument();
 
     // selection
-    BOOL SelectFromPosition(int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
+    BOOL SelectFromPosition(int nSegmentIndex, DWORD dwPosition, bool bFindExact);
     BOOL SetSelectedAnnotationString(CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
     CSaString GetSelectedAnnotationString();
     CString GetSelectedAnnotationString(BOOL bRemoveDelimiter);
@@ -568,7 +590,7 @@ private:
     DWORD m_dwScrollLine;                   // number of samples to scroll one line
     DWORD m_dwStartCursor;                  // start cursor position
     DWORD m_dwStopCursor;                   // stop cursor position
-    DWORD m_dPlaybackPosition;              // playback cursor position
+    DWORD m_dwPlaybackPosition;             // playback cursor position
     DWORD m_dwPlaybackTime;                 // TickCount of last playback update
     double m_dPlaybackPositionLimit;        // playback cursor position
     int m_nPlaybackSpeed;
@@ -607,7 +629,7 @@ private:
     DWORD lastBoundaryStopCursor;
     int lastBoundaryIndex;
     ECursorSelect lastBoundaryCursor;
-    DWORD lastPlaybackPosition;
+    DWORD m_dwLastPlaybackPosition;
 
     bool bEnableScrolling;                  // true if we should scroll during playback
 

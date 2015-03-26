@@ -187,15 +187,20 @@ public:
 
 protected:
     virtual void PostNcDestroy();
-    void ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd *, bool bMove = false, bool scroll = false); // change the current cursor position
-    short int CheckResult(short int nResult, CProcess * pProcess); // check the process result
-    void PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend = NULL,
-                      bool bCursors = true, bool bPrivateCursor = false);  // do the common plot painting before data has been drawn
-    virtual void PlotStandardPaint(CDC * pDC,CRect rWnd, CRect rClip,
-                                   CProcess * pProcess, CSaDoc * pProcessDoc, int nFlags = 0); // standard plot painting
-    void PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip);        // do the common plot paint jobs after data has been drawn
-    virtual void StandardAnimateFrame(DWORD dwFrameIndex);           // animate the plot for the specified frame
-    virtual void StandardEndAnimation();                             // complete animation
+	// change the current cursor position
+    void ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, bool scroll = false); 
+    // check the process result
+	short int CheckResult(short int nResult, CProcess * pProcess); 
+	// do the common plot painting before data has been drawn
+    void PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend = NULL, bool bCursors = true, bool bPrivateCursor = false);  
+	// standard plot painting
+    virtual void PlotStandardPaint(CDC * pDC,CRect rWnd, CRect rClip, CProcess * pProcess, CSaDoc * pProcessDoc, int nFlags = 0);
+	// do the common plot paint jobs after data has been drawn
+    void PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip);
+	// animate the plot for the specified frame
+    virtual void StandardAnimateFrame(DWORD dwFrameIndex);
+	// complete animation
+    virtual void StandardEndAnimation();
     virtual CGrid GetGrid() const;
     void SetHorizontalCursors(BOOL bValue=TRUE);
     virtual int GetPenThickness() const;

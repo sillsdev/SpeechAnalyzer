@@ -98,10 +98,14 @@ public:
     BOOL HaveGrid();
     void SetLineDraw(BOOL bLine);
     void ShowGrid(BOOL bShow, BOOL bRedraw = FALSE);
-    void SetStartCursor(CSaView * pView);                   // set start cursor position
-    void SetStopCursor(CSaView * pView);                    // set stop cursor position
-    void SetPlaybackCursor(CSaView * pView);                // set stop cursor position
-    void SetPlaybackPosition(CSaView * pView, bool scroll); // set start cursor position
+	// set start cursor position
+    void SetStartCursor(CSaView * pView);
+	// set stop cursor position
+    void SetStopCursor(CSaView * pView);
+	// set stop cursor position
+    void SetPlaybackCursor(CSaView * pView);
+	// set start cursor position
+    void SetPlaybackPosition(CSaView * pView, bool scroll); 
     void SetPlaybackFlash(bool on);
     void MoveStartCursor(CSaView * pView, DWORD dwNewPositon);
     void MoveStopCursor(CSaView * pView, DWORD dwNewPositon);

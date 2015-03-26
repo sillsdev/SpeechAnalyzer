@@ -386,6 +386,7 @@ void CGraphWnd::SetCaptionStyle(int nStyle, BOOL bRedraw) {
 // For area graphs it does not do anything.
 //***************************************************************************/
 void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos) {
+
     // don't process area graphs
     if (m_bAreaGraph) {
         return;

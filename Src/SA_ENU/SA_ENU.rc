@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,119
+ FILEVERSION 3,1,0,120
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.119"
+            VALUE "FileVersion", "v3.1.0.120"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -2396,17 +2396,17 @@ BEGIN
     GROUPBOX        "File Analysis",IDC_STATIC,4,5,326,106
     GROUPBOX        "Status",IDC_STATIC,4,114,326,50
     LTEXT           "Select the ELAN tier which matches the Speech Analyzer transcription field.\n\nYou can assign the ELAN tier to more than one transcription field.",IDC_STATIC,8,127,317,32
-    LTEXT           "Ref Num",IDC_STATIC,13,24,29,8
-    COMBOBOX        IDC_COMBO_REF_NUM,45,22,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Phonetic",IDC_STATIC,13,41,29,8
-    COMBOBOX        IDC_COMBO_PHONETIC,45,39,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Phonemic",IDC_STATIC,10,57,32,8
-    COMBOBOX        IDC_COMBO_PHONEMIC,45,55,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Ortho.",IDC_STATIC,22,74,20,8
-    COMBOBOX        IDC_COMBO_ORTHO,45,72,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Gloss English",IDC_STATIC,24,91,18,8
-    COMBOBOX        IDC_COMBO_GLOSS,45,89,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Gloss National",IDC_STATIC,178,24,34,8
+    LTEXT           "Ref Num",IDC_STATIC,21,24,29,8
+    COMBOBOX        IDC_COMBO_REF_NUM,54,22,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Phonetic",IDC_STATIC,21,41,29,8
+    COMBOBOX        IDC_COMBO_PHONETIC,54,39,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Phonemic",IDC_STATIC,18,57,32,8
+    COMBOBOX        IDC_COMBO_PHONEMIC,54,55,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Ortho.",IDC_STATIC,30,74,20,8
+    COMBOBOX        IDC_COMBO_ORTHO,54,72,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Gloss English",IDC_STATIC,7,91,43,8
+    COMBOBOX        IDC_COMBO_GLOSS,54,89,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Gloss Nat.",IDC_STATIC,177,24,34,8
     COMBOBOX        IDC_COMBO_GLOSS_NAT,215,22,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Phrase L1",IDC_STATIC,178,41,33,8
     COMBOBOX        IDC_COMBO_PL1,215,39,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
@@ -4649,7 +4649,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.119"
+    VS_VERSION              "Version 3.1.0.120"
     VS_COPYRIGHT            "© 1996-2015 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4703,7 +4703,7 @@ BEGIN
     IDS_ERROR_BADFILENAME_CHARS 
                             "A filename can't contain any of the following characters: \\ / : * ? "" < > | "
     IDS_ERROR_NO_SETTING_DIR 
-	"Speech Analyzer was unable create or access the directory:\n'%1'\nSpeech Analyzer uses this directory to store application settings and documents.\nPlease correct the error and restart the application.\nReason: %2"
+                            "Speech Analyzer was unable create or access the directory:\n'%1'\nSpeech Analyzer uses this directory to store application settings and documents.\nPlease correct the error and restart the application.\nReason: %2"
     IDS_ERROR_UNKNOWN       "Unknown error code %08x (%d)"
 END
 
@@ -5415,6 +5415,7 @@ BEGIN
     IDS_NO_ISO              "Unable to load '%1' file. Please make sure the application has been installed properly!"
     IDS_DISABLED_SEGMENT    "Disabled - select or add a segment"
     IDS_DELETE_REFERENCE    "This process will delete existing reference numbers.\nDo you want to continue?"
+    IDS_ERROR_ELAN1         "Selected PHONETIC tier must not be a reference tier."
 END
 
 STRINGTABLE

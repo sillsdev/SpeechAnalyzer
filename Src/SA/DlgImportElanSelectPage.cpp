@@ -50,35 +50,75 @@ void CDlgImportElanSelectPage::DoDataExchange(CDataExchange * pDX) {
         Elan::CAnnotationDocument & document = pSheet->document;
         ElanMap result;
         // first selection is blank line
-        if (refnum.GetCurSel()>0) {
-            result[REFERENCE] = document.tiers[refnum.GetCurSel()-1].tierID.c_str();
+        if (refnum.GetCurSel()!=CB_ERR) {
+			int idx = refnum.GetCurSel();
+			int sel = refnum.GetItemData(idx);
+			if (sel!=-1) {
+				result[REFERENCE] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (phonetic.GetCurSel()>0) {
-            result[PHONETIC] = document.tiers[phonetic.GetCurSel()-1].tierID.c_str();
+        if (phonetic.GetCurSel()!=CB_ERR) {
+			int idx = phonetic.GetCurSel();
+			int sel = phonetic.GetItemData(idx);
+			if (sel!=-1) {
+				result[PHONETIC] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (phonemic.GetCurSel()>0) {
-            result[PHONEMIC] = document.tiers[phonemic.GetCurSel()-1].tierID.c_str();
+        if (phonemic.GetCurSel()!=CB_ERR) {
+			int idx = phonemic.GetCurSel();
+			int sel = phonemic.GetItemData(idx);
+			if (sel!=-1) {
+				result[PHONEMIC] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (ortho.GetCurSel()>0) {
-            result[ORTHO] = document.tiers[ortho.GetCurSel()-1].tierID.c_str();
+        if (ortho.GetCurSel()!=CB_ERR) {
+			int idx = ortho.GetCurSel();
+			int sel = ortho.GetItemData(idx);
+			if (sel!=-1) {
+				result[ORTHO] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (gloss.GetCurSel()>0) {
-            result[GLOSS] = document.tiers[gloss.GetCurSel()-1].tierID.c_str();
+        if (gloss.GetCurSel()!=CB_ERR) {
+			int idx = gloss.GetCurSel();
+			int sel = gloss.GetItemData(idx);
+			if (sel!=-1) {
+				result[GLOSS] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (glossNat.GetCurSel()>0) {
-            result[GLOSS_NAT] = document.tiers[glossNat.GetCurSel()-1].tierID.c_str();
+        if (glossNat.GetCurSel()!=CB_ERR) {
+			int idx = glossNat.GetCurSel();
+			int sel = glossNat.GetItemData(idx);
+			if (sel!=-1) {
+				result[GLOSS_NAT] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (pl1.GetCurSel()>0) {
-            result[MUSIC_PL1] = document.tiers[pl1.GetCurSel()-1].tierID.c_str();
+        if (pl1.GetCurSel()!=CB_ERR) {
+			int idx = pl1.GetCurSel();
+			int sel = pl1.GetItemData(idx);
+			if (sel!=-1) {
+				result[MUSIC_PL1] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (pl2.GetCurSel()>0) {
-            result[MUSIC_PL2] = document.tiers[pl2.GetCurSel()-1].tierID.c_str();
+        if (pl2.GetCurSel()!=CB_ERR) {
+			int idx = pl2.GetCurSel();
+			int sel = pl2.GetItemData(idx);
+			if (sel!=-1) {
+			    result[MUSIC_PL2] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (pl3.GetCurSel()>0) {
-            result[MUSIC_PL3] = document.tiers[pl3.GetCurSel()-1].tierID.c_str();
+        if (pl3.GetCurSel()!=CB_ERR) {
+			int idx = pl3.GetCurSel();
+			int sel = pl3.GetItemData(idx);
+			if (sel!=-1) {
+		        result[MUSIC_PL3] = document.tiers[sel].tierID.c_str();
+			}
         }
-        if (pl4.GetCurSel()>0) {
-            result[MUSIC_PL4] = document.tiers[pl4.GetCurSel()-1].tierID.c_str();
+        if (pl4.GetCurSel()!=CB_ERR) {
+			int idx = pl4.GetCurSel();
+			int sel = pl4.GetItemData(idx);
+			if (sel!=-1) {
+	            result[MUSIC_PL4] = document.tiers[sel].tierID.c_str();
+			}
         }
         pSheet->assignments = result;
     }
@@ -91,28 +131,48 @@ BOOL CDlgImportElanSelectPage::OnInitDialog() {
     Elan::CAnnotationDocument & document = pSheet->document;
     int selection = pSheet->selection;
 
-    refnum.AddString(L"");
-    phonetic.AddString(L"");
-    phonemic.AddString(L"");
-    ortho.AddString(L"");
-    gloss.AddString(L"");
-    glossNat.AddString(L"");
-    pl1.AddString(L"");
-    pl2.AddString(L"");
-    pl3.AddString(L"");
-    pl4.AddString(L"");
+    int idx = refnum.AddString(L"");
+	refnum.SetItemData(idx,-1);
+    idx = phonetic.AddString(L"");
+	phonetic.SetItemData(idx,-1);
+    idx = phonemic.AddString(L"");
+	phonemic.SetItemData(idx,-1);
+    idx = ortho.AddString(L"");
+	ortho.SetItemData(idx,-1);
+    idx = gloss.AddString(L"");
+	gloss.SetItemData(idx,-1);
+    idx = glossNat.AddString(L"");
+	glossNat.SetItemData(idx,-1);
+    idx = pl1.AddString(L"");
+	pl1.SetItemData(idx,-1);
+    idx = pl2.AddString(L"");
+	pl2.SetItemData(idx,-1);
+    idx = pl3.AddString(L"");
+	pl3.SetItemData(idx,-1);
+    idx = pl4.AddString(L"");
+	pl4.SetItemData(idx,-1);
 
     for (size_t i=0; i<document.tiers.size(); i++) {
-        refnum.AddString(document.tiers[i].tierID.c_str());
-        phonetic.AddString(document.tiers[i].tierID.c_str());
-        phonemic.AddString(document.tiers[i].tierID.c_str());
-        ortho.AddString(document.tiers[i].tierID.c_str());
-        gloss.AddString(document.tiers[i].tierID.c_str());
-        glossNat.AddString(document.tiers[i].tierID.c_str());
-        pl1.AddString(document.tiers[i].tierID.c_str());
-        pl2.AddString(document.tiers[i].tierID.c_str());
-        pl3.AddString(document.tiers[i].tierID.c_str());
-        pl4.AddString(document.tiers[i].tierID.c_str());
+        idx = refnum.AddString(document.tiers[i].tierID.c_str());
+		refnum.SetItemData(idx,i);
+        idx = phonetic.AddString(document.tiers[i].tierID.c_str());
+		phonetic.SetItemData(idx,i);
+        idx = phonemic.AddString(document.tiers[i].tierID.c_str());
+		phonemic.SetItemData(idx,i);
+        idx = ortho.AddString(document.tiers[i].tierID.c_str());
+		ortho.SetItemData(idx,i);
+        idx = gloss.AddString(document.tiers[i].tierID.c_str());
+		gloss.SetItemData(idx,i);
+        idx = glossNat.AddString(document.tiers[i].tierID.c_str());
+		glossNat.SetItemData(idx,i);
+        idx = pl1.AddString(document.tiers[i].tierID.c_str());
+		pl1.SetItemData(idx,i);
+        idx = pl2.AddString(document.tiers[i].tierID.c_str());
+		pl2.SetItemData(idx,i);
+        idx = pl3.AddString(document.tiers[i].tierID.c_str());
+		pl3.SetItemData(idx,i);
+        idx = pl4.AddString(document.tiers[i].tierID.c_str());
+		pl4.SetItemData(idx,i);
     }
 
     refnum.SetCurSel(0);

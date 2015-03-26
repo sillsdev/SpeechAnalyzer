@@ -95,6 +95,7 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(wistringstream & stream, C
             CSaString buffer;
             CSaString marker = *it;
             if (cstream.ReadStreamString(marker, buffer)) {
+				buffer = buffer.Trim();
                 result[marker.MakeLower()].push_back(buffer);
                 // when see the sync marker, balance the other entries.
                 if (marker.Compare(syncMarker)==0) {

@@ -1779,12 +1779,16 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         if (pGraph->HavePrivateCursor()) {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
-            fDataStart = (double)pView->GetStartCursorPosition(); // data index of first sample to display
-            dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; // number of data points to display
+			// data index of first sample to display
+            fDataStart = (double)pView->GetStartCursorPosition(); 
+			// number of data points to display
+            dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; 
         } else {
             // get necessary data from document and from view
-            fDataStart = pView->GetDataPosition(rWnd.Width());  // data index of first sample to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
+			// data index of first sample to display
+            fDataStart = pView->GetDataPosition(rWnd.Width());
+			// number of data points to display
+            dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); 
         }
     }
     if (dwDataFrame == 0) {
@@ -2065,10 +2069,10 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         //SDM 1.06.6
         //SDM 1.5Test8.5
         int index = pView->GetSelectionIndex();
-        BOOL selected = !pView->SelectFromPosition(m_nIndex, dwPosition);
+        BOOL selected = !pView->SelectFromPosition(m_nIndex, dwPosition, false);
         TRACE("selection_index=%d selectpos=%d\n",index,selected);
         if (((CMainFrame *)AfxGetMainWnd())->IsEditAllowed() &&
-                (!pView->SelectFromPosition(m_nIndex, dwPosition)) &&
+                (!pView->SelectFromPosition(m_nIndex, dwPosition, false)) &&
                 (pView->GetSelectionIndex()!=-1)) {
             //SDM 1.5Test8.5
             // Selection not changed

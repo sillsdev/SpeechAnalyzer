@@ -424,9 +424,12 @@ CSaView::CSaView(const CSaView * pToBeCopied) {
     m_bSegmentBoundaries = FALSE;
     m_bUpdateBoundaries = TRUE;
     m_bDrawStyleLine = TRUE;
-    m_dwDataPosition = 0; // start with first sample data
-    m_fMagnify = 1.0; // no magnify
-    m_fZoom = 1.0; // no zoom
+	// start with first sample data
+    m_dwDataPosition = 0; 
+	// no magnify
+    m_fMagnify = 1.0;
+	// no zoom
+    m_fZoom = 1.0; 
     m_fMaxZoom = 0;
     m_bAnimating = FALSE;
     m_bPrintPreviewInProgress = FALSE;
@@ -447,8 +450,9 @@ CSaView::CSaView(const CSaView * pToBeCopied) {
     m_dwHScrollFactor = 0;
     m_fVScrollSteps = 0;
     m_dwScrollLine = 0;
-    m_dPlaybackPosition = 0;
-    lastPlaybackPosition = 0;
+    m_dwPlaybackPosition = 0;
+    m_dwLastPlaybackPosition = 0;
+	TRACE("init=%d\n",m_dwLastPlaybackPosition);
     m_dwPlaybackTime = 0;
     m_dPlaybackPositionLimit = 0;
     m_nPlaybackSpeed = 0;
@@ -903,8 +907,10 @@ void CSaView::Clear(void) {
 }
 
 void  CSaView::PartialCopy(const CSaView & right) {
+
     m_nFocusedID = 0;
-    m_nLayout = right.m_nLayout; // default layout
+	// default layout
+    m_nLayout = right.m_nLayout; 
     m_bLegendAll = right.m_bLegendAll;
     m_bLegendNone = right.m_bLegendNone;
     m_bXScaleAll = right.m_bXScaleAll;
@@ -913,9 +919,12 @@ void  CSaView::PartialCopy(const CSaView & right) {
     m_bSegmentBoundaries = right.m_bSegmentBoundaries;
     m_bUpdateBoundaries = right.m_bUpdateBoundaries;
     m_bDrawStyleLine = right.m_bDrawStyleLine;
-    m_dwDataPosition = 0; // start with first sample data
-    m_fMagnify = 1.0; // no magnify
-    m_fZoom = 1.0; // no zoom
+	// start with first sample data
+    m_dwDataPosition = 0; 
+	// no magnify
+    m_fMagnify = 1.0;
+	// no zoom
+    m_fZoom = 1.0; 
     m_fMaxZoom = 0;
     m_bPrintPreviewInProgress = FALSE;
 
@@ -1639,7 +1648,9 @@ void CSaView::ResetFocusedGraph() {
 // zoom, but only do the rest (center etc).
 /***************************************************************************/
 void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
-    CSaDoc * pDoc = GetDocument(); // get pointer to document
+
+	// get pointer to document
+    CSaDoc * pDoc = GetDocument(); 
     CRect rWnd;
     GetClientRect(rWnd);
     DWORD wSmpSize = pDoc->GetSampleSize();
@@ -1652,7 +1663,8 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
         m_fZoom = m_fMaxZoom;
     }
 
-    m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
+	// one line scroll width
+    m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); 
     if (m_dwScrollLine < wSmpSize) {
         m_dwScrollLine = wSmpSize;
     }
@@ -1662,7 +1674,8 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
 
     // limit left border
     if (dwDataCenter > GetDataFrame() / 2) {
-        m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; // set new data position
+		// set new data position
+        m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; 
         // for 16 bit data value must be even
         if (wSmpSize == 2) {
             m_dwDataPosition &= ~1;
@@ -1672,8 +1685,10 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
     }
 
     // limit right border
-    if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) { // is data position too high?
-        m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); // reduce data position to maximum
+	// is data position too high?
+    if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) { 
+		// reduce data position to maximum
+        m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); 
     }
 
     // set scroll bar
@@ -1690,12 +1705,15 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
         if ((m_apGraphs[nLoop]) &&
                 (!m_apGraphs[nLoop]->IsAreaGraph()) &&
                 (!m_apGraphs[nLoop]->HavePrivateCursor())) {
-            m_apGraphs[nLoop]->RedrawGraph();    // repaint whole graph without legend window
+			// repaint whole graph without legend window
+            m_apGraphs[nLoop]->RedrawGraph();    
         }
     }
     if (GraphIDtoPtr(IDD_RECORDING)) {
         GraphIDtoPtr(IDD_RECORDING)->GetPlot()->RedrawWindow(NULL,NULL,RDW_INTERNALPAINT|RDW_UPDATENOW);
     }
+
+	TRACE("m_dwDataPosition=%lu\n",m_dwDataPosition);
 
     pViewMainFrame->SetPlayerTimes();
 }
@@ -1704,6 +1722,7 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
 // CSaView::ZoomOut Zoom out
 /***************************************************************************/
 void CSaView::ZoomOut(double fZoomAmount) {
+
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     DWORD wSmpSize = pDoc->GetSampleSize();
 
@@ -1722,7 +1741,8 @@ void CSaView::ZoomOut(double fZoomAmount) {
 
             // limit left border
             if (dwDataCenter > GetDataFrame() / 2) {
-                m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; // set new data position
+				// set new data position
+                m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; 
                 // for 16 bit data value must be even
                 if (pDoc->Is16Bit()) {
                     m_dwDataPosition &= ~1;
@@ -1731,8 +1751,10 @@ void CSaView::ZoomOut(double fZoomAmount) {
                 m_dwDataPosition = 0;
             }
             // limit right border
-            if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) { // is data position too high?
-                m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();    // reduce data position to maximum
+			// is data position too high?
+            if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) {
+				// reduce data position to maximum
+                m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();    
             }
             // set scroll bar
             m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
@@ -1760,6 +1782,9 @@ void CSaView::ZoomOut(double fZoomAmount) {
         if (pViewMainFrame->IsScrollZoom()) {
             SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
         }
+
+		TRACE("m_dwDataPosition=%lu\n",m_dwDataPosition);
+
         pViewMainFrame->SetPlayerTimes();
     }
 }
@@ -2084,20 +2109,19 @@ DWORD CSaView::GetDataFrame() {
 // converted to pixels then to bytes using the width provided
 /***************************************************************************/
 double CSaView::GetDataPosition(int nWndWidth) {
-    double fDataPos = m_dwDataPosition;
-
-    DWORD dwDataFrame = GetDataFrame(); // number of data points to display
+    
+	double fDataPos = m_dwDataPosition;
+	// number of data points to display
+    DWORD dwDataFrame = GetDataFrame(); 
 
     // SDM 1.06.6U4 Calculate position based on pixel aligned graph
-    if ((nWndWidth) && (dwDataFrame)) {
+    if ((nWndWidth!=0) && (dwDataFrame>0)) {
         // calculate data samples per pixel
         double fBytesPerPix = (double)dwDataFrame / (double)(nWndWidth);
         fDataPos = round(fDataPos/fBytesPerPix)*fBytesPerPix;
     }
-
     return fDataPos;
 }
-
 
 /***************************************************************************/
 // CSaView::AdjustDataFrame Adjust data frame width for particular window
@@ -2255,25 +2279,26 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
 /***************************************************************************/
 // CSaView::SetPlaybackPosition Set the playbackPosition
 /***************************************************************************/
-void CSaView::SetPlaybackPosition(DWORD dwNewPos, int nSpeed, BOOL bEstimate) {
-    if (bEstimate) {
+void CSaView::SetPlaybackPosition( DWORD dwNewPos, int nSpeed, BOOL bEstimate) {
+    
+	if (bEstimate) {
         SetTimer(ID_TIMER_PLAYBACK, 1, NULL);
     } else {
         if (nSpeed!=0) {
             m_dwPlaybackTime = GetTickCount();
             SetTimer(ID_TIMER_PLAYBACK, 1, NULL);
         }
-        m_dPlaybackPosition = dwNewPos;
+        m_dwPlaybackPosition = dwNewPos;
         m_nPlaybackSpeed = nSpeed;
     }
 
-    DWORD dwPlaybackPosition = dwNewPos;
     // for 16 bit data value must be even
     if (GetDocument()->Is16Bit()) {
-        dwPlaybackPosition = dwPlaybackPosition & ~1;
-    }
-
-    lastPlaybackPosition = dwPlaybackPosition;
+        m_dwLastPlaybackPosition = dwNewPos & ~1;
+    } else {
+        m_dwLastPlaybackPosition = dwNewPos;
+	}
+	TRACE(">>m_dwLastPlaybackPosition=%d\n");
 
     // move start cursors in all the graphs
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
@@ -2304,9 +2329,10 @@ void CSaView::SetPlaybackFlash(bool on) {
 // CSaView::OnTimer Set the playbackPosition
 /***************************************************************************/
 void CSaView::OnTimer(UINT nIDEvent) {
+
     if (nIDEvent == ID_TIMER_PLAYBACK) {
         if (m_nPlaybackSpeed>0) {
-            DWORD dwNewPos = (DWORD)(m_dPlaybackPosition + (GetTickCount()-m_dwPlaybackTime)/GetDocument()->GetTimeFromBytes(1000) * m_nPlaybackSpeed / 100);
+            DWORD dwNewPos = (DWORD)(m_dwPlaybackPosition + (GetTickCount()-m_dwPlaybackTime)/GetDocument()->GetTimeFromBytes(1000) * m_nPlaybackSpeed / 100);
             SetPlaybackPosition(dwNewPos, m_nPlaybackSpeed, TRUE);
         }
         return;
@@ -2381,16 +2407,19 @@ void CSaView::MoveStopCursor(DWORD dwNewPos) {
 /***************************************************************************/
 // CSaView::SetDataFrame Set number of data samples to display
 // The caller delivers a start position (first data sample he wants to have
-// displayed) and the number of samples to display. Then this function
-// calculates the nearest possible zooming factor and sets up the real dis-
-// playable first data and the number of samples to display.
+// displayed) and the number of samples to display. 
+// Then this function calculates the nearest possible zooming factor 
+// and sets up the real displayable first data and the number of samples to 
+// display.
 /***************************************************************************/
 void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame) {
+
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     DWORD wSmpSize = pDoc->GetSampleSize();
     CRect rWnd;
     GetClientRect(rWnd);
-    m_dwDataPosition = dwStart; // set start position
+	// set start position
+    m_dwDataPosition = dwStart; 
     // for 16 bit data value must be even
     if (pDoc->Is16Bit()) {
         m_dwDataPosition &= ~1;
@@ -2438,14 +2467,15 @@ void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame) {
 // CSaView::GetDataFrame returns the parameters set by set
 /***************************************************************************/
 void CSaView::GetDataFrame(DWORD & dwStart, DWORD & dwFrame) {
-    CSaDoc * pDoc = GetDocument(); // get pointer to document
-
-    dwStart = m_dwDataPosition; // set start position
-
+    
+	// get pointer to document
+	CSaDoc * pDoc = GetDocument(); 
+	// set start position
+    dwStart = m_dwDataPosition; 
     // calculate zooming factor
     DWORD dwDataSize = pDoc->GetDataSize();
-
-    dwFrame = (DWORD)(((double)dwDataSize) / m_fZoom + 0.5); // zoom factor
+	// zoom factor
+    dwFrame = (DWORD)(((double)dwDataSize) / m_fZoom + 0.5); 
 }
 
 LRESULT CSaView::OnCursorInFragment(WPARAM nCursorSelect, LPARAM dwFragmentIndex) {
@@ -4669,8 +4699,8 @@ void CSaView::OnEditAddGloss() {
 void CSaView::OnEditAddMarkup() {
 
     DWORD start = GetStartCursorPosition();
-    DWORD stop = GetStopCursorPosition();
-    OnEditAddPhonetic();
+
+	OnEditAddPhonetic();
     OnEditAddGloss();
 
     CSaDoc * pDoc = GetDocument();  // get pointer to document
@@ -4958,8 +4988,8 @@ void CSaView::OnEditSplit() {
     DWORD newStart = pPhonetic->GetOffset(newsel);
     DWORD newStop = pPhonetic->GetStop(newsel);
     SelectSegment(pPhonetic,newsel);
-    SetCursorPosition(ECursorSelect::START_CURSOR,newStart);
-    SetCursorPosition(ECursorSelect::STOP_CURSOR,newStop);
+    SetCursorPosition( START_CURSOR,newStart);
+    SetCursorPosition( STOP_CURSOR,newStop);
     RefreshGraphs(TRUE,FALSE);
 }
 
@@ -4994,8 +5024,8 @@ void CSaView::OnEditMerge() {
     DWORD newStart = pPhonetic->GetOffset(newsel);
     DWORD newStop = pPhonetic->GetStop(newsel);
     SelectSegment(pPhonetic,newsel);
-    SetCursorPosition(ECursorSelect::START_CURSOR,newStart);
-    SetCursorPosition(ECursorSelect::STOP_CURSOR,newStop);
+    SetCursorPosition(START_CURSOR,newStart);
+    SetCursorPosition(STOP_CURSOR,newStop);
     RefreshGraphs(TRUE,FALSE);
 }
 
@@ -5023,7 +5053,6 @@ void CSaView::OnEditMoveLeft() {
         return;
     }
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-    bool segmental = GetDocument()->IsSegmental(pPhonetic, sel);
     DWORD start = pPhonetic->GetOffset(sel);
     DWORD stop = pPhonetic->GetStop(sel);
 
@@ -5033,8 +5062,8 @@ void CSaView::OnEditMoveLeft() {
     sel = (sel<count)?sel:count-1;
     start = pPhonetic->GetOffset(sel);
     stop = pPhonetic->GetStop(sel);
-    SetCursorPosition(ECursorSelect::START_CURSOR,start);
-    SetCursorPosition(ECursorSelect::STOP_CURSOR,stop);
+    SetCursorPosition(START_CURSOR,start);
+    SetCursorPosition(STOP_CURSOR,stop);
     RefreshGraphs(TRUE,FALSE);
 }
 
@@ -5068,6 +5097,7 @@ void CSaView::OnUpdateEditMoveRight(CCmdUI * pCmdUI) {
 // CSaView::OnEditMoveRight
 /***************************************************************************/
 void CSaView::OnEditMoveRight() {
+
     CSegment * pSeg = FindSelectedAnnotation();
     if (pSeg==NULL) {
         return;
@@ -5080,7 +5110,6 @@ void CSaView::OnEditMoveRight() {
         return;
     }
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-    bool segmental = GetDocument()->IsSegmental(pPhonetic, sel);
     DWORD start = pPhonetic->GetOffset(sel);
     DWORD stop = pPhonetic->GetStop(sel);
 
@@ -5088,8 +5117,8 @@ void CSaView::OnEditMoveRight() {
 
     start = pPhonetic->GetOffset(sel);
     stop = pPhonetic->GetStop(sel);
-    SetCursorPosition(ECursorSelect::START_CURSOR,start);
-    SetCursorPosition(ECursorSelect::STOP_CURSOR,stop);
+    SetCursorPosition(START_CURSOR,start);
+    SetCursorPosition(STOP_CURSOR,stop);
     RefreshGraphs(TRUE,FALSE);
 }
 
@@ -5160,17 +5189,20 @@ void CSaView::OnEditUp() {
 
         // search for next upper visible annotation window which is not empty
         for (nLoop--; nLoop >= 0; nLoop--) {
-            if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                    ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
-                m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, true);// SDM 1.5Test8.1
-
+            if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && 
+				((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE) ||
+				// SDM 1.5Test8.1
+				((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS) && (CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) {
+				// SDM 1.5Test8.1
+                m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, true);
                 if (m_advancedSelection.GetSelectionIndex() == -1) {
                     m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset,false);
                 }
 
                 if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition) ||
-                        (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
-                    ZoomIn(0, FALSE);    // center selection in view
+                    (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
+					// center selection in view
+                    ZoomIn(0, FALSE);    
                 }
                 break;
             }
@@ -5199,9 +5231,11 @@ void CSaView::OnUpdateEditUp(CCmdUI * pCmdUI) {
             }
             if (nLoop == -1) {
                 pCmdUI->Enable(FALSE);
-                return; // no segments navigation irrelevant
+				// no segments navigation irrelevant
+                return; 
             }
-        } else { // SDM 1.5Test8.1 find window position from segment index
+        } else { 
+			// SDM 1.5Test8.1 find window position from segment index
             for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++) {
                 if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop) {
                     nLoop = nIndex;
@@ -5230,13 +5264,12 @@ void CSaView::OnUpdateEditUp(CCmdUI * pCmdUI) {
 // window down (or start at top left)
 /***************************************************************************/
 void CSaView::OnEditDown() {
-    int nLoop;
-    DWORD dwOffset;
 
-    if (m_pFocusedGraph) { // needs to have a focused graph
+	// needs to have a focused graph
+    if (m_pFocusedGraph!=NULL) { 
         m_advancedSelection.Update(this);
-        nLoop = m_advancedSelection.GetSelectionIndex();
-        dwOffset = m_advancedSelection.GetSelectionStart();
+        int nLoop = m_advancedSelection.GetSelectionIndex();
+        DWORD dwOffset = m_advancedSelection.GetSelectionStart();
 
         if (nLoop == -1) {
             // no selection yet, search for last annotation which is not empty
@@ -5248,9 +5281,11 @@ void CSaView::OnEditDown() {
                 }
             }
             if (nLoop == ANNOT_WND_NUMBER) {
-                return;    // no segments navigation irrelevant
+				// no segments navigation irrelevant
+                return;    
             }
-        } else { // SDM 1.5Test8.1 find window position from segment index
+        } else { 
+			// SDM 1.5Test8.1 find window position from segment index
             for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++) {
                 if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop) {
                     nLoop = nIndex;
@@ -5261,18 +5296,20 @@ void CSaView::OnEditDown() {
 
         // search for next lower visible annotation window which is not empty
         for (nLoop++; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-            if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                    ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
-                m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, true);// SDM 1.5Test8.1
-
+            if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && 
+				((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE) ||
+				// SDM 1.5Test8.1
+				((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { 
+				// SDM 1.5Test8.1
+                m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, true);
                 if (m_advancedSelection.GetSelectionIndex() == -1) {
                     m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset,false);
                 }
 
-
-                if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
-                        || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
-                    ZoomIn(0, FALSE);    // center selection in view
+                if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition) || 
+					(m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
+					// center selection in view
+                    ZoomIn(0, FALSE);    
                 }
                 break;
             }
@@ -5285,12 +5322,11 @@ void CSaView::OnEditDown() {
 // window down (or start at top left)
 /***************************************************************************/
 void CSaView::OnUpdateEditDown(CCmdUI * pCmdUI) {
-    int nLoop = -1;
-
+    
     // needs to have a focused graph
     if (m_pFocusedGraph!=NULL) {
         m_advancedSelection.Update(this);
-        nLoop = m_advancedSelection.GetSelectionIndex();
+        int nLoop = m_advancedSelection.GetSelectionIndex();
 
         if (nLoop == -1) {
             // no selection yet, search for last annotation which is not empty
@@ -5302,9 +5338,11 @@ void CSaView::OnUpdateEditDown(CCmdUI * pCmdUI) {
             }
             if (nLoop == ANNOT_WND_NUMBER) {
                 pCmdUI->Enable(FALSE);
-                return; // no segments navigation irrelevant
+				// no segments navigation irrelevant
+                return; 
             }
-        } else { // SDM 1.5Test8.1 find window position from segment index
+        } else { 
+			// SDM 1.5Test8.1 find window position from segment index
             for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++) {
                 if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop) {
                     nLoop = nIndex;
@@ -5435,8 +5473,8 @@ void CSaView::OnEditPrevious() {
             }
         }
         // if necessary scroll selection into view
-        if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
-                || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
+        if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition) || 
+			(m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
             ZoomIn(0, FALSE);    // center selection in view
         }
     }
@@ -5632,8 +5670,8 @@ void CSaView::OnEditNext() {
             }
         }
         // if necessary scroll selection into view
-        if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
-                || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
+        if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition) || 
+			(m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
             ZoomIn(0, FALSE);    // center selection in view
         }
     }
@@ -5913,6 +5951,7 @@ void CSaView::OnMoveStopCursorHere() {
 // CSaDoc::OnAutoSnapUpdate Adjust all independent segments to snap boundaries
 /***************************************************************************/
 void CSaView::OnEditCopyPhoneticToPhonemic(void) {
+
     // doesn't user want to keep existing gloss?
     if (AfxMessageBox(IDS_CONFIRM_PHONEMIC_COPY, MB_YESNO | MB_ICONQUESTION, 0) != IDYES) {
         return;
@@ -6002,7 +6041,8 @@ CURSORPOS CSaView::GetStopCursorPosition() {
 }
 
 DWORD CSaView::GetPlaybackCursorPosition() {
-    return lastPlaybackPosition;
+	TRACE("GetPlaybackCursorPosition=%d\n",m_dwLastPlaybackPosition);
+    return m_dwLastPlaybackPosition;
 }
 
 CGraphWnd * CSaView::GetFocusedGraphWnd() {
@@ -6123,8 +6163,8 @@ DWORD CSaView::GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd 
     return (DWORD)(CURSOR_MIN_DISTANCE*fSamplesPerPix*nSmpSize);
 }
 
-BOOL CSaView::SelectFromPosition(int nSegmentIndex, DWORD dwPosition, int nMode) {
-    return m_advancedSelection.SelectFromPosition(this, nSegmentIndex, dwPosition, nMode);
+BOOL CSaView::SelectFromPosition(int nSegmentIndex, DWORD dwPosition, bool bFindExact) {
+    return m_advancedSelection.SelectFromPosition( this, nSegmentIndex, dwPosition, bFindExact);
 }
 
 BOOL CSaView::SetSelectedAnnotationString(CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck) {

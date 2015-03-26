@@ -518,6 +518,7 @@ void CDlgFnKeys::OnTest() {
         case 4:
             //ID_PLAYBACK_LTOSTOP
             dwStart = DWORD(m_pView->GetDataPosition(0));
+			TRACE("DataPosition=%lu\n",dwStart);
             dwSize = m_pView->GetStopCursorPosition();
             if (dwSize > dwStart) {
                 dwSize -= dwStart;

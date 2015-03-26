@@ -151,7 +151,7 @@ void CGraphWnd::SetPlaybackCursor(CSaView * pView) {
 /***************************************************************************/
 // CGraphWnd::SetPlaybackPosition
 /***************************************************************************/
-void CGraphWnd::SetPlaybackPosition(CSaView * pView, bool scroll) {
+void CGraphWnd::SetPlaybackPosition( CSaView * pView, bool scroll) {
     if (m_pPlot->HaveCursors()) {
         m_pPlot->SetPlaybackCursor(pView, scroll);
     }

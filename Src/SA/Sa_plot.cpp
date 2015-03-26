@@ -512,9 +512,8 @@ DWORD CPlotWnd::AdjustDataFrame(int iWidth) {
 // redrawn. If the cursor is not visible on the new position (out of the
 // plot), its window size will be 0.
 /***************************************************************************/
-void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, bool /*bMove*/, bool scroll) {
-    UNUSED_ALWAYS(pView);
-
+void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, bool scroll) {
+    
     CGraphWnd * pGraph = (CGraphWnd *)GetParent(); // get pointer to parent graph
 
     // get window coordinates
@@ -526,8 +525,8 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
 
     CRect rNewWnd = rWnd;
     // get actual data position and frame
-    double fDataPos;
-    DWORD dwDataFrame;
+    double fDataPos = 0;
+    DWORD dwDataFrame = 0;
     // check if area graph type
     if (pGraph->IsAreaGraph()) {
         // get necessary data from area plot
@@ -540,8 +539,9 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
     }
 
     CRect rNewLine;
-    if (((m_bCursors) &&   // added by AKE to hide cursors in graph edit mode
-            (dwNewPosition >= (DWORD)fDataPos) && (dwNewPosition < ((DWORD)fDataPos + dwDataFrame)))) {
+	// added by AKE to hide cursors in graph edit mode
+    if (((m_bCursors) &&   
+         (dwNewPosition >= (DWORD)fDataPos) && (dwNewPosition < ((DWORD)fDataPos + dwDataFrame)))) {
         // cursor is visible
         ASSERT(rNewWnd.Width());
         double fBytesPerPix = (double)dwDataFrame / (double)rNewWnd.Width(); // calculate data samples per pixel
@@ -556,8 +556,10 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
         rNewWnd.SetRect(nPixelPos - CURSOR_WINDOW_HALFWIDTH, 0, nPixelPos + CURSOR_WINDOW_HALFWIDTH, rNewWnd.bottom);
     } else {
         if (scroll) {
-            DWORD start = (DWORD)GetDataPosition(rNewWnd.Width());      // data index of first sample to display
-            DWORD size = pView->GetDataFrame();                         // number of data points to display
+			// data index of first sample to display
+            DWORD start = (DWORD)GetDataPosition(rNewWnd.Width());      
+			// number of data points to display
+			DWORD size = pView->GetDataFrame();
             DWORD margin = size/4;
             if (dwNewPosition>margin) {
                 DWORD newStart = dwNewPosition-margin;
@@ -589,31 +591,33 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
     // check if new cursor line position
     if (rOldLine != rNewLine) {
         // invalidate and update old position
-        if (pWnd->IsDrawn()) { // SDM 1.5Test10.5
-            InvalidateRect(rOldLine, TRUE);    // redraw old cursor position
+		// SDM 1.5Test10.5
+        if (pWnd->IsDrawn()) { 
+			// redraw old cursor position
+            InvalidateRect(rOldLine, TRUE);    
         }
-        pWnd->MoveWindow(rNewWnd, FALSE); // move the cursor window to the new position
-        pWnd->SetDrawn(FALSE);  // SDM 1.5Test10.5
+		// move the cursor window to the new position
+        pWnd->MoveWindow(rNewWnd, FALSE); 
+		// SDM 1.5Test10.5
+        pWnd->SetDrawn(FALSE);  
         //  SDM 1.06.5
         //  By delaying update all changes are complete so the order of changes of cursors
         //  becomes irrelevant to cursor redraw.
         //  Underlying windows will be updated first because of the WS_EX_TRANSPARENT style of cursor windows
-        //  UpdateWindow(); // update this region before redrawing the cursor window
         rNewLine.SetRect(rNewLine.left - rNewWnd.left, rNewLine.top, rNewLine.left - rNewWnd.left + 1, rNewLine.bottom);
-        pWnd->InvalidateRect(rNewLine, TRUE); // redraw new cursor line
-        //  pWnd->UpdateWindow(); // update the cursor
+		// redraw new cursor line
+        pWnd->InvalidateRect(rNewLine, TRUE); 
     }
-    // move the cursor window to the new position
-    //    else pWnd->MoveWindow(rNewWnd, FALSE);
 }
 
 /***************************************************************************/
 // CPlotWnd::SetStartCursor Position the start cursor
 /***************************************************************************/
 void CPlotWnd::SetStartCursor(CSaView * pView) {
+
     DWORD dwStartCursor = pView->GetStartCursorPosition();
     if (m_pStartCursor) {
-        ChangeCursorPosition(pView, dwStartCursor, m_pStartCursor);
+		ChangeCursorPosition( pView, dwStartCursor, m_pStartCursor);
     }
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     if ((bDynamicUpdate) && (m_bAnimationPlot)) {
@@ -654,7 +658,7 @@ void CPlotWnd::ShowCursors() {
 /***************************************************************************/
 void CPlotWnd::SetStopCursor(CSaView * pView) {
     if (m_pStopCursor) {
-        ChangeCursorPosition(pView, pView->GetStopCursorPosition(), m_pStopCursor);
+        ChangeCursorPosition( pView, pView->GetStopCursorPosition(), m_pStopCursor);
     }
 }
 
@@ -663,7 +667,7 @@ void CPlotWnd::SetStopCursor(CSaView * pView) {
 /***************************************************************************/
 void CPlotWnd::SetPlaybackCursor(CSaView * pView, bool scroll) {
     if (m_PlaybackCursor.IsCreated()) {
-        ChangeCursorPosition(pView, pView->GetPlaybackCursorPosition(), &m_PlaybackCursor, false, scroll);
+        ChangeCursorPosition( pView, pView->GetPlaybackCursorPosition(), &m_PlaybackCursor, scroll);
     }
 }
 
@@ -677,24 +681,18 @@ void CPlotWnd::SetPlaybackFlash(bool val) {
 // CPlotWnd::MoveStartCursor Move the start cursor
 /***************************************************************************/
 void CPlotWnd::MoveStartCursor(CSaView * pView, DWORD dwNewPosition) {
-    // no cursors visible?
-    if (!m_bCursors) {
-        return;
-    }
-
-    ChangeCursorPosition(pView, dwNewPosition, m_pStartCursor, true);
+	// no cursors visible?
+    if (!m_bCursors) return;
+    ChangeCursorPosition( pView, dwNewPosition, m_pStartCursor);
 }
 
 /***************************************************************************/
 // CPlotWnd::MoveStopCursor Move the stop cursor
 /***************************************************************************/
-void CPlotWnd::MoveStopCursor(CSaView * pView, DWORD dwNewPosition) {
+void CPlotWnd::MoveStopCursor( CSaView * pView, DWORD dwNewPosition) {
     // no cursors visible
-    if (!m_bCursors) {
-        return;
-    }
-
-    ChangeCursorPosition(pView, dwNewPosition, m_pStopCursor, true);
+    if (!m_bCursors) return;
+    ChangeCursorPosition( pView, dwNewPosition, m_pStopCursor);
 }
 
 /***************************************************************************/
@@ -805,7 +803,8 @@ int CPlotWnd::GetPrivateCursorPosition() {
 // the plot before scrolling.
 /***************************************************************************/
 void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DWORD dwFrame) {
-    // hide the helper windows (do not scroll them)
+    
+	// hide the helper windows (do not scroll them)
     int nOldMode = m_HelperWnd.SetMode(MODE_HIDDEN);
     // now scroll
     ScrollWindow(nScrollAmount, 0);
@@ -813,20 +812,25 @@ void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DW
     // replace the helper windows
     m_HelperWnd.SetMode(nOldMode);
     // move the cursor windows if necessary
-    DWORD dwStartCursorPos = pView->GetStartCursorPosition(); // position of start cursor
-    DWORD dwStopCursorPos = pView->GetStopCursorPosition(); // position of stop cursor
+	// position of start cursor
+    DWORD dwStartCursorPos = pView->GetStartCursorPosition(); 
+	// position of stop cursor
+    DWORD dwStopCursorPos = pView->GetStopCursorPosition(); 
     DWORD dwPlaybackCursorPos = pView->GetPlaybackCursorPosition();
 
     // move cursor windows
     CRect rCursor;
     if ((dwStartCursorPos < dwOldPos) || (dwStartCursorPos >= (dwOldPos + dwFrame))) {
-        SetStartCursor(pView);    // start cursor was not visible, move it if it's now visible
+		// start cursor was not visible, move it if it's now visible
+        SetStartCursor(pView);    
     }
     if ((dwStopCursorPos < dwOldPos) || (dwStopCursorPos >= (dwOldPos + dwFrame))) {
-        SetStopCursor(pView);    // stop cursor was not visible, move it if it's now visible
+		// stop cursor was not visible, move it if it's now visible
+        SetStopCursor(pView);    
     }
     if ((dwPlaybackCursorPos < dwOldPos) || (dwPlaybackCursorPos >= (dwOldPos + dwFrame))) {
-        SetPlaybackCursor(pView, false);    // stop cursor was not visible, move it if it's now visible
+		// stop cursor was not visible, move it if it's now visible
+        SetPlaybackCursor(pView, false);    
     }
 }
 
@@ -1619,75 +1623,76 @@ DWORD CPlotWnd::GetAreaLength(CRect * pRwnd) {
 // deselected.
 //**************************************************************************/
 void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL bSecondSelection) {
-    if (m_bCursors) {
-        CSaView * pView = (CSaView *)GetParent()->GetParent();
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        DWORD nSampleSize = pDoc->GetSampleSize();
-        if (nSampleSize == 2) {
-            // positions have to be even for 16 bit
-            dwStart &= ~1;
-            dwStop &= ~1;
-        }
-        if (dwStart > 0) {
-            dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, pDoc->GetDataSize() - nSampleSize);
-        }
-        if ((dwStop > 0) && (dwStop < (pDoc->GetDataSize() - nSampleSize))) {
-            dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, pDoc->GetDataSize() - nSampleSize);
-        }
+    
+	if (!m_bCursors) return;
 
-        if ((m_dwHighLightPosition == dwStart) &&
-                (m_dwHighLightLength == dwStop - dwStart)) {
-            return;
-        }
+    CSaView * pView = (CSaView *)GetParent()->GetParent();
+    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    DWORD nSampleSize = pDoc->GetSampleSize();
+    if (nSampleSize == 2) {
+        // positions have to be even for 16 bit
+        dwStart &= ~1;
+        dwStop &= ~1;
+    }
+    if (dwStart > 0) {
+        dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, pDoc->GetDataSize() - nSampleSize);
+    }
+    if ((dwStop > 0) && (dwStop < (pDoc->GetDataSize() - nSampleSize))) {
+        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, pDoc->GetDataSize() - nSampleSize);
+    }
 
-        if (bRedraw) {
-            // calculate the actual and the new highlighted rectangles
-            CRect rWnd;
-            GetClientRect(rWnd);
-            double fDataPos = GetDataPosition(rWnd.Width());    // data index of first sample to display
-            DWORD dwDataFrame = AdjustDataFrame(rWnd.Width());  // number of data points to display
-            ASSERT(rWnd.Width());
-            double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
+    if ((m_dwHighLightPosition == dwStart) &&
+            (m_dwHighLightLength == dwStop - dwStart)) {
+        return;
+    }
 
-            int nHighLightPixLeft = 0;
-            int nHighLightPixRight = 0;
-            if ((dwDataFrame != 0) && (m_dwHighLightLength != 0)) {
-                // there is actually something to highlight
-                if ((m_dwHighLightPosition + m_dwHighLightLength) > fDataPos) {
-                    if (m_dwHighLightPosition < fDataPos) {
-                        m_dwHighLightLength -= ((DWORD)fDataPos - m_dwHighLightPosition);
-                        m_dwHighLightPosition = (DWORD)fDataPos;
-                    }
-                    // SDM 1.06.6U4 align selection to graph aligned to pixels
-                    nHighLightPixLeft = round(((double)m_dwHighLightPosition - fDataPos) / fBytesPerPix);
-                    nHighLightPixRight = round(((double)(m_dwHighLightPosition + m_dwHighLightLength) - fDataPos) / fBytesPerPix);
+    if (bRedraw) {
+        // calculate the actual and the new highlighted rectangles
+        CRect rWnd;
+        GetClientRect(rWnd);
+        double fDataPos = GetDataPosition(rWnd.Width());    // data index of first sample to display
+        DWORD dwDataFrame = AdjustDataFrame(rWnd.Width());  // number of data points to display
+        ASSERT(rWnd.Width());
+        double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
+
+        int nHighLightPixLeft = 0;
+        int nHighLightPixRight = 0;
+        if ((dwDataFrame != 0) && (m_dwHighLightLength != 0)) {
+            // there is actually something to highlight
+            if ((m_dwHighLightPosition + m_dwHighLightLength) > fDataPos) {
+                if (m_dwHighLightPosition < fDataPos) {
+                    m_dwHighLightLength -= ((DWORD)fDataPos - m_dwHighLightPosition);
+                    m_dwHighLightPosition = (DWORD)fDataPos;
                 }
+                // SDM 1.06.6U4 align selection to graph aligned to pixels
+                nHighLightPixLeft = round(((double)m_dwHighLightPosition - fDataPos) / fBytesPerPix);
+                nHighLightPixRight = round(((double)(m_dwHighLightPosition + m_dwHighLightLength) - fDataPos) / fBytesPerPix);
             }
-            // this is the actual highlighted rectangle in the plot
-            CRect rOldHi(nHighLightPixLeft - 1, rWnd.top, nHighLightPixRight + 1, rWnd.bottom);
-            nHighLightPixLeft = round(((double)dwStart - fDataPos) / fBytesPerPix);
-            nHighLightPixRight = round(((double)dwStop - fDataPos) / fBytesPerPix);
-            // this is the new highlighted rectangle in the plot
-            CRect rNewHi(nHighLightPixLeft - 1, rWnd.top, nHighLightPixRight + 1, rWnd.bottom);
-
-            // now find the difference
-            rWnd.UnionRect(rOldHi, rNewHi);
-
-            m_dwHighLightPosition = dwStart;
-            m_dwHighLightLength = dwStop - dwStart;
-
-            rWnd.InflateRect(2,0);
-            InvalidateRect(rWnd,TRUE);
-        } else {
-            m_dwHighLightPosition = dwStart;
-            m_dwHighLightLength = dwStop - dwStart;
         }
-        if (m_dwHighLightLength && !bSecondSelection) {
-            // deselect segment, if one selected
-            CSegment * pSegment = pView->FindSelectedAnnotation();
-            if (pSegment) {
-                pView->ChangeAnnotationSelection(pSegment, pSegment->GetSelection(), 0, 0);
-            }
+        // this is the actual highlighted rectangle in the plot
+        CRect rOldHi(nHighLightPixLeft - 1, rWnd.top, nHighLightPixRight + 1, rWnd.bottom);
+        nHighLightPixLeft = round(((double)dwStart - fDataPos) / fBytesPerPix);
+        nHighLightPixRight = round(((double)dwStop - fDataPos) / fBytesPerPix);
+        // this is the new highlighted rectangle in the plot
+        CRect rNewHi(nHighLightPixLeft - 1, rWnd.top, nHighLightPixRight + 1, rWnd.bottom);
+
+        // now find the difference
+        rWnd.UnionRect(rOldHi, rNewHi);
+
+        m_dwHighLightPosition = dwStart;
+        m_dwHighLightLength = dwStop - dwStart;
+
+        rWnd.InflateRect(2,0);
+        InvalidateRect(rWnd,TRUE);
+    } else {
+        m_dwHighLightPosition = dwStart;
+        m_dwHighLightLength = dwStop - dwStart;
+    }
+    if (m_dwHighLightLength && !bSecondSelection) {
+        // deselect segment, if one selected
+        CSegment * pSegment = pView->FindSelectedAnnotation();
+        if (pSegment) {
+            pView->ChangeAnnotationSelection(pSegment, pSegment->GetSelection(), 0, 0);
         }
     }
 }

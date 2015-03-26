@@ -502,7 +502,8 @@ void CSaView::OnPlaybackLtostart() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackStarttor() {
-    SendPlayMessage(ID_PLAYBACK_STARTTOR, FALSE); // send message to start player
+	// send message to start player
+    SendPlayMessage(ID_PLAYBACK_STARTTOR, FALSE); 
 }
 
 /***************************************************************************/
@@ -513,7 +514,8 @@ void CSaView::OnPlaybackStarttor() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackLtoStop() {
-    SendPlayMessage(ID_PLAYBACK_LTOSTOP, FALSE); // send message to start player
+	// send message to start player
+    SendPlayMessage(ID_PLAYBACK_LTOSTOP, FALSE); 
 }
 
 /***************************************************************************/
@@ -524,7 +526,8 @@ void CSaView::OnPlaybackLtoStop() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackEndCursor() {
-    SendPlayMessage(ID_PLAYBACK_ENDCURSOR, FALSE); // send message to start player
+	// send message to start player
+    SendPlayMessage(ID_PLAYBACK_ENDCURSOR, FALSE); 
 }
 
 /***************************************************************************/
@@ -1899,40 +1902,50 @@ void CSaView::OnUpdateGraphsZoomOut(CCmdUI * pCmdUI) {
 // CSaView::OnHScroll Horizontal scrolling
 /***************************************************************************/
 void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
-    //TRACE("OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
-    CSaDoc * pDoc = GetDocument();  // get pointer to document
-    if (m_fZoom > 1.0) {            // zooming is enabled
-        DWORD dwOldDataPosition = m_dwDataPosition; // save actual data position
+
+    TRACE(">>OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
+	// get pointer to document
+    CSaDoc * pDoc = GetDocument();  
+	// zooming is enabled
+    if (m_fZoom > 1.0) {
+		// save actual data position
+        DWORD dwOldDataPosition = m_dwDataPosition; 
         switch (nSBCode) {
-        case SB_LEFT: // scroll to the leftmost position
+        case SB_LEFT: 
+			// scroll to the leftmost position
             m_dwDataPosition = 0;
             break;
-        case SB_LINELEFT: // scroll one line left
+        case SB_LINELEFT: 
+			// scroll one line left
             if (m_dwDataPosition >= m_dwScrollLine) {
                 m_dwDataPosition -= m_dwScrollLine;
             } else {
                 m_dwDataPosition = 0;
             }
             break;
-        case SB_RIGHT: // scroll to the rightmost position
+        case SB_RIGHT: 
+			// scroll to the rightmost position
             m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
             break;
-        case SB_LINERIGHT: // scroll one line right
+        case SB_LINERIGHT: 
+			// scroll one line right
             if ((m_dwDataPosition <= (pDoc->GetDataSize() - GetDataFrame() - m_dwScrollLine)) &&
-                    (pDoc->GetDataSize() >= (GetDataFrame() + m_dwScrollLine))) {
+                (pDoc->GetDataSize() >= (GetDataFrame() + m_dwScrollLine))) {
                 m_dwDataPosition += m_dwScrollLine;
             } else {
                 m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
             }
             break;
-        case SB_PAGELEFT: // scroll one page left
+        case SB_PAGELEFT: 
+			// scroll one page left
             if (m_dwDataPosition >= GetDataFrame()) {
                 m_dwDataPosition -= GetDataFrame();
             } else {
                 m_dwDataPosition = 0;
             }
             break;
-        case SB_PAGERIGHT: // scroll one page right
+        case SB_PAGERIGHT: 
+			// scroll one page right
             if ((m_dwDataPosition <= (pDoc->GetDataSize() - 2 * GetDataFrame())) &&
                     (pDoc->GetDataSize() >= (2 * GetDataFrame()))) {
                 m_dwDataPosition += GetDataFrame();
@@ -1941,7 +1954,8 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
             }
             break;
         case SB_THUMBTRACK:
-        case SB_THUMBPOSITION: // scroll to position
+        case SB_THUMBPOSITION: 
+			// scroll to position
             m_dwDataPosition = nPos * m_dwHScrollFactor;
             if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) {
                 m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
@@ -1956,7 +1970,8 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
             m_dwDataPosition &= ~1;
         }
         // is scrolling necessary?
-        if (dwOldDataPosition != m_dwDataPosition) { // scroll
+		// scroll
+        if (dwOldDataPosition != m_dwDataPosition) { 
             // set scroll bar
             SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
             // scroll all graph windows (only if the have cursors visible)
@@ -1971,9 +1986,8 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
             }
         }
     }
-
+	TRACE("<<m_dwDataPosition=%lu\n",m_dwDataPosition);
     CView::OnHScroll(nSBCode, nPos, pScrollBar);
-
     pViewMainFrame->SetPlayerTimes();
 }
 
@@ -1984,28 +1998,37 @@ void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
     TRACE("OnVScroll %d %f %f\n",nPos,m_fZoom,m_fVScrollSteps);
 
     double fZoom = m_fZoom;
-    double fActualPos = m_fVScrollSteps / m_fZoom; // actual position
+	// actual position
+    double fActualPos = m_fVScrollSteps / m_fZoom; 
     switch (nSBCode) {
-    case SB_BOTTOM:     // zoom maximum
+    case SB_BOTTOM:     
+		// zoom maximum
         fZoom = m_fMaxZoom;
         break;
-    case SB_LINEDOWN:   // zoom one step more
+    case SB_LINEDOWN:   
+		// zoom one step more
         fZoom = m_fVScrollSteps / (fActualPos - 1);
         break;
-    case SB_TOP:        // no zoom
+    case SB_TOP:        
+		// no zoom
         fZoom = (double)0.5;
-        break;          // to be sure it will be set to 1.0 (rounding errors)
-    case SB_LINEUP:     // zoom one step less
+		// to be sure it will be set to 1.0 (rounding errors)
+        break;          
+    case SB_LINEUP:     
+		// zoom one step less
         fZoom = m_fVScrollSteps / (fActualPos + 1);
         break;
-    case SB_PAGEDOWN:   // double zoom
+    case SB_PAGEDOWN:   
+		// double zoom
         fZoom = 2.*m_fZoom;
         break;
-    case SB_PAGEUP:     // divide zoom by two
+    case SB_PAGEUP:     
+		// divide zoom by two
         fZoom = 0.5*m_fZoom;
         break;
     case SB_THUMBTRACK:
-    case SB_THUMBPOSITION: { // zoom from position
+    case SB_THUMBPOSITION: { 
+		// zoom from position
         SCROLLINFO info;
         GetScrollInfo(SB_VERT, &info, SIF_TRACKPOS);
         nPos = info.nTrackPos;
@@ -3094,12 +3117,14 @@ void CSaView::OnEditSelectWaveform() {
     // select/deselect raw data area
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
 
-    if (i >= 0 && m_apGraphs[i]) {
+    if ((i >= 0) && (m_apGraphs[i]!=NULL)) {
         // check if already area selected
         if (m_apGraphs[i]->GetPlot()->GetHighLightLength()) {
-            m_apGraphs[i]->GetPlot()->SetHighLightArea(0, 0);    // deselect
+			// deselect
+            m_apGraphs[i]->GetPlot()->SetHighLightArea(0, 0);    
         } else {
-            m_apGraphs[i]->GetPlot()->SetHighLightArea(GetStartCursorPosition(), GetStopCursorPosition());    // select
+			// select
+            m_apGraphs[i]->GetPlot()->SetHighLightArea(GetStartCursorPosition(), GetStopCursorPosition());
         }
     }
 }
@@ -3589,16 +3614,16 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
     obs.WriteBool(psz_updateboundaries, m_bUpdateBoundaries);
 
     // These data members are currently not saved.
-    //    DWORD m_dwDataPosition;              // current start position of displayed data
+    //    DWORD m_dwDataPosition;				// current start position of displayed data
     //    double m_fMagnify;                    // magnify factor
-    //    double m_fZoom;                         // current zoom factor
-    //    double m_fMaxZoom;                  // max. zoom factor
-    //    DWORD m_dwHScrollFactor;             // factor to represent scroll position on horizontal scroll bar
+    //    double m_fZoom;                       // current zoom factor
+    //    double m_fMaxZoom;					// max. zoom factor
+    //    DWORD m_dwHScrollFactor;				// factor to represent scroll position on horizontal scroll bar
     //    double m_fVScrollSteps;               // number of vertical scroll steps
-    //    DWORD m_dwScrollLine;              // number of samples to scroll one line
-    //    DWORD m_dwStartCursor;               // start cursor position
-    //    DWORD m_dwStopCursor;              // stop cursor position
-    //    BOOL  m_bViewIsActive;               // TRUE = view is activated
+    //    DWORD m_dwScrollLine;					// number of samples to scroll one line
+    //    DWORD m_dwStartCursor;				// start cursor position
+    //    DWORD m_dwStopCursor;					// stop cursor position
+    //    BOOL  m_bViewIsActive;				// TRUE = view is activated
     // Printing data members are not saved - no need.
 
     obs.WriteEndMarker(psz_saview);

@@ -15,6 +15,8 @@
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
 
+#include "sa_enu_resource.h"
+
 #include "DlgImportElanSheet.h"
 #include "Elan.h"
 
@@ -26,6 +28,9 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+/**
+* Returns the SAXML node name
+*/
 LPCTSTR GetAnnotationName(EAnnotation ea) {
     switch (ea) {
     case PHONETIC:
@@ -35,9 +40,9 @@ LPCTSTR GetAnnotationName(EAnnotation ea) {
     case GLOSS:
         return L"Gloss";
     case GLOSS_NAT:
-        return L"Gloss Nat.";
+        return L"GlossNat";
     case ORTHO:
-        return L"Ortho";
+        return L"Orthographic";
     case TONE:
         return L"Tone";
     case REFERENCE:
@@ -85,6 +90,13 @@ DOMElement * CreateElement(xercesc_3_1::DOMDocument * doc, EAnnotation ea, LPCTS
     return pElement;
 }
 
+bool IsGloss(EAnnotation ea) {
+    if ((ea==GLOSS)||(ea==GLOSS_NAT)) {
+        return true;
+    }
+    return false;
+}
+
 bool IsPhrase(EAnnotation ea) {
     if ((ea==MUSIC_PL1) || (ea==MUSIC_PL2) || (ea==MUSIC_PL3) || (ea==MUSIC_PL4)) {
         return true;
@@ -107,6 +119,7 @@ wstring GetFloat(double val) {
 
 /**
 * Writes a SAXML document
+* Throws an int string resource ID on failure, or logic error
 */
 void CSAXMLUtils::WriteSAXML(LPCTSTR filename, Elan::CAnnotationDocument & document, ElanMap & assignments) {
     ScopedXMLUtils utils;
@@ -169,88 +182,33 @@ void CSAXMLUtils::WriteSAXML(LPCTSTR filename, Elan::CAnnotationDocument & docum
         pElement->appendChild(doc->createTextNode(L"0"));
         rootElem->appendChild(pElement);
 
+        list<EAnnotation> stack;
+        stack.push_back(PHONETIC);
+        stack.push_back(TONE);
+        stack.push_back(PHONEMIC);
+        stack.push_back(ORTHO);
+        stack.push_back(GLOSS);
+        stack.push_back(GLOSS_NAT);
+        stack.push_back(REFERENCE);
+
         pElement = doc->createElement(L"Segments");
-        ElanMap::iterator it = assignments.begin();
-        while (it!=assignments.end()) {
-            if (IsPhrase(it->first)) {
-                it++;
-                continue;
+        while (stack.size()>0) {
+            EAnnotation type = stack.front();
+            stack.pop_front();
+            if (ProcessTier(type,stack,doc,*pElement,assignments,document,L"")) {
+                break;
             }
-            for (size_t i=0; i<document.tiers.size(); i++) {
-                Elan::CTier & tier = document.tiers[i];
-                if (_wcsicmp(tier.tierID.c_str(),it->second.c_str())==0) {
-                    for (size_t j=0; j<tier.annotations.size(); j++) {
-                        DOMElement * pSegData = doc->createElement(L"SegmentData");
-                        pSegData->setAttribute(L"IsBookmark",L"false");
-                        Elan::CAnnotation & annotation = tier.annotations[j];
-                        if (annotation.alignableAnnotation.annotationID.size()>0) {
-                            pSegData->appendChild(CreateElement(doc,it->first,annotation.alignableAnnotation.annotationValue.c_str()));
-                            double start = document.getTime(annotation.alignableAnnotation.timeSlotRef1.c_str());
-                            double end = document.getTime(annotation.alignableAnnotation.timeSlotRef2.c_str());
-                            start /= 1000.0;
-                            end /= 1000.0;
-                            wstring buffer = GetFloat(start);
-                            pSegData->setAttribute(L"Offset",buffer.c_str());
-                            buffer = GetFloat(end-start);
-                            pSegData->setAttribute(L"Duration",buffer.c_str());
-                            pSegData->setAttribute(L"MarkDuration",GetFloat(start).c_str());
-                        } else if (annotation.refAnnotation.annotationID.size()>0) {
-                            pSegData->appendChild(CreateElement(doc,it->first,annotation.refAnnotation.annotationValue.c_str()));
-                            double start = document.getTime(annotation.refAnnotation,true);
-                            double end = document.getTime(annotation.refAnnotation,false);
-                            start /= 1000.0;
-                            end /= 1000.0;
-                            wstring buffer = GetFloat(start);
-                            pSegData->setAttribute(L"Offset",buffer.c_str());
-                            buffer = GetFloat(end-start);
-                            pSegData->setAttribute(L"Duration",buffer.c_str());
-                            pSegData->setAttribute(L"MarkDuration",GetFloat(start).c_str());
-                        }
-                        pElement->appendChild(pSegData);
-                    }
-                }
-            }
-            it++;
         }
         rootElem->appendChild(pElement);
 
+        // process independent phrase segments
         pElement = doc->createElement(L"MusicSegments");
-        it = assignments.begin();
+        ElanMap::iterator it = assignments.begin();
         while (it!=assignments.end()) {
-            if (!IsPhrase(it->first)) {
-                it++;
-                continue;
-            }
-            for (size_t i=0; i<document.tiers.size(); i++) {
-                Elan::CTier & tier = document.tiers[i];
-                if (_wcsicmp(tier.tierID.c_str(),it->second.c_str())==0) {
-                    for (size_t j=0; j<tier.annotations.size(); j++) {
-                        Elan::CAnnotation & annotation = tier.annotations[j];
-                        DOMElement * pSegData = doc->createElement(L"MusicSegmentData");
-                        pSegData->setAttribute(L"PhraseLevel",GetPhraseLevel(it->first));
-                        if (annotation.alignableAnnotation.annotationID.size()>0) {
-                            pSegData->appendChild(CreateElement(doc,it->first,annotation.alignableAnnotation.annotationValue.c_str()));
-                            double start = document.getTime(annotation.alignableAnnotation.timeSlotRef1.c_str());
-                            double end = document.getTime(annotation.alignableAnnotation.timeSlotRef2.c_str());
-                            start /= 1000.0;
-                            end /= 1000.0;
-                            wstring buffer = GetFloat(start);
-                            pSegData->setAttribute(L"Offset",buffer.c_str());
-                            buffer = GetFloat(end-start);
-                            pSegData->setAttribute(L"Duration",buffer.c_str());
-                        } else if (annotation.refAnnotation.annotationID.size()>0) {
-                            pSegData->appendChild(CreateElement(doc,it->first,annotation.refAnnotation.annotationValue.c_str()));
-                            double start = document.getTime(annotation.refAnnotation,true);
-                            double end = document.getTime(annotation.refAnnotation,false);
-                            start /= 1000.0;
-                            end /= 1000.0;
-                            wstring buffer = GetFloat(start);
-                            pSegData->setAttribute(L"Offset",buffer.c_str());
-                            buffer = GetFloat(end-start);
-                            pSegData->setAttribute(L"Duration",buffer.c_str());
-                        }
-                        pElement->appendChild(pSegData);
-                    }
+            if (IsPhrase(it->first)) {
+                Elan::CTier * tier = FindTier(document,it->second);
+                if (tier!=NULL) {
+                    AddPhraseSegments(it->first,doc,*pElement,document,*tier);
                 }
             }
             it++;
@@ -276,4 +234,236 @@ void CSAXMLUtils::WriteSAXML(LPCTSTR filename, Elan::CAnnotationDocument & docum
         throw logic_error("unexpected exception");
     }
 }
+
+/**
+* If this is the root node - (no parent ID) - then we will control the segment loop
+* If not, then we only add one entry for the specified parent ID
+*/
+bool CSAXMLUtils::ProcessTier(EAnnotation type, list<EAnnotation> stack, xercesc_3_1::DOMDocument * doc, xercesc_3_1::DOMElement & parent, ElanMap & assignments, Elan::CAnnotationDocument & document, wstring parentID) {
+
+    ElanMap::iterator it = assignments.find(type);
+    if (it==assignments.end()) {
+        return false;
+    }
+
+    Elan::CTier * tier = FindTier(document,it->second);
+    if (tier==NULL) {
+        return false;
+    }
+
+    if (type==PHONETIC) {
+        if (parentID.size()!=0) {
+            throw IDS_ERROR_ELAN1;
+        }
+        for (size_t j=0; j<tier->annotations.size(); j++) {
+            DOMElement * pElement = doc->createElement(L"SegmentData");
+            pElement->setAttribute(L"IsBookmark",L"false");
+            Elan::CAnnotation & annotation = tier->annotations[j];
+            wstring annotationID;
+            if (annotation.alignableAnnotation.annotationID.size()>0) {
+                pElement->appendChild(CreateElement(doc,type,annotation.alignableAnnotation.annotationValue.c_str()));
+                double start = document.getTime(annotation.alignableAnnotation.timeSlotRef1.c_str());
+                double end = document.getTime(annotation.alignableAnnotation.timeSlotRef2.c_str());
+                start /= 1000.0;
+                end /= 1000.0;
+                wstring buffer = GetFloat(start);
+                pElement->setAttribute(L"Offset",buffer.c_str());
+                buffer = GetFloat(end-start);
+                pElement->setAttribute(L"Duration",buffer.c_str());
+                pElement->setAttribute(L"MarkDuration",L"0");
+                annotationID = annotation.alignableAnnotation.annotationID;
+            } else if (annotation.refAnnotation.annotationID.size()>0) {
+                pElement->appendChild(CreateElement(doc,type,annotation.refAnnotation.annotationValue.c_str()));
+                double start = document.getTime(annotation.refAnnotation,true);
+                double end = document.getTime(annotation.refAnnotation,false);
+                start /= 1000.0;
+                end /= 1000.0;
+                wstring buffer = GetFloat(start);
+                pElement->setAttribute(L"Offset",buffer.c_str());
+                buffer = GetFloat(end-start);
+                pElement->setAttribute(L"Duration",buffer.c_str());
+                pElement->setAttribute(L"MarkDuration",L"0");
+                annotationID = annotation.refAnnotation.annotationID;
+            }
+            if (annotationID.size()>0) {
+				list<EAnnotation>::iterator it = stack.begin();
+				while (it!=stack.end()) {
+                    EAnnotation ctype = *it;
+                    ProcessTier(ctype, stack, doc, *pElement, assignments, document, annotationID);
+					it++;
+                }
+            }
+            parent.appendChild(pElement);
+        }
+    } else if (type==GLOSS) {
+        if (parentID.size()==0) {
+            for (size_t j=0; j<tier->annotations.size(); j++) {
+                DOMElement * pElement = doc->createElement(L"SegmentData");
+                pElement->setAttribute(L"IsBookmark",L"false");
+                Elan::CAnnotation & annotation = tier->annotations[j];
+                wstring annotationID;
+                if (annotation.alignableAnnotation.annotationID.size()>0) {
+                    pElement->appendChild(CreateElement(doc,type,annotation.alignableAnnotation.annotationValue.c_str()));
+                    double start = document.getTime(annotation.alignableAnnotation.timeSlotRef1.c_str());
+                    double end = document.getTime(annotation.alignableAnnotation.timeSlotRef2.c_str());
+                    start /= 1000.0;
+                    end /= 1000.0;
+                    wstring buffer = GetFloat(start);
+                    pElement->setAttribute(L"Offset",buffer.c_str());
+                    buffer = GetFloat(end-start);
+                    pElement->setAttribute(L"Duration",buffer.c_str());
+                    pElement->setAttribute(L"MarkDuration",buffer.c_str());
+                    pElement->appendChild(CreateElement(doc,PHONETIC,L"\xFFFD"));
+                    annotationID = annotation.alignableAnnotation.annotationID;
+                } else if (annotation.refAnnotation.annotationID.size()>0) {
+                    pElement->appendChild(CreateElement(doc,type,annotation.refAnnotation.annotationValue.c_str()));
+                    double start = document.getTime(annotation.refAnnotation,true);
+                    double end = document.getTime(annotation.refAnnotation,false);
+                    start /= 1000.0;
+                    end /= 1000.0;
+                    wstring buffer = GetFloat(start);
+                    pElement->setAttribute(L"Offset",buffer.c_str());
+                    buffer = GetFloat(end-start);
+                    pElement->setAttribute(L"Duration",buffer.c_str());
+                    pElement->setAttribute(L"MarkDuration",buffer.c_str());
+                    pElement->appendChild(CreateElement(doc,PHONETIC,L"\xFFFD"));
+                    annotationID = annotation.refAnnotation.annotationID;
+                }
+                if (annotationID.size()>0) {
+					list<EAnnotation>::iterator it = stack.begin();
+					while (it!=stack.end()) {
+						EAnnotation ctype = *it;
+						ProcessTier(ctype, stack, doc, *pElement, assignments, document, annotationID);
+						it++;
+					}
+                }
+                parent.appendChild(pElement);
+            }
+        } else {
+            // there is already a segment data section
+            // we are nested within an existing segment
+            for (size_t j=0; j<tier->annotations.size(); j++) {
+                Elan::CAnnotation & annotation = tier->annotations[j];
+                if (annotation.refAnnotation.annotationID.size()>0) {
+                    if (_wcsicmp(annotation.refAnnotation.annotationRef.c_str(),parentID.c_str())==0) {
+						double start = document.getTime(annotation.refAnnotation,true);
+						double end = document.getTime(annotation.refAnnotation,false);
+						start /= 1000.0;
+						end /= 1000.0;
+						wstring buffer = GetFloat(end-start);
+						parent.setAttribute(L"MarkDuration",buffer.c_str());
+						parent.appendChild(CreateElement(doc,type,tier->annotations[j].refAnnotation.annotationValue.c_str()));
+						break;
+                    }
+                }
+            }
+        }
+    } else {
+        // if we are a dependent segment, and we have no parents, then we need to create a segment element
+        if (parentID.size()==0) {
+            for (size_t j=0; j<tier->annotations.size(); j++) {
+                DOMElement * pElement = doc->createElement(L"SegmentData");
+                pElement->setAttribute(L"IsBookmark",L"false");
+                Elan::CAnnotation & annotation = tier->annotations[j];
+                wstring annotationID;
+                if (annotation.alignableAnnotation.annotationID.size()>0) {
+                    pElement->appendChild(CreateElement(doc,type,annotation.alignableAnnotation.annotationValue.c_str()));
+                    double start = document.getTime(annotation.alignableAnnotation.timeSlotRef1.c_str());
+                    double end = document.getTime(annotation.alignableAnnotation.timeSlotRef2.c_str());
+                    start /= 1000.0;
+                    end /= 1000.0;
+                    wstring buffer = GetFloat(start);
+                    pElement->setAttribute(L"Offset",buffer.c_str());
+                    buffer = GetFloat(end-start);
+                    pElement->setAttribute(L"Duration",buffer.c_str());
+                    pElement->setAttribute(L"MarkDuration",buffer.c_str());
+                    pElement->appendChild(CreateElement(doc,type,annotation.alignableAnnotation.annotationValue.c_str()));
+                    annotationID = annotation.alignableAnnotation.annotationID;
+                } else if (annotation.refAnnotation.annotationID.size()>0) {
+                    pElement->appendChild(CreateElement(doc,type,annotation.refAnnotation.annotationValue.c_str()));
+                    double start = document.getTime(annotation.refAnnotation,true);
+                    double end = document.getTime(annotation.refAnnotation,false);
+                    start /= 1000.0;
+                    end /= 1000.0;
+                    wstring buffer = GetFloat(start);
+                    pElement->setAttribute(L"Offset",buffer.c_str());
+                    buffer = GetFloat(end-start);
+                    pElement->setAttribute(L"Duration",buffer.c_str());
+                    pElement->setAttribute(L"MarkDuration",buffer.c_str());
+                    pElement->appendChild(CreateElement(doc,type,annotation.refAnnotation.annotationValue.c_str()));
+                    annotationID = annotation.refAnnotation.annotationID;
+                }
+                pElement->appendChild(CreateElement(doc,PHONETIC,L"\xFFFD"));
+                if (annotationID.size()>0) {
+					list<EAnnotation>::iterator it = stack.begin();
+					while (it!=stack.end()) {
+						EAnnotation ctype = *it;
+						ProcessTier(ctype, stack, doc, *pElement, assignments, document, annotationID);
+						it++;
+					}
+                }
+                parent.appendChild(pElement);
+            }
+        } else {
+            // we are nested within an existing segment
+            // for all other segment types
+            for (size_t j=0; j<tier->annotations.size(); j++) {
+                Elan::CAnnotation & annotation = tier->annotations[j];
+                if (annotation.refAnnotation.annotationID.size()>0) {
+                    if (_wcsicmp(annotation.refAnnotation.annotationRef.c_str(),parentID.c_str())==0) {
+                        parent.appendChild(CreateElement(doc,type,annotation.refAnnotation.annotationValue.c_str()));
+						break;
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+
+Elan::CTier * CSAXMLUtils::FindTier(Elan::CAnnotationDocument & document, wstring tierid) {
+    for (size_t i=0; i<document.tiers.size(); i++) {
+        if (_wcsicmp(document.tiers[i].tierID.c_str(),tierid.c_str())==0) {
+            return &document.tiers[i];
+        }
+    }
+    return NULL;
+}
+
+void CSAXMLUtils::AddPhraseSegments(EAnnotation atype,
+                                    xercesc_3_1::DOMDocument * doc,
+                                    DOMElement & element,
+                                    Elan::CAnnotationDocument & document,
+                                    Elan::CTier & tier) {
+
+    for (size_t j=0; j<tier.annotations.size(); j++) {
+        Elan::CAnnotation & annotation = tier.annotations[j];
+        DOMElement * pSegData = doc->createElement(L"MusicSegmentData");
+        pSegData->setAttribute(L"PhraseLevel",GetPhraseLevel(atype));
+        if (annotation.alignableAnnotation.annotationID.size()>0) {
+            pSegData->appendChild(CreateElement(doc,atype,annotation.alignableAnnotation.annotationValue.c_str()));
+            double start = document.getTime(annotation.alignableAnnotation.timeSlotRef1.c_str());
+            double end = document.getTime(annotation.alignableAnnotation.timeSlotRef2.c_str());
+            start /= 1000.0;
+            end /= 1000.0;
+            wstring buffer = GetFloat(start);
+            pSegData->setAttribute(L"Offset",buffer.c_str());
+            buffer = GetFloat(end-start);
+            pSegData->setAttribute(L"Duration",buffer.c_str());
+        } else if (annotation.refAnnotation.annotationID.size()>0) {
+            pSegData->appendChild(CreateElement(doc,atype,annotation.refAnnotation.annotationValue.c_str()));
+            double start = document.getTime(annotation.refAnnotation,true);
+            double end = document.getTime(annotation.refAnnotation,false);
+            start /= 1000.0;
+            end /= 1000.0;
+            wstring buffer = GetFloat(start);
+            pSegData->setAttribute(L"Offset",buffer.c_str());
+            buffer = GetFloat(end-start);
+            pSegData->setAttribute(L"Duration",buffer.c_str());
+        }
+        element.appendChild(pSegData);
+    }
+}
+
+
 

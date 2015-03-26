@@ -812,7 +812,12 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
             // create a SAXML file
             wstring filename = wave_file_name.substr(0,wave_file_name.length()-wcslen(L".wav"));
             filename.append(L".saxml");
-            CSAXMLUtils::WriteSAXML(filename.c_str(), document, assignments);
+			try {
+				CSAXMLUtils::WriteSAXML(filename.c_str(), document, assignments);
+			} catch(int error) {
+				ErrorMessage(error);
+				return false;
+			}
 
         } else if (result==IDCANCEL) {
             return FALSE;

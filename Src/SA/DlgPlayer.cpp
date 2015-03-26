@@ -167,6 +167,7 @@ void CDlgPlayer::SetPositionTime() {
             case ID_PLAYBACK_LTOSTART:
             case ID_PLAYBACK_LTOSTOP:
                 dwPosition = DWORD(m_pView->GetDataPosition(0));
+				TRACE("DataPosition=%lu\n",dwPosition);
                 break;
             case ID_PLAYBACK_CURSORS:
             case ID_PLAYBACK_STARTTOR:
@@ -414,6 +415,7 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
                 break;
             case ID_PLAYBACK_LTOSTOP:
                 dwStart = DWORD(m_pView->GetDataPosition(0));
+				TRACE("DataPosition=%lu\n",dwStart);
                 dwSize = m_pView->GetStopCursorPosition();
                 if (dwSize > dwStart) {
                     dwSize -= dwStart;
@@ -458,10 +460,12 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
                 m_dwPlayPosition = dwStart;
             }
             if (bError) {
-                pApp->ErrorMessage(IDS_ERROR_PLAYMODE);    // play mode not playable
+				// play mode not playable
+                pApp->ErrorMessage(IDS_ERROR_PLAYMODE);    
             } else {
                 SetDlgItemText(IDC_TIMERTEXT, _T("Current Time"));
-                m_pView->SetPlaybackPosition(dwStart); // SDM 1.5Test10.5
+				// SDM 1.5Test10.5
+                m_pView->SetPlaybackPosition(dwStart); 
 
                 //TRACE("Post UPDATE_PLAYER 1\n");
                 AfxGetMainWnd()->PostMessageW(WM_USER_UPDATE_PLAYER, 1, 0);
@@ -470,10 +474,14 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
             }
 
             if (bError) {
-                m_nMode = STOPPED;  // play not successfull
-                m_play.Release(); // release Play button
-                m_pause.EnableWindow(FALSE); // disable Pause button
-                GetDlgItem(IDC_PLAYMODE)->EnableWindow(TRUE); // enable mode window
+				// play not successfull
+                m_nMode = STOPPED;
+				// release Play button
+                m_play.Release(); 
+				// disable Pause button
+                m_pause.EnableWindow(FALSE);
+				// enable mode window
+                GetDlgItem(IDC_PLAYMODE)->EnableWindow(TRUE); 
                 m_VUBar.Reset();
                 // An error has occurred
                 return FALSE;
@@ -495,7 +503,8 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
         break;
 
     case STOPPED: {
-        bool postUpdate = (m_nMode==PLAYING)?true:false;
+        bool postUpdate = (m_nMode==PLAYING);
+		bool wasIdle = (m_nMode==IDLE);
         m_nMode = STOPPED;
         if (m_pWave) {
             m_pWave->Stop();
@@ -503,7 +512,10 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
         m_dwPlayPosition = 0;
         SetPositionTime();
         m_pView->StopPlaybackTimer();
-        m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
+		if (!wasIdle) {
+			// SDM 1.06.6U6 hide playback indicators
+			m_pView->SetPlaybackPosition(0xffffffff);
+		}
 
         if (postUpdate) {
             //TRACE("Post UPDATE_PLAYER 2\n");
@@ -543,8 +555,9 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
 // The actually playing data block has been finished playing. Update the
 // dialog display controls.
 /***************************************************************************/
-void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed) {
-    m_pView->SetPlaybackPosition(dwPosition, nSpeed);
+void CDlgPlayer::BlockFinished( UINT nLevel, DWORD dwPosition, UINT nSpeed) {
+
+    m_pView->SetPlaybackPosition( dwPosition, nSpeed);
 
     //TRACE("Post UPDATE_PLAYER 3\n");
     AfxGetMainWnd()->PostMessageW(WM_USER_UPDATE_PLAYER, 3, 0);

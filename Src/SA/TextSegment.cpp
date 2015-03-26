@@ -72,7 +72,7 @@ DWORD CTextSegment::CalculateDuration(ISaDoc * pDoc, const int nIndex) const {
 
     CSegment * pMaster = (CSegment *)pDoc->GetSegment(m_nMasterIndex);
     pMaster->Validate();
-    DWORD offset_size = GetOffsetSize();
+    int offset_size = GetOffsetSize();
     if ((nIndex < 0) || (nIndex >= offset_size)) {
         return DWORD(-1);
     }
