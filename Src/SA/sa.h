@@ -93,75 +93,43 @@ public:
     CSaApp();
     ~CSaApp();
 
-    // Attributes
-private:
-    //  FindMemoryLeaks m_fml;
-
-    HINSTANCE m_hEnglishResources;
-    HINSTANCE m_hLocalizedResources;
-    CMultiDocTemplate * m_pDocTemplate; // document template
-    CMultiDocTemplate * m_pWbTemplate;  // workbench document template
-    CSaString   m_szCmdFileName;        // file path and name of CMD-Line file
-    int         m_nBatchMode;           // 0 = not in batch mode, 1 = in batch mode do not exit, 3 = in batch mode ok to exit
-    BOOL        m_bModified;            // TRUE = at least one of the batch files has been modified
-    BOOL        m_bNewDocument;         // TRUE = file new operation
-    int         m_nEntry;               // number of entries in list file
-    int         m_nCommand;             // command sequence to execute
-    CStringArray * m_pszErrors;         // error message string array
-    CStringArray * m_pszMessages;       // message string array
-    CDocument * m_pWbDoc;               // pointer to workbench document
-    CSaString   m_szWbPath;             // path and filename of workbench file
-    BOOL        m_bWbOpenOnExit;        // TRUE, if workbench was open on exit
-    CSaString   m_szCallingApp;         // title bar prefix of calling app
-    UINT        m_OpenAsID;             // ID (ID_FILE_OPEN, ID_FILE_OPENAS_PHONETICANALYSIS, etc.) selected from File-Open or File-OpenAs menus.
-    CSaString   m_szLastClipboardPath;  // Path to last file sent to the clipboard
-    CSaString   m_szLastVersion;        // Last version SA was opened in
-    BOOL        m_bNewUser;             // Last version SA was opened in
-
-    // Operations
-public:
     // helper functions
     BOOL WriteSettings();
     BOOL ReadSettings();
-    void PasteClipboardToNewFile(HGLOBAL hData); // create a new file and paste the clipboard into it
+    void PasteClipboardToNewFile(HGLOBAL hData);		// create a new file and paste the clipboard into it
     CSaDoc * OpenWavFileAsNew(LPCTSTR szTempPath);
-    CDocument * OpenBlankView(bool bWithGraphs); // open a blank view to do something on.
+    CDocument * OpenBlankView(bool bWithGraphs);		// open a blank view to do something on.
     CSaString DefaultDir(CSaString * pFilename = NULL) const;
 
     static BOOL CSaApp::m_bUseUnicodeEncoding;
 
-private:
-    int         CheckForBatchMode(LPTSTR);                      // check if SA runs in batch mode
-    void        CopyClipboardTranscription(LPCTSTR szTempPath);
-
-public:
-    void        ExamineCmdLine(LPCTSTR, WPARAM wParam = 0);     // examine the command line
-    void        ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
-    void        ErrorMessage(CSaString & szText);
-    void        Message(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
-    void        DisplayMessages();                              // displays a stored error message
-    void        SetBatchFileChanged(CSaString, int, CDocument *); // set file changed in batch mode list file
-    int         GetBatchMode();                                 // return application mode (batch or not, exit allowed)
-    void        CancelBatchMode();                              // allow SA to exit
-    CDocument * IsFileOpened(LPCTSTR pszFileName);				// check is this file already opened
-    bool        IsDocumentOpened(const CSaDoc * pDoc);           // check is this file already opened
-    BOOL        CloseWorkbench(CDocument *);                    // close an already opened workbench document
-    void        WorkbenchClosed();                              // signal, that workbench has been closed
-    void        SetWorkbenchPath(CSaString * pszPath);          // set the workbenchs document pathname
+    void ExamineCmdLine(LPCTSTR, WPARAM wParam = 0);    // examine the command line
+    void ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL) const;
+    void ErrorMessage(CSaString & szText) const;
+    void Message(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
+    void DisplayMessages();                             // displays a stored error message
+    void SetBatchFileChanged(CSaString, int, CDocument *); // set file changed in batch mode list file
+    int GetBatchMode();                                 // return application mode (batch or not, exit allowed)
+    void CancelBatchMode();                             // allow SA to exit
+    CDocument * IsFileOpened(LPCTSTR pszFileName);      // check is this file already opened
+    bool IsDocumentOpened(const CSaDoc * pDoc);         // check is this file already opened
+    BOOL CloseWorkbench(CDocument *);                   // close an already opened workbench document
+    void WorkbenchClosed();                             // signal, that workbench has been closed
+    void SetWorkbenchPath(CSaString * pszPath);         // set the workbenchs document pathname
     CSaString * GetWorkbenchPath();                             // returns a pointer to the workbench pathname
-    int         SaDoPrintDialog(CPrintDialog * pPD, BOOL landscape);
-    BOOL        SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape);
-    BOOL        IsCreatingNewFile();                            // return TRUE if file new operation running
-    CDocument * GetWbDoc();                                     // return pointer to workbench document
-    void        SetWbOpenOnExit(BOOL bOpen);
-    void        FileReturn(BOOL bHide=TRUE);                    // return to calling application
-    CWnd    *   IsAppRunning();
-    UINT        GetOpenAsID();                                  // return m_OpenAsID
-    void        SetOpenAsID(UINT OpenAsID);                     // set m_OpenAsID
-    void        SetLastClipboardPath(LPCTSTR szPath);
-    LPCTSTR     GetLastClipboardPath();
-    void        FileOpen();
-    void        GetMRUFilePath(int i, CSaString & buffer) const;
+    int SaDoPrintDialog(CPrintDialog * pPD, BOOL landscape);
+    BOOL SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape);
+    BOOL IsCreatingNewFile();                           // return TRUE if file new operation running
+    CDocument * GetWbDoc();                             // return pointer to workbench document
+    void SetWbOpenOnExit(BOOL bOpen);
+    void FileReturn(BOOL bHide=TRUE);                   // return to calling application
+    CWnd * IsAppRunning();
+    UINT GetOpenAsID();                                 // return m_OpenAsID
+    void SetOpenAsID(UINT OpenAsID);                    // set m_OpenAsID
+    void SetLastClipboardPath(LPCTSTR szPath);
+    LPCTSTR GetLastClipboardPath();
+    void FileOpen();
+    void GetMRUFilePath(int i, CSaString & buffer) const;
 
     // methods for saving the settings and window state.
     CSaView * GetViewActive();
@@ -182,6 +150,9 @@ public:
     virtual BOOL InitInstance();
     virtual int ExitInstance();
     virtual CDocument * OpenDocumentFile(LPCTSTR lpszFileName);
+
+    bool IsSAServer() const;
+    bool IsSAB() const;
 
 protected:
     void ShowStartupDialog(BOOL bAppIsStartingUp);
@@ -231,7 +202,6 @@ protected:
     virtual void WakeUp(LPCTSTR aCommandLine);
     // sleeping thread that waits for activation
     static UINT ActivationThread(CSaApp * aObject);
-    bool IsSAS();
 
     DECLARE_MESSAGE_MAP()
 
@@ -241,10 +211,33 @@ protected:
     class CSingleInstanceData * mData;
 
 private:
+    int CheckForBatchMode(LPTSTR);      // check if SA runs in batch mode
+    void CopyClipboardTranscription(LPCTSTR szTempPath);
     CSaString GetBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpDefault = NULL);
     BOOL WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue);
+
+    HINSTANCE m_hEnglishResources;
+    HINSTANCE m_hLocalizedResources;
+    CMultiDocTemplate * m_pDocTemplate;		// document template
+    CMultiDocTemplate * m_pWbTemplate;		// workbench document template
+    CSaString m_szCmdFileName;				// file path and name of CMD-Line file
+    int m_nBatchMode;						// 0 = not in batch mode, 1 = in batch mode do not exit, 3 = in batch mode ok to exit
+    BOOL m_bModified;						// TRUE = at least one of the batch files has been modified
+    BOOL m_bNewDocument;					// TRUE = file new operation
+    int m_nEntry;							// number of entries in list file
+    int m_nCommand;							// command sequence to execute
+    CStringArray * m_pszErrors;				// error message string array
+    CStringArray * m_pszMessages;			// message string array
+    CDocument * m_pWbDoc;					// pointer to workbench document
+    CSaString m_szWbPath;					// path and filename of workbench file
+    BOOL m_bWbOpenOnExit;					// TRUE, if workbench was open on exit
+    CSaString m_szCallingApp;				// title bar prefix of calling app
+    UINT m_OpenAsID;						// ID (ID_FILE_OPEN, ID_FILE_OPENAS_PHONETICANALYSIS, etc.) selected from File-Open or File-OpenAs menus.
+    CSaString m_szLastClipboardPath;		// Path to last file sent to the clipboard
+    CSaString m_szLastVersion;				// Last version SA was opened in
+    BOOL m_bNewUser;						// Last version SA was opened in
 };
 
 CSaString GetShellFolderPath(DWORD csidl);
 
-#endif // __SA_H__
+#endif

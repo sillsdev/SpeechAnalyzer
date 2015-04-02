@@ -52,6 +52,7 @@ CImportELAN::CImportELAN(const CSaString & szFileName, BOOL batch) {
 // CImport::Import read import file
 /***************************************************************************/
 BOOL CImportELAN::Import(EImportMode nMode) {
+
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     pDoc->CheckPoint();
     pDoc->SetModifiedFlag(TRUE);

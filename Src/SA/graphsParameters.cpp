@@ -186,8 +186,8 @@ void CDlgParametersPitchPage::Apply() {
             pDoc->GetPitch()->SetDataInvalid();
             pDoc->GetCustomPitch()->SetDataInvalid();
             pDoc->GetSmoothedPitch()->SetDataInvalid();
-            pDoc->SetModifiedFlag(); // document has been modified
-            pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+            pDoc->SetModifiedFlag();			// document has been modified
+            pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
         }
         if ((m_nChange != pUttParm->nMaxChange) || (m_nGroup != pUttParm->nMinGroup)
                 || (m_nInterpol != pUttParm->nMaxInterp)) {

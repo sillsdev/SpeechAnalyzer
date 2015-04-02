@@ -691,7 +691,7 @@ void CDlgAutoRecorder::DeleteTempFile() {
             mmioClose(m_hmmioFile, 0);
             m_hmmioFile = NULL;
         }
-        FileUtils::RemoveFile(m_szFileName);
+        FileUtils::Remove(m_szFileName);
         wmemset(m_szFileName,0,_countof(m_szFileName));
     }
 }

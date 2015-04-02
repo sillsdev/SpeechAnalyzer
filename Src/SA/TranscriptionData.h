@@ -1,13 +1,17 @@
 #ifndef TRANSCRIPTION_DATA_H
 #define TRANSCRIPTION_DATA_H
 
+#include "AppDefs.h"
 #include "TranscriptionHelper.h"
 
 class CTranscriptionData {
 public:
     CTranscriptionData();
 
-    void ResetContent();
+	MarkerList & GetMarkerList( EAnnotation type);
+    CString GetValue( EAnnotation type, int index);
+
+	void ResetContent();
 
     // the primary tag
     CSaString m_szPrimary;

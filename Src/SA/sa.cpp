@@ -420,7 +420,7 @@ BOOL CSaApp::InitInstance() {
 
     // create main MDI Frame window
     CMainFrame * pMainFrame = new CMainFrame();
-    if (!IsSAS()) {
+    if (!IsSAServer()) {
         if (!pMainFrame->LoadFrame(IDR_MAINFRAME)) {
             return FALSE;
         }
@@ -443,7 +443,7 @@ BOOL CSaApp::InitInstance() {
     free((void *)m_pszHelpFilePath);
     m_pszHelpFilePath = _tcsdup(szNewPath);
 
-    if (IsSAS()) {
+    if (IsSAServer()) {
         if (!GetBatchMode()) {
             AfxMessageBox(IDS_ERROR_SAS,MB_OK,0);
             delete m_pMainWnd;
@@ -843,7 +843,7 @@ void CSaApp::OnProcessBatchCommands() {
             helper.Import(nMode);
             try { // SDM 1.5Test10.0
                 // delete the list file
-                FileUtils::RemoveFile(szPath);
+                FileUtils::Remove(szPath);
             } catch (CFileException e) {
                 // error removing file
                 ErrorMessage(IDS_ERROR_DELLISTFILE, szPath);
@@ -980,7 +980,7 @@ void CSaApp::OnProcessBatchCommands() {
 // CSaApp::ErrorMessage Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
+void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) const {
     CSaString szText;
     try {
         // create the text
@@ -1028,7 +1028,7 @@ void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
 // CSaApp::ErrorMessage Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::ErrorMessage(CSaString & szText) {
+void CSaApp::ErrorMessage(CSaString & szText) const {
 #ifdef _DEBUG
     ASSERT(FALSE);
 #endif
@@ -1160,7 +1160,7 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) {
     CSaDoc * pResult = OpenWavFileAsNew(szTempPath);
     if (!pResult) {
         // Error opening file, destroy temp
-        FileUtils::RemoveFile(szTempPath);
+        FileUtils::Remove(szTempPath);
     }
 }
 
@@ -1545,7 +1545,7 @@ void CSaApp::FileReturn(BOOL bHide) {
         if (!m_bModified) { // modified batch files are available
             // there are no changes in the list file, so delete the list file
             // delete the list file
-            FileUtils::RemoveFile(m_szCmdFileName);
+            FileUtils::Remove(m_szCmdFileName);
         }
         CWnd * pWnd = IsAppRunning(); // SDM 1.5Test8.5
         if (pWnd!=NULL) {
@@ -2360,8 +2360,12 @@ void CSaApp::GetMRUFilePath(int i, CSaString & buffer) const {
     }
 }
 
-bool CSaApp::IsSAS() {
-    return (CSaString(m_pszExeName).Find(_T("SAS")) != -1);
+bool CSaApp::IsSAServer() const {
+    return (CSaString(m_pszExeName).Find(_T("SAServer")) != -1);
+}
+
+bool CSaApp::IsSAB() const {
+    return (CSaString(m_pszExeName).Find(_T("SA-SAB")) != -1);
 }
 
 // Name:        CSingleInstanceData
@@ -2462,7 +2466,7 @@ BOOL CSaApp::CreateAsSingleton(LPCTSTR aName) {
         TRACE("SingleInstance not supported in batch mode\n");
         return TRUE;
     }
-    if (IsSAS()) {
+    if (IsSAServer()) {
         TRACE("SingleInstance not supported in server mode\n");
         return TRUE;
     }

@@ -66,7 +66,7 @@ void Lift13::write_document(Document & doc, LPCTSTR filename) {
     xercesc_3_1::DOMDocument * pDoc = toDOM(doc);
 
     // checking file existence
-    FileUtils::RemoveFile(filename);
+    FileUtils::Remove(filename);
 
     printf("writing output\n");
     // write the document to disk

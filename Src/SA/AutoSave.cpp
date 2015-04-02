@@ -252,7 +252,7 @@ void CAutoSave::CleanAll() {
                 continue;
             }
             wstring path = finder.GetFilePath();
-            FileUtils::RemoveFile(path.c_str());
+            FileUtils::Remove(path.c_str());
         } while (more);
     }
 }
@@ -379,7 +379,7 @@ void CAutoSave::Save(CSaDoc & document) {
         // if the current autosave wave file exists, delete it
         if (currentwave.length()>0) {
             if (FileUtils::FileExists(currentwave.c_str())) {
-                FileUtils::RemoveFile(currentwave.c_str());
+                FileUtils::Remove(currentwave.c_str());
             }
         }
         if (!::CopyFile(restorewave.c_str(), currentwave.c_str(), TRUE)) {
@@ -390,7 +390,7 @@ void CAutoSave::Save(CSaDoc & document) {
     if (document.IsTransModified()) {
         if (currentxml.length()>0) {
             if (FileUtils::FileExists(currentxml.c_str())) {
-                FileUtils::RemoveFile(currentxml.c_str());
+                FileUtils::Remove(currentxml.c_str());
             }
         }
 
@@ -401,7 +401,7 @@ void CAutoSave::Save(CSaDoc & document) {
 
         // rename it to the appropriate name
 		wstring oldname = FileUtils::ReplaceExtension(currentwave.c_str(),L".saxml");
-        FileUtils::RenameFile(oldname.c_str(), currentxml.c_str());
+        FileUtils::Rename(oldname.c_str(), currentxml.c_str());
     }
 
     // write the info file
@@ -446,7 +446,7 @@ void CAutoSave::RestoreFile(LPCTSTR from, LPCTSTR to) {
         wstring backup;
         backup.append(to);
         backup.append(L".bak");
-        FileUtils::RenameFile(to, backup.c_str());
+        FileUtils::Rename(to, backup.c_str());
     }
     ::CopyFile(from, to, FALSE);
     ::DeleteFile(from);
@@ -514,13 +514,13 @@ void CAutoSave::Close(LPCTSTR filename) {
                 fn = fn.substr(pos+1,fn.length()-pos-1);
             }
             if (fn.compare(info)==0) {
-                FileUtils::RemoveFile(path.c_str());
+                FileUtils::Remove(path.c_str());
             } else if (fn.compare(wave)==0) {
-                FileUtils::RemoveFile(path.c_str());
+                FileUtils::Remove(path.c_str());
             } else if (fn.compare(saxml)==0) {
-                FileUtils::RemoveFile(path.c_str());
+                FileUtils::Remove(path.c_str());
             } else if (fn.compare(tmp)==0) {
-                FileUtils::RemoveFile(path.c_str());
+                FileUtils::Remove(path.c_str());
             }
 
         } while (more);

@@ -80,6 +80,8 @@ public:
 
     int GetMasterIndex(void) const;
     EAnnotation GetAnnotationIndex(void) const;
+	bool Is( EAnnotation type) const;
+
     // get copies of internal data.  (const functions)
     virtual CFontTable * NewFontTable() const = 0;  // return selected font table
     int GetOffsetSize() const;
@@ -103,10 +105,11 @@ public:
     DWORD GetDurationAt(int index) const;
     void InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration);
     virtual void RemoveAt(int index, bool remove);          // remove text, offset and duration
-    virtual void Split(CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart);
-    virtual void Merge(CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
-    virtual void MoveDataLeft(DWORD offset);
-    virtual void MoveDataRight(DWORD offset);
+    virtual bool Split( DWORD start, DWORD newStopStart);
+    virtual bool Merge( DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
+    virtual bool MoveDataLeftSAB(DWORD offset, CString newText);
+    virtual bool MoveDataLeft(DWORD offset);
+    virtual bool MoveDataRight(DWORD offset, bool sab);
     void AdjustDuration(DWORD offset, DWORD duration);
     virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
     virtual BOOL SetText(int nIndex, LPCTSTR pszString, int nDelimiter, DWORD dwOffset, DWORD dwDuration);   // insert a new segment
@@ -187,13 +190,15 @@ public:
     void GrowSegment( CSaDoc & document, DWORD sectionStart, DWORD sectionLength);  
 	bool IsDependent( CSegment & parent);
 
+	int GetLastNonEmptyValue();
+
 protected:
     int GetReferenceCount(CSegment * pSegment, int sel);
 
     typedef BOOL (CALLBACK EXPORT * TpInputFilterProc)(CSaString &);
     int m_nSelection;                   // selected segment
-    EAnnotation m_nAnnotationIndex;
-    int m_nMasterIndex;
+    EAnnotation m_nAnnotationType;
+    int m_nMasterType;
 
     CStringArray m_Text;                // array of text strings
 

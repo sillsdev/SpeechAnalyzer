@@ -252,7 +252,7 @@ CProcessSmoothLoudness::CProcessSmoothLoudness() {
 /***************************************************************************/
 CProcessSmoothLoudness::~CProcessSmoothLoudness() {
     // delete the temporary file
-    FileUtils::RemoveFile(m_SRDfileStatus.m_szFullName);
+    FileUtils::Remove(m_SRDfileStatus.m_szFullName);
     if (m_pSRDfile) {
         delete m_pSRDfile;
         m_pSRDfile = NULL;
@@ -276,7 +276,7 @@ long CProcessSmoothLoudness::Exit(int nError, HANDLE hSmoothBlock) {
         m_pSRDfile->Abort();
     }
 
-    FileUtils::RemoveFile(m_SRDfileStatus.m_szFullName);
+    FileUtils::Remove(m_SRDfileStatus.m_szFullName);
     m_SRDfileStatus.m_szFullName[0] = 0;
     // free the smoothed data buffer
     ::GlobalUnlock(hSmoothBlock);
@@ -476,7 +476,7 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT n
 /***************************************************************************/
 void CProcessSmoothLoudness::SetDataInvalid() {
     CProcess::SetDataInvalid();
-    FileUtils::RemoveFile(m_SRDfileStatus.m_szFullName);
+    FileUtils::Remove(m_SRDfileStatus.m_szFullName);
     m_SRDfileStatus.m_szFullName[0] = 0;
 }
 
@@ -676,7 +676,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
         if (!m_hSRDdata) {
             // memory allocation error
             ErrorMessage(IDS_ERROR_MEMALLOC);
-            FileUtils::RemoveFile(m_SRDfileStatus.m_szFullName);
+            FileUtils::Remove(m_SRDfileStatus.m_szFullName);
             m_SRDfileStatus.m_szFullName[0] = 0;
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, 100);
@@ -687,7 +687,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
             ErrorMessage(IDS_ERROR_MEMLOCK);
             ::GlobalFree(m_hSRDdata);
             m_hSRDdata = NULL;
-            FileUtils::RemoveFile(m_SRDfileStatus.m_szFullName);
+            FileUtils::Remove(m_SRDfileStatus.m_szFullName);
             m_SRDfileStatus.m_szFullName[0] = 0;
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, 100);

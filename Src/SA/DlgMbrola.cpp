@@ -39,7 +39,7 @@ CDlgMbrola::CDlgMbrola() : CPropertyPage(CDlgMbrola::IDD) {
 
 CDlgMbrola::~CDlgMbrola() {
     // remove synthesized wavefile in SA
-    FileUtils::RemoveFile(m_szMBRolaName);
+    FileUtils::Remove(m_szMBRolaName);
     unload_MBR();
 }
 

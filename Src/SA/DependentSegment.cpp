@@ -30,7 +30,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 int CDependentSegment::AlignOffsetToMaster(ISaDoc * pSaDoc, DWORD * pdwOffset) const {
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     // get pointer to master offset array
-    CSegment * pSegment = pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pSegment = pDoc->GetSegment(m_nMasterType);
     int nLength = pSegment->GetOffsetSize();
     if (nLength == 0) {
         return -1;    // no master segment yet
@@ -57,7 +57,7 @@ int CDependentSegment::AlignOffsetToMaster(ISaDoc * pSaDoc, DWORD * pdwOffset) c
 int CDependentSegment::AlignStopToMaster(CDocument * pSaDoc, DWORD * pdwStop) const {
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     // get pointer to master offset array
-    CSegment * pSegment = pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pSegment = pDoc->GetSegment(m_nMasterType);
     int nLength = pSegment->GetOffsetSize();
     if (nLength == 0) {
         return -1;    // no master segment yet
@@ -85,7 +85,7 @@ int CDependentSegment::AlignStopToMaster(CDocument * pSaDoc, DWORD * pdwStop) co
 void CDependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, ELimit) const {
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
-    CSegment * pMaster = pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pMaster = pDoc->GetSegment(m_nMasterType);
 
     int nTextIndex = GetSelection();
 
@@ -140,7 +140,7 @@ int CDependentSegment::AdjustPositionToMaster(CDocument * pSaDoc, DWORD & dwNewO
     DWORD dwAlignStop[2] = {
         dwNewStop
     };
-    CSegment * pMaster = pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pMaster = pDoc->GetSegment(m_nMasterType);
     int ret; // SDM 1.5Test8.2 added return parameter
 
     // Find Nearest master Start
@@ -259,7 +259,7 @@ void CDependentSegment::AdjustCursorsToMaster(CDocument * pSaDoc, BOOL bAdjust, 
 int CDependentSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EMode nMode) const {
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
-    CSegment * pMaster = pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pMaster = pDoc->GetSegment(m_nMasterType);
 
     int nTextIndex = GetSelection();
 
@@ -334,12 +334,12 @@ int CDependentSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwStart, DWO
 /***************************************************************************/
 void CDependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
     // get the offset and duration from master
-    int nSegment = pDoc->GetSegment(m_nMasterIndex)->FindOffset(dwStart);
+    int nSegment = pDoc->GetSegment(m_nMasterType)->FindOffset(dwStart);
     if (nSegment == -1) {
         return;    // return on error
     }
 
-    DWORD dwDuration = pDoc->GetSegment(m_nMasterIndex)->GetDuration(nSegment);
+    DWORD dwDuration = pDoc->GetSegment(m_nMasterType)->GetDuration(nSegment);
     DWORD dwStop = dwStart + dwDuration;
 
     int nPos = CheckPosition(pDoc, dwStart, dwStop, MODE_ADD); // get the insert position
@@ -357,10 +357,10 @@ void CDependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaSt
         return;    // return on error
     }
 
-    pDoc->SetModifiedFlag(TRUE);        // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
+    pDoc->SetModifiedFlag(TRUE);				// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);			// transcription data has been modified
     pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop); // change the selection
-    pView->RefreshGraphs(FALSE);        // refresh the graphs between cursors
+    pView->RefreshGraphs(FALSE);				// refresh the graphs between cursors
 }
 
 int CDependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL /*bUnused*/) const {
@@ -389,6 +389,3 @@ void CDependentSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
     pView->ChangeAnnotationSelection(this, sel, 0, 0);  // deselect
     pView->RefreshGraphs(FALSE);                        // refresh the graphs between cursors
 }
-
-
-

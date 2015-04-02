@@ -283,8 +283,8 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
             }
         }
     }
-    pDoc->SetModifiedFlag(TRUE); // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+    pDoc->SetModifiedFlag(TRUE);		// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
     // invalidate parsing information
     pDoc->GetSegment(GLOSS)->SetDataInvalid();
 

@@ -531,7 +531,7 @@ void CDlgRecorder::DeleteTempFile() {
             mmioClose(m_hmmioFile, 0);
         }
         try {
-            FileUtils::RemoveFile(m_szFileName);
+            FileUtils::Remove(m_szFileName);
             m_szFileName[0] = 0;
         } catch (CFileException e) {
             // error deleting file

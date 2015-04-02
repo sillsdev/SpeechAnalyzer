@@ -1,3 +1,8 @@
+SA - 3.1.0.121 4/2/2015
+-Fixed problem where file status was not updated to 'modified' after performing 'move left', 'move right', merge or split.
+-Fixed problem were extra segments were left when performing 'move left' in normal mode.
+-Added feature for SAB to retrieve fields from original SAB import file when using merge/move features.
+
 SA - 3.1.0.120 3/25/2015
 -Fixed bug that was calculating from gloss duration value for gloss segments when import ELAN files.
 -Fixed problems with ELAN import feature in that SA wasn't using correct tier name selected in ELAN import dialog box.

@@ -28,7 +28,7 @@ bool CClipboardHelper::LoadFileFromData(HGLOBAL hData, LPTSTR szFilename, size_t
         CFile file;
         if (!file.Open(szFilename, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
             TRACE("unable to open file for writing\n");
-            FileUtils::RemoveFile(szFilename);
+            FileUtils::Remove(szFilename);
             ::GlobalUnlock(hData);
             return false;
         }

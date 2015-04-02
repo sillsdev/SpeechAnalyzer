@@ -568,7 +568,7 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
     WAVETIME stop = pDoc->toTime(dwStop, true);
     if (!pDoc->CopySectionToNewWavFile(start, stop-start, filename, false)) {
         // be sure to delete the file
-        FileUtils::RemoveFile(filename);
+        FileUtils::Remove(filename);
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,filename);
         return -1;
@@ -653,7 +653,7 @@ int ExportPhraseSegment(CMusicPhraseSegment * seg, int index, wstring & filename
     WAVETIME stop = pDoc->toTime(dwStop, true);
     if (!pDoc->CopySectionToNewWavFile(start,stop-start,filename.c_str(),false)) {
         // be sure to delete the file
-        FileUtils::RemoveFile(filename.c_str());
+        FileUtils::Remove(filename.c_str());
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,filename.c_str());
         return -1;

@@ -44,7 +44,7 @@ CProcessChange::CProcessChange() {
 /***************************************************************************/
 CProcessChange::~CProcessChange() {
     // delete the temporary quality file
-    FileUtils::RemoveFile(m_qualityFileStatus.m_szFullName);
+    FileUtils::Remove(m_qualityFileStatus.m_szFullName);
     if (m_pQualityFile) {
         delete m_pQualityFile;
     }
@@ -66,7 +66,7 @@ long CProcessChange::Exit(int nError) {
     if (m_pQualityFile) {
         m_pQualityFile->Abort();
     }
-    FileUtils::RemoveFile(m_qualityFileStatus.m_szFullName);
+    FileUtils::Remove(m_qualityFileStatus.m_szFullName);
     m_qualityFileStatus.m_szFullName[0] = 0;
     return CProcess::Exit(nError);
 }
@@ -194,7 +194,7 @@ DWORD CProcessChange::CalculateACF16(CProcess * pProc, unsigned char * pSRDdata,
 /***************************************************************************/
 void CProcessChange::SetDataInvalid() {
     CProcess::SetDataInvalid();
-    FileUtils::RemoveFile(m_qualityFileStatus.m_szFullName);
+    FileUtils::Remove(m_qualityFileStatus.m_szFullName);
     m_qualityFileStatus.m_szFullName[0] = 0;
 }
 

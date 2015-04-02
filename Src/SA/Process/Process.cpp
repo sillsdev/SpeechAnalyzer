@@ -555,7 +555,7 @@ void CProcess::CloseTempFile(BOOL bUpdateStatus) {
 /***************************************************************************/
 void CProcess::DeleteTempFile() {
     CloseTempFile(FALSE); // close the temporary file
-    FileUtils::RemoveFile(GetProcessFileName());
+    FileUtils::Remove(GetProcessFileName());
     DeleteProcessFileName();
     m_fileStatus.m_size = 0;
 }

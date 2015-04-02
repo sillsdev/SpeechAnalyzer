@@ -4973,7 +4973,7 @@ void CSaView::OnEditSplit() {
     if (sel==-1) {
         return;
     }
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+    if (!pSeg->Is(PHONETIC)) {
         return;
     }
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
@@ -5013,7 +5013,7 @@ void CSaView::OnEditMerge() {
     if (sel==-1) {
         return;
     }
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+    if (!pSeg->Is(PHONETIC)) {
         return;
     }
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
@@ -5041,18 +5041,23 @@ void CSaView::OnUpdateEditMoveLeft(CCmdUI * pCmdUI) {
 // CSaView::OnEditMoveLeft
 /***************************************************************************/
 void CSaView::OnEditMoveLeft() {
+
     CSegment * pSeg = FindSelectedAnnotation();
     if (pSeg==NULL) {
-        return;
-    }
+		TRACE("segment not found\n");
+		return;
+	}
     int sel = pSeg->GetSelection();
     if (sel==-1) {
-        return;
-    }
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
-        return;
-    }
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
+		TRACE("segment not selected\n");
+		return;
+	}
+    if (!pSeg->Is(PHONETIC)) {
+		TRACE("selected segment is not PHONETIC\n");
+		return;
+	}
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
+    bool segmental = GetDocument()->IsSegmental( pPhonetic, sel);
     DWORD start = pPhonetic->GetOffset(sel);
     DWORD stop = pPhonetic->GetStop(sel);
 
@@ -5106,7 +5111,7 @@ void CSaView::OnEditMoveRight() {
     if (sel==-1) {
         return;
     }
-    if (pSeg->GetAnnotationIndex()!=PHONETIC) {
+    if (!pSeg->Is(PHONETIC)) {
         return;
     }
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;

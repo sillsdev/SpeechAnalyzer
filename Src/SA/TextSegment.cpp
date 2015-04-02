@@ -70,7 +70,7 @@ BOOL CTextSegment::Append(LPCTSTR pszString, bool delimiter, DWORD dwStart, DWOR
 /***************************************************************************/
 DWORD CTextSegment::CalculateDuration(ISaDoc * pDoc, const int nIndex) const {
 
-    CSegment * pMaster = (CSegment *)pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pMaster = (CSegment *)pDoc->GetSegment(m_nMasterType);
     pMaster->Validate();
     int offset_size = GetOffsetSize();
     if ((nIndex < 0) || (nIndex >= offset_size)) {
@@ -103,7 +103,7 @@ void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwSto
 
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
-    CSegment * pMaster = pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pMaster = pDoc->GetSegment(m_nMasterType);
 
     int nTextIndex = GetSelection();
 
@@ -208,7 +208,7 @@ int CTextSegment::CheckPosition(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
         }
         return nTextIndex;
     } else { // Add
-        if (pDoc->GetSegment(m_nMasterIndex)->IsEmpty()) {
+        if (pDoc->GetSegment(m_nMasterType)->IsEmpty()) {
             //TRACE("no segment\n");
             return -1;
         }
@@ -246,7 +246,7 @@ void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString 
         nPos++;
     }
 
-    CSegment * pMaster = pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pMaster = pDoc->GetSegment(m_nMasterType);
     int nMaster = -1;
 
     if ((nPos == -1) || (nPos >= GetOffsetSize()) || dwStart > GetStop(nPos)) {

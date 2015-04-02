@@ -407,6 +407,16 @@ private:
 
 	void SaveSection( bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESaveArea saveArea, EFileFormat fileFormat);
 
+	void UpdateReferenceBuffer();
+
+	// permanent reference to application
+	const CSaApp & app;
+
+	// SAB transcription data buffer
+	bool sabLoaded;
+	CTranscriptionData sabBuffer;
+
+	// segment operations
 	CSegmentOps segmentOps;
 
 	// dirty flag for audio data

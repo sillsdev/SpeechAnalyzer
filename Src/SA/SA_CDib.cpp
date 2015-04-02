@@ -348,7 +348,7 @@ void CDib::Save(void) {
                 FileUtils::GetTempFileName(_T("TMP"), szBmpFilename.GetBuffer(_MAX_PATH), MAX_PATH);
                 szBmpFilename.ReleaseBuffer();
                 // delete temporary file automatically created by GetTempFileName
-                FileUtils::RemoveFile(szBmpFilename);
+                FileUtils::Remove(szBmpFilename);
                 // This is likely but not guaranteed to be unique, but bmp2png insist that bmp's have ".bmp" extension
                 szBmpFilename += L".bmp";
             } else {
@@ -373,7 +373,7 @@ void CDib::Save(void) {
                         if (nResult != 0) {
                             AfxMessageBox(IDS_ERROR_SCREEN_CAPTURE_SAVE);
                             TRACE(_T("bmp2png result = %d\n"), nResult);
-                            FileUtils::RemoveFile(szBmpFilename); // delete temporary bmp
+                            FileUtils::Remove(szBmpFilename); // delete temporary bmp
                         }
                     } catch (...) {
                         TRACE(_T("Exception\n"));

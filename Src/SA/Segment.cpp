@@ -102,9 +102,9 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CSegment::CSegment Constructor
 /***************************************************************************/
-CSegment::CSegment(EAnnotation index, int master) {
-    m_nAnnotationIndex = index;
-    m_nMasterIndex = master;
+CSegment::CSegment( EAnnotation type, int masterType) {
+    m_nAnnotationType = type;
+    m_nMasterType = masterType;
     m_nSelection = - 1;                 // no segment selected
 }
 
@@ -384,6 +384,7 @@ int CSegment::GetPrevious(int nIndex) const {
 // selected segment to look for.
 /***************************************************************************/
 int CSegment::GetNext(int nIndex) const {
+
     // find out, which character is the reference
     int nReference = 0;
     if (nIndex >= 0) {
@@ -584,7 +585,7 @@ void CSegment::Adjust( ISaDoc * pDoc, int nIndex, DWORD dwOffset, DWORD dwDurati
 
     DWORD dwOldOffset = GetOffset(nIndex);
     DWORD dwOldStop = GetStop(nIndex);
-	TRACE("Adjust %d %d start=%d end=%d\n",this->m_nAnnotationIndex,nIndex,dwOldOffset,dwOldStop);
+	TRACE("Adjust %d %d start=%d end=%d\n",this->m_nAnnotationType,nIndex,dwOldOffset,dwOldStop);
     // adjust this segment
     for (int nLoop = nIndex; nLoop < m_Offset.GetSize(); nLoop++) {
         if (GetOffset(nLoop) == dwOldOffset) {
@@ -598,7 +599,7 @@ void CSegment::Adjust( ISaDoc * pDoc, int nIndex, DWORD dwOffset, DWORD dwDurati
     // adjust all dependent segments
     for (int nWnd = 0; nWnd < ANNOT_WND_NUMBER; nWnd++) {
         CSegment * pSegment = pDoc->GetSegment(nWnd);
-        if ((pSegment!=NULL) && (pSegment->GetMasterIndex() == m_nAnnotationIndex)) {
+        if ((pSegment!=NULL) && (pSegment->GetMasterIndex() == m_nAnnotationType)) {
             // for segmental, only adjust segments that match the existing segment
             if (segmental) {
                 int nIndex = pSegment->FindOffset(dwOldOffset);
@@ -846,11 +847,15 @@ CSaString CSegment::GetOverlappingText(DWORD dwStart, DWORD dwStop) {
 }
 
 int CSegment::GetMasterIndex(void) const {
-    return m_nMasterIndex;
+    return m_nMasterType;
+}
+
+bool CSegment::Is( EAnnotation type) const {
+	return (type==m_nAnnotationType);
 }
 
 EAnnotation CSegment::GetAnnotationIndex(void) const {
-    return m_nAnnotationIndex;
+    return m_nAnnotationType;
 }
 
 //overridden by derived classes
@@ -910,14 +915,14 @@ void CSegment::AdjustDuration( DWORD offset, DWORD duration) {
 * Split this segment
 * @param start the offset of the phonetic segment
 */
-void CSegment::Split(CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart) {
+bool CSegment::Split( DWORD thisOffset, DWORD newStopStart) {
 
     if (m_Offset.GetSize()==0) {
-        return;
+        return false;
     }
     int index=FindIndex(thisOffset);
     if (index==-1) {
-        return;
+        return false;
     }
     // store old stop location
     DWORD stop = GetStop(index);
@@ -926,62 +931,98 @@ void CSegment::Split(CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD new
     //Add(pDoc, pView, newStopStart, GetDefaultChar(), FALSE, FALSE);
     AdjustDuration(thisOffset,newStopStart-thisOffset);
     Insert(index+1,GetDefaultChar(),FALSE,newStopStart,stop-newStopStart);
+	return true;
 }
 
 /**
 * Split this segment
 * @param start the offset of the phonetic segment
 */
-void CSegment::Merge(CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop) {
+bool CSegment::Merge( DWORD thisOffset, DWORD prevOffset, DWORD thisStop) {
 
     if (m_Offset.GetSize()==0) {
-        return;
+        return false;
     }
     int index = FindIndex(thisOffset);
     if (index==-1) {
-        return;
+        return false;
     }
     int prev = FindIndex(prevOffset);
     if (prev==-1) {
-        return;
+        return false;
     }
 
     // shorten text
     RemoveAt(index,true);
     // increase segment size
     AdjustDuration(prevOffset,thisStop-prevOffset);
+	return true;
 }
 
-void CSegment::MoveDataLeft(DWORD offset) {
+/**
+* SAB use
+* return true if modified
+*/
+bool CSegment::MoveDataLeftSAB( DWORD offset, CString newText) {
 
-    int sel = FindOffset(offset);
-    if (sel==-1) {
-        return;
-    }
-    if (GetContentLength()==0) {
-        return;
-    }
+	ASSERT(m_Text.GetCount()==m_Offset.GetCount());
+	ASSERT(m_Text.GetCount()==m_Duration.GetCount());
 
-    m_Text.RemoveAt(sel);
-    m_Text.Add(GetDefaultChar());
+	int index = FindOffset(offset);
+    if (index==-1) return false;
+
+	// shift the text left
+	// for sab, for the last segment, retrieve data from the file.
+	m_Text.RemoveAt(index);
+	m_Text.Add(newText);
+	return true;
 }
 
-void CSegment::MoveDataRight(DWORD offset) {
+/*
+* non-sab use
+* returns true if modified
+*/
+bool CSegment::MoveDataLeft( DWORD offset) {
 
-    int sel = FindOffset(offset);
-    if (sel==-1) {
-        return;
-    }
-    if (GetContentLength()==0) {
-        return;
-    }
+	ASSERT(m_Text.GetCount()==m_Offset.GetCount());
+	ASSERT(m_Text.GetCount()==m_Duration.GetCount());
 
-    m_Text.InsertAt(sel,GetDefaultChar());
-    size_t last = GetOffsetSize()-1;
-    DWORD lastOffset = GetOffset(last);
-    DWORD lastDuration = GetDuration(last);
-    m_Offset.Add(lastOffset+lastDuration);
-    m_Duration.Add(20);
+	int index = FindOffset(offset);
+    if (index==-1) return false;
+
+	// shift the text left
+	m_Text.RemoveAt(index);
+	// remove the last segment
+	size_t end = m_Offset.GetCount()-1;
+	m_Offset.RemoveAt(end);
+	m_Duration.RemoveAt(end);
+	return true;
+}
+
+bool CSegment::MoveDataRight(DWORD offset, bool sab) {
+
+	ASSERT(m_Text.GetCount()==m_Offset.GetCount());
+	ASSERT(m_Text.GetCount()==m_Duration.GetCount());
+
+	int index = FindOffset(offset);
+    if (index==-1) return false;
+
+	if (sab) {
+		// for sab - lose the data at the end
+		m_Text.InsertAt(index,GetDefaultChar());
+		size_t end = m_Text.GetSize()-1;
+		m_Text.RemoveAt(end);
+	} else {
+		// for non-sab add overflow to buffer at end
+		// add text to buffer at end
+		m_Text.InsertAt(index,GetDefaultChar());
+		size_t end = m_Offset.GetSize()-1;
+		DWORD lastOffset = GetOffset(end);
+		DWORD lastDuration = GetDuration(end);
+		m_Offset.Add(lastOffset+lastDuration);
+		m_Duration.Add(20);
+	}
+	return true;
 }
 
 CSaString CSegment::GetDefaultChar() {
@@ -1089,7 +1130,7 @@ void CSegment::ShrinkSegment( CSaDoc & document, DWORD dwSectionStart, DWORD dwS
         DWORD dwOldOffset = GetOffset(nIndex);
 		DWORD dwOldDuration = GetDuration(nIndex);
 
-		TRACE("Testing %d %d start=%d length=%d end=%d\n",m_nAnnotationIndex,nIndex,dwOldOffset,dwOldDuration,(dwOldOffset+dwOldDuration));
+		TRACE("Testing %d %d start=%d length=%d end=%d\n",m_nAnnotationType,nIndex,dwOldOffset,dwOldDuration,(dwOldOffset+dwOldDuration));
         if (dwOldOffset >= (dwSectionStart + dwSectionLength)) {
             break; // no more to delete
         }
@@ -1197,7 +1238,14 @@ void CSegment::GrowSegment( CSaDoc & document, DWORD dwSectionStart, DWORD dwSec
 }
 
 bool CSegment::IsDependent( CSegment & parent) {
-	if (m_nMasterIndex==-1) return false;
+	if (m_nMasterType==-1) return false;
 	int parentType = parent.GetAnnotationIndex();
-	return (parentType==m_nMasterIndex);
+	return (parentType==m_nMasterType);
+}
+
+int CSegment::GetLastNonEmptyValue() {
+	for (int i = m_Text.GetCount()-1;i>=0;i--) {
+		if (m_Text[i].Trim().GetLength()>0) return i;
+	}
+	return -1;
 }

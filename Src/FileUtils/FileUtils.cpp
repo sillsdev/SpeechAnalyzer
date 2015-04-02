@@ -27,7 +27,7 @@ wstring FileUtils::GetTempFileName(LPCTSTR szPrefix) {
     return result;
 }
 
-void FileUtils::RemoveFile(LPCTSTR path) {
+void FileUtils::Remove(LPCTSTR path) {
     // bad path
     if (path==NULL) {
         return;
@@ -202,10 +202,16 @@ bool FileUtils::EndsWith(LPCTSTR path, LPCTSTR extension) {
     return (_wcsicmp(sub.c_str(),extension)==0);
 }
 
-void FileUtils::RenameFile(LPCTSTR oldname, LPCTSTR newname) {
+void FileUtils::Rename(LPCTSTR oldname, LPCTSTR newname) {
 	// clear the way!
 	DeleteFile(newname);
     _wrename(oldname, newname);
+}
+
+void FileUtils::Copy(LPCTSTR src, LPCTSTR dst) {
+	// clear the way!
+	DeleteFile(dst);
+	::CopyFileW( src, dst, false);
 }
 
 bool FileUtils::IsReadOnly(LPCTSTR filename) {

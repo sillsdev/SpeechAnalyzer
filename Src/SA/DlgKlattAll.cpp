@@ -101,7 +101,7 @@ CDlgKlattAll::CDlgKlattAll(CWnd * pParent /*=NULL*/, int nSelectedView)
 CDlgKlattAll::~CDlgKlattAll() {
     m_cDefaults.Save(GetDefaultsPath());
     // remove synthesized wave file in SA
-    FileUtils::RemoveFile(m_szSynthesizedFilename);
+    FileUtils::Remove(m_szSynthesizedFilename);
 }
 
 void CDlgKlattAll::CreateSynthesizer(CWnd * pParent, int nMode) {
