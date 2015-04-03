@@ -16,6 +16,7 @@
 #define ID_PREVIEW                      91
 #define IDR_MAINFRAME                   91
 #define IDR_SA_ANNTYPE                  92
+#define IDR_SA_SABTYPE                  93
 #define IDR_SA_WBTYPE                   95
 #define IDR_WORKBENCH                   96
 #define IDR_SA_MIDTYPE                  99
@@ -1498,7 +1499,6 @@
 #define ID_ADDOVERLAY                   33050
 #define ID_REMOVE_OVERLAY               33051
 #define ID_SETDEFAULT                   33052
-#define ID_FILE_IMPORT                  33053
 #define ID_EDIT_PASTENEW                33054
 #define ID_EDIT_SELECTWAVEFORM          33055
 #define ID_EDIT_AUTO_ADD                33056
@@ -1554,6 +1554,7 @@
 #define ID_PLAYBACK_STOPTOR             33143
 #define ID_IMPORT_TIME_TABLE            33145
 #define ID_IMPORT_SFM                   33146
+#define ID_IMPORT_SAB                   33147
 #define ID_NEXT_GRAPH                   33148
 #define IDC_SYNTHESIS                   33149
 #define ID_SYNTHESIS                    33151
@@ -1801,12 +1802,15 @@
 #define IDS_LENGTH_LIMITED              61321
 #define IDS_IMPORT_ELAN_METHOD_ELAN     61322
 #define IDS_IMPORT_ELAN_METHOD_ELAN2    61323
-#define IDS_IMPORT_ELAN_METHOD_SAYMORE  61323
-#define IDS_NO_ISO                      61324
-#define IDS_STRING4                     61325
-#define IDS_DISABLED_SEGMENT            61325
-#define IDS_DELETE_REFERENCE            61326
-#define IDS_ERROR_ELAN1                 61327
+#define IDS_IMPORT_ELAN_METHOD_SAYMORE  61324
+#define IDS_NO_ISO                      61325
+#define IDS_STRING4                     61326
+#define IDS_DISABLED_SEGMENT            61327
+#define IDS_DELETE_REFERENCE            61328
+#define IDS_ERROR_ELAN1                 61329
+#define IDS_ERROR_SAB_NO_IMPORT         61330
+#define IDS_ERROR_SAB_EXISTING          61331
+#define IDS_ERROR_SAB_NO_SEGMENTS		61332
 
 // Next default values for new objects
 // 

@@ -227,7 +227,8 @@ void CSegment::Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace) 
 // CSegment::ReplaceSelectedSegment
 /***************************************************************************/
 void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace) {
-    if (m_nSelection==-1) {
+    
+	if (m_nSelection==-1) {
         return;
     }
 
@@ -718,7 +719,8 @@ int CSegment::FindNext(int fromIndex, LPCTSTR strToFind) {
 // CSegment::Match find next segment matching strToFind and hilite it.
 //***************************************************************************/
 bool CSegment::Match(int index, LPCTSTR strToFind) {
-    if (index < 0) {
+    
+	if (index < 0) {
         return false;
     }
     if (IsEmpty()) {
@@ -784,7 +786,8 @@ DWORD CSegment::GetDurationAt(int index) const {
 }
 
 void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
-    ASSERT(index>=0);
+    
+	ASSERT(index>=0);
     if (index<0) {
         return;
     }
@@ -799,7 +802,8 @@ void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
 * remove text, offset and duration
 */
 void CSegment::RemoveAt(int index, bool remove) {
-    ASSERT(index>=0);
+    
+	ASSERT(index>=0);
     ASSERT(index<m_Offset.GetCount());
     if (index<0) {
         return;
@@ -820,7 +824,8 @@ void CSegment::RemoveAt(int index, bool remove) {
 * Returns the text that is within the start and stop markers
 */
 CSaString CSegment::GetContainedText(DWORD dwStart, DWORD dwStop) {
-    CSaString szText;
+    
+	CSaString szText;
     for (int i=0; i<m_Offset.GetSize(); i++) {
         DWORD begin = m_Offset[i];
         // offset can't be dwStop, because then the the segments length would be zero.
@@ -835,7 +840,8 @@ CSaString CSegment::GetContainedText(DWORD dwStart, DWORD dwStop) {
 * Returns the text that contains the start and stop markers
 */
 CSaString CSegment::GetOverlappingText(DWORD dwStart, DWORD dwStop) {
-    CSaString szText;
+    
+	CSaString szText;
     for (int i=0; i<m_Offset.GetSize(); i++) {
         DWORD begin = m_Offset[i];
         DWORD end = begin+m_Duration[i];
@@ -927,8 +933,6 @@ bool CSegment::Split( DWORD thisOffset, DWORD newStopStart) {
     // store old stop location
     DWORD stop = GetStop(index);
     // shorten segment
-    //m_Duration[index]=newStopStart-thisOffset;
-    //Add(pDoc, pView, newStopStart, GetDefaultChar(), FALSE, FALSE);
     AdjustDuration(thisOffset,newStopStart-thisOffset);
     Insert(index+1,GetDefaultChar(),FALSE,newStopStart,stop-newStopStart);
 	return true;
@@ -971,6 +975,11 @@ bool CSegment::MoveDataLeftSAB( DWORD offset, CString newText) {
 	int index = FindOffset(offset);
     if (index==-1) return false;
 
+	newText = newText.Trim();
+	if (newText.GetLength()==0) {
+		newText = GetDefaultChar();
+	}
+
 	// shift the text left
 	// for sab, for the last segment, retrieve data from the file.
 	m_Text.RemoveAt(index);
@@ -1007,15 +1016,16 @@ bool CSegment::MoveDataRight(DWORD offset, bool sab) {
 	int index = FindOffset(offset);
     if (index==-1) return false;
 
+	CString defaultChar = GetDefaultChar();
 	if (sab) {
 		// for sab - lose the data at the end
-		m_Text.InsertAt(index,GetDefaultChar());
+		m_Text.InsertAt(index,defaultChar);
 		size_t end = m_Text.GetSize()-1;
 		m_Text.RemoveAt(end);
 	} else {
 		// for non-sab add overflow to buffer at end
 		// add text to buffer at end
-		m_Text.InsertAt(index,GetDefaultChar());
+		m_Text.InsertAt(index,defaultChar);
 		size_t end = m_Offset.GetSize()-1;
 		DWORD lastOffset = GetOffset(end);
 		DWORD lastDuration = GetDuration(end);
@@ -1025,12 +1035,13 @@ bool CSegment::MoveDataRight(DWORD offset, bool sab) {
 	return true;
 }
 
-CSaString CSegment::GetDefaultChar() {
-    return CSaString(" ");
+CString CSegment::GetDefaultChar() {
+    return CString(" ");
 }
 
 CString CSegment::GetContent() const {
-    ASSERT(m_Offset.GetCount()==m_Text.GetCount());
+    
+	ASSERT(m_Offset.GetCount()==m_Text.GetCount());
     CString text;
     for (int i=0; i<m_Text.GetCount(); i++) {
         text.Append(m_Text[i]);
@@ -1039,7 +1050,8 @@ CString CSegment::GetContent() const {
 }
 
 size_t CSegment::GetContentLength() const {
-    if (m_Text.GetCount()==0) {
+    
+	if (m_Text.GetCount()==0) {
         return 0;
     }
     CString text = GetContent();
@@ -1048,16 +1060,16 @@ size_t CSegment::GetContentLength() const {
 
 /***************************************************************************/
 // CDependentTextSegment::Insert Insert/append a text segment
-// Returns FALSE if an error occurred. If the pointer to the string is NULL
-// there will be no string added.
+// Returns FALSE if an error occurred. 
+// If the pointer to the string is NULL there will be no string added.
 /***************************************************************************/
-BOOL CSegment::SetText(int nIndex, LPCTSTR pszString, int nDelimiter, DWORD dwOffset, DWORD dwDuration) {
-    if (pszString==NULL) {
-        return TRUE;
-    }
-    if (wcslen(pszString)>0) {
+BOOL CSegment::SetText( int nIndex, LPCTSTR pszString) {
+
+	if ((pszString==NULL)||(wcslen(pszString)==0)) {
+        m_Text.SetAt(nIndex, "");
+	} else {
         m_Text.SetAt(nIndex, pszString);
-    }
+	}
     return TRUE;
 }
 
@@ -1077,7 +1089,8 @@ bool CSegment::Filter(CString & text) {
 // CTextSegment::CountWords
 //***************************************************************************/i
 int CSegment::CountWords() {
-    if (m_Text.GetCount()==0) {
+    
+	if (m_Text.GetCount()==0) {
         return 0;
     }
     int nWords = 0;

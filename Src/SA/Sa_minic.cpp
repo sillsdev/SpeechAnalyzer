@@ -103,7 +103,6 @@ BOOL CMiniCaptionWnd::PreCreateWindow(CREATESTRUCT & cs) {
     // register the window class
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0,
-                                       //LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_SA_ANNTYPE)));
                                        LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME)));
     // precreate the window
     BOOL bRet = CWnd::PreCreateWindow(cs);

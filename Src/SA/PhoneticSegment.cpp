@@ -551,8 +551,8 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
     return MAKELONG(nLevel, nProgress);
 }
 
-CSaString CPhoneticSegment::GetDefaultChar() {
-    return CSaString(SEGMENT_DEFAULT_CHAR);
+CString CPhoneticSegment::GetDefaultChar() {
+    return CString(SEGMENT_DEFAULT_CHAR);
 }
 
 bool CPhoneticSegment::Filter() {
@@ -564,7 +564,8 @@ bool CPhoneticSegment::Filter() {
 }
 
 bool CPhoneticSegment::Filter(CString & text) {
-    TCHAR cIPASpaceReplace = 0xFFFD;        // Box Character
+	// Box Character
+    TCHAR cIPASpaceReplace = 0xFFFD;        
     bool bChanged = false;
     for (int i=0; i<text.GetLength(); i++) {
         if (text[i]==0) {

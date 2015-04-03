@@ -101,10 +101,12 @@ public:
     int FindIndex(DWORD offset);
     virtual int FindNext(int fromIndex, LPCTSTR strToFind);
     virtual int FindPrev(int fromIndex, LPCTSTR strToFind);
-    int CheckCursors(CSaDoc *, BOOL bOverlap) const;        // checks the position of the cursors for new segment
+    // checks the position of the cursors for new segment
+    int CheckCursors(CSaDoc *, BOOL bOverlap) const;
     DWORD GetDurationAt(int index) const;
     void InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration);
-    virtual void RemoveAt(int index, bool remove);          // remove text, offset and duration
+	// remove text, offset and duration
+    virtual void RemoveAt(int index, bool remove);
     virtual bool Split( DWORD start, DWORD newStopStart);
     virtual bool Merge( DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
     virtual bool MoveDataLeftSAB(DWORD offset, CString newText);
@@ -112,7 +114,8 @@ public:
     virtual bool MoveDataRight(DWORD offset, bool sab);
     void AdjustDuration(DWORD offset, DWORD duration);
     virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
-    virtual BOOL SetText(int nIndex, LPCTSTR pszString, int nDelimiter, DWORD dwOffset, DWORD dwDuration);   // insert a new segment
+	// insert a new segment
+    virtual BOOL SetText(int nIndex, LPCTSTR pszString);   
 
     enum EMode {
         MODE_AUTOMATIC,
@@ -170,7 +173,7 @@ public:
 	// return segment length
     virtual int GetSegmentLength(int nIndex) const;
 
-    virtual CSaString GetDefaultChar();
+    virtual CString GetDefaultChar();
 
     void Validate();
 

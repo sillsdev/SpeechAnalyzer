@@ -36,12 +36,10 @@ private:
     CSpinControl m_SpinMinThreshold;
 
     // Dialog Data
-    //{{AFX_DATA(CDlgAdvancedParsePhrases)
     enum { IDD = IDD_ADVANCEDPARSEPHRASE };
     int m_nBreakWidth;
     int m_nMaxThreshold;
     int m_nMinThreshold;
-    //}}AFX_DATA
 
     // Operations
 protected:

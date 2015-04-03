@@ -1,3 +1,10 @@
+SA - 3.1.0.122 4/3/2015
+-Fixed issue where message box is displayed to tell user they may overwrite existing reference numbers, but all the reference segments are blank.  This occurs during auto-add-reference.
+-Started reducing menus for SAB release.
+-Added 'Import SAB' feature.  Automatically imports data and assigns reference and gloss values to segments.
+-Fixed bug that occurs during MoveLeft - Phonetic marker is not added and Gloss word marker is also missing.
+-Modified default character for most segments.  Code was insert space, rather than blank entry.
+
 SA - 3.1.0.121 4/2/2015
 -Fixed problem where file status was not updated to 'modified' after performing 'move left', 'move right', merge or split.
 -Fixed problem were extra segments were left when performing 'move left' in normal mode.

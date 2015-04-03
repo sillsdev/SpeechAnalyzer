@@ -310,7 +310,7 @@ public:
     int GetLastSegmentBeforePosition(int annotSetID, DWORD cursorPos);
 
     static int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & result);
-    void SplitSegment(CSaView * pView, CPhoneticSegment * pSeg, int sel, bool segmental);
+    void SplitSegment( CPhoneticSegment * pSeg, int sel, bool segmental);
     bool CanSplit(CSegment * pSeg);
     bool CanMerge(CSegment * pSeg);
     void MergeSegments(CSaView * pView, CPhoneticSegment * pSeg);
@@ -322,6 +322,7 @@ public:
     void MoveDataLeft(DWORD offset);
     void MoveDataRight(DWORD offset);
 	void DeselectAll();
+	void ImportSAB( LPCTSTR filename);
 
 protected:
     virtual void DeleteContents();
@@ -400,7 +401,6 @@ private:
     void CreateSAXML(LPCTSTR filename, Elan::CAnnotationDocument & document, map<EAnnotation,wstring> & assignments);
 
     void ErrorMessage(UINT nTextID, LPCTSTR pszText1=NULL, LPCTSTR pszText2=NULL);
-    void ErrorMessage(CSaString & text);
 
     void NormalizePhoneticDependencies();
     int GetInsertionIndex(CSegment * pSegment, DWORD offset);

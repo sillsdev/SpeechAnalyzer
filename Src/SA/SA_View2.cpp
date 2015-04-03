@@ -148,6 +148,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_GRAPHS_ZOOM_OUT, OnGraphsZoomOut)
     ON_COMMAND(ID_IMPORT_MIDI, OnImportStaff)
     ON_COMMAND(ID_IMPORT_SFM, OnImportSFM)
+    ON_COMMAND(ID_IMPORT_SAB, OnImportSAB)
     ON_COMMAND(ID_IMPORT_ELAN, OnImportELAN)
     ON_COMMAND(ID_IMPORT_TIME_TABLE, OnImportSFT)
     ON_COMMAND(ID_LEGEND_ALL, OnLegendAll)
@@ -4983,7 +4984,7 @@ void CSaView::OnEditSplit() {
     // if we are splitting at the end, we need to calculate the new segment
     newsel = (newsel==-1)?sel+length:newsel;
 
-    GetDocument()->SplitSegment(this, pPhonetic, sel, segmental);
+    GetDocument()->SplitSegment( pPhonetic, sel, segmental);
 
     DWORD newStart = pPhonetic->GetOffset(newsel);
     DWORD newStop = pPhonetic->GetStop(newsel);

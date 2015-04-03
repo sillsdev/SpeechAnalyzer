@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,121
+ FILEVERSION 3,1,0,122
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.121"
+            VALUE "FileVersion", "v3.1.0.122"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -117,6 +117,7 @@ IDI_DOWN                ICON                    "res\\down.ico"
 IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\SA.ico"
 IDR_SA_WBTYPE           ICON                    "RES\\SA_WB.ICO"
 IDR_SA_ANNTYPE          ICON                    "RES\\SA.ICO"
+IDR_SA_SABTYPE          ICON                    "RES\\SA.ICO"
 IDR_MAINFRAME_SAS       ICON                    "RES\\SA.ICO"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -3471,6 +3472,374 @@ BEGIN
     END
 END
 
+IDR_SA_SABTYPE MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        //MENUITEM "&Record New...\tCtrl+R",      ID_FILE_RECORD
+        //MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        //MENUITEM "Open Startup...",             ID_FILE_OPEN_SPECIAL
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        POPUP "&Import"
+        BEGIN
+            //MENUITEM "&Standard Format (.SFM)",     ID_IMPORT_SFM
+            MENUITEM "&Scripture App Builder (.TXT)", ID_IMPORT_SAB
+            //MENUITEM SEPARATOR
+            //MENUITEM "Staff &Notes...",             ID_IMPORT_MIDI
+        END
+        //POPUP "&Export"
+        //BEGIN
+            //MENUITEM "E&xtensible Markup (.XML)",   ID_EXPORT_XML
+            //MENUITEM "&Fieldworks (.SFM)",          ID_EXPORT_FW
+            //MENUITEM "&Lift Format (.LIFT)",        ID_EXPORT_LIFT
+            //MENUITEM "SFM &Time Table (.SFT)",      ID_EXPORT_TIME_TABLE
+            //MENUITEM "&Standard Format (.SFM)",     ID_EXPORT_SFM
+            //MENUITEM SEPARATOR
+            //MENUITEM "Staff &Notes...",             ID_EXPORT_MIDI
+        //END
+        //MENUITEM "Sp&lit File...",              ID_FILE_SPLIT
+        //MENUITEM SEPARATOR
+        //POPUP "Screen Capt&ure"
+        //BEGIN
+            //MENUITEM "Save &Window...",             ID_GRAPHS_SCREENCAPTURE
+            //MENUITEM "C&opy Window",                ID_GRAPHS_SCREENCOPY
+            //MENUITEM SEPARATOR
+            //MENUITEM "Sa&ve Graphs...",             ID_GRAPHS_GRAPHSCAPTURE
+            //MENUITEM "Copy &Graphs",                ID_GRAPHS_GRAPHSCOPY
+        //END
+        //MENUITEM SEPARATOR
+        //MENUITEM "Infor&mation...\tCtrl+I",     ID_FILE_INFORMATION
+        //MENUITEM SEPARATOR
+        //MENUITEM "Page Se&tup...",              ID_FILE_PAGE_SETUP
+        //MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        //MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        //MENUITEM SEPARATOR
+        //MENUITEM "Phonology Assistant...",      ID_FILE_PHONOLOGYASSISTANT
+        //MENUITEM SEPARATOR
+        POPUP "AutoSave"
+        BEGIN
+            MENUITEM "On",                          ID_AUTOSAVE_ON
+            MENUITEM "Off",                         ID_AUTOSAVE_OFF
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM "Re&do\tCtrl+Y",               ID_EDIT_REDO
+        MENUITEM SEPARATOR
+        POPUP "&Transcription"
+        BEGIN
+            MENUITEM "&Add Phonetic Segment\tCtrl+Q", ID_EDIT_ADD_PHONETIC
+            MENUITEM "Tr&anscription Editor\tF4",   ID_EDIT_EDITOR
+            MENUITEM "&Direct Edit\tF2",            ID_EDIT_INPLACE
+            MENUITEM "Re&move Segment\tDelete",     ID_EDIT_REMOVE
+            MENUITEM SEPARATOR
+            MENUITEM "Add &Syllable Segment\tCtrl+L", ID_EDIT_ADD_SYLLABLE
+            MENUITEM "Add Gloss &Word Segment\tCtrl+W", ID_EDIT_ADD_WORD
+            MENUITEM "Add Gloss &Bookmark\tCtrl+B", ID_EDIT_ADD_BOOKMARK
+            MENUITEM "Add Markup\tAlt+M",           ID_EDIT_ADD_MARKUP
+            MENUITEM "Add Phrase L&1 Segment\tCtrl+1", ID_EDIT_ADD_PHRASE_L1
+            MENUITEM "Add Phrase L&2 Segment\tCtrl+2", ID_EDIT_ADD_PHRASE_L2
+            MENUITEM "Add Phrase L&3 Segment\tCtrl+3", ID_EDIT_ADD_PHRASE_L3
+            MENUITEM "Add Phrase L&4 Segment\tCtrl+4", ID_EDIT_ADD_PHRASE_L4
+            MENUITEM "Add Wordlist &Record Markup\tAlt+Z", ID_EDIT_AUTO_ADD
+            MENUITEM "Add Text Breath &Group Markup\tAlt+X", ID_EDIT_AUTO_ADD_STORY_SECTION
+            MENUITEM SEPARATOR
+            MENUITEM "&Update All Boundaries",      ID_EDIT_AUTO_SNAP_UPDATE
+            MENUITEM SEPARATOR
+            MENUITEM "&Copy Phonetic Transcription to Phonemic", ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
+        END
+        MENUITEM "Edit Segment &Boundaries\tINS", ID_EDIT_SEGMENT_BOUNDARIES
+        MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
+        MENUITEM SEPARATOR
+        MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
+        MENUITEM "M&erge Segments\tCtrl+H",     ID_EDIT_MERGE
+        MENUITEM "Move Data Left\tShift+G",     ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Data Right\tShift+H",    ID_EDIT_MOVE_RIGHT
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
+        MENUITEM SEPARATOR
+        //MENUITEM "Copy &Measurements\tCtrl+Shift+C", ID_EDIT_COPY_MEASUREMENTS
+        MENUITEM "Select &Waveform Segment\tCtrl+A", ID_EDIT_SELECTWAVEFORM_FAKE
+        MENUITEM "Select Wa&veform\tCtrl+ClickDrag", ID_EDIT_SELECTWAVEFORM_FAKE
+        MENUITEM SEPARATOR
+        POPUP "S&elect Segment"
+        BEGIN
+            MENUITEM "Next Item\tAlt+Right",        ID_EDIT_NEXT
+            MENUITEM "Previous Item\tAlt+Left",     ID_EDIT_PREVIOUS
+            MENUITEM "Up Item\tAlt+Up",             ID_EDIT_UP
+            MENUITEM "Down Item\tAlt+Down",         ID_EDIT_DOWN
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Find...\tCtrl+F",            ID_EDIT_FIND
+        MENUITEM "Find &Next...\tF3",           ID_EDIT_FIND_NEXT
+        MENUITEM "&Replace...",                 ID_EDIT_REPLACE
+    END
+    POPUP "&Graphs"
+    BEGIN
+        MENUITEM "&Layout",                     ID_GRAPHS_LAYOUT
+        POPUP "T&ypes"
+        BEGIN
+            MENUITEM "Raw &Waveform",               IDD_RAWDATA
+            MENUITEM "&Intensity",                  IDD_LOUDNESS
+            MENUITEM "&Duration",                   IDD_DURATION
+            MENUITEM "C&hange",                     IDD_CHANGE
+            MENUITEM SEPARATOR
+            MENUITEM "&Raw Pitch",                  IDD_PITCH
+            MENUITEM "&Custom Pitch",               IDD_CHPITCH
+            MENUITEM "Sm&oothed Pitch",             IDD_SMPITCH
+            MENUITEM "A&uto Pitch",                 IDD_GRAPITCH
+            MENUITEM SEPARATOR
+            MENUITEM "Spectrogram",                 IDD_SPECTROGRAM
+            MENUITEM "Snapshot",                    IDD_SNAPSHOT
+            MENUITEM "S&pectrum",                   IDD_SPECTRUM
+            MENUITEM "&Zero Crossing",              IDD_ZCROSS
+            MENUITEM "&F1 v. F2",                   IDD_F1F2
+            MENUITEM "F2 v. F&1",                   IDD_F2F1
+            MENUITEM "(F&2-F1) v. F1",              IDD_F2F1F1
+            MENUITEM "F1 v. F2 v. F&3",             IDD_3D
+            MENUITEM SEPARATOR
+            MENUITEM "Me&logram",                   IDD_MELOGRAM
+            MENUITEM "Tonal Weighting Chart",       IDD_TWC
+            MENUITEM "Magnitude",                   IDD_MAGNITUDE
+            MENUITEM "&Staff",                      IDD_STAFF
+            MENUITEM SEPARATOR
+            MENUITEM "Pos&ition View",              IDD_RECORDING
+        END
+        //MENUITEM "Taskbar T&ypes",              ID_GRAPHS_TYPES
+        //MENUITEM "&Parameters...",              ID_GRAPHS_PARAMETERS
+        MENUITEM SEPARATOR
+        POPUP "&Transcription Bars"
+        BEGIN
+            POPUP "&Reference"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_REFERENCE_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_REFERENCE
+                MENUITEM "&Waveform Only",              ID_REFERENCE_RAWDATA
+                MENUITEM "&No Graphs",                  ID_REFERENCE_NONE
+            END
+            POPUP "P&honetic"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_PHONETIC_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_PHONETIC
+                MENUITEM "&Waveform Only",              ID_PHONETIC_RAWDATA
+                MENUITEM "&No Graphs",                  ID_PHONETIC_NONE
+            END
+            POPUP "T&one"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_TONE_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_TONE
+                MENUITEM "&Waveform Only",              ID_TONE_RAWDATA
+                MENUITEM "&No Graphs",                  ID_TONE_NONE
+            END
+            POPUP "Phone&mic"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_PHONEMIC_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_PHONEMIC
+                MENUITEM "&Waveform Only",              ID_PHONEMIC_RAWDATA
+                MENUITEM "&No Graphs",                  ID_PHONEMIC_NONE
+            END
+            POPUP "Orthogr&aphic"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_ORTHO_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_ORTHO
+                MENUITEM "&Waveform Only",              ID_ORTHO_RAWDATA
+                MENUITEM "&No Graphs",                  ID_ORTHO_NONE
+            END
+            POPUP "&Gloss English"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_GLOSS_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_GLOSS
+                MENUITEM "&Waveform Only",              ID_GLOSS_RAWDATA
+                MENUITEM "&No Graphs",                  ID_GLOSS_NONE
+            END
+            POPUP "Gloss &National"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_GLOSS_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_GLOSS_NAT
+                MENUITEM "&Waveform Only",              ID_GLOSS_RAWDATA
+                MENUITEM "&No Graphs",                  ID_GLOSS_NONE
+            END
+            POPUP "Phrase Level &1"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_PHRASE_L1_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_MUSIC_PL1
+                MENUITEM "&Waveform Only",              ID_PHRASE_L1_RAWDATA
+                MENUITEM "&No Graphs",                  ID_PHRASE_L1_NONE
+            END
+            POPUP "Phrase Level &2"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_PHRASE_L2_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_MUSIC_PL2
+                MENUITEM "&Waveform Only",              ID_PHRASE_L2_RAWDATA
+                MENUITEM "&No Graphs",                  ID_PHRASE_L2_NONE
+            END
+            POPUP "Phrase Level &3"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_PHRASE_L3_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_MUSIC_PL3
+                MENUITEM "&Waveform Only",              ID_PHRASE_L3_RAWDATA
+                MENUITEM "&No Graphs",                  ID_PHRASE_L3_NONE
+            END
+            POPUP "Phrase Level &4"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_PHRASE_L4_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_MUSIC_PL4
+                MENUITEM "&Waveform Only",              ID_PHRASE_L4_RAWDATA
+                MENUITEM "&No Graphs",                  ID_PHRASE_L4_NONE
+            END
+        END
+        POPUP "&View"
+        BEGIN
+            POPUP "Lege&nd ( y-axis )"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_LEGEND_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_LEGEND
+                MENUITEM "&Waveform Only",              ID_LEGEND_RAWDATA
+                MENUITEM "&No Graphs",                  ID_LEGEND_NONE
+            END
+            POPUP "Time Scale ( &x-axis )"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_XSCALE_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_XSCALE
+                MENUITEM "&Waveform Only",              ID_XSCALE_RAWDATA
+                MENUITEM "&No Graphs",                  ID_XSCALE_NONE
+            END
+            MENUITEM "Transcription Boundaries",    ID_VIEW_TRANSCRIPTION_BOUNDARIES
+            POPUP "Segment &Boundaries"
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_BOUNDARIES_ALL
+                MENUITEM "&This Graph",                 ID_BOUNDARIES_THIS
+                MENUITEM "&Waveform Only",              ID_BOUNDARIES_RAWDATA
+                MENUITEM "&No Graphs",                  ID_BOUNDARIES_NONE
+            END
+            MENUITEM "",                            1
+            POPUP "&Zoom"
+            BEGIN
+                MENUITEM "Step &In\tCtrl+PgDn",         ID_GRAPHS_ZOOM_IN
+                MENUITEM "Step &Out\tCtrl+PgUp",        ID_GRAPHS_ZOOM_OUT
+                MENUITEM "&Full\tCtrl+Home",            ID_GRAPHS_ZOOM_ALL
+                MENUITEM "Cursors\tCtrl+Enter",         ID_GRAPHS_ZOOM_CURSORS
+            END
+            POPUP "Magn&ify"
+            BEGIN
+                MENUITEM "x&1",                         ID_GRAPHS_MAGNIFY1
+                MENUITEM "x&2",                         ID_GRAPHS_MAGNIFY2
+                MENUITEM "x&4",                         ID_GRAPHS_MAGNIFY4
+                MENUITEM "&Custom...",                  ID_GRAPHS_MAGNIFYCUSTOM
+            END
+        END
+        //POPUP "&Overlay"
+        //BEGIN
+            //MENUITEM "Add &Overlay...",             ID_ADDOVERLAY
+            //MENUITEM "Remove Overlay...",           ID_REMOVE_OVERLAY
+            //MENUITEM "Remove All Overlays",         ID_REMOVE_OVERLAYS
+            //MENUITEM SEPARATOR
+            //MENUITEM "Record Overlay",              ID_POPUP_RECORD_OVERLAY
+        //END
+        //MENUITEM SEPARATOR
+        //MENUITEM "E&qualize Length",            ID_GRAPHS_EQUALIZELENGTH
+        //MENUITEM SEPARATOR
+        //POPUP "&Drawing Style"
+        //BEGIN
+            //MENUITEM "&Line",                       ID_POPUPGRAPH_STYLE_LINE
+            //MENUITEM "&Solid",                      ID_POPUPGRAPH_STYLE_SOLID
+            //MENUITEM "S&amples",                    ID_POPUPGRAPH_STYLE_DOTS
+        //END
+    END
+    POPUP "&Playback"
+    BEGIN
+        MENUITEM "&End Cursor -> File End\tF7", ID_PLAYBACK_ENDCURSOR
+        MENUITEM "Between &Cursors\tF8",        ID_PLAYBACK_CURSORS
+        MENUITEM "&Left Window Border -> End Cursor\tF9", ID_PLAYBACK_LTOSTOP
+        MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOPTOR
+        MENUITEM "Current &Window\tF11",        ID_PLAYBACK_WINDOW
+        MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
+        MENUITEM "Pa&use\tSpace",               ID_PLAYER_PAUSE
+        MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
+        //POPUP "Function &Keys"
+        //BEGIN
+            //MENUITEM "Ctrl+F1",                     ID_PLAY_F1
+            //MENUITEM "Ctrl+F2",                     ID_PLAY_F2
+            //MENUITEM "Ctrl+F3",                     ID_PLAY_F3
+            //MENUITEM "Ctrl+F4",                     ID_PLAY_F4
+            //MENUITEM "Ctrl+F5",                     ID_PLAY_F5
+            //MENUITEM "Ctrl+F6",                     ID_PLAY_F6
+            //MENUITEM "Ctrl+F7",                     ID_PLAY_F7
+            //MENUITEM "Ctrl+F8",                     ID_PLAY_F8
+            //MENUITEM "Ctrl+F9",                     ID_PLAY_F9
+            //MENUITEM "Ctrl+F10",                    ID_PLAY_F10
+            //MENUITEM "Ctrl+F11",                    ID_PLAY_F11
+            //MENUITEM "Ctrl+F12",                    ID_PLAY_F12
+        //END
+        //MENUITEM SEPARATOR
+        //MENUITEM "Pla&yer...",                  ID_PLAYER
+        //MENUITEM "Se&tup Function Keys...",     ID_SETUP_FNKEYS
+    END
+    POPUP "&Tools"
+    BEGIN
+        //POPUP "&Adjust Waveform"
+        //BEGIN
+            //MENUITEM "&Invert",                     ID_TOOLS_ADJUST_INVERT
+            //MENUITEM "&Normalize",                  ID_TOOLS_ADJUST_NORMALIZE
+            //MENUITEM "&Zero Offset",                ID_TOOLS_ADJUST_ZERO
+            //MENUITEM "Insert &Silence...",          ID_TOOLS_ADJUST_SILENCE
+        //END
+        POPUP "Automatic &Markup"
+        BEGIN
+            MENUITEM "Locate Phonetic &Segments...", ID_ADVANCED_SEGMENT
+            MENUITEM "Locate &Words...",            ID_ADVANCED_PARSE_WORD
+            MENUITEM "Locate &Phrases...",          ID_ADVANCED_PARSE_PHRASE
+        END
+        POPUP "Align &Transcription"
+        BEGIN
+            MENUITEM "Add &Reference Numbers...",   ID_AUTOMATICMARKUP_REFERENCEDATA
+            MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
+        END
+        MENUITEM SEPARATOR
+        //MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
+        //MENUITEM "&Workbench",                  ID_WORKBENCH
+        //MENUITEM SEPARATOR
+        MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile Horizontal",            ID_WINDOW_TILE_HORZ
+        MENUITEM "Tile &Vertical",              ID_WINDOW_TILE_VERT
+        MENUITEM SEPARATOR
+        MENUITEM "&Retile Graphs\tCtrl+T",      ID_GRAPHS_TILE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
+        MENUITEM "&What's New?",                ID_HELP_WHATS_NEW
+        MENUITEM "T&roubleshooting",            ID_HELP_TROUBLE
+        MENUITEM "&Graphs",                     ID_HELP_GRAPHS
+        MENUITEM "&Music Analysis",             ID_HELP_MUSIC
+        POPUP "&Training"
+        BEGIN
+            MENUITEM "&Student Manual",             ID_HELP_TRAINING_STUDENT
+            MENUITEM "&Instructor Guide",           ID_HELP_TRAINING_INSTRUCTOR
+        END
+        MENUITEM "S&FM Markers",                ID_HELP_SFMMARKERS
+        MENUITEM "&Using Help",                 ID_HELP_USINGHELP
+        MENUITEM SEPARATOR
+        MENUITEM "&About Speech Analyzer",      ID_APP_ABOUT
+    END
+END
+
 IDR_SA_FLOATINGPOPUP MENU
 BEGIN
     POPUP "Popup Graph"
@@ -4120,6 +4489,106 @@ BEGIN
     "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
 END
 
+IDR_SA_SABTYPE ACCELERATORS
+BEGIN
+    "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
+    "Q",            ID_EDIT_ADD_PHONETIC,   VIRTKEY, CONTROL, NOINVERT
+    VK_ADD,         ID_EDIT_ADD_PHONETIC,   VIRTKEY, ALT, NOINVERT
+    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
+    "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
+    "1",            ID_EDIT_ADD_PHRASE_L1,  VIRTKEY, CONTROL, NOINVERT
+    "2",            ID_EDIT_ADD_PHRASE_L2,  VIRTKEY, CONTROL, NOINVERT
+    "3",            ID_EDIT_ADD_PHRASE_L3,  VIRTKEY, CONTROL, NOINVERT
+    "4",            ID_EDIT_ADD_PHRASE_L4,  VIRTKEY, CONTROL, NOINVERT
+    "L",            ID_EDIT_ADD_SYLLABLE,   VIRTKEY, CONTROL, NOINVERT
+    "W",            ID_EDIT_ADD_WORD,       VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_AUTO_ADD,       VIRTKEY, ALT, NOINVERT
+    "X",            ID_EDIT_AUTO_ADD_STORY_SECTION, VIRTKEY, ALT, NOINVERT
+    VK_LEFT,        ID_EDIT_BOUNDARY_START_LEFT, VIRTKEY, CONTROL, ALT, NOINVERT
+    VK_RIGHT,       ID_EDIT_BOUNDARY_START_RIGHT, VIRTKEY, CONTROL, ALT, NOINVERT
+    VK_LEFT,        ID_EDIT_BOUNDARY_STOP_LEFT, VIRTKEY, SHIFT, ALT, NOINVERT
+    VK_RIGHT,       ID_EDIT_BOUNDARY_STOP_RIGHT, VIRTKEY, SHIFT, ALT, NOINVERT
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    "C",            ID_EDIT_COPY_MEASUREMENTS, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_LEFT,        ID_EDIT_CURSOR_START_LEFT, VIRTKEY, CONTROL, NOINVERT
+    VK_RIGHT,       ID_EDIT_CURSOR_START_RIGHT, VIRTKEY, CONTROL, NOINVERT
+    VK_LEFT,        ID_EDIT_CURSOR_STOP_LEFT, VIRTKEY, SHIFT, NOINVERT
+    VK_RIGHT,       ID_EDIT_CURSOR_STOP_RIGHT, VIRTKEY, SHIFT, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    VK_DOWN,        ID_EDIT_DOWN,           VIRTKEY, ALT, NOINVERT
+    VK_F4,          ID_EDIT_EDITOR,         VIRTKEY, NOINVERT
+    "F",            ID_EDIT_FIND,           VIRTKEY, CONTROL, NOINVERT
+    VK_F3,          ID_EDIT_FIND_NEXT,      VIRTKEY, NOINVERT
+    VK_F2,          ID_EDIT_INPLACE,        VIRTKEY, NOINVERT
+    "H",            ID_EDIT_MERGE,          VIRTKEY, CONTROL, NOINVERT
+    "G",            ID_EDIT_MOVE_LEFT,      VIRTKEY, SHIFT, NOINVERT
+    "H",            ID_EDIT_MOVE_RIGHT,     VIRTKEY, SHIFT, NOINVERT
+    "H",            ID_EDIT_MOVE_RIGHT_MERGE, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_RIGHT,       ID_EDIT_NEXT,           VIRTKEY, ALT, NOINVERT
+    VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    "N",            ID_EDIT_PASTENEW,       VIRTKEY, CONTROL, NOINVERT
+    VK_LEFT,        ID_EDIT_PREVIOUS,       VIRTKEY, ALT, NOINVERT
+    "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
+    VK_INSERT,      ID_EDIT_SEGMENT_BOUNDARIES, VIRTKEY, NOINVERT
+    "E",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
+    "A",            ID_EDIT_SELECTWAVEFORM, VIRTKEY, CONTROL, NOINVERT
+    "G",            ID_EDIT_SPLIT,          VIRTKEY, CONTROL, NOINVERT
+    "G",            ID_EDIT_SPLIT_MOVE_LEFT, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    VK_UP,          ID_EDIT_UP,             VIRTKEY, ALT, NOINVERT
+    "I",            ID_FILE_INFORMATION,    VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
+    "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_GRAPHS_TILE,         VIRTKEY, CONTROL, NOINVERT
+    VK_HOME,        ID_GRAPHS_ZOOM_ALL,     VIRTKEY, CONTROL, NOINVERT
+    VK_RETURN,      ID_GRAPHS_ZOOM_CURSORS, VIRTKEY, CONTROL, NOINVERT
+    VK_NEXT,        ID_GRAPHS_ZOOM_IN,      VIRTKEY, CONTROL, NOINVERT
+    VK_PRIOR,       ID_GRAPHS_ZOOM_OUT,     VIRTKEY, CONTROL, NOINVERT
+    VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
+    VK_TAB,         ID_NEXT_GRAPH,          VIRTKEY, SHIFT, NOINVERT
+    VK_F1,          ID_PLAY_F1,             VIRTKEY, CONTROL, NOINVERT
+    VK_F10,         ID_PLAY_F10,            VIRTKEY, CONTROL, NOINVERT
+    VK_F11,         ID_PLAY_F11,            VIRTKEY, CONTROL, NOINVERT
+    VK_F12,         ID_PLAY_F12,            VIRTKEY, CONTROL, NOINVERT
+    VK_F13,         ID_PLAY_F13,            VIRTKEY, CONTROL, NOINVERT
+    VK_F14,         ID_PLAY_F14,            VIRTKEY, CONTROL, NOINVERT
+    VK_F15,         ID_PLAY_F15,            VIRTKEY, CONTROL, NOINVERT
+    VK_F16,         ID_PLAY_F16,            VIRTKEY, CONTROL, NOINVERT
+    VK_F17,         ID_PLAY_F17,            VIRTKEY, SHIFT, NOINVERT
+    VK_F18,         ID_PLAY_F18,            VIRTKEY, CONTROL, NOINVERT
+    VK_F19,         ID_PLAY_F19,            VIRTKEY, CONTROL, NOINVERT
+    VK_F2,          ID_PLAY_F2,             VIRTKEY, CONTROL, NOINVERT
+    VK_F20,         ID_PLAY_F20,            VIRTKEY, CONTROL, NOINVERT
+    VK_F21,         ID_PLAY_F21,            VIRTKEY, CONTROL, NOINVERT
+    VK_F22,         ID_PLAY_F22,            VIRTKEY, CONTROL, NOINVERT
+    VK_F23,         ID_PLAY_F23,            VIRTKEY, CONTROL, NOINVERT
+    VK_F24,         ID_PLAY_F24,            VIRTKEY, CONTROL, NOINVERT
+    VK_F3,          ID_PLAY_F3,             VIRTKEY, CONTROL, NOINVERT
+    VK_F4,          ID_PLAY_F4,             VIRTKEY, CONTROL, NOINVERT
+    VK_F5,          ID_PLAY_F5,             VIRTKEY, CONTROL, NOINVERT
+    VK_F6,          ID_PLAY_F6,             VIRTKEY, CONTROL, NOINVERT
+    VK_F7,          ID_PLAY_F7,             VIRTKEY, CONTROL, NOINVERT
+    VK_F8,          ID_PLAY_F8,             VIRTKEY, CONTROL, NOINVERT
+    VK_F9,          ID_PLAY_F9,             VIRTKEY, CONTROL, NOINVERT
+    VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
+    VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
+    VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
+    VK_F9,          ID_PLAYBACK_LTOSTOP,    VIRTKEY, NOINVERT
+    VK_F10,         ID_PLAYBACK_STOPTOR,    VIRTKEY, NOINVERT
+    VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
+    " ",            ID_PLAYER_PAUSE,        ASCII,  NOINVERT
+    VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
+    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
+END
+
 IDR_SA_DISPLAYPLOT ACCELERATORS
 BEGIN
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
@@ -4649,10 +5118,11 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.121"
+    VS_VERSION              "Version 3.1.0.122"
     VS_COPYRIGHT            "© 1996-2015 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
+    IDR_SA_SABTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
 
@@ -5343,7 +5813,6 @@ BEGIN
     ID_ADDOVERLAY           "Add an overlay graph to the currently selected graph\nAdd Overlay"
     ID_REMOVE_OVERLAY       "Remove an overlay item from an overlay graph\nRemove Overlay"
     ID_SETDEFAULT           "Set the current view configuration as the default view configuration."
-    ID_FILE_IMPORT          "Import Standard Format Markers\nImport SFM"
     ID_EDIT_PASTENEW        "Paste clipboard wave data into a new file\nPaste As New File"
     ID_EDIT_SELECTWAVEFORM  "Select waveform data between cursors\nSelect Waveform"
 END
@@ -5534,6 +6003,7 @@ BEGIN
     ID_PLAYBACK_STOPTOR     "Plays between the end cursor and the right window border\nPlay End Cursor -> Right"
     ID_IMPORT_TIME_TABLE    "Import Time Table data\nImport Time Table"
     ID_IMPORT_SFM           "Import Standard Format Markers\nImport SFM"
+    ID_IMPORT_SAB           "Import Scripture App Builder\nImport SAB"
     IDC_SYNTHESIS           "Future synthesis option, Construction in progress"
     ID_SYNTHESIS            "Future synthesis option, Construction in progress"
 END
@@ -5749,6 +6219,13 @@ END
 STRINGTABLE
 BEGIN
     ID_SHOW_BORDERS         "Show Boundaries\nShow Boundaries"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_SAB_NO_IMPORT "Unable to import data from Scripture App Builder text file.\nImport operation aborted."
+    IDS_ERROR_SAB_NO_SEGMENTS  "There are no segments.  Please create Gloss and Reference segments first before importing data.\nImport operation aborted."
+    IDS_ERROR_SAB_EXISTING  "Data already exists in Reference and Gloss Segments.\nImport operation aborted."
 END
 
 #endif    // English (United States) resources

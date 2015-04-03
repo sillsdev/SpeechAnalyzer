@@ -832,6 +832,30 @@ void CSaView::OnImportSFM() {
 }
 
 /***************************************************************************/
+// CSaView::OnImportSAB Import SAB text file and automatically process it
+/***************************************************************************/
+void CSaView::OnImportSAB() {
+    
+	// Get Export File Type and Name
+	// load file name
+    CSaString szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str(); 
+    int nFind = szTitle.ReverseFind('.');
+    if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0)) {
+        szTitle = szTitle.Left(nFind);    // remove extension
+    }
+    CSaString szFilter = "Scripture App Builder (*.sab)(*.txt)|*.sab;*.txt|All Files (*.*) |*.*||";
+    CFileDialog dlgFile(TRUE,_T("sab"),szTitle,OFN_HIDEREADONLY,szFilter,NULL);
+    if (dlgFile.DoModal()!=IDOK) {
+        return;
+    }
+
+    CSaString szPath = dlgFile.GetPathName();
+
+	CSaDoc * pDoc = GetDocument();
+	pDoc->ImportSAB( szPath);
+}
+
+/***************************************************************************/
 // CSaView::OnImportELAN Import wave file data from ELAN transcription
 /***************************************************************************/
 void CSaView::OnImportELAN() {

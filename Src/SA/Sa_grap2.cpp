@@ -97,6 +97,7 @@
 #include "PrivateCursorWnd.h"
 #include "ReferenceWnd.h"
 #include "GlossNatWnd.h"
+#include "sa.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -856,9 +857,10 @@ CRecGraphWnd::CRecGraphWnd() : CGraphWnd(IDD_RECORDING) {
 // 09/22/2000 - DDO Created
 /***************************************************************************/
 BOOL CRecGraphWnd::PreCreateWindow(CREATESTRUCT & cs) {
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
-                                       AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0,
-                                       LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_SA_ANNTYPE)));
+                                       pApp->LoadStandardCursor(IDC_ARROW), 0,
+                                       LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(pApp->IsSAB()?IDR_SA_SABTYPE:IDR_SA_ANNTYPE)));
 
     BOOL bRet = CWnd::PreCreateWindow(cs);
     cs.style = WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER;

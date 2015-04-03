@@ -302,6 +302,7 @@ protected:
     afx_msg void OnExportTimeTable();
     afx_msg void OnExportMIDI();
     afx_msg void OnImportSFM();
+    afx_msg void OnImportSAB();
     afx_msg void OnImportELAN();
     afx_msg void OnImportSFT();
     afx_msg void OnFilePhonologyAssistant();

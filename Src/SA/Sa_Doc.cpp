@@ -966,7 +966,7 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp) {
     } catch (...) {
         CSaString szError;
         szError.Format(_T("Unexpected exception thrown from 'SaAudioDocumentReader::Initialize()'"));
-        ErrorMessage(szError);
+        app.ErrorMessage(szError);
         initSucceeded = FALSE;
     }
 
@@ -1333,8 +1333,6 @@ BOOL CSaDoc::InsertTranscriptions(LPCTSTR pszPathName, DWORD dwPos) {
 
     TRACE(L"inserting transcriptions for %s at %d\n",pszPathName,dwPos);
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
     CScopedCursor waitCursor(this);
 
     // initialize com object
@@ -1344,13 +1342,13 @@ BOOL CSaDoc::InsertTranscriptions(LPCTSTR pszPathName, DWORD dwPos) {
     if (createResult) {
         CSaString szCreateResult;
         szCreateResult.Format(_T("%x"), createResult);
-        pApp->ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentReader.CreateInstance()"), szCreateResult);
+        app.ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentReader.CreateInstance()"), szCreateResult);
         return FALSE;
     }
 
     if (!saAudioDocRdr->Initialize(pszPathName, VARIANT_TRUE)) {
         // TODO: Display a more relevant error message.
-        pApp->ErrorMessage(IDS_ERROR_NODATA, pszPathName);
+        app.ErrorMessage(IDS_ERROR_NODATA, pszPathName);
         saAudioDocRdr->Close();
         saAudioDocRdr->Release();
         saAudioDocRdr = NULL;
@@ -1478,12 +1476,11 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
                                  DWORD & dwDataSize) {
 
     dwDataSize = 0;
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
     // open file
     HMMIO hmmioFile; // file handle
     hmmioFile = mmioOpen(const_cast<TCHAR *>(pszPathName), NULL, MMIO_READ | MMIO_DENYWRITE);
     if (!hmmioFile) {
-        pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
+        app.ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
         return false;
     }
     // locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
@@ -1492,7 +1489,7 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
     if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
         mmioClose(hmmioFile, 0);
         // error descending into wave chunk
-        pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, pszPathName);
+        app.ErrorMessage(IDS_ERROR_WAVECHUNK, pszPathName);
         return false;
     }
     // find the format chunk. It should be a subchunk of the 'RIFF' parent chunk
@@ -1505,7 +1502,7 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
         if (fmtParm.wTag != WAVE_FORMAT_PCM) { // check if PCM format
             mmioClose(hmmioFile, 0);
             // error testing pcm format
-            pApp->ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
+            app.ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
             return false;
         }
         if (lError != -1) {
@@ -1533,13 +1530,13 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
         mmioAscend(hmmioFile, &mmckinfoSubchunk, 0);
         if (lError == -1) {
             // error reading format chunk
-            pApp->ErrorMessage(IDS_ERROR_READFORMAT, pszPathName);
+            app.ErrorMessage(IDS_ERROR_READFORMAT, pszPathName);
             mmioClose(hmmioFile, 0);
             return false;
         }
     } else {
         // error finding format chunk
-        pApp->ErrorMessage(IDS_ERROR_FORMATCHUNK, pszPathName);
+        app.ErrorMessage(IDS_ERROR_FORMATCHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return false;
     }
@@ -1547,7 +1544,7 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
     mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
     if (mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
         // error finding data chunk
-        pApp->ErrorMessage(IDS_ERROR_DATACHUNK, pszPathName);
+        app.ErrorMessage(IDS_ERROR_DATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return false;
     }
@@ -1555,7 +1552,7 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
     dwDataSize = mmckinfoSubchunk.cksize;
     if (dwDataSize == 0L) {
         // error 0 size data chunk
-        pApp->ErrorMessage(IDS_ERROR_NODATA, pszPathName);
+        app.ErrorMessage(IDS_ERROR_NODATA, pszPathName);
         mmioClose(hmmioFile, 0);
         return false;
     }
@@ -1768,8 +1765,6 @@ DWORD CSaDoc::CheckWaveFormatForPaste(LPCTSTR pszPathName) {
 
     fmtParm.Trace();
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
     if (dwDataSize) {
         CFmtParm * pFmtParm = &fmtParm;
         if ((m_FmtParm.wChannels != pFmtParm->wChannels) ||
@@ -1778,7 +1773,7 @@ DWORD CSaDoc::CheckWaveFormatForPaste(LPCTSTR pszPathName) {
                 (m_FmtParm.wBlockAlign != pFmtParm->wBlockAlign) ||
                 (m_FmtParm.wBitsPerSample != pFmtParm->wBitsPerSample)) {
             // not the right format
-            pApp->ErrorMessage(IDS_ERROR_PASTEFORMAT);
+            app.ErrorMessage(IDS_ERROR_PASTEFORMAT);
             return FALSE;
         }
     }
@@ -1799,12 +1794,10 @@ DWORD CSaDoc::CheckWaveFormatForOpen(LPCTSTR pszPathName) {
         return 0;
     }
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
     if (dwDataSize) {
         if (fmtParm.dwSamplesPerSec < 1) {
             // not the right format
-            pApp->ErrorMessage(IDS_ERROR_INVALID_SAMPLING_RATE, pszPathName);
+            app.ErrorMessage(IDS_ERROR_INVALID_SAMPLING_RATE, pszPathName);
             return 0;
         }
     }
@@ -1835,7 +1828,6 @@ public:
 bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
 
     bool result = true;
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     // display status bar message
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
@@ -1874,7 +1866,7 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
     if (createResult) {
         CSaString szCreateResult;
         szCreateResult.Format(_T("%x"), createResult);
-        pApp->ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("STAudio.CreateInstance()"), szCreateResult);
+        app.ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("STAudio.CreateInstance()"), szCreateResult);
         pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
         return false;
     }
@@ -1882,7 +1874,7 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
     try {
         result = (stAudio->ConvertToWAV(_bstr_t(pszPathName), _bstr_t(m_szTempConvertedWave.c_str()), 22050, 16, 1)==VARIANT_TRUE);
     } catch (...) {
-        pApp->ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
+        app.ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
         pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
         return false;
     }
@@ -1929,7 +1921,7 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
             // check if the file already opened
             if (pApp->IsFileOpened(target.c_str())) {
                 // error file already opened by SA
-                pApp->ErrorMessage(IDS_ERROR_FILEOPENED, target.c_str());
+                app.ErrorMessage(IDS_ERROR_FILEOPENED, target.c_str());
                 return FALSE;
             }
             // temporary wave file to rename
@@ -1944,7 +1936,7 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
                 // different drives, copy the file
                 if (!CopyWave(m_szTempWave, target.c_str())) {
                     // error copying file
-                    pApp->ErrorMessage(IDS_ERROR_FILEWRITE, target.c_str());
+                    app.ErrorMessage(IDS_ERROR_FILEWRITE, target.c_str());
                     return FALSE;
                 }
                 // now delete the old file (source)
@@ -1954,7 +1946,7 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
                     CFile::Rename(m_szTempWave, target.c_str());
                 } catch (CFileException e) {
                     // error renaming file
-                    pApp->ErrorMessage(IDS_ERROR_FILEWRITE, target.c_str());
+                    app.ErrorMessage(IDS_ERROR_FILEWRITE, target.c_str());
                     return FALSE;
                 }
             }
@@ -1988,7 +1980,7 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 						dlg.mShowFiles = showNew; 
 					} else if (pApp->IsFileOpened(newFile)) {
 						// error file already opened by SA
-						pApp->ErrorMessage(IDS_ERROR_FILEOPENED, newFile);
+						app.ErrorMessage(IDS_ERROR_FILEOPENED, newFile);
 						return FALSE;
 					}
 
@@ -1999,7 +1991,7 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 							status.m_attribute |= CFile::readOnly;
 							CFile::SetStatus(newFile, status);
 						} catch (...) {
-							pApp->ErrorMessage(IDS_ERROR_FILEWRITE, newFile);
+							app.ErrorMessage(IDS_ERROR_FILEWRITE, newFile);
 							return FALSE;
 						}
 					}
@@ -2037,8 +2029,6 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 /***************************************************************************/
 BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipboardFile) {
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
     CScopedCursor waitCursor(this);
 
     DWORD dwDataSize = m_dwDataSize;
@@ -2055,7 +2045,7 @@ BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipbo
     if (createResult) {
         CSaString szCreateResult;
         szCreateResult.Format(_T("%x"), createResult);
-        pApp->ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.CreateInstance()"), szCreateResult);
+        app.ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.CreateInstance()"), szCreateResult);
         return FALSE;
     }
 
@@ -2066,8 +2056,7 @@ BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipbo
     }
 
     if (!saAudioDocWriter->Initialize( pszPathName, szMD5HashCode, (short)bIsClipboardFile)) {
-        CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-        pApp->ErrorMessage(IDS_ERROR_WRITEPHONETIC, pszPathName);
+        app.ErrorMessage(IDS_ERROR_WRITEPHONETIC, pszPathName);
         saAudioDocWriter->Close();
         saAudioDocWriter->Release();
         saAudioDocWriter = NULL;
@@ -2103,8 +2092,6 @@ BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipbo
 /***************************************************************************/
 DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-
     CScopedCursor waitCursor(this);
 
     // open file
@@ -2112,7 +2099,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
     hmmioFile = mmioOpen(const_cast<TCHAR *>(pszPathName), NULL, MMIO_READWRITE | MMIO_EXCLUSIVE);
     if (!hmmioFile) {
         // error opening file
-        pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
+        app.ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
         return 0;
     }
 
@@ -2121,7 +2108,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
     mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
     if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
         // error descending into wave chunk
-        pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, pszPathName);
+        app.ErrorMessage(IDS_ERROR_WAVECHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return 0;
     }
@@ -2145,7 +2132,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
         CFile file;
         if (!file.Open(m_szRawDataWrk.c_str(), CFile::modeRead)) {
             // error opening file
-            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_szRawDataWrk.c_str());
+            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_szRawDataWrk.c_str());
             mmioClose(hmmioFile, 0);
             return 0;
         }
@@ -2161,7 +2148,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
                 dwSizeRead = file.Read(buffer, _countof(buffer));
             } catch (CFileException e) {
                 // error reading file
-                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, m_szRawDataWrk.c_str());
+                app.ErrorMessage(IDS_ERROR_READTEMPFILE, m_szRawDataWrk.c_str());
                 mmioClose(hmmioFile, 0);
                 return 0;
             }
@@ -2172,7 +2159,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
 
             if (mmioWrite(hmmioFile, buffer, dwSizeRead) == -1) {
                 // error writing wave file
-                pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
+                app.ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
                 mmioClose(hmmioFile, 0);
                 return 0;
             }
@@ -2181,7 +2168,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
         // get out of 'data' chunk
         if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0)) {
             // error writing data chunk
-            pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
+            app.ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
             mmioClose(hmmioFile, 0);
             return 0;
         }
@@ -2192,7 +2179,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
     // get out of 'RIFF' chunk, to write RIFF size
     if (mmioAscend(hmmioFile, &mmckinfoParent, 0)) {
         // error writing RIFF chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
+        app.ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return 0;
     }
@@ -2405,8 +2392,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
     // get pointer to view and app
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
+    
     ASSERT(dStart<dTotalLength);
 
     long lSizeWritten = 0;  // this is number of bytes written
@@ -2415,7 +2401,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
         // create and open or just open the file
         if (!file.Open( szTempPath.c_str(), CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
             // error opening file
-            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath.c_str());
+            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath.c_str());
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2426,7 +2412,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
         HMMIO hmmioFile = mmioOpen(const_cast<TCHAR *>(pszSourcePathName), NULL, MMIO_READ | MMIO_DENYWRITE);
         if (!hmmioFile) {
             // error opening file
-            pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
+            app.ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2437,7 +2423,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
         mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
         if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
             // error descending into wave chunk
-            pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
+            app.ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
             mmioClose(hmmioFile, 0);
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
@@ -2449,7 +2435,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
         mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
         if (mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
             // error descending into data chunk
-            pApp->ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
+            app.ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
             mmioClose(hmmioFile, 0);
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
@@ -2480,7 +2466,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
             TRACE(_T("front pad bytes written=%lu\n"), lSizeWritten);
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2508,7 +2494,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
             long lSizeRead = mmioRead(hmmioFile, buffer, _countof(buffer));
             if (lSizeRead == -1) {
                 // error reading from data chunk
-                pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
+                app.ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
                 mmioClose(hmmioFile, 0);
                 m_dwDataSize = 0;       // no data available
                 SetModifiedFlag(FALSE); // will be unable to save
@@ -2563,7 +2549,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
                         lSizeWritten += lWriteSize;
                     } catch (CFileException e) {
                         // error writing file
-                        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
+                        app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
                         m_dwDataSize = 0;       // no data available
                         SetModifiedFlag(FALSE); // will be unable to save
                         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2585,7 +2571,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
             long lSizeRead = mmioRead(hmmioFile, buffer, _countof(buffer));
             if (lSizeRead == -1) {
                 // error reading from data chunk
-                pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
+                app.ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
                 mmioClose(hmmioFile, 0);
                 m_dwDataSize = 0;       // no data available
                 SetModifiedFlag(FALSE); // will be unable to save
@@ -2611,7 +2597,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
                 lSizeWritten += lWriteSize;
             } catch (CFileException e) {
                 // error writing file
-                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
                 m_dwDataSize = 0;       // no data available
                 SetModifiedFlag(FALSE); // will be unable to save
                 pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2642,7 +2628,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
             }
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2691,13 +2677,12 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
     // get pointer to view and app
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     CFile file;
     // create and open or just open the file
     if (!file.Open(pszTempPathName, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
         // error opening file
-        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
         m_dwDataSize = 0;       // no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2708,7 +2693,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
     HMMIO hmmioFile = mmioOpen(const_cast<TCHAR *>(pszSourcePathName), NULL, MMIO_READ | MMIO_DENYWRITE);
     if (!hmmioFile) {
         // error opening file
-        pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
+        app.ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
         m_dwDataSize = 0;       // no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2720,7 +2705,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
     mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
     if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
         // error descending into wave chunk
-        pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
+        app.ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
         mmioClose(hmmioFile, 0);
         m_dwDataSize = 0;       // no data available
         SetModifiedFlag(FALSE); // will be unable to save
@@ -2733,7 +2718,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
     mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
     if (mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
         // error descending into data chunk
-        pApp->ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
+        app.ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
         mmioClose(hmmioFile, 0);
         m_dwDataSize = 0;       // no data available
         SetModifiedFlag(FALSE); // will be unable to save
@@ -2752,7 +2737,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
         long lSizeRead = mmioRead(hmmioFile, buffer, _countof(buffer));
         if (lSizeRead == -1) {
             // error reading from data chunk
-            pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
+            app.ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
             mmioClose(hmmioFile, 0);
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
@@ -2770,7 +2755,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
             file.Write(buffer, (DWORD)lSizeRead);
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2809,13 +2794,12 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
     // get pointer to view and app
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     CFile file;
     // open the file
     if (!file.Open(pszTempPathName, CFile::modeReadWrite | CFile::shareExclusive)) {
         // error opening file
-        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
         return FALSE;
     }
     // seek insert position
@@ -2823,7 +2807,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
         file.Seek(insertPos,CFile::begin);
     } catch (CFileException e) {
         // error opening file
-        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
         return FALSE;
     }
 
@@ -2831,7 +2815,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
     HMMIO hmmioFile = mmioOpen(const_cast<TCHAR *>(pszSourcePathName), NULL, MMIO_READ | MMIO_DENYWRITE);
     if (!hmmioFile) {
         // error opening file
-        pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
+        app.ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
         m_dwDataSize = 0;       // no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -2843,7 +2827,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
     mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
     if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
         // error descending into wave chunk
-        pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
+        app.ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
         mmioClose(hmmioFile, 0);
         m_dwDataSize = 0;       // no data available
         SetModifiedFlag(FALSE); // will be unable to save
@@ -2856,7 +2840,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
     mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
     if (mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
         // error descending into data chunk
-        pApp->ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
+        app.ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
         mmioClose(hmmioFile, 0);
         m_dwDataSize = 0;       // no data available
         SetModifiedFlag(FALSE); // will be unable to save
@@ -2876,7 +2860,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
         long lSizeRead = mmioRead(hmmioFile, (HPSTR)buffer, _countof(buffer));
         if (lSizeRead == -1) {
             // error reading from data chunk
-            pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
+            app.ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
             mmioClose(hmmioFile, 0);
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
@@ -2894,7 +2878,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
             file.Write(buffer, (DWORD)lSizeRead);
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
             m_dwDataSize = 0;       // no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -3823,16 +3807,15 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart) {
             short int nResult = LOWORD(pMain->GetWbProcess(m_nWbProcess - 1, 0)->Process(pView, this));
             bProcess = TRUE;
             // check process result
-            CSaApp * pApp = (CSaApp *)AfxGetApp();
             if (nResult == PROCESS_CANCELED) {
                 // process has been canceled, inform user and switch back to wave file
-                pApp->ErrorMessage(IDS_ERROR_WBCANCEL);
+                app.ErrorMessage(IDS_ERROR_WBCANCEL);
                 m_nWbProcess = 0;
                 bInvalidate = TRUE;
             } else {
                 if (nResult == PROCESS_ERROR) {
                     // processing error, inform user and switch back to wave file
-                    pApp->ErrorMessage(IDS_ERROR_WBPROCESS);
+                    app.ErrorMessage(IDS_ERROR_WBPROCESS);
                     m_nWbProcess = 0;
                     bInvalidate = TRUE;
                 } else {
@@ -3884,13 +3867,11 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
 
     DWORD dwLength = file.GetLength();
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
     // allocate clipboard buffer
     HGLOBAL hGlobal = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwLength);
     if (hGlobal==NULL) {
         // memory allocation error
-        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+        app.ErrorMessage(IDS_ERROR_MEMALLOC);
         file.Abort();
         return FALSE;
     }
@@ -3899,7 +3880,7 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
     HPSTR lpData = (HPSTR)::GlobalLock(hGlobal);
     if (!lpData) {
         // memory lock error
-        pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
+        app.ErrorMessage(IDS_ERROR_MEMLOCK);
         ::GlobalFree(hGlobal);
         file.Abort();
         return FALSE;
@@ -3928,14 +3909,12 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
     pClipData->SetClipboard();
 
     if (bDelete) {
-        CSaApp * pApp = (CSaApp *)AfxGetApp();
         // this piece has to be deleted
-
         // open temporary wave file
         CFile file;
         if (!file.Open(m_szRawDataWrk.c_str(), CFile::modeReadWrite | CFile::shareExclusive)) {
             // error opening file
-            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_szRawDataWrk.c_str());
+            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_szRawDataWrk.c_str());
             return FALSE;
         }
 
@@ -3961,7 +3940,7 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
                 dwDataTail -= dwReadSize;
             } catch (CFileException e) {
                 // error reading file
-                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, m_szRawDataWrk.c_str());
+                app.ErrorMessage(IDS_ERROR_READTEMPFILE, m_szRawDataWrk.c_str());
                 return FALSE;
             }
             // find the target position and write the data block from the buffer
@@ -3970,7 +3949,7 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
                 file.Write(buffer, dwReadSize);
             } catch (CFileException e) {
                 // error writing file
-                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
                 return FALSE;
             }
             dwSectionPos += _countof(buffer);
@@ -3979,7 +3958,7 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
             file.SetLength(tempSize - dwSectionLength);
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
             return FALSE;
         }
 
@@ -4066,7 +4045,7 @@ BOOL CSaDoc::PasteClipboardToWave(HGLOBAL hData, WAVETIME insertTime) {
             }
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
             FileUtils::Remove(szTempPath);
             return FALSE;
         }
@@ -4129,8 +4108,6 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
 
     TRACE("start=%d %d\n",insertAt, repetitions);
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
     CURSORPOS dwSilenceSize = toCursor(silence);
 
     // open temporary wave file
@@ -4148,13 +4125,12 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
             // get pointer to view and app
             POSITION pos = GetFirstViewPosition();
             CSaView * pView = (CSaView *)GetNextView(pos);
-            CSaApp * pApp = (CSaApp *)AfxGetApp();
 
             CFile file;
             // open the file
             if (!file.Open(lpszRawTempPath, CFile::modeReadWrite | CFile::shareExclusive)) {
                 // error opening file
-                pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, lpszRawTempPath);
+                app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, lpszRawTempPath);
                 Undo(FALSE);
                 return FALSE;
             }
@@ -4164,7 +4140,7 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
                 file.Seek(dwTemp, CFile::begin);
             } catch (CFileException e) {
                 // error opening file
-                pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, lpszRawTempPath);
+                app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, lpszRawTempPath);
                 Undo(FALSE);
                 return FALSE;
             }
@@ -4190,7 +4166,7 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
                     file.Write(buffer, (DWORD)lSizeRead);
                 } catch (CFileException e) {
                     // error writing file
-                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
+                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
                     m_dwDataSize = 0;       // no data available
                     SetModifiedFlag(FALSE); // will be unable to save
                     pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
@@ -4210,7 +4186,7 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
             m_pProcessFragments->SetDataInvalid();  // remove old fragmented data
         } catch (CFileException e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
             return FALSE;
         }
 
@@ -5149,7 +5125,7 @@ void CSaDoc::OnFileSaveAs() {
 			}
 		} else if (pApp->IsFileOpened(newFile.c_str())) {
 			// error file already opened by SA
-			pApp->ErrorMessage(IDS_ERROR_FILEOPENED, newFile.c_str());
+			app.ErrorMessage(IDS_ERROR_FILEOPENED, newFile.c_str());
 			return;
 		}
 		saveArea = dlg.mSaveArea;
@@ -5356,7 +5332,7 @@ void CSaDoc::OnFileSplitFile() {
 
         // we need a focused graph!
         if (pView->GetFocusedGraphWnd()==NULL) {
-            pApp->ErrorMessage(IDS_SPLIT_NO_SELECTION);
+            app.ErrorMessage(IDS_SPLIT_NO_SELECTION);
             return;
         }
 
@@ -5374,12 +5350,12 @@ void CSaDoc::OnFileSplitFile() {
 
         // check the for preexistence of a file with the same name as the folder.
         if (FileUtils::FileExists(glossPath.c_str())) {
-            pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,glossPath.c_str());
+            app.ErrorMessage(IDS_SPLIT_FILE_EXISTS,glossPath.c_str());
             return;
         }
 
         if (FileUtils::FileExists(phrasePath.c_str())) {
-            pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,phrasePath.c_str());
+            app.ErrorMessage(IDS_SPLIT_FILE_EXISTS,phrasePath.c_str());
             return;
         }
 
@@ -5421,15 +5397,15 @@ void CSaDoc::OnFileSplitFile() {
 
     // create the folders.
     if (!FileUtils::CreateFolder(newPath.c_str())) {
-        pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,newPath.c_str());
+        app.ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,newPath.c_str());
         return;
     }
     if (!FileUtils::CreateFolder(glossPath.c_str())) {
-        pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,glossPath.c_str());
+        app.ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,glossPath.c_str());
         return;
     }
     if (!FileUtils::CreateFolder(phrasePath.c_str())) {
-        pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,phrasePath.c_str());
+        app.ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,phrasePath.c_str());
         return;
     }
 
@@ -5458,7 +5434,7 @@ void CSaDoc::OnFileSplitFile() {
     int count=dataCount+wavCount;
 
     if (count==0) {
-        pApp->ErrorMessage(IDS_SPLIT_INCOMPLETE);
+        app.ErrorMessage(IDS_SPLIT_INCOMPLETE);
     } else {
         CString szText;
         wchar_t szNumber[128];
@@ -5506,8 +5482,7 @@ void CSaDoc::CopyProcessTempFile() {
             }
         } catch (CFileException e) {
             // error copying wave file
-            CSaApp * pApp = (CSaApp *)AfxGetApp();
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
         }
 
         // get file information
@@ -5538,8 +5513,7 @@ void CSaDoc::OnAdvancedParseWords() {
     if (m_pDlgAdvancedParseWords==NULL) {
         m_pDlgAdvancedParseWords = new CDlgAdvancedParseWords(this);
         if (!m_pDlgAdvancedParseWords->Create()) {
-            CSaApp * pApp = (CSaApp *)AfxGetApp();
-            pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
+            app.ErrorMessage(IDS_ERROR_NO_DIALOG);
             delete m_pDlgAdvancedParseWords;
             m_pDlgAdvancedParseWords = NULL;
             return;
@@ -5565,8 +5539,7 @@ void CSaDoc::OnAdvancedParsePhrases() {
     if (m_pDlgAdvancedParsePhrases==NULL) {
         m_pDlgAdvancedParsePhrases = new CDlgAdvancedParsePhrases(this);
         if (!m_pDlgAdvancedParsePhrases->Create()) {
-            CSaApp * pApp = (CSaApp *)AfxGetApp();
-            pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
+            app.ErrorMessage(IDS_ERROR_NO_DIALOG);
             delete m_pDlgAdvancedParsePhrases;
             m_pDlgAdvancedParsePhrases = NULL;
             return;
@@ -5602,8 +5575,6 @@ BOOL CSaDoc::AdvancedParseAuto() {
     // add the gloss transcription bar to all views
     pView->SendMessage(WM_COMMAND, ID_GLOSS_ALL);
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
     CSegment * pSegment = m_apSegments[GLOSS];
 
     RestartAllProcesses();
@@ -5613,12 +5584,12 @@ BOOL CSaDoc::AdvancedParseAuto() {
     short int nResult = LOWORD(pSegment->Process(NULL, this));   // process data
     if (nResult == PROCESS_ERROR) {
         // error parsing
-        pApp->ErrorMessage(IDS_ERROR_PARSE);
+        app.ErrorMessage(IDS_ERROR_PARSE);
         return FALSE;
     }
     if (nResult == PROCESS_CANCELED) {
         // error canceled parsing
-        pApp->ErrorMessage(IDS_CANCELED);
+        app.ErrorMessage(IDS_CANCELED);
         return FALSE;
     }
 
@@ -6289,6 +6260,7 @@ bool CSaDoc::IsTempFile() {
 }
 
 bool CSaDoc::PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
+
     CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
     if (dlg.mUsingNumbers) {
         // apply the number
@@ -6337,9 +6309,11 @@ bool CSaDoc::PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selectio
 
         CFileEncodingHelper feh(temp);
         if (!feh.CheckEncoding(true)) {
+			return false;
         }
         wistringstream stream;
         if (!feh.ConvertFileToUTF16(stream)) {
+			return false;
         }
         if (!ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,FALSE,td,true,false)) {
             // we will let the implementation code catch this...
@@ -6360,9 +6334,12 @@ bool CSaDoc::PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selectio
             DWORD offset = pGloss->GetOffset(i);
             bool found=false;
             for (int j = 0; j < pReference->GetOffsetSize(); j++) {
+				CString text = pReference->GetText(j).Trim();
                 DWORD roffset = pReference->GetOffset(j);
                 if (roffset==offset) {
-                    return true;
+					if (text.GetLength()>0) {
+						return true;
+					}
                 } else if (roffset>offset) {
                     // for this instance, we are placed before a segment
                     found=true;
@@ -6379,8 +6356,11 @@ bool CSaDoc::PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selectio
                     int r = j-1;
                     DWORD poffset = pReference->GetOffset(r);
                     DWORD pstop = pReference->GetStop(r);
+					CString text = pReference->GetText(r).Trim();
                     if ((poffset<offset)&&(offset<pstop)) {
-                        return true;
+						if (text.GetLength()>0) {
+							return true;
+						}
                     }
                 }
             }
@@ -6419,7 +6399,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
                 if (roffset==offset) {
                     if (rduration==duration) {
                         // we can just overwrite the text
-                        pReference->SetText(j,text,0,offset,duration);
+                        pReference->SetText(j,text);
                         found=true;
                     } else {
                         // we can just overwrite the text
@@ -6463,9 +6443,11 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
 
         CFileEncodingHelper feh(temp);
         if (!feh.CheckEncoding(true)) {
+			return;
         }
         wistringstream stream;
         if (!feh.ConvertFileToUTF16(stream)) {
+			return;
         }
         if (!ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,FALSE,td,true,false)) {
             CString msg;
@@ -6501,7 +6483,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
                     if (rduration==duration) {
                         // the segment sizes are the same
                         // we can just overwrite the text
-                        pReference->SetText(j,text,0,offset,duration);
+                        pReference->SetText(j,text);
                         found=true;
                     } else {
                         // we need to readjust the segment to it's new size
@@ -7977,8 +7959,6 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
                             int & dataCount,
                             int & wavCount) {
 
-    LPCTSTR szCrLf = L"\r\n";
-
     EWordFilenameConvention wordConvention = WFC_REF_GLOSS;
     EPhraseFilenameConvention phraseConvention = PFC_REF_GLOSS;
 
@@ -8721,13 +8701,7 @@ int CSaDoc::GetLastSegmentBeforePosition(int annotSetID, DWORD cursorPos) {
 }
 
 void CSaDoc::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-    pApp->ErrorMessage(nTextID, pszText1, pszText2);
-}
-
-void CSaDoc::ErrorMessage(CSaString & msg) {
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-    pApp->ErrorMessage(msg);
+    app.ErrorMessage(nTextID, pszText1, pszText2);
 }
 
 int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & filename) {
@@ -8775,7 +8749,7 @@ int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, 
 * @param sel the selected phonetic segment
 * @param segmental true if there are multiple phonetic segments to a gloss segment
 */
-void CSaDoc::SplitSegment(CSaView * pView, CPhoneticSegment * pSeg, int sel, bool segmental) {
+void CSaDoc::SplitSegment( CPhoneticSegment * pSeg, int sel, bool segmental) {
     
 	if (sel==-1) {
         return;
@@ -8801,7 +8775,7 @@ void CSaDoc::SplitSegment(CSaView * pView, CPhoneticSegment * pSeg, int sel, boo
         }
     }
 
-    SetModifiedFlag(modified|IsModified());
+    SetModifiedFlag((BOOL)modified|IsModified());
 	SetTransModifiedFlag(modified|IsTransModified());
 }
 
@@ -8895,7 +8869,7 @@ void CSaDoc::MergeSegments(CSaView * pView, CPhoneticSegment * pPhonetic) {
         }
     }
 
-    SetModifiedFlag(modified|IsModified());
+    SetModifiedFlag((BOOL)modified|IsModified());
 	SetTransModifiedFlag(modified|IsTransModified());
 }
 
@@ -8997,9 +8971,11 @@ void CSaDoc::UpdateReferenceBuffer() {
     // data should be fully validated by dialog!
     CFileEncodingHelper feh(target);
     if (!feh.CheckEncoding(true)) {
+		return;
     }
     wistringstream stream;
     if (!feh.ConvertFileToUTF16(stream)) {
+		return;
     }
 	// load in everything possible
     if (!ImportTranscription(stream,true,true,true,true,true,sabBuffer,true,false)) {
@@ -9069,7 +9045,11 @@ void CSaDoc::MoveDataLeft(DWORD offset) {
 				entry[TONE] = sabBuffer.GetValue(TONE,i);
 				entry[PHONEMIC] = sabBuffer.GetValue(PHONEMIC,i);
 				entry[ORTHO] = sabBuffer.GetValue(ORTHO,i);
-				entry[GLOSS] = sabBuffer.GetValue(GLOSS,i);
+				CString temp = sabBuffer.GetValue(GLOSS,i);
+				if ((temp.GetLength()>0)&&(temp[0]!=WORD_DELIMITER)) {
+					temp = WORD_DELIMITER + temp;
+				}
+				entry[GLOSS] = temp;
 				entry[GLOSS_NAT] = sabBuffer.GetValue(GLOSS_NAT,i);
 				entry[MUSIC_PL1] = sabBuffer.GetValue(MUSIC_PL1,i);
 				entry[MUSIC_PL2] = sabBuffer.GetValue(MUSIC_PL2,i);
@@ -9082,19 +9062,17 @@ void CSaDoc::MoveDataLeft(DWORD offset) {
 			CSegment * pSeg = m_apSegments[n];
 			SABMap::iterator it = entry.find((EAnnotation)n);
 			// do we have an entry?
-			CString text = pSeg->GetDefaultChar();
+			CString text;
 			if (it!=entry.end()) {
 				text = entry[(EAnnotation)n];
 			}
-			modified != pSeg->MoveDataLeftSAB(offset,text);
+			modified |= pSeg->MoveDataLeftSAB(offset,text);
 		}
 
 	} else {
+		// non-sab case
 		for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
 			CSegment * pSeg = m_apSegments[n];
-			CString newText = pSeg->GetDefaultChar();
-			if (app.IsSAB()) {
-			}
 			modified |= pSeg->MoveDataLeft(offset);
 		}
 	}
@@ -9132,7 +9110,7 @@ void CSaDoc::MoveDataRight(DWORD offset) {
         CSegment * pSeg = m_apSegments[n];
         modified |= pSeg->MoveDataRight(offset, app.IsSAB());
     }
-    SetModifiedFlag(modified|IsModified());
+    SetModifiedFlag((BOOL)modified|IsModified());
 	SetTransModifiedFlag(modified|IsTransModified());
 }
 
@@ -9193,4 +9171,79 @@ void CSaDoc::DeselectAll() {
             m_apSegments[nLoop]->SetSelection(-1);
         }
     }
+}
+
+void CSaDoc::ImportSAB( LPCTSTR filename) {
+
+	// verify ref and gloss segments are empty
+	CReferenceSegment * pRef = (CReferenceSegment*)GetSegment(REFERENCE);
+	CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
+	// ref may be empty
+	if (pGloss->GetOffsetSize()==0) {
+		app.ErrorMessage(IDS_ERROR_SAB_NO_SEGMENTS);
+		return;
+	}
+
+	bool hasdata = false;
+	for (int i=0;i<pGloss->GetOffsetSize();i++) {
+		CString text = pGloss->GetText(i).Trim();
+		if (text.GetLength()==0) continue;
+		if ((text.GetLength()==1)&&(text[0]=='#')) continue;
+		hasdata = true;
+		break;
+	}
+	for (int i=0;i<pRef->GetOffsetSize();i++) {
+		CString text = pRef->GetText(i).Trim();
+		if (text.GetLength()==0) continue;
+		hasdata = true;
+		break;
+	}
+	if (hasdata) {
+		app.ErrorMessage(IDS_ERROR_SAB_EXISTING);
+		return;
+	}
+
+	// delete existing ref entries and recreate from gloss entries
+	pRef->DeleteContents();
+
+	// auto add reference numbers
+    CTranscriptionData td;
+
+    CFileEncodingHelper feh(filename);
+    if (!feh.CheckEncoding(true)) {
+        return;
+    }
+
+    wistringstream stream;
+    if (!feh.ConvertFileToUTF16(stream)) {
+		return;
+    }
+
+    if (!ImportTranscription(stream,TRUE,FALSE,FALSE,FALSE,FALSE,td,true,false)) {
+		app.ErrorMessage(IDS_ERROR_SAB_NO_IMPORT);
+        return;
+    }
+
+    CString ref = td.m_szPrimary;
+	MarkerList gl = td.GetMarkerList(GLOSS);
+    TranscriptionDataMap & map = td.m_TranscriptionData;
+    MarkerList::iterator rit = map[ref].begin();
+    MarkerList::iterator rend = map[ref].end();
+    MarkerList::iterator git = gl.begin();
+    MarkerList::iterator gend = gl.end();
+
+	DWORD limit = pGloss->GetOffsetSize()-1;
+	int i=0;
+	while (git!=gend) {
+		pGloss->SetText(i,*git);
+		git++;
+		if (rit!=rend) {
+			DWORD offset = pGloss->GetOffset(i);
+			DWORD duration = pGloss->GetDuration(i);
+			pRef->Append(*rit,false,offset,duration);
+			rit++;
+		}
+		i++;
+		if (i>limit) break;
+	}
 }
