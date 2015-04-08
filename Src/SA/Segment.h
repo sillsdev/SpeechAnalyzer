@@ -195,6 +195,8 @@ public:
 
 	int GetLastNonEmptyValue();
 
+	virtual bool ContainsText( DWORD offset, DWORD duration);
+
 protected:
     int GetReferenceCount(CSegment * pSegment, int sel);
 

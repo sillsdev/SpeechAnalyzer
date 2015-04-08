@@ -13,12 +13,15 @@ public:
     virtual ~CGlossSegment();
 
     virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
-    virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);     // remove a segment
+	// remove a segment
+    virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);     
     void CorrectGlossDurations(ISaDoc * pSaDoc);
     virtual void Serialize(CArchive & ar);
+	virtual bool ContainsText( DWORD offset, DWORD stop);
 
 protected:
-    long Exit(int nError);                                          // exit processing on error
+	// exit processing on error
+    long Exit(int nError);
 
 private:
     virtual CFontTable * NewFontTable() const;

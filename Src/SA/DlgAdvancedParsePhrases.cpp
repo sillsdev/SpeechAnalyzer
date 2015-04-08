@@ -23,11 +23,10 @@ IMPLEMENT_DYNAMIC(CDlgAdvancedParsePhrases, CDialog)
 CDlgAdvancedParsePhrases::CDlgAdvancedParsePhrases(CSaDoc * pDoc) :
     CDialog(CDlgAdvancedParsePhrases::IDD, NULL) {
     // Set parsing parameters to default values.
-    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    CParseParm * pCParseParm = pMainWnd->GetCParseParm();
-    m_nBreakWidth = (int)(1000.0 * pCParseParm->fPhraseBreakWidth);
-    m_nMaxThreshold = pCParseParm->nMaxThreshold;
-    m_nMinThreshold = pCParseParm->nMinThreshold;
+    CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
+    m_nBreakWidth = (int)(1000.0 * pMainFrame->GetPhraseBreakWidth());
+    m_nMaxThreshold = pMainFrame->GetMaxThreshold();
+    m_nMinThreshold = pMainFrame->GetMinThreshold();
     m_pDoc = pDoc;
 }
 
@@ -79,10 +78,9 @@ BOOL CDlgAdvancedParsePhrases::OnInitDialog() {
     // initialize member data
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    CParseParm * pCParseParm = pMainFrame->GetCParseParm();
-    m_nBreakWidth = (int)(pCParseParm->fPhraseBreakWidth * (float)1000 + 0.5);
-    m_nMaxThreshold = pCParseParm->nMaxThreshold;
-    m_nMinThreshold = pCParseParm->nMinThreshold;
+    m_nBreakWidth = (int)(pMainFrame->GetPhraseBreakWidth() * (float)1000 + 0.5);
+	m_nMaxThreshold = pMainFrame->GetMaxThreshold();
+	m_nMinThreshold = pMainFrame->GetMinThreshold();
 
     UpdateData(FALSE);
 
@@ -96,10 +94,9 @@ void CDlgAdvancedParsePhrases::Apply() {
     // store new data
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    CParseParm * pCParseParm = pMainFrame->GetCParseParm();
-    pCParseParm->fPhraseBreakWidth = (float)m_nBreakWidth / (float)1000;
-    pCParseParm->nMaxThreshold = m_nMaxThreshold;
-    pCParseParm->nMinThreshold = m_nMinThreshold;
+    pMainFrame->SetPhraseBreakWidth((float)m_nBreakWidth / (float)1000);
+    pMainFrame->SetMaxThreshold(m_nMaxThreshold);
+    pMainFrame->SetMinThreshold(m_nMinThreshold);
 
     if (!m_pDoc->AdvancedParsePhrase()) {
         Undo();
@@ -191,7 +188,7 @@ BEGIN_MESSAGE_MAP(CDlgAdvancedParsePhrases, CDialog)
     ON_COMMAND(IDC_BREAKWIDTHSCROLL, OnBreakWidthScroll)
     ON_COMMAND(IDC_PARSEMAXTHRESHOLDSCROLL, OnMaxThresholdScroll)
     ON_COMMAND(IDC_PARSEMINTHRESHOLDSCROLL, OnMinThresholdScroll)
-    ON_BN_CLICKED(IDC_APPLY, &CDlgAdvancedParsePhrases::OnBnClickedApply)
+    ON_BN_CLICKED(IDC_APPLY, &CDlgAdvancedParsePhrases::OnApply)
 END_MESSAGE_MAP()
 
 void CDlgAdvancedParsePhrases::OnOK() {
@@ -204,6 +201,6 @@ void CDlgAdvancedParsePhrases::OnCancel() {
     CDialog::OnCancel();
 }
 
-void CDlgAdvancedParsePhrases::OnBnClickedApply() {
+void CDlgAdvancedParsePhrases::OnApply() {
     Apply();
 }

@@ -72,6 +72,7 @@ void CWorkbenchDoc::Serialize(CArchive & ar) {
 // workbench processes and all there properties.
 /***************************************************************************/
 BOOL CWorkbenchDoc::OnOpenDocument(LPCTSTR pszPathName) {
+
     if (!((CSaApp *)AfxGetApp())->CloseWorkbench(this)) {
 		// close already opened workbench
         return FALSE;    

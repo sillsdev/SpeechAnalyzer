@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,122
+ FILEVERSION 3,1,0,124
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.122"
+            VALUE "FileVersion", "v3.1.0.124"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -66,7 +66,9 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "RES\\SA.ICO"
+IDR_MAINFRAME_SA        ICON                    "RES\\SA.ICO"
+IDR_MAINFRAME_AS        ICON                    "RES\\AS.ICO"
+IDR_MAINFRAME_SAS       ICON                    "RES\\SA.ICO"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -117,8 +119,7 @@ IDI_DOWN                ICON                    "res\\down.ico"
 IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\SA.ico"
 IDR_SA_WBTYPE           ICON                    "RES\\SA_WB.ICO"
 IDR_SA_ANNTYPE          ICON                    "RES\\SA.ICO"
-IDR_SA_SABTYPE          ICON                    "RES\\SA.ICO"
-IDR_MAINFRAME_SAS       ICON                    "RES\\SA.ICO"
+IDR_SA_SABTYPE          ICON                    "RES\\AS.ICO"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2953,6 +2954,7 @@ IDB_JAW                 BITMAP                  "RES\\JAW.BMP"
 IDB_TONGUE              BITMAP                  "RES\\TONGUE.BMP"
 IDR_BAR_ADVANCED        BITMAP                  "res\\IDR_BAR_ADVANCED.bmp"
 IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
+IDR_BAR_SAB             BITMAP                  "res\\IDR_BAR_SAB.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3058,13 +3060,36 @@ BEGIN
     BUTTON      IDD_TASKBAR_ICON
 END
 
+IDR_BAR_SAB TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_UNDO
+    BUTTON      ID_EDIT_REDO
+    SEPARATOR
+    BUTTON      ID_EDIT_ADD_MARKUP
+    SEPARATOR
+    BUTTON      ID_EDIT_SEGMENT_SIZE
+    SEPARATOR
+    BUTTON      ID_GRAPHS_ZOOM_IN
+    BUTTON      ID_GRAPHS_ZOOM_OUT
+    BUTTON      ID_GRAPHS_ZOOM_ALL
+    BUTTON      ID_GRAPHS_ZOOM_CURSORS
+    SEPARATOR
+    BUTTON      ID_PLAYBACK_CURSORS
+    BUTTON      ID_PLAYBACK_ENDCURSOR
+    BUTTON      ID_PLAYBACK_FILE
+    BUTTON      ID_PLAYER_PAUSE
+    BUTTON      ID_PLAYER_STOP
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
 //
 
-IDR_MAINFRAME MENU
+IDR_MAINFRAME_SA MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3102,6 +3127,27 @@ BEGIN
         MENUITEM "&Using Help",                 ID_HELP_USINGHELP
         MENUITEM SEPARATOR
         MENUITEM "&About Speech Analyzer",      ID_APP_ABOUT
+    END
+END
+
+IDR_MAINFRAME_AS MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "Ope&n Startup...",            ID_FILE_OPEN_SPECIAL
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Tools"
+    BEGIN
+        MENUITEM "&Options...",                 ID_TOOLS_OPTIONS, GRAYED
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About AudioSync",            ID_APP_ABOUT
     END
 END
 
@@ -3436,7 +3482,7 @@ BEGIN
         END
         POPUP "Align &Transcription"
         BEGIN
-            MENUITEM "Add &Reference Numbers...",   ID_AUTOMATICMARKUP_REFERENCEDATA
+            MENUITEM "Add &Reference Numbers...",   ID_AUTO_MARKUP_REFERENCE_DATA
             MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
         END
         MENUITEM SEPARATOR
@@ -3476,55 +3522,17 @@ IDR_SA_SABTYPE MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        //MENUITEM "&Record New...\tCtrl+R",      ID_FILE_RECORD
-        //MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        //MENUITEM "Open Startup...",             ID_FILE_OPEN_SPECIAL
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         POPUP "&Import"
         BEGIN
-            //MENUITEM "&Standard Format (.SFM)",     ID_IMPORT_SFM
             MENUITEM "&Scripture App Builder (.TXT)", ID_IMPORT_SAB
-            //MENUITEM SEPARATOR
-            //MENUITEM "Staff &Notes...",             ID_IMPORT_MIDI
         END
-        //POPUP "&Export"
-        //BEGIN
-            //MENUITEM "E&xtensible Markup (.XML)",   ID_EXPORT_XML
-            //MENUITEM "&Fieldworks (.SFM)",          ID_EXPORT_FW
-            //MENUITEM "&Lift Format (.LIFT)",        ID_EXPORT_LIFT
-            //MENUITEM "SFM &Time Table (.SFT)",      ID_EXPORT_TIME_TABLE
-            //MENUITEM "&Standard Format (.SFM)",     ID_EXPORT_SFM
-            //MENUITEM SEPARATOR
-            //MENUITEM "Staff &Notes...",             ID_EXPORT_MIDI
-        //END
-        //MENUITEM "Sp&lit File...",              ID_FILE_SPLIT
-        //MENUITEM SEPARATOR
-        //POPUP "Screen Capt&ure"
-        //BEGIN
-            //MENUITEM "Save &Window...",             ID_GRAPHS_SCREENCAPTURE
-            //MENUITEM "C&opy Window",                ID_GRAPHS_SCREENCOPY
-            //MENUITEM SEPARATOR
-            //MENUITEM "Sa&ve Graphs...",             ID_GRAPHS_GRAPHSCAPTURE
-            //MENUITEM "Copy &Graphs",                ID_GRAPHS_GRAPHSCOPY
-        //END
-        //MENUITEM SEPARATOR
-        //MENUITEM "Infor&mation...\tCtrl+I",     ID_FILE_INFORMATION
-        //MENUITEM SEPARATOR
-        //MENUITEM "Page Se&tup...",              ID_FILE_PAGE_SETUP
-        //MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
-        //MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
-        //MENUITEM SEPARATOR
-        //MENUITEM "Phonology Assistant...",      ID_FILE_PHONOLOGYASSISTANT
-        //MENUITEM SEPARATOR
-        POPUP "AutoSave"
-        BEGIN
-            MENUITEM "On",                          ID_AUTOSAVE_ON
-            MENUITEM "Off",                         ID_AUTOSAVE_OFF
-        END
+        MENUITEM SEPARATOR
+        MENUITEM "Infor&mation...\tCtrl+I",     ID_FILE_INFORMATION
         MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
         MENUITEM SEPARATOR
@@ -3570,7 +3578,6 @@ BEGIN
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
         MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
         MENUITEM SEPARATOR
-        //MENUITEM "Copy &Measurements\tCtrl+Shift+C", ID_EDIT_COPY_MEASUREMENTS
         MENUITEM "Select &Waveform Segment\tCtrl+A", ID_EDIT_SELECTWAVEFORM_FAKE
         MENUITEM "Select Wa&veform\tCtrl+ClickDrag", ID_EDIT_SELECTWAVEFORM_FAKE
         MENUITEM SEPARATOR
@@ -3617,8 +3624,6 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Pos&ition View",              IDD_RECORDING
         END
-        //MENUITEM "Taskbar T&ypes",              ID_GRAPHS_TYPES
-        //MENUITEM "&Parameters...",              ID_GRAPHS_PARAMETERS
         MENUITEM SEPARATOR
         POPUP "&Transcription Bars"
         BEGIN
@@ -3740,23 +3745,6 @@ BEGIN
                 MENUITEM "&Custom...",                  ID_GRAPHS_MAGNIFYCUSTOM
             END
         END
-        //POPUP "&Overlay"
-        //BEGIN
-            //MENUITEM "Add &Overlay...",             ID_ADDOVERLAY
-            //MENUITEM "Remove Overlay...",           ID_REMOVE_OVERLAY
-            //MENUITEM "Remove All Overlays",         ID_REMOVE_OVERLAYS
-            //MENUITEM SEPARATOR
-            //MENUITEM "Record Overlay",              ID_POPUP_RECORD_OVERLAY
-        //END
-        //MENUITEM SEPARATOR
-        //MENUITEM "E&qualize Length",            ID_GRAPHS_EQUALIZELENGTH
-        //MENUITEM SEPARATOR
-        //POPUP "&Drawing Style"
-        //BEGIN
-            //MENUITEM "&Line",                       ID_POPUPGRAPH_STYLE_LINE
-            //MENUITEM "&Solid",                      ID_POPUPGRAPH_STYLE_SOLID
-            //MENUITEM "S&amples",                    ID_POPUPGRAPH_STYLE_DOTS
-        //END
     END
     POPUP "&Playback"
     BEGIN
@@ -3768,34 +3756,9 @@ BEGIN
         MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
         MENUITEM "Pa&use\tSpace",               ID_PLAYER_PAUSE
         MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
-        //POPUP "Function &Keys"
-        //BEGIN
-            //MENUITEM "Ctrl+F1",                     ID_PLAY_F1
-            //MENUITEM "Ctrl+F2",                     ID_PLAY_F2
-            //MENUITEM "Ctrl+F3",                     ID_PLAY_F3
-            //MENUITEM "Ctrl+F4",                     ID_PLAY_F4
-            //MENUITEM "Ctrl+F5",                     ID_PLAY_F5
-            //MENUITEM "Ctrl+F6",                     ID_PLAY_F6
-            //MENUITEM "Ctrl+F7",                     ID_PLAY_F7
-            //MENUITEM "Ctrl+F8",                     ID_PLAY_F8
-            //MENUITEM "Ctrl+F9",                     ID_PLAY_F9
-            //MENUITEM "Ctrl+F10",                    ID_PLAY_F10
-            //MENUITEM "Ctrl+F11",                    ID_PLAY_F11
-            //MENUITEM "Ctrl+F12",                    ID_PLAY_F12
-        //END
-        //MENUITEM SEPARATOR
-        //MENUITEM "Pla&yer...",                  ID_PLAYER
-        //MENUITEM "Se&tup Function Keys...",     ID_SETUP_FNKEYS
     END
     POPUP "&Tools"
     BEGIN
-        //POPUP "&Adjust Waveform"
-        //BEGIN
-            //MENUITEM "&Invert",                     ID_TOOLS_ADJUST_INVERT
-            //MENUITEM "&Normalize",                  ID_TOOLS_ADJUST_NORMALIZE
-            //MENUITEM "&Zero Offset",                ID_TOOLS_ADJUST_ZERO
-            //MENUITEM "Insert &Silence...",          ID_TOOLS_ADJUST_SILENCE
-        //END
         POPUP "Automatic &Markup"
         BEGIN
             MENUITEM "Locate Phonetic &Segments...", ID_ADVANCED_SEGMENT
@@ -3804,13 +3767,11 @@ BEGIN
         END
         POPUP "Align &Transcription"
         BEGIN
-            MENUITEM "Add &Reference Numbers...",   ID_AUTOMATICMARKUP_REFERENCEDATA
+            MENUITEM "Add &Reference Numbers...",   ID_AUTO_MARKUP_REFERENCE_DATA
             MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
+            MENUITEM "Generate CV Data...",         ID_AUTO_GENERATE_CV_DATA
         END
         MENUITEM SEPARATOR
-        //MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
-        //MENUITEM "&Workbench",                  ID_WORKBENCH
-        //MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
     END
     POPUP "&Window"
@@ -3823,20 +3784,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
-        MENUITEM "&What's New?",                ID_HELP_WHATS_NEW
-        MENUITEM "T&roubleshooting",            ID_HELP_TROUBLE
-        MENUITEM "&Graphs",                     ID_HELP_GRAPHS
-        MENUITEM "&Music Analysis",             ID_HELP_MUSIC
-        POPUP "&Training"
-        BEGIN
-            MENUITEM "&Student Manual",             ID_HELP_TRAINING_STUDENT
-            MENUITEM "&Instructor Guide",           ID_HELP_TRAINING_INSTRUCTOR
-        END
-        MENUITEM "S&FM Markers",                ID_HELP_SFMMARKERS
-        MENUITEM "&Using Help",                 ID_HELP_USINGHELP
-        MENUITEM SEPARATOR
-        MENUITEM "&About Speech Analyzer",      ID_APP_ABOUT
+        MENUITEM "&About AudioSync",            ID_APP_ABOUT
     END
 END
 
@@ -4587,6 +4535,7 @@ BEGIN
     " ",            ID_PLAYER_PAUSE,        ASCII,  NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
     "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
+    "J",            ID_AUTO_GENERATE_CV_DATA, VIRTKEY, CONTROL, NOINVERT
 END
 
 IDR_SA_DISPLAYPLOT ACCELERATORS
@@ -4600,7 +4549,16 @@ BEGIN
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
 END
 
-IDR_MAINFRAME ACCELERATORS
+IDR_MAINFRAME_SA ACCELERATORS
+BEGIN
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_TOOLS_SELFTEST,      VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
+    VK_CANCEL,      ID_TOOLS_SELFTEST,      VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
+    VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
+END
+
+IDR_MAINFRAME_AS ACCELERATORS
 BEGIN
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
@@ -5118,16 +5076,17 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.122"
+    VS_VERSION              "Version 3.1.0.124"
     VS_COPYRIGHT            "© 1996-2015 SIL International (MSEA).\nAll Rights Reserved."
-    IDR_MAINFRAME           "Speech Analyzer"
+    IDR_MAINFRAME_SA        "Speech Analyzer"
+    IDR_MAINFRAME_AS        "AudioSync"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
     IDR_SA_SABTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
 
 STRINGTABLE
 BEGIN
+    IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
     IDR_WORKBENCH           "Workbench"
     IDR_SA_MIDTYPE          "\nMID\nSA MIDI\nMIDI Files (*.mid)\n.mid\nmidFileType\nMID File Type"
 END
@@ -5883,8 +5842,21 @@ BEGIN
                             "Speech Analyzer will markup the audio file according to the markup that was done in SayMore.\nThese segments will be considered as breath groups and  the Transcription from SayMore will be placed in the Phonetic Transcription field.\nThe Free Translation will be associated with each group and placed in the Phrase Level 1 Transcription field."
     IDS_NO_ISO              "Unable to load '%1' file. Please make sure the application has been installed properly!"
     IDS_DISABLED_SEGMENT    "Disabled - select or add a segment"
+END
+
+STRINGTABLE
+BEGIN
     IDS_DELETE_REFERENCE    "This process will delete existing reference numbers.\nDo you want to continue?"
     IDS_ERROR_ELAN1         "Selected PHONETIC tier must not be a reference tier."
+    IDS_ERROR_SAB_NO_IMPORT "Unable to import data from Scripture App Builder text file.\nImport operation aborted."
+    IDS_SAB_QUERY_AUTOSEGMENT_EXISTING 
+                            "There are existing Gloss and/or Reference segments.\nWould you like AudioSync to use these segments for the import process, or should it automatically calculate new segments?\nClick YES to use the existing segments.\nClick NO to automatically resegment the audio data.\nClick CANCEL to terminate the import process."
+    IDS_ERROR_SAB_NO_SEGMENTS 
+                            "There are no segments.  Please create Gloss and Reference segments first before importing data.\nImport operation aborted."
+    IDS_ERROR_SAB_AUTOPARSE_FAIL 
+                            "Unable to automatically parse the Gloss Segments.\n%1 Segments were provided, but only %2 were found.\nPlease manually parse the Gloss segments and retry importing the data file."
+    IDS_SAB_QUERY_AUTOSEGMENT 
+                            "There are no existing Gloss or Reference Segments.\nAudio Sync needs segments to be defined in order to import data.\nWould you like for AudioSync to automatically segment the audio data?\nClick YES to perform auto segmentation.\nClick NO to abort the import process."
 END
 
 STRINGTABLE
@@ -6143,7 +6115,7 @@ BEGIN
     ID_EDIT_COPY_PHONETIC_TO_PHONEMIC 
                             "Copy Phonetic Transcriptions to Phonemic Transcriptions"
     IDS_SPLIT_INCOMPLETE    "The split was not completed.  No segments were found."
-    ID_AUTOMATICMARKUP_REFERENCEDATA "Renumber the Reference Data"
+    ID_AUTO_MARKUP_REFERENCE_DATA "Renumber the Reference Data"
     IDS_SPLIT_NO_GLOSS      "An empty Gloss transcription field was found at %1 segment %2.\nPlease correct the transcription or rerun the Split File feature and use the checkbox to allow skipping of blank words."
     IDS_SPLIT_NO_REF        "An empty Reference transcription field was found at %1 segment %2.\nPlease correct the transcription field or rerun the Split File feature with a different filenaming convention."
     IDS_SPLIT_NO_WRITE      "An error occurred while writing '%1'.  Please make sure the directory is writeable."
@@ -6223,9 +6195,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERROR_SAB_NO_IMPORT "Unable to import data from Scripture App Builder text file.\nImport operation aborted."
-    IDS_ERROR_SAB_NO_SEGMENTS  "There are no segments.  Please create Gloss and Reference segments first before importing data.\nImport operation aborted."
-    IDS_ERROR_SAB_EXISTING  "Data already exists in Reference and Gloss Segments.\nImport operation aborted."
+    IDS_ERROR_GENERATE_CV_PHONETIC 
+                            "There are no phonetics segments.  Phonetic segments are needed to ceate CV data.\nAborting operation."
+    IDS_ERROR_GENERATE_CV_TONE 
+                            "There are pre-existing Tone Segments.  The data will be overwritten by this function.  Please remove the segments.\nAborting operation."
+    IDS_ERROR_GENERATE_CV_NOPITCH 
+                            "Failed to generate Pitch data.\nThe operation has been aborted."
+    IDS_SAB_QUERY_EXISTING_DATA 
+                            "WARNING! There is existing segment data in the Reference, Gloss and/or Gloss Nat. segments.\nProceeding with the import process will overwrite the segment data.\nClick YES to proceed with the import process.\nClick NO to terminate."
 END
 
 #endif    // English (United States) resources

@@ -326,10 +326,6 @@ BOOL CSaApp::InitInstance() {
 
     SetRegistryKey(_T("SIL"));
 
-    // create the error message string array
-    m_pszErrors = new CStringArray();
-    m_pszMessages = new CStringArray();
-
     // Standard initialization
     // If you are not using these features and wish to reduce the size
     // of your final executable, you should remove from the following
@@ -349,7 +345,7 @@ BOOL CSaApp::InitInstance() {
 
     // Register the application's document templates.
     // Document templates serve as the connection between documents, frame windows and views.
-    m_pDocTemplate = new CMultiDocTemplate((IsSAB()?IDR_SA_SABTYPE:IDR_SA_ANNTYPE),
+    m_pDocTemplate = new CMultiDocTemplate((IsAudioSync()?IDR_SA_SABTYPE:IDR_SA_ANNTYPE),
                                            RUNTIME_CLASS(CSaDoc),
                                            RUNTIME_CLASS(CChildFrame),
                                            RUNTIME_CLASS(CSaView));
@@ -382,7 +378,12 @@ BOOL CSaApp::InitInstance() {
             //splash->Show();
             szSplashText.LoadString(IDS_SPLASH_LOADING);
             splash->Message = (_bstr_t)szSplashText;
-            szSplashText.LoadString(IDR_MAINFRAME);
+			CSaApp * pApp = (CSaApp*)AfxGetApp();
+			if (pApp->IsAudioSync()) {
+		        szSplashText.LoadString(IDR_MAINFRAME_AS);
+			} else {
+	            szSplashText.LoadString(IDR_MAINFRAME_SA);
+			}
             splash->ProdName = (_bstr_t)szSplashText;
             // load version info
             CSaString szVersion((LPCTSTR)VS_VERSION);
@@ -421,9 +422,15 @@ BOOL CSaApp::InitInstance() {
     // create main MDI Frame window
     CMainFrame * pMainFrame = new CMainFrame();
     if (!IsSAServer()) {
-        if (!pMainFrame->LoadFrame(IDR_MAINFRAME)) {
-            return FALSE;
-        }
+		if (IsAudioSync()) {
+			if (!pMainFrame->LoadFrame(IDR_MAINFRAME_AS)) {
+				return FALSE;
+			}
+		} else {
+			if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SA)) {
+				return FALSE;
+			}
+		}
     } else if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SAS)) {
         return FALSE;
     }
@@ -538,16 +545,7 @@ int CSaApp::ExitInstance() {
 
     BOOL bOK = FALSE;
     try {
-        if (m_pszErrors) {
-            delete m_pszErrors;
-            m_pszErrors = NULL;
-        }
-        if (m_pszMessages) {
-            delete m_pszMessages;
-            m_pszMessages = NULL;
-        }
         bOK = CWinApp::ExitInstance();
-
         // standard implementation: save initialisation
         SaveStdProfileSettings();
     } catch (...) {
@@ -980,7 +978,7 @@ void CSaApp::OnProcessBatchCommands() {
 // CSaApp::ErrorMessage Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) const {
+void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
     CSaString szText;
     try {
         // create the text
@@ -993,7 +991,8 @@ void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) cons
         } else {
             szText.LoadString(nTextID);
         }
-        m_pszErrors->Add(szText); // add the string to the array
+		// add the string to the array
+        m_pszErrors.Add(szText); 
     } catch (CMemoryException e) {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -1004,8 +1003,8 @@ void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) cons
 // CSaApp::Message Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
-    CSaString szText;
+void CSaApp::Message( UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
+	CSaString szText;
     try {
         // create the text
         if (pszText1) {
@@ -1017,7 +1016,7 @@ void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
         } else {
             szText.LoadString(nTextID);
         }
-        m_pszMessages->Add(szText); // add the string to the array
+        m_pszMessages.Add(szText); // add the string to the array
     } catch (CMemoryException e) {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -1028,17 +1027,12 @@ void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
 // CSaApp::ErrorMessage Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::ErrorMessage(CSaString & szText) const {
+void CSaApp::ErrorMessage(CSaString & szText) {
 #ifdef _DEBUG
     ASSERT(FALSE);
 #endif
-    try {
-        m_pszErrors->Add(szText); // add the string to the array
-    } catch (CMemoryException e) {
-        // memory allocation error
-        ErrorMessage(IDS_ERROR_MEMALLOC);
-    }
-
+	// add the string to the array
+    m_pszErrors.Add(szText); 
 }
 
 /***************************************************************************/
@@ -1288,6 +1282,7 @@ CDocument * CSaApp::OpenBlankView(bool bWithGraphs) {
 // The user wants to see the modal about dialog.
 /***************************************************************************/
 void CSaApp::OnAppAbout() {
+
     // initialize the about box object
     CoInitialize(NULL);
     IAboutDlgPtr aboutDlg;
@@ -1300,7 +1295,12 @@ void CSaApp::OnAppAbout() {
     }
 
     // set the text values
-    aboutDlg->ProdName = _T("Speech Analyzer");
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	if (pApp->IsAudioSync()) {
+	    aboutDlg->ProdName = _T("AudioSync");
+	} else {
+		aboutDlg->ProdName = _T("Speech Analyzer");
+	}
     CSaString szVersion((LPCTSTR)VS_VERSION);;
     CSaString szBuild;
     szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
@@ -1675,14 +1675,16 @@ BOOL CSaApp::OnIdle(LONG lCount) {
 /***************************************************************************/
 void CSaApp::DisplayMessages() {
 
-    if (m_pszErrors->GetSize() > 0) {
-        CSaString error = m_pszErrors->GetAt(0);
-        m_pszErrors->RemoveAt(0, 1); // remove message (before we lose process thread)
+    if (m_pszErrors.GetSize() > 0) {
+        CSaString error = m_pszErrors.GetAt(0);
+		// remove message (before we lose process thread)
+        m_pszErrors.RemoveAt(0, 1); 
         AfxMessageBox(error, MB_OK | MB_ICONEXCLAMATION, 0);
     }
-    if (m_pszMessages->GetSize() > 0) {
-        CSaString error = m_pszMessages->GetAt(0);
-        m_pszMessages->RemoveAt(0, 1); // remove message (before we lose process thread)
+    if (m_pszMessages.GetSize() > 0) {
+        CSaString error = m_pszMessages.GetAt(0);
+		// remove message (before we lose process thread)
+        m_pszMessages.RemoveAt(0, 1); 
         AfxMessageBox(error, MB_OK | MB_ICONINFORMATION, 0);
     }
 }
@@ -2364,9 +2366,11 @@ bool CSaApp::IsSAServer() const {
     return (CSaString(m_pszExeName).Find(_T("SAServer")) != -1);
 }
 
-bool CSaApp::IsSAB() const {
-	return true;
-    return (CSaString(m_pszExeName).Find(_T("SA-SAB")) != -1);
+bool CSaApp::IsAudioSync() const {
+#ifdef _DEBUG
+    return true;
+#endif
+    return (CSaString(m_pszExeName).Find(_T("AudioSync")) != -1);
 }
 
 // Name:        CSingleInstanceData

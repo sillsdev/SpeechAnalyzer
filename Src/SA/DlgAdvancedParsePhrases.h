@@ -52,7 +52,7 @@ protected:
     afx_msg void OnBreakWidthScroll();
     afx_msg void OnMaxThresholdScroll();
     afx_msg void OnMinThresholdScroll();
-    afx_msg void OnBnClickedApply();
+    afx_msg void OnApply();
     DECLARE_MESSAGE_MAP()
     virtual void OnOK();
     virtual void OnCancel();

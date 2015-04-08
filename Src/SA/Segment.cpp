@@ -586,7 +586,7 @@ void CSegment::Adjust( ISaDoc * pDoc, int nIndex, DWORD dwOffset, DWORD dwDurati
 
     DWORD dwOldOffset = GetOffset(nIndex);
     DWORD dwOldStop = GetStop(nIndex);
-	TRACE("Adjust %d %d start=%d end=%d\n",this->m_nAnnotationType,nIndex,dwOldOffset,dwOldStop);
+	//TRACE("Adjust %d %d start=%d end=%d\n",this->m_nAnnotationType,nIndex,dwOldOffset,dwOldStop);
     // adjust this segment
     for (int nLoop = nIndex; nLoop < m_Offset.GetSize(); nLoop++) {
         if (GetOffset(nLoop) == dwOldOffset) {
@@ -1262,3 +1262,19 @@ int CSegment::GetLastNonEmptyValue() {
 	}
 	return -1;
 }
+
+bool CSegment::ContainsText( DWORD offset, DWORD stop) {
+	for (int i=0;i<GetOffsetSize();i++) {
+		DWORD thisOffset = GetOffset(i);
+		DWORD thisStop = GetStop(i);
+		if ((thisOffset>=offset)&&(thisStop<=stop)) {
+			CString text = GetText(i).Trim();
+			if (text.GetLength()>0) {
+				TRACE("text %s is blocking operation for %d\n",(LPCTSTR)text,this->m_nAnnotationType);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+

@@ -14,6 +14,7 @@ public:
     virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace);
     virtual bool Filter();
     virtual bool Filter(CString & text);
+	virtual bool ContainsText( DWORD offset, DWORD stop);
 
 protected:
 	// exit processing on error

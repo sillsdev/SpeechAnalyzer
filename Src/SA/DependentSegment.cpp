@@ -333,7 +333,8 @@ int CDependentSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwStart, DWO
 // CDependentSegment::Add Add dependent annotation segment
 /***************************************************************************/
 void CDependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
-    // get the offset and duration from master
+    
+	// get the offset and duration from master
     int nSegment = pDoc->GetSegment(m_nMasterType)->FindOffset(dwStart);
     if (nSegment == -1) {
         return;    // return on error

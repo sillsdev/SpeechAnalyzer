@@ -579,3 +579,17 @@ bool CPhoneticSegment::Filter(CString & text) {
     return bChanged;
 }
 
+bool CPhoneticSegment::ContainsText( DWORD offset, DWORD stop) {
+	for (int i=0;i<GetOffsetSize();i++) {
+		DWORD thisOffset = GetOffset(i);
+		DWORD thisStop = GetStop(i);
+		if ((thisOffset>=offset)&&(thisStop<=stop)) {
+			CString text = GetText(i).Trim();
+			if (text.GetLength()==0) continue;
+			if ((text.GetLength()==1) && (text[0]==0xFFFD)) continue;
+			TRACE("text %s is blocking operation for %d\n",(LPCTSTR)text,this->m_nAnnotationType);
+			return true;
+		}
+	}
+	return false;
+}

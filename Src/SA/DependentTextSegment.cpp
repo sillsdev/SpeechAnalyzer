@@ -105,6 +105,6 @@ void CDependentTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, C
 
     pDoc->SetModifiedFlag(TRUE);                                    // document has been modified
     pDoc->SetTransModifiedFlag(TRUE);                               // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop);   // change the selection
+    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop);  // change the selection
     pView->RefreshGraphs(FALSE);                                    // refresh the graphs between cursors
 }

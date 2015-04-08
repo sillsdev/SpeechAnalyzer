@@ -65,20 +65,6 @@ class CFontTable;
 
 typedef UINT(CALLBACK * DLGHOOKPROC)(HWND, UINT, WPARAM, LPARAM);
 
-typedef struct SDefaultViewInfo {
-    CSaView    *   pView;
-    BOOL           bMaximize;
-    int            nHeight;
-    int            nWidth;
-    CParseParm      ParsePrm;
-    CSegmentParm    SegmentPrm;
-    CPitchParm      PitchPrm;
-    CFormantParm    FormantPrm;
-    CSpectrumParm   SpectrumPrm;
-    CSpectroParm    SpectrogramPrm;
-    CSpectroParm    SnapshotPrm;
-} DefaultViewInfo;
-
 //###########################################################################
 // CMainFrame window
 
@@ -90,8 +76,8 @@ public:
     CMainFrame();
     virtual ~CMainFrame();
 
-    BOOL ToolBarVisible();          // toolbar on/off
-    BOOL TaskBarVisible();          // taskbar on/off
+    BOOL AdvancedToolBarVisible();
+    BOOL TaskBarVisible();
     const CSaString GetPermGraphNames(void);
     const CSaString GetTempGraphNames(void);
     const UINT GetPermLayout(void);
@@ -113,8 +99,17 @@ public:
     CSaView * GetCurrSaView(void);
 
     // Reference to objects containing parsing, segmenting, pitch, spectrum, and spectrogram parameter defaults // RLJ 11.1A
-    CParseParm * GetCParseParm();
-    CSegmentParm * GetSegmentParm();
+	float GetWordBreakWidth();
+	float GetPhraseBreakWidth();
+	float GetActiveBreakWidth();
+	int GetMaxThreshold();
+	int GetMinThreshold();
+	void SetWordBreakWidth(float value);
+	void SetPhraseBreakWidth(float value);
+	void SetMaxThreshold(int value);
+	void SetMinThreshold(int value);
+
+	CSegmentParm * GetSegmentParm();
     const CPitchParm * GetPitchParmDefaults() const;
     void SetPitchParmDefaults(const CPitchParm & cParm);
     const CMusicParm * GetMusicParmDefaults() const;
@@ -140,10 +135,6 @@ public:
     void WriteDefaultView(CObjectOStream & obs);
     void DisplayPlot(CDisplayPlot * pPlot);
     void NotifyFragmentDone(void * pCaller);
-
-    // transcription fonts
-    CSaStringArray m_GraphFontFaces;        // array of graph font face strings
-    CUIntArray m_GraphFontSizes;            // array of graph font sizes
 
     CSaString GetFontFace(int nIndex);
     int GetFontSize(int nIndex);
@@ -171,9 +162,9 @@ public:
     BOOL IsPlayerTestRun();     // return TRUE if player is running function key test run
     void SetPlayerTimes();      // set player dialogue time in LED indicators
     BOOL IsScrollZoom();
-    int  GetStatusPosReadout();
-    int  GetStatusPitchReadout();
-    int  GetGraphUpdateMode();
+    int GetStatusPosReadout();
+    int GetStatusPitchReadout();
+    int GetGraphUpdateMode();
     void SetGraphUpdateMode(int nMode);
     BOOL IsAnimationRequested();
     int GetAnimationFrameRate();
@@ -181,12 +172,12 @@ public:
     void SetupFunctionKeys();
     void SendMessageToMDIDescendants(UINT message, WPARAM wParam, LPARAM lParam); // send message to all mdi children
     void AppMessage(WPARAM wParam, LPARAM lParam);
-    void  SetPreviewFlag();
-    void  ClearPreviewFlag();
-    void  SetPrintingFlag();
-    void  ClearPrintingFlag();
-    void  CreateFindOrReplaceDlg();
-    void  MaybeCreateFindOrReplaceDlg(bool bWantFindOnly);
+    void SetPreviewFlag();
+    void ClearPreviewFlag();
+    void SetPrintingFlag();
+    void ClearPrintingFlag();
+    void CreateFindOrReplaceDlg();
+    void MaybeCreateFindOrReplaceDlg(bool bWantFindOnly);
     // workbench helper functions
     CProcess * GetWbProcess(int nProcess, int nFilter);
     CProcess * SetWbProcess(int nProcess, int nFilter, CProcess * pProcess); // set new workbench process pointer and return old one
@@ -211,6 +202,10 @@ public:
     void InitializeAutoSave();
     afx_msg void OnAutoSaveOn();
     afx_msg void OnAutoSaveOff();
+
+    // transcription fonts
+    CSaStringArray m_GraphFontFaces;        // array of graph font face strings
+    CUIntArray m_GraphFontSizes;            // array of graph font sizes
 
     friend CDisplayPlot;
 
@@ -271,28 +266,24 @@ protected:
     UINT m_nPermDefaultLayout;
     UINT m_nTempDefaultLayout;
 
-    //***********************************************************
-    // DDO - 08/03/00 Don't need this setting anymore.
-    //BOOL              m_bSaveOnExit;            // if TRUE, save all SA settings on Exit.
-    //***********************************************************
-    BOOL                m_bShowStartupDlg;        // True if start dialog box gets shown after splash screen.
-    BOOL                m_nStartDataMode;         // 0 = Phonetic, 1 = Music  DDO - 08/08/00
-    BOOL                m_bSaveOpenFiles;         // if True, save current open files to re-load them next time   //tdg 09/03/97
-    BOOL                m_bStatusBar;             // status bar on/off
+    BOOL                m_bShowStartupDlg;			// True if start dialog box gets shown after splash screen.
+    BOOL                m_nStartDataMode;			// 0 = Phonetic, 1 = Music  DDO - 08/08/00
+    BOOL                m_bSaveOpenFiles;			// if True, save current open files to re-load them next time   //tdg 09/03/97
+    BOOL                m_bStatusBar;				// status bar on/off
     BOOL                m_bShowAdvancedAudio;
-    int                 m_nStatusPosReadout;      // status bar position readout mode
-    int                 m_nStatusPitchReadout;    // status bar pitch readout mode
-    BOOL                m_bToneAbove;             // tone Above phonetic
-    BOOL                m_bScrollZoom;            // scrollbar zoom on/off
-    int                 m_nCaptionStyle;          // graph caption style
-    Colors              m_colors;                 // color settings
-    CFnKeys             m_fnKeys;                 // function keys setup
-    CGrid                m_grid;                   // gridline settings
-    int                 m_nGraphUpdateMode;       // 0 = static (when cursor set), 1 = dynamic (while cursor is moving)
-    BOOL                m_bAnimate;               // TRUE = animation requested
-    int                 m_nAnimationRate;         // frame rate for animations (in frames/sec)
-    ECursorAlignment    m_nCursorAlignment;       // cursor snap mode: align to sample, zero crossing, or fragment
-    BOOL                m_bDefaultViewExists;    // True if a default view configuration was read from the .psa file.
+    int                 m_nStatusPosReadout;		// status bar position readout mode
+    int                 m_nStatusPitchReadout;		// status bar pitch readout mode
+    BOOL                m_bToneAbove;				// tone Above phonetic
+    BOOL                m_bScrollZoom;				// scrollbar zoom on/off
+    int                 m_nCaptionStyle;			// graph caption style
+    Colors              m_colors;					// color settings
+    CFnKeys             m_fnKeys;					// function keys setup
+    CGrid               m_grid;						// gridline settings
+    int                 m_nGraphUpdateMode;			// 0 = static (when cursor set), 1 = dynamic (while cursor is moving)
+    BOOL                m_bAnimate;					// TRUE = animation requested
+    int                 m_nAnimationRate;			// frame rate for animations (in frames/sec)
+    ECursorAlignment    m_nCursorAlignment;			// cursor snap mode: align to sample, zero crossing, or fragment
+    BOOL                m_bDefaultViewExists;		// True if a default view configuration was read from the .psa file.
     CWaveformGeneratorSettings m_waveformGeneratorSettings;
     void WriteReadDefaultViewToTempFile(BOOL bWrite);
 
@@ -319,6 +310,7 @@ protected:
     CProgressStatusBar  m_progressStatusBar;   // status control bar embedded object for progress
     CToolBar            m_wndToolBarBasic;
     CToolBar            m_wndToolBarAdvanced;
+    CToolBar            m_wndToolBarSAB;
     CTaskBar            m_wndTaskBar;
     CSaWorkbenchView  * m_pWorkbenchView;      // workbench view
     bool                m_bFindOnly;           // find/replace is only find
@@ -328,8 +320,8 @@ protected:
     int m_aWbFilterID[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER];
 
     // dialogs
-    CDlgPlayer * m_pDlgPlayer;          // pointer to player dialog object
-    CDlgFind * m_pDlgFind;            // pointer to find/replace dialog object
+    CDlgPlayer * m_pDlgPlayer;					// pointer to player dialog object
+    CDlgFind * m_pDlgFind;						// pointer to find/replace dialog object
     CDlgEditor * m_pDlgEditor;
     WINDOWPLACEMENT m_wplDlgEditor;
     BOOL m_bIsPrinting;
@@ -340,6 +332,8 @@ protected:
     CToolSettings toolSettings;
     CDisplayPlot * m_pDisplayPlot;
     CDlgAutoRecorder * m_pAutoRecorder;
+
+	float activeBreakWidth;
 
 private:
     BOOL m_bAutoSave;

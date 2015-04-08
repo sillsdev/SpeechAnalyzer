@@ -97,7 +97,8 @@ BOOL CDlgAdvancedSegment::OnInitDialog() {
 }
 
 void CDlgAdvancedSegment::Apply() {
-    UpdateData(TRUE);
+  
+	UpdateData(TRUE);
 
     // get segment parameters data
     // save new data
@@ -195,7 +196,7 @@ BEGIN_MESSAGE_MAP(CDlgAdvancedSegment, CDialog)
     ON_COMMAND(IDC_SEGMENTWIDTHSCROLL, OnSegmentWidthScroll)
     ON_COMMAND(IDC_CHANGEMINSCROLL, OnChangeMinScroll)
     ON_COMMAND(IDC_ZEROCROSSINGMINSCROLL, OnZeroCrossMinScroll)
-    ON_BN_CLICKED(IDC_APPLY, &CDlgAdvancedSegment::OnBnClickedApply)
+    ON_BN_CLICKED(IDC_APPLY, &CDlgAdvancedSegment::OnApply)
 END_MESSAGE_MAP()
 
 void CDlgAdvancedSegment::OnOK() {
@@ -208,6 +209,6 @@ void CDlgAdvancedSegment::OnCancel() {
     CDialog::OnCancel();
 }
 
-void CDlgAdvancedSegment::OnBnClickedApply() {
+void CDlgAdvancedSegment::OnApply() {
     Apply();
 }

@@ -23,10 +23,10 @@
 #include "stdafx.h"
 #include "Process\Process.h"
 #include "Segment.h"
-
 #include "sa_doc.h"
 #include "sa_view.h"
 #include "mainfrm.h"
+#include "sa.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -2247,7 +2247,12 @@ void CAboutTitle::OnPaint() {
     dc.SetBkMode(TRANSPARENT); // letters overlap, so they must be transparent
     // get the title text
     CString szText;
-    szText.LoadString(IDR_MAINFRAME);
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	if (pApp->IsAudioSync()) {
+	    szText.LoadString(IDR_MAINFRAME_AS);
+	} else {
+		szText.LoadString(IDR_MAINFRAME_SA);
+	}
     // get window coordinates
     CRect rWnd;
     GetClientRect(rWnd);

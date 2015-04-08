@@ -403,8 +403,7 @@ CPlotWnd::~CPlotWnd() {
 /***************************************************************************/
 BOOL CPlotWnd::PreCreateWindow(CREATESTRUCT & cs) {
     // register the window class
-    cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
-                                       AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0, 0);
+    cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS, AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0, 0);
     //::SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
     return CWnd::PreCreateWindow(cs);
 }

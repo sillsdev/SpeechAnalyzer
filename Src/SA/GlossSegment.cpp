@@ -105,6 +105,7 @@ long CGlossSegment::Exit(int nError) {
 // tage in the higher word.
 /***************************************************************************/
 long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int nLevel) {
+
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -135,29 +136,33 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
     CScopedCursor waitCursor(this);
 
     // start parsing
-    if (!StartProcess(pCaller, IDS_STATTXT_PARSING, FALSE)) {   // memory allocation failed or previous processing error
-        EndProcess(); // end data processing
+	// memory allocation failed or previous processing error
+    if (!StartProcess(pCaller, IDS_STATTXT_PARSING, FALSE)) {   
+		// end data processing
+        EndProcess();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
-    DWORD dwLoopEnd = pLoudness->GetDataSize();                 // end of loop
+	// end of loop
+    DWORD dwLoopEnd = pLoudness->GetDataSize();                 
     // prepare parameters
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
     // get parsing parameters
-    CParseParm * pCParseParm = pMainFrame->GetCParseParm();
-    float fFactor = (float)pDoc->GetDataSize() / (float)dwLoopEnd;  // size factor
+	// size factor
+    float fFactor = (float)pDoc->GetDataSize() / (float)dwLoopEnd;  
     TRACE("fFactor %f\n",fFactor);
 
-    DWORD dwBreakWidth = (DWORD)(pDoc->GetBytesFromTime(pCParseParm->fBreakWidth) / fFactor);  // break width in process words
+	// break width in process words
+    DWORD dwBreakWidth = (DWORD)(pDoc->GetBytesFromTime( pMainFrame->GetActiveBreakWidth()) / fFactor);  
     if (!dwBreakWidth) {
         dwBreakWidth = 1;
     }
 
     // CLW 1.07a
-    int nMaxThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pCParseParm->nMaxThreshold / 100); // threshold
-    int nMinThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pCParseParm->nMinThreshold / 100); // threshold
+	int nMaxThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pMainFrame->GetMaxThreshold() / 100);
+    int nMinThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pMainFrame->GetMinThreshold() / 100);
 
     int nBlockAlign = pDoc->GetBlockAlign();
 
@@ -253,7 +258,7 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
                                         pPhonetic->Adjust( pDoc, previousSeg, dwPhoneticOffset, dwPhoneticStop - dwPhoneticOffset, false);
                                         DWORD offset = pPhonetic->GetOffset(previousSeg);
                                         DWORD duration = pPhonetic->GetDuration(previousSeg);
-                                        //TRACE("adjusted offset[%d]=%lu %lu %lu\n",previousSeg,offset,(offset+duration),duration);
+                                        TRACE("adjusted offset[%d]=%lu %lu %lu\n",previousSeg,offset,(offset+duration),duration);
                                         if ((offset+duration)>=dwGlossStart) {
                                             //TRACE("moving gloss start %lu->%lu\n",dwGlossStart,(offset+duration));
                                             dwGlossStart = offset+duration+1;
@@ -369,4 +374,19 @@ void CGlossSegment::CorrectGlossDurations(ISaDoc * pDoc) {
             nGloss = GetNext(nGloss);
         }
     }
+}
+
+bool CGlossSegment::ContainsText( DWORD offset, DWORD stop) {
+	for (int i=0;i<GetOffsetSize();i++) {
+		DWORD thisOffset = GetOffset(i);
+		DWORD thisStop = GetStop(i);
+		if ((thisOffset>=offset)&&(thisStop<=stop)) {
+			CString text = GetText(i).Trim();
+			if (text.GetLength()==0) continue;
+			if ((text.GetLength()==1) && ((text[0]==WORD_DELIMITER)||(text[0]==TEXT_DELIMITER))) continue;
+			TRACE("text %s is blocking operation for %d\n",(LPCTSTR)text,this->m_nAnnotationType);
+			return true;
+		}
+	}
+	return false;
 }

@@ -88,8 +88,6 @@ void CUndoRedoDoc::Redo() {
     }
 }
 
-
-
 /***************************************************************************/
 // CUndoRedoDoc::CheckPoint - in order for Undo/Redo to work, the
 // user of this class must periodicaly call CheckPoint() to save the

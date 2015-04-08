@@ -55,7 +55,7 @@ protected:
     afx_msg void OnSegmentWidthScroll();
     afx_msg void OnChangeMinScroll();
     afx_msg void OnZeroCrossMinScroll();
-    afx_msg void OnBnClickedApply();
+    afx_msg void OnApply();
     DECLARE_MESSAGE_MAP()
     virtual void OnOK();
     virtual void OnCancel();

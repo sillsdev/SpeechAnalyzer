@@ -1,3 +1,23 @@
+SA - 3.1.0.124 4/7/2015
+-Removed Autosave from menu for AudioSync
+-Added support so that move left/move right/mege and split can be done after selecting any segment and then performing a right mouse click to access the popup menu.  This is for AudioSync only.
+-Modified basic toolbar for AudioSync.
+-Transcription boundaries are enabled by default for AudioSync.
+-Segment boundaries are disabled by default for AudioSync.
+-Modified AudioSync import process so that it now can automatically segment the project if it is not already.  If empty segments exist, of if segment data exist, AudioSync will ask the user what they want to do.
+-Renamed install application to to 'AudioSync'.
+-Fixed some self-inflicted program crashes when attempting to use a reference to the application object instead of a pointer.  Occurs during 'saveas' operation.  Introduced in 3.1.0.123
+-Fixed bug where .SAB backup file wasn't created when import the SAB data file.
+-Disabled single-click used to enter in-place editor.
+-Disabled the ability to 'move data left' on a cell that contains data.  This prevents data loss.
+-Fixed problem where file status was STILL not updated to 'modified' after performing independent 'move left', 'move right' operations.
+
+SA - 3.1.0.123 4/6/2015
+-Fixed bug where checkpoint was not created when import SAB files.
+-Fixed bug where first letter of gloss was dropped during SAB import process.
+-Added feature to generate CV data
+-Fixed bug where screen was not refreshed after SAB import process.
+
 SA - 3.1.0.122 4/3/2015
 -Fixed issue where message box is displayed to tell user they may overwrite existing reference numbers, but all the reference segments are blank.  This occurs during auto-add-reference.
 -Started reducing menus for SAB release.

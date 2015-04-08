@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{67914272-7CF2-4E5B-A0EC-54728888A13D}</ProjectGuid>
+    <ProjectGuid>{793E5783-785D-42D2-9A84-F773A9DAF39F}</ProjectGuid>
     <RootNamespace>SaUnicode</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <ProjectName>SA</ProjectName>
+    <ProjectName>AudioSync</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -45,8 +45,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\Output\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SA</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">SA</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AudioSync</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AudioSync</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -631,14 +631,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SA.rc" />
+    <ResourceCompile Include="AS.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="SA.rc" />
+      <UserProperties RESOURCE_FILE="AS.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

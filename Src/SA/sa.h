@@ -96,36 +96,50 @@ public:
     // helper functions
     BOOL WriteSettings();
     BOOL ReadSettings();
-    void PasteClipboardToNewFile(HGLOBAL hData);		// create a new file and paste the clipboard into it
+	// create a new file and paste the clipboard into it
+    void PasteClipboardToNewFile(HGLOBAL hData);		
     CSaDoc * OpenWavFileAsNew(LPCTSTR szTempPath);
-    CDocument * OpenBlankView(bool bWithGraphs);		// open a blank view to do something on.
+	// open a blank view to do something on.
+    CDocument * OpenBlankView(bool bWithGraphs);
     CSaString DefaultDir(CSaString * pFilename = NULL) const;
 
     static BOOL CSaApp::m_bUseUnicodeEncoding;
 
-    void ExamineCmdLine(LPCTSTR, WPARAM wParam = 0);    // examine the command line
-    void ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL) const;
-    void ErrorMessage(CSaString & szText) const;
+	// examine the command line
+    void ExamineCmdLine(LPCTSTR, WPARAM wParam = 0);    
+    void ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
+    void ErrorMessage(CSaString & szText);
     void Message(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
-    void DisplayMessages();                             // displays a stored error message
-    void SetBatchFileChanged(CSaString, int, CDocument *); // set file changed in batch mode list file
-    int GetBatchMode();                                 // return application mode (batch or not, exit allowed)
-    void CancelBatchMode();                             // allow SA to exit
-    CDocument * IsFileOpened(LPCTSTR pszFileName);      // check is this file already opened
-    bool IsDocumentOpened(const CSaDoc * pDoc);         // check is this file already opened
+	// displays a stored error message
+    void DisplayMessages();
+	// set file changed in batch mode list file
+    void SetBatchFileChanged(CSaString, int, CDocument *); 
+	// return application mode (batch or not, exit allowed)
+    int GetBatchMode();
+	// allow SA to exit
+    void CancelBatchMode();
+    // check is this file already opened
+    CDocument * IsFileOpened(LPCTSTR pszFileName);
+    // check is this file already opened
+    bool IsDocumentOpened(const CSaDoc * pDoc);
     BOOL CloseWorkbench(CDocument *);                   // close an already opened workbench document
     void WorkbenchClosed();                             // signal, that workbench has been closed
     void SetWorkbenchPath(CSaString * pszPath);         // set the workbenchs document pathname
     CSaString * GetWorkbenchPath();                             // returns a pointer to the workbench pathname
     int SaDoPrintDialog(CPrintDialog * pPD, BOOL landscape);
     BOOL SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape);
-    BOOL IsCreatingNewFile();                           // return TRUE if file new operation running
-    CDocument * GetWbDoc();                             // return pointer to workbench document
+	// return TRUE if file new operation running
+    BOOL IsCreatingNewFile();
+	// return pointer to workbench document
+    CDocument * GetWbDoc();
     void SetWbOpenOnExit(BOOL bOpen);
-    void FileReturn(BOOL bHide=TRUE);                   // return to calling application
+	// return to calling application
+    void FileReturn(BOOL bHide=TRUE);
     CWnd * IsAppRunning();
-    UINT GetOpenAsID();                                 // return m_OpenAsID
-    void SetOpenAsID(UINT OpenAsID);                    // set m_OpenAsID
+	// return m_OpenAsID
+    UINT GetOpenAsID();
+	// set m_OpenAsID
+    void SetOpenAsID(UINT OpenAsID);
     void SetLastClipboardPath(LPCTSTR szPath);
     LPCTSTR GetLastClipboardPath();
     void FileOpen();
@@ -142,8 +156,10 @@ public:
     // Operations on the MDI child view [window] list, ordered by z-order.
     void SetZ();
     // Set the current z-order of all MDI child views.
-    BOOL ReadProperties(CObjectIStream & obs);  // read the open databases and windows
-    void WriteProperties(CObjectOStream & obs); // write the open databases and windows
+	// read the open databases and windows
+    BOOL ReadProperties(CObjectIStream & obs);  
+	// write the open databases and windows
+    void WriteProperties(CObjectOStream & obs); 
     CSaString GetStartupMessage(CSaString szLastVersion);
     void SetupNewUser();
 
@@ -152,7 +168,7 @@ public:
     virtual CDocument * OpenDocumentFile(LPCTSTR lpszFileName);
 
     bool IsSAServer() const;
-    bool IsSAB() const;
+    bool IsAudioSync() const;
 
 protected:
     void ShowStartupDialog(BOOL bAppIsStartingUp);
@@ -226,8 +242,8 @@ private:
     BOOL m_bNewDocument;					// TRUE = file new operation
     int m_nEntry;							// number of entries in list file
     int m_nCommand;							// command sequence to execute
-    CStringArray * m_pszErrors;				// error message string array
-    CStringArray * m_pszMessages;			// message string array
+    CStringArray m_pszErrors;				// error message string array
+    CStringArray m_pszMessages;				// message string array
     CDocument * m_pWbDoc;					// pointer to workbench document
     CSaString m_szWbPath;					// path and filename of workbench file
     BOOL m_bWbOpenOnExit;					// TRUE, if workbench was open on exit

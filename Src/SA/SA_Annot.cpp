@@ -2060,7 +2060,9 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }
-    if (dwDataFrame != 0) { // data is available
+	
+	// data is available
+    if (dwDataFrame != 0) { 
         ASSERT(rWnd.Width());
         double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
         // calculate clicked data position
@@ -2071,15 +2073,15 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         int index = pView->GetSelectionIndex();
         BOOL selected = !pView->SelectFromPosition(m_nIndex, dwPosition, false);
         TRACE("selection_index=%d selectpos=%d\n",index,selected);
-        if (((CMainFrame *)AfxGetMainWnd())->IsEditAllowed() &&
-                (!pView->SelectFromPosition(m_nIndex, dwPosition, false)) &&
-                (pView->GetSelectionIndex()!=-1)) {
+        //if (((CMainFrame *)AfxGetMainWnd())->IsEditAllowed() &&
+        //     (!pView->SelectFromPosition(m_nIndex, dwPosition, false)) &&
+        //     (pView->GetSelectionIndex()!=-1)) {
             //SDM 1.5Test8.5
             // Selection not changed
-            if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000)) {
-                OnCreateEdit();
-            }
-        };
+        //    if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000)) {
+        //       OnCreateEdit();
+        //    }
+        //};
 
         // SDM 1.06.6U2
         if (pView->GetSelectionIndex() != -1) {

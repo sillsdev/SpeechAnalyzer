@@ -282,7 +282,6 @@ void CDlgAutoReferenceData::ValidateRange(CDataExchange * pDX, UINT field, int v
     if ((value>=min)&&(value<=max)) {
         return;
     }
-
     CString param1;
     param1.Format(L"%d",min);
     CString param2;

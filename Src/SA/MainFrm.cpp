@@ -147,6 +147,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_UPDATE_COMMAND_UI(ID_SYNTHESIS_VTRACT, OnUpdateSynthesis)
     ON_COMMAND_EX(IDR_BAR_BASIC, OnBarCheck)
     ON_UPDATE_COMMAND_UI(IDR_BAR_BASIC, OnUpdateControlBarMenu)
+    ON_COMMAND_EX(IDR_BAR_SAB, OnBarCheck)
+    ON_UPDATE_COMMAND_UI(IDR_BAR_SAB, OnUpdateControlBarMenu)
     ON_COMMAND_EX(IDR_BAR_ADVANCED, OnBarCheck)
     ON_UPDATE_COMMAND_UI(IDR_BAR_ADVANCED, OnUpdateControlBarMenu)
     ON_COMMAND_EX(ID_VIEW_TASKBAR, OnBarCheck)
@@ -339,6 +341,8 @@ CMainFrame::CMainFrame() {
     m_nAnimationRate = MAX_ANIMATION_RATE;
     m_nCursorAlignment = ALIGN_AT_FRAGMENT;
     m_bAutoSave = TRUE;
+
+	activeBreakWidth = m_parseParmDefaults.fBreakWidth;
 }
 
 /***************************************************************************/
@@ -562,7 +566,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     if (!m_wndToolBarBasic.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
                                     | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
                                     CRect(0,0,0,0), IDR_BAR_BASIC) ||
-            !m_wndToolBarBasic.LoadToolBar(IDR_BAR_BASIC)) {
+            (!m_wndToolBarBasic.LoadToolBar(IDR_BAR_BASIC))) {
         TRACE(_T("Failed to create toolbar\n"));
         return -1; // failed to create
     }
@@ -570,7 +574,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     if (!m_wndToolBarAdvanced.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
                                        | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
                                        CRect(0,0,0,0), IDR_BAR_ADVANCED) ||
-            !m_wndToolBarAdvanced.LoadToolBar(IDR_BAR_ADVANCED)) {
+            (!m_wndToolBarAdvanced.LoadToolBar(IDR_BAR_ADVANCED))) {
+        TRACE(_T("Failed to create toolbar\n"));
+        return -1; // failed to create
+    }
+
+    if (!m_wndToolBarSAB.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
+                                       | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
+                                       CRect(0,0,0,0), IDR_BAR_SAB) ||
+            (!m_wndToolBarSAB.LoadToolBar(IDR_BAR_SAB))) {
         TRACE(_T("Failed to create toolbar\n"));
         return -1; // failed to create
     }
@@ -586,7 +598,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     m_dataStatusBar.Init();
     // create progress statusbar
     if ((!m_progressStatusBar.Create(this)) ||
-            (!m_progressStatusBar.SetIndicators(progressIndicators, sizeof(progressIndicators)/sizeof(UINT)))) {
+        (!m_progressStatusBar.SetIndicators(progressIndicators, sizeof(progressIndicators)/sizeof(UINT)))) {
         TRACE(_T("Failed to create progress status bar\n"));
         return -1; // failed to create
     }
@@ -597,15 +609,28 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
     m_wndToolBarBasic.EnableDocking(CBRS_ALIGN_ANY);
     m_wndToolBarAdvanced.EnableDocking(CBRS_ALIGN_ANY);
-    EnableDocking(CBRS_ALIGN_ANY);  // Creates CDockBar objects
+	m_wndToolBarSAB.EnableDocking(CBRS_ALIGN_ANY);
+
+	// Creates CDockBar objects
+    EnableDocking(CBRS_ALIGN_ANY);
+
     DockControlBar(&m_wndToolBarBasic, AFX_IDW_DOCKBAR_TOP);
     DockControlBar(&m_wndToolBarAdvanced, AFX_IDW_DOCKBAR_TOP);
+    DockControlBar(&m_wndToolBarSAB, AFX_IDW_DOCKBAR_TOP);
+
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	if (pApp->IsAudioSync()) {
+		ShowControlBar(&m_wndToolBarBasic, FALSE, FALSE);
+		ShowControlBar(&m_wndToolBarSAB, TRUE, FALSE);
+	} else {
+		ShowControlBar(&m_wndToolBarBasic, TRUE, FALSE);
+		ShowControlBar(&m_wndToolBarSAB, FALSE, FALSE);
+	}
     ShowControlBar(&m_wndToolBarAdvanced, FALSE, FALSE);
 
     // Create Task Bar last this affects its position Z-Order and therefore layout behavior
     // Last in the Z-Order is preferrable for the task bar
-    if (!m_wndTaskBar.Create(this, IDD_TASKBAR, WS_CHILD | WS_VISIBLE | CBRS_ALIGN_LEFT
-                             | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_FIXED, ID_VIEW_TASKBAR)) {
+    if (!m_wndTaskBar.Create(this, IDD_TASKBAR, WS_CHILD | WS_VISIBLE | CBRS_ALIGN_LEFT | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_FIXED, ID_VIEW_TASKBAR)) {
         TRACE(_T("Failed to create data task bar\n"));
         return -1; // failed to create
     }
@@ -682,7 +707,7 @@ void CMainFrame::OnToolsOptions() {
         dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
         dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
         dlg.m_dlgViewPage.m_nPitchMode = m_nStatusPitchReadout;
-        dlg.m_dlgViewPage.m_bToolbar = ToolBarVisible();
+        dlg.m_dlgViewPage.m_bToolbar = AdvancedToolBarVisible();
         dlg.m_dlgViewPage.m_bTaskbar = TaskBarVisible();
         dlg.m_dlgViewPage.m_bToneAbove = m_bToneAbove;
         dlg.m_dlgViewPage.m_bScrollZoom = m_bScrollZoom;
@@ -782,12 +807,16 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
         }
     }
 
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+
     m_nStatusPitchReadout = toolSettings.m_nPitchMode;
     // apply to toolbar
-    if (toolSettings.m_bToolbar != ToolBarVisible()) {
+    if (toolSettings.m_bToolbar != AdvancedToolBarVisible()) {
         BOOL bAdvanced = toolSettings.m_bToolbar;
-        ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, FALSE); // change toolbar status
-        ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, FALSE); // change toolbar status
+		// change toolbar status
+		int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+        ShowControlBar(GetControlBar(tbID), !bAdvanced, FALSE);
+        ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, FALSE);	
     }
     // apply to taskbar
     if (toolSettings.m_bTaskbar != TaskBarVisible()) {
@@ -1358,11 +1387,13 @@ void CMainFrame::OnSaveWindowAsBMP() {
     CDib dib;
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
-    GetControlBar(IDR_BAR_BASIC)->GetWindowRect(&rectToolbar);
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+    GetControlBar(tbID)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
     int nWidth = rectToolbar.right - rectToolbar.left;
-    if (!GetControlBar(IDR_BAR_BASIC)->IsFloating()) {
+    if (!GetControlBar(tbID)->IsFloating()) {
         if ((nWidth > nHeight) && (rectToolbar.top < (rectMainWnd.top + rectMainWnd.bottom) / 2)) {
             rectCrop.top = nHeight - 2;
         }
@@ -1411,11 +1442,13 @@ void CMainFrame::OnCopyWindowAsBMP() {
     CDib dib;
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
-    GetControlBar(IDR_BAR_BASIC)->GetWindowRect(&rectToolbar);
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+    GetControlBar(tbID)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
     int nWidth = rectToolbar.right - rectToolbar.left;
-    if (!GetControlBar(IDR_BAR_BASIC)->IsFloating()) {
+    if (!GetControlBar(tbID)->IsFloating()) {
         if ((nWidth > nHeight) && (rectToolbar.top < (rectMainWnd.top + rectMainWnd.bottom) / 2)) {
             rectCrop.top = nHeight - 2;
         }
@@ -1900,7 +1933,7 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
     obs.WriteBool(psz_statusbar , m_bStatusBar);
     obs.WriteInteger(psz_statusposreadout, m_nStatusPosReadout);
     obs.WriteInteger(psz_statuspitchreadout, m_nStatusPitchReadout);
-    obs.WriteBool(psz_toolbar, ToolBarVisible());
+    obs.WriteBool(psz_toolbar, AdvancedToolBarVisible());
     obs.WriteBool(psz_taskbar, TaskBarVisible());
     obs.WriteBool(psz_toneAbove, m_bToneAbove);  //SDM 1.5Test8.2
     obs.WriteBool(psz_scrollzoom, m_bScrollZoom);
@@ -2001,10 +2034,13 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
         else if (obs.bReadInteger(psz_statusposreadout, m_nStatusPosReadout));
         else if (obs.bReadInteger(psz_statuspitchreadout, m_nStatusPitchReadout));
         else if (obs.bReadBool(psz_toolbar, b)) {
-            if (b != ToolBarVisible()) {
+            if (b != AdvancedToolBarVisible()) {
+				// change toolbar status
                 BOOL bAdvanced = b;
-                ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, TRUE); // change toolbar status
-                ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); // change toolbar status
+				CSaApp * pApp = (CSaApp*)AfxGetApp();
+				int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+                ShowControlBar(GetControlBar(tbID),!bAdvanced, TRUE); 
+                ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); 
             }
         } else if (obs.bReadBool(psz_taskbar, b)) {
             if (b != TaskBarVisible()) {
@@ -2430,17 +2466,20 @@ BOOL CMainFrame::OnCopyData(CWnd * /*pWnd*/, COPYDATASTRUCT * pCopyDataStruct) {
     return TRUE;
 }
 
-BOOL CMainFrame::ToolBarVisible() {
-    // toolbar on/off
-    return m_wndToolBarAdvanced.IsVisible() ;
-};
+// toolbar on/off
+BOOL CMainFrame::AdvancedToolBarVisible() {
+    return m_wndToolBarAdvanced.IsVisible();
+}
+
+// taskbar on/off
 BOOL CMainFrame::TaskBarVisible() {
-    // taskbar on/off
     return m_wndTaskBar.IsVisible();
-};
+}
+
 const CSaString CMainFrame::GetPermGraphNames(void) {
     return m_szPermDefaultGraphs;
 }
+
 const CSaString CMainFrame::GetTempGraphNames(void) {
     return m_szTempDefaultGraphs;
 }
@@ -2469,9 +2508,38 @@ void CMainFrame::SetStartDataMode(int nMode) {
     m_nStartDataMode = nMode;
 }
 
-CParseParm * CMainFrame::GetCParseParm() {
-    return &m_parseParmDefaults;
+float CMainFrame::GetActiveBreakWidth() {
+	return activeBreakWidth;
 }
+
+void CMainFrame::SetWordBreakWidth(float value) {
+	m_parseParmDefaults.fBreakWidth = value;
+	activeBreakWidth = value;
+}
+void CMainFrame::SetPhraseBreakWidth(float value) {
+	m_parseParmDefaults.fPhraseBreakWidth = value;
+	activeBreakWidth = value;
+}
+void CMainFrame::SetMaxThreshold(int value) {
+	m_parseParmDefaults.nMaxThreshold = value;
+}
+void CMainFrame::SetMinThreshold(int value) {
+	m_parseParmDefaults.nMinThreshold = value;
+}
+
+float CMainFrame::GetWordBreakWidth() {
+	return m_parseParmDefaults.fBreakWidth;
+}
+float CMainFrame::GetPhraseBreakWidth() {
+	return m_parseParmDefaults.fPhraseBreakWidth;
+}
+int CMainFrame::GetMaxThreshold() {
+	return m_parseParmDefaults.nMaxThreshold;
+}
+int CMainFrame::GetMinThreshold() {
+	return m_parseParmDefaults.nMinThreshold;
+}
+
 CSegmentParm * CMainFrame::GetSegmentParm() {
     return &m_segmentParmDefaults;
 }

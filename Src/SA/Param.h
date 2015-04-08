@@ -24,7 +24,6 @@ public:
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
     void Init();
-
     float fBreakWidth;          // minimum width of break (ms) for words
     float fPhraseBreakWidth;    // minimum width of break (ms) for phrases
     int nMaxThreshold;          // minimum threshold (%)

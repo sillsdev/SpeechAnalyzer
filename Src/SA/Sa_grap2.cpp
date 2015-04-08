@@ -860,7 +860,7 @@ BOOL CRecGraphWnd::PreCreateWindow(CREATESTRUCT & cs) {
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        pApp->LoadStandardCursor(IDC_ARROW), 0,
-                                       LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(pApp->IsSAB()?IDR_SA_SABTYPE:IDR_SA_ANNTYPE)));
+                                       LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(pApp->IsAudioSync()?IDR_SA_SABTYPE:IDR_SA_ANNTYPE)));
 
     BOOL bRet = CWnd::PreCreateWindow(cs);
     cs.style = WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER;

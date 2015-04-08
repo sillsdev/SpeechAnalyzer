@@ -91,7 +91,7 @@ enum EUpdateMode {
 
 #define WORD_DELIMITER                  _T('#')         // '#' delimits words in text annotation windows
 #define TEXT_DELIMITER                  _T('!')         // '!' delimits text in text annotation windows
-#define SPACE_DELIMITER             0x20            // ' ' space
+#define SPACE_DELIMITER					0x20            // ' ' space
 #define EDIT_DELIMITER_REPLACEMENT      _T('.')         // Replace Delimiters with this character
 
 #define SEGMENT_DEFAULT_CHAR            _T('\xFFFD')    // default 0xFFFD

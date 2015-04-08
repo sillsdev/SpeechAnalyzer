@@ -18,8 +18,8 @@ CSegmentOps::~CSegmentOps(void) {
 ***************************************************************************/
 void CSegmentOps::ShrinkSegments( WAVETIME start, WAVETIME length) {
 
-    DWORD sectionStart = document.toBytes(start, true);
-    DWORD sectionLength = document.toBytes(length, true);
+    DWORD sectionStart = document.ToBytes(start, true);
+    DWORD sectionLength = document.ToBytes(length, true);
 
 	for (int nSeg=0;nSeg<ANNOT_WND_NUMBER;nSeg++) {
 		document.GetSegment(nSeg)->ShrinkSegment(document,sectionStart,sectionLength);
@@ -37,8 +37,8 @@ void CSegmentOps::ShrinkSegments( WAVETIME start, WAVETIME length) {
 ***************************************************************************/
 void CSegmentOps::GrowSegments(WAVETIME start, WAVETIME length) {
 
-	DWORD sectionStart = document.toBytes(start, true);
-    DWORD sectionLength = document.toBytes(length, true);
+	DWORD sectionStart = document.ToBytes(start, true);
+    DWORD sectionLength = document.ToBytes(length, true);
 
 	for (int nSeg=0;nSeg<ANNOT_WND_NUMBER;nSeg++) {
 		document.GetSegment(nSeg)->GrowSegment(document,sectionStart,sectionLength);

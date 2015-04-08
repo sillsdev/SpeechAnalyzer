@@ -15,6 +15,8 @@
 #include "sa_wbch.h"
 #include "mainfrm.h"
 
+#include "sa.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
@@ -101,9 +103,11 @@ BOOL CMiniCaptionWnd::Create(LPCTSTR lpszClassName,
 /***************************************************************************/
 BOOL CMiniCaptionWnd::PreCreateWindow(CREATESTRUCT & cs) {
     // register the window class
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	int rezID = (pApp->IsAudioSync())?IDR_MAINFRAME_AS:IDR_MAINFRAME_SA;
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0,
-                                       LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME)));
+                                       LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(rezID)));
     // precreate the window
     BOOL bRet = CWnd::PreCreateWindow(cs);
     // change the style

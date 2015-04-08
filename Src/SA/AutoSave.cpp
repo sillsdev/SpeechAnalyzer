@@ -271,7 +271,7 @@ private:
 
 void CAutoSave::Save(CSaDoc & document) {
 
-    TRACE("autosave\n");
+    //TRACE("autosave\n");
     if (updating) {
         return;
     }

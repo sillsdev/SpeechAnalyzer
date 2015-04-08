@@ -14,11 +14,12 @@
 #define VS_COPYRIGHT                    81
 #define ID_PRINT                        90
 #define ID_PREVIEW                      91
-#define IDR_MAINFRAME                   91
-#define IDR_SA_ANNTYPE                  92
-#define IDR_SA_SABTYPE                  93
-#define IDR_SA_WBTYPE                   95
-#define IDR_WORKBENCH                   96
+#define IDR_MAINFRAME_SA                92
+#define IDR_MAINFRAME_AS                93
+#define IDR_SA_ANNTYPE                  94
+#define IDR_SA_SABTYPE                  95
+#define IDR_SA_WBTYPE                   96
+#define IDR_WORKBENCH                   97
 #define IDR_SA_MIDTYPE                  99
 #define IDD_GRAPHSTYPES                 101
 #define IDD_PARAMETERSPITCHPAGE         103
@@ -139,6 +140,7 @@
 #define IDR_BAR_BASIC                   344
 #define IDD_TASKBAR                     345
 #define IDR_TASKBAR                     346
+#define IDR_BAR_SAB                     347
 #define IDI_NEXT                        349
 #define IDI_PREV                        350
 #define IDI_UP                          351
@@ -1620,7 +1622,8 @@
 #define IDS_CONFIRM_PHONEMIC_COPY       33218
 #define ID_EDIT_COPY_PHONETIC_TO_PHONEMIC 33219
 #define IDS_SPLIT_INCOMPLETE            33220
-#define ID_AUTOMATICMARKUP_REFERENCEDATA 33221
+#define ID_AUTO_MARKUP_REFERENCE_DATA   33221
+#define ID_AUTO_GENERATE_CV_DATA        33222
 #define ID_FILE_PHONOLOGYASSISTANT      33224
 #define IDS_SPLIT_NO_GLOSS              33225
 #define IDS_SPLIT_NO_REF                33226
@@ -1810,7 +1813,17 @@
 #define IDS_ERROR_ELAN1                 61329
 #define IDS_ERROR_SAB_NO_IMPORT         61330
 #define IDS_ERROR_SAB_EXISTING          61331
-#define IDS_ERROR_SAB_NO_SEGMENTS		61332
+#define IDS_SAB_QUERY_AUTOSEGMENT_EXISTING 61331
+#define IDS_ERROR_SAB_NO_SEGMENTS       61332
+#define IDS_ERROR_SAB_AUTOPARSE_FAIL    61333
+#define IDS_SAB_QUERY_AUTOSEGMENT_EXISTING_DATA 61334
+#define IDS_SAB_QUERY_AUTOPARSE         61335
+#define IDS_SAB_QUERY_AUTOSEGMENT       61335
+#define IDS_ERROR_GENERATE_CV_PHONETIC  61350
+#define IDS_ERROR_GENERATE_CV_TONE      61351
+#define IDS_ERROR_GENERATE_CV_NOPITCH   61352
+#define IDS_ERROR_AUTO_PARSE            61353
+#define IDS_SAB_QUERY_EXISTING_DATA     61353
 
 // Next default values for new objects
 // 

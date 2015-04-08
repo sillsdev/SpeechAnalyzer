@@ -85,8 +85,6 @@ class CProcessTonalWeightChart;
 class CSegment;
 class CGlossSegment;
 class CGlossNatSegment;
-class CDlgAdvancedSegment;
-class CDlgAdvancedParseWords;
 class CDlgAdvancedParsePhrases;
 class CDlgAutoReferenceData;
 class CTranscriptionDataSettings;
@@ -105,39 +103,63 @@ public:
     bool IsAudioModified() const;
     void SetTransModifiedFlag(bool bMod = true);
     bool IsTransModified() const;
-    void SetID(int nID);                                            // set document ID
+	// set document ID
+    void SetID(int nID);
     int GetID();
-    void SetWbProcess(int nProcess);                                // set workbench process number
-    int GetWbProcess();                                             // return workbench process number
-    CFileStatus * GetFileStatus();                                  // pointer to file status structure
-    SourceParm * GetSourceParm();                                   // pointer to source parameters structure
-    EGender GetGender();                                            // returns gender: 0 = male, 1 = female, 2 = child
+	// set workbench process number
+    void SetWbProcess(int nProcess);
+	// return workbench process number
+    int GetWbProcess();
+	// pointer to file status structure
+    CFileStatus * GetFileStatus();
+	// pointer to source parameters structure
+    SourceParm * GetSourceParm();
+	// returns gender: 0 = male, 1 = female, 2 = child
+    EGender GetGender();
     // guesses if undefined in source parameters
     const CUttParm * GetUttParm();
-    void GetUttParm(CUttParm *, BOOL bOriginal=FALSE);              // get a copy of the utterance parameters structure
-    void SetFmtParm(CFmtParm *, BOOL bAdjustSpectro = TRUE);        // set format parameters structure
-    void SetUttParm(const CUttParm *, BOOL bOriginal = FALSE);      // set utterance parameters structure
-    const CPitchParm * GetPitchParm() const;                        // pointer to pitch parameters structure
+	// get a copy of the utterance parameters structure
+    void GetUttParm(CUttParm *, BOOL bOriginal=FALSE);
+	// set format parameters structure
+    void SetFmtParm(CFmtParm *, BOOL bAdjustSpectro = TRUE);
+	// set utterance parameters structure
+    void SetUttParm(const CUttParm *, BOOL bOriginal = FALSE);
+	// pointer to pitch parameters structure
+    const CPitchParm * GetPitchParm() const;
     void SetPitchParm(const CPitchParm & parm);
-    const CMusicParm * GetMusicParm() const;                        // pointer to music parameters structure
+	// pointer to music parameters structure
+    const CMusicParm * GetMusicParm() const;
     void SetMusicParm(const CMusicParm & parm);
-    const CIntensityParm & GetCIntensityParm() const;               // pointer to music parameters structure
+	// pointer to music parameters structure
+    const CIntensityParm & GetCIntensityParm() const;
     void SetCIntensityParm(const CIntensityParm & parm);
-    SDPParm * GetSDPParm();                                         // pointer to SDP parameters structure
-    DWORD GetDataSize() const;                                      // return wave source data size in bytes for one channel
-    DWORD GetRawDataSize() const;                                   // return wave source data size in bytes for all channels
-    HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);    // return wave source data pointer on given position (offset)
-    int GetWaveData(DWORD dwOffset, BOOL *);                        // return wave source (one sample) on given position (offset)
-    DWORD GetWaveBufferIndex();                                     // return index for wave source data buffer
+	// pointer to SDP parameters structure
+    SDPParm * GetSDPParm();
+	// return wave source data size in bytes for one channel
+    DWORD GetDataSize() const;
+	// return wave source data size in bytes for all channels
+    DWORD GetRawDataSize() const;
+	// return wave source data pointer on given position (offset)
+    HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
+	// return wave source (one sample) on given position (offset)
+    int GetWaveData(DWORD dwOffset, BOOL *);
+	// return index for wave source data buffer
+    DWORD GetWaveBufferIndex();
     CSaString GetMusicScore();
     BOOL IsBackgroundProcessing();
-    BOOL EnableBackgroundProcessing(BOOL bState = TRUE);            // background processing: TRUE = enabled
+	// background processing: TRUE = enabled
+    BOOL EnableBackgroundProcessing(BOOL bState = TRUE);
 
-    CProcessDoc * GetUnprocessed();                                 // process pointer to Unprocessed
-    CProcessAdjust * GetAdjust();                                   // process pointer to adjust
-    CProcessFragments * GetFragments();                             // process pointer to fragment object
-    CProcessLoudness * GetLoudness();                               // process pointer to loudness object
-    CProcessSmoothLoudness * GetSmoothLoudness();                   // process pointer to smooth loudness object
+	// process pointer to Unprocessed
+    CProcessDoc * GetUnprocessed();
+	// process pointer to adjust
+    CProcessAdjust * GetAdjust();
+	// process pointer to fragment object
+    CProcessFragments * GetFragments();
+	// process pointer to loudness object
+    CProcessLoudness * GetLoudness();
+	// process pointer to smooth loudness object
+    CProcessSmoothLoudness * GetSmoothLoudness();
     CProcessZCross * GetZCross();                                   // process pointer to zero crossings object
     CProcessPitch * GetPitch();                                     // process pointer to pitch object
     CProcessCustomPitch * GetCustomPitch();                         // process pointer to custom pitch object
@@ -159,15 +181,17 @@ public:
     CProcessGlottis * GetGlottalWave();                             // process pointer to glottal waveform object
     CProcessTonalWeightChart * GetTonalWeightChart();               // process pointer to tonal weighting chart CLW 11/8/99
     int GetSegmentSize(EAnnotation nIndex);                         // get the pointers to a segment object
-    CSegment * GetSegment(int nIndex);                              // get the pointers to a segment object
-    CSegment * GetSegment(EAnnotation nIndex);                      // get the pointers to a segment object
+	// get the pointers to a segment object
+    CSegment * GetSegment(int nIndex);
+	// get the pointers to a segment object
+    CSegment * GetSegment(EAnnotation nIndex);
     CGlossSegment * GetGlossSegment();
     CGlossNatSegment * GetGlossNatSegment();
-    CFontTable * GetFont(int nIndex);                               // return font size
+	// return font size
+    CFontTable * GetFont(int nIndex);
     CSaString GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * pbRes);
-    void DestroyAdvancedSegment();
-    void DestroyAdvancedParse();
-    void CreateFonts(); // set and create fonts
+	// set and create fonts
+    void CreateFonts(); 
     CDocTemplate * GetTemplate();
     void AutoSnapUpdate(void);
     // methods for saving the window settings and program options.
@@ -196,20 +220,23 @@ public:
     void InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
     BOOL CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName);
     virtual BOOL CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, WAVETIME start, WAVETIME length, BOOL bTruncate);
-    void ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);     // apply a new recorded wave file
-    void ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);       // Update for rt auto-pitch
+	// apply a new recorded wave file
+    void ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);
+	// Update for rt auto-pitch
+    void ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);
     DWORD SnapCursor(ECursorSelect nCursorSelect,
                      DWORD dwCursorOffset,
                      DWORD dwLowerLimit,
                      DWORD dwUpperLimit,
                      ESnapDirection nSnapDirection = SNAP_BOTH,
                      ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING); // align cursors
-    DWORD SnapCursor(ECursorSelect nCursorSelect,
-                     DWORD dwCursorOffset,
-                     ESnapDirection nSnapDirection = SNAP_BOTH);
-    void InvalidateAllProcesses();  // invalidates all the graph processes
-    void RestartAllProcesses();     // invalidates all the processes
-    BOOL AnyProcessCanceled();      // invalidates all the processes
+    DWORD SnapCursor(ECursorSelect nCursorSelect, DWORD dwCursorOffset, ESnapDirection nSnapDirection = SNAP_BOTH);
+	// invalidates all the graph processes
+    void InvalidateAllProcesses();
+	// invalidates all the processes
+    void RestartAllProcesses();
+	// invalidates all the processes
+    BOOL AnyProcessCanceled();
     // process the actually selected workbench process
     BOOL WorkbenchProcess(BOOL bInvalidate = FALSE, BOOL bRestart = FALSE);
     // copies wave data out of the wave file
@@ -218,19 +245,24 @@ public:
     BOOL PasteClipboardToWave(HGLOBAL hGlobal, WAVETIME start);
     BOOL InsertSilenceIntoWave(WAVETIME silence, WAVETIME start, int repetitions);
 
-    void DeleteWaveFromUndo();      // deletes a wave undo entry from the undo list
-    void UndoWaveFile();            // undo a wave file change
+	// deletes a wave undo entry from the undo list
+    void DeleteWaveFromUndo();
+	// undo a wave file change
+    void UndoWaveFile();
     BOOL IsWaveToUndo();
     void CopyProcessTempFile();
-    BOOL UpdateSegmentBoundaries(BOOL bOverlap);        // update segment boundaries
+	// update segment boundaries
+    BOOL UpdateSegmentBoundaries(BOOL bOverlap);
     BOOL UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelection, DWORD start, DWORD stop);
     BOOL AutoSnapUpdateNeeded(void);
-    virtual void SerializeForUndoRedo(CArchive & ar);   // overridden for document i/o
+	// overridden for document i/o
+    virtual void SerializeForUndoRedo(CArchive & ar);
     BOOL AdvancedParsePhrase();
     BOOL AdvancedParseWord();
     BOOL AdvancedParseAuto();
     BOOL AdvancedSegment();
-    virtual HMENU GetDefaultMenu(); // get menu depending on state
+	// get menu depending on state
+    virtual HMENU GetDefaultMenu();
     virtual HACCEL GetDefaultAccel();
     virtual void NotifyAutoPitchDone(void * pCaller);
     virtual void NotifyFragmentDone(void * pCaller);
@@ -251,9 +283,11 @@ public:
     wstring GetFilenameFromTitle();
 
     // wave helper functions
-    void GetFmtParm(CFmtParm & format, bool processed);     // get a copy of the format parameters structure
+	// get a copy of the format parameters structure
+    void GetFmtParm(CFmtParm & format, bool processed);
 
-    HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);   // return wave data pointer on given position (offset)
+	// return wave data pointer on given position (offset)
+    HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
     HPSTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
     void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
     DWORD GetUnprocessedBufferIndex(size_t nSize);
@@ -278,7 +312,7 @@ public:
     WAVETIME toTimeFromSamples(WAVESAMP val);
     CURSORPOS toCursor(WAVETIME val);
     CURSORPOS toCursor(WAVESAMP val);
-    DWORD toBytes(WAVETIME val, bool singleChannel);
+    DWORD ToBytes(WAVETIME val, bool singleChannel);
     DWORD toSamples(WAVETIME val);
 
     CSaString GetTempFilename();
@@ -313,16 +347,67 @@ public:
     void SplitSegment( CPhoneticSegment * pSeg, int sel, bool segmental);
     bool CanSplit(CSegment * pSeg);
     bool CanMerge(CSegment * pSeg);
-    void MergeSegments(CSaView * pView, CPhoneticSegment * pSeg);
+    void MergeSegments( CPhoneticSegment * pSeg);
     bool IsSegmental(CPhoneticSegment * pSeg, int sel);
     bool IsBoundary(CPhoneticSegment * pPhonetic, int sel);
     void SelectSegment(CSegment * pSegment, int index);
-    bool CanMoveDataLeft(CSegment * pSegment);
     bool CanMoveDataRight(CSegment * pSegment);
     void MoveDataLeft(DWORD offset);
     void MoveDataRight(DWORD offset);
 	void DeselectAll();
-	void ImportSAB( LPCTSTR filename);
+	void ImportSAB( CSaView & view, LPCTSTR filename);
+
+	void AdjustZero();
+	int GetZero();
+
+	void AdjustNormalize();
+	int GetNormalize();
+
+	void AdjustInvert();
+	int GetInvert();
+
+	void ClearSABLoaded();
+
+    bool PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selection);
+    void AddReferenceData(CDlgAutoReferenceData & dlg, int selection);
+
+	void ClearTranscriptionCount();
+	void RevertAllTranscriptionChanges();
+
+	void SaveSection( bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESaveArea saveArea, EFileFormat fileFormat);
+
+	bool IsTempWaveEmpty();
+	CString GetTempWave();
+
+	bool HasFullName();
+
+	void CloseAutoSave( LPCTSTR file);
+
+	void ExportTimeTable( BOOL bF1,
+						  BOOL bF2,
+						  BOOL bF3,
+						  BOOL bF4,
+						  BOOL bGloss,
+						  BOOL bGlossNat,
+						  CString szIntervalTime,
+						  BOOL bSegmentLength,
+						  BOOL bMagnitude,
+						  BOOL bOrtho,
+						  BOOL bPhonemic,
+						  BOOL bPhonetic,
+						  BOOL bPitch,
+						  BOOL bReference,
+						  BOOL bSegmentStart,
+						  BOOL bSampleTime,
+						  BOOL bTone,
+						  BOOL bZeroCrossings,
+						  int nSampleRate,
+						  int nCalculationMethod,
+						  int nRegion,
+						  BOOL bMelogram);
+	void GenerateCVData( CSaView & view);
+	bool AutoSegment( CSaView & view, DWORD goal);
+	int FindPhoneticIndex( CSegment * pSeg, int index);
 
 protected:
     virtual void DeleteContents();
@@ -331,7 +416,8 @@ protected:
     virtual BOOL OnSaveDocument(LPCTSTR pszPathName);
     BOOL SaveDocument(LPCTSTR pszPathName, bool bSaveAudio);
     BOOL CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTotalLength);
-    virtual BOOL SaveModified(); // return TRUE if ok to continue
+	// return TRUE if ok to continue
+    virtual BOOL SaveModified(); 
     void AlignTranscriptionData(CTranscriptionDataSettings & settings);
     void AlignTranscriptionDataByRef(CTranscriptionData & td);
     bool ExportSegments(CExportLiftSettings & settings, Lift13::lift & document, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
@@ -344,40 +430,8 @@ protected:
     LPCTSTR GetTag(EAnnotation val);
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
     LPCTSTR GetProcessFilename();
-    bool PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selection);
-    void AddReferenceData(CDlgAutoReferenceData & dlg, int selection);
-
-    afx_msg void OnUpdateFileSave(CCmdUI * pCmdUI);
-    afx_msg void OnFileSaveAs();
-    afx_msg void OnUpdateFileSaveAs(CCmdUI * pCmdUI);
-    afx_msg void OnFileSplitFile();
-    afx_msg void OnUpdateFileSplit(CCmdUI * pCmdUI);
-    afx_msg void OnAdvancedParseWords();
-    afx_msg void OnUpdateAdvancedParseWords(CCmdUI * pCmdUI);
-    afx_msg void OnAdvancedParsePhrases();
-    afx_msg void OnUpdateAdvancedParsePhrases(CCmdUI * pCmdUI);
-    afx_msg void OnAdvancedSegment();
-    afx_msg void OnUpdateAdvancedSegment(CCmdUI * pCmdUI);
-    afx_msg void OnAutoAlign();
-    afx_msg void OnUpdateAutoAlign(CCmdUI * pCmdUI);
-    afx_msg void OnAddReferenceData();
-    afx_msg void OnUpdateAddReferenceData(CCmdUI * pCmdUI);
-    afx_msg void OnUpdateBoundaries();
-    afx_msg void OnUpdateUpdateBoundaries(CCmdUI * pCmdUI);
-    afx_msg void OnAutoSnapUpdate();
-    afx_msg void OnUpdateAutoSnapUpdate(CCmdUI * pCmdUI);
-    afx_msg void OnToolsAdjustInvert();
-    afx_msg void OnUpdateToolsAdjustInvert(CCmdUI * pCmdUI);
-    afx_msg void OnToolsAdjustNormalize();
-    afx_msg void OnUpdateToolsAdjustNormalize(CCmdUI * pCmdUI);
-    afx_msg void OnToolsAdjustZero();
-    afx_msg void OnUpdateToolsAdjustZero(CCmdUI * pCmdUI);
-    afx_msg void OnToolsAdjustSilence();
-    afx_msg void OnUpdateToolsAdjustSilence(CCmdUI * pCmdUI);
 
     int m_nTranscriptionApplicationCount;
-
-    DECLARE_MESSAGE_MAP()
 
 private:
     BOOL CopyWaveToTemp(LPCTSTR pszSourcePathName);
@@ -405,12 +459,9 @@ private:
     void NormalizePhoneticDependencies();
     int GetInsertionIndex(CSegment * pSegment, DWORD offset);
 
-	void SaveSection( bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESaveArea saveArea, EFileFormat fileFormat);
-
 	void UpdateReferenceBuffer();
 
-	// permanent reference to application
-	const CSaApp & app;
+	void ErrorMessage( CSaString & msg);
 
 	// SAB transcription data buffer
 	bool sabLoaded;
@@ -437,59 +488,84 @@ private:
     // for stereo 16 bit, the data is ordered
     // left(low), left(high), right(low), right(high)
 
-    wstring m_szRawDataWrk;                     // wave working temporary represents all channels of data
-    DWORD m_dwDataSize;                         // size of the data subchunk for all channels
-    CFmtParm m_FmtParm;                         // contains format parameters
-    CSaParam m_saParam;                         // contains sa parameters
-    SourceParm m_sourceParm;                    // contains source parameters
-    CUttParm m_uttParm;                         // contains utterance (pitch) parameters
-    CUttParm m_uttOriginal;                     // contains utterance (pitch) parameters as read from file
-    CPitchParm m_pitchParm;                     // contains pitch parameters
-    CMusicParm m_musicParm;                     // contains music parameters
-    CIntensityParm m_intensityParm;             // contains intensity parameters
-    SDPParm m_SDPParm;                          // contains SDP parameters
-    CSaString m_szMusicScore;                   // musical score string
-    BOOL m_bProcessBackground;                  // TRUE = enable background processing when idle
-    CProcessDoc m_ProcessDoc;                   // process the raw data
-    CProcessAdjust * m_pProcessAdjust;
-    CProcessFragments * m_pProcessFragments;    // data processing object
-    CProcessLoudness * m_pProcessLoudness;      // data processing object
-    CProcessSmoothLoudness * m_pProcessSmoothLoudness; // data processing object
-    CProcessZCross * m_pProcessZCross;          // data processing object
-    CProcessPitch * m_pProcessPitch;            // data processing object
-    CProcessCustomPitch * m_pProcessCustomPitch; // data processing object
-    CProcessSmoothedPitch * m_pProcessSmoothedPitch; // data processing object
-    CProcessGrappl * m_pProcessGrappl;          // data processing object
-    CProcessMelogram * m_pProcessMelogram;      // data processing object
-    CProcessChange * m_pProcessChange;          // data processing object
-    CProcessRaw * m_pProcessRaw;                // data processing object
-    CProcessHilbert * m_pProcessHilbert;        // data processing object
-    CProcessSpectrum * m_pProcessSpectrum;      // data processing object
-    CProcessSpectrogram * m_pProcessSpectrogram; // data processing object
-    CProcessSpectrogram * m_pProcessSnapshot; // data processing object
-    CProcessWavelet * m_pProcessWavelet;        // data processing object  ARH 8/2/01 Added for wavelet graph
-    CProcessFormants * m_pProcessFormants;      // data processing object
-    CProcessFormantTracker * m_pProcessFormantTracker; // data processing object
-    CProcessDurations * m_pProcessDurations;    // data processing object
-    CProcessSDP * m_pProcessSDP[3];             // data processing object
-    CProcessRatio * m_pProcessRatio;            // data processing object
-    CProcessPOA * m_pProcessPOA;                // data processing object
-    CProcessGlottis  * m_pProcessGlottis;       // data processing object
-    CProcessTonalWeightChart * m_pProcessTonalWeightChart; // data processing object CLW 11/5/99
-    CSegment * m_apSegments[ANNOT_WND_NUMBER];  // array of pointers to the segment objects
+	// wave working temporary represents all channels of data
+    wstring m_szRawDataWrk;
+	// size of the data subchunk for all channels
+    DWORD m_dwDataSize;
+	// contains format parameters
+    CFmtParm m_FmtParm;
+	// contains sa parameters
+    CSaParam m_saParam;
+	// contains source parameters
+    SourceParm m_sourceParm;
+	// contains utterance (pitch) parameters
+    CUttParm m_uttParm;
+	// contains utterance (pitch) parameters as read from file
+    CUttParm m_uttOriginal;
+	// contains pitch parameters
+    CPitchParm m_pitchParm;
+	// contains music parameters
+    CMusicParm m_musicParm;
+	// contains intensity parameters
+    CIntensityParm m_intensityParm;
+	// contains SDP parameters
+    SDPParm m_SDPParm;
+	// musical score string
+    CSaString m_szMusicScore;
+	// TRUE = enable background processing when idle
+    BOOL m_bProcessBackground;
+	// process the raw data
+    CProcessDoc m_ProcessDoc;
+    
+	// data processing objects
+	CProcessAdjust * m_pProcessAdjust;
+    CProcessFragments * m_pProcessFragments;    
+    CProcessLoudness * m_pProcessLoudness;
+    CProcessSmoothLoudness * m_pProcessSmoothLoudness;
+    CProcessZCross * m_pProcessZCross;
+    CProcessPitch * m_pProcessPitch;
+    CProcessCustomPitch * m_pProcessCustomPitch;
+    CProcessSmoothedPitch * m_pProcessSmoothedPitch;
+    CProcessGrappl * m_pProcessGrappl;
+    CProcessMelogram * m_pProcessMelogram;
+    CProcessChange * m_pProcessChange;
+    CProcessRaw * m_pProcessRaw;
+    CProcessHilbert * m_pProcessHilbert;
+    CProcessSpectrum * m_pProcessSpectrum;
+    CProcessSpectrogram * m_pProcessSpectrogram;
+    CProcessSpectrogram * m_pProcessSnapshot;
+	// data processing object  ARH 8/2/01 Added for wavelet graph
+    CProcessWavelet * m_pProcessWavelet;
+    CProcessFormants * m_pProcessFormants;
+    CProcessFormantTracker * m_pProcessFormantTracker;
+    CProcessDurations * m_pProcessDurations;
+    CProcessSDP * m_pProcessSDP[3];
+    CProcessRatio * m_pProcessRatio;
+    CProcessPOA * m_pProcessPOA;
+    CProcessGlottis  * m_pProcessGlottis;
+	// data processing object CLW 11/5/99
+    CProcessTonalWeightChart * m_pProcessTonalWeightChart; 
+	
+	
+	// array of pointers to the segment objects
+    CSegment * m_apSegments[ANNOT_WND_NUMBER];
     CObArray * m_pCreatedFonts;
-    BOOL m_bBlockBegin;                         // actual block begin flag
-    CSaString m_szTempWave;                     // file name and path of temp file for wave data chunk
-    wstring m_szTempConvertedWave;              // path of temp wave file converted from non-wave audio
-    BOOL m_bWaveUndoNow;                        // TRUE, if wave file change is to undo
-    int m_nCheckPointCount;                     // counter for checkpoints (wave undo)
-    _bstr_t m_szMD5HashCode;                    // assigned from SA wave doc reader COM object
-    bool m_bUsingTempFile;                      // FALSE, if audio file is non-wave (mp3, wma, etc.) or standard wave
-    bool m_bAllowEdit;                          // TRUE if the file is editable
-
-    CDlgAdvancedSegment * m_pDlgAdvancedSegment;
-    CDlgAdvancedParseWords * m_pDlgAdvancedParseWords;
-    CDlgAdvancedParsePhrases * m_pDlgAdvancedParsePhrases;
+	// actual block begin flag
+    BOOL m_bBlockBegin;
+	// file name and path of temp file for wave data chunk
+    CSaString m_szTempWave;
+	// path of temp wave file converted from non-wave audio
+    wstring m_szTempConvertedWave;
+	// TRUE, if wave file change is to undo
+    BOOL m_bWaveUndoNow;
+	// counter for checkpoints (wave undo)
+    int m_nCheckPointCount;
+	// assigned from SA wave doc reader COM object
+    _bstr_t m_szMD5HashCode;
+	// FALSE, if audio file is non-wave (mp3, wma, etc.) or standard wave
+    bool m_bUsingTempFile;
+	// TRUE if the file is editable
+    bool m_bAllowEdit;                          
 
     bool m_bMultiChannel;
     int m_nSelectedChannel;

@@ -76,8 +76,7 @@ CProcessLoudness::~CProcessLoudness() {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                               int nLevel) {
+long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
