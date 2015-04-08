@@ -17,7 +17,7 @@
 #define IDR_MAINFRAME_SA                92
 #define IDR_MAINFRAME_AS                93
 #define IDR_SA_ANNTYPE                  94
-#define IDR_SA_SABTYPE                  95
+#define IDR_SA_ASTYPE                   95
 #define IDR_SA_WBTYPE                   96
 #define IDR_WORKBENCH                   97
 #define IDR_SA_MIDTYPE                  99

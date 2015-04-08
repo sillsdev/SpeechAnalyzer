@@ -383,7 +383,8 @@ public:
 
 	void CloseAutoSave( LPCTSTR file);
 
-	void ExportTimeTable( BOOL bF1,
+	void ExportTimeTable( LPCTSTR filename,
+						  BOOL bF1,
 						  BOOL bF2,
 						  BOOL bF3,
 						  BOOL bF4,
@@ -403,7 +404,7 @@ public:
 						  BOOL bZeroCrossings,
 						  int nSampleRate,
 						  int nCalculationMethod,
-						  int nRegion,
+						  bool bEntire,
 						  BOOL bMelogram);
 	void GenerateCVData( CSaView & view);
 	bool AutoSegment( CSaView & view, DWORD goal);

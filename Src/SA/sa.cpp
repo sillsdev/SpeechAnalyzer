@@ -345,7 +345,7 @@ BOOL CSaApp::InitInstance() {
 
     // Register the application's document templates.
     // Document templates serve as the connection between documents, frame windows and views.
-    m_pDocTemplate = new CMultiDocTemplate((IsAudioSync()?IDR_SA_SABTYPE:IDR_SA_ANNTYPE),
+    m_pDocTemplate = new CMultiDocTemplate((IsAudioSync()?IDR_SA_ASTYPE:IDR_SA_ANNTYPE),
                                            RUNTIME_CLASS(CSaDoc),
                                            RUNTIME_CLASS(CChildFrame),
                                            RUNTIME_CLASS(CSaView));
@@ -2367,9 +2367,6 @@ bool CSaApp::IsSAServer() const {
 }
 
 bool CSaApp::IsAudioSync() const {
-#ifdef _DEBUG
-    return true;
-#endif
     return (CSaString(m_pszExeName).Find(_T("AudioSync")) != -1);
 }
 

@@ -1370,7 +1370,13 @@ void CSaView::OnExportTimeTable() {
     CDlgExportTimeTable dlg;
     if (dlg.DoModal()==IDOK) {
 	    CSaDoc * pDoc = GetDocument();
-		pDoc->ExportTimeTable( dlg.m_bF1,
+		wstring filename;
+		int result = pDoc->GetSaveAsFilename( pDoc->GetTitle(), _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
+		if (result!=IDOK) {
+			return;
+		}
+		pDoc->ExportTimeTable( filename.c_str(),
+							   dlg.m_bF1,
 							   dlg.m_bF2,
 							   dlg.m_bF3,
 							   dlg.m_bF4,
@@ -1390,7 +1396,7 @@ void CSaView::OnExportTimeTable() {
 							   dlg.m_bZeroCrossings,
 							   dlg.m_nSampleRate,
 							   dlg.m_nCalculationMethod,
-							   dlg.m_nRegion,
+							   (dlg.m_nRegion!=0),
 							   dlg.m_bMelogram);
 
 	}

@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,124
+ FILEVERSION 3,1,0,125
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.124"
+            VALUE "FileVersion", "v3.1.0.125"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -116,10 +116,10 @@ IDI_NEXT                ICON                    "res\\next.ico"
 IDI_PREV                ICON                    "res\\prev.ico"
 IDI_UP                  ICON                    "res\\up.ico"
 IDI_DOWN                ICON                    "res\\down.ico"
-IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\SA.ico"
+IDR_SYNTHESIS_VOCAL_TRACT ICON                  "res\\SA.ico"
 IDR_SA_WBTYPE           ICON                    "RES\\SA_WB.ICO"
 IDR_SA_ANNTYPE          ICON                    "RES\\SA.ICO"
-IDR_SA_SABTYPE          ICON                    "RES\\AS.ICO"
+IDR_SA_ASTYPE           ICON                    "RES\\AS.ICO"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3135,7 +3135,6 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "Ope&n Startup...",            ID_FILE_OPEN_SPECIAL
         MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
@@ -3518,7 +3517,7 @@ BEGIN
     END
 END
 
-IDR_SA_SABTYPE MENU
+IDR_SA_ASTYPE MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -4437,7 +4436,7 @@ BEGIN
     "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
 END
 
-IDR_SA_SABTYPE ACCELERATORS
+IDR_SA_ASTYPE ACCELERATORS
 BEGIN
     "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
     "Q",            ID_EDIT_ADD_PHONETIC,   VIRTKEY, CONTROL, NOINVERT
@@ -5076,12 +5075,12 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.124"
+    VS_VERSION              "Version 3.1.0.125"
     VS_COPYRIGHT            "© 1996-2015 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME_SA        "Speech Analyzer"
     IDR_MAINFRAME_AS        "AudioSync"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    IDR_SA_SABTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
+    IDR_SA_ASTYPE           "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
 END
 
 STRINGTABLE

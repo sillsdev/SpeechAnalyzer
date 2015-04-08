@@ -1,3 +1,8 @@
+SA - 3.1.0.125 4/8/2015
+-Fixed bug where gloss and glossnat segments weren't identified during SAB import function.
+-Added code to save .SFT timing data along with other .WAV and .SAXML data.
+-Removed 'Open Startup' menu choice for AS.
+
 SA - 3.1.0.124 4/7/2015
 -Removed Autosave from menu for AudioSync
 -Added support so that move left/move right/mege and split can be done after selecting any segment and then performing a right mouse click to access the popup menu.  This is for AudioSync only.

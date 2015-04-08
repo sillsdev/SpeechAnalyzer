@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AudioSync"
-#define MyAppVersion "3.1.0.124"
+#define MyAppVersion "3.1.0.125"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "AudioSync.exe"

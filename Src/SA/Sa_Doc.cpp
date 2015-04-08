@@ -1874,8 +1874,8 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 
     std::wstring target = pszPathName;
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-
+	// get pointer to application
+    CSaApp * pApp = (CSaApp *)AfxGetApp(); 
     {
         CScopedCursor waitCursor(this);
 
@@ -1913,7 +1913,8 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
                     return FALSE;
                 }
             }
-            m_szTempWave.Empty(); // empty the new file name string
+			// empty the new file name string
+            m_szTempWave.Empty(); 
         } else {
             // we are dealing with a normal file.
             // does the file still exist?
@@ -1924,7 +1925,8 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 				{
 					CSaString oldFile = GetPathName();
 					if (oldFile.IsEmpty()) {
-						oldFile = GetFilenameFromTitle().c_str(); // get the current view caption string
+						// get the current view caption string
+						oldFile = GetFilenameFromTitle().c_str(); 
 					}
 					oldFile = FileUtils::ReplaceExtension( (LPCTSTR)oldFile, L".wav").c_str();
 					// need to save copy (return value is destroyed)
@@ -1990,7 +1992,9 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 // The fmt and data chunks have to be there already! 
 // The temporary wave file data will be copied into the wave chunk.
 /***************************************************************************/
-BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipboardFile) {
+BOOL CSaDoc::WriteDataFiles( LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipboardFile) {
+
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
 
     CScopedCursor waitCursor(this);
 
@@ -2045,6 +2049,12 @@ BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipbo
     saAudioDocWriter->Release();
     saAudioDocWriter = NULL;
     CoUninitialize();
+
+	if (pApp->IsAudioSync()) {
+		// write the timing file
+		wstring target = FileUtils::ReplaceExtension(pszPathName,L".sft");
+		ExportTimeTable(target.c_str(),FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,"20",0,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE,FALSE,0,1,true,FALSE);
+	}
 
     return TRUE;
 }
@@ -4845,7 +4855,8 @@ void CSaDoc::Dump(CDumpContext & dc) const {
 BOOL CSaDoc::DoFileSave() {
 
     // SDM 1.5Test10.2
-    if ((m_fileStat.m_szFullName[0] == 0) || !(IsModified() || m_nWbProcess)) {
+    if ((m_fileStat.m_szFullName[0] == 0) || 
+		(!(IsModified() || m_nWbProcess))) {
         // OnFileSaveDisabled
         // SDM 1.5Test10.2
         return FALSE;
@@ -4930,7 +4941,7 @@ BOOL CSaDoc::DoFileSave() {
 
     // change the file attribute to read only
     szPathName = GetPathName();
-    if (bSaveAudio && !szPathName.IsEmpty()) {
+    if ((bSaveAudio) && (!szPathName.IsEmpty())) {
         CFile::SetStatus(szPathName, m_fileStat);
     }
 
@@ -7263,7 +7274,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.124");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.125");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -8528,8 +8539,8 @@ void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename) {
 	CGlossNatSegment * pGlossNat = (CGlossNatSegment*)GetSegment(GLOSS_NAT);
 
 	bool hasRef = pRef->GetOffsetSize()>0;
-	bool hasGloss = pRef->GetOffsetSize()>0;
-	bool hasGlossNat = pRef->GetOffsetSize()>0;
+	bool hasGloss = pGloss->GetOffsetSize()>0;
+	bool hasGlossNat = pGlossNat->GetOffsetSize()>0;
 
 	bool hasSegments = hasRef | hasGloss | hasGlossNat;
 
@@ -8792,7 +8803,8 @@ void CSaDoc::CloseAutoSave( LPCTSTR file) {
 	m_AutoSave.Close(file);
 }
 
-void CSaDoc::ExportTimeTable( BOOL bF1,
+void CSaDoc::ExportTimeTable( LPCTSTR filename,
+							  BOOL bF1,
 							  BOOL bF2,
 							  BOOL bF3,
 							  BOOL bF4,
@@ -8812,19 +8824,14 @@ void CSaDoc::ExportTimeTable( BOOL bF1,
 						      BOOL bZeroCrossings,
 							  int nSampleRate,
 							  int nCalculationMethod,
-							  int nRegion,
+							  bool bEntire,
 						      BOOL bMelogram) {
 
-    wstring filename;
-    int result = GetSaveAsFilename( GetTitle(), _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
-    if (result!=IDOK) {
-        return;
-    }
-    
-	CString szFileName = filename.c_str();
-    if (szFileName == "") {
-        return;
-    }
+	ASSERT(filename!=NULL);
+	ASSERT(wcslen(filename)>0);
+	if (wcslen(filename)==0) {
+		return;
+	}
 
     // process all flags
     if (nSampleRate == 0) {
@@ -8853,13 +8860,16 @@ void CSaDoc::ExportTimeTable( BOOL bF1,
         }
     }
 
-    DWORD dwOffset = pView->GetStartCursorPosition();
-    DWORD dwStopPosition = pView->GetStopCursorPosition();
+    DWORD dwOffset = 0;
+    DWORD dwStopPosition = 0;
 	// entire file
-    if (nRegion != 0) { 
+    if (bEntire) { 
         dwOffset = 0;
         dwStopPosition = GetDataSize() - GetBlockAlign();
-    }
+    } else {
+		dwOffset = pView->GetStartCursorPosition();
+		dwStopPosition = pView->GetStopCursorPosition();
+	}
 
     int nIndex = 0;
 
@@ -8995,12 +9005,15 @@ void CSaDoc::ExportTimeTable( BOOL bF1,
 
 	// now write the file
 	{
-		CFile file(szFileName, CFile::modeCreate|CFile::modeWrite);
+		CFile file(filename, CFile::modeCreate|CFile::modeWrite);
 
 		// write header
 
 		// \name write filename
-		szString = "\\name " + szFileName + szCrLf;
+		szString = "\\name ";
+		szString.Append(filename);
+		szString.Append(szCrLf);
+
 		WriteFileUtf8(&file, szString);
 
 		// \date write current time
@@ -9207,10 +9220,12 @@ void CSaDoc::ExportTimeTable( BOOL bF1,
 			DWORD dwCalcIncrement = 0;
 			DWORD dwIndex = 0;
 			if (nCalculationMethod == 0) {
+				// midpoint value
 				dwBegin = dwEnd = (dwOffset + dwNext)/2;
 				dwEnd++;
 				dwCalcIncrement = 10;
 			} else {
+				// average value
 				dwBegin = dwOffset;
 				dwEnd = dwNext;
 				dwCalcIncrement = (dwEnd - dwBegin)/20;
