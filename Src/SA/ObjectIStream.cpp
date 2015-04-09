@@ -177,8 +177,7 @@ bool CObjectIStream::bReadString(LPCSTR pszMarker, LPSTR szResult, size_t size) 
     LPCSTR read = NULL;
     bool result = bReadString(pszMarker, &read);
     if (result) {
-        size_t sz = strlen(read);
-        strcpy_s(szResult, size, read);
+        strcpy_s( szResult, size, read);
     }
     return result;
 }
@@ -331,7 +330,8 @@ bool CObjectIStream::bReadWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wp
 #endif  // not NO_INTERFACE
 
 void CObjectIStream::ReadMarkedString(LPCSTR * ppszMarker, LPCSTR * ppszString, BOOL bTrimWhiteSpace) {
-    if (m_bUnRead) {
+    
+	if (m_bUnRead) {
         *ppszMarker = m_pszMarker;
         *ppszString = m_pszString;
         m_bUnRead = FALSE;
@@ -341,7 +341,7 @@ void CObjectIStream::ReadMarkedString(LPCSTR * ppszMarker, LPCSTR * ppszString, 
     ReadMarkedLine(ppszMarker, ppszString);
 
     // Read any additional lines of the marked string
-    int ich;
+    int ich = 0;
     while (((ich = m_ios.peek()) != EOF) && (ich != '\\')) {
         *m_pszEnd++ = '\n';
         ReadLine();

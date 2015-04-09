@@ -85,12 +85,13 @@ class CSaView : public CView {
 public:
 	// default constructor
 	CSaView();
-
 	// copy constructor
     CSaView( const CSaView * right);  
 	// assignment operator
     CSaView & operator=(const CSaView &); 
     virtual ~CSaView();
+
+	void Init();
 
 	// return the corresponding layout to selected graphs
     static UINT SetLayout(UINT *);
@@ -262,23 +263,23 @@ public:
     void ShowCursors();
     void HideCursors();
 
-    CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
+	// array of pointers to the graph objects
+    CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; 
 
     afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 
     void EnableScrolling(bool val);
     void SelectSegment(CSegment * pSegment, int index);
 
-    bool CanMoveDataLeft( CSegment * pSegment);
+    void EditMoveLeft( bool combined);
+    bool CanMoveDataLeft( CSegment * pSegment, bool combined);
 	bool AnySegmentHasData( CSegment * pSegment, int sel);
 
 protected:
     BOOL PreCreateWindow(CREATESTRUCT & cs);
-    void Copy(const CSaView & toBeCopied);
     void PartialCopy(const CSaView & fromThis);
     void Clear(void);
-    virtual void OnInitialUpdate(); // called first time after construct
-    BOOL DestroyGraph(CGraphWnd ** pGraph, BOOL bResetFocus = TRUE);
+    BOOL DestroyGraph(CGraphWnd ** pGraph, BOOL bResetFocus);
     CRecGraphWnd * CreateRecGraph(CRecGraphWnd * pFromGraph = NULL, CObjectIStream * pObs = NULL);
     void OnUpdateEditPaste(CCmdUI * pCmdUI);
     void OnUpdateEditPasteNew(CCmdUI * pCmdUI);
@@ -288,6 +289,9 @@ protected:
     void OnUpdateEditRedo(CCmdUI * pCmdUI);
     void OnEditAddPhrase(CMusicPhraseSegment * pSeg);
     void OnUpdateEditAddPhrase(CCmdUI * pCmdUI, EAnnotation annot);
+
+	// called first time after construct
+    virtual void OnInitialUpdate(); 
     virtual BOOL OnPreparePrinting(CPrintInfo * pInfo);
     virtual void OnBeginPrinting(CDC * pDC, CPrintInfo * pInfo);
     virtual void OnEndPrinting(CDC * pDC, CPrintInfo * pInfo);

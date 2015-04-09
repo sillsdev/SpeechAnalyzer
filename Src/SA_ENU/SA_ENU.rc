@@ -27,7 +27,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 3,1,0,125
- PRODUCTVERSION 1,0,0,1
+ PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -49,7 +49,7 @@ BEGIN
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
             VALUE "ProductName", "SA"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductVersion", "2.0.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -116,7 +116,7 @@ IDI_NEXT                ICON                    "res\\next.ico"
 IDI_PREV                ICON                    "res\\prev.ico"
 IDI_UP                  ICON                    "res\\up.ico"
 IDI_DOWN                ICON                    "res\\down.ico"
-IDR_SYNTHESIS_VOCAL_TRACT ICON                  "res\\SA.ico"
+IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\SA.ico"
 IDR_SA_WBTYPE           ICON                    "RES\\SA_WB.ICO"
 IDR_SA_ANNTYPE          ICON                    "RES\\SA.ICO"
 IDR_SA_ASTYPE           ICON                    "RES\\AS.ICO"
@@ -438,14 +438,14 @@ BEGIN
     COMBOBOX        IDC_COLORSOVERLAY,62,83,104,286,CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "...",IDC_CHGCOLOR_OVRLY,168,83,12,13
     PUSHBUTTON      "Basic",IDC_DEFAULT,192,29,56,14
-    PUSHBUTTON      "Default Colors",IDC_SYSTEM,192,73,56,14
+    PUSHBUTTON      "Default Colors",IDC_SYSTEM,192,65,56,14
     GROUPBOX        "Windows Setup",IDC_STATIC,6,6,265,139
     LTEXT           "Graph",IDC_STATIC,14,31,42,8
     LTEXT           "Transcription",IDC_STATIC,14,49,42,8
     LTEXT           "Scale",IDC_STATIC,14,67,42,8
     LTEXT           "Overlay",IDC_OVERCOLOR,14,85,42,8
-    LTEXT           "Reset colors to 16 color mode.",IDC_STATIC1,193,46,73,20
-    LTEXT           "Reset colors to SA default colors.",IDC_STATIC2,193,90,73,20
+    LTEXT           "Reset colors to 16 color mode.",IDC_STATIC1,193,45,73,20
+    LTEXT           "Reset colors to SA default colors.",IDC_STATIC2,193,81,73,20
 END
 
 IDD_RECORDER DIALOG 0, 0, 334, 91
@@ -2593,6 +2593,10 @@ BEGIN
         BOTTOMMARGIN, 141
     END
 
+    IDD_OPTIONSCOLORSPAGE, DIALOG
+    BEGIN
+    END
+
     IDD_OPTIONSFONTPAGE, DIALOG
     BEGIN
         VERTGUIDE, 270
@@ -3146,7 +3150,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About AudioSync",            ID_APP_ABOUT
+        MENUITEM "&About Audio+Sync",           ID_APP_ABOUT
     END
 END
 
@@ -3238,9 +3242,11 @@ BEGIN
         MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
-        MENUITEM "M&erge Segments\tCtrl+H",     ID_EDIT_MERGE
-        MENUITEM "Move Data Left\tShift+G",     ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Data Right\tShift+H",    ID_EDIT_MOVE_RIGHT
+        MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
+        MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
+        MENUITEM "Split and Move Left\tShitf+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShitf+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3528,7 +3534,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Import"
         BEGIN
-            MENUITEM "&Scripture App Builder (.TXT)", ID_IMPORT_SAB
+            MENUITEM "Audio+&Sync Phrases (.phrases)", ID_IMPORT_SAB
         END
         MENUITEM SEPARATOR
         MENUITEM "Infor&mation...\tCtrl+I",     ID_FILE_INFORMATION
@@ -3568,9 +3574,11 @@ BEGIN
         MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
-        MENUITEM "M&erge Segments\tCtrl+H",     ID_EDIT_MERGE
-        MENUITEM "Move Data Left\tShift+G",     ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Data Right\tShift+H",    ID_EDIT_MOVE_RIGHT
+        MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
+        MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
+        MENUITEM "Split and Move Left\tShitf+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShitf+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3783,7 +3791,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About AudioSync",            ID_APP_ABOUT
+        MENUITEM "&About Audio+Sync",           ID_APP_ABOUT
     END
 END
 
@@ -3871,8 +3879,10 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
-        MENUITEM "Move Data Left\tShift+G",     ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Data Right\tShift+H",    ID_EDIT_MOVE_RIGHT
+        MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
+        MENUITEM "Split and Move Left\tShitf+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShitf+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM "&Edit\tF4",                   ID_EDIT_EDITOR
         MENUITEM "&View Boundaries",            ID_VIEW_TRANSCRIPTION_BOUNDARIES
         MENUITEM SEPARATOR
@@ -5075,10 +5085,9 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.125"
     VS_COPYRIGHT            "© 1996-2015 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME_SA        "Speech Analyzer"
-    IDR_MAINFRAME_AS        "AudioSync"
+    IDR_MAINFRAME_AS        "Audio+Sync"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
     IDR_SA_ASTYPE           "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
 END
@@ -5508,10 +5517,10 @@ STRINGTABLE
 BEGIN
     IDS_QUESTION_APPLYRECORD "Apply the recorded data into a waveform graph?"
     IDS_QUESTION_BUFFERRESTART 
-                            "In order to change the size of the data buffers, all open documents have to be closed. Do you want to close them now?"
+                            "In order to change the size of the data buffers, all open documents have to be closed.\nDo you want to close them now?"
     IDS_QUESTION_RECREATEGRAPHS 
-                            "In order to change the graph window caption style, all graph windows have to be deleted and created again. All overlay graphs will be lost. Do you want to change the caption style?"
-    IDS_QUESTION_DELRECORD  "The recorded data has to be deleted, if you change the record settings. Do you want to delete your last recording?"
+                            "In order to change the graph window caption style, all graph windows have to be deleted and created again.\nAll overlay graphs will be lost.\nDo you want to change the caption style?"
+    IDS_QUESTION_DELRECORD  "The recorded data has to be deleted, if you change the record settings.\nDo you want to delete your last recording?"
     IDS_QUESTION_READ_ONLY  "The audio file you are saving is Read-Only. Would you like to continue saving the audio data?\n\nTo save the audio data to another file, click YES.\nTo skip saving the audio file but save the transcription data, click NO.\nTo cancel saving altogether, click CANCEL."
     IDS_ERROR_MMIO_BADID_VISTA 
                             "Sound device unavailable.\n\nCheck your microphone and speaker connections."
@@ -5847,15 +5856,15 @@ STRINGTABLE
 BEGIN
     IDS_DELETE_REFERENCE    "This process will delete existing reference numbers.\nDo you want to continue?"
     IDS_ERROR_ELAN1         "Selected PHONETIC tier must not be a reference tier."
-    IDS_ERROR_SAB_NO_IMPORT "Unable to import data from Scripture App Builder text file.\nImport operation aborted."
+    IDS_ERROR_SAB_NO_IMPORT "Unable to import data from Audio+Sync Phrases file.\nImport operation aborted."
     IDS_SAB_QUERY_AUTOSEGMENT_EXISTING 
-                            "There are existing Gloss and/or Reference segments.\nWould you like AudioSync to use these segments for the import process, or should it automatically calculate new segments?\nClick YES to use the existing segments.\nClick NO to automatically resegment the audio data.\nClick CANCEL to terminate the import process."
+                            "There are existing Gloss and/or Reference segments.\nWould you like Audio+Sync to use these segments for the import process, or should it automatically calculate new segments?\nClick YES to use the existing segments.\nClick NO to automatically resegment the audio data.\nClick CANCEL to terminate the import process."
     IDS_ERROR_SAB_NO_SEGMENTS 
                             "There are no segments.  Please create Gloss and Reference segments first before importing data.\nImport operation aborted."
     IDS_ERROR_SAB_AUTOPARSE_FAIL 
                             "Unable to automatically parse the Gloss Segments.\n%1 Segments were provided, but only %2 were found.\nPlease manually parse the Gloss segments and retry importing the data file."
     IDS_SAB_QUERY_AUTOSEGMENT 
-                            "There are no existing Gloss or Reference Segments.\nAudio Sync needs segments to be defined in order to import data.\nWould you like for AudioSync to automatically segment the audio data?\nClick YES to perform auto segmentation.\nClick NO to abort the import process."
+                            "There are no existing Gloss or Reference Segments.\nAudio Sync needs segments to be defined in order to import data.\nWould you like for Audio+Sync to automatically segment the audio data?\nClick YES to perform auto segmentation.\nClick NO to abort the import process."
 END
 
 STRINGTABLE
@@ -5974,7 +5983,7 @@ BEGIN
     ID_PLAYBACK_STOPTOR     "Plays between the end cursor and the right window border\nPlay End Cursor -> Right"
     ID_IMPORT_TIME_TABLE    "Import Time Table data\nImport Time Table"
     ID_IMPORT_SFM           "Import Standard Format Markers\nImport SFM"
-    ID_IMPORT_SAB           "Import Scripture App Builder\nImport SAB"
+    ID_IMPORT_SAB           "Import Audio+Sync Phrases\nImport Phrases"
     IDC_SYNTHESIS           "Future synthesis option, Construction in progress"
     ID_SYNTHESIS            "Future synthesis option, Construction in progress"
 END

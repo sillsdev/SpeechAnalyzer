@@ -329,7 +329,7 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
 /***************************************************************************/
 // CTextSegment::CaluculateDuration calculate segment duration from master data
 /***************************************************************************/
-DWORD CIndependentSegment::CalculateDuration(ISaDoc * pDoc, const int nIndex) const {
+DWORD CIndependentSegment::CalculateDuration(ISaDoc * /*pDoc*/, const int nIndex) const {
 
     DWORD offset_size = GetOffsetSize();
     if ((nIndex < 0) || (nIndex >= offset_size)) {

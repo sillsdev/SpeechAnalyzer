@@ -176,17 +176,18 @@ public:
     enum { IDD = IDD_OPTIONSSAVEPAGE };
     CStatic m_TempIcon;
     CStatic m_PermIcon;
-    BOOL  m_saveOpenFiles;         // tdg - 09/03/97
-    BOOL  m_showStartupDlg;        // DDO - 08/03/00
+    BOOL  m_saveOpenFiles;
+    BOOL  m_showStartupDlg;
     CString m_szPermGraphs;
     CString m_szTempGraphs;
     CString m_szPermCurrLabel;
     CString m_szTempCurrLabel;
 
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX);       // DDX/DDV support
-    void ShowCurrentDefaultViews(BOOL bPermanent);  // DDO - 08/07/00
-    void SetStartDlgCheckHelp(void);                // DDO - 08/09/00
+    virtual void DoDataExchange(CDataExchange * pDX);
+    void ShowPermanentView();
+    void ShowTemporaryView();
+    void SetStartDlgCheckHelp(void);
     virtual BOOL OnInitDialog();
     afx_msg void OnSaveTempDefaultTemplate();
     afx_msg void OnSavePermDefaultTemplate();

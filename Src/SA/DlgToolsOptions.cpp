@@ -941,15 +941,16 @@ BOOL CDlgOptionsSavePage::OnInitDialog() {
     GetDlgItem(IDC_STATIC_PERM)->SetFont(&m_Font);
     GetDlgItem(IDC_STATIC_TEMP)->SetFont(&m_Font);
 
-    ShowCurrentDefaultViews(TRUE);
-    ShowCurrentDefaultViews(FALSE);
+    ShowPermanentView();
+    ShowTemporaryView();
+
     SetStartDlgCheckHelp();
     GetDlgItem(ID_SHOWSTARTUPDLG)->EnableWindow(!m_saveOpenFiles);
 
     return TRUE;
 }
 /***************************************************************************/
-// CDlgOptionsSavePage::ShowCurrentDefaultViews()
+// CDlgOptionsSavePage::SetStartDlgCheckHelp()
 // Added by DDO - 08/07/00
 /***************************************************************************/
 void CDlgOptionsSavePage::SetStartDlgCheckHelp() {
@@ -959,30 +960,82 @@ void CDlgOptionsSavePage::SetStartDlgCheckHelp() {
 }
 
 /***************************************************************************/
-// CDlgOptionsSavePage::ShowCurrentDefaultViews()
+// CDlgOptionsSavePage::ShowPermanentView()
 // Added by DDO - 08/07/00
 /***************************************************************************/
-void CDlgOptionsSavePage::ShowCurrentDefaultViews(BOOL bPermanent) {
+void CDlgOptionsSavePage::ShowPermanentView() {
 
-    UINT     nIconID;
-    UINT     nLayout;
-    CStatic * pIcon;
+    UINT nIconID = 0;
+    UINT nLayout = ((CMainFrame *)AfxGetMainWnd())->GetPermLayout();
+    CStatic * pIcon = &m_PermIcon;
+    m_szPermGraphs = ((CMainFrame *)AfxGetMainWnd())->GetPermGraphNames();
+    m_szPermCurrLabel = (m_szPermGraphs.IsEmpty()) ? "" : "Current Setting:";
+    m_szTempGraphs = "";
+    m_szTempCurrLabel = "";
+    GetDlgItem(IDC_TEMPLAYOUTICON)->ShowWindow(SW_HIDE);
 
-    if (bPermanent) {
-        nLayout = ((CMainFrame *)AfxGetMainWnd())->GetPermLayout();
-        pIcon   = &m_PermIcon;
-        m_szPermGraphs = ((CMainFrame *)AfxGetMainWnd())->GetPermGraphNames();
-        m_szPermCurrLabel = (m_szPermGraphs.IsEmpty()) ? "" : "Current Setting:";
-        m_szTempGraphs = "";
-        m_szTempCurrLabel = "";
-        GetDlgItem(IDC_TEMPLAYOUTICON)->ShowWindow(SW_HIDE);
-    } else {
-        nLayout = ((CMainFrame *)AfxGetMainWnd())->GetTempLayout();
-        pIcon = &m_TempIcon;
-        m_szTempGraphs = ((CMainFrame *)AfxGetMainWnd())->GetTempGraphNames();
-        m_szTempCurrLabel = (m_szTempGraphs.IsEmpty()) ? "" : "Current Setting:";
-        GetDlgItem(IDC_TEMPLAYOUTICON)->ShowWindow(SW_SHOWNORMAL);
+    switch (nLayout) {
+    case ID_LAYOUT_1:
+        nIconID = IDI_LAYOUT1;
+        break;
+    case ID_LAYOUT_2A:
+        nIconID = IDI_LAYOUT2A;
+        break;
+    case ID_LAYOUT_2B:
+        nIconID = IDI_LAYOUT2B;
+        break;
+    case ID_LAYOUT_2C:
+        nIconID = IDI_LAYOUT2C;
+        break;
+    case ID_LAYOUT_3A:
+        nIconID = IDI_LAYOUT3A;
+        break;
+    case ID_LAYOUT_3B:
+        nIconID = IDI_LAYOUT3B;
+        break;
+    case ID_LAYOUT_3C:
+        nIconID = IDI_LAYOUT3C;
+        break;
+    case ID_LAYOUT_4A:
+        nIconID = IDI_LAYOUT4A;
+        break;
+    case ID_LAYOUT_4B:
+        nIconID = IDI_LAYOUT4B;
+        break;
+    case ID_LAYOUT_4C:
+        nIconID = IDI_LAYOUT4C;
+        break;
+    case ID_LAYOUT_5:
+        nIconID = IDI_LAYOUT5;
+        break;
+    case ID_LAYOUT_6A:
+        nIconID = IDI_LAYOUT6A;
+        break;
+    case ID_LAYOUT_6B:
+        nIconID = IDI_LAYOUT6B;
+        break;
+    default:
+        nIconID = 0;
     }
+
+    if (nIconID) {
+        pIcon->SetIcon(((CSaApp *)AfxGetApp())->LoadIcon(nIconID));
+    }
+    UpdateData(FALSE);
+}
+
+/***************************************************************************/
+// CDlgOptionsSavePage::ShowTemporaryView()
+// Added by DDO - 08/07/00
+/***************************************************************************/
+void CDlgOptionsSavePage::ShowTemporaryView() {
+
+    UINT nIconID = 0;
+    UINT nLayout = ((CMainFrame *)AfxGetMainWnd())->GetTempLayout();
+    CStatic * pIcon = &m_TempIcon;
+    m_szTempGraphs = ((CMainFrame *)AfxGetMainWnd())->GetTempGraphNames();
+    m_szTempCurrLabel = (m_szTempGraphs.IsEmpty()) ? "" : "Current Setting:";
+    GetDlgItem(IDC_TEMPLAYOUTICON)->ShowWindow(SW_SHOWNORMAL);
 
     switch (nLayout) {
     case ID_LAYOUT_1:
@@ -1040,7 +1093,7 @@ void CDlgOptionsSavePage::ShowCurrentDefaultViews(BOOL bPermanent) {
 void CDlgOptionsSavePage::OnSaveTempDefaultTemplate() {
 
     ((CMainFrame *)AfxGetMainWnd())->OnSetDefaultGraphs(FALSE);
-    ShowCurrentDefaultViews(FALSE);
+    ShowTemporaryView();
 }
 
 /***************************************************************************/
@@ -1049,7 +1102,7 @@ void CDlgOptionsSavePage::OnSaveTempDefaultTemplate() {
 void CDlgOptionsSavePage::OnSavePermDefaultTemplate() {
 
     ((CMainFrame *)AfxGetMainWnd())->OnSetDefaultGraphs(TRUE);
-    ShowCurrentDefaultViews(TRUE);
+    ShowPermanentView();
     ((CDlgToolsOptions *)GetParent())->ApplyNow();
 }
 
@@ -1183,8 +1236,8 @@ void CDlgToolsOptions::ChangeButtons() {
 // action concerning the mainframe.
 /***************************************************************************/
 void CDlgToolsOptions::OnApplyNow() {
-    GetActivePage()->UpdateData(TRUE); // retrieve data
-
+    
+	GetActivePage()->UpdateData(TRUE); // retrieve data
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     pMainWnd->SetToolSettings(GetSettings(fullView),fullView);
     AfxGetMainWnd()->SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);

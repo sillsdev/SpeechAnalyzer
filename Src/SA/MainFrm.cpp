@@ -334,7 +334,8 @@ CMainFrame::CMainFrame() {
     m_bDefaultMaximizeView = TRUE;
     m_nDefaultHeightView = 0;
     m_nDefaultWidthView = 0;
-    m_bDefaultViewExists = FALSE;       // DDO - 08/07/00
+	// DDO - 08/07/00
+    m_bDefaultViewExists = false;
 
     m_nGraphUpdateMode = STATIC_UPDATE;
     m_bAnimate = FALSE;
@@ -349,7 +350,8 @@ CMainFrame::CMainFrame() {
 // CMainFrame::~CMainFrame Destructor
 /***************************************************************************/
 CMainFrame::~CMainFrame() {
-    // delete modeless dialog and other objects
+    
+	// delete modeless dialog and other objects
     if (m_pWorkbenchView) {
         delete m_pWorkbenchView; // workbench
         m_pWorkbenchView = NULL;
@@ -366,7 +368,7 @@ CMainFrame::~CMainFrame() {
         delete m_pDlgEditor; // SDM 1.06.5 editor
         m_pDlgEditor = NULL;
     }
-    if (m_pDefaultViewConfig) {
+    if (m_pDefaultViewConfig!=NULL) {
         delete m_pDefaultViewConfig;
         m_pDefaultViewConfig = NULL;
     }
@@ -690,6 +692,8 @@ void CMainFrame::OnInitMenu(CMenu * pMenu) {
 /***************************************************************************/
 void CMainFrame::OnToolsOptions() {
 
+    CSaApp * pApp = (CSaApp *)AfxGetApp();
+
     if (GetCurrSaView() != NULL) {
 
         // set property sheet caption
@@ -727,28 +731,33 @@ void CMainFrame::OnToolsOptions() {
             }
         } catch (CMemoryException e) {
             // memory allocation error
-            CSaApp * pApp = (CSaApp *)AfxGetApp();
             pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
             return;
         }
 
         // create the modal dialog box
-        if (dlg.DoModal() == IDOK) {       // OK button pressed
+		// OK button pressed
+        if (dlg.DoModal() == IDOK) {							
             SetToolSettings(dlg.GetSettings(true),true);
-            SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
+			// do apply changes
+            SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);		
+
         }
     } else {
         // there is no view - show a limited version of the tools options dialog box
         // set property sheet caption
         CSaString szCaption;
-        szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
+		// load caption string
+        szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); 
         // create property sheet object
         CDlgToolsOptions dlg(szCaption, NULL, false);
 
         // create the modal dialog box
-        if (dlg.DoModal() == IDOK) {       // OK button pressed
+		// OK button pressed
+        if (dlg.DoModal() == IDOK) {							
             SetToolSettings(dlg.GetSettings(false), false);
-            SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
+			// do apply changes
+            SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);		
         }
     }
 }
@@ -1175,6 +1184,7 @@ LRESULT CMainFrame::OnChangeView(WPARAM wParam, LPARAM lParam) {
 // to SM menu item.
 /***************************************************************************/
 void CMainFrame::OnClose() {
+
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     if (pApp->GetBatchMode() == 1) {
         // TODO: this can probably be completely removed at some point
@@ -1487,27 +1497,22 @@ void CMainFrame::OnUpdateGraphsAsBMP(CCmdUI * pCmdUI) {
 // CMainFrame::OnSetDefault
 /***************************************************************************/
 void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent) {
-    //**********************************************************
-    // Get pointers to the active view and it's document.
-    //**********************************************************
+
+	// Get pointers to the active view and it's document.
     CSaView * pSrcView = (CSaView *)GetCurrSaView();
 
-    //**********************************************************
     // If a view class for the default view has exists then
     // delete it so we can create a new default from the
     // current view.  DDO - 08/07/00
-    //**********************************************************
-    if (m_pDefaultViewConfig) {
+    if (m_pDefaultViewConfig!=NULL) {
         delete m_pDefaultViewConfig;
     }
     m_pDefaultViewConfig = new CSaView(pSrcView);
 
-    //**********************************************************
     // Build a string of graph names used to display on the
     // dialog to tell the user the current default view
     // graphs. Also get the layout (used to show the user an
     // icon of the current layout).
-    //**********************************************************
     m_szTempDefaultGraphs = "";
     m_nTempDefaultLayout = (bPermanent) ? 0 : pSrcView->GetLayout();
 
@@ -1516,14 +1521,10 @@ void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent) {
         m_nPermDefaultLayout = pSrcView->GetLayout();
     }
 
-    //**********************************************************
     // Build a string from graph captions.
-    //**********************************************************
     ((bPermanent) ? m_szPermDefaultGraphs : m_szTempDefaultGraphs) = m_pDefaultViewConfig->GetGraphsDescription();
 
-    //**********************************************************
     // SDM 1.5Test8.1
-    //**********************************************************
     BOOL bMaximized = m_bDefaultMaximizeView;
 
     if (MDIGetActive(&bMaximized)) {
@@ -1537,14 +1538,12 @@ void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent) {
         }
     }
 
-    //**********************************************************
     // If the user clicked on the permanent button then save
     // the default settings to the file that holds the
     // temporary default view settings. DDO - 08/08/00
-    //**********************************************************
     if (bPermanent) {
         m_nStartDataMode = 0;
-        WriteReadDefaultViewToTempFile(TRUE);
+        WriteDefaultViewToTempFile();
     }
 }
 
@@ -1891,18 +1890,16 @@ static const char * psz_autosave     = "AutoSave";
 //
 //********************************************************************
 void CMainFrame::WriteProperties(CObjectOStream & obs) {
+
     //*****************************************************
-    // Before beginning to write the properties, make sure
-    // that if there has been a permanent default view
-    // defined, it is read from the temp file. This is to
-    // make sure any temp. view stored in memory gets
-    // replaced with the permanent view the user wants to
-    // keep in the settings file. i.e. This will make sure
-    // the temp. default view isn't the one written to the
+    // Before beginning to write the properties, make sure that if there has been a permanent default view
+    // defined, it is read from the temp file. 
+	// This is to make sure any temp. view stored in memory gets replaced with the permanent view the user wants to
+    // keep in the settings file. i.e. This will make sure the temp. default view isn't the one written to the
     // settings file.  DDO - 08/07/00
     //*****************************************************
     if (m_bDefaultViewExists) {
-        WriteReadDefaultViewToTempFile(FALSE);
+        ReadDefaultViewFromTempFile();
     }
 
     obs.WriteBeginMarker(psz_mainframe);
@@ -2113,28 +2110,30 @@ static LPCSTR psz_defaultviewconfig = "defaultviewconfig";
 //
 //********************************************************************
 BOOL CMainFrame::ReadDefaultView(CObjectIStream & obs) {
+
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_defaultviewconfig)) {
         return FALSE;
     }
 
-    if (m_pDefaultViewConfig) {
-        delete m_pDefaultViewConfig;    // always start from scratch
+    if (m_pDefaultViewConfig!=NULL) {
+		// always start from scratch
+        delete m_pDefaultViewConfig;    
     }
     m_pDefaultViewConfig = new CSaView();
     m_nPermDefaultLayout = 0;
     m_szPermDefaultGraphs  = "";
 
     while (!obs.bAtEnd()) {
-        if (m_pDefaultViewConfig ? m_pDefaultViewConfig->ReadProperties(obs, FALSE) : FALSE) {
-            if (m_pDefaultViewConfig->GetLayout() < ID_LAYOUT_FIRST ||
-                    m_pDefaultViewConfig->GetLayout() > ID_LAYOUT_LAST ||
-                    m_pDefaultViewConfig->GetGraphIDs()[0] == 0) {
+        if ((m_pDefaultViewConfig!=NULL) ? m_pDefaultViewConfig->ReadProperties(obs, FALSE) : FALSE) {
+            if ((m_pDefaultViewConfig->GetLayout() < ID_LAYOUT_FIRST) ||
+                (m_pDefaultViewConfig->GetLayout() > ID_LAYOUT_LAST) ||
+                (m_pDefaultViewConfig->GetGraphIDs()[0] == 0)) {
                 // This is a corrupted default view
                 delete m_pDefaultViewConfig;
                 m_pDefaultViewConfig = NULL;
             } else {
                 m_nPermDefaultLayout = m_pDefaultViewConfig->GetLayout();
-                m_szPermDefaultGraphs  = m_pDefaultViewConfig->GetGraphsDescription();
+                m_szPermDefaultGraphs = m_pDefaultViewConfig->GetGraphsDescription();
             }
         } else if (obs.bEnd(psz_defaultviewconfig)) {
             break;
@@ -2148,7 +2147,7 @@ BOOL CMainFrame::ReadDefaultView(CObjectIStream & obs) {
         pviewT->ShowInitialTopState();
     }
 
-    WriteReadDefaultViewToTempFile(TRUE);
+    WriteDefaultViewToTempFile();
 
     return TRUE;
 }
@@ -2157,61 +2156,77 @@ BOOL CMainFrame::ReadDefaultView(CObjectIStream & obs) {
 //
 //********************************************************************
 void CMainFrame::WriteDefaultView(CObjectOStream & obs) {
-    if (m_bDefaultViewExists && m_pDefaultViewConfig) {
+
+	if ((m_bDefaultViewExists) && (m_pDefaultViewConfig!=NULL)) {
         obs.WriteBeginMarker(psz_defaultviewconfig);
-        obs.WriteString(psz_defaultgraphlist, "");   // We don't use this anymore but the old code expected/required it
+		// We don't use this anymore but the old code expected/required it
+        obs.WriteString(psz_defaultgraphlist, "");   
         m_pDefaultViewConfig->WriteProperties(obs);
         obs.WriteEndMarker(psz_defaultviewconfig);
     }
 }
 
-static LPCSTR pszTmpDfltSettingsFile = "~!SA!~.tmp";
-
 //********************************************************************
-// WriteReadDefaultViewToTempFile()
+// WriteDefaultViewToTempFile()
 // writes defaultView properties to predefined temp file
 // WARNING ....read destroys temp file
 //********************************************************************
-void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite) {
-    CSaString szPath;
-
+void CMainFrame::WriteDefaultViewToTempFile() {
+    
+	CSaString szPath;
     GetTempPath(_MAX_PATH, szPath.GetBuffer(_MAX_PATH));
     szPath.ReleaseBuffer();
 
+	// Use thread id to keep different threads from interfering with this file
+	CSaString szTmpDfltSettingsFile;
+    szTmpDfltSettingsFile.Format(_T("~!SA!~ %08X.tmp"), AfxGetThread()->m_nThreadID); 
+    szPath += szTmpDfltSettingsFile;
+
+    try {
+        if (m_pDefaultViewConfig!=NULL) {
+			CObjectOStream obs(szPath.utf8().c_str());
+			obs.WriteBool(psz_bMaxView,  m_bDefaultMaximizeView);
+			obs.WriteInteger(psz_HeightView, m_nDefaultHeightView);
+			obs.WriteInteger(psz_WidthView, m_nDefaultWidthView);
+			m_pDefaultViewConfig->WriteProperties(obs);
+			obs.getIos().close();
+			m_bDefaultViewExists = true;
+		}
+    } catch (...) {
+    }
+}
+
+//********************************************************************
+// ReadDefaultViewFromTempFile()
+// writes defaultView properties to predefined temp file
+// WARNING ....read destroys temp file
+//********************************************************************
+void CMainFrame::ReadDefaultViewFromTempFile() {
+
+	CSaString szPath;
+    GetTempPath(_MAX_PATH, szPath.GetBuffer(_MAX_PATH));
+    szPath.ReleaseBuffer();
+
+	// Use thread id to keep different threads from interfering with this file
     CSaString szTmpDfltSettingsFile;
-    szTmpDfltSettingsFile.Format(_T("~!SA!~ %08X.tmp"), AfxGetThread()->m_nThreadID); // Use thread id to keep different threads from interfering with this file
+    szTmpDfltSettingsFile.Format(_T("~!SA!~ %08X.tmp"), AfxGetThread()->m_nThreadID); 
 
     szPath += szTmpDfltSettingsFile;
 
     try {
-        if (bWrite) {
-            if (!m_pDefaultViewConfig) {
-                return;
-            }
-            CObjectOStream obs(szPath.utf8().c_str());
+        CObjectIStream obs(szPath.utf8().c_str());
 
-            obs.WriteBool(psz_bMaxView,  m_bDefaultMaximizeView);
-            obs.WriteInteger(psz_HeightView, m_nDefaultHeightView);
-            obs.WriteInteger(psz_WidthView, m_nDefaultWidthView);
-            m_pDefaultViewConfig->WriteProperties(obs);
-            obs.getIos().close();
-            m_bDefaultViewExists = TRUE;
-        } else {
-            CObjectIStream obs(szPath.utf8().c_str());
-
-            obs.bReadBool(psz_bMaxView, m_bDefaultMaximizeView);
-            obs.bReadInteger(psz_HeightView, m_nDefaultHeightView);
-            obs.bReadInteger(psz_WidthView, m_nDefaultWidthView);
-            if (m_pDefaultViewConfig) {
-                delete m_pDefaultViewConfig;
-            }
-            m_pDefaultViewConfig = new CSaView();
-
-            m_pDefaultViewConfig->ReadProperties(obs, FALSE);
-            obs.Close();
-            std::string szUtf8 = szPath.utf8();
-            remove(szUtf8.c_str());
+        obs.bReadBool(psz_bMaxView, m_bDefaultMaximizeView);
+        obs.bReadInteger(psz_HeightView, m_nDefaultHeightView);
+        obs.bReadInteger(psz_WidthView, m_nDefaultWidthView);
+        if (m_pDefaultViewConfig!=NULL) {
+            delete m_pDefaultViewConfig;
         }
+        m_pDefaultViewConfig = new CSaView();
+        m_pDefaultViewConfig->ReadProperties( obs, FALSE);
+        obs.Close();
+        std::string szUtf8 = szPath.utf8();
+        remove(szUtf8.c_str());
     } catch (...) {
     }
 }

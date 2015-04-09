@@ -2451,7 +2451,7 @@ void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, bool bOverlap) {
 }
 
 void CAnnotationWnd::ShowTranscriptionBoundaries(BOOL val) {
-    m_bTranscriptionBoundary = val;
+    m_bTranscriptionBoundary = (val)?true:false;
 }
 
 void CAnnotationWnd::DrawTranscriptionBorders(CDC * pDC, CRect rWnd, Colors * pColors) {

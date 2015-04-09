@@ -29,6 +29,7 @@ extern bool IsReadOnly(LPCTSTR path);
 extern wstring NormalizePath(LPCTSTR path);
 extern wstring ReplaceExtension(LPCTSTR path, LPCTSTR extension);
 extern wstring RemoveExtension(LPCTSTR path);
+extern wstring GetExtension(LPCTSTR path);
 
 }
 

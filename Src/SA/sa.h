@@ -170,6 +170,8 @@ public:
     bool IsSAServer() const;
     bool IsAudioSync() const;
 
+	CString GetVersionString();
+
 protected:
     void ShowStartupDialog(BOOL bAppIsStartingUp);
     afx_msg void OnAppAbout();

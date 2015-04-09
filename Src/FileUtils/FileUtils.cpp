@@ -260,4 +260,16 @@ wstring FileUtils::RemoveExtension(LPCTSTR path) {
 	return filename;
 }
 
+/**
+* Remove existing extension
+*/
+wstring FileUtils::GetExtension(LPCTSTR path) {
+	wstring extension = path;
+	size_t index = extension.find_last_of('.');
+	if (index != wstring::npos) {
+		extension = extension.substr(index+1);
+	}
+	return extension;
+}
+
 

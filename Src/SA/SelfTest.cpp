@@ -293,8 +293,8 @@ void CSelfTestRunner::GetSystemInfo() {
         break;
     }
 
-    CSaString szSAVersion;
-    szSAVersion.LoadString(VS_VERSION);
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+    CSaString szSAVersion = pApp->GetVersionString();
     result.sysInfo.version = szSAVersion.utf8();
 }
 

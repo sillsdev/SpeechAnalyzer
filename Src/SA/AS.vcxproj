@@ -14,7 +14,7 @@
     <ProjectGuid>{793E5783-785D-42D2-9A84-F773A9DAF39F}</ProjectGuid>
     <RootNamespace>SaUnicode</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <ProjectName>AudioSync</ProjectName>
+    <ProjectName>AS</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -45,8 +45,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\Output\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AudioSync</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AudioSync</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AS</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AS</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -66,6 +66,7 @@
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)stdafx.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ResourceCompile />
     <Link>
@@ -109,6 +110,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PrecompiledHeaderOutputFile>$(IntDir)stdafx.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -367,6 +369,7 @@
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />
     <None Include="Process.cd" />
+    <None Include="Res\AS.ICO" />
     <None Include="Res\SA.ICO" />
     <None Include="segment selection.cd" />
     <None Include="Segments.cd" />
@@ -377,6 +380,7 @@
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="array_ptr.h" />
+    <ClInclude Include="as_resource.h" />
     <ClInclude Include="DlgAutoRecorder.h" />
     <ClInclude Include="AutoSave.h" />
     <ClInclude Include="ChildFrame.h" />
@@ -495,7 +499,6 @@
     <ClInclude Include="Sa.h" />
     <ClInclude Include="SAXMLUtils.h" />
     <ClInclude Include="SA_Annot.h" />
-    <ClInclude Include="sa_resource.h" />
     <ClInclude Include="ScopedCursor.h" />
     <ClInclude Include="SegmentOps.h" />
     <ClInclude Include="SegmentSelection.h" />

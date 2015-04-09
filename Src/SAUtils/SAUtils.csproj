@@ -97,7 +97,10 @@
   <ItemGroup>
     <Compile Include="Audio\Audio.cs" />
     <Compile Include="Audio\IAudio.cs" />
-    <Compile Include="GUI\AboutDlg.cs">
+    <Compile Include="GUI\ASAboutDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\SAAboutDlg.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\ColorHelper.cs" />
@@ -153,8 +156,12 @@
     <Compile Include="XmlSerializationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GUI\AboutDlg.resx">
-      <DependentUpon>AboutDlg.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\ASAboutDlg.resx">
+      <DependentUpon>ASAboutDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SAAboutDlg.resx">
+      <DependentUpon>SAAboutDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ExceptionViewer.resx">

@@ -227,10 +227,11 @@ CSaApp theApp;
 // CSaApp helper functions
 
 HMODULE LoadCompatibleLibrary(LPCTSTR szTarget) {
+
     // Is Library Compatible
     wchar_t szApp[MAX_PATH*4];
     wmemset(szApp,0,_countof(szApp));
-    GetModuleFileName(AfxGetInstanceHandle(), szApp, _countof(szApp));
+	GetModuleFileName(AfxGetInstanceHandle(), szApp, _countof(szApp));
 
     wchar_t szName[MAX_PATH*4];
     wcscpy_s(szName,_countof(szName),szTarget);
@@ -259,6 +260,7 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szTarget) {
         return 0;
     }
 
+	// now read the local application version.
     dwSize = GetFileVersionInfoSize(szApp, &dwHandle);
     if (!dwSize) {
         return 0;
@@ -274,10 +276,10 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szTarget) {
         return 0;
     }
 
-    if ((pAppVS->dwFileVersionLS != pLibVS->dwFileVersionLS) ||
-            (pAppVS->dwFileVersionMS != pLibVS->dwFileVersionMS) ||
-            (pAppVS->dwProductVersionLS != pLibVS->dwProductVersionLS) ||
-            (pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS)) {
+	// we will only use the product version to track the relationship between
+	// SA, AS and SA_ENU
+    if ((pAppVS->dwProductVersionLS != pLibVS->dwProductVersionLS) ||
+        (pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS)) {
         CSaString szMessage;
         szMessage.FormatMessage(_T("%1 was found, but contains resources from incompatible version.\nIt will not be used."), szTarget);
         AfxMessageBox(szMessage);
@@ -336,8 +338,6 @@ BOOL CSaApp::InitInstance() {
     //    afxTraceFlags = 1;
 #endif
 
-    // Set dialog background color
-    SetDialogBkColor(GetSysColor(COLOR_BTNFACE));
     // Load standard INI file options (including MRU)
     LoadStdProfileSettings(8);
 
@@ -386,7 +386,7 @@ BOOL CSaApp::InitInstance() {
 			}
             splash->ProdName = (_bstr_t)szSplashText;
             // load version info
-            CSaString szVersion((LPCTSTR)VS_VERSION);
+			CSaString szVersion = pApp->GetVersionString();
             szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
             // Beta version display
             int nBuildIndex = szVersion.Find(_T("Build"));
@@ -475,7 +475,7 @@ BOOL CSaApp::InitInstance() {
 
         // Dispatch commands specified on the command line
         if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) &&
-                (!ProcessShellCommand(cmdInfo))) {
+            (!ProcessShellCommand(cmdInfo))) {
             return FALSE;
         }
 
@@ -1283,50 +1283,86 @@ CDocument * CSaApp::OpenBlankView(bool bWithGraphs) {
 /***************************************************************************/
 void CSaApp::OnAppAbout() {
 
-    // initialize the about box object
-    CoInitialize(NULL);
-    IAboutDlgPtr aboutDlg;
-    HRESULT createResult = aboutDlg.CreateInstance(__uuidof(AboutDlg));
-    if (createResult) {
-        CSaString szCreateResult;
-        szCreateResult.Format(_T("%x"), createResult);
-        ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("AboutDlg.CreateInstance()"), szCreateResult);
-        return;
-    }
+	// initialize the about box object
+	CoInitialize(NULL);
+	IAboutDlgPtr aboutDlg;
 
-    // set the text values
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-	    aboutDlg->ProdName = _T("AudioSync");
+	if (IsAudioSync()) {
+		HRESULT createResult = aboutDlg.CreateInstance(__uuidof(ASAboutDlg));
+		if (createResult) {
+			CSaString szCreateResult;
+			szCreateResult.Format(_T("%x"), createResult);
+			ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("AboutDlg.CreateInstance()"), szCreateResult);
+			return;
+		}
+
+		// set the text values
+		aboutDlg->ProdName = _T("Audio+Sync");
+		CSaString szVersion = GetVersionString();
+		CSaString szBuild;
+		szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
+		int nBuildIndex = szVersion.Find(_T("Build"));
+		if (nBuildIndex > 0) {
+			szBuild = szVersion.Mid(nBuildIndex, szVersion.GetLength() - nBuildIndex - 1);
+			szVersion = szVersion.Left(nBuildIndex - 2);
+		}
+
+		// Remove RC number
+		int nRCIndex = szVersion.Find(_T("RC"));
+		if (nRCIndex > 0) {
+			szVersion = szVersion.Left(nRCIndex - 1);
+		}
+
+		CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);;
+		aboutDlg->ProdVersion = (_bstr_t)szVersion;
+		aboutDlg->Copyright = (_bstr_t)szCopyright;
+		aboutDlg->DriveLetter = _T("C");
+		aboutDlg->Build = (_bstr_t)szBuild;
+
+		// now show it
+		aboutDlg->ShowDialog();
+
+		aboutDlg->Release();
+		aboutDlg = NULL;
 	} else {
+		HRESULT createResult = aboutDlg.CreateInstance(__uuidof(SAAboutDlg));
+		if (createResult) {
+			CSaString szCreateResult;
+			szCreateResult.Format(_T("%x"), createResult);
+			ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("AboutDlg.CreateInstance()"), szCreateResult);
+			return;
+		}
+
+		// set the text values
 		aboutDlg->ProdName = _T("Speech Analyzer");
+		CSaString szVersion = GetVersionString();
+		CSaString szBuild;
+		szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
+		int nBuildIndex = szVersion.Find(_T("Build"));
+		if (nBuildIndex > 0) {
+			szBuild = szVersion.Mid(nBuildIndex, szVersion.GetLength() - nBuildIndex - 1);
+			szVersion = szVersion.Left(nBuildIndex - 2);
+		}
+
+		// Remove RC number
+		int nRCIndex = szVersion.Find(_T("RC"));
+		if (nRCIndex > 0) {
+			szVersion = szVersion.Left(nRCIndex - 1);
+		}
+
+		CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);;
+		aboutDlg->ProdVersion = (_bstr_t)szVersion;
+		aboutDlg->Copyright = (_bstr_t)szCopyright;
+		aboutDlg->DriveLetter = _T("C");
+		aboutDlg->Build = (_bstr_t)szBuild;
+
+		// now show it
+		aboutDlg->ShowDialog();
+
+		aboutDlg->Release();
+		aboutDlg = NULL;
 	}
-    CSaString szVersion((LPCTSTR)VS_VERSION);;
-    CSaString szBuild;
-    szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
-    int nBuildIndex = szVersion.Find(_T("Build"));
-    if (nBuildIndex > 0) {
-        szBuild = szVersion.Mid(nBuildIndex, szVersion.GetLength() - nBuildIndex - 1);
-        szVersion = szVersion.Left(nBuildIndex - 2);
-    }
 
-    // Remove RC number
-    int nRCIndex = szVersion.Find(_T("RC"));
-    if (nRCIndex > 0) {
-        szVersion = szVersion.Left(nRCIndex - 1);
-    }
-
-    CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);;
-    aboutDlg->ProdVersion = (_bstr_t)szVersion;
-    aboutDlg->Copyright = (_bstr_t)szCopyright;
-    aboutDlg->DriveLetter = _T("C");
-    aboutDlg->Build = (_bstr_t)szBuild;
-
-    // now show it
-    aboutDlg->ShowDialog();
-
-    aboutDlg->Release();
-    aboutDlg = NULL;
     CoUninitialize();
 }
 
@@ -2075,7 +2111,7 @@ static LPCSTR psz_wbonexit     = "wbonexit";
 void CSaApp::WriteProperties(CObjectOStream & obs) {
 
     // get the version
-    CSaString szVersion((LPCTSTR)VS_VERSION);
+	CSaString szVersion = GetVersionString();
     CSaString szBuildNum;
     szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
     int nBuildIndex = szVersion.Find(_T("Build"));
@@ -2093,8 +2129,7 @@ void CSaApp::WriteProperties(CObjectOStream & obs) {
 
     ((CMainFrame *)m_pMainWnd)->WriteProperties(obs);
 
-    if ((!GetBatchMode()) &&
-            ((CMainFrame *)m_pMainWnd)->GetSaveOpenFiles()) {
+    if ((!GetBatchMode()) && ((CMainFrame *)m_pMainWnd)->GetSaveOpenFiles()) {
         //tdg 09/03/97
         CDocList doclst; // get list of currently open documents
         for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
@@ -2256,20 +2291,19 @@ BOOL CSaApp::ReadSettings() {
 
 /***************************************************************************/
 /***************************************************************************/
-CSaString CSaApp::GetStartupMessage(CSaString szLastVersion) {
-
+CSaString CSaApp::GetStartupMessage( CSaString szLastVersion) {
+    CSaString msg;
+	if (IsAudioSync()) {
+		return msg;
+	}
     if ((szLastVersion[0] < '2') || (szLastVersion[0] > '9')) {
         szLastVersion = "2.7";
     }
-
     CSaString szRelease = szLastVersion.Left(3);
     CSaString szBuild = szLastVersion.Right(szLastVersion.GetLength() - 4);
-    CSaString msg;
-
     if (szRelease == "2.7") {
         msg.LoadString(IDS_STARTUP_3_0);
     }
-
     return msg;
 }
 
@@ -2363,11 +2397,11 @@ void CSaApp::GetMRUFilePath(int i, CSaString & buffer) const {
 }
 
 bool CSaApp::IsSAServer() const {
-    return (CSaString(m_pszExeName).Find(_T("SAServer")) != -1);
+	return (CSaString(m_pszExeName).CompareNoCase(L"saserver") == 0);
 }
 
 bool CSaApp::IsAudioSync() const {
-    return (CSaString(m_pszExeName).Find(_T("AudioSync")) != -1);
+    return (CSaString(m_pszExeName).CompareNoCase(L"as") == 0);
 }
 
 // Name:        CSingleInstanceData
@@ -2711,5 +2745,41 @@ CSaString GetShellFolderPath(DWORD csidl) {
         FreeLibrary(hModule);
     }
     return CSaString(documentPath);
+}
+
+CString CSaApp::GetVersionString() {
+
+	CString result;
+
+	// Is Library Compatible
+    wchar_t szApp[MAX_PATH*4];
+    wmemset(szApp,0,_countof(szApp));
+	GetModuleFileName( AfxGetInstanceHandle(), szApp, _countof(szApp));
+
+	// now read the local application version.
+	DWORD dwHandle = 0;
+    DWORD dwSize = GetFileVersionInfoSize(szApp, &dwHandle);
+    if (!dwSize) {
+        return result;
+    }
+
+    array_ptr<BYTE> pAppVersion(dwSize);
+    if (!GetFileVersionInfo(szApp, dwHandle, dwSize, pAppVersion.get())) {
+        return result;
+    }
+
+	UINT nLen = 0;
+    VS_FIXEDFILEINFO * pAppVS = NULL;
+    if (!VerQueryValue(pAppVersion.get(), _T("\\"), (void **) &pAppVS, &nLen)) {
+        return result;
+    }
+
+	DWORD major1 = (pAppVS->dwFileVersionMS & 0xffff0000)>>16;
+	DWORD major2 = pAppVS->dwFileVersionMS & 0xffff;
+	DWORD minor3 = (pAppVS->dwFileVersionLS & 0xffff0000)>>16;
+	DWORD minor4 = pAppVS->dwFileVersionLS & 0xffff;
+
+	result.Format(L"Version %d.%d.%d.%d",major1,major2,minor3,minor4);
+	return result;
 }
 

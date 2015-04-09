@@ -2053,7 +2053,7 @@ BOOL CSaDoc::WriteDataFiles( LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipb
 	if (pApp->IsAudioSync()) {
 		// write the timing file
 		wstring target = FileUtils::ReplaceExtension(pszPathName,L".sft");
-		ExportTimeTable(target.c_str(),FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,"20",0,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE,FALSE,0,1,true,FALSE);
+		ExportTimeTable(target.c_str(),FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,"20",TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE,FALSE,0,1,true,FALSE);
 	}
 
     return TRUE;

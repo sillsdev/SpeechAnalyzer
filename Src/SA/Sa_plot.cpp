@@ -412,9 +412,10 @@ BOOL CPlotWnd::PreCreateWindow(CREATESTRUCT & cs) {
 // CPlotWnd::ShowSegmentBoundaries Show or hide the boundaries
 /***************************************************************************/
 void CPlotWnd::ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw) {
-    m_bBoundaries = bShow;
+    m_bBoundaries = (bShow)?true:false;
     if (bRedraw) {
-        RedrawPlot();    // repaint whole plot window
+		// repaint whole plot window
+        RedrawPlot();    
     }
 }
 
@@ -425,7 +426,8 @@ void CPlotWnd::SetMagnify(double fMagnify, BOOL bRedraw) {
     if (m_fMagnify != fMagnify) {
         m_fMagnify = fMagnify;
         if (bRedraw) {
-            RedrawPlot();    // repaint whole plot window
+			// repaint whole plot window
+            RedrawPlot();    
         }
     }
 }

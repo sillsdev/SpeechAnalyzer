@@ -160,7 +160,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;buttonOk.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>10</value>
   </data>
   <metadata name="lblAvailableMemory.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -196,7 +196,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lblAvailableMemory.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>5</value>
   </data>
   <metadata name="lblAvailableDiskSpace.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -232,7 +232,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lblAvailableDiskSpace.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>6</value>
   </data>
   <metadata name="fieldWorksIcon.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -268,40 +268,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;fieldWorksIcon.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="lnkWebsite.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lnkWebsite.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="lnkWebsite.LinkArea" type="System.Windows.Forms.LinkArea, System.Windows.Forms">
-    <value>28, 55</value>
-  </data>
-  <data name="lnkWebsite.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 263</value>
-  </data>
-  <data name="lnkWebsite.Size" type="System.Drawing.Size, System.Drawing">
-    <value>297, 17</value>
-  </data>
-  <data name="lnkWebsite.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
-  </data>
-  <data name="lnkWebsite.Text" xml:space="preserve">
-    <value>For more information, visit http://phonologyassistant.sil.org</value>
-  </data>
-  <data name="&gt;&gt;lnkWebsite.Name" xml:space="preserve">
-    <value>lnkWebsite</value>
-  </data>
-  <data name="&gt;&gt;lnkWebsite.Type" xml:space="preserve">
-    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;lnkWebsite.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;lnkWebsite.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>8</value>
   </data>
   <data name="lnkFeedback.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -313,13 +280,13 @@
     <value>13, 245</value>
   </data>
   <data name="lnkFeedback.Size" type="System.Drawing.Size, System.Drawing">
-    <value>302, 17</value>
+    <value>352, 17</value>
   </data>
   <data name="lnkFeedback.TabIndex" type="System.Int32, mscorlib">
     <value>23</value>
   </data>
   <data name="lnkFeedback.Text" xml:space="preserve">
-    <value>Please report errors and comments to PaFeedback@sil.org</value>
+    <value>Please report errors and comments to audio-sync_comments@sil.org</value>
   </data>
   <data name="&gt;&gt;lnkFeedback.Name" xml:space="preserve">
     <value>lnkFeedback</value>
@@ -331,7 +298,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lnkFeedback.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="lblBuild.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -361,7 +328,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lblBuild.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>1</value>
   </data>
   <data name="lblAppVersion.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -388,7 +355,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lblAppVersion.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="lblAvailableMemoryValue.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -421,7 +388,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lblAvailableMemoryValue.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>3</value>
   </data>
   <data name="lblAvailableDiskSpaceValue.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -454,7 +421,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lblAvailableDiskSpaceValue.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>4</value>
   </data>
   <data name="lblCopyright.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -484,7 +451,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lblCopyright.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>7</value>
   </data>
   <data name="lblName.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 18.75pt, style=Bold</value>
@@ -514,7 +481,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;lblName.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>9</value>
   </data>
   <data name="panel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
@@ -559,7 +526,7 @@
     <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>AboutDlg</value>
+    <value>ASAboutDlg</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

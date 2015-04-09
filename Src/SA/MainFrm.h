@@ -283,9 +283,10 @@ protected:
     BOOL                m_bAnimate;					// TRUE = animation requested
     int                 m_nAnimationRate;			// frame rate for animations (in frames/sec)
     ECursorAlignment    m_nCursorAlignment;			// cursor snap mode: align to sample, zero crossing, or fragment
-    BOOL                m_bDefaultViewExists;		// True if a default view configuration was read from the .psa file.
+    bool                m_bDefaultViewExists;		// True if a default view configuration was read from the .psa file.
     CWaveformGeneratorSettings m_waveformGeneratorSettings;
-    void WriteReadDefaultViewToTempFile(BOOL bWrite);
+    void WriteDefaultViewToTempFile();
+    void ReadDefaultViewFromTempFile();
 
     // Default values for various parameters                     // RLJ 11.1A
     CSaView      *      m_pDefaultViewConfig;       // holds the default view for when a doc is newly opened.

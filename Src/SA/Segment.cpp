@@ -314,7 +314,7 @@ BOOL CSegment::SetAt(const CSaString & text, DWORD dwStart, DWORD dwDuration) {
 * nDelimiter is not used in this basic version of the function.
 * nIndex index into annotation string
 ***************************************************************************/
-BOOL CSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+BOOL CSegment::Insert(int nIndex, LPCTSTR pszString, bool /*delimiter*/, DWORD dwStart, DWORD dwDuration) {
     InsertAt(nIndex,pszString,dwStart,dwDuration);
     return TRUE;
 }
@@ -1081,7 +1081,7 @@ bool CSegment::Filter() {
     return false;
 }
 
-bool CSegment::Filter(CString & text) {
+bool CSegment::Filter( CString & /*text*/) {
     return false;
 }
 
@@ -1211,7 +1211,7 @@ void CSegment::ShrinkSegment( CSaDoc & document, DWORD dwSectionStart, DWORD dwS
 * In the other way, the segments in the deleted section will be deleted. 
 * The ones that overlap into the section will be adjusted if valid
 ***************************************************************************/
-void CSegment::GrowSegment( CSaDoc & document, DWORD dwSectionStart, DWORD dwSectionLength) {
+void CSegment::GrowSegment( CSaDoc & /*document*/, DWORD dwSectionStart, DWORD dwSectionLength) {
 
     SetSelection(-1);                // make sure nothing selected
     int nIndex = GetPrevious(-1);    // find last index (works if nothing selected)

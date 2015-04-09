@@ -32,7 +32,7 @@ void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwS
 // For example if we are inserting at the 4 gloss segment but only reference
 // segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
-BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool /*delimiter*/, DWORD dwStart, DWORD dwDuration) {
     if (pszString==NULL) {
         return FALSE;
     }
@@ -76,7 +76,7 @@ int CDependentTextSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwAligne
 /***************************************************************************/
 // CDependentTextSegment::Add Add dependent annotation segment
 /***************************************************************************/
-void CDependentTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
+void CDependentTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool /*delimiter*/, bool bCheck) {
 
     // get the offset and duration from master
     int nSegment = pDoc->GetSegment(GLOSS)->FindOffset(dwStart);

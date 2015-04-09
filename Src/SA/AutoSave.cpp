@@ -307,6 +307,7 @@ void CAutoSave::Save(CSaDoc & document) {
     }
 
     bool isTempFile = false;
+	bool isWave = true;
     wstring filename;
     wstring root;
     wstring restorewave;
@@ -355,7 +356,11 @@ void CAutoSave::Save(CSaDoc & document) {
         if (pos!=wstring::npos) {
             filename = filename.substr(pos+1,filename.length()-pos-1);
         }
-        // remove extension
+
+		CString extension = FileUtils::GetExtension(filename.c_str()).c_str();
+		isWave = (extension.CompareNoCase(L"wav")==0);
+
+		// remove extension
 		filename = FileUtils::RemoveExtension(filename.c_str());
         root = filename;
 
@@ -365,27 +370,28 @@ void CAutoSave::Save(CSaDoc & document) {
 
         currentwave.append(autosavedir);
         currentwave.append(root);
-        currentwave.append(L".wav.autosave");
+        currentwave.append(L".audio.autosave");
 
         currentxml.append(autosavedir);
         currentxml.append(root);
         currentxml.append(L".saxml.autosave");
     }
 
-    // compare sizes.  if they are the same, don't do anything.
-    ULONGLONG srcsize = GetFileSize(restorewave.c_str());
-    ULONGLONG destsize = GetFileSize(currentwave.c_str());
-    if (srcsize!=destsize) {
-        // if the current autosave wave file exists, delete it
-        if (currentwave.length()>0) {
-            if (FileUtils::FileExists(currentwave.c_str())) {
-                FileUtils::Remove(currentwave.c_str());
-            }
-        }
-        if (!::CopyFile(restorewave.c_str(), currentwave.c_str(), TRUE)) {
-            TRACE(L"Unable to save wave file\n");
-        }
-    }
+	// if it's not a wave file, we aren't making a copy
+	// compare sizes.  if they are the same, don't do anything.
+	ULONGLONG srcsize = GetFileSize(restorewave.c_str());
+	ULONGLONG destsize = GetFileSize(currentwave.c_str());
+	if (srcsize!=destsize) {
+		// if the current autosave wave file exists, delete it
+		if (currentwave.length()>0) {
+			if (FileUtils::FileExists(currentwave.c_str())) {
+				FileUtils::Remove(currentwave.c_str());
+			}
+		}
+		if (!::CopyFile(restorewave.c_str(), currentwave.c_str(), TRUE)) {
+			TRACE(L"Unable to save wave file\n");
+		}
+	}
 
     if (document.IsTransModified()) {
         if (currentxml.length()>0) {
@@ -396,7 +402,7 @@ void CAutoSave::Save(CSaDoc & document) {
 
         // copy any transcription to the autosave directory
         saving = true;
-        document.WriteDataFiles(currentwave.c_str(),true,false);
+        document.WriteDataFiles( currentwave.c_str(), isWave, false);
         saving = false;
 
         // rename it to the appropriate name
@@ -482,7 +488,7 @@ void CAutoSave::Close(LPCTSTR filename) {
 	original = FileUtils::RemoveExtension(original.c_str());
     wstring root = original;
     wstring info = root + L".info";
-    wstring wave = root + L".wav.autosave";
+    wstring wave = root + L".audio.autosave";
     wstring saxml = root + L".saxml.autosave";
     wstring tmp = root + L".tmp.autosave";
 
