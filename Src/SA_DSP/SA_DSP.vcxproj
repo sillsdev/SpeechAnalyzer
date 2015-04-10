@@ -95,7 +95,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;SA_DSP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

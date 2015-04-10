@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "OrthoSegment.h"
 
-COrthoSegment::COrthoSegment(EAnnotation index, int master) :
+COrthographicSegment::COrthographicSegment(EAnnotation index, int master) :
     CDependentSegment(index,master) {
 }
 
-CFontTable * COrthoSegment::NewFontTable() const {
+CFontTable * COrthographicSegment::NewFontTable() const {
     return new CFontTableANSI;
 }
 

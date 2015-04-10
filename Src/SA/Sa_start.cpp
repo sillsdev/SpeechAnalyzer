@@ -1,13 +1,13 @@
 /////////////////////////////////////////////////////////////////////////////
 // sa_start.cpp:
-// Implementation of the CStartModeDlg (dialog) class.
+// Implementation of the CDlgStartMode (dialog) class.
 //
 // Author: Russ Johnson
 // copyright 2000 JAARS Inc. SIL
 //
 // Revision History
 //   05/16/2000 - Original
-//       RLJ Created so that CStartModeDlg could be moved here, to reduce
+//       RLJ Created so that CDlgStartMode could be moved here, to reduce
 //           Sa_dlg.OBJ size enough to allow LINK/DEBUG
 ///  05/31/2000
 //       RLJ Add SetOpenMode() call;
@@ -36,11 +36,11 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CStartModeDlg dialog
+// CDlgStartMode dialog
 //
 // RLJ - April 14, 2000
 
-BEGIN_MESSAGE_MAP(CStartModeDlg, CDialog)
+BEGIN_MESSAGE_MAP(CDlgStartMode, CDialog)
     ON_BN_CLICKED(ID_START_MODE_RECORD, OnStartModeRecord)
     ON_BN_CLICKED(ID_CLOSE, OnCloseButton)
     ON_LBN_DBLCLK(IDC_RECENTLIST, OnDblclkRecentlist)
@@ -51,14 +51,14 @@ BEGIN_MESSAGE_MAP(CStartModeDlg, CDialog)
     ON_COMMAND(IDHELP, OnHelpStartMode)
 END_MESSAGE_MAP()
 
-//CStartModeDlg::CStartModeDlg(CWnd* pParent /*=NULL*/)
-CStartModeDlg::CStartModeDlg(CWnd * pParent) : CDialog(CStartModeDlg::IDD, pParent) {
+//CDlgStartMode::CDlgStartMode(CWnd* pParent /*=NULL*/)
+CDlgStartMode::CDlgStartMode(CWnd * pParent) : CDialog(CDlgStartMode::IDD, pParent) {
     m_nDontShowAgain = FALSE;
     m_bShowDontShowAgainOption = TRUE;
     m_nDataMode = -1;
 }
 
-void CStartModeDlg::DoDataExchange(CDataExchange * pDX) {
+void CDlgStartMode::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_RECENTLIST, m_lbRecentFiles);
     DDX_Check(pDX, IDC_STARTMODE_DONTSHOW, m_nDontShowAgain);
@@ -66,11 +66,11 @@ void CStartModeDlg::DoDataExchange(CDataExchange * pDX) {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CStartModeDlg message handlers
+// CDlgStartMode message handlers
 
 //****************************************************************
 //****************************************************************
-BOOL CStartModeDlg::OnInitDialog() {
+BOOL CDlgStartMode::OnInitDialog() {
     CDialog::OnInitDialog();
     // center dialog on framewindow
     CenterWindow();
@@ -101,7 +101,7 @@ BOOL CStartModeDlg::OnInitDialog() {
     int nChars = (rWnd.right / tm.tmAveCharWidth * 8 / 10); // experience values
     for (int i = 0; i < _AFX_MRU_MAX_COUNT; i++) {
         CFileStatus status;
-        pApp->GetMRUFilePath(i,workDir);
+        workDir = pApp->GetMRUFilePath(i);
         if ((workDir.GetLength() > 0)  && CFile::GetStatus(workDir, status)) {
             if (workDir.GetLength() > nChars) { // file path is too long
                 CSaString szRightPath = workDir.Right(nChars - 6);
@@ -176,7 +176,7 @@ BOOL CStartModeDlg::OnInitDialog() {
 
 //****************************************************************
 //****************************************************************
-void CStartModeDlg::OnStartModeRecord() {
+void CDlgStartMode::OnStartModeRecord() {
     if (!Cleanup()) {
         return;
     }
@@ -187,7 +187,7 @@ void CStartModeDlg::OnStartModeRecord() {
 
 //****************************************************************
 //****************************************************************
-void CStartModeDlg::OnCloseButton() {
+void CDlgStartMode::OnCloseButton() {
     if (!Cleanup()) {
         return;
     }
@@ -196,7 +196,7 @@ void CStartModeDlg::OnCloseButton() {
 
 //****************************************************************
 //****************************************************************
-bool CStartModeDlg::Cleanup() {
+bool CDlgStartMode::Cleanup() {
     //**************************************************
     // Enable this radio button first or UpdateData
     // will bomb.
@@ -215,7 +215,7 @@ bool CStartModeDlg::Cleanup() {
 //****************************************************************
 // DDO - 08/08/00
 //****************************************************************
-void CStartModeDlg::OnDblclkRecentlist() {
+void CDlgStartMode::OnDblclkRecentlist() {
     UINT nOpenID = ID_FILE_OPEN;
     int nIndex = m_lbRecentFiles.GetCurSel();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
@@ -246,7 +246,7 @@ void CStartModeDlg::OnDblclkRecentlist() {
         CSaString szFile;
         CFileStatus status;
         for (int i = 0; i < nIndex; i++) {
-            pApp->GetMRUFilePath(i,szFile);
+            szFile = pApp->GetMRUFilePath(i);
             if (!CFile::GetStatus(szFile, status)) {
                 nIndex++;
             }
@@ -261,22 +261,20 @@ void CStartModeDlg::OnDblclkRecentlist() {
 //****************************************************************
 // DDO - 08/08/2000
 //****************************************************************
-void CStartModeDlg::OnOk() {
+void CDlgStartMode::OnOk() {
     OnDblclkRecentlist();
 }
 
 //****************************************************************
 // OnPlay  Play selected file
 //****************************************************************
-void CStartModeDlg::OnPlay() {
-    int nIndex = m_lbRecentFiles.GetCurSel();
+void CDlgStartMode::OnPlay() {
 
+	int nIndex = m_lbRecentFiles.GetCurSel();
     if (nIndex > 0) {
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         CSaString file;
-
-        pApp->GetMRUFilePath(nIndex - 1,file);
-
+        file = pApp->GetMRUFilePath(nIndex - 1);
         PlaySound(LPCTSTR(file), 0, SND_ASYNC | SND_NODEFAULT | SND_FILENAME);
     }
 }
@@ -284,14 +282,14 @@ void CStartModeDlg::OnPlay() {
 //****************************************************************
 // OnStop  Stop playback file
 //****************************************************************
-void CStartModeDlg::OnStop() {
+void CDlgStartMode::OnStop() {
     PlaySound(NULL, 0, SND_PURGE | SND_NODEFAULT);
 }
 
 //****************************************************************
 // OnSelchangeRecentlist  Update play selected file button
 //****************************************************************
-void CStartModeDlg::OnSelchangeRecentlist() {
+void CDlgStartMode::OnSelchangeRecentlist() {
     int nIndex = m_lbRecentFiles.GetCurSel();
 
     OnStop();
@@ -304,7 +302,7 @@ void CStartModeDlg::OnSelchangeRecentlist() {
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaString file;
     if (nIndex > 0) {
-        pApp->GetMRUFilePath(nIndex - 1,file);
+        file = pApp->GetMRUFilePath(nIndex - 1);
     }
 
     CFileStatus status;
@@ -318,9 +316,9 @@ void CStartModeDlg::OnSelchangeRecentlist() {
 }
 
 /***************************************************************************/
-// CStartModeDlg::OnHelpStartMode Call Start Mode help
+// CDlgStartMode::OnHelpStartMode Call Start Mode help
 /***************************************************************************/
-void CStartModeDlg::OnHelpStartMode() {
+void CDlgStartMode::OnHelpStartMode() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Start_Mode.htm";

@@ -518,9 +518,11 @@ BOOL CSegmentSelection::SetSelectedAnnotationString(CSaView * pView, CSaString &
                 if (bCheck) {
                     pDoc->CheckPoint();
                 }
-                pDoc->SetModifiedFlag(TRUE); // document has been modified
-                pDoc->SetTransModifiedFlag(TRUE); // transcription has been modified
-                pSegment->Insert(nInsertAt, szString, true, m_dwStart,m_dwDuration);
+				// document has been modified
+                pDoc->SetModifiedFlag(TRUE); 
+				// transcription has been modified
+                pDoc->SetTransModifiedFlag(TRUE); 
+                pSegment->Insert( nInsertAt, szString, true, m_dwStart,m_dwDuration);
                 pView->ChangeAnnotationSelection(pSegment, nInsertAt);
             }
         }

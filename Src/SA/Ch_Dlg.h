@@ -170,7 +170,7 @@ public:
     static BOOL m_bPlay[kPlayButtons];
 
 private:
-    CButton   wndPlayButton[kPlayButtons];
+    CButton wndPlayButton[kPlayButtons];
 
     // Operations
 public:

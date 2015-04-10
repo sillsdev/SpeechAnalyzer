@@ -469,7 +469,8 @@ void CDlgRecorder::SetRecorderMode(EMode mode) {
 // to write.
 /***************************************************************************/
 BOOL CDlgRecorder::CreateTempFile() {
-    // create the temporary file
+    
+	// create the temporary file
     FileUtils::GetTempFileName(_T("WAV"), m_szFileName, _countof(m_szFileName));
     // create and open the file
     CSaApp * pApp = (CSaApp *)AfxGetApp();

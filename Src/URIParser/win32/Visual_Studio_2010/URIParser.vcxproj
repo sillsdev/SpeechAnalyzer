@@ -65,6 +65,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Lib />
   </ItemDefinitionGroup>

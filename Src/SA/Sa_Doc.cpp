@@ -215,7 +215,7 @@ sabLoaded(false) {
     m_apSegments[PHONETIC] = new CPhoneticSegment(PHONETIC);            // create phonetic segment object
     m_apSegments[TONE] = new CToneSegment(TONE,PHONETIC);               // create tone segment object
     m_apSegments[PHONEMIC] = new CPhonemicSegment(PHONEMIC,PHONETIC);   // create phonemic segment object
-    m_apSegments[ORTHO] = new COrthoSegment(ORTHO,PHONETIC);            // create orthographic segment object
+    m_apSegments[ORTHO] = new COrthographicSegment(ORTHO,PHONETIC);            // create orthographic segment object
     m_apSegments[GLOSS] = new CGlossSegment(GLOSS,PHONETIC);            // create gloss segment object
     m_apSegments[GLOSS_NAT] = new CGlossNatSegment(GLOSS_NAT,GLOSS);    // create gloss nat. segment object
     m_apSegments[REFERENCE] = new CReferenceSegment(REFERENCE,GLOSS);
@@ -810,7 +810,10 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
     // if the return value is false, the file is not in an acceptable format
     if (!IsStandardWaveFormat(wave_file_name.c_str())) {
         // tell the user what's going on!
-        AfxMessageBox(IDS_SUPPORT_WAVE_COPY, MB_OK|MB_ICONWARNING,0);
+		CSaApp * pApp = (CSaApp*)AfxGetApp();
+		if (!pApp->IsAudioSync()) {
+			AfxMessageBox(IDS_SUPPORT_WAVE_COPY, MB_OK|MB_ICONWARNING,0);
+		}
         // convert to wave will select or merge the channels.
         // the output will be a single channel file
         m_bUsingTempFile = true;
@@ -1930,8 +1933,10 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 					}
 					oldFile = FileUtils::ReplaceExtension( (LPCTSTR)oldFile, L".wav").c_str();
 					// need to save copy (return value is destroyed)
-					CString defaultDir = pApp->DefaultDir();
-					CDlgSaveAsOptions dlg(_T("wav"), oldFile, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, false, (GetNumChannels()!=1));
+					CString defaultDir = pApp->GetDefaultDir();
+					CString extension = _T("wav");
+					CString filter = _T("WAV Files (*.wav)|*.wav||");
+					CDlgSaveAsOptions dlg( extension, oldFile, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, filter, NULL, false, (GetNumChannels()!=1));
 					if (dlg.DoModal()!=IDOK) {
 						return FALSE;
 					}
@@ -4911,10 +4916,13 @@ BOOL CSaDoc::DoFileSave() {
             fileName = fileName.Trim();
         }
 
-        CFileDialog dlg(FALSE, _T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"));
+		CString extension = _T("wav");
+		CString filter = _T("WAV Files (*.wav)|*.wav||");
+        CFileDialog dlg( FALSE, extension, fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, filter);
 
-        CSaString szDefault = static_cast<CSaApp *>(AfxGetApp())->DefaultDir(); // need to save copy (return value is destroyed)
-        dlg.m_ofn.lpstrInitialDir = szDefault;
+		CSaApp * pApp = (CSaApp*)AfxGetApp();
+		CString defaultDir =pApp->GetDefaultDir();
+        dlg.m_ofn.lpstrInitialDir = defaultDir;
 
         if (dlg.DoModal()!=IDOK) {
             return FALSE;
@@ -6320,7 +6328,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
             nStringIndex = 0;
             nGlossIndex = 0;
             nWordIndex = 0;
-            COrthoSegment * pOrtho = (COrthoSegment *)GetSegment(ORTHO);
+            COrthographicSegment * pOrtho = (COrthographicSegment *)GetSegment(ORTHO);
             pTable = GetFont(ORTHO);
             pOrtho->DeleteContents(); // Delete contents and reinsert from scratch
 
@@ -6499,7 +6507,7 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td) {
     CGlossNatSegment * pGlossNat = GetGlossNatSegment();
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetSegment(PHONETIC);
     CPhonemicSegment * pPhonemic = (CPhonemicSegment *)GetSegment(PHONEMIC);
-    COrthoSegment * pOrthographic = (COrthoSegment *)GetSegment(ORTHO);
+    COrthographicSegment * pOrthographic = (COrthographicSegment *)GetSegment(ORTHO);
 
     if (pReference->GetOffsetSize()==0) {
         AfxMessageBox(IDS_ERROR_TAT_NO_REFERENCE,MB_OK|MB_ICONEXCLAMATION,0);
@@ -8486,7 +8494,7 @@ void CSaDoc::NormalizePhoneticDependencies() {
 
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetSegment(PHONETIC);
     CPhonemicSegment * pPhonemic = (CPhonemicSegment *)GetSegment(PHONEMIC);
-    COrthoSegment * pOrtho = (COrthoSegment *)GetSegment(ORTHO);
+    COrthographicSegment * pOrtho = (COrthographicSegment *)GetSegment(ORTHO);
     CToneSegment * pTone = (CToneSegment *)GetSegment(TONE);
 
     for (int i=0; i<pPhonetic->GetOffsetSize(); i++) {
@@ -8517,6 +8525,9 @@ void CSaDoc::DeselectAll() {
     }
 }
 
+/**
+* Normal method called during 'import SAB menu item
+*/
 void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename) {
 
 	CheckPoint();
@@ -8711,11 +8722,6 @@ void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename) {
 		while (gnit!=gnend) {
 			// insert gloss
 			CString text = (*gnit).Trim();
-			if (text.GetLength()==0) {
-				text = WORD_DELIMITER;
-			} else if ((text[0]!=WORD_DELIMITER)&&(text[0]!=TEXT_DELIMITER)) {
-				text.Insert(0,WORD_DELIMITER);
-			}
 			pGlossNat->SetText(i,text);
 			gnit++;
 			// insert reference
@@ -8725,6 +8731,175 @@ void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename) {
 			}
 			i++;
 			if (i>limit) break;
+		}
+	}
+}
+
+/**
+* Called during AS startup
+*/
+void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
+
+	if ((!autoSegment)&&(!loadData)) return;
+
+	CheckPoint();
+	// create the backup SAB file
+	// look for and copy the .sab file
+	// if it's the same, just leave the sab file alone
+    wstring oldFile;
+	if (!IsTempWaveEmpty()) {
+		oldFile = GetTempWave();
+    } else {
+        oldFile = GetPathName();
+    }
+	wstring to = FileUtils::ReplaceExtension(oldFile.c_str(),L".sab");
+	FileUtils::Copy(filename,to.c_str());
+
+	// auto add reference numbers
+    CTranscriptionData td;
+
+    CFileEncodingHelper feh(filename);
+    if (!feh.CheckEncoding(true)) {
+        return;
+    }
+
+    wistringstream stream;
+    if (!feh.ConvertFileToUTF16(stream)) {
+		return;
+    }
+
+    if (!ImportTranscription(stream,TRUE,TRUE,FALSE,FALSE,FALSE,td,true,false)) {
+		ErrorMessage(IDS_ERROR_SAB_NO_IMPORT);
+        return;
+    }
+
+    CString ref = td.m_szPrimary;
+	MarkerList gl = td.GetMarkerList(GLOSS);
+	MarkerList gn = td.GetMarkerList(GLOSS_NAT);
+    TranscriptionDataMap & map = td.m_TranscriptionData;
+    MarkerList::iterator rit = map[ref].begin();
+    MarkerList::iterator rend = map[ref].end();
+    MarkerList::iterator glit = gl.begin();
+    MarkerList::iterator glend = gl.end();
+    MarkerList::iterator gnit = gn.begin();
+    MarkerList::iterator gnend = gn.end();
+
+	// is the incoming data gl or gn?
+	bool usingGL = false;
+	while (glit!=glend) {
+		CString text = (*glit).Trim();
+		glit++;
+		if (text.GetLength()==0) continue;
+		if ((text.GetLength()==1)&&((text[0]==WORD_DELIMITER)||(text[0]==TEXT_DELIMITER))) continue;
+		usingGL = true;
+		break;
+	}
+
+	if (autoSegment) {
+		// delete segments for everything
+		DeleteSegmentContents(PHONETIC);
+		DeleteSegmentContents(PHONEMIC);
+		DeleteSegmentContents(ORTHO);
+		DeleteSegmentContents(TONE);
+		DeleteSegmentContents(GLOSS);
+		DeleteSegmentContents(GLOSS_NAT);
+		DeleteSegmentContents(REFERENCE);
+	}
+
+	// verify ref and gloss segments are empty
+	CReferenceSegment * pRef = (CReferenceSegment*)GetSegment(REFERENCE);
+	CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
+	CGlossNatSegment * pGlossNat = (CGlossNatSegment*)GetSegment(GLOSS_NAT);
+
+    // get reference to view
+    POSITION pos = GetFirstViewPosition();
+    CSaView & view = (CSaView &)*GetNextView(pos);
+
+    CGraphWnd * pGraph = view.GraphIDtoPtr(IDD_RAWDATA);
+    if (pGraph!=NULL) {
+		pGraph->ShowAnnotation(PHONETIC,TRUE);
+		pGraph->ShowAnnotation(REFERENCE,TRUE);
+		if (usingGL) {
+			pGraph->ShowAnnotation(GLOSS,TRUE);
+			pGraph->ShowAnnotation(GLOSS_NAT,FALSE);
+		} else {
+			pGraph->ShowAnnotation(GLOSS,FALSE);
+			pGraph->ShowAnnotation(GLOSS_NAT,TRUE);
+		}
+		view.RefreshGraphs(TRUE,TRUE,TRUE);
+	}
+
+	if (autoSegment) {
+		DWORD goal = (usingGL)?gl.size():gn.size();
+		if (!AutoSegment( view, goal)) {
+			view.RefreshGraphs(TRUE,TRUE,TRUE);
+			return;
+		}
+	}
+
+	view.RefreshGraphs(TRUE,TRUE,TRUE);
+
+	if (loadData) {
+
+		CheckPoint();
+
+		// add reference segments for each Gloss Segment
+		pRef->DeleteContents();
+		pGlossNat->DeleteContents();
+		for (int i=0;i<pGloss->GetOffsetSize();i++) {
+			DWORD offset = pGloss->GetOffset(i);
+			DWORD duration = pGloss->GetDuration(i);
+			pRef->Append(L"",false,offset,duration);
+			pGlossNat->Append(L"",false,offset,duration);
+		}
+
+		// reset for resue
+		glit = gl.begin();
+
+		if (usingGL) {
+			DWORD limit = pGloss->GetOffsetSize()-1;
+			int i=0;
+			while (glit!=glend) {
+				// insert gloss
+				CString text = (*glit).Trim();
+				if (text.GetLength()==0) {
+					text = WORD_DELIMITER;
+				} else if ((text[0]!=WORD_DELIMITER)&&(text[0]!=TEXT_DELIMITER)) {
+					text.Insert(0,WORD_DELIMITER);
+				}
+				DWORD offset = pGloss->GetOffset(i);
+				DWORD duration = pGloss->GetDuration(i);
+				TRACE(L"Setting gloss %d at %d %d\n",i,offset,duration);
+				pGloss->SetText(i,text);
+				glit++;
+				// insert reference
+				if (rit!=rend) {
+					DWORD offset = pRef->GetOffset(i);
+					DWORD duration = pRef->GetDuration(i);
+					TRACE(L"Setting ref %d with %s at %d %d\n",i,(LPCTSTR)*rit,offset,duration);
+					pRef->SetText(i,*rit);
+					rit++;
+				}
+				i++;
+				if (i>limit) break;
+			}
+		} else {
+			// using gloss national
+			DWORD limit = pGlossNat->GetOffsetSize()-1;
+			int i=0;
+			while (gnit!=gnend) {
+				// insert gloss
+				CString text = (*gnit).Trim();
+				pGlossNat->SetText(i,text);
+				gnit++;
+				// insert reference
+				if (rit!=rend) {
+					pRef->SetText(i,*rit);
+					rit++;
+				}
+				i++;
+				if (i>limit) break;
+			}
 		}
 	}
 }

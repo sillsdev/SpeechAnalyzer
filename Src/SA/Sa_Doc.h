@@ -356,6 +356,9 @@ public:
     void MoveDataRight(DWORD offset);
 	void DeselectAll();
 	void ImportSAB( CSaView & view, LPCTSTR filename);
+	void ImportSAB( LPCTSTR filename, bool segmentAudio, bool loadData);
+	void SegmentAudio( );
+	void LoadData( );
 
 	void AdjustZero();
 	int GetZero();

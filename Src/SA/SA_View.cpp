@@ -608,11 +608,11 @@ CSaView & CSaView::operator=(const CSaView & right) {
     Clear();
 	PartialCopy(right);
 	m_restartPageOptions = right.m_restartPageOptions;
-	m_pPageLayout = new CPrintOptionsDlg(right.m_pPageLayout);
+	m_pPageLayout = new CDlgPrintOptions(right.m_pPageLayout);
 	m_pFocusedGraph = NULL; // no graph focused
 	m_pCDibForPrint = NULL;
 	m_pPgLayoutBackup = NULL;
-	m_pPickOverlay = new CPickOverlayDlg;
+	m_pPickOverlay = new CDlgPickOver;
 	m_z = 0;
 	m_WeJustReadTheProperties = FALSE;
 	m_pDocument = NULL;
@@ -643,7 +643,7 @@ void CSaView::Init() {
 
     m_pStopwatch = NULL;
     m_restartPageOptions = FALSE;
-    m_pPageLayout = new CPrintOptionsDlg();
+    m_pPageLayout = new CDlgPrintOptions();
 
     //********************************************************
     // 09/25/2000 - DDO
@@ -678,7 +678,7 @@ void CSaView::Init() {
         }
     }
     m_nCursorAlignment = MainFrame()->GetCursorAlignment();
-	m_bTranscriptionBoundaries = (pApp->IsAudioSync())?TRUE:FALSE;
+	m_bTranscriptionBoundaries = TRUE;
     m_bSegmentBoundaries = TRUE;
     m_bUpdateBoundaries = TRUE;
     m_bDrawStyleLine = TRUE;
@@ -693,7 +693,7 @@ void CSaView::Init() {
     m_bPrintPreviewInProgress = FALSE;
     m_pCDibForPrint = NULL;
     m_pPgLayoutBackup = NULL;
-    m_pPickOverlay = new CPickOverlayDlg;
+    m_pPickOverlay = new CDlgPickOver;
     m_eInitialShowCmd = SW_SHOWNORMAL;
     m_z = 0;
     m_WeJustReadTheProperties = FALSE;
@@ -2928,16 +2928,16 @@ void CSaView::OnPopupgraphStyleLine() {
 /***************************************************************************/
 void CSaView::OnUpdatePopupgraphStyleLine(CCmdUI * pCmdUI) {
     pCmdUI->Enable(m_pFocusedGraph // enable if focused graph
-                   && (GetDocument()->GetDataSize() != 0) // enable if data is available
-                   && (m_nFocusedID != IDD_SPECTROGRAM) // enable if graph is not this type
-                   && (m_nFocusedID != IDD_SNAPSHOT) // enable if graph is not this type
-                   && (m_nFocusedID != IDD_3D) // enable if graph is not this type
-                   && (m_nFocusedID != IDD_F1F2) // enable if graph is not this type
-                   && (m_nFocusedID != IDD_F2F1) // enable if graph is not this type
-                   && (m_nFocusedID != IDD_F2F1F1) // enable if graph is not this type
-                   && (m_nFocusedID != IDD_SDP_A) // enable if graph is not this type
-                   && (m_nFocusedID != IDD_SDP_B) // enable if graph is not this type
-                   && (m_nFocusedID != IDD_INVSDP)); // enable if graph is not this type
+                   && (GetDocument()->GetDataSize() != 0)	// enable if data is available
+                   && (m_nFocusedID != IDD_SPECTROGRAM)		// enable if graph is not this type
+                   && (m_nFocusedID != IDD_SNAPSHOT)		// enable if graph is not this type
+                   && (m_nFocusedID != IDD_3D)				// enable if graph is not this type
+                   && (m_nFocusedID != IDD_F1F2)			// enable if graph is not this type
+                   && (m_nFocusedID != IDD_F2F1)			// enable if graph is not this type
+                   && (m_nFocusedID != IDD_F2F1F1)			// enable if graph is not this type
+                   && (m_nFocusedID != IDD_SDP_A)			// enable if graph is not this type
+                   && (m_nFocusedID != IDD_SDP_B)			// enable if graph is not this type
+                   && (m_nFocusedID != IDD_INVSDP));		// enable if graph is not this type
 
     if (m_pFocusedGraph)
         pCmdUI->SetCheck((m_pFocusedGraph->HaveDrawingStyleLine() && (m_nFocusedID != IDD_RAWDATA))
@@ -3084,7 +3084,6 @@ void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDea
             pStat->SetPaneText(ID_STATUSPANE_4, _T(""));
         }
     }
-
 }
 
 /***************************************************************************/
@@ -3357,7 +3356,9 @@ void CSaView::OnPopupgraphXScale() {
 // CSaView::OnUpdatePopupgraphXScale Menu update
 /***************************************************************************/
 void CSaView::OnUpdatePopupgraphXScale(CCmdUI * pCmdUI) {
-    BOOL bEnable = m_pFocusedGraph && GetDocument()->GetDataSize() != 0 && (m_pFocusedGraph->HaveXScale() || !m_pFocusedGraph->DisableXScale()) && m_nFocusedID != IDD_TWC;
+    BOOL bEnable = ((m_pFocusedGraph && GetDocument()->GetDataSize() != 0) && 
+					((m_pFocusedGraph->HaveXScale()) || (!m_pFocusedGraph->DisableXScale())) && 
+					(m_nFocusedID != IDD_TWC));
     pCmdUI->Enable(bEnable);
     if (m_pFocusedGraph) {
         pCmdUI->SetCheck(m_pFocusedGraph->HaveXScale());    // check if graph has x-scale window
@@ -4289,7 +4290,7 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
     int  i  = 0;
     UINT id = 0;
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-    UINT OpenAsID = pApp->GetOpenAsID();
+    UINT openAsID = pApp->GetOpenAsID();
 
     memset(&m_apGraphs[0],  0, sizeof(CGraphWnd *) * MAX_GRAPHS_NUMBER);
     memset(&m_anGraphID[0], 0, sizeof(UINT) * MAX_GRAPHS_NUMBER);
@@ -4301,7 +4302,7 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
             // If we're suppposed to create visible graphs then create
             // the appropriate graph (i.e. a position view or other).
             //*********************************************************
-            if (bCreateGraphs && OpenAsID == ID_FILE_OPEN) {
+            if (bCreateGraphs && openAsID == ID_FILE_OPEN) {
                 if (id == IDD_RECORDING) {
                     m_apGraphs[i] = CreateRecGraph(NULL, &obs);
                     m_anGraphID[i] = IDD_RECORDING;
@@ -4343,14 +4344,9 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
         }
     }
 
-
-
-    //************************************************************
-    // RLJ 06/06/2000 - If OpenAsID = "Phonetic/Music Analysis",
-    //                  then create corresponding graphs.
-    //************************************************************
-    if (bCreateGraphs && OpenAsID != ID_FILE_OPEN) {
-        CreateOpenAsGraphs(OpenAsID);
+    // RLJ 06/06/2000 - If OpenAsID = "Phonetic/Music Analysis", then create corresponding graphs.
+    if ((bCreateGraphs) && (openAsID != ID_FILE_OPEN)) {
+        CreateOpenAsGraphs(openAsID);
     }
 
     return TRUE;
@@ -4363,26 +4359,20 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
 BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView) {
     
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int OpenAsID = pApp->GetOpenAsID();
-    if (OpenAsID == ID_FILE_OPEN) {
+	int openAsID = pApp->GetOpenAsID();
+    if (openAsID == ID_FILE_OPEN) {
         for (int i = 0, nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-            if (pTemplateView.m_apGraphs[nLoop])
-                CreateGraph(i, pTemplateView.m_anGraphID[nLoop], CREATE_FROMGRAPH,
-                            NULL, pTemplateView.m_apGraphs[nLoop]);
-
+            if (pTemplateView.m_apGraphs[nLoop]) {
+                CreateGraph(i, pTemplateView.m_anGraphID[nLoop], CREATE_FROMGRAPH, NULL, pTemplateView.m_apGraphs[nLoop]);
+			}
             if (m_apGraphs[i]!=NULL) {
                 i++;
             }
         }
+    } else {
+	    // RLJ 06/06/2000 - If openAsID = "Phonetic/Music Analysis", then create corresponding graphs.
+        CreateOpenAsGraphs(openAsID);
     }
-    /*****************************************************************/
-    // RLJ 06/06/2000 - If OpenAsID = "Phonetic/Music Analysis",
-    //                  then create corresponding graphs.
-    /*****************************************************************/
-    else {
-        CreateOpenAsGraphs(OpenAsID);
-    }
-
     return TRUE;
 }
 
@@ -4718,10 +4708,10 @@ int CSaView::GetGraphIndexForIDD(UINT nIDD) {
 // CSaView::CreateOpenAsGraphs Create graphs for "File-->Open As"
 // Create graphs for "File-->Open As" (Phonetic/Music Analysis)
 /***************************************************************************/
-void CSaView::CreateOpenAsGraphs(UINT OpenAsID) {
+void CSaView::CreateOpenAsGraphs(UINT openAsID) {
 	// RLJ 07/28/2000
     DeleteGraphs(); 
-    switch (OpenAsID) {
+    switch (openAsID) {
     case ID_FILE_OPENAS_MUSICANALYSIS:
         // Open *.Wav & display Raw Waveform, Melogram, and Tonal Weighting Chart -- OpenMA
         m_nLayout = ID_LAYOUT_2A; // Use default layout.  // RLJ 07/28/2000
@@ -6146,7 +6136,7 @@ BOOL CSaView::OnPreparePrinting(CPrintInfo * pInfo) {
         int pages = CalculateHiResPrintPages();
 
         if (pages == -1) {
-            CPrintOptionsDlg * pPgLayoutBckup = new CPrintOptionsDlg(m_pPageLayout);
+            CDlgPrintOptions * pPgLayoutBckup = new CDlgPrintOptions(m_pPageLayout);
 
             // error - bring up the dialog to fix
             // inconsistantcy between number of graphs
@@ -6237,7 +6227,7 @@ void CSaView::OnPrintPageSetup(void) {
     if (m_restartPageOptions) {
         m_restartPageOptions = FALSE;
     } else {
-        m_pPgLayoutBackup = new CPrintOptionsDlg(m_pPageLayout);
+        m_pPgLayoutBackup = new CDlgPrintOptions(m_pPageLayout);
     }
 
     m_pPageLayout->SetGraphsPtr(m_apGraphs);
@@ -8322,7 +8312,7 @@ void CSaView::OnEditAddPhonetic() {
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetAnnotation(PHONETIC);
     CPhonemicSegment * pPhonemic = (CPhonemicSegment *)GetAnnotation(PHONEMIC);
-    COrthoSegment * pOrtho = (COrthoSegment *)GetAnnotation(ORTHO);
+    COrthographicSegment * pOrtho = (COrthographicSegment *)GetAnnotation(ORTHO);
     CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
     CGlossNatSegment * pGlossNat = (CGlossNatSegment *)GetAnnotation(GLOSS_NAT);
     CReferenceSegment * pReference = (CReferenceSegment *) GetAnnotation(REFERENCE);
@@ -11191,9 +11181,11 @@ void CSaView::OnFileSaveAs() {
 		}
 		path = FileUtils::ReplaceExtension( (LPCTSTR)path, L".wav").c_str();
 
-		CString defaultDir = pApp->DefaultDir();
+		CString defaultDir = pApp->GetDefaultDir();
 		oldFile = path;
-		CDlgSaveAsOptions dlg(_T("wav"), path, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, true, stereo);
+		CString extension = _T("wav");
+		CString filter = _T("WAV Files (*.wav)|*.wav||");
+		CDlgSaveAsOptions dlg( extension, path, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, filter, NULL, true, stereo);
 		if (dlg.DoModal()!=IDOK) {
 			return;
 		}

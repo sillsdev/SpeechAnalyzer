@@ -1,13 +1,13 @@
 /////////////////////////////////////////////////////////////////////////////
 // sa_start.h:
-// Interface of the CStartModeDlg (dialog) class.
+// Interface of the CDlgStartMode (dialog) class.
 //
 // Author: Urs Ruchti
 // copyright 2000 JAARS Inc. SIL
 //
 // Revision History
 //   05/16/2000 - Original
-//       RLJ Created so that CStartModeDlg could be moved here, to reduce
+//       RLJ Created so that CDlgStartMode could be moved here, to reduce
 //           Sa_dlg.OBJ size enough to allow LINK/DEBUG
 //
 /////////////////////////////////////////////////////////////////////////////
@@ -15,18 +15,18 @@
 #define _SA_START_H
 
 /////////////////////////////////////////////////////////////////////////////
-// CStartModeDlg dialog
+// CDlgStartMode dialog
 // RLJ - April 18, 2000
 
 class CSaApp;
 
-class CStartModeDlg : public CDialog {
+class CDlgStartMode : public CDialog {
     // Construction
 public:
-    CStartModeDlg(CWnd * pParent = NULL); // standard constructor
+    CDlgStartMode(CWnd * pParent = NULL); // standard constructor
 
     // Dialog Data
-    //{{AFX_DATA(CStartModeDlg)
+    //{{AFX_DATA(CDlgStartMode)
     enum { IDD = IDD_START_MODE };
     CListBox  m_lbRecentFiles;
     BOOL  m_nDontShowAgain;

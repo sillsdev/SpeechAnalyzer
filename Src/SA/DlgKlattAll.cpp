@@ -1594,7 +1594,8 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
     CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
 
     BOOL bTempTranscription = FALSE;
-    if (pPhonetic->IsEmpty()) { // no annotations
+    if (pPhonetic->IsEmpty()) { 
+		// no annotations
         CSaString szTranscription = " ";
         pPhonetic->Insert(0, szTranscription, false, 0, pDoc->GetDataSize());
         bTempTranscription = TRUE;

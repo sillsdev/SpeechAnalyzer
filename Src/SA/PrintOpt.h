@@ -9,14 +9,14 @@
 #ifndef _PRINTOPT_
 #define _PRINTOPT_
 
-class CPrintOptionsDlg : public CDialog {
+class CDlgPrintOptions : public CDialog {
 public:
     // Construction & initialization
-    CPrintOptionsDlg(CWnd * pParent = NULL); // standard constructor
-    CPrintOptionsDlg(const CPrintOptionsDlg & from);  // copy constructor
-    CPrintOptionsDlg & operator=(const CPrintOptionsDlg &); // assignment operator
+    CDlgPrintOptions(CWnd * pParent = NULL); // standard constructor
+    CDlgPrintOptions(const CDlgPrintOptions & from);  // copy constructor
+    CDlgPrintOptions & operator=(const CDlgPrintOptions &); // assignment operator
     void SetupGraphsList(void);
-    void CopyFrom(const CPrintOptionsDlg & from);
+    void CopyFrom(const CDlgPrintOptions & from);
 
     // getters
     BOOL IsGraphSelected(int nGraph) {

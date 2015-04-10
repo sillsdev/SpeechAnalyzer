@@ -103,7 +103,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\include;..\uriparser\include;..\..\output\release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
@@ -145,6 +145,7 @@
     <ClCompile Include="DependentTextSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
+    <ClCompile Include="DlgASStart.cpp" />
     <ClCompile Include="DlgExportFW.cpp" />
     <ClCompile Include="DlgExportFWResult.cpp" />
     <ClCompile Include="DlgExportLift.cpp" />
@@ -379,6 +380,7 @@
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="array_ptr.h" />
+    <ClInclude Include="DlgASStart.h" />
     <ClInclude Include="DlgAutoRecorder.h" />
     <ClInclude Include="AutoSave.h" />
     <ClInclude Include="ChildFrame.h" />

@@ -108,6 +108,7 @@
 #include <direct.h>
 #include "DlgHelpSFMMarkers.h"
 #include "Utils.h"
+#include "DlgASStart.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -1246,6 +1247,7 @@ void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath) {
 // not only there, but also in FileOpen and OnFileCreate (I THINK).
 /***************************************************************************/
 CDocument * CSaApp::OpenBlankView(bool bWithGraphs) {
+
     // create new MDI child, sa type
     POSITION posTemplate = GetFirstDocTemplatePosition();
     if (!GetNextDocTemplate(posTemplate)) {
@@ -1406,40 +1408,62 @@ void CSaApp::OnFileRecord() {
 //   MOST OF THIS CODE WAS COPIED FROM OnFileRecord
 /***************************************************************************/
 void CSaApp::FileOpen() {
-    int id = GetOpenAsID();
-    CDocument * pDoc = OpenBlankView(true);                 // uses auto naming
 
-    CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
-    ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   // give editor a chance to close
+	if (IsAudioSync()) {
+		CDlgASStart dlg;
+		if (dlg.DoModal()==IDOK) {
+			SetOpenAsID(ID_FILE_OPENAS_PHONETICANALYSIS);
+			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
+			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
+				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
+				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData);
+				pDoc2->DoFileSave();
+			}
+		}
+	} else {
+	    int id = GetOpenAsID();
+		// uses auto naming
+		CDocument * pDoc = OpenBlankView(true);                 
 
-    SetOpenAsID(id);
+		CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
+		ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+		// give editor a chance to close
+		pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
 
-    CDlgFileOpen dlgFile(_T("wav"),
-                         _T("*.wav"),
-                         OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
-                         _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Files (*.saxml) |*.saxml|Speech Analyzer Workbench Files (*.wb) |*.wb|ELAN Files (*.eaf)|*.eaf||"));
+		SetOpenAsID(id);
 
-    CSaString szDefault = DefaultDir(); // need to save copy (return value is destroyed)
-    dlgFile.m_ofn.lpstrInitialDir = szDefault;
+		CString extension;
+		CString filename;
+		CString filter;
+		if (IsAudioSync()) {
+			extension = _T("mp3");
+			filename = _T("*.mp3");
+			filter = _T("MP3 Files (*.mp3)|*.mp3|WAV Files (*.wav)|*.wav|WMA Files (*.wma )|*.wma|Speech Analyzer Files (*.saxml) |*.saxml||");
+		} else {
+			extension = _T("wav");
+			filename = _T("*.wav");
+			filter = _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Files (*.saxml) |*.saxml|Speech Analyzer Workbench Files (*.wb) |*.wb|ELAN Files (*.eaf)|*.eaf||");
+		}
+		CDlgFileOpen dlg( extension, filename, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, filter);
+		CString defaultDir = GetDefaultDir();
+		dlg.m_ofn.lpstrInitialDir = defaultDir;
+		if (dlg.DoModal() == IDOK) {
+			OpenDocumentFile(dlg.GetPathName());
+		}
 
-    if (dlgFile.DoModal() == IDOK) {
-        OpenDocumentFile(dlgFile.GetPathName());
-    }
-
-    if (pDoc!=NULL) {
-        pDoc->OnCloseDocument();
-    }
+		if (pDoc!=NULL) {
+			pDoc->OnCloseDocument();
+		}
+	}
 }
 
-CSaString CSaApp::DefaultDir(CSaString * pFilename) const {
-    if (pFilename) {
+CSaString CSaApp::GetDefaultDir(CSaString * pFilename) const {
+    
+	if (pFilename) {
         CSaString szPath = *pFilename;
         int nFind = szPath.ReverseFind('\\');
-
         if (nFind != -1) {
             szPath = szPath.Left(nFind);
-
             CFileStatus status;
             if ((CFile::GetStatus(szPath, status)) &&
                     (status.m_attribute & CFile::directory)) {
@@ -1451,7 +1475,7 @@ CSaString CSaApp::DefaultDir(CSaString * pFilename) const {
     // prompt the user (with all document templates)
     CSaString workingDir;
     for (int i=0; i < _AFX_MRU_MAX_COUNT; i++) {
-        GetMRUFilePath(i,workingDir);
+        workingDir = GetMRUFilePath(i);
         if (workingDir.GetLength() > 0) {
             CSaString szPath = workingDir;
             int nFind = szPath.ReverseFind('\\');
@@ -1517,11 +1541,25 @@ void CSaApp::OnFileOpenMA() {
 // Added on 09/01/2000 by DDO
 /***************************************************************************/
 void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
+
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    CStartModeDlg StartDlg;
-    StartDlg.m_nDataMode = pMainWnd->GetStartDataMode();
-    StartDlg.m_bShowDontShowAgainOption = bAppIsStartingUp;
-    StartDlg.DoModal();
+	if (IsAudioSync()) {
+		CDlgASStart dlg;
+		if (dlg.DoModal()==IDOK) {
+			SetOpenAsID(ID_FILE_OPENAS_PHONETICANALYSIS);
+			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
+			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
+				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
+				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData);
+				pDoc2->DoFileSave();
+			}
+		}
+	} else {
+		CDlgStartMode dlg;
+		dlg.m_nDataMode = pMainWnd->GetStartDataMode();
+		dlg.m_bShowDontShowAgainOption = bAppIsStartingUp;
+		dlg.DoModal();
+	}
 }
 
 /***************************************************************************/
@@ -2386,14 +2424,16 @@ void CSaApp::CancelBatchMode() {
     }
 }
 
-void CSaApp::GetMRUFilePath(int i, CSaString & buffer) const {
-    buffer.Empty();
-    if (!m_pRecentFileList->GetSize()) { // no entries, need to load from registry, this is the MRU list
+CString CSaApp::GetMRUFilePath(int i) const {
+    CString result;
+	// no entries, need to load from registry, this is the MRU list
+    if (!m_pRecentFileList->GetSize()) { 
         m_pRecentFileList->ReadList();
     }
     if (i < m_pRecentFileList->GetSize()) {
-        buffer = (*m_pRecentFileList)[i];
+        result = (*m_pRecentFileList)[i];
     }
+	return result;
 }
 
 bool CSaApp::IsSAServer() const {
@@ -2710,19 +2750,19 @@ CDocument * CSaApp::GetWbDoc() {
     // return pointer to workbench document
     return m_pWbDoc;
 }
-void CSaApp::SetWbOpenOnExit(BOOL bOpen) {
-    m_bWbOpenOnExit = bOpen;
+void CSaApp::SetWbOpenOnExit(BOOL value) {
+    m_bWbOpenOnExit = value;
 }
 UINT CSaApp::GetOpenAsID() {
     // return m_OpenAsID
     return m_OpenAsID;
 }
-void CSaApp::SetOpenAsID(UINT OpenAsID) {
+void CSaApp::SetOpenAsID(UINT value) {
     // set m_OpenAsID
-    m_OpenAsID = OpenAsID;
+    m_OpenAsID = value;
 }
-void CSaApp::SetLastClipboardPath(LPCTSTR szPath) {
-    m_szLastClipboardPath = szPath;
+void CSaApp::SetLastClipboardPath(LPCTSTR value) {
+    m_szLastClipboardPath = value;
 }
 
 LPCTSTR CSaApp::GetLastClipboardPath() {

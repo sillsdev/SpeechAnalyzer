@@ -20,11 +20,11 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CPickOverlayDlg dialog
+// CDlgPickOver dialog
 
 
-CPickOverlayDlg::CPickOverlayDlg(CWnd * pParent /*=NULL*/)
-    : CDialog(CPickOverlayDlg::IDD, pParent) {
+CDlgPickOver::CDlgPickOver(CWnd * pParent /*=NULL*/)
+    : CDialog(CDlgPickOver::IDD, pParent) {
     for (int i=0; i<MAX_LIST_SIZE; i++) {
         m_bIsItemSelected[i] = FALSE;
     }
@@ -36,12 +36,12 @@ CPickOverlayDlg::CPickOverlayDlg(CWnd * pParent /*=NULL*/)
 
 }
 
-void CPickOverlayDlg::DoDataExchange(CDataExchange * pDX) {
+void CDlgPickOver::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_SELECT_GRAPHS2PRINT,  m_SelectItems);
 }
 
-BEGIN_MESSAGE_MAP(CPickOverlayDlg, CDialog)
+BEGIN_MESSAGE_MAP(CDlgPickOver, CDialog)
     ON_BN_CLICKED(IDC_CLEARALLGRAPHS, OnClearallgraphs)
     ON_BN_CLICKED(IDC_SELECTALLGRAPHS, OnSelectallgraphs)
     ON_COMMAND(IDHELP, OnHelpPickOverlay)
@@ -49,24 +49,24 @@ END_MESSAGE_MAP()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CPickOverlayDlg message handlers
+// CDlgPickOver message handlers
 
-void CPickOverlayDlg::OnClearallgraphs() {
+void CDlgPickOver::OnClearallgraphs() {
     for (int i=0; i< m_SelectItems.GetCount(); i++) {
         m_SelectItems.SetSel(i,FALSE);
     }
 }
 
-void CPickOverlayDlg::OnSelectallgraphs() {
+void CDlgPickOver::OnSelectallgraphs() {
     for (int i=0; i< m_SelectItems.GetCount(); i++) {
         m_SelectItems.SetSel(i,TRUE);
     }
 }
 
 /***************************************************************************/
-// CPickOverlayDlg::OnHelpPickOverlay Call Overlay help
+// CDlgPickOver::OnHelpPickOverlay Call Overlay help
 /***************************************************************************/
-void CPickOverlayDlg::OnHelpPickOverlay() {
+void CDlgPickOver::OnHelpPickOverlay() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Graphs/Overlay.htm";
@@ -74,9 +74,9 @@ void CPickOverlayDlg::OnHelpPickOverlay() {
 }
 
 /***************************************************************************/
-// CPickOverlayDlg::SetupItemsList
+// CDlgPickOver::SetupItemsList
 /***************************************************************************/
-void CPickOverlayDlg::SetupItemsList() {
+void CDlgPickOver::SetupItemsList() {
     if (m_Mode_AddTrueRemoveFalse) {
         for (int i=0; i < m_numItems; i++) {
             ASSERT(m_apGraphs[i] && CGraphWnd::IsMergeableGraph(m_apGraphs[i]));
@@ -118,9 +118,9 @@ void CPickOverlayDlg::SetupItemsList() {
 
 
 /***************************************************************************/
-// CPickOverlayDlg::OnOK
+// CDlgPickOver::OnOK
 /***************************************************************************/
-void CPickOverlayDlg::OnOK() {
+void CDlgPickOver::OnOK() {
     UpdateData(TRUE);
 
     m_NumItemsSelected = m_SelectItems.GetSelCount();
@@ -139,10 +139,10 @@ void CPickOverlayDlg::OnOK() {
 
 
 /***************************************************************************/
-// CPickOverlayDlg::OnInitDialog Dialog initialisation
+// CDlgPickOver::OnInitDialog Dialog initialisation
 // The dialog is centered over the main frame window.
 /***************************************************************************/
-BOOL CPickOverlayDlg::OnInitDialog() {
+BOOL CDlgPickOver::OnInitDialog() {
     CDialog::OnInitDialog();
 
     for (int i=0; i<MAX_LIST_SIZE; i++) {
@@ -161,14 +161,14 @@ BOOL CPickOverlayDlg::OnInitDialog() {
 }
 
 
-void CPickOverlayDlg::ResetGraphsPtr() {
+void CDlgPickOver::ResetGraphsPtr() {
     m_numItems = 0;
 }
 
 /***************************************************************************/
-// CPickOverlayDlg::SetGraphsPtr
+// CDlgPickOver::SetGraphsPtr
 /***************************************************************************/
-void CPickOverlayDlg::SetGraphsPtr(CGraphWnd * pGraphs[], CGraphWnd * pExceptGraph) {
+void CDlgPickOver::SetGraphsPtr(CGraphWnd * pGraphs[], CGraphWnd * pExceptGraph) {
     ASSERT(pExceptGraph);
     int i = 0;
     while ((i < MAX_GRAPHS_NUMBER) && (m_numItems < MAX_LIST_SIZE)) {
@@ -197,7 +197,7 @@ void CPickOverlayDlg::SetGraphsPtr(CGraphWnd * pGraphs[], CGraphWnd * pExceptGra
     m_Mode_AddTrueRemoveFalse = TRUE;
 }
 
-void CPickOverlayDlg::AddPlot(const CPlotWnd * pPlot, LPCTSTR szDoc) {
+void CDlgPickOver::AddPlot(const CPlotWnd * pPlot, LPCTSTR szDoc) {
     ASSERT(pPlot);
     ASSERT(m_numPlots < MAX_PLOTS);
     m_apPlot[m_numPlots] = pPlot;
@@ -207,11 +207,11 @@ void CPickOverlayDlg::AddPlot(const CPlotWnd * pPlot, LPCTSTR szDoc) {
     m_Mode_AddTrueRemoveFalse = FALSE;
 }
 
-UINT CPickOverlayDlg::GraphsCount(void) {
+UINT CDlgPickOver::GraphsCount(void) {
     return m_numItems;
 }
 
-CGraphWnd * CPickOverlayDlg::GetNextSelectedGraph(int & pos) {
+CGraphWnd * CDlgPickOver::GetNextSelectedGraph(int & pos) {
     CGraphWnd * pGraphRet = NULL;
     while ((!pGraphRet) && (pos < m_numItems)) {
         if (m_bIsItemSelected[pos]) {
@@ -223,7 +223,7 @@ CGraphWnd * CPickOverlayDlg::GetNextSelectedGraph(int & pos) {
     return pGraphRet;
 }
 
-void CPickOverlayDlg::ResetPlots() {
+void CDlgPickOver::ResetPlots() {
     for (int i=0; i<MAX_PLOTS; i++) {
         m_apPlot[i] = NULL;
         m_szDoc[i].Empty();
@@ -231,6 +231,6 @@ void CPickOverlayDlg::ResetPlots() {
     m_numPlots = 0;
 }
 
-const CPlotWnd * CPickOverlayDlg::GetPlot(int idx) {
+const CPlotWnd * CDlgPickOver::GetPlot(int idx) {
     return m_apPlot[idx];
 }

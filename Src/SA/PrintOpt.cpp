@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // printopt.cpp:
-// Implementation of the CPrintOptionsDlg class.
+// Implementation of the CDlgPrintOptions class.
 // This class manages the users page printing options using a dialog.
 // Author: Doug Eberman
 // copyright 1997 JAARS Inc. SIL
@@ -22,10 +22,10 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::CPrintOptionsDlg constructor
+// CDlgPrintOptions::CDlgPrintOptions constructor
 /***************************************************************************/
-CPrintOptionsDlg::CPrintOptionsDlg(CWnd * pParent /*=NULL*/)
-    : CDialog(CPrintOptionsDlg::IDD, pParent) {
+CDlgPrintOptions::CDlgPrintOptions(CWnd * pParent /*=NULL*/)
+    : CDialog(CDlgPrintOptions::IDD, pParent) {
     m_bFixedAspectR = TRUE;
     m_bUseSmallFonts = TRUE;
     m_IsLandscape = TRUE;
@@ -49,7 +49,7 @@ CPrintOptionsDlg::CPrintOptionsDlg(CWnd * pParent /*=NULL*/)
 
 
 
-void CPrintOptionsDlg::CopyFrom(const CPrintOptionsDlg & from) {
+void CDlgPrintOptions::CopyFrom(const CDlgPrintOptions & from) {
     m_bFixedAspectR = from.m_bFixedAspectR;
     m_bUseSmallFonts = from.m_bUseSmallFonts;
     m_IsLandscape = from.m_IsLandscape;
@@ -75,19 +75,19 @@ void CPrintOptionsDlg::CopyFrom(const CPrintOptionsDlg & from) {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::CPrintOptionsDlg copy constructor
+// CDlgPrintOptions::CDlgPrintOptions copy constructor
 /***************************************************************************/
-CPrintOptionsDlg::CPrintOptionsDlg(const CPrintOptionsDlg & from)
-    : CDialog(CPrintOptionsDlg::IDD, from.GetParent()) {
+CDlgPrintOptions::CDlgPrintOptions(const CDlgPrintOptions & from)
+    : CDialog(CDlgPrintOptions::IDD, from.GetParent()) {
     CopyFrom(from);
 }
 
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::CPrintOptionsDlg assignment operator
+// CDlgPrintOptions::CDlgPrintOptions assignment operator
 /***************************************************************************/
-CPrintOptionsDlg & CPrintOptionsDlg::operator=(const CPrintOptionsDlg & from) {
+CDlgPrintOptions & CDlgPrintOptions::operator=(const CDlgPrintOptions & from) {
     // RLJ 09/14/2000 Fails Debug assertion in VC++ 6.0 (presumably not in VC++ 1.52C)
     //  SetParent(from.GetParent());
     if (from.GetParentOwner()) {
@@ -103,10 +103,10 @@ CPrintOptionsDlg & CPrintOptionsDlg::operator=(const CPrintOptionsDlg & from) {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnInitDialog Dialog initialisation
+// CDlgPrintOptions::OnInitDialog Dialog initialisation
 // The dialog is centered over the main frame window.
 /***************************************************************************/
-BOOL CPrintOptionsDlg::OnInitDialog() {
+BOOL CDlgPrintOptions::OnInitDialog() {
     CDialog::OnInitDialog();
 
     m_bmpPort.AutoLoad(IDC_PORTBMP, this);
@@ -137,24 +137,24 @@ BOOL CPrintOptionsDlg::OnInitDialog() {
     return TRUE;
 }
 
-void CPrintOptionsDlg::ShowLandscapeBitmap(BOOL show) {
+void CDlgPrintOptions::ShowLandscapeBitmap(BOOL show) {
     GetDlgItem(IDC_PORTBMP)->ShowWindow(!show);
     GetDlgItem(IDC_LANDBMP)->ShowWindow(show);
 }
 
 /***************************************************************************/
-// CPrintOptionsDlg::SetGraphsPtr
+// CDlgPrintOptions::SetGraphsPtr
 /***************************************************************************/
-void CPrintOptionsDlg::SetGraphsPtr(CGraphWnd * pGraphs[]) {
+void CDlgPrintOptions::SetGraphsPtr(CGraphWnd * pGraphs[]) {
     for (int i=0; i < MAX_GRAPHS_NUMBER; i++) {
         m_apGraphs[i] = pGraphs[i];
     }
 }
 
 /***************************************************************************/
-// CPrintOptionsDlg::SetupGraphsList
+// CDlgPrintOptions::SetupGraphsList
 /***************************************************************************/
-void CPrintOptionsDlg::SetupGraphsList() {
+void CDlgPrintOptions::SetupGraphsList() {
     m_numGraphs = 0;
 
     for (int i=0; i < MAX_GRAPHS_NUMBER; i++) {
@@ -178,9 +178,9 @@ void CPrintOptionsDlg::SetupGraphsList() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::DoDataExchange
+// CDlgPrintOptions::DoDataExchange
 /***************************************************************************/
-void CPrintOptionsDlg::DoDataExchange(CDataExchange * pDX) {
+void CDlgPrintOptions::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Radio(pDX, IDC_SCREEN_SHOT, m_IsHiRes);
     DDX_Check(pDX, IDC_FIXED_PRINT_ASPECTR, m_bFixedAspectR);
@@ -193,9 +193,9 @@ void CPrintOptionsDlg::DoDataExchange(CDataExchange * pDX) {
 }
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnOK
+// CDlgPrintOptions::OnOK
 /***************************************************************************/
-void CPrintOptionsDlg::OnOK() {
+void CDlgPrintOptions::OnOK() {
     UpdateData(TRUE);
 
     m_NumRows = _ttoi(m_strNumRows);
@@ -241,9 +241,9 @@ void CPrintOptionsDlg::OnOK() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::EnableCustomLayout
+// CDlgPrintOptions::EnableCustomLayout
 /***************************************************************************/
-void CPrintOptionsDlg::EnableCustomLayout(BOOL enable) {
+void CDlgPrintOptions::EnableCustomLayout(BOOL enable) {
     GetDlgItem(IDC_PRINT_ROWS)->EnableWindow(enable);
     GetDlgItem(IDC_PRINT_COLS)->EnableWindow(enable);
     m_SpinRow.EnableWindow(enable);
@@ -253,9 +253,9 @@ void CPrintOptionsDlg::EnableCustomLayout(BOOL enable) {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::Message Map
+// CDlgPrintOptions::Message Map
 /***************************************************************************/
-BEGIN_MESSAGE_MAP(CPrintOptionsDlg, CDialog)
+BEGIN_MESSAGE_MAP(CDlgPrintOptions, CDialog)
     ON_BN_CLICKED(IDC_MORE, OnMore)
     ON_BN_CLICKED(IDC_USESCREENLAYOUT  , OnUseScreenLayout)
     ON_BN_CLICKED(IDC_ONEPERPAGE , OnPrintOnePerPage)
@@ -276,14 +276,14 @@ END_MESSAGE_MAP()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CPrintOptionsDlg message handlers
+// CDlgPrintOptions message handlers
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnMore - user clicked more/less button so
+// CDlgPrintOptions::OnMore - user clicked more/less button so
 //  expand/collapse window
 /***************************************************************************/
-void CPrintOptionsDlg::OnMore() {
+void CDlgPrintOptions::OnMore() {
     if (m_IsExpanded) {
         Collapse();
     } else {
@@ -294,9 +294,9 @@ void CPrintOptionsDlg::OnMore() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::Expand() - helper for OnMore()
+// CDlgPrintOptions::Expand() - helper for OnMore()
 /***************************************************************************/
-void CPrintOptionsDlg::Expand() {
+void CDlgPrintOptions::Expand() {
     CWnd * pWnd = GetDlgItem(IDC_MORE);
     ASSERT(pWnd);
     pWnd->SetWindowText(_T("LESS &<<"));
@@ -312,9 +312,9 @@ void CPrintOptionsDlg::Expand() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::Collapse - helper for OnMore()
+// CDlgPrintOptions::Collapse - helper for OnMore()
 /***************************************************************************/
-void CPrintOptionsDlg::Collapse() {
+void CDlgPrintOptions::Collapse() {
     CWnd * pWnd = GetDlgItem(IDC_MORE);
     ASSERT(pWnd);
     pWnd->SetWindowText(_T("MORE &>>"));
@@ -336,10 +336,10 @@ void CPrintOptionsDlg::Collapse() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnSelectallgraphs - user clicked the ALL GRAPHS button,
+// CDlgPrintOptions::OnSelectallgraphs - user clicked the ALL GRAPHS button,
 // so set them all to be selected.
 /***************************************************************************/
-void CPrintOptionsDlg::OnSelectallgraphs() {
+void CDlgPrintOptions::OnSelectallgraphs() {
     for (int i=0; i< m_listBoxGraphsToPrint.GetCount(); i++) {
         m_listBoxGraphsToPrint.SetSel(i,TRUE);
     }
@@ -348,10 +348,10 @@ void CPrintOptionsDlg::OnSelectallgraphs() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnPrint - user clicked print.  Set flag and exit -
+// CDlgPrintOptions::OnPrint - user clicked print.  Set flag and exit -
 // caller will check flag and do the actual print.
 /***************************************************************************/
-void CPrintOptionsDlg::OnPrint() {
+void CDlgPrintOptions::OnPrint() {
     m_bUserClickedPrint = TRUE;
     OnOK();
 }
@@ -360,10 +360,10 @@ void CPrintOptionsDlg::OnPrint() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnClearallgraphs - user selected clear all graphs from
+// CDlgPrintOptions::OnClearallgraphs - user selected clear all graphs from
 // the list of possible graphs to print - clear all selections.
 /***************************************************************************/
-void CPrintOptionsDlg::OnClearallgraphs() {
+void CDlgPrintOptions::OnClearallgraphs() {
     // TODO: Add your control notification handler code here
     for (int i=0; i< m_listBoxGraphsToPrint.GetCount(); i++) {
         m_listBoxGraphsToPrint.SetSel(i,FALSE);
@@ -373,21 +373,21 @@ void CPrintOptionsDlg::OnClearallgraphs() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnHiRes - user selected the hi-res type of printing,
+// CDlgPrintOptions::OnHiRes - user selected the hi-res type of printing,
 // enable the ability to expand dialog and reveal more hi-res printing options.
 /***************************************************************************/
-void CPrintOptionsDlg::OnHires() {
+void CDlgPrintOptions::OnHires() {
     GetDlgItem(IDC_MORE)->EnableWindow(TRUE);
 }
 
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnScreenShot - user selected the screen shot type of
+// CDlgPrintOptions::OnScreenShot - user selected the screen shot type of
 // printing.  Disable the ability to expand the dialog as it would only
 // reveal hi-res options which don't apply to screen shot.
 /***************************************************************************/
-void CPrintOptionsDlg::OnScreenShot() {
+void CDlgPrintOptions::OnScreenShot() {
     if (m_IsExpanded) {
         Collapse();
     }
@@ -397,10 +397,10 @@ void CPrintOptionsDlg::OnScreenShot() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnPreview - user clicked preview.  Set flag and exit -
+// CDlgPrintOptions::OnPreview - user clicked preview.  Set flag and exit -
 // caller will check flag and do a preview.
 /***************************************************************************/
-void CPrintOptionsDlg::OnPreview() {
+void CDlgPrintOptions::OnPreview() {
     m_bUserClickedPreview = TRUE;
     OnOK();
 }
@@ -408,9 +408,9 @@ void CPrintOptionsDlg::OnPreview() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnSpinRow  - number of rows to print per page spiner hit.
+// CDlgPrintOptions::OnSpinRow  - number of rows to print per page spiner hit.
 /***************************************************************************/
-void CPrintOptionsDlg::OnSpinRow() {
+void CDlgPrintOptions::OnSpinRow() {
     UpdateData(TRUE);
     m_NumRows = _ttoi(m_strNumRows);
 
@@ -435,9 +435,9 @@ void CPrintOptionsDlg::OnSpinRow() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnSpinCol  - number of cols to print per page spiner hit.
+// CDlgPrintOptions::OnSpinCol  - number of cols to print per page spiner hit.
 /***************************************************************************/
-void CPrintOptionsDlg::OnSpinCol() {
+void CDlgPrintOptions::OnSpinCol() {
     UpdateData(TRUE);
     m_NumCols = _ttoi(m_strNumCols);
 
@@ -461,10 +461,10 @@ void CPrintOptionsDlg::OnSpinCol() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnPortrait - portrait radio button pushed.  Show
+// CDlgPrintOptions::OnPortrait - portrait radio button pushed.  Show
 // correct bitmap.
 /***************************************************************************/
-void CPrintOptionsDlg::OnPortrait() {
+void CDlgPrintOptions::OnPortrait() {
     UpdateData(TRUE);
     ShowLandscapeBitmap(m_IsLandscape);
 }
@@ -472,10 +472,10 @@ void CPrintOptionsDlg::OnPortrait() {
 
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnLandscape - landscape radio button pushed.  Show
+// CDlgPrintOptions::OnLandscape - landscape radio button pushed.  Show
 // correct bitmap.
 /***************************************************************************/
-void CPrintOptionsDlg::OnLandscape() {
+void CDlgPrintOptions::OnLandscape() {
     UpdateData(TRUE);
     ShowLandscapeBitmap(m_IsLandscape);
 }
@@ -489,7 +489,7 @@ static LPCSTR psz_islandscape  = "islandscape";
 static LPCSTR psz_ishires      = "ishires";
 
 
-void CPrintOptionsDlg::WriteProperties(CObjectOStream & obs) {
+void CDlgPrintOptions::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_printoptions);
     obs.WriteNewline();
 
@@ -508,7 +508,7 @@ void CPrintOptionsDlg::WriteProperties(CObjectOStream & obs) {
 }
 
 
-BOOL CPrintOptionsDlg::ReadProperties(CObjectIStream & obs) {
+BOOL CDlgPrintOptions::ReadProperties(CObjectIStream & obs) {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_printoptions)) {
         return FALSE;
     }
@@ -528,9 +528,9 @@ BOOL CPrintOptionsDlg::ReadProperties(CObjectIStream & obs) {
 }
 
 /***************************************************************************/
-// CPrintOptionsDlg::OnHelpPrintOptions Call Page Setup dialog help
+// CDlgPrintOptions::OnHelpPrintOptions Call Page Setup dialog help
 /***************************************************************************/
-void CPrintOptionsDlg::OnHelpPrintOptions() {
+void CDlgPrintOptions::OnHelpPrintOptions() {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/File/Page_Setup.htm";

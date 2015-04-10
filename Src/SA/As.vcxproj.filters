@@ -1,140 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-  </ItemGroup>
-  <PropertyGroup Label="Globals">
-    <ProjectGuid>{793E5783-785D-42D2-9A84-F773A9DAF39F}</ProjectGuid>
-    <RootNamespace>SaUnicode</RootNamespace>
-    <Keyword>MFCProj</Keyword>
-    <ProjectName>AS</ProjectName>
-  </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
-  <PropertyGroup>
-    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\Output\Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\Output\Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AS</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AS</TargetName>
-  </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Midl>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MkTypLibCompatible>true</MkTypLibCompatible>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetEnvironment>Win32</TargetEnvironment>
-      <HeaderFileName>
-      </HeaderFileName>
-    </Midl>
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\include;..\uriparser\include;..\..\output\debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <WarningLevel>Level4</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>$(IntDir)stdafx.pch</PrecompiledHeaderOutputFile>
-    </ClCompile>
-    <ResourceCompile />
-    <Link>
-      <AdditionalDependencies>mfc100ud.lib;mfcs100ud.lib;atlsd.lib;msvcrtd.lib;msvcprtd.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
-      <StackReserveSize>1048576</StackReserveSize>
-      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
-      <AdditionalLibraryDirectories>$(OutDir);$(XERCES_VC10_HOME)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Bscmake>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
-    <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Midl>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MkTypLibCompatible>true</MkTypLibCompatible>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetEnvironment>Win32</TargetEnvironment>
-      <HeaderFileName>
-      </HeaderFileName>
-    </Midl>
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\include;..\uriparser\include;..\..\output\release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <WarningLevel>Level4</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <PrecompiledHeaderOutputFile>$(IntDir)stdafx.pch</PrecompiledHeaderOutputFile>
-    </ClCompile>
-    <ResourceCompile>
-      <Culture>0x0409</Culture>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-    <Link>
-      <AdditionalDependencies>mfc100u.lib;mfcs100u.lib;atls.lib;msvcrt.lib;msvcprt.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <IgnoreAllDefaultLibraries>
-      </IgnoreAllDefaultLibraries>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <GenerateMapFile>false</GenerateMapFile>
-      <SubSystem>Windows</SubSystem>
-      <StackReserveSize>1048576</StackReserveSize>
-      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <AdditionalLibraryDirectories>$(OutDir);$(XERCES_VC10_HOME)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Bscmake>
-  </ItemDefinitionGroup>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="AlignInfo.cpp" />
     <ClCompile Include="ArchiveTransfer.cpp" />
@@ -222,18 +87,14 @@
     <ClCompile Include="Process\SA_W_PAS.CPP" />
     <ClCompile Include="Process\SA_W_REV.CPP" />
     <ClCompile Include="Clip.cpp" />
-    <ClCompile Include="Partiture.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="Partiture.cpp" />
     <ClCompile Include="PickOver.cpp" />
     <ClCompile Include="RecMixer.cpp" />
     <ClCompile Include="ReferenceSegment.cpp" />
     <ClCompile Include="ReferenceWnd.cpp" />
     <ClCompile Include="SaParam.cpp" />
     <ClCompile Include="SaString.cpp" />
-    <ClCompile Include="SAXMLUtils.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="SAXMLUtils.cpp" />
     <ClCompile Include="SA_Annot.cpp" />
     <ClCompile Include="SA_Cursr.cpp" />
     <ClCompile Include="sa_g_3dPitch.cpp" />
@@ -271,9 +132,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Param.cpp" />
     <ClCompile Include="Ch_dlg.cpp" />
-    <ClCompile Include="Ch_dlwnd.cpp">
-      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
-    </ClCompile>
+    <ClCompile Include="Ch_dlwnd.cpp" />
     <ClCompile Include="Ch_table.cpp" />
     <ClCompile Include="DlgAutoRecorder.cpp" />
     <ClCompile Include="DlgAdvancedParsePhrases.cpp" />
@@ -347,12 +206,7 @@
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="SA_View.cpp" />
     <ClCompile Include="Sa_wave.cpp" />
-    <ClCompile Include="Stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
-    </ClCompile>
+    <ClCompile Include="Stdafx.cpp" />
     <ClCompile Include="StpWatch.cpp" />
     <ClCompile Include="TaskBar.cpp" />
     <ClCompile Include="Undoredo.cpp" />
@@ -363,18 +217,6 @@
     <ClCompile Include="WaveInDevice.cpp" />
     <ClCompile Include="WaveOutDevice.cpp" />
     <ClCompile Include="WaveWarp.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\SA MSEA Release Notes.txt" />
-    <None Include="Annotation.cd" />
-    <None Include="Export.cd" />
-    <None Include="Graphs.cd" />
-    <None Include="Process.cd" />
-    <None Include="Res\AS.ICO" />
-    <None Include="Res\SA.ICO" />
-    <None Include="segment selection.cd" />
-    <None Include="Segments.cd" />
-    <None Include="Windows.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignInfo.h" />
@@ -607,43 +449,25 @@
     <ClInclude Include="WaveWarp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MBROLA\mbrola.vcxproj">
-      <Project>{70e56708-42c2-4233-af98-dc57f936c968}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SAUtils\SAUtils.csproj">
-      <Project>{45f4f307-5c89-46e1-b92b-0a2e3489ff6f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SA_DSP\SA_DSP.vcxproj">
-      <Project>{bb3f670e-28af-42ce-9c9f-de267d3cb986}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SA_ENU\SA_ENU.vcxproj">
-      <Project>{23e56f0e-30a8-4cf2-ab4d-5b1ed39cd268}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SA_KLATT\SA_KLATT.vcxproj">
-      <Project>{56f754f7-b130-4ccf-8a99-9422d3f0234d}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\WaveUtils\WaveUtils.vcxproj">
-      <Project>{7710bea3-39dc-4485-893f-ed4d9ca91973}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\yeti.mmedia\yeti.mmedia.csproj">
-      <Project>{315ee7bf-eae2-42c0-bfc6-cca9160f3cfe}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\yeti.wmfsdk\yeti.wmfsdk.csproj">
-      <Project>{fecb5beb-ab05-454a-bb14-6a554e897274}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ZGraph\zGraph.vcxproj">
-      <Project>{f8066672-47ab-44da-8698-ad978581a138}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="AS.rc" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties RESOURCE_FILE="AS.rc" />
-    </VisualStudio>
-  </ProjectExtensions>
+  <ItemGroup>
+    <None Include="Annotation.cd" />
+    <None Include="Export.cd" />
+    <None Include="Graphs.cd" />
+    <None Include="Process.cd" />
+    <None Include="Res\AS.ICO" />
+    <None Include="Res\SA.ICO" />
+    <None Include="segment selection.cd" />
+    <None Include="Segments.cd" />
+    <None Include="Windows.cd" />
+    <None Include="..\SA MSEA Release Notes.txt">
+      <Filter>Release Notes</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Release Notes">
+      <UniqueIdentifier>{ef8ed689-fc78-46e6-8394-824b034d0191}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>

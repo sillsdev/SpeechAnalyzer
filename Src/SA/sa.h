@@ -101,7 +101,7 @@ public:
     CSaDoc * OpenWavFileAsNew(LPCTSTR szTempPath);
 	// open a blank view to do something on.
     CDocument * OpenBlankView(bool bWithGraphs);
-    CSaString DefaultDir(CSaString * pFilename = NULL) const;
+    CSaString GetDefaultDir(CSaString * pFilename = NULL) const;
 
     static BOOL CSaApp::m_bUseUnicodeEncoding;
 
@@ -143,7 +143,7 @@ public:
     void SetLastClipboardPath(LPCTSTR szPath);
     LPCTSTR GetLastClipboardPath();
     void FileOpen();
-    void GetMRUFilePath(int i, CSaString & buffer) const;
+    CString GetMRUFilePath(int i) const;
 
     // methods for saving the settings and window state.
     CSaView * GetViewActive();

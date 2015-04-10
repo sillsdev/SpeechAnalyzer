@@ -10,14 +10,14 @@ class CSaView;
 #define MAX_PLOTS MAX_LIST_SIZE
 
 /////////////////////////////////////////////////////////////////////////////
-// CPickOverlayDlg dialog
+// CDlgPickOver dialog
 
-class CPickOverlayDlg : public CDialog {
+class CDlgPickOver : public CDialog {
     // Construction
 public:
     const CPlotWnd * GetPlot(int idx);
     void ResetPlots();
-    CPickOverlayDlg(CWnd * pParent = NULL); // standard constructor
+    CDlgPickOver(CWnd * pParent = NULL); // standard constructor
 
     enum { MAX_LIST_SIZE = 64 };
 
@@ -41,7 +41,7 @@ public:
 protected:
 
     // Dialog Data
-    //{{AFX_DATA(CPickOverlayDlg)
+    //{{AFX_DATA(CDlgPickOver)
     enum { IDD = IDD_PICKOVERLAY };
     CListBox    m_SelectItems;
     //}}AFX_DATA

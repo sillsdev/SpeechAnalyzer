@@ -2,10 +2,10 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Audio+Sync"
-#define MyAppVersion "0.99.0.0"
+#define MyAppVersion "0.99.0.1"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
-#define MyAppExeName "Audio+Sync.exe"
+#define MyAppExeName "AS.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -52,16 +52,8 @@ Source: "C:\Working\SIL\MSEA\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ig
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\notice"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\license"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\What's New.pdf"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Speech_Analyzer_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Using_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\uriparser\uriparser_copying"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\iso639.txt"; DestDir: "{app}"; Flags: ignoreversion
-;samples
-Source: "C:\Working\SIL\MSEA\DistFiles\Samples\*"; DestDir: "{app}\Samples"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Samples\Music\*"; DestDir: "{app}\Samples\Music"; Flags: ignoreversion
-;training
-Source: "C:\Working\SIL\MSEA\DistFiles\Training\*.pdf"; DestDir: "{app}\Training"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -85,9 +77,6 @@ Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "ye
 
 [Dirs]
 Name: "{app}\components"
-Name: "{app}\Samples"
-Name: "{app}\Samples\Music"
-Name: "{app}\Training"
 
 [UninstallDelete]
 Type: files; Name: "{app}\SAUtils.tlb"

@@ -76,6 +76,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>uriparser.lib;C:\Tools\cpptest-1.1.2\win\VisualStudio.NET\cpptest\Release\cpptest.lib;%(AdditionalDependencies)</AdditionalDependencies>

@@ -59,10 +59,10 @@ typedef enum ECreateHow { CREATE_STANDARD=0, CREATE_FROMSTREAM=1, CREATE_FROMGRA
 //###########################################################################
 // CSaView view
 
-class CPickOverlayDlg;
+class CDlgPickOver;
 class CSegmentSelection;
 class CDib;
-class CPrintOptionsDlg;
+class CDlgPrintOptions;
 class CObjectIStream;
 class CSaApp;
 class CGraphWnd;
@@ -230,7 +230,7 @@ public:
     BOOL ReadGraphListProperties(const CSaView & fromThis);
 	// called first time after construct and when applying new wave
     void InitialUpdate(BOOL bTemp=FALSE); 
-    void CreateOpenAsGraphs(UINT OpenAsID);
+    void CreateOpenAsGraphs(UINT openAsID);
     BOOL GetStaticTWC();
     void SetStaticTWC(BOOL bChecked);
     BOOL GetNormalMelogram();
@@ -632,9 +632,9 @@ private:
     UINT m_nLayout;                         // actual Layout number
     CSegmentSelection m_advancedSelection;
     CGraphWnd * m_pFocusedGraph;            // pointer to focused graph
-    CPrintOptionsDlg * m_pPageLayout;
-    CPrintOptionsDlg * m_pPgLayoutBackup;
-    CPickOverlayDlg * m_pPickOverlay;
+    CDlgPrintOptions * m_pPageLayout;
+    CDlgPrintOptions * m_pPgLayoutBackup;
+    CDlgPickOver * m_pPickOverlay;
     UINT m_nFocusedID;                      // ID of focused graph
     BOOL m_bLegendAll;                      // legend window show/hide all
     BOOL m_bLegendNone;                     // legend window hide all

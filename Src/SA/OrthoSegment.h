@@ -3,9 +3,9 @@
 
 #include "DependentSegment.h"
 
-class COrthoSegment : public CDependentSegment {
+class COrthographicSegment : public CDependentSegment {
 public:
-    COrthoSegment(EAnnotation index, int master = -1);
+    COrthographicSegment(EAnnotation index, int master = -1);
 
 private:
     virtual CFontTable * NewFontTable() const;

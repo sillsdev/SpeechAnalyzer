@@ -329,8 +329,6 @@ void CDib::Save(void) {
                 if (CFile::GetStatus(szPathnameExtended, status)) {
                     CSaString szPrompt = szPathnameExtended + _T(" already exists.\nDo you want to replace it?");
                     if (AfxMessageBox(szPrompt, MB_YESNO) == IDNO) {
-                        // User does not want to overwrite
-                        // dlg.m_ofn.lpstrInitialDir = dlg.GetFolderPath();
                         continue;
                     }
                 }

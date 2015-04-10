@@ -77,6 +77,7 @@ CProcessLoudness::~CProcessLoudness() {
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
+
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }

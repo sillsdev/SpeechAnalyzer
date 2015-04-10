@@ -157,7 +157,6 @@
 #define IDD_SELECT_TRANSCRIPTION_BARS   369
 #define IDD_DIALOG2                     370
 #define IDD_HELP_SFM_MARKERS            370
-#define IDD_DIALOG3                     371
 #define IDB_REVU                        375
 #define IDB_RESULTU                     376
 #define IDB_RAWU                        377
@@ -168,6 +167,7 @@
 #define IDB_ECHOU                       382
 #define IDB_HPU                         383
 #define IDB_LPU                         384
+#define IDD_AUDIOSYNC_STARTUP           385
 #define IDC_HIGHPASS                    502
 #define ID_STATUSPANE_EMPTY             700
 #define ID_STATUSPANE_1                 701
@@ -1223,6 +1223,7 @@
 #define IDC_RADIO_FILE                  2056
 #define IDC_EDIT1                       2057
 #define IDC_FILENAME_PREFIX             2057
+#define IDC_EDIT_AUDIO_FILENAME         2057
 #define IDC_BEGIN_LABEL                 2058
 #define IDC_END_LABEL                   2059
 #define IDC_BEGIN_COMBO                 2060
@@ -1230,6 +1231,7 @@
 #define IDC_CHECK_GLOSS_EMPTY           2062
 #define IDC_CHECK1                      2066
 #define IDC_CHECK_OVERWRITE             2066
+#define IDC_CHECK_USE_LAST_FILE         2066
 #define IDC_RADIO_FIELDWORKS            2067
 #define IDC_RADIO_OTHER                 2068
 #define IDC_EDIT_FIELDWORKS_FOLDER      2071
@@ -1243,6 +1245,7 @@
 #define IDC_STATIC_SFM_COUNT            2079
 #define IDC_EDIT2                       2080
 #define IDC_FILENAME_SUFFIX             2080
+#define IDC_EDIT_PHRASE_FILENAME        2080
 #define IDC_MSFLEXGRID1                 2081
 #define IDC_MFCPROPERTYGRID1            2082
 #define IDC_RADIO1                      2083
@@ -1273,7 +1276,12 @@
 #define IDC_LIST_GLOSS_NAT              2109
 #define IDC_COMBO1                      2110
 #define IDC_GLOSS_NAT                   2111
+#define IDC_BUTTON_BROWSE1              2111
 #define IDC_GLOSS_NAT_ENABLED           2112
+#define IDC_BUTTON_BROWSE2              2112
+#define IDC_CHECK_SEGMENT_AUDIO         2113
+#define IDC_CHECK_LOAD                  2114
+#define IDC_CHECK_LOAD_DATA             2114
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1830,9 +1838,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        385
+#define _APS_NEXT_RESOURCE_VALUE        386
 #define _APS_NEXT_COMMAND_VALUE         33257
-#define _APS_NEXT_CONTROL_VALUE         2111
+#define _APS_NEXT_CONTROL_VALUE         2115
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif
