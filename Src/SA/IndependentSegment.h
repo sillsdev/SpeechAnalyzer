@@ -17,6 +17,8 @@ public:
     DWORD CalculateDuration(ISaDoc * pDoc, const int nIndex) const;
     // add a segment
     virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true);
+	virtual int Add( DWORD offset, DWORD duration);
+	virtual void AddAt( int index, DWORD offset, DWORD duration);
 };
 
 #endif

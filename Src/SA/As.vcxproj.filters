@@ -7,7 +7,6 @@
     <ClCompile Include="ChildFrame.cpp" />
     <ClCompile Include="ClipboardHelper.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
-    <ClCompile Include="DependentTextSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
     <ClCompile Include="DlgASStart.cpp" />
@@ -233,7 +232,6 @@
     <ClInclude Include="ch_table.h" />
     <ClInclude Include="ClipboardHelper.h" />
     <ClInclude Include="DependentSegment.h" />
-    <ClInclude Include="DependentTextSegment.h" />
     <ClInclude Include="DlgAlignTranscriptionDataImportRefPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataTextPage.h" />
     <ClInclude Include="DlgExportFW.h" />

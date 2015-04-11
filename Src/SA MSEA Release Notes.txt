@@ -1,5 +1,6 @@
 AS - 0.99.0.2 4/10/2015
 -Revised layout of Audio+Sync startup dialog box.
+-Fixes for missing segments when performing locate segments/locate words/locate phrases and auto segmentation (AS/SA)
 
 AS - 0.99.0.1 4/9/2015
 -Changed default for transciption boundaries to be on by default for AS and SA.

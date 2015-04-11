@@ -8,6 +8,8 @@
 #include "PhoneticSegment.h"
 #include "TextSegment.h"
 #include "ScopedCursor.h"
+#include "ReferenceSegment.h"
+#include "GlossNatSegment.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -184,8 +186,6 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC); // get pointer to phonetic segment
     pDoc->AutoSnapUpdate(); // Snap phonetic SDM 1.5Test11.0
 
-    pPhonetic->Validate();
-
     // start processing
     DWORD dwLoopPos = 0;
 
@@ -266,47 +266,35 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
                                     }
                                 }
                             }
-
                             // SDM 1.06.3a Insert 0 duration calculate later
-                            CSaString szSegment = SEGMENT_DEFAULT_CHAR;
-                            TRACE("insert offset[%d] %lu %lu\n",nPhonetic,dwGlossStart,0);
-                            if (!pPhonetic->Insert(nPhonetic, szSegment, false, dwGlossStart, 0)) {
-                                return Exit(PROCESS_ERROR); // error, writing segment failed
-                            }
-                            pPhonetic->Validate();
+							pPhonetic->AddAt( pDoc, nPhonetic, dwGlossStart, 0);
                         }
                     } else {
                         // there is no phonetic segment, create one
-                        // this is the first segment
-                        nPhonetic = 0;
-
-                        // SDM 1.06.3a Insert 0 duration calculate later
-                        CSaString szSegment = SEGMENT_DEFAULT_CHAR;
-                        TRACE("insert offset[%d] %lu %lu\n",nPhonetic,dwGlossStart,0);
-                        if (!pPhonetic->Insert(nPhonetic, szSegment, false, dwGlossStart, 0)) {
-                            return Exit(PROCESS_ERROR); // error, writing segment failed
-                        }
-                        pPhonetic->Validate();
+						nPhonetic = pPhonetic->Add( pDoc, dwGlossStart, 0);
                     }
                 }
 
                 // write gloss
-                if (!Insert(nGlossIndex++, NULL, 0, dwGlossStart, 0)) {
-                    return Exit(PROCESS_ERROR); // error, writing gloss failed
-                }
+				AddAt( pDoc, nGlossIndex++, dwGlossStart, 0);
 
-                pDoc->SetModifiedFlag(TRUE);        // document has been modified
-                pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
+				// document has been modified
+                pDoc->SetModifiedFlag(TRUE);
+				// transcription data has been modified
+                pDoc->SetTransModifiedFlag(TRUE);   
             }
-            dwBreakCount = 0; // end of valley
+			// end of valley
+            dwBreakCount = 0; 
         } else {
             // CLW 1.07a
-            if (nLoudnessData <= nMinThreshold) {   // point is under min threshold
+			// point is under min threshold
+            if (nLoudnessData <= nMinThreshold) {   
                 // reset end of break
                 dwBreakEnd = dwLoopPos;
                 if (dwBreakCount == 0) {
                     // note beginning of break
-                    dwBreakStart = dwLoopPos - 1;   // SDM 1.5 Test 11.0
+					// SDM 1.5 Test 11.0
+                    dwBreakStart = dwLoopPos - 1;   
                 }
                 dwBreakCount++;
             } else if (dwBreakCount > 0) {          // SDM 1.5 Test 11.0
@@ -321,8 +309,6 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
         }
     }
 
-    pPhonetic->Validate();
-
     //adjust last phonetic SDM 1.5Test11.0
     int nPhonetic = pPhonetic->GetPrevious(-1);
     if ((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic)==0)) {
@@ -332,8 +318,6 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
             pPhonetic->Adjust(pDoc,nPhonetic, pPhonetic->GetOffset(nPhonetic),dwPhoneticStop - pPhonetic->GetOffset(nPhonetic), false);
         }
     }
-
-    pPhonetic->Validate();
 
     // Adjust durations of inserted phonetic segments
     if (!pPhonetic->IsEmpty()) {
@@ -353,8 +337,6 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
             nPhonetic = nNext;
         }
     }
-
-    pPhonetic->Validate();
 
     CorrectGlossDurations(pDoc);
 
@@ -390,3 +372,12 @@ bool CGlossSegment::ContainsText( DWORD offset, DWORD stop) {
 	}
 	return false;
 }
+
+void CGlossSegment::AddAt( CSaDoc * pDoc, int index, DWORD offset, DWORD duration) {
+    InsertAt( index, offset, duration);
+	CGlossNatSegment * pGlossNat = (CGlossNatSegment*)pDoc->GetSegment(GLOSS_NAT);
+	pGlossNat->InsertAt( index, offset, duration);
+	CReferenceSegment * pRef = (CReferenceSegment*)pDoc->GetSegment(REFERENCE);
+	pRef->InsertAt( index, offset, duration);
+}
+

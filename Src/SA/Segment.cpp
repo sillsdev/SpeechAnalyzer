@@ -785,19 +785,6 @@ DWORD CSegment::GetDurationAt(int index) const {
     return m_Duration[index];
 }
 
-void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
-    
-	ASSERT(index>=0);
-    if (index<0) {
-        return;
-    }
-    m_Text.InsertAt(index,CString(text));
-    m_Offset.InsertAt(index,offset);
-    m_Duration.InsertAt(index,duration);
-    ASSERT(m_Text.GetCount()==m_Offset.GetCount());
-    ASSERT(m_Text.GetCount()==m_Duration.GetCount());
-}
-
 /**
 * remove text, offset and duration
 */
@@ -881,21 +868,6 @@ long CSegment::Process(void * /*pCaller*/, ISaDoc * /*pDoc*/, int /*nProgress*/,
     return PROCESS_ERROR;
 }
 
-void CSegment::Validate() {
-    if (m_Offset.GetCount()==1) {
-        return;
-    }
-    for (int i=1; i<m_Offset.GetCount(); i++) {
-        if (m_Offset[i-1]>m_Offset[i]) {
-            TRACE("offset[%d]=%lu %lu %lu\n",i-2,m_Offset[i-3],m_Offset[i-2]+m_Duration[i-3],m_Duration[i-3]);
-            TRACE("offset[%d]=%lu %lu %lu\n",i-2,m_Offset[i-2],m_Offset[i-2]+m_Duration[i-2],m_Duration[i-2]);
-            TRACE("offset[%d]=%lu %lu %lu\n",i-1,m_Offset[i-1],m_Offset[i-1]+m_Duration[i-1],m_Duration[i-1]);
-            TRACE("offset[%d]=%lu %lu %lu\n",i,m_Offset[i],m_Offset[i]+m_Duration[i],m_Duration[i-1]);
-            ASSERT(m_Offset[i-1]<=m_Offset[i]);
-        }
-    }
-}
-
 /**
 * Find the index for the specified offset
 */
@@ -934,7 +906,7 @@ bool CSegment::Split( DWORD thisOffset, DWORD newStopStart) {
     DWORD stop = GetStop(index);
     // shorten segment
     AdjustDuration(thisOffset,newStopStart-thisOffset);
-    Insert(index+1,GetDefaultChar(),FALSE,newStopStart,stop-newStopStart);
+    Insert(index+1,GetDefaultText(),FALSE,newStopStart,stop-newStopStart);
 	return true;
 }
 
@@ -967,7 +939,7 @@ bool CSegment::Merge( DWORD thisOffset, DWORD prevOffset, DWORD thisStop) {
 * SAB use
 * return true if modified
 */
-bool CSegment::MoveDataLeftSAB( DWORD offset, CString newText) {
+bool CSegment::MoveDataLeftSAB( DWORD offset, CString text) {
 
 	ASSERT(m_Text.GetCount()==m_Offset.GetCount());
 	ASSERT(m_Text.GetCount()==m_Duration.GetCount());
@@ -975,15 +947,16 @@ bool CSegment::MoveDataLeftSAB( DWORD offset, CString newText) {
 	int index = FindOffset(offset);
     if (index==-1) return false;
 
-	newText = newText.Trim();
-	if (newText.GetLength()==0) {
-		newText = GetDefaultChar();
+	text = text.Trim();
+	if (text.GetLength()==0) {
+		text = GetDefaultText();
 	}
 
 	// shift the text left
 	// for sab, for the last segment, retrieve data from the file.
 	m_Text.RemoveAt(index);
-	m_Text.Add(newText);
+
+	m_Text.Add(text);
 	return true;
 }
 
@@ -1016,15 +989,17 @@ bool CSegment::MoveDataRight(DWORD offset, bool sab) {
 	int index = FindOffset(offset);
     if (index==-1) return false;
 
-	CString defaultChar = GetDefaultChar();
+	CString defaultChar = GetDefaultText();
 	if (sab) {
 		// for sab - lose the data at the end
+
 		m_Text.InsertAt(index,defaultChar);
 		size_t end = m_Text.GetSize()-1;
 		m_Text.RemoveAt(end);
 	} else {
 		// for non-sab add overflow to buffer at end
 		// add text to buffer at end
+
 		m_Text.InsertAt(index,defaultChar);
 		size_t end = m_Offset.GetSize()-1;
 		DWORD lastOffset = GetOffset(end);
@@ -1035,8 +1010,8 @@ bool CSegment::MoveDataRight(DWORD offset, bool sab) {
 	return true;
 }
 
-CString CSegment::GetDefaultChar() {
-    return CString(" ");
+CString CSegment::GetDefaultText() {
+    return CString("");
 }
 
 CString CSegment::GetContent() const {
@@ -1059,7 +1034,7 @@ size_t CSegment::GetContentLength() const {
 }
 
 /***************************************************************************/
-// CDependentTextSegment::Insert Insert/append a text segment
+// CSegment::Insert Insert/append a text segment
 // Returns FALSE if an error occurred. 
 // If the pointer to the string is NULL there will be no string added.
 /***************************************************************************/
@@ -1068,7 +1043,7 @@ BOOL CSegment::SetText( int nIndex, LPCTSTR pszString) {
 	if ((pszString==NULL)||(wcslen(pszString)==0)) {
         m_Text.SetAt(nIndex, "");
 	} else {
-        m_Text.SetAt(nIndex, pszString);
+		m_Text.SetAt(nIndex, pszString);
 	}
     return TRUE;
 }
@@ -1276,5 +1251,60 @@ bool CSegment::ContainsText( DWORD offset, DWORD stop) {
 		}
 	}
 	return false;
+}
+
+int CSegment::Add( DWORD offset, DWORD duration) {
+	CString text = GetDefaultText();
+	return Add( text, offset, duration);
+}
+
+/**
+* Insert a segment into the list
+* Allows for overlapping segments
+* Keeps offset values in sorted order
+*/
+int CSegment::Add( LPCTSTR text, DWORD offset, DWORD duration) {
+    ASSERT(m_Text.GetCount()==m_Offset.GetCount());
+    ASSERT(m_Text.GetCount()==m_Duration.GetCount());
+	DWORD stop = offset + duration;
+	for (int i=0;i<m_Offset.GetCount();i++) {
+		DWORD curOffset = m_Offset[i];
+		DWORD curStop = curOffset + m_Duration[i];
+		if (offset<curOffset) {
+			InsertAt( i, text, offset, duration);
+			return i;
+		} else if ((offset==curOffset)&&(stop==curStop)) {
+			TRACE("segment using existing offset=%d duration=%d\n",offset,duration);
+			return i;
+		} else if (stop<curOffset) {
+			// we've gone far enough
+			break;
+		}
+	}
+	// empty or at end
+	int index = m_Text.Add(text);
+	m_Offset.Add(offset);
+	m_Duration.Add(duration);
+    TRACE("segment add type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,index,offset,duration);
+	return index;
+}
+
+void CSegment::InsertAt(int index, DWORD offset, DWORD duration) {
+	InsertAt( index, GetDefaultText(), offset, duration);
+}
+
+void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
+	ASSERT(index>=0);
+    if (index<0) {
+		TRACE("invalid index giveon on InsertAt\n");
+		return;
+	}
+
+    TRACE("segment insertat type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,index,offset,duration);
+    m_Text.InsertAt(index,CString(text));
+    m_Offset.InsertAt(index,offset);
+    m_Duration.InsertAt(index,duration);
+    ASSERT(m_Text.GetCount()==m_Offset.GetCount());
+    ASSERT(m_Text.GetCount()==m_Duration.GetCount());
 }
 

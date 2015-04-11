@@ -392,3 +392,11 @@ void CIndependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSa
     pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
 }
 
+int CIndependentSegment::Add( DWORD offset, DWORD duration) {
+	return CSegment::Add(offset,duration);
+}
+
+void CIndependentSegment::AddAt( int index, DWORD offset, DWORD duration) {
+	CSegment::InsertAt( index, GetDefaultText(), offset, duration);
+}
+

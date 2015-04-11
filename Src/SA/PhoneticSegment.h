@@ -16,10 +16,13 @@ public:
     virtual bool Filter(CString & text);
 	virtual bool ContainsText( DWORD offset, DWORD stop);
 
+	virtual int Add( CSaDoc * pDoc, DWORD offset, DWORD duration);
+	virtual void AddAt( CSaDoc * pDoc, int index, DWORD offset, DWORD duration);
+
 protected:
 	// exit processing on error
     virtual long Exit(int nError); 
-    virtual CString GetDefaultChar();
+    virtual CString GetDefaultText();
 
 private:
     virtual CFontTable * NewFontTable() const;

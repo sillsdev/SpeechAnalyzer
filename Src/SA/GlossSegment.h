@@ -19,6 +19,8 @@ public:
     virtual void Serialize(CArchive & ar);
 	virtual bool ContainsText( DWORD offset, DWORD stop);
 
+	virtual void AddAt( CSaDoc * pDoc, int index, DWORD offset, DWORD duration);
+
 protected:
 	// exit processing on error
     long Exit(int nError);

@@ -8352,7 +8352,7 @@ void CSaDoc::MoveDataLeft(DWORD offset) {
 			// there is a reference number
 			MarkerList & ml = sabBuffer.GetMarkerList(REFERENCE);
 			MarkerList::iterator rit = ml.begin();
-			CString ref = pRef->GetDefaultChar();
+			CString ref = pRef->GetDefaultText();
 			int i=0;
 			while (rit!=ml.end()) {
 				if (lastRef.Compare(*rit)==0) {
@@ -8674,16 +8674,6 @@ void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename) {
 	}
 
 	view.RefreshGraphs(TRUE,TRUE,TRUE);
-
-	// add reference segments for each Gloss Segment
-	pRef->DeleteContents();
-	pGlossNat->DeleteContents();
-	for (int i=0;i<pGloss->GetOffsetSize();i++) {
-		DWORD offset = pGloss->GetOffset(i);
-		DWORD duration = pGloss->GetDuration(i);
-		pRef->Append(L"",false,offset,duration);
-		pGlossNat->Append(L"",false,offset,duration);
-	}
 
 	// reset for resue
     glit = gl.begin();
@@ -9694,6 +9684,8 @@ bool CSaDoc::AutoSegment( CSaView & view, DWORD goal) {
 		DeleteSegmentContents(ORTHO);
 		DeleteSegmentContents(TONE);
 	    DeleteSegmentContents(GLOSS);
+		DeleteSegmentContents(GLOSS_NAT);
+		DeleteSegmentContents(REFERENCE);
 
 		pSegment->RestartProcess(); // for the case of a cancelled process
 		pSegment->SetDataInvalid(); // SDM 1.5Test10.7
@@ -9739,7 +9731,15 @@ bool CSaDoc::AutoSegment( CSaView & view, DWORD goal) {
 	// we failed
 	// run it one more time with the best result
 	pMainFrame->SetPhraseBreakWidth((float)(bestWidth)/1000.0f);
+
+	DeleteSegmentContents(PHONETIC);
+	DeleteSegmentContents(PHONEMIC);
+	DeleteSegmentContents(ORTHO);
+	DeleteSegmentContents(TONE);
 	DeleteSegmentContents(GLOSS);
+	DeleteSegmentContents(GLOSS_NAT);
+	DeleteSegmentContents(REFERENCE);
+
 	// for the case of a cancelled process
 	pSegment->RestartProcess();
 	// SDM 1.5Test10.7

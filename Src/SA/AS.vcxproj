@@ -42,9 +42,9 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\Output\Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\AS\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\Output\Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\AS\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AS</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AS</TargetName>
   </PropertyGroup>
@@ -142,7 +142,6 @@
     <ClCompile Include="ChildFrame.cpp" />
     <ClCompile Include="ClipboardHelper.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
-    <ClCompile Include="DependentTextSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
     <ClCompile Include="DlgASStart.cpp" />
@@ -391,7 +390,6 @@
     <ClInclude Include="ch_table.h" />
     <ClInclude Include="ClipboardHelper.h" />
     <ClInclude Include="DependentSegment.h" />
-    <ClInclude Include="DependentTextSegment.h" />
     <ClInclude Include="DlgAlignTranscriptionDataImportRefPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataTextPage.h" />
     <ClInclude Include="DlgExportFW.h" />

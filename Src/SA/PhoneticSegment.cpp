@@ -7,6 +7,9 @@
 #include "MainFrm.h"
 #include "SA_View.h"
 #include "GlossSegment.h"
+#include "PhonemicSegment.h"
+#include "OrthoSegment.h"
+#include "ToneSegment.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -208,6 +211,7 @@ void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
 // tage in the higher word.
 /***************************************************************************/
 long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int nLevel) {
+
     //TRACE(_T("Process: CPhoneticSegment\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -252,16 +256,20 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
-    CSegmentParm * pSegParm = pMainFrame->GetSegmentParm(); // get segment parameters // RLJ 1.5Test11.1A
+	// get segment parameters // RLJ 1.5Test11.1A
+    CSegmentParm * pSegParm = pMainFrame->GetSegmentParm(); 
     // float fFactor = (float)pDoc->GetDataSize() / (float)dwLoopEnd; // size factor
     // fFactor based on frame-length for accuracy (CLW 1/20/98)
-    float fFactor = (float) CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) * pDoc->GetBlockAlign(); // size factor
+	// size factor
+    float fFactor = (float) CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) * pDoc->GetBlockAlign(); 
     // Flank Width needs to be rounded up to guarantee minimum width (CLW 1/19/98)
-    DWORD dwFlankWidth = (DWORD)((pDoc->GetBytesFromTime(pSegParm->fSegmentWidth) + fFactor - 1) / 2 / fFactor); // flank width in process words
+	// flank width in process words
+    DWORD dwFlankWidth = (DWORD)((pDoc->GetBytesFromTime(pSegParm->fSegmentWidth) + fFactor - 1) / 2 / fFactor); 
     // DWORD dwFlankWidth = (DWORD)(pDoc->GetBytesFromTime(pSegParm->fSegmentWidth) / 2 / fFactor); // CLW 10/12/98
     if (!dwFlankWidth) {
         dwFlankWidth = 1;
     }
+
     int nChThreshold = (int)((long)pChange->GetMaxValue() * (long)pSegParm->nChThreshold / 100); // change threshold
     int nZCThreshold = pSegParm->nZCThreshold; // zero crossing threshold (CLW)
     DWORD dwLoopPos = 0;
@@ -375,7 +383,8 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
                     // join the two peaks
                     dwZCStart = dwOldZCStart;
                 }
-                dwShortZCStart = dwShortZCStop = 0;  // reset short segment start and end
+				// reset short segment start and end
+                dwShortZCStart = dwShortZCStop = 0;  
             }
 
             // is the current peak (still) short?
@@ -386,15 +395,20 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
                 // adjacent to old segment?
                 if (dwZCStart - dwOldZCStop < 4 * dwFlankWidth) {
                     // join the two peaks (adjust most recently stored segment)
-                    dwZCStart = dwOldZCStart; // rewind start of current segment to start of old
-                    dwOldZCStop = dwZCStop; // fast forward end of old segment to end of current
-                    dwSegmentStart = (DWORD)(((float)dwZCStart + 0.5F) * fFactor); // CLW 1/20/98
-                    dwSegmentStop = (DWORD)(((float)dwZCStop + 0.5F) * fFactor); // CLW 1/20/98
+					// rewind start of current segment to start of old
+                    dwZCStart = dwOldZCStart; 
+					// fast forward end of old segment to end of current
+                    dwOldZCStop = dwZCStop; 
+					// CLW 1/20/98
+                    dwSegmentStart = (DWORD)(((float)dwZCStart + 0.5F) * fFactor); 
+					// CLW 1/20/98
+                    dwSegmentStop = (DWORD)(((float)dwZCStop + 0.5F) * fFactor); 
 					// store it
                     Adjust(pDoc, nSegmentIndex - 1, dwSegmentStart, dwSegmentStop - dwSegmentStart, false); 
                     dwSegmentStart = dwSegmentStop;
                     dwSegmentStop = 0;
-                    dwShortZCStart = dwShortZCStop = 0; // reset short segment start and end
+					// reset short segment start and end
+                    dwShortZCStart = dwShortZCStop = 0; 
 
                 }
                 // restart search
@@ -413,52 +427,62 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
         dwLoopPos = dwOldZCStop + dwFlankWidth;
         dwChLoopEnd = dwZCStart - dwFlankWidth;
         /*********************************************************************/
-        int nOldChData = pChange->GetProcessedData(dwLoopPos++, &bRes); // read change data point
+		// read change data point
+        int nOldChData = pChange->GetProcessedData(dwLoopPos++, &bRes); 
         if (!bRes) {
-            return Exit(PROCESS_ERROR);    // error, reading change data failed
+			// error, reading change data failed
+            return Exit(PROCESS_ERROR);    
         }
         while ((dwLoopPos < dwChLoopEnd) && (dwZCStart - dwOldZCStop > 4 * dwFlankWidth)) {
-            int nChangeData = pChange->GetProcessedData(dwLoopPos, &bRes); // read change data point
+			// read change data point
+            int nChangeData = pChange->GetProcessedData(dwLoopPos, &bRes); 
             if (!bRes) {
-                return Exit(PROCESS_ERROR);    // error, reading change data failed
+				// error, reading change data failed
+                return Exit(PROCESS_ERROR);    
             }
-            if (nChangeData > nChThreshold) { // point is over threshold
-                if (nOldChData < nChangeData) { // rising flank
+			// point is over threshold
+            if (nChangeData > nChThreshold) { 
+				// rising flank
+                if (nOldChData < nChangeData) { 
                     if (dwFlankDown) {
-                        // there was a falling flank before
-                        dwFlankUp = dwFlankDown = 0; // new hill
+                        // there was a falling flank before new hill
+                        dwFlankUp = dwFlankDown = 0; 
                         dwHillTop = 0;
                     }
                     dwFlankUp++;
                 } else {
-                    if (nOldChData > nChangeData) { // falling flank
+					// falling flank
+                    if (nOldChData > nChangeData) { 
                         if (!dwHillTop) {
                             dwHillTop = dwLoopPos - 1;
                         }
                         dwFlankDown++;
                         if ((dwFlankUp >= dwFlankWidth) && (dwFlankDown >= dwFlankWidth)) {
                             // segment start or stop found
-                            if ((!dwSegmentStart) && (nSegmentIndex > 0)) { // CLW mod 1/19/98
-                                dwSegmentStart = (DWORD)((float)dwHillTop * fFactor);    // CLW 1/20/98
-                            } else { // start already found before
+							// CLW mod 1/19/98
+                            if ((!dwSegmentStart) && (nSegmentIndex > 0)) { 
+								// CLW 1/20/98
+                                dwSegmentStart = (DWORD)((float)dwHillTop * fFactor);    
+                            } else { 
+								// start already found before
                                 if (!dwSegmentStop) {
-                                    dwSegmentStop = (DWORD)((float)dwHillTop * fFactor);    // CLW 1/20/98
+									// CLW 1/20/98
+                                    dwSegmentStop = (DWORD)((float)dwHillTop * fFactor);    
                                 }
                                 // ready to store segment
-                                CSaString szSegment = SEGMENT_DEFAULT_CHAR;
-                                if (dwSegmentStart >= dwSegmentStop || dwSegmentStop > dwLastSample) {
+                                if ((dwSegmentStart >= dwSegmentStop) || (dwSegmentStop > dwLastSample)) {
                                     break;
                                 }
-                                bRes = Insert(nSegmentIndex++, szSegment, 0, dwSegmentStart, dwSegmentStop - dwSegmentStart);
-                                if (!bRes) {
-                                    return Exit(PROCESS_ERROR);    // error, writing segment failed
-                                }
+								AddAt( pDoc, nSegmentIndex++, dwSegmentStart, dwSegmentStop - dwSegmentStart);
                                 dwSegmentStart = dwSegmentStop;
                                 dwSegmentStop = 0;
-                                pDoc->SetModifiedFlag(TRUE); // document has been modified
-                                pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+								// document has been modified
+                                pDoc->SetModifiedFlag(TRUE); 
+								// transcription data has been modified
+                                pDoc->SetTransModifiedFlag(TRUE); 
                             }
-                            dwFlankUp = dwFlankDown = dwHillTop = 0; // look for new hill
+							// look for new hill
+                            dwFlankUp = dwFlankDown = dwHillTop = 0; 
                         }
                     }
                 }
@@ -468,7 +492,8 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
             nOldChData = nChangeData;
             dwLoopPos++;
         }
-        dwFlankUp = dwFlankDown = dwHillTop = 0; // look for new hill
+		// look for new hill
+        dwFlankUp = dwFlankDown = dwHillTop = 0; 
 
         /*********************************************************************/
         // Added by CLW 6/98 - 9/25/98
@@ -479,41 +504,40 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
         }
         {
             // Figure out start and stop
-            if ((!dwSegmentStart) && (nSegmentIndex)) { // CLW mod 1/19/98
-                dwSegmentStart = (DWORD)(((float)dwZCStart + 0.5F) * fFactor);    // CLW 1/20/98
-            } else { // start already found before
-                dwSegmentStop = (DWORD)(((float)dwZCStart + 0.5F) * fFactor); // CLW 1/20/98
+			// CLW mod 1/19/98
+            if ((!dwSegmentStart) && (nSegmentIndex)) { 
+				// CLW 1/20/98
+                dwSegmentStart = (DWORD)(((float)dwZCStart + 0.5F) * fFactor);    
+            } else { 
+				// start already found before
+				// CLW 1/20/98
+                dwSegmentStop = (DWORD)(((float)dwZCStart + 0.5F) * fFactor); 
                 if (dwSegmentStop - dwSegmentStart > 2 * dwFlankWidth) {
                     // store previous segment
-                    CSaString szSegment = SEGMENT_DEFAULT_CHAR;
                     if (dwSegmentStart >= dwSegmentStop || dwSegmentStop > dwLastSample) {
                         break;
                     }
-                    bRes = Insert(nSegmentIndex++, szSegment, 0, dwSegmentStart, dwSegmentStop - dwSegmentStart);
-                    if (!bRes) {
-                        return Exit(PROCESS_ERROR);    // error, writing segment failed
-                    }
+					AddAt( pDoc, nSegmentIndex++, dwSegmentStart, dwSegmentStop - dwSegmentStart);
                     dwSegmentStart = dwSegmentStop;
                 }
                 dwSegmentStop = 0;
             }
             if (!dwSegmentStop) {
-                dwSegmentStop = (DWORD)((float)dwZCStop * fFactor);    // CLW 1/20/98
+				// CLW 1/20/98
+                dwSegmentStop = (DWORD)((float)dwZCStop * fFactor);
             }
             {
                 // Store new zero crossing segment
-                CSaString szSegment = SEGMENT_DEFAULT_CHAR;
                 if (dwSegmentStart >= dwSegmentStop || dwSegmentStop > dwLastSample) {
                     break;
                 }
-                bRes = Insert(nSegmentIndex++, szSegment, 0, dwSegmentStart, dwSegmentStop - dwSegmentStart);
-                if (!bRes) {
-                    return Exit(PROCESS_ERROR);    // error, writing segment failed
-                }
+                AddAt( pDoc, nSegmentIndex++, dwSegmentStart, dwSegmentStop - dwSegmentStart);
                 dwSegmentStart = dwSegmentStop;
                 dwSegmentStop = 0;
-                pDoc->SetModifiedFlag(TRUE); // document has been modified
-                pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+				// document has been modified
+                pDoc->SetModifiedFlag(TRUE); 
+				// transcription data has been modified
+                pDoc->SetTransModifiedFlag(TRUE); 
             }
         }
         dwLoopPos = dwZCStop - 1;
@@ -525,7 +549,8 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
         // set progress bar
         SetProgress(nProgress + (int)(100 * dwLoopPos / dwLoopEnd / (DWORD)nLevel));
         if (IsCanceled()) {
-            return Exit(PROCESS_CANCELED);    // process canceled
+			// process canceled
+            return Exit(PROCESS_CANCELED);    
         }
     }
     // Add segment for silence at end
@@ -534,24 +559,21 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
         // store silence segment
         dwSegmentStart = dwLastStop;
         dwSegmentStop = dwLastSample;
-        CSaString szSegment = SEGMENT_DEFAULT_CHAR;
-        bRes = Insert(nSegmentIndex++, szSegment, 0, dwSegmentStart, dwSegmentStop - dwSegmentStart);
-        if (!bRes) {
-            return Exit(PROCESS_ERROR);    // error, writing segment failed
-        }
+        AddAt( pDoc, nSegmentIndex++, dwSegmentStart, dwSegmentStop - dwSegmentStart);
     }
 
     pDoc->AutoSnapUpdate();
 
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
-    EndProcess((nProgress >= 95)); // end data processing
+	// end data processing
+    EndProcess((nProgress >= 95)); 
     EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }
 
-CString CPhoneticSegment::GetDefaultChar() {
+CString CPhoneticSegment::GetDefaultText() {
     return CString(SEGMENT_DEFAULT_CHAR);
 }
 
@@ -592,4 +614,25 @@ bool CPhoneticSegment::ContainsText( DWORD offset, DWORD stop) {
 		}
 	}
 	return false;
+}
+
+int CPhoneticSegment::Add( CSaDoc * pDoc, DWORD offset, DWORD duration) {
+	int index = CIndependentSegment::Add( offset, duration);
+	CPhonemicSegment * pPhonemic = (CPhonemicSegment*)pDoc->GetSegment(PHONEMIC);
+	pPhonemic->Add( offset, duration);
+	COrthographicSegment * pOrtho = (COrthographicSegment*)pDoc->GetSegment(ORTHO);
+	pOrtho->Add( offset, duration);
+	CToneSegment * pTone = (CToneSegment*)pDoc->GetSegment(TONE);
+	pTone->Add( offset, duration);
+	return index;
+}
+
+void CPhoneticSegment::AddAt( CSaDoc * pDoc, int index, DWORD offset, DWORD duration) {
+	InsertAt( index, offset, duration);
+	CPhonemicSegment * pPhonemic = (CPhonemicSegment*)pDoc->GetSegment(PHONEMIC);
+	pPhonemic->InsertAt( index, offset, duration);
+	COrthographicSegment * pOrtho = (COrthographicSegment*)pDoc->GetSegment(ORTHO);
+	pOrtho->InsertAt( index, offset, duration);
+	CToneSegment * pTone = (CToneSegment*)pDoc->GetSegment(TONE);
+	pTone->InsertAt( index, offset, duration);
 }

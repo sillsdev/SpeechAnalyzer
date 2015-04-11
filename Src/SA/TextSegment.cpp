@@ -19,20 +19,11 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-/***************************************************************************/
-// CTextSegment::CTextSegment Constructor
-/***************************************************************************/
 CTextSegment::CTextSegment(EAnnotation index, int master) : CDependentSegment(index,master) {
 }
 
-/***************************************************************************/
-// CTextSegment::~CTextSegment Destructor
-/***************************************************************************/
 CTextSegment::~CTextSegment() {
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CTextSegment helper functions
 
 /***************************************************************************/
 // CTextSegment::Insert Insert a text segment
@@ -71,7 +62,6 @@ BOOL CTextSegment::Append(LPCTSTR pszString, bool delimiter, DWORD dwStart, DWOR
 DWORD CTextSegment::CalculateDuration(ISaDoc * pDoc, const int nIndex) const {
 
     CSegment * pMaster = (CSegment *)pDoc->GetSegment(m_nMasterType);
-    pMaster->Validate();
     int offset_size = GetOffsetSize();
     if ((nIndex < 0) || (nIndex >= offset_size)) {
         return DWORD(-1);

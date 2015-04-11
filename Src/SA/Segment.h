@@ -78,24 +78,50 @@ public:
 
     virtual void Serialize(CArchive & ar);
 
+    enum EMode {
+        MODE_AUTOMATIC,
+        MODE_EDIT,
+        MODE_ADD
+    };
+
+    enum ELimit {
+        LIMIT_MOVING_START=1,
+        LIMIT_MOVING_STOP=2,
+        LIMIT_MOVING_BOTH=3,
+        LIMIT_MOVING_START_NO_OVERLAP=4,
+        LIMIT_MOVING_STOP_NO_OVERLAP=5,
+        LIMIT_MOVING_BOTH_NO_OVERLAP=6,
+    };
+
     int GetMasterIndex(void) const;
     EAnnotation GetAnnotationIndex(void) const;
 	bool Is( EAnnotation type) const;
 
     // get copies of internal data.  (const functions)
-    virtual CFontTable * NewFontTable() const = 0;  // return selected font table
+	// return selected font table
+    virtual CFontTable * NewFontTable() const = 0;  
     int GetOffsetSize() const;
     int GetDurationSize() const;
-    DWORD GetOffset(const int nIndex) const;        // return offset
-    DWORD GetDuration(const int nIndex) const;      // return duration
-    CString GetText(const int nIndex) const;        // return text
-    DWORD GetStop(const int nIndex) const;          // return stop
-    int GetSelection() const;                       // return the index of the selected character
-    int GetPrevious(int nIndex = -1) const;         // return the index of the previous segment
-    int GetNext(int nIndex = -1) const;             // return the index of the next segment
-    int FindOffset(DWORD dwOffset) const;           // return segment with matching offset
-    int FindStop(DWORD dwOffset) const;             // return segment with matching stop
-    int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; // get segment index from position
+	// return offset
+    DWORD GetOffset(const int nIndex) const;
+	// return duration
+    DWORD GetDuration(const int nIndex) const;
+	// return text
+    CString GetText(const int nIndex) const;
+	// return stop
+    DWORD GetStop(const int nIndex) const;
+	// return the index of the selected character
+    int GetSelection() const;
+	// return the index of the previous segment
+    int GetPrevious(int nIndex = -1) const;
+	// return the index of the next segment
+    int GetNext(int nIndex = -1) const;
+	// return segment with matching offset
+    int FindOffset(DWORD dwOffset) const;
+	// return segment with matching stop
+    int FindStop(DWORD dwOffset) const;
+	// get segment index from position
+    int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; 
     virtual bool Match(int index, LPCTSTR find);
     virtual void Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
     int FindIndex(DWORD offset);
@@ -104,6 +130,7 @@ public:
     // checks the position of the cursors for new segment
     int CheckCursors(CSaDoc *, BOOL bOverlap) const;
     DWORD GetDurationAt(int index) const;
+    void InsertAt(int index, DWORD offset, DWORD duration);
     void InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration);
 	// remove text, offset and duration
     virtual void RemoveAt(int index, bool remove);
@@ -117,22 +144,7 @@ public:
 	// insert a new segment
     virtual BOOL SetText(int nIndex, LPCTSTR pszString);   
 
-    enum EMode {
-        MODE_AUTOMATIC,
-        MODE_EDIT,
-        MODE_ADD
-    };
-
     virtual int CheckPosition(ISaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL bOverlap=TRUE) const = 0;
-
-    enum ELimit {
-        LIMIT_MOVING_START=1,
-        LIMIT_MOVING_STOP=2,
-        LIMIT_MOVING_BOTH=3,
-        LIMIT_MOVING_START_NO_OVERLAP=4,
-        LIMIT_MOVING_STOP_NO_OVERLAP=5,
-        LIMIT_MOVING_BOTH_NO_OVERLAP=6,
-    };
 
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const = 0;
     BOOL NeedToScroll(CSaView & saView, int nIndex) const;
@@ -173,9 +185,7 @@ public:
 	// return segment length
     virtual int GetSegmentLength(int nIndex) const;
 
-    virtual CString GetDefaultChar();
-
-    void Validate();
+    virtual CString GetDefaultText();
 
 	// return the contents of the entire segment
     CString GetContent() const;
@@ -199,17 +209,23 @@ public:
 
 protected:
     int GetReferenceCount(CSegment * pSegment, int sel);
+	virtual int Add( DWORD offset, DWORD duration);
+	virtual int Add( LPCTSTR text, DWORD offset, DWORD duration);
 
     typedef BOOL (CALLBACK EXPORT * TpInputFilterProc)(CSaString &);
-    int m_nSelection;                   // selected segment
+	// selected segment
+    int m_nSelection;                   
     EAnnotation m_nAnnotationType;
     int m_nMasterType;
 
-    CStringArray m_Text;                // array of text strings
+	// array of text strings
+    CStringArray m_Text;
 
 private:
-    CDWordArray m_Offset;               // array of offsets
-    CDWordArray m_Duration;             // array of durations
+	// array of offsets
+    CDWordArray m_Offset;
+	// array of durations
+    CDWordArray m_Duration;
 };
 
 #endif

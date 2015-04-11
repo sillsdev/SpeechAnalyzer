@@ -2482,7 +2482,7 @@ void CSaView::OnUpdateGraphsZoomOut(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 
-    TRACE(">>OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
+    //TRACE(">>OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
 	// get pointer to document
     CSaDoc * pDoc = GetDocument();  
 	// zooming is enabled
@@ -2565,7 +2565,7 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
             }
         }
     }
-	TRACE("<<m_dwDataPosition=%lu\n",m_dwDataPosition);
+	//TRACE("<<m_dwDataPosition=%lu\n",m_dwDataPosition);
     CView::OnHScroll(nSBCode, nPos, pScrollBar);
     pViewMainFrame->SetPlayerTimes();
 }
@@ -4607,7 +4607,7 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 *    Specifies the x- and y-coordinate of the cursor. These coordinates are always relative to the upper-left corner of the screen.
 */
 BOOL CSaView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) {
-    TRACE("OnMouseWheel %d\n",zDelta);
+    //TRACE("OnMouseWheel %d\n",zDelta);
     if (zDelta<0) {
         double fZoom = 1.25*m_fZoom;
         ZoomIn(fZoom - m_fZoom);
@@ -5882,7 +5882,7 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
         GraphIDtoPtr(IDD_RECORDING)->GetPlot()->RedrawWindow(NULL,NULL,RDW_INTERNALPAINT|RDW_UPDATENOW);
     }
 
-	TRACE("m_dwDataPosition=%lu\n",m_dwDataPosition);
+	//TRACE("m_dwDataPosition=%lu\n",m_dwDataPosition);
 
     pViewMainFrame->SetPlayerTimes();
 }
@@ -5952,7 +5952,7 @@ void CSaView::ZoomOut(double fZoomAmount) {
             SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
         }
 
-		TRACE("m_dwDataPosition=%lu\n",m_dwDataPosition);
+		//TRACE("m_dwDataPosition=%lu\n",m_dwDataPosition);
 
         pViewMainFrame->SetPlayerTimes();
     }
@@ -8336,14 +8336,11 @@ void CSaView::OnEditAddPhonetic() {
             nNext = nInsertAt;
         }
         if ((nNext != -1) &&
-                (pPhonetic->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))) {
+            (pPhonetic->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))) {
             pPhonetic->Adjust(pDoc, nNext, GetStopCursorPosition(), pPhonetic->GetStop(nNext)-GetStopCursorPosition(),false);
         }
 
-        pPhonetic->Insert(nInsertAt, szString, false, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
-        pPhonemic->Insert(nInsertAt, L"", false, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
-        pOrtho->Insert(nInsertAt, L"", false, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
-        pTone->Insert(nInsertAt, L"", false, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
+		pPhonetic->AddAt( pDoc, nInsertAt, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
 
         // Adjust Gloss
         if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt))) {
@@ -8405,10 +8402,7 @@ void CSaView::OnEditAddPhonetic() {
 
                 nInsertAt = pPhonetic->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
                 ASSERT(nInsertAt >= 0);
-                pPhonetic->Insert(nInsertAt, szString, false, dwStart, dwStop - dwStart);
-                pPhonemic->Insert(nInsertAt, L"", false, dwStart, dwStop - dwStart);
-                pOrtho->Insert(nInsertAt, L"", false, dwStart, dwStop - dwStart);
-                pTone->Insert(nInsertAt, L"", false, dwStart, dwStop - dwStart);
+				pPhonetic->AddAt( pDoc, nInsertAt, dwStart, dwStop-dwStart);
 
                 // Adjust Gloss
                 if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt))) {

@@ -390,3 +390,8 @@ void CDependentSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
     pView->ChangeAnnotationSelection(this, sel, 0, 0);  // deselect
     pView->RefreshGraphs(FALSE);                        // refresh the graphs between cursors
 }
+
+int CDependentSegment::Add( DWORD offset, DWORD duration) {
+	return CSegment::Add(offset,duration);
+}
+
