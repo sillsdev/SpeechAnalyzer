@@ -121,21 +121,18 @@
     <value>False</value>
   </metadata>
   <metadata name="m_toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+    <value>17, -15</value>
   </metadata>
   <metadata name="buttonOk.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="buttonOk.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
   <data name="buttonOk.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="buttonOk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>418, 251</value>
+    <value>418, 220</value>
   </data>
   <data name="buttonOk.Size" type="System.Drawing.Size, System.Drawing">
     <value>91, 26</value>
@@ -165,9 +162,6 @@
   <metadata name="lblAvailableMemory.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
-  <data name="lblAvailableMemory.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
   <data name="lblAvailableMemory.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -175,7 +169,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblAvailableMemory.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 179</value>
+    <value>150, 148</value>
   </data>
   <data name="lblAvailableMemory.Size" type="System.Drawing.Size, System.Drawing">
     <value>92, 13</value>
@@ -201,9 +195,6 @@
   <metadata name="lblAvailableDiskSpace.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
-  <data name="lblAvailableDiskSpace.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
   <data name="lblAvailableDiskSpace.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -211,7 +202,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblAvailableDiskSpace.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 203</value>
+    <value>150, 172</value>
   </data>
   <data name="lblAvailableDiskSpace.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 13</value>
@@ -247,10 +238,10 @@
     <value />
   </data>
   <data name="fieldWorksIcon.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 13</value>
+    <value>23, 23</value>
   </data>
   <data name="fieldWorksIcon.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 141</value>
+    <value>110, 110</value>
   </data>
   <data name="fieldWorksIcon.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
     <value>StretchImage</value>
@@ -280,7 +271,7 @@
     <value>28, 55</value>
   </data>
   <data name="lnkWebsite.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 263</value>
+    <value>13, 231</value>
   </data>
   <data name="lnkWebsite.Size" type="System.Drawing.Size, System.Drawing">
     <value>311, 17</value>
@@ -313,7 +304,7 @@
     <value>37, 55</value>
   </data>
   <data name="lnkFeedback.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 245</value>
+    <value>13, 213</value>
   </data>
   <data name="lnkFeedback.Size" type="System.Drawing.Size, System.Drawing">
     <value>302, 17</value>
@@ -343,7 +334,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblBuild.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 227</value>
+    <value>13, 195</value>
   </data>
   <data name="lblBuild.Size" type="System.Drawing.Size, System.Drawing">
     <value>50, 13</value>
@@ -370,7 +361,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblAppVersion.Location" type="System.Drawing.Point, System.Drawing">
-    <value>152, 97</value>
+    <value>152, 65</value>
   </data>
   <data name="lblAppVersion.Size" type="System.Drawing.Size, System.Drawing">
     <value>352, 17</value>
@@ -393,14 +384,11 @@
   <data name="&gt;&gt;lblAppVersion.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="lblAvailableMemoryValue.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
   <data name="lblAvailableMemoryValue.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="lblAvailableMemoryValue.Location" type="System.Drawing.Point, System.Drawing">
-    <value>265, 176</value>
+    <value>265, 145</value>
   </data>
   <data name="lblAvailableMemoryValue.Size" type="System.Drawing.Size, System.Drawing">
     <value>244, 19</value>
@@ -426,14 +414,11 @@
   <data name="&gt;&gt;lblAvailableMemoryValue.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="lblAvailableDiskSpaceValue.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
   <data name="lblAvailableDiskSpaceValue.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="lblAvailableDiskSpaceValue.Location" type="System.Drawing.Point, System.Drawing">
-    <value>265, 201</value>
+    <value>265, 170</value>
   </data>
   <data name="lblAvailableDiskSpaceValue.Size" type="System.Drawing.Size, System.Drawing">
     <value>244, 17</value>
@@ -459,14 +444,11 @@
   <data name="&gt;&gt;lblAvailableDiskSpaceValue.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="lblCopyright.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
   <data name="lblCopyright.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="lblCopyright.Location" type="System.Drawing.Point, System.Drawing">
-    <value>149, 142</value>
+    <value>149, 111</value>
   </data>
   <data name="lblCopyright.Size" type="System.Drawing.Size, System.Drawing">
     <value>360, 24</value>
@@ -496,7 +478,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>148, 61</value>
+    <value>148, 29</value>
   </data>
   <data name="lblName.Size" type="System.Drawing.Size, System.Drawing">
     <value>356, 32</value>
@@ -526,7 +508,7 @@
     <value>0, 0</value>
   </data>
   <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>520, 290</value>
+    <value>520, 263</value>
   </data>
   <data name="panel1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -550,7 +532,7 @@
     <value>5, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>520, 290</value>
+    <value>520, 263</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterParent</value>

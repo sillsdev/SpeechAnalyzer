@@ -254,12 +254,16 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     HDC hdc = pDC->GetSafeHdc();
 
     // set up an array of colors to be used in the Z-graph
+	// get application colors
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    Colors * pColor = pMainWnd->GetColors(); // get application colors
+    Colors * pColor = pMainWnd->GetColors();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); // get pointer to formants object
-    CFormantParm * pFormantParms = pFormants->GetFormantParms();   //!!move to formant processing class
-    ProcessFTFormants(); // process FormantTracker formants
+	// get pointer to formants object
+    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
+	//!!move to formant processing class
+	// process FormantTracker formants
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();
+    ProcessFTFormants();
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bTrackFormants = pFormantParms->bTrackFormants;
     BOOL bCluster = (pFormants->GetFormantFrameCount() > 1);
@@ -279,24 +283,27 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
         int nPoints = bCluster ? zG.n - 2 : zG.n - 1;
         int nSymbol;
         for (nSymbol = 0; nSymbol < nPoints; nSymbol++) {
-            DataPointSymbol[nSymbol] = 'L';    // LPC point
+			// LPC point
+            DataPointSymbol[nSymbol] = 'L';
         }
-        DataPointSymbol[nSymbol] = 'C';   // cepstral point
+		// cepstral point
+        DataPointSymbol[nSymbol] = 'C';
         if (bCluster) {
-            PlotColorArray[2] = pColor->cPlotStopCursor;  // for mean value of tracking cluster
+			// for mean value of tracking cluster
+            PlotColorArray[2] = pColor->cPlotStopCursor;
             DataPointSymbol[++nSymbol] = 'M';
         }
     }
 
     // fill In the [SGraph] structure elements
-    zG.hdc          = hdc            ; // windows HDC
-    zG.RWindow      = &rClient       ; // RECT with plot dimensions
+    zG.hdc          = hdc            ;		// windows HDC
+    zG.RWindow      = &rClient       ;		// RECT with plot dimensions
     zG.symbols      = (int far *)DataPointSymbol; // symbols array (no symbols used)
-    zG.axis_color   = pColor->cPlotGrid; // graph axis color
-    zG.bkg_color    = pColor->cPlotBkg;   // graph bkg. color
-    zG.plot_color   = PlotColorArray ;    // array of plot colors
+    zG.axis_color   = pColor->cPlotGrid;	// graph axis color
+    zG.bkg_color    = pColor->cPlotBkg;		// graph bkg. color
+    zG.plot_color   = PlotColorArray ;		// array of plot colors
     zG.fill_style   = 0              ;
-    zG.title        = _T("\0")           ;
+    zG.title        = _T("\0");
     zG.legend_position = zNO_LEGEND  ;
     zG.symbols_flag = OFF            ;
     zG.grid_flag    = HaveGrid()     ;

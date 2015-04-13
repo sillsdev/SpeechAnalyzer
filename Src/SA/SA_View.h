@@ -225,8 +225,8 @@ public:
     BOOL ReadProperties(CObjectIStream & obs, BOOL createGraphs); 
 	// Autoloading
     BOOL ReadGraphListProperties(CObjectIStream & obs, BOOL createGraphs); 
-    static void s_SetObjectStream(CObjectIStream & obs);
-    static void s_ClearObjectStream();
+    static void SetObjectStream(CObjectIStream & obs);
+    static void ClearObjectStream();
     BOOL ReadGraphListProperties(const CSaView & fromThis);
 	// called first time after construct and when applying new wave
     void InitialUpdate(BOOL bTemp=FALSE); 
@@ -239,7 +239,6 @@ public:
 	// change graph type
     BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);             
     void RemoveRtPlots();
-    CMainFrame * MainFrame();
     LRESULT OnFrameAnimationDone(WPARAM wParam = 0, LPARAM lParam = 0L);
 	// overridden to draw this view
     virtual void OnDraw(CDC * pDC); 
@@ -271,8 +270,8 @@ public:
     void EnableScrolling(bool val);
     void SelectSegment(CSegment * pSegment, int index);
 
-    void EditMoveLeft( bool combined);
-    bool CanMoveDataLeft( CSegment * pSegment, bool combined);
+    void EditMoveLeft();
+    bool CanMoveDataLeft( CSegment * pSegment, bool discrete);
 	bool AnySegmentHasData( CSegment * pSegment, int sel);
 
 protected:
@@ -624,6 +623,8 @@ private:
     BOOL IsPhoneticOverlapping(bool story);
     BOOL AllowAutoAdd(bool story);
 
+	CMainFrame & GetMainFrame();
+
 	void ErrorMessage( int msg);
 	void ErrorMessage( int msg, LPCTSTR param);
 	void ErrorMessage( CSaString & msg);
@@ -697,7 +698,6 @@ private:
     static CObjectIStream * s_pobsAutoload;
     BOOL m_WeJustReadTheProperties;
     BOOL m_bViewCreated;
-    CMainFrame * pViewMainFrame;
 
     DWORD lastBoundaryStartCursor;
     DWORD lastBoundaryStopCursor;
@@ -706,7 +706,7 @@ private:
     DWORD m_dwLastPlaybackPosition;
 
 	// true if we should scroll during playback
-    bool bEnableScrolling;
+    bool enableScrolling;
 
     CDlgAdvancedParseWords * m_pDlgAdvancedParseWords;
     CDlgAdvancedSegment * m_pDlgAdvancedSegment;

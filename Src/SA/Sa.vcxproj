@@ -364,7 +364,7 @@
     <ClCompile Include="WaveWarp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\SA MSEA Release Notes.txt" />
+    <None Include="..\Release Notes.txt" />
     <None Include="Annotation.cd" />
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />

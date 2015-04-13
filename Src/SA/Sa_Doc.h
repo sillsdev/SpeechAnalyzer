@@ -347,16 +347,16 @@ public:
     void SplitSegment( CPhoneticSegment * pSeg, int sel, bool segmental);
     bool CanSplit(CSegment * pSeg);
     bool CanMerge(CSegment * pSeg);
-    void MergeSegments( CPhoneticSegment * pSeg);
+    void MergeSegments( CPhoneticSegment * pSeg, int sel);
     bool IsSegmental(CPhoneticSegment * pSeg, int sel);
     bool IsBoundary(CPhoneticSegment * pPhonetic, int sel);
-    void SelectSegment(CSegment * pSegment, int index);
+    void SelectSegment(CSegment * pSegment, int sel);
     bool CanMoveDataRight(CSegment * pSegment);
     void MoveDataLeft(DWORD offset);
     void MoveDataRight(DWORD offset);
 	void DeselectAll();
 	void ImportSAB( CSaView & view, LPCTSTR filename);
-	void ImportSAB( LPCTSTR filename, bool segmentAudio, bool loadData);
+	void ImportSAB( LPCTSTR filename, bool segmentAudio, bool loadData, int skipCount);
 	void SegmentAudio( );
 	void LoadData( );
 

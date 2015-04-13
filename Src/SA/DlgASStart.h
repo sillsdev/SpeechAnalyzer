@@ -16,6 +16,8 @@ class CDlgASStart : public CDialog {
 public:
     CDlgASStart(CWnd * pParent = NULL);
 
+	int GetSkipCount();
+
     enum { IDD = IDD_AUDIOSYNC_STARTUP };
 
 	CString audioFilename;
@@ -33,8 +35,13 @@ protected:
 	CButton browse2;
 	CButton checkbox1;
 	CButton checkbox2;
+	CEdit edit1;
 	CEdit edit2;
 	CButton ok;
+	CStatic text1;
+	CComboBox combo1;
+
+	CString skipCount;
 
 	DECLARE_MESSAGE_MAP()
 };

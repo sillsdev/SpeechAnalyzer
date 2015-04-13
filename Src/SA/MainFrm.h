@@ -146,21 +146,29 @@ public:
     virtual void Dump(CDumpContext & dc) const;
 #endif
     // helper functions
-    void ShowDataStatusBar(BOOL bShow); // show or hide data status bar
+	// show or hide data status bar
+    void ShowDataStatusBar(BOOL bShow); 
     CDataStatusBar * GetDataStatusBar();
     CProgressStatusBar * GetProgressStatusBar();
     int ComputeNumberOfViews(int nNum);
     int GetCaptionStyle();
     Colors * GetColors();
-    CFnKeys * GetFnKeys(CFnKeys *); // return a copy of the function keys structure
-    void SetFnKeys(CFnKeys *); // set the function keys structure
+	void SetColors(Colors value);
+	// return a copy of the function keys structure
+    CFnKeys * GetFnKeys(CFnKeys *);
+	// set the function keys structure
+    void SetFnKeys(CFnKeys *); 
     LRESULT OnPlayer(WPARAM, LPARAM, SSpecific *);
     CGrid * GetGrid();
     BOOL IsStatusBar();
-    BOOL IsPlayerPlaying();     // return TRUE if player is playing
-    BOOL IsPlayerPaused();      // return TRUE if player is paused
-    BOOL IsPlayerTestRun();     // return TRUE if player is running function key test run
-    void SetPlayerTimes();      // set player dialogue time in LED indicators
+	// return TRUE if player is playing
+    BOOL IsPlayerPlaying();
+	// return TRUE if player is paused
+    BOOL IsPlayerPaused();
+	// return TRUE if player is running function key test run
+    BOOL IsPlayerTestRun();
+	// set player dialogue time in LED indicators
+    void SetPlayerTimes();
     BOOL IsScrollZoom();
     int GetStatusPosReadout();
     int GetStatusPitchReadout();

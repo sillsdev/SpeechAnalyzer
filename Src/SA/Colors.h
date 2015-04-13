@@ -40,8 +40,8 @@ public:
     COLORREF cSysInActiveCapText;   // system caption text color
     COLORREF cBackupColor;          // needed for overlay colors
 
-    COLORREF     cAnnotationBkg[ANNOT_WND_NUMBER]; // annotation window background color
-    COLORREF     cAnnotationFont[ANNOT_WND_NUMBER]; // annotation window font color
+    COLORREF cAnnotationBkg[ANNOT_WND_NUMBER];	// annotation window background color
+    COLORREF cAnnotationFont[ANNOT_WND_NUMBER]; // annotation window font color
 
 protected:
     static void GreyScale(COLORREF & rgb);

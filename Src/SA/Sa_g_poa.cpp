@@ -130,9 +130,11 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
     CProcessPOA * pPOA = (CProcessPOA *)pDoc->GetPOA(); // get pointer to POA object
     if (!pAutoPitch->IsVoiced(pDoc, dwFrameStart) || !pAutoPitch->IsVoiced(pDoc, dwFrameStart + dwFrameSize - wSmpSize)) {
         // frame is not entirely voiced
-        Colors * pColor = pMainWnd->GetColors(); // get application colors
+		// get application colors
+        Colors * pColor = pMainWnd->GetColors(); 
         CBrush Eraser(pColor->cPlotBkg);
-        pDC->FillRect(&rWnd, &Eraser);  // clear the plot area
+		// clear the plot area
+        pDC->FillRect(&rWnd, &Eraser);  
         if (!bDynamicUpdate) {
             m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_SELECTVOICED, &rWnd);
         } else {
@@ -200,9 +202,12 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
         CBitmap * pOldTongue = dcTongue.SelectObject(&bmTongue); //load tongue bitmap into memory device
         CBitmap * pOldJaw = dcJaw.SelectObject(&bmJaw);         //load jaw bitmap into memory device
 
-        Colors * pColor = pMainWnd->GetColors();         //get application colors
-        CPen Pen(PS_SOLID, 1, pColor->cPlotData[0]);     //get pen
-        CPen * pOldPen = dcFace.SelectObject(&Pen);      //select pen for plotting
+		//get application colors
+        Colors * pColor = pMainWnd->GetColors();
+		//get pen
+        CPen Pen(PS_SOLID, 1, pColor->cPlotData[0]);
+		//select pen for plotting
+        CPen * pOldPen = dcFace.SelectObject(&Pen);
 
         static SVocalTractCoord VocalTractPlotSect[] = {
 #include "voctract.h"    //locate the vocal tract sections in the plot

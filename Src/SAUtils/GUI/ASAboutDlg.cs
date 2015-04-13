@@ -162,8 +162,8 @@ public class ASAboutDlg : Form, IAboutDlg {
             // 
             // buttonOk
             // 
-            resources.ApplyResources(buttonOk, "buttonOk");
             buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(buttonOk, "buttonOk");
             buttonOk.Name = "buttonOk";
             m_toolTip.SetToolTip(buttonOk, resources.GetString("buttonOk.ToolTip"));
             buttonOk.UseVisualStyleBackColor = true;
@@ -222,14 +222,14 @@ public class ASAboutDlg : Form, IAboutDlg {
             // 
             // lblAvailableMemoryValue
             // 
-            resources.ApplyResources(this.lblAvailableMemoryValue, "lblAvailableMemoryValue");
             this.lblAvailableMemoryValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            resources.ApplyResources(this.lblAvailableMemoryValue, "lblAvailableMemoryValue");
             this.lblAvailableMemoryValue.Name = "lblAvailableMemoryValue";
             // 
             // lblAvailableDiskSpaceValue
             // 
-            resources.ApplyResources(this.lblAvailableDiskSpaceValue, "lblAvailableDiskSpaceValue");
             this.lblAvailableDiskSpaceValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            resources.ApplyResources(this.lblAvailableDiskSpaceValue, "lblAvailableDiskSpaceValue");
             this.lblAvailableDiskSpaceValue.Name = "lblAvailableDiskSpaceValue";
             // 
             // lblCopyright

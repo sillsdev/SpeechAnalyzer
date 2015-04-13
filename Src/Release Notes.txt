@@ -1,4 +1,16 @@
-AS - 0.99.0.2 4/10/2015
+AS - 0.99.0.4 4/11/2015
+- Hid 'Locate segments' and 'Locate phrases' (AS)
+- Shortened menu items for 'Speech Analyzer Help' to 'View Help' (AS/SA)
+- Added code to call 'Audio+Sync Help.pdf' for Audio+Sync Help menu item. (AS)
+- Added sa3.psa to install (AS)
+- Modified default cursor selection for AS startup dialogbox (AS)
+- Sorted control order for AS startup dialog (AS)
+- Shorted AS startup dialog box
+- Added 'skip' parameter to AS start dialog (AS).  This parameter is only available through the start dialog.
+- Fixed merge bug (AS/SA)
+- Fixed move left bug (AS/SA)
+
+AS - 0.99.0.2 & 0.99.0.3 4/10/2015
 -Revised layout of Audio+Sync startup dialog box.
 -Fixes for missing segments when performing locate segments/locate words/locate phrases and auto segmentation (AS/SA)
 

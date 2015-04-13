@@ -5434,7 +5434,7 @@ BOOL CSaDoc::ReadProperties(CObjectIStream & obs) {
         return TRUE;
     }
     TRACE(_T("Autoload: %s\n"), sPath);
-    CSaView::s_SetObjectStream(obs);  // 1996-09-05 MRP
+    CSaView::SetObjectStream(obs);
 
     while (!obs.bAtEnd()) {
         if (CSaDoc::ReadPropertiesOfViews(obs, sPath)) ;
@@ -5443,10 +5443,11 @@ BOOL CSaDoc::ReadProperties(CObjectIStream & obs) {
         } else if (obs.bAtBeginOrEndMarker()) {
             break;
         } else {
-            obs.ReadMarkedString();    // Skip unexpected field
+			// Skip unexpected field
+            obs.ReadMarkedString();    
         }
     }
-    CSaView::s_ClearObjectStream();  // 1996-09-05 MRP
+    CSaView::ClearObjectStream();
 
     return TRUE;
 }
@@ -8099,6 +8100,7 @@ void CSaDoc::SplitSegment( CPhoneticSegment * pSeg, int sel, bool segmental) {
 }
 
 bool CSaDoc::CanSplit(CSegment * pSeg) {
+
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
     if (pSeg==NULL) {
         return false;
@@ -8127,6 +8129,7 @@ bool CSaDoc::CanSplit(CSegment * pSeg) {
 }
 
 bool CSaDoc::CanMerge(CSegment * pSeg) {
+
 	CSaApp * pApp = (CSaApp *)AfxGetApp();
     if (pSeg==NULL) {
         return false;
@@ -8185,9 +8188,8 @@ bool CSaDoc::CanMerge(CSegment * pSeg) {
     return true;
 }
 
-void CSaDoc::MergeSegments( CPhoneticSegment * pPhonetic) {
+void CSaDoc::MergeSegments( CPhoneticSegment * pPhonetic, int sel) {
     
-	int sel = pPhonetic->GetSelection();
     if (sel==-1) {
         return;
     }
@@ -8600,135 +8602,13 @@ void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename) {
 		autoSegment = true;
 	}
 
-	// auto add reference numbers
-    CTranscriptionData td;
-
-    CFileEncodingHelper feh(filename);
-    if (!feh.CheckEncoding(true)) {
-        return;
-    }
-
-    wistringstream stream;
-    if (!feh.ConvertFileToUTF16(stream)) {
-		return;
-    }
-
-    if (!ImportTranscription(stream,TRUE,TRUE,FALSE,FALSE,FALSE,td,true,false)) {
-		ErrorMessage(IDS_ERROR_SAB_NO_IMPORT);
-        return;
-    }
-
-    CString ref = td.m_szPrimary;
-	MarkerList gl = td.GetMarkerList(GLOSS);
-	MarkerList gn = td.GetMarkerList(GLOSS_NAT);
-    TranscriptionDataMap & map = td.m_TranscriptionData;
-    MarkerList::iterator rit = map[ref].begin();
-    MarkerList::iterator rend = map[ref].end();
-    MarkerList::iterator glit = gl.begin();
-    MarkerList::iterator glend = gl.end();
-    MarkerList::iterator gnit = gn.begin();
-    MarkerList::iterator gnend = gn.end();
-
-	// is the incoming data gl or gn?
-	bool usingGL = false;
-	while (glit!=glend) {
-		CString text = (*glit).Trim();
-		glit++;
-		if (text.GetLength()==0) continue;
-		if ((text.GetLength()==1)&&((text[0]==WORD_DELIMITER)||(text[0]==TEXT_DELIMITER))) continue;
-		usingGL = true;
-		break;
-	}
-
-	if (autoSegment) {
-		// delete segments for everything
-		DeleteSegmentContents(PHONETIC);
-		DeleteSegmentContents(PHONEMIC);
-		DeleteSegmentContents(ORTHO);
-		DeleteSegmentContents(TONE);
-		DeleteSegmentContents(GLOSS);
-		DeleteSegmentContents(GLOSS_NAT);
-		DeleteSegmentContents(REFERENCE);
-	}
-
-    CGraphWnd * pGraph = view.GraphIDtoPtr(IDD_RAWDATA);
-    if (pGraph!=NULL) {
-		pGraph->ShowAnnotation(PHONETIC,TRUE);
-		pGraph->ShowAnnotation(REFERENCE,TRUE);
-		if (usingGL) {
-			pGraph->ShowAnnotation(GLOSS,TRUE);
-			pGraph->ShowAnnotation(GLOSS_NAT,FALSE);
-		} else {
-			pGraph->ShowAnnotation(GLOSS,FALSE);
-			pGraph->ShowAnnotation(GLOSS_NAT,TRUE);
-		}
-		view.RefreshGraphs(TRUE,TRUE,TRUE);
-	}
-
-	if (autoSegment) {
-		DWORD goal = (usingGL)?gl.size():gn.size();
-		if (!AutoSegment( view, goal)) {
-			view.RefreshGraphs(TRUE,TRUE,TRUE);
-			return;
-		}
-	}
-
-	view.RefreshGraphs(TRUE,TRUE,TRUE);
-
-	// reset for resue
-    glit = gl.begin();
-
-	if (usingGL) {
-		DWORD limit = pGloss->GetOffsetSize()-1;
-		int i=0;
-		while (glit!=glend) {
-			// insert gloss
-			CString text = (*glit).Trim();
-			if (text.GetLength()==0) {
-				text = WORD_DELIMITER;
-			} else if ((text[0]!=WORD_DELIMITER)&&(text[0]!=TEXT_DELIMITER)) {
-				text.Insert(0,WORD_DELIMITER);
-			}
-			DWORD offset = pGloss->GetOffset(i);
-			DWORD duration = pGloss->GetDuration(i);
-			TRACE(L"Setting gloss %d at %d %d\n",i,offset,duration);
-			pGloss->SetText(i,text);
-			glit++;
-			// insert reference
-			if (rit!=rend) {
-				DWORD offset = pRef->GetOffset(i);
-				DWORD duration = pRef->GetDuration(i);
-				TRACE(L"Setting ref %d with %s at %d %d\n",i,(LPCTSTR)*rit,offset,duration);
-				pRef->SetText(i,*rit);
-				rit++;
-			}
-			i++;
-			if (i>limit) break;
-		}
-	} else {
-		// using gloss national
-		DWORD limit = pGlossNat->GetOffsetSize()-1;
-		int i=0;
-		while (gnit!=gnend) {
-			// insert gloss
-			CString text = (*gnit).Trim();
-			pGlossNat->SetText(i,text);
-			gnit++;
-			// insert reference
-			if (rit!=rend) {
-				pRef->SetText(i,*rit);
-				rit++;
-			}
-			i++;
-			if (i>limit) break;
-		}
-	}
+	ImportSAB( filename, autoSegment, true, 0);
 }
 
 /**
 * Called during AS startup
 */
-void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
+void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int skipCount) {
 
 	if ((!autoSegment)&&(!loadData)) return;
 
@@ -8764,6 +8644,7 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
     }
 
     CString ref = td.m_szPrimary;
+	MarkerList rf = td.GetMarkerList(REFERENCE);
 	MarkerList gl = td.GetMarkerList(GLOSS);
 	MarkerList gn = td.GetMarkerList(GLOSS_NAT);
     TranscriptionDataMap & map = td.m_TranscriptionData;
@@ -8801,6 +8682,11 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
 	CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
 	CGlossNatSegment * pGlossNat = (CGlossNatSegment*)GetSegment(GLOSS_NAT);
 
+	CToneSegment * pTone = (CToneSegment*)GetSegment(TONE);
+	COrthographicSegment * pOrtho = (COrthographicSegment*)GetSegment(ORTHO);
+	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
+	CPhonemicSegment * pPhonemic = (CPhonemicSegment*)GetSegment(PHONEMIC);
+
     // get reference to view
     POSITION pos = GetFirstViewPosition();
     CSaView & view = (CSaView &)*GetNextView(pos);
@@ -8821,9 +8707,21 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
 
 	if (autoSegment) {
 		DWORD goal = (usingGL)?gl.size():gn.size();
+		goal += skipCount;
 		if (!AutoSegment( view, goal)) {
 			view.RefreshGraphs(TRUE,TRUE,TRUE);
 			return;
+		}
+
+		while (skipCount>0) {
+			pRef->RemoveAt(0,true);
+			pGlossNat->RemoveAt(0,true);
+			pGloss->RemoveAt(0,true);
+			pTone->RemoveAt(0,true);
+			pOrtho->RemoveAt(0,true);
+			pPhonemic->RemoveAt(0,true);
+			pPhonetic->RemoveAt(0,true);
+			skipCount--;
 		}
 	}
 
@@ -8833,16 +8731,6 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
 
 		CheckPoint();
 
-		// add reference segments for each Gloss Segment
-		pRef->DeleteContents();
-		pGlossNat->DeleteContents();
-		for (int i=0;i<pGloss->GetOffsetSize();i++) {
-			DWORD offset = pGloss->GetOffset(i);
-			DWORD duration = pGloss->GetDuration(i);
-			pRef->Append(L"",false,offset,duration);
-			pGlossNat->Append(L"",false,offset,duration);
-		}
-
 		// reset for resue
 		glit = gl.begin();
 
@@ -8850,6 +8738,7 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
 			DWORD limit = pGloss->GetOffsetSize()-1;
 			int i=0;
 			while (glit!=glend) {
+				
 				// insert gloss
 				CString text = (*glit).Trim();
 				if (text.GetLength()==0) {
@@ -8857,16 +8746,10 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
 				} else if ((text[0]!=WORD_DELIMITER)&&(text[0]!=TEXT_DELIMITER)) {
 					text.Insert(0,WORD_DELIMITER);
 				}
-				DWORD offset = pGloss->GetOffset(i);
-				DWORD duration = pGloss->GetDuration(i);
-				TRACE(L"Setting gloss %d at %d %d\n",i,offset,duration);
 				pGloss->SetText(i,text);
 				glit++;
 				// insert reference
 				if (rit!=rend) {
-					DWORD offset = pRef->GetOffset(i);
-					DWORD duration = pRef->GetDuration(i);
-					TRACE(L"Setting ref %d with %s at %d %d\n",i,(LPCTSTR)*rit,offset,duration);
 					pRef->SetText(i,*rit);
 					rit++;
 				}
@@ -8878,6 +8761,7 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData) {
 			DWORD limit = pGlossNat->GetOffsetSize()-1;
 			int i=0;
 			while (gnit!=gnend) {
+
 				// insert gloss
 				CString text = (*gnit).Trim();
 				pGlossNat->SetText(i,text);

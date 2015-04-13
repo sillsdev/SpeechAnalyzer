@@ -43,14 +43,18 @@ void CDlgASStart::DoDataExchange(CDataExchange * pDX) {
     CDialog::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_EDIT_AUDIO_FILENAME, audioFilename);
     DDX_Text(pDX, IDC_EDIT_PHRASE_FILENAME, phraseFilename);
+	DDX_Text(pDX, IDC_COMBO_SKIP, skipCount);
     DDX_Check(pDX, IDC_CHECK_SEGMENT_AUDIO, segmentAudio);
     DDX_Check(pDX, IDC_CHECK_LOAD_DATA, loadData);
 
     DDX_Control(pDX, IDC_BUTTON_BROWSE2, browse2);
+    DDX_Control(pDX, IDC_EDIT_AUDIO_FILENAME, edit1);
     DDX_Control(pDX, IDC_EDIT_PHRASE_FILENAME, edit2);
     DDX_Control(pDX, IDC_CHECK_SEGMENT_AUDIO, checkbox1);
     DDX_Control(pDX, IDC_CHECK_LOAD_DATA, checkbox2);
 	DDX_Control(pDX, IDOK, ok);
+	DDX_Control(pDX, IDC_COMBO_SKIP, combo1);
+	DDX_Control(pDX, IDC_STATIC_TITLE, text1);
 }
 
 BOOL CDlgASStart::OnInitDialog() {
@@ -72,8 +76,16 @@ BOOL CDlgASStart::OnInitDialog() {
 	audioFilename = path;
 	UpdateData(FALSE);
 	OnChange();
+	// setting selection to force caret to end of edit
+	// field for really long filenames.
+	edit1.SetFocus();
+	edit1.SetSel(-1);
+	edit2.SetSel(-1);
+
+	combo1.SetCurSel(3);
+
 	// return TRUE  unless you set the focus to a control
-    return TRUE;  
+    return FALSE;
 }
 
 void CDlgASStart::OnClickedBrowseAudio() {
@@ -89,6 +101,7 @@ void CDlgASStart::OnClickedBrowseAudio() {
     audioFilename = dlg.GetPathName();
 	UpdateData(FALSE);
 	OnChange();
+	edit1.SetSel(-1);
 }
 
 void CDlgASStart::OnClickedBrowsePhrases() {
@@ -109,6 +122,7 @@ void CDlgASStart::OnClickedBrowsePhrases() {
 	}
 	UpdateData(FALSE);
 	OnChange();
+	edit2.SetSel(-1);
 }
 
 void CDlgASStart::OnChange() {
@@ -120,6 +134,8 @@ void CDlgASStart::OnChange() {
 		edit2.EnableWindow(FALSE);
 		browse2.EnableWindow(FALSE);
 		checkbox1.EnableWindow(FALSE);
+		text1.EnableWindow(FALSE);
+		combo1.EnableWindow(FALSE);
 		checkbox2.EnableWindow(FALSE);
 		ok.EnableWindow(FALSE);
 	} else if (FileUtils::FileExists(audioFilename)) {
@@ -135,6 +151,8 @@ void CDlgASStart::OnChange() {
 			edit2.EnableWindow(FALSE);
 			browse2.EnableWindow(FALSE);
 			checkbox1.EnableWindow(FALSE);
+			text1.EnableWindow(FALSE);
+			combo1.EnableWindow(FALSE);
 			checkbox2.EnableWindow(FALSE);
 			ok.EnableWindow(TRUE);
 		} else {
@@ -146,6 +164,8 @@ void CDlgASStart::OnChange() {
 				edit2.EnableWindow(TRUE);
 				browse2.EnableWindow(TRUE);
 				checkbox1.EnableWindow(FALSE);
+				text1.EnableWindow(FALSE);
+				combo1.EnableWindow(FALSE);
 				checkbox2.EnableWindow(FALSE);
 				ok.EnableWindow(TRUE);
 			} else if (FileUtils::FileExists(phraseFilename)) {
@@ -155,6 +175,8 @@ void CDlgASStart::OnChange() {
 				// enable segmentation if need be
 				// this can happen with or without phrase file
 				checkbox1.EnableWindow(TRUE);
+				text1.EnableWindow(TRUE);
+				combo1.EnableWindow(TRUE);
 				bool segmenting = (checkbox1.GetCheck()==1);
 				// enable OK button
 				if (segmenting) {
@@ -175,6 +197,8 @@ void CDlgASStart::OnChange() {
 				segmentAudio = FALSE;
 				loadData = FALSE;
 				checkbox1.EnableWindow(FALSE);
+				text1.EnableWindow(FALSE);
+				combo1.EnableWindow(FALSE);
 				checkbox2.EnableWindow(FALSE);
 				ok.EnableWindow(FALSE);
 			}
@@ -185,9 +209,15 @@ void CDlgASStart::OnChange() {
 		edit2.EnableWindow(FALSE);
 		browse2.EnableWindow(FALSE);
 		checkbox1.EnableWindow(FALSE);
+		text1.EnableWindow(FALSE);
+		combo1.EnableWindow(FALSE);
 		checkbox2.EnableWindow(FALSE);
 		ok.EnableWindow(FALSE);
 	}
 	UpdateData(FALSE);
+}
+
+int CDlgASStart::GetSkipCount() {
+	return ::_wtoi(skipCount);
 }
 

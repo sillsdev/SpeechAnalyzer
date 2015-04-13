@@ -219,7 +219,8 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
         GetClientRect(rClient);
         CDC * pDC = GetDC();
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-        Colors * pColor = pMainWnd->GetColors(); // get application colors
+		// get application colors
+        Colors * pColor = pMainWnd->GetColors(); 
         CBrush Eraser(pColor->cPlotBkg);
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NO_DURATIONS, &rClient);
 

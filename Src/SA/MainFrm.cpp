@@ -2652,6 +2652,10 @@ Colors * CMainFrame::GetColors() {
     return &m_colors;
 }
 
+void CMainFrame::SetColors( Colors value) {
+    m_colors = value;
+}
+
 CGrid * CMainFrame::GetGrid() {
     return &m_grid;
 }

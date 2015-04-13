@@ -138,14 +138,14 @@ public class SAAboutDlg : Form, IAboutDlg {
             System.Windows.Forms.Label lblAvailableDiskSpace;
             System.Windows.Forms.PictureBox fieldWorksIcon;
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lnkWebsite = new System.Windows.Forms.LinkLabel();
+            this.lnkFeedback = new System.Windows.Forms.LinkLabel();
             this.lblBuild = new System.Windows.Forms.Label();
             this.lblAppVersion = new System.Windows.Forms.Label();
             this.lblAvailableMemoryValue = new System.Windows.Forms.Label();
             this.lblAvailableDiskSpaceValue = new System.Windows.Forms.Label();
             this.lblCopyright = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
-            this.lnkFeedback = new System.Windows.Forms.LinkLabel();
-            this.lnkWebsite = new System.Windows.Forms.LinkLabel();
             m_toolTip = new System.Windows.Forms.ToolTip(this.components);
             buttonOk = new System.Windows.Forms.Button();
             lblAvailableMemory = new System.Windows.Forms.Label();
@@ -164,8 +164,8 @@ public class SAAboutDlg : Form, IAboutDlg {
             // 
             // buttonOk
             // 
-            resources.ApplyResources(buttonOk, "buttonOk");
             buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(buttonOk, "buttonOk");
             buttonOk.Name = "buttonOk";
             m_toolTip.SetToolTip(buttonOk, resources.GetString("buttonOk.ToolTip"));
             buttonOk.UseVisualStyleBackColor = true;
@@ -205,6 +205,22 @@ public class SAAboutDlg : Form, IAboutDlg {
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
             // 
+            // lnkWebsite
+            // 
+            resources.ApplyResources(this.lnkWebsite, "lnkWebsite");
+            this.lnkWebsite.Name = "lnkWebsite";
+            this.lnkWebsite.TabStop = true;
+            this.lnkWebsite.UseCompatibleTextRendering = true;
+            this.lnkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.HandleWebsiteLinkClicked);
+            // 
+            // lnkFeedback
+            // 
+            resources.ApplyResources(this.lnkFeedback, "lnkFeedback");
+            this.lnkFeedback.Name = "lnkFeedback";
+            this.lnkFeedback.TabStop = true;
+            this.lnkFeedback.UseCompatibleTextRendering = true;
+            this.lnkFeedback.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.HandleFeedbackLinkClicked);
+            // 
             // lblBuild
             // 
             resources.ApplyResources(this.lblBuild, "lblBuild");
@@ -217,14 +233,14 @@ public class SAAboutDlg : Form, IAboutDlg {
             // 
             // lblAvailableMemoryValue
             // 
-            resources.ApplyResources(this.lblAvailableMemoryValue, "lblAvailableMemoryValue");
             this.lblAvailableMemoryValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            resources.ApplyResources(this.lblAvailableMemoryValue, "lblAvailableMemoryValue");
             this.lblAvailableMemoryValue.Name = "lblAvailableMemoryValue";
             // 
             // lblAvailableDiskSpaceValue
             // 
-            resources.ApplyResources(this.lblAvailableDiskSpaceValue, "lblAvailableDiskSpaceValue");
             this.lblAvailableDiskSpaceValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            resources.ApplyResources(this.lblAvailableDiskSpaceValue, "lblAvailableDiskSpaceValue");
             this.lblAvailableDiskSpaceValue.Name = "lblAvailableDiskSpaceValue";
             // 
             // lblCopyright
@@ -236,22 +252,6 @@ public class SAAboutDlg : Form, IAboutDlg {
             // 
             resources.ApplyResources(this.lblName, "lblName");
             this.lblName.Name = "lblName";
-            // 
-            // lnkFeedback
-            // 
-            resources.ApplyResources(this.lnkFeedback, "lnkFeedback");
-            this.lnkFeedback.Name = "lnkFeedback";
-            this.lnkFeedback.TabStop = true;
-            this.lnkFeedback.UseCompatibleTextRendering = true;
-            this.lnkFeedback.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.HandleFeedbackLinkClicked);
-            // 
-            // lnkWebsite
-            // 
-            resources.ApplyResources(this.lnkWebsite, "lnkWebsite");
-            this.lnkWebsite.Name = "lnkWebsite";
-            this.lnkWebsite.TabStop = true;
-            this.lnkWebsite.UseCompatibleTextRendering = true;
-            this.lnkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.HandleWebsiteLinkClicked);
             // 
             // SAAboutDlg
             // 

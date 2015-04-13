@@ -70,28 +70,35 @@ CPlotSpectrum::~CPlotSpectrum() {
 // cursors.
 /***************************************************************************/
 void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
-    // Get pointer to graph, document, and main frame.
+
+	// Get pointer to graph, document, and main frame.
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
-    WORD wSmpSize = WORD(pDoc->GetSampleSize());        // calculate sample size in bytes
+    CSaDoc * pDoc = pView->GetDocument();
+	// calculate sample size in bytes
+    WORD wSmpSize = WORD(pDoc->GetSampleSize());
     double SigBandwidth = (double)pDoc->GetSamplesPerSec() / 2.;
+    // get application colors
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    Colors * pColor = pMainWnd->GetColors();            // get application colors
+    Colors * pColor = pMainWnd->GetColors();
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
 
     // Finish fragmenting as needed.
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    pDoc->EnableBackgroundProcessing(FALSE);            // Force fragmenter to finish
-    short int nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
+	// Force fragmenter to finish
+    pDoc->EnableBackgroundProcessing(FALSE);
+	// process data
+    short int nResult = LOWORD(pFragments->Process(this, pDoc));
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (!bDynamicUpdate) {
-            nResult = CheckResult(nResult, pFragments);    // check the process result
+			// check the process result
+            nResult = CheckResult(nResult, pFragments);
         }
         return;
     }
 
     // Get spectrum object and spectrum plot parameters.
-    CProcessSpectrum * pSpectrum = (CProcessSpectrum *)pDoc->GetSpectrum(); // get pointer to spectrum object
+	// get pointer to spectrum object
+    CProcessSpectrum * pSpectrum = (CProcessSpectrum *)pDoc->GetSpectrum();
     CSpectrumParm * pSpectrumParms = pSpectrum->GetSpectrumParms();
 
     // Get pointer to raw waveform plot.

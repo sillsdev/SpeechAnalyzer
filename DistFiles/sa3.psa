@@ -1,0 +1,448 @@
+\+SaApp 0.99.0.4
+
+\+mainframe 
+
+\placementMain max      -1   -1   -1   -1  210   24 1351  728
+\placementEditor normal   -1   -1   -1   -1  479  344  859  554
+\StartMode 0
+\showstartupdlg 1
+\saveopenfiles 0
+\showadvancedaudio 0
+\statusbar 1
+\statusposreadout 0
+\statuspitchreadout 0
+\toolbar 0
+\taskbar 0
+\toneAbove 0
+\scrollzoom 1
+\GraphUpdateMode 0
+\Animate 0
+\AnimationRate 5
+\CursorMode 2
+\+colors 
+\+plotcolors 
+\rgb 225,255,255
+\rgb 0,128,192
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 255,128,0
+\rgb 0,0,255
+\rgb 100,100,100
+\rgb 0,0,255
+\rgb 51,153,255
+\rgb 255,255,255
+\rgb 109,109,109
+\rgb 0,0,0
+\rgb 0,128,0
+\rgb 255,0,0
+\rgb 0,0,255
+\-plotcolors
+\+scalecolors 
+\rgb 250,250,230
+\rgb 0,0,255
+\rgb 0,0,255
+\-scalecolors
+\+annotationbkg 
+\rgb 255,255,200
+\rgb 255,232,200
+\rgb 202,255,202
+\rgb 200,225,255
+\rgb 244,213,255
+\rgb 244,235,185
+\rgb 220,220,175
+\rgb 240,240,240
+\rgb 240,240,240
+\rgb 240,240,240
+\rgb 240,240,240
+\-annotationbkg
+\+annotationfont 
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\rgb 0,0,0
+\-annotationfont
+\-colors
+\+fnkeys 
+\repeat 0
+\delay 1000
+\volume 100
+\speed 100
+\mode 32832
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 94
+\speed 100
+\mode 32832
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\repeat 0
+\delay 1000
+\volume 50
+\speed 100
+\mode 32834
+\-fnkeys
+\+grid 
+
+\xgrid 1
+\ygrid 1
+\xstyle 0
+\ystyle 0
+\-grid
+\+generator 
+\+sinusoid1 
+\enable 0
+\amplitude 30
+\frequency 1000
+\phase 0
+\-sinusoid1
+\+sinusoid2 
+\enable 1
+\amplitude 30
+\frequency 5000
+\phase 0
+\-sinusoid2
+\+sinusoid3 
+\enable 0
+\amplitude 30
+\frequency 10000
+\phase 0
+\-sinusoid3
+\+comb 
+\enable 0
+\amplitude 30
+\frequency 3000
+\phase 0
+\-comb
+\+square 
+\enable 0
+\amplitude 30
+\frequency 3000
+\phase 0
+\-square
+\+triangle 
+\enable 0
+\amplitude 30
+\frequency 5000
+\phase 0
+\-triangle
+\+saw 
+\enable 0
+\amplitude 30
+\frequency 3000
+\phase 0
+\-saw
+\discontinuities 0
+\harmonics 10
+\samplingrate 44100
+\filelength 5
+\bits 16
+\-generator
+\+parse 
+\break_ms 500
+\phrase_break_ms 468
+\maxThreshold 10
+\minThreshold 5
+\-parse
+\+segment 
+\segment_ms 20
+\minChange 17
+\minZeroCrossing 50
+\-segment
+\+pitch 
+\RangeMode 0
+\ScaleMode 2
+\UpperBound 176
+\LowerBound 80
+\UseCepMedianFilter 1
+\CepMedianFilterSize 7
+\ManualUpper 180
+\ManualLower 70
+\-pitch
+\+music 
+\UpperBound 59
+\LowerBound 37
+\ManualUpper 70
+\ManualLower 44
+\CalcUpperBound 84
+\CalcLowerBound 28
+\ManualCalcUpper 84
+\ManualCalcLower 28
+\-music
+\+intensity 
+\ScaleMode 0
+\-intensity
+\+spectrum 
+\nScaleMode 0
+\nPwrUpperBound 10
+\nPwrLowerBound -80
+\nFreqUpperBound 11025
+\nFreqLowerBound 0
+\nFreqScaleRange 2
+\nSmoothLevel 5
+\nPeakSharpFac 0
+\bShowLpcSpectrum 1
+\bShowCepSpectrum 0
+\bShowFormantFreq 1
+\bShowFormantBandwidth 0
+\bShowFormantPower 0
+\-spectrum
+\+spectrogramA 
+\nResolution3 2
+\nColor 1
+\bShowF1 1
+\bShowF2 1
+\bShowF3 1
+\bShowF4 0
+\bShowF5andUp 0
+\bSmoothFormantTracks 1
+\nFrequency 3600
+\nMaxThreshold 221
+\nMinThreshold 27
+\nOverlay 0
+\bShowPitch 0
+\bShowFormants 0
+\-spectrogramA
+\+spectrogramB 
+\nResolution3 2
+\nColor 0
+\bShowF1 1
+\bShowF2 1
+\bShowF3 1
+\bShowF4 0
+\bShowF5andUp 0
+\bSmoothFormantTracks 1
+\nFrequency 3200
+\nMaxThreshold 209
+\nMinThreshold 61
+\nOverlay 0
+\bShowPitch 0
+\bShowFormants 0
+\-spectrogramB
+\captionstyle 3
+\+graphfontarray 
+\graphfont Doulos SIL
+\graphfontsize 13
+\graphfont Doulos SIL
+\graphfontsize 11
+\graphfont Doulos SIL
+\graphfontsize 12
+\graphfont Doulos SIL
+\graphfontsize 12
+\graphfont Charis SIL
+\graphfontsize 11
+\graphfont Doulos SIL
+\graphfontsize 12
+\graphfont Doulos SIL
+\graphfontsize 11
+\graphfont Doulos SIL
+\graphfontsize 11
+\graphfont Doulos SIL
+\graphfontsize 11
+\graphfont Doulos SIL
+\graphfontsize 11
+\graphfont Doulos SIL
+\graphfontsize 12
+\-graphfontarray
+\DefaultMaximizeView 1
+\DefaultHeightView 379
+\DefaultWidthView 870
+\AutoSave 1
+\-mainframe
+\+defaultviewconfig 
+\+saview 
+\+graphlist 
+\graphid 1597
+\+sagraph 
+\showlegend 1
+\showxscale 1
+\+annotwnd 
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\-annotwnd
+\-sagraph
+\graphid 222
+\+sagraph 
+\showlegend 1
+\showxscale 1
+\+annotwnd 
+\showwnd 1
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 1
+\showwnd 1
+\showwnd 1
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\showwnd 0
+\-annotwnd
+\-sagraph
+\-graphlist
+\+printoptions 
+
+\fixedaspectr 1
+\usesmallfonts 1
+\islandscape 1
+\ishires 0
+\-printoptions
+\layout2 28672
+\legendall 1
+\legendnone 0
+\xscaleall 1
+\xscalenone 0
+\+annotallornonelist 
+\annotall 0
+\annotnone 0
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\annotall 0
+\annotnone 1
+\-annotallornonelist
+\boundariesall 0
+\transcriptionboundaries 1
+\drawstyleline 1
+\updateboundaries 1
+\-saview
+\-defaultviewconfig
+\wbonexit 0
+\+sourceInfo 
+\enable 0
+\gender -1
+\-sourceInfo
+\-SaApp

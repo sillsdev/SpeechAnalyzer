@@ -2530,24 +2530,26 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,47,141,50,14
 END
 
-IDD_AUDIOSYNC_STARTUP DIALOGEX 0, 0, 430, 148
+IDD_AUDIOSYNC_STARTUP DIALOGEX 0, 0, 357, 149
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio+Sync Project Start"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,162,128,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,216,128,50,14
-    EDITTEXT        IDC_EDIT_AUDIO_FILENAME,11,26,355,14,ES_AUTOHSCROLL,WS_EX_RIGHT
-    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE1,369,26,50,14
-    EDITTEXT        IDC_EDIT_PHRASE_FILENAME,11,59,355,14,ES_AUTOHSCROLL,WS_EX_RIGHT
-    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE2,369,58,50,14
-    CONTROL         "Automatically segment the audio recording",IDC_CHECK_SEGMENT_AUDIO,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,88,152,10
-    CONTROL         "Automatically fill the segments with text",IDC_CHECK_LOAD_DATA,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,103,143,10
-    GROUPBOX        "Processing",IDC_STATIC,11,75,407,44
-    LTEXT           "Audio Recording",IDC_STATIC,13,15,53,8
-    LTEXT           "Text for Alignment",IDC_STATIC,13,48,60,8
+    LTEXT           "Audio Recording",IDC_STATIC,8,15,53,8
+    EDITTEXT        IDC_EDIT_AUDIO_FILENAME,7,26,290,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE1,300,26,50,14
+    LTEXT           "Text for Alignment",IDC_STATIC,8,47,60,8
+    EDITTEXT        IDC_EDIT_PHRASE_FILENAME,7,58,290,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE2,301,57,49,14
+    GROUPBOX        "Processing",IDC_STATIC,7,75,343,44
+    CONTROL         "Automatically segment the audio recording and skip the first ",IDC_CHECK_SEGMENT_AUDIO,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,88,206,10
+    COMBOBOX        IDC_COMBO_SKIP,220,86,25,74,CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP
+    LTEXT           "segments.",IDC_STATIC_TITLE,250,89,34,8
+    CONTROL         "Automatically fill the segments with text.",IDC_CHECK_LOAD_DATA,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,102,144,10
+    DEFPUSHBUTTON   "OK",IDOK,127,128,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,181,128,50,14
 END
 
 
@@ -2908,9 +2910,9 @@ BEGIN
     IDD_AUDIOSYNC_STARTUP, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 423
+        RIGHTMARGIN, 350
         TOPMARGIN, 7
-        BOTTOMMARGIN, 141
+        BOTTOMMARGIN, 142
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -3128,7 +3130,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
+        MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
         MENUITEM "&What's New?",                ID_HELP_WHATS_NEW
         MENUITEM "T&roubleshooting",            ID_HELP_TROUBLE
         MENUITEM "&Graphs",                     ID_HELP_GRAPHS
@@ -3151,16 +3153,17 @@ BEGIN
     BEGIN
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
         MENUITEM SEPARATOR
-        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
     POPUP "&Tools"
     BEGIN
-        MENUITEM "&Options...",                 ID_TOOLS_OPTIONS, GRAYED
+        MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
     END
     POPUP "&Help"
     BEGIN
+        MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
         MENUITEM "&About Audio+Sync",           ID_APP_ABOUT
     END
 END
@@ -3517,7 +3520,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
+        MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
         MENUITEM "&What's New?",                ID_HELP_WHATS_NEW
         MENUITEM "T&roubleshooting",            ID_HELP_TROUBLE
         MENUITEM "&Graphs",                     ID_HELP_GRAPHS
@@ -3779,9 +3782,7 @@ BEGIN
     BEGIN
         POPUP "Automatic &Markup"
         BEGIN
-            MENUITEM "Locate Phonetic &Segments...", ID_ADVANCED_SEGMENT
             MENUITEM "Locate &Words...",            ID_ADVANCED_PARSE_WORD
-            MENUITEM "Locate &Phrases...",          ID_ADVANCED_PARSE_PHRASE
         END
         POPUP "Align &Transcription"
         BEGIN
@@ -3802,6 +3803,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
+        MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
         MENUITEM "&About Audio+Sync",           ID_APP_ABOUT
     END
 END
@@ -4026,7 +4028,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
+        MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
         MENUITEM "&Workbench Help",             ID_HELP_WORKBENCH
         POPUP "&Training"
         BEGIN
@@ -4189,7 +4191,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
+        MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
         MENUITEM SEPARATOR
         MENUITEM "&What's New?",                ID_HELP_WHATS_NEW
         MENUITEM "T&roubleshooting",            ID_HELP_TROUBLE
@@ -5076,6 +5078,23 @@ BEGIN
     0
 END
 
+IDD_AUDIOSYNC_STARTUP DLGINIT
+BEGIN
+    IDC_COMBO_SKIP, 0x403, 2, 0
+0x0030, 
+    IDC_COMBO_SKIP, 0x403, 2, 0
+0x0031, 
+    IDC_COMBO_SKIP, 0x403, 2, 0
+0x0032, 
+    IDC_COMBO_SKIP, 0x403, 2, 0
+0x0033, 
+    IDC_COMBO_SKIP, 0x403, 2, 0
+0x0034, 
+    IDC_COMBO_SKIP, 0x403, 2, 0
+0x0035, 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5945,7 +5964,7 @@ BEGIN
                             "Open *.Wav & display Raw Waveform, Melogram, and Tonal Wght.\nOpenMA"
     ID_HELP_WHATS_NEW       "Help with new Speech Analyzer features\nWhat's New"
     IDS_HELP                "&Help"
-    ID_HELP_CONTENTS        "List help topics\nSpeech Analyzer Help"
+    ID_HELP_CONTENTS        "List help topics\nView Help"
     ID_HELP_USINGHELP       "Help about how to use help\nUsing Help"
 END
 

@@ -589,7 +589,7 @@ CSaView::CSaView( const CSaView * right) {
     lastBoundaryIndex = -1;
     lastBoundaryCursor = UNDEFINED_CURSOR;
 
-    bEnableScrolling = false;
+    enableScrolling = false;
 }
 
 CSaView::~CSaView() {
@@ -638,9 +638,6 @@ void CSaView::Init() {
 	m_pDlgAdvancedParsePhrases = NULL;
 	m_pDlgAdvancedParseWords = NULL;
 
-    // RLJ 06/01/2000
-    pViewMainFrame = (CMainFrame *)AfxGetMainWnd();
-
     m_pStopwatch = NULL;
     m_restartPageOptions = FALSE;
     m_pPageLayout = new CDlgPrintOptions();
@@ -677,7 +674,7 @@ void CSaView::Init() {
             m_abAnnNone[nLoop] = TRUE;
         }
     }
-    m_nCursorAlignment = MainFrame()->GetCursorAlignment();
+    m_nCursorAlignment = GetMainFrame().GetCursorAlignment();
 	m_bTranscriptionBoundaries = TRUE;
     m_bSegmentBoundaries = TRUE;
     m_bUpdateBoundaries = TRUE;
@@ -726,7 +723,7 @@ void CSaView::Init() {
     lastBoundaryIndex = -1;
     lastBoundaryCursor = UNDEFINED_CURSOR;
 
-    bEnableScrolling = false;
+    enableScrolling = false;
 }
 
 /***************************************************************************/
@@ -773,8 +770,10 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
         }
     }
 
-    (*pGraph)->SetCaptionStyle(pViewMainFrame->GetCaptionStyle());     // set caption style
-    (*pGraph)->SetMagnify(m_fMagnify);                                 // set the magnify factor
+	// set caption style
+    (*pGraph)->SetCaptionStyle(GetMainFrame().GetCaptionStyle());
+	// set the magnify factor
+    (*pGraph)->SetMagnify(m_fMagnify);
     (*pGraph)->ShowTranscriptionBoundaries(m_bTranscriptionBoundaries);
 
     switch (nID) {
@@ -818,7 +817,7 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
 /***************************************************************************/
 void CSaView::SendPlayMessage(WORD Int1, WORD Int2) {
     DWORD lParam = MAKELONG(Int1, Int2);
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam); // send message to start player
+    GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam); // send message to start player
 }
 
 /***************************************************************************/
@@ -995,14 +994,14 @@ void CSaView::OnPlaybackSlow() {
         Player_Slow = 25
     };
 
-    CFnKeys * pKeys = ((CMainFrame *)pViewMainFrame)->GetFnKeys(0);
+    CFnKeys * pKeys = GetMainFrame().GetFnKeys(0);
     pKeys->bRepeat[Player_Slow] = FALSE;     // TRUE, if playback repeat enabled
     pKeys->nDelay[Player_Slow] = 100;        // repeat delay time in ms
     pKeys->nMode[Player_Slow] = ID_PLAYBACK_CURSORS;       // replay mode
     pKeys->nSpeed[Player_Slow] = 50;        // default replay speed in %
     pKeys->nVolume[Player_Slow] = 50;       // default play volume in %
 
-    pViewMainFrame->PostMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, MAKELONG(Player_Slow, -1));
+    GetMainFrame().PostMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, MAKELONG(Player_Slow, -1));
 }
 
 /***************************************************************************/
@@ -1095,7 +1094,7 @@ void CSaView::OnPlaybackStopToR() {
 /***************************************************************************/
 void CSaView::OnPlayerPause() {
     // send message to pause player
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PAUSED, MAKELONG(-1, FALSE));
+    GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::PAUSED, MAKELONG(-1, FALSE));
 }
 
 /***************************************************************************/
@@ -1103,7 +1102,7 @@ void CSaView::OnPlayerPause() {
 /***************************************************************************/
 void CSaView::OnUpdatePlayerPause(CCmdUI * pCmdUI) {
     // enable if player is playing
-    pCmdUI->Enable(pViewMainFrame->IsPlayerPlaying());
+    pCmdUI->Enable(GetMainFrame().IsPlayerPlaying());
 }
 
 /***************************************************************************/
@@ -1116,7 +1115,7 @@ void CSaView::OnUpdatePlayerPause(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnPlayerStop() {
     // send message to stop player
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
+    GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
 }
 
 /***************************************************************************/
@@ -1124,7 +1123,7 @@ void CSaView::OnPlayerStop() {
 /***************************************************************************/
 void CSaView::OnUpdatePlayerStop(CCmdUI * pCmdUI) {
     // enable if player is playing
-    pCmdUI->Enable((pViewMainFrame->IsPlayerPlaying())||(pViewMainFrame->IsPlayerPaused()));
+    pCmdUI->Enable((GetMainFrame().IsPlayerPlaying())||(GetMainFrame().IsPlayerPaused()));
 }
 
 /***************************************************************************/
@@ -1136,7 +1135,7 @@ void CSaView::OnUpdatePlayerStop(CCmdUI * pCmdUI) {
 // ## Under construction!
 /***************************************************************************/
 void CSaView::OnPlayer() {
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, TRUE)); // send message to start player
+    GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, TRUE)); // send message to start player
 }
 
 /***************************************************************************/
@@ -2567,7 +2566,7 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
     }
 	//TRACE("<<m_dwDataPosition=%lu\n",m_dwDataPosition);
     CView::OnHScroll(nSBCode, nPos, pScrollBar);
-    pViewMainFrame->SetPlayerTimes();
+    GetMainFrame().SetPlayerTimes();
 }
 
 /***************************************************************************/
@@ -2657,7 +2656,7 @@ void CSaView::OnSize(UINT nType, int cx, int cy) {
             SetScrollRange(SB_HORZ, 0, (int)((pDoc->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
             SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
         }
-        if (pViewMainFrame->IsScrollZoom() && (pDoc->GetDataSize() > 0)) {
+        if (GetMainFrame().IsScrollZoom() && (pDoc->GetDataSize() > 0)) {
             // set vertical scroll bar
             SetScrollRange(SB_VERT, ZOOM_SCROLL_RESOLUTION, (int)m_fVScrollSteps, FALSE);
             SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
@@ -3043,7 +3042,7 @@ void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDea
     }
     if (bActivate) { // activating
         // inform mainframe
-        pViewMainFrame->SendMessage(WM_USER_CHANGEVIEW, TRUE, (LONG)this);
+        GetMainFrame().SendMessage(WM_USER_CHANGEVIEW, TRUE, (LONG)this);
         // process workbench if necessary
         if (pDoc->WorkbenchProcess()) {
             RefreshGraphs(TRUE, TRUE);
@@ -3055,7 +3054,7 @@ void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDea
             }
         } else { // clear status bar panes
             // get pointer to status bar
-            CDataStatusBar * pStat = pViewMainFrame->GetDataStatusBar();
+            CDataStatusBar * pStat = GetMainFrame().GetDataStatusBar();
             // turn off symbols
             pStat->SetPaneSymbol(ID_STATUSPANE_SAMPLES, FALSE);
             pStat->SetPaneSymbol(ID_STATUSPANE_FORMAT, FALSE);
@@ -3094,8 +3093,8 @@ void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDea
 void CSaView::OnDestroy() {
     CView::OnDestroy();
 
-    if (pViewMainFrame->ComputeNumberOfViews(-1) == 0) { // last view destroyed?
-        pViewMainFrame->SendMessage(WM_USER_CHANGEVIEW, FALSE, (LONG)this);    // inform mainframe
+    if (GetMainFrame().ComputeNumberOfViews(-1) == 0) { // last view destroyed?
+        GetMainFrame().SendMessage(WM_USER_CHANGEVIEW, FALSE, (LONG)this);    // inform mainframe
     }
 }
 
@@ -3780,8 +3779,8 @@ void CSaView::OnUpdatePlaybackPortion(CCmdUI * pCmdUI) {
 // CSaView::OnSetupFnkeys Calls the player and the setup Fn-keys dialog
 /***************************************************************************/
 void CSaView::OnSetupFnkeys() {
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
-    pViewMainFrame->SetupFunctionKeys();
+    GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
+    GetMainFrame().SetupFunctionKeys();
 }
 
 /***************************************************************************/
@@ -3813,8 +3812,9 @@ CSegment * CSaView::GetAnnotation(EAnnotation annot) {
 // CSaView::OnFilePrint
 /***************************************************************************/
 void CSaView::OnFilePrint() {
-    pViewMainFrame->UpdateWindow();      // Repaint window in case a screen shot print is requested
-    pViewMainFrame->SetPrintingFlag();
+	// Repaint window in case a screen shot print is requested
+    GetMainFrame().UpdateWindow();      
+    GetMainFrame().SetPrintingFlag();
     CView::OnFilePrint();
 }
 
@@ -3822,10 +3822,10 @@ void CSaView::OnFilePrint() {
 // CSaView::OnFilePrintPreview
 /***************************************************************************/
 void CSaView::OnFilePrintPreview() {
-    pViewMainFrame->UpdateWindow();
-    pViewMainFrame->SetPrintingFlag();
+    GetMainFrame().UpdateWindow();
+    GetMainFrame().SetPrintingFlag();
     m_bPrintPreviewInProgress = TRUE;
-    pViewMainFrame->SetPreviewFlag();
+    GetMainFrame().SetPreviewFlag();
     CView::OnFilePrintPreview();
 }
 
@@ -4094,14 +4094,14 @@ CSaView * CSaView::GetViewActiveChild(CMDIChildWnd * pwnd) {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::s_SetObjectStream(CObjectIStream & obs) {
+void CSaView::SetObjectStream(CObjectIStream & obs) {
     ASSERT(!s_pobsAutoload);
     s_pobsAutoload = &obs;
 }
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::s_ClearObjectStream() {
+void CSaView::ClearObjectStream() {
     s_pobsAutoload = NULL;
 }
 
@@ -4556,11 +4556,11 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
             OnHScroll(SB_PAGEDOWN, 0, GetScrollBarCtrl(SB_HORZ)); // scroll right one page
             break;
         case VK_ESCAPE: // process interrupt from user and stop player
-            if (pViewMainFrame->IsPlayerPlaying()) {
-                pViewMainFrame->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L);    // send message to stop player
+            if (GetMainFrame().IsPlayerPlaying()) {
+                GetMainFrame().SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L);    // send message to stop player
             } else if (!IsAnimating()) { // Do not cancel processes during animation
                 // get pointer to status bar
-                pStatusBar = (CProgressStatusBar *)pViewMainFrame->GetProgressStatusBar();
+                pStatusBar = (CProgressStatusBar *)GetMainFrame().GetProgressStatusBar();
                 pProcessOwner = (CProcess *)pStatusBar->GetProcessOwner(); // get the current process owner
                 if (pProcessOwner) {
                     pProcessOwner->CancelProcess();    // cancel the process
@@ -4619,13 +4619,14 @@ BOOL CSaView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) {
 }
 
 void CSaView::EnableScrolling(bool value) {
-    bEnableScrolling = value;
+    enableScrolling = value;
 }
 
 void CSaView::SelectSegment(CSegment * pSegment, int index) {
-    DWORD dwStart = pSegment->GetOffset(index);
-    DWORD dwEnd = pSegment->GetStop(index);
-    ChangeAnnotationSelection(pSegment, index, dwStart, dwEnd);
+    
+	DWORD dwStart = pSegment->GetOffset(index);
+    DWORD dwStop = pSegment->GetStop(index);
+    ChangeAnnotationSelection(pSegment, index, dwStart, dwStop);
 	// refresh the graphs between cursors
     RefreshGraphs(FALSE); 
 }
@@ -4673,7 +4674,7 @@ int CSaView::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     ModifyStyle(0, WS_CLIPCHILDREN);
 
 	// add one view
-    pViewMainFrame->ComputeNumberOfViews(1); 
+    GetMainFrame().ComputeNumberOfViews(1); 
     m_bViewCreated = TRUE;
     return 0;
 }
@@ -5117,16 +5118,8 @@ void  CSaView::PartialCopy( const CSaView & right) {
     m_fMaxZoom = 0;
     m_bPrintPreviewInProgress = FALSE;
 
-    //***********************************************************
-    // Added following two lines: DDO - 09/25/00
-    //***********************************************************
     m_bStaticTWC = right.m_bStaticTWC;
     m_bNormalMelogram = right.m_bNormalMelogram;
-
-    //***********************************************************
-    // Added following two lines: DDO - 08/07/00
-    //***********************************************************
-    pViewMainFrame = (CMainFrame *)AfxGetMainWnd();
 
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         m_abAnnAll[nLoop] = right.m_abAnnAll[nLoop];
@@ -5655,6 +5648,7 @@ void CSaView::RefreshGraphs(BOOL bEntire, BOOL bLegend, BOOL bLayout) {
 // all the highlighted areas in the plots will be deleted.
 //**************************************************************************/
 void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection, DWORD dwStart, DWORD dwStop) {
+
     // set start- and stop cursor if not deselecting
     BOOL bSelect = FALSE;
 
@@ -5685,7 +5679,8 @@ void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection, DWO
                 if (m_apGraphs[nGraphLoop]) {
                     m_apGraphs[nGraphLoop]->ChangeAnnotationSelection(nLoop);
                     if (bSelect) {
-                        m_apGraphs[nGraphLoop]->GetPlot()->SetHighLightArea(0, 0); // deselect
+						// deselect
+                        m_apGraphs[nGraphLoop]->GetPlot()->SetHighLightArea(0, 0); 
                     }
                 }
             }
@@ -5865,7 +5860,7 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
     SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
 
     // if scrolling zoom enabled, set the new position
-    if (pViewMainFrame->IsScrollZoom()) {
+    if (GetMainFrame().IsScrollZoom()) {
         SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
     }
 
@@ -5884,7 +5879,7 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
 
 	//TRACE("m_dwDataPosition=%lu\n",m_dwDataPosition);
 
-    pViewMainFrame->SetPlayerTimes();
+    GetMainFrame().SetPlayerTimes();
 }
 
 /***************************************************************************/
@@ -5948,13 +5943,13 @@ void CSaView::ZoomOut(double fZoomAmount) {
         }
 
         // if scrolling zoom enabled, set the new position
-        if (pViewMainFrame->IsScrollZoom()) {
+        if (GetMainFrame().IsScrollZoom()) {
             SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
         }
 
 		//TRACE("m_dwDataPosition=%lu\n",m_dwDataPosition);
 
-        pViewMainFrame->SetPlayerTimes();
+        GetMainFrame().SetPlayerTimes();
     }
 }
 
@@ -6070,14 +6065,12 @@ void CSaView::InitialUpdate(BOOL bTemp) {
 
     if (s_pobsAutoload) {
         ReadProperties(*s_pobsAutoload, TRUE);
-    } else if ((pApp->IsCreatingNewFile()) ||
-               (!pViewMainFrame) ||
-               (!pViewMainFrame->DefaultIsValid())) {
+    } else if ((pApp->IsCreatingNewFile()) || (!GetMainFrame().DefaultIsValid())) {
         CSaDoc * pDoc = GetDocument();
         CSaString docPath = pDoc->GetPathName();
         CFileStatus status;
-        if (CFile::GetStatus(docPath, status) &&
-                ((status.m_attribute & CFile::readOnly)==CFile::readOnly)) {
+        if ((CFile::GetStatus(docPath, status)) &&
+            ((status.m_attribute & CFile::readOnly)==CFile::readOnly)) {
             CSaString docTitle = pDoc->GetTitle() + " (Read-Only)";
             pDoc->SetTitle(docTitle);
         }
@@ -6089,8 +6082,8 @@ void CSaView::InitialUpdate(BOOL bTemp) {
 			// ReadGraphListProperties assumes no graphs
             DeleteGraphs(); 
         }
-        PartialCopy(*(pViewMainFrame->pDefaultViewConfig()));
-        ReadGraphListProperties(*(pViewMainFrame->pDefaultViewConfig()));
+        PartialCopy(*(GetMainFrame().pDefaultViewConfig()));
+        ReadGraphListProperties(*(GetMainFrame().pDefaultViewConfig()));
     }
 
     if (!bTemp) {
@@ -6106,7 +6099,7 @@ void CSaView::InitialUpdate(BOOL bTemp) {
     // if scrolling zoom enabled, show the scroll bar and set the
     // new position otherwise hide the vertical scroll bar.
     //**************************************************************
-    if ((pViewMainFrame->IsScrollZoom()) && (GetDocument()->GetDataSize() != 0)) {
+    if ((GetMainFrame().IsScrollZoom()) && (GetDocument()->GetDataSize() != 0)) {
         SetScrollRange(SB_VERT, ZOOM_SCROLL_RESOLUTION, (int)m_fVScrollSteps, FALSE);
         SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
     } else {
@@ -6176,8 +6169,8 @@ void CSaView::OnBeginPrinting(CDC * pDC, CPrintInfo * /*pInfo*/) {
 
     if (m_pPageLayout->bIsHiRes()) {
         if (!isColor) {
-            m_saveColors = *pViewMainFrame->GetColors();
-            pViewMainFrame->GetColors()->SetupDefault(TRUE, TRUE);
+            m_saveColors = *GetMainFrame().GetColors();
+            GetMainFrame().GetColors()->SetupDefault(TRUE, TRUE);
         }
     } else if (m_bPrintPreviewInProgress && !isColor && m_pCDibForPrint) {
         m_pCDibForPrint->GoGreyScale();
@@ -6192,15 +6185,15 @@ void CSaView::OnEndPrinting(CDC * pDC, CPrintInfo * /*pInfo*/) {
 
     if (m_pPageLayout->bIsHiRes()) {
         if (!isColor) {
-            *pViewMainFrame->GetColors() = m_saveColors;
+            GetMainFrame().SetColors(m_saveColors);
         }
     } else if (m_pCDibForPrint) {
         delete m_pCDibForPrint;
         m_pCDibForPrint = NULL;
     }
     m_bPrintPreviewInProgress = FALSE;
-    pViewMainFrame->ClearPreviewFlag();
-    pViewMainFrame->ClearPrintingFlag();
+    GetMainFrame().ClearPreviewFlag();
+    GetMainFrame().ClearPrintingFlag();
     if (m_restartPageOptions) {
         PostMessage(WM_COMMAND, ID_FILE_PAGE_SETUP);
     }
@@ -6433,7 +6426,7 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
         }
     }
 
-    pViewMainFrame->SetPlayerTimes();
+    GetMainFrame().SetPlayerTimes();
 
 }
 
@@ -6465,7 +6458,7 @@ void CSaView::SetPlaybackPosition( DWORD dwNewPos, int nSpeed, BOOL bEstimate) {
     // move start cursors in all the graphs
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if (m_apGraphs[nLoop]!=NULL) {
-            m_apGraphs[nLoop]->SetPlaybackPosition(this,bEnableScrolling);
+            m_apGraphs[nLoop]->SetPlaybackPosition(this,enableScrolling);
         }
     }
 }
@@ -6599,7 +6592,7 @@ void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame) {
         }
     }
     // if scrolling zoom enabled, set the new position
-    if (pViewMainFrame->IsScrollZoom()) {
+    if (GetMainFrame().IsScrollZoom()) {
         SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
     }
     if (fZoom > 1.0) { 
@@ -7250,7 +7243,8 @@ int CSaView::CalculateHiResPrintPages(void) {
 //
 /***************************************************************************/
 void CSaView::PreparePrintingForScreenShot(void) {
-    CWindowDC    scrn(pViewMainFrame);
+    
+	CWindowDC scrn(AfxGetMainWnd());
 
     scrn.SelectClipRgn(NULL); // select entire window client area
     scrn.GetClipBox(&m_memRect);
@@ -9089,8 +9083,9 @@ void CSaView::OnUpdateEditAddMarkup(CCmdUI * pCmdUI) {
 // CSaView::OnUpdateEditAddBookmark Update handler for AddBookmark
 /***************************************************************************/
 void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI) {
+
     BOOL bEnable = FALSE;
-    CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
+    CSaDoc * pDoc = (CSaDoc *) GetDocument();
 
     CSegment * pSeg = GetAnnotation(GLOSS);
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
@@ -9147,6 +9142,7 @@ void CSaView::OnUpdateEditSplit(CCmdUI * pCmdUI) {
 // CSaView::OnEditSplit
 /***************************************************************************/
 void CSaView::OnEditSplit() {
+
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
     CSegment * pSeg = FindSelectedAnnotation();
@@ -9165,14 +9161,13 @@ void CSaView::OnEditSplit() {
 			return;
 		}
 		bool segmental = GetDocument()->IsSegmental(pPhonetic, psel);
-		int length = pPhonetic->GetSegmentLength(psel);
-		int newsel = pPhonetic->GetNext(psel);
-		// if we are splitting at the end, we need to calculate the new segment
-		newsel = (newsel==-1)?psel+length:newsel;
 		pDoc->SplitSegment( pPhonetic, psel, segmental);
-		DWORD newStart = pPhonetic->GetOffset(newsel);
-		DWORD newStop = pPhonetic->GetStop(newsel);
-		SelectSegment(pPhonetic,newsel);
+
+		int newsel = pSeg->GetNext(sel);
+		DWORD newStart = pSeg->GetOffset(newsel);
+		DWORD newStop = pSeg->GetStop(newsel);
+		DeselectAnnotations();
+		pSeg->SetSelection(newsel);
 		SetCursorPosition( START_CURSOR,newStart);
 		SetCursorPosition( STOP_CURSOR,newStop);
 		RefreshGraphs(TRUE,FALSE);
@@ -9183,14 +9178,13 @@ void CSaView::OnEditSplit() {
     }
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
     bool segmental = GetDocument()->IsSegmental(pPhonetic, sel);
-    int length = pPhonetic->GetSegmentLength(sel);
-    int newsel = pPhonetic->GetNext(sel);
-    // if we are splitting at the end, we need to calculate the new segment
-    newsel = (newsel==-1)?sel+length:newsel;
-    pDoc->SplitSegment( pPhonetic, sel, segmental);
-    DWORD newStart = pPhonetic->GetOffset(newsel);
-    DWORD newStop = pPhonetic->GetStop(newsel);
-    SelectSegment(pPhonetic,newsel);
+	pDoc->SplitSegment( pPhonetic, sel, segmental);
+
+	int newsel = pSeg->GetNext(sel);
+    DWORD newStart = pSeg->GetOffset(newsel);
+    DWORD newStop = pSeg->GetStop(newsel);
+	DeselectAnnotations();
+	pSeg->SetSelection(newsel);
     SetCursorPosition( START_CURSOR,newStart);
     SetCursorPosition( STOP_CURSOR,newStop);
     RefreshGraphs(TRUE,FALSE);
@@ -9220,6 +9214,7 @@ void CSaView::OnEditMerge() {
     if (sel==-1) {
         return;
     }
+
 	if (pApp->IsAudioSync()) {
 		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
 		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
@@ -9227,11 +9222,13 @@ void CSaView::OnEditMerge() {
 			TRACE("cant find matching phonetic segment\n");
 			return;
 		}
-		int newsel = pSeg->GetPrevious(psel);
-		pDoc->MergeSegments(pPhonetic);
-		DWORD newStart = pPhonetic->GetOffset(newsel);
-		DWORD newStop = pPhonetic->GetStop(newsel);
-		SelectSegment(pPhonetic,newsel);
+		pDoc->MergeSegments(pPhonetic,psel);
+
+		int newsel = pSeg->GetPrevious(sel);
+		DWORD newStart = pSeg->GetOffset(newsel);
+		DWORD newStop = pSeg->GetStop(newsel);
+		DeselectAnnotations();
+		pSeg->SetSelection(newsel);
 		SetCursorPosition(START_CURSOR,newStart);
 		SetCursorPosition(STOP_CURSOR,newStop);
 		RefreshGraphs(TRUE,FALSE);
@@ -9243,13 +9240,13 @@ void CSaView::OnEditMerge() {
         return;
     }
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-    int newsel = pSeg->GetPrevious(sel);
+    pDoc->MergeSegments( pPhonetic, sel);
 
-    GetDocument()->MergeSegments( pPhonetic);
-
-    DWORD newStart = pPhonetic->GetOffset(newsel);
-    DWORD newStop = pPhonetic->GetStop(newsel);
-    SelectSegment(pPhonetic,newsel);
+	int newsel = pSeg->GetPrevious(sel);
+    DWORD newStart = pSeg->GetOffset(newsel);
+    DWORD newStop = pSeg->GetStop(newsel);
+	DeselectAnnotations();
+	pSeg->SetSelection(newsel);
     SetCursorPosition(START_CURSOR,newStart);
     SetCursorPosition(STOP_CURSOR,newStop);
     RefreshGraphs(TRUE,FALSE);
@@ -9260,24 +9257,26 @@ void CSaView::OnEditMerge() {
 /***************************************************************************/
 void CSaView::OnUpdateEditMoveLeft(CCmdUI * pCmdUI) {
     CSegment * pSeg = FindSelectedAnnotation();
-    pCmdUI->Enable((CanMoveDataLeft(pSeg,false))?TRUE:FALSE);
+    pCmdUI->Enable((CanMoveDataLeft(pSeg,true))?TRUE:FALSE);
 }
 
 /***************************************************************************/
 // CSaView::OnEditMoveLeft
 /***************************************************************************/
 void CSaView::OnEditMoveLeft() {
-	EditMoveLeft(false);
+	EditMoveLeft();
 }
 
 /***************************************************************************/
 // CSaView::OnEditMoveLeft
+// The selection should be on the segment to be filled - a blank segment
 /***************************************************************************/
-void CSaView::EditMoveLeft(bool combined) {
+void CSaView::EditMoveLeft() {
 
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
-    CSegment * pSeg = FindSelectedAnnotation();
+
+	CSegment * pSeg = FindSelectedAnnotation();
     if (pSeg==NULL) {
 		TRACE("segment not found\n");
 		return;
@@ -9288,20 +9287,10 @@ void CSaView::EditMoveLeft(bool combined) {
 		return;
 	}
 
-	if (!combined) {
-		if (sel==0) {
-			TRACE("starting segment");
-			return;
-		}
-		sel -= 1;
-	}
-
 	// in combined mode we will be creating an
-	if (!combined) {
-		if (AnySegmentHasData( pSeg, sel)) {
-			TRACE("segment contains data\n");
-			return;
-		}
+	if (AnySegmentHasData( pSeg, sel)) {
+		TRACE("segment contains data\n");
+		return;
 	}
 
 	if (pApp->IsAudioSync()) {
@@ -9311,14 +9300,13 @@ void CSaView::EditMoveLeft(bool combined) {
 			return;
 		}
 		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		bool segmental = pDoc->IsSegmental( pPhonetic, sel);
 		DWORD start = pPhonetic->GetOffset(psel);
-		DWORD stop = pPhonetic->GetStop(psel);
 		pDoc->MoveDataLeft(start);
-		size_t count = pPhonetic->GetOffsetSize();
-		psel = (psel<count)?psel:count-1;
-		start = pPhonetic->GetOffset(psel);
-		stop = pPhonetic->GetStop(psel);
+
+		start = pSeg->GetOffset(sel);
+		DWORD stop = pSeg->GetStop(sel);
+		DeselectAnnotations();
+		pSeg->SetSelection(sel);
 		SetCursorPosition(START_CURSOR,start);
 		SetCursorPosition(STOP_CURSOR,stop);
 		RefreshGraphs(TRUE,FALSE);
@@ -9329,15 +9317,15 @@ void CSaView::EditMoveLeft(bool combined) {
 		TRACE("selected segment is not PHONETIC\n");
 		return;
 	}
+
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
-    bool segmental = pDoc->IsSegmental( pPhonetic, sel);
     DWORD start = pPhonetic->GetOffset(sel);
-    DWORD stop = pPhonetic->GetStop(sel);
     pDoc->MoveDataLeft(start);
-    size_t count = pPhonetic->GetOffsetSize();
-    sel = (sel<count)?sel:count-1;
-    start = pPhonetic->GetOffset(sel);
-    stop = pPhonetic->GetStop(sel);
+
+	start = pSeg->GetOffset(sel);
+	DWORD stop = pSeg->GetStop(sel);
+	DeselectAnnotations();
+	pSeg->SetSelection(sel);
     SetCursorPosition(START_CURSOR,start);
     SetCursorPosition(STOP_CURSOR,stop);
     RefreshGraphs(TRUE,FALSE);
@@ -9347,10 +9335,11 @@ void CSaView::EditMoveLeft(bool combined) {
 // CSaView::OnUpdateEditSplitMoveLeft
 /***************************************************************************/
 void CSaView::OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI) {
+
     CSegment * pSeg = FindSelectedAnnotation();
 	CSaDoc * pDoc = GetDocument();
-    bool a = CanMoveDataLeft(pSeg,true);
-    bool b = pDoc->CanSplit(pSeg);
+    bool a = pDoc->CanSplit(pSeg);
+    bool b = CanMoveDataLeft(pSeg,false);
     pCmdUI->Enable((a&b)?TRUE:FALSE);
 }
 
@@ -9359,7 +9348,7 @@ void CSaView::OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnEditSplitMoveLeft() {
     OnEditSplit();
-    EditMoveLeft(true);
+    EditMoveLeft();
 }
 
 /***************************************************************************/
@@ -9396,10 +9385,12 @@ void CSaView::OnEditMoveRight() {
 		}
 	    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
 		DWORD start = pPhonetic->GetOffset(psel);
-		DWORD stop = pPhonetic->GetStop(psel);
 		pDoc->MoveDataRight(start);
-		start = pPhonetic->GetOffset(psel);
-		stop = pPhonetic->GetStop(psel);
+
+		start = pSeg->GetOffset(psel);
+		DWORD stop = pSeg->GetStop(psel);
+		DeselectAnnotations();
+		pSeg->SetSelection(sel);
 		SetCursorPosition(START_CURSOR,start);
 		SetCursorPosition(STOP_CURSOR,stop);
 		RefreshGraphs(TRUE,FALSE);
@@ -9412,10 +9403,12 @@ void CSaView::OnEditMoveRight() {
 	}
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	DWORD start = pPhonetic->GetOffset(sel);
-	DWORD stop = pPhonetic->GetStop(sel);
 	pDoc->MoveDataRight(start);
-	start = pPhonetic->GetOffset(sel);
-	stop = pPhonetic->GetStop(sel);
+
+	start = pSeg->GetOffset(sel);
+	DWORD stop = pSeg->GetStop(sel);
+	DeselectAnnotations();
+	pSeg->SetSelection(sel);
 	SetCursorPosition(START_CURSOR,start);
 	SetCursorPosition(STOP_CURSOR,stop);
 	RefreshGraphs(TRUE,FALSE);
@@ -10092,7 +10085,7 @@ int CSaView::GetGraphUpdateMode() {
     if (GetCursorAlignment() != ALIGN_AT_FRAGMENT) {
         return STATIC_UPDATE;    // This file must be in static mode fragments disabled.
     } else {
-        return MainFrame()->GetGraphUpdateMode();
+        return GetMainFrame().GetGraphUpdateMode();
     }
 }
 
@@ -10103,7 +10096,7 @@ BOOL CSaView::IsAnimationRequested() {
     if (GetGraphUpdateMode() == STATIC_UPDATE) {
         return FALSE;    // This file must be in dynamic mode to animate
     } else {
-        return MainFrame()->IsAnimationRequested();
+        return GetMainFrame().IsAnimationRequested();
     }
 }
 
@@ -10111,7 +10104,7 @@ BOOL CSaView::IsAnimationRequested() {
 // CSaView::GetAnimationFrameRate
 /***************************************************************************/
 int CSaView::GetAnimationFrameRate() {
-    return MainFrame()->GetAnimationFrameRate();
+    return GetMainFrame().GetAnimationFrameRate();
 }
 
 void CSaView::OnSpectroFormants() {
@@ -10416,10 +10409,6 @@ BOOL CSaView::GetNormalMelogram() {
 
 void CSaView::SetNormalMelogram(BOOL bChecked) {
     m_bNormalMelogram = bChecked;   // TCJ 6/23/00
-}
-
-CMainFrame * CSaView::MainFrame() {
-    return pViewMainFrame;
 }
 
 LRESULT CSaView::OnAutoSave(WPARAM, LPARAM) {
@@ -11280,7 +11269,7 @@ void CSaView::ErrorMessage( CSaString & msg) {
 	pApp->ErrorMessage(msg);
 }
 
-bool CSaView::CanMoveDataLeft( CSegment * pSeg, bool combined) {
+bool CSaView::CanMoveDataLeft( CSegment * pSeg, bool discrete) {
     
 	CSaDoc * pDoc = GetDocument();
 	if (pSeg==NULL) {
@@ -11291,19 +11280,9 @@ bool CSaView::CanMoveDataLeft( CSegment * pSeg, bool combined) {
         return false;
     }
 
-	// if this is a discrete operation then
-	// we really want to operate on the segment to the 
-	// left of us
-	if (!combined) {
-		if (sel==0) {
-			return false;
-		}
-		sel -= 1;
-	}
-
 	// we will be creating a new segment in combined mode
 	// so we don't need to check
-	if (!combined) {
+	if (discrete) {
 		if (AnySegmentHasData( pSeg, sel)) {
 			TRACE("segment contains data\n");
 			return false;
@@ -11352,4 +11331,7 @@ bool CSaView::AnySegmentHasData( CSegment * pSeg, int sel) {
 	return false;
 }
 
+CMainFrame & CSaView::GetMainFrame() {
+	return *((CMainFrame*)AfxGetMainWnd());
+}
 

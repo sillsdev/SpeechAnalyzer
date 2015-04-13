@@ -201,9 +201,11 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CSaApp::CSaApp() {
 
-    m_nBatchMode = 0;       // no batch mode
+	// no batch mode
+    m_nBatchMode = 0;       
     m_bModified = FALSE;
-    m_nEntry = 0;           // reset number of entries in batch list file
+	// reset number of entries in batch list file
+    m_nEntry = 0;           
     m_nCommand =-1;         // SDM 1.5Test8.5 (not processing batch commands)
     m_bNewDocument = FALSE;
     m_pWbDoc = NULL;
@@ -1168,7 +1170,8 @@ CSaDoc * CSaApp::OpenWavFileAsNew(LPCTSTR szTempPath) {
         AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC,MB_OK,0);
         return NULL;
     }
-    m_bNewDocument = TRUE; // this is a file new operation
+	// this is a file new operation
+    m_bNewDocument = TRUE;	
     posTemplate = GetFirstDocTemplatePosition();
     CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
     ASSERT(pTemplate != NULL);
@@ -1374,7 +1377,7 @@ void CSaApp::OnAppAbout() {
 // MFC OnFileNew, because MFC lets the user choose a view type.
 /***************************************************************************/
 void CSaApp::OnFileCreate() {
-    OpenBlankView(false); // RLJ 05/15/2000
+    OpenBlankView(false);
 }
 
 /***************************************************************************/
@@ -1391,15 +1394,19 @@ void CSaApp::OnUpdateFileCreate(CCmdUI * pCmdUI) {
 // because MFC lets the user choose a view type.
 /***************************************************************************/
 void CSaApp::OnFileRecord() {
-    OpenBlankView(true); // use auto naming
+	
+	// use auto naming
+    OpenBlankView(true); 
 
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
-    pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0); // give editor a chance to close
+	// give editor a chance to close
+    pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0); 
 
     // launch recorder in this new view
-    pMDIFrameWnd->MDIGetActive()->GetActiveView()->SendMessage(WM_USER_RECORDER, 0, 0); // send message to start recorder
+	// send message to start recorder
+    pMDIFrameWnd->MDIGetActive()->GetActiveView()->SendMessage(WM_USER_RECORDER, 0, 0); 
 }
 
 /***************************************************************************/
@@ -1410,21 +1417,32 @@ void CSaApp::OnFileRecord() {
 void CSaApp::FileOpen() {
 
 	if (IsAudioSync()) {
+		// terry wants to see somthing behind the dialog...
+		CDocument * pTemp = OpenBlankView(true);                 
+		CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
+		ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+		// give editor a chance to close
+		pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
+
 		CDlgASStart dlg;
 		if (dlg.DoModal()==IDOK) {
-			SetOpenAsID(ID_FILE_OPENAS_PHONETICANALYSIS);
+			SetOpenAsID(ID_FILE_OPEN);
 			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
 			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
 				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
-				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData);
+				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount());
 				pDoc2->DoFileSave();
 			}
+		}
+
+		if (pTemp!=NULL) {
+			pTemp->OnCloseDocument();
 		}
 	} else {
 	    int id = GetOpenAsID();
 		// uses auto naming
-		CDocument * pDoc = OpenBlankView(true);                 
-
+		CDocument * pDoc = OpenBlankView(true);
+		// this allows screen to be drawn
 		CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
 		ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 		// give editor a chance to close
@@ -1544,15 +1562,26 @@ void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
 	if (IsAudioSync()) {
+		// terry wants to see something behind the dialog box
+		CDocument * pTemp = OpenBlankView(true);                 
+		CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
+		ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+		// give editor a chance to close
+		pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
+
 		CDlgASStart dlg;
 		if (dlg.DoModal()==IDOK) {
-			SetOpenAsID(ID_FILE_OPENAS_PHONETICANALYSIS);
+			SetOpenAsID(ID_FILE_OPEN);
 			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
 			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
 				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
-				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData);
+				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount());
 				pDoc2->DoFileSave();
 			}
+		}
+
+		if (pTemp!=NULL) {
+			pTemp->OnCloseDocument();
 		}
 	} else {
 		CDlgStartMode dlg;
@@ -1682,6 +1711,7 @@ void CSaApp::OnUpdateAppExit(CCmdUI * pCmdUI) {
 // CSaApp::OnIdle Idle processing
 /***************************************************************************/
 BOOL CSaApp::OnIdle(LONG lCount) {
+
     // during termination, the main window may no longer be valid
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     if (pMainWnd==NULL) {
@@ -1767,7 +1797,15 @@ void CSaApp::DisplayMessages() {
 // CSaApp::OnHelpContents Call Help Index (Table of Contents)
 /***************************************************************************/
 void CSaApp::OnHelpContents() {
-    ::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);
+
+	if (IsAudioSync()) {
+		CSaString szAppPath = m_pszHelpFilePath;
+		szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
+		CSaString szCommandLine = "\"" + szAppPath + _T("\\Audio+Sync Help.pdf\"");
+		ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
+	} else {
+	    ::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);
+	}
 }
 
 /***************************************************************************/
@@ -1787,7 +1825,7 @@ void CSaApp::OnHelpWhatsNew() {
 
     CSaString szAppPath = m_pszHelpFilePath;
     szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-    CSaString szCommandLine = "\"" + szAppPath + _T("\\SA MSEA Release Notes.txt\"");
+    CSaString szCommandLine = "\"" + szAppPath + _T("\\Release Notes.txt\"");
     ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
@@ -1795,6 +1833,7 @@ void CSaApp::OnHelpWhatsNew() {
 // CSaApp::OnHelpSFMMarkers Display SFM Marker table
 /***************************************************************************/
 void CSaApp::OnHelpSFMMarkers() {
+
     CDlgHelpSFMMarkers dlg;
     dlg.DoModal();
 }
@@ -2319,7 +2358,6 @@ BOOL CSaApp::ReadSettings() {
     }
 
     CObjectIStream obs(szPath.utf8().c_str());
-
     if (!obs.bFail()) {
         ret = ReadProperties(obs);
     }

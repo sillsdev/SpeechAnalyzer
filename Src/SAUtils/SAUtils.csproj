@@ -221,9 +221,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\kimidSilLogo2.png" />
     <None Include="Resources\Collapse.png" />
     <None Include="Resources\Expand.png" />
-    <Content Include="Resources\kimidSilLogo.jpg" />
     <None Include="Resources\RemoveGridRowNormal.png" />
     <None Include="Resources\RemoveGridRowHot.png" />
     <None Include="Resources\LoadingWheel.gif" />

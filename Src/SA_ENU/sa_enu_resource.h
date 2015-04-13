@@ -1274,14 +1274,15 @@
 #define IDC_LIST_ORTHO                  2107
 #define IDC_LIST_GLOSS                  2108
 #define IDC_LIST_GLOSS_NAT              2109
-#define IDC_COMBO1                      2110
+#define IDC_COMBO_SKIP                  2110
 #define IDC_GLOSS_NAT                   2111
-#define IDC_BUTTON_BROWSE1              2111
-#define IDC_GLOSS_NAT_ENABLED           2112
-#define IDC_BUTTON_BROWSE2              2112
-#define IDC_CHECK_SEGMENT_AUDIO         2113
-#define IDC_CHECK_LOAD                  2114
-#define IDC_CHECK_LOAD_DATA             2114
+#define IDC_BUTTON_BROWSE1              2112
+#define IDC_GLOSS_NAT_ENABLED           2113
+#define IDC_BUTTON_BROWSE2              2114
+#define IDC_CHECK_SEGMENT_AUDIO         2115
+#define IDC_CHECK_LOAD                  2116
+#define IDC_CHECK_LOAD_DATA             2117
+#define IDC_STATIC_TITLE                2118
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1838,9 +1839,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        386
+#define _APS_NEXT_RESOURCE_VALUE        387
 #define _APS_NEXT_COMMAND_VALUE         33257
-#define _APS_NEXT_CONTROL_VALUE         2115
+#define _APS_NEXT_CONTROL_VALUE         2116
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif
