@@ -147,8 +147,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_UPDATE_COMMAND_UI(ID_SYNTHESIS_VTRACT, OnUpdateSynthesis)
     ON_COMMAND_EX(IDR_BAR_BASIC, OnBarCheck)
     ON_UPDATE_COMMAND_UI(IDR_BAR_BASIC, OnUpdateControlBarMenu)
-    ON_COMMAND_EX(IDR_BAR_SAB, OnBarCheck)
-    ON_UPDATE_COMMAND_UI(IDR_BAR_SAB, OnUpdateControlBarMenu)
+    ON_COMMAND_EX(IDR_BAR_AS, OnBarCheck)
+    ON_UPDATE_COMMAND_UI(IDR_BAR_AS, OnUpdateControlBarMenu)
     ON_COMMAND_EX(IDR_BAR_ADVANCED, OnBarCheck)
     ON_UPDATE_COMMAND_UI(IDR_BAR_ADVANCED, OnUpdateControlBarMenu)
     ON_COMMAND_EX(ID_VIEW_TASKBAR, OnBarCheck)
@@ -583,8 +583,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
     if (!m_wndToolBarSAB.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
                                        | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
-                                       CRect(0,0,0,0), IDR_BAR_SAB) ||
-            (!m_wndToolBarSAB.LoadToolBar(IDR_BAR_SAB))) {
+                                       CRect(0,0,0,0), IDR_BAR_AS) ||
+            (!m_wndToolBarSAB.LoadToolBar(IDR_BAR_AS))) {
         TRACE(_T("Failed to create toolbar\n"));
         return -1; // failed to create
     }
@@ -823,7 +823,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
     if (toolSettings.m_bToolbar != AdvancedToolBarVisible()) {
         BOOL bAdvanced = toolSettings.m_bToolbar;
 		// change toolbar status
-		int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+		int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
         ShowControlBar(GetControlBar(tbID), !bAdvanced, FALSE);
         ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, FALSE);	
     }
@@ -1192,7 +1192,8 @@ void CMainFrame::OnClose() {
         return;
     }
 
-    if (!AfxGetApp()->SaveAllModified()) { // user canceled close operation
+	// user canceled close operation
+    if (!AfxGetApp()->SaveAllModified()) { 
         return;
     }
 
@@ -1205,14 +1206,13 @@ void CMainFrame::OnClose() {
     if (pWbDoc) {
         POSITION pos = pWbDoc->GetFirstViewPosition();
         CView * pView = pWbDoc->GetNextView(pos);
-        pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); // close view
+		// close view
+        pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); 
     }
 
     ((CSaApp *)AfxGetApp())->SetWbOpenOnExit(pWbDoc != NULL);
 
-    //******************************************************
     // Workbench is still there, don't close
-    //******************************************************
     if (((CSaApp *)AfxGetApp())->GetWbDoc()) {
         return;
     }
@@ -1398,7 +1398,7 @@ void CMainFrame::OnSaveWindowAsBMP() {
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+	int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
     GetControlBar(tbID)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
@@ -1453,7 +1453,7 @@ void CMainFrame::OnCopyWindowAsBMP() {
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+	int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
     GetControlBar(tbID)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
@@ -2035,7 +2035,7 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
 				// change toolbar status
                 BOOL bAdvanced = b;
 				CSaApp * pApp = (CSaApp*)AfxGetApp();
-				int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+				int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
                 ShowControlBar(GetControlBar(tbID),!bAdvanced, TRUE); 
                 ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); 
             }

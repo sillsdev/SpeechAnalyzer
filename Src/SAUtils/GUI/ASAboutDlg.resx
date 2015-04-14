@@ -169,7 +169,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblAvailableMemory.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 147</value>
+    <value>150, 148</value>
   </data>
   <data name="lblAvailableMemory.Size" type="System.Drawing.Size, System.Drawing">
     <value>92, 13</value>
@@ -202,7 +202,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblAvailableDiskSpace.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 171</value>
+    <value>150, 172</value>
   </data>
   <data name="lblAvailableDiskSpace.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 13</value>
@@ -325,7 +325,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblAppVersion.Location" type="System.Drawing.Point, System.Drawing">
-    <value>152, 69</value>
+    <value>152, 65</value>
   </data>
   <data name="lblAppVersion.Size" type="System.Drawing.Size, System.Drawing">
     <value>352, 17</value>
@@ -352,7 +352,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblAvailableMemoryValue.Location" type="System.Drawing.Point, System.Drawing">
-    <value>265, 144</value>
+    <value>265, 145</value>
   </data>
   <data name="lblAvailableMemoryValue.Size" type="System.Drawing.Size, System.Drawing">
     <value>244, 19</value>
@@ -382,7 +382,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblAvailableDiskSpaceValue.Location" type="System.Drawing.Point, System.Drawing">
-    <value>265, 169</value>
+    <value>265, 170</value>
   </data>
   <data name="lblAvailableDiskSpaceValue.Size" type="System.Drawing.Size, System.Drawing">
     <value>244, 17</value>
@@ -412,7 +412,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblCopyright.Location" type="System.Drawing.Point, System.Drawing">
-    <value>149, 110</value>
+    <value>149, 111</value>
   </data>
   <data name="lblCopyright.Size" type="System.Drawing.Size, System.Drawing">
     <value>360, 24</value>
@@ -442,7 +442,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>148, 33</value>
+    <value>148, 29</value>
   </data>
   <data name="lblName.Size" type="System.Drawing.Size, System.Drawing">
     <value>356, 32</value>

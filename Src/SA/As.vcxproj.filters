@@ -278,7 +278,6 @@
     <ClInclude Include="OrthoSegment.h" />
     <ClInclude Include="PhonemicSegment.h" />
     <ClInclude Include="PhoneticSegment.h" />
-    <ClInclude Include="picture.h" />
     <ClInclude Include="PlayMixer.h" />
     <ClInclude Include="PrivateCursorWnd.h" />
     <ClInclude Include="Clip.hpp" />
@@ -445,6 +444,7 @@
     <ClInclude Include="WaveInDevice.h" />
     <ClInclude Include="WaveOutDevice.h" />
     <ClInclude Include="WaveWarp.h" />
+    <ClInclude Include="picture.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AS.rc" />
@@ -459,7 +459,7 @@
     <None Include="segment selection.cd" />
     <None Include="Segments.cd" />
     <None Include="Windows.cd" />
-    <None Include="..\SA MSEA Release Notes.txt">
+    <None Include="..\Release Notes.txt">
       <Filter>Release Notes</Filter>
     </None>
   </ItemGroup>

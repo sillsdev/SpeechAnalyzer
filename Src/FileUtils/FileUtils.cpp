@@ -272,4 +272,13 @@ wstring FileUtils::GetExtension(LPCTSTR path) {
 	return extension;
 }
 
+// remove parent folder
+wstring FileUtils::GetFilename(LPCTSTR path) {
+	wstring result = path;
+    size_t pos = result.rfind('\\');
+    if (pos!=wstring::npos) {
+        result = result.substr(pos+1,result.length()-pos-1);
+    }
+	return result;
+}
 

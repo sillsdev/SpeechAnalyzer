@@ -221,7 +221,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\kimidSilLogo.jpg" />
     <Content Include="Resources\kimidSilLogo2.png" />
+    <Content Include="Resources\sil_logo_128x144.png" />
+    <Content Include="Resources\sil_logo_300x337.png" />
     <None Include="Resources\Collapse.png" />
     <None Include="Resources\Expand.png" />
     <None Include="Resources\RemoveGridRowNormal.png" />

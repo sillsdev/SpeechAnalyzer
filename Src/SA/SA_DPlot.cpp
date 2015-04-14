@@ -46,7 +46,7 @@ CDisplayPlot::CDisplayPlot(CString & szPlot) {
 	// change toolbar status
     m_bToolBar = m_pMainFrame->AdvancedToolBarVisible();
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_BASIC), FALSE, TRUE); 
-    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_SAB), FALSE, TRUE); 
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_AS), FALSE, TRUE); 
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), FALSE, TRUE); 
 
     // disable toolbar
@@ -141,7 +141,7 @@ CDisplayPlot::~CDisplayPlot() {
 	// restore toolbar
     BOOL bAdvanced = m_bToolBar;
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int tbID = (pApp->IsAudioSync())?IDR_BAR_SAB:IDR_BAR_BASIC;
+	int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(tbID),!bAdvanced, TRUE); 
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE);
 

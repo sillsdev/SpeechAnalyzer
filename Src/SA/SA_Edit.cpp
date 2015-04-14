@@ -218,8 +218,8 @@ void CDlgEditor::OnPlaybackWord() {
 // Sends a message to the player to playback the original gloss selection.
 /***************************************************************************/
 void CDlgEditor::OnStopWord() {
-    GetMainFrame()->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
 
+    GetMainFrame()->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
     SetButtonState(IDC_PLAY_WORD,IDC_STOP_WORD,false);
 }
 
@@ -246,8 +246,8 @@ void CDlgEditor::OnPlaybackPhraseL1() {
 // Sends a message to the player to playback the original phrase selection.
 /***************************************************************************/
 void CDlgEditor::OnStopPhraseL1() {
-    GetMainFrame()->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
 
+    GetMainFrame()->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
     SetButtonState(IDC_PLAY_PHRASE_L1,IDC_STOP_PHRASE_L1,false);
 }
 

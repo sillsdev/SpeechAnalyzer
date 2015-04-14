@@ -58,6 +58,9 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
+// 10% margin for scroll during playback
+#define SCROLL_MARGIN 10
+
 //###########################################################################
 // CPlotHelperWnd
 // Helper window to display additional user information. It displays various
@@ -515,13 +518,15 @@ DWORD CPlotWnd::AdjustDataFrame(int iWidth) {
 /***************************************************************************/
 void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, bool scroll) {
     
-    CGraphWnd * pGraph = (CGraphWnd *)GetParent(); // get pointer to parent graph
+	// get pointer to parent graph
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent(); 
 
     // get window coordinates
     CRect rWnd;
     GetClientRect(rWnd);
     if (rWnd.Width() == 0) {
-        return;    // cursor not visible SDM 1.5Test8.5
+		// cursor not visible SDM 1.5Test8.5
+        return;    
     }
 
     CRect rNewWnd = rWnd;
@@ -535,17 +540,21 @@ void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCurs
         dwDataFrame = GetAreaLength(&rWnd);
     } else {
         // get necessary data from view
-        fDataPos = GetDataPosition(rNewWnd.Width());        // data index of first sample to display
-        dwDataFrame = AdjustDataFrame(rNewWnd.Width());     // number of data points to display
+		// data index of first sample to display
+        fDataPos = GetDataPosition(rNewWnd.Width());
+		// number of data points to display
+        dwDataFrame = AdjustDataFrame(rNewWnd.Width());     
     }
 
     CRect rNewLine;
 	// added by AKE to hide cursors in graph edit mode
     if (((m_bCursors) &&   
-         (dwNewPosition >= (DWORD)fDataPos) && (dwNewPosition < ((DWORD)fDataPos + dwDataFrame)))) {
+         (dwNewPosition >= (DWORD)fDataPos) && 
+		 (dwNewPosition < ((DWORD)fDataPos + dwDataFrame)))) {
         // cursor is visible
         ASSERT(rNewWnd.Width());
-        double fBytesPerPix = (double)dwDataFrame / (double)rNewWnd.Width(); // calculate data samples per pixel
+		// calculate data samples per pixel
+        double fBytesPerPix = (double)dwDataFrame / (double)rNewWnd.Width();
         // calculate actual cursor position in pixel
         // SDM 1.06.6U4 calculate position based on pixel aligned graph
         int nPixelPos = (int)round(((double)dwNewPosition - fDataPos) / fBytesPerPix);
@@ -561,7 +570,8 @@ void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCurs
             DWORD start = (DWORD)GetDataPosition(rNewWnd.Width());      
 			// number of data points to display
 			DWORD size = pView->GetDataFrame();
-            DWORD margin = size/4;
+			// margin remaining before we scroll
+            DWORD margin = (size*10)/100;
             if (dwNewPosition>margin) {
                 DWORD newStart = dwNewPosition-margin;
                 TRACE("%d %d %d %d\n",start,size,dwNewPosition,newStart);
@@ -569,12 +579,14 @@ void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCurs
                 pGraph->UpdateWindow();
             } else {
                 // cursor is not visible
-                rNewLine.SetRect(0, 0, 0, 0); // shrink it to 0 size
+				// shrink it to 0 size
+                rNewLine.SetRect(0, 0, 0, 0); 
                 rNewWnd = rNewLine;
             }
         } else {
             // cursor is not visible
-            rNewLine.SetRect(0, 0, 0, 0); // shrink it to 0 size
+			// shrink it to 0 size
+            rNewLine.SetRect(0, 0, 0, 0); 
             rNewWnd = rNewLine;
         }
     }
@@ -585,7 +597,8 @@ void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCurs
     ScreenToClient(rOldLine);
 
     // get the line position in the middle
-    if (rOldLine.Width() > 1) { // cursor window has large width
+    if (rOldLine.Width() > 1) { 
+		// cursor window has large width
         rOldLine.left += CURSOR_WINDOW_HALFWIDTH;
         rOldLine.right -= (CURSOR_WINDOW_HALFWIDTH - 1);
     }

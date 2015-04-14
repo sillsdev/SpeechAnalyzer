@@ -318,15 +318,17 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_NEXT_GRAPH, OnNextGraph)
     ON_COMMAND(ID_PLAYBACK_CURSORS, OnPlaybackCursors)
     ON_COMMAND(ID_PLAYBACK_FILE, OnPlaybackFile)
-    ON_COMMAND(ID_PLAYBACK_LTOSTART, OnPlaybackLtostart)
-    ON_COMMAND(ID_PLAYBACK_LTOSTOP, OnPlaybackLtoStop)
+    ON_COMMAND(ID_PLAYBACK_LTOSTART, OnPlaybackLeftToStart)
+    ON_COMMAND(ID_PLAYBACK_LTOSTOP, OnPlaybackLeftToStop)
     ON_COMMAND(ID_PLAYBACK_SLOW, OnPlaybackSlow)
-    ON_COMMAND(ID_PLAYBACK_STARTTOR, OnPlaybackStarttor)
-    ON_COMMAND(ID_PLAYBACK_STOPTOR, OnPlaybackStopToR)
+    ON_COMMAND(ID_PLAYBACK_STARTTOR, OnPlaybackStartToRight)
+    ON_COMMAND(ID_PLAYBACK_STOPTOR, OnPlaybackStopToRight)
     ON_COMMAND(ID_PLAYBACK_WINDOW, OnPlaybackWindow)
     ON_COMMAND(ID_PLAYBACK_ENDCURSOR, OnPlaybackEndCursor)
     ON_COMMAND(ID_PLAYER, OnPlayer)
     ON_COMMAND(ID_PLAYER_PAUSE, OnPlayerPause)
+	ON_COMMAND(ID_PLAYER_RESUME, OnPlayerResume)
+    ON_COMMAND(ID_PLAYER_TOGGLE, OnPlayerToggle)
     ON_COMMAND(ID_PLAYER_STOP, OnPlayerStop)
     ON_COMMAND(ID_POPUPGRAPH_GRIDLINES, OnPopupgraphGridlines)
     ON_COMMAND(ID_POPUPGRAPH_LEGEND, OnPopupgraphLegend)
@@ -504,6 +506,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_PLAYBACK_WINDOW, OnUpdatePlaybackPortion)
     ON_UPDATE_COMMAND_UI(ID_PLAYER, OnUpdatePlayback)
     ON_UPDATE_COMMAND_UI(ID_PLAYER_PAUSE, OnUpdatePlayerPause)
+	ON_UPDATE_COMMAND_UI(ID_PLAYER_RESUME, OnUpdatePlayerResume)
+    ON_UPDATE_COMMAND_UI(ID_PLAYER_TOGGLE, OnUpdatePlayerToggle)
     ON_UPDATE_COMMAND_UI(ID_PLAYER_STOP, OnUpdatePlayerStop)
     ON_UPDATE_COMMAND_UI(ID_PLAY_F24, OnUpdatePlayback)
     ON_UPDATE_COMMAND_UI(ID_PLAYBACK_ENDCURSOR, OnUpdatePlaybackPortion)
@@ -631,8 +635,6 @@ CSaView & CSaView::operator=(const CSaView & right) {
 }
 
 void CSaView::Init() {
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
 
 	m_pDlgAdvancedSegment = NULL;
 	m_pDlgAdvancedParsePhrases = NULL;
@@ -815,9 +817,11 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
 /***************************************************************************/
 // CSaView::SendPlayMessage Send specified IDC_PLAY message to player.
 /***************************************************************************/
-void CSaView::SendPlayMessage(WORD Int1, WORD Int2) {
+void CSaView::SendPlayMessage( WORD Int1, WORD Int2) {
+
     DWORD lParam = MAKELONG(Int1, Int2);
-    GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam); // send message to start player
+	// send message to start player
+    GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam); 
 }
 
 /***************************************************************************/
@@ -995,12 +999,16 @@ void CSaView::OnPlaybackSlow() {
     };
 
     CFnKeys * pKeys = GetMainFrame().GetFnKeys(0);
-    pKeys->bRepeat[Player_Slow] = FALSE;     // TRUE, if playback repeat enabled
-    pKeys->nDelay[Player_Slow] = 100;        // repeat delay time in ms
-    pKeys->nMode[Player_Slow] = ID_PLAYBACK_CURSORS;       // replay mode
-    pKeys->nSpeed[Player_Slow] = 50;        // default replay speed in %
-    pKeys->nVolume[Player_Slow] = 50;       // default play volume in %
-
+	// TRUE, if playback repeat enabled
+    pKeys->bRepeat[Player_Slow] = FALSE;
+	// repeat delay time in ms
+    pKeys->nDelay[Player_Slow] = 100;
+	// replay mode
+    pKeys->nMode[Player_Slow] = ID_PLAYBACK_CURSORS;
+	// default replay speed in %
+    pKeys->nSpeed[Player_Slow] = 50;
+	// default play volume in %
+    pKeys->nVolume[Player_Slow] = 50;
     GetMainFrame().PostMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, MAKELONG(Player_Slow, -1));
 }
 
@@ -1012,7 +1020,8 @@ void CSaView::OnPlaybackSlow() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackFile() {
-    SendPlayMessage(ID_PLAYBACK_FILE, FALSE); // send message to start player
+	// send message to start player
+    SendPlayMessage(ID_PLAYBACK_FILE, FALSE); 
 }
 
 /***************************************************************************/
@@ -1027,36 +1036,36 @@ void CSaView::OnPlaybackWindow() {
 }
 
 /***************************************************************************/
-// CSaView::OnPlaybackLtostart Playback left window border to start cursor
+// CSaView::OnPlaybackLeftToStart Playback left window border to start cursor
 // The mainframe is informed and it will launch the player. The player
 // message takes as wParam the player mode, in the lower word of lParam the
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackLtostart() {
+void CSaView::OnPlaybackLeftToStart() {
     SendPlayMessage(ID_PLAYBACK_LTOSTART, FALSE); // send message to start player
 }
 
 /***************************************************************************/
-// CSaView::OnPlaybackStarttor Playback start cursor to right window border
+// CSaView::OnPlaybackStartToRight Playback start cursor to right window border
 // The mainframe is informed and it will launch the player. The player
 // message takes as wParam the player mode, in the lower word of lParam the
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackStarttor() {
+void CSaView::OnPlaybackStartToRight() {
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_STARTTOR, FALSE); 
 }
 
 /***************************************************************************/
-// CSaView::OnPlaybackLtoStop Playback left window border to stop cursor
+// CSaView::OnPlaybackLeftToStop Playback left window border to stop cursor
 // The mainframe is informed and it will launch the player. The player
 // message takes as wParam the player mode, in the lower word of lParam the
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackLtoStop() {
+void CSaView::OnPlaybackLeftToStop() {
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_LTOSTOP, FALSE); 
 }
@@ -1074,13 +1083,13 @@ void CSaView::OnPlaybackEndCursor() {
 }
 
 /***************************************************************************/
-// CSaView::OnPlaybackStopToR Playback stop cursor to right window border
+// CSaView::OnPlaybackStopToRight Playback stop cursor to right window border
 // The mainframe is informed and it will launch the player. The player
 // message takes as wParam the player mode, in the lower word of lParam the
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackStopToR() {
+void CSaView::OnPlaybackStopToRight() {
     SendPlayMessage(ID_PLAYBACK_STOPTOR, FALSE); // send message to start player
 }
 
@@ -1090,7 +1099,6 @@ void CSaView::OnPlaybackStopToR() {
 // message takes as wParam the player mode, in the lower word of lParam the
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE). If the submode is -1, it stays as it was before.
-// ## Under construction!
 /***************************************************************************/
 void CSaView::OnPlayerPause() {
     // send message to pause player
@@ -1098,11 +1106,93 @@ void CSaView::OnPlayerPause() {
 }
 
 /***************************************************************************/
-// CSaView::OnUpdatePlayerStop Menu update
+// CSaView::OnUpdatePlayerPause Menu update
 /***************************************************************************/
 void CSaView::OnUpdatePlayerPause(CCmdUI * pCmdUI) {
     // enable if player is playing
     pCmdUI->Enable(GetMainFrame().IsPlayerPlaying());
+}
+
+/***************************************************************************/
+// CSaView::OnPlayerResume Resume the player
+// The mainframe is informed and it will resume the player. The player
+// message takes as wParam the player mode, in the lower word of lParam the
+// submode and in the higher word if it will be launched in full size (TRUE)
+// or small (FALSE). 
+// If the submode is -1, it stays as it was before.
+/***************************************************************************/
+void CSaView::OnPlayerResume() {
+
+	if (GetMainFrame().IsPlayerPaused()) {
+		// send message to start player
+		SendPlayMessage(ID_PLAYBACK_FILE, FALSE); 
+	}
+}
+
+/***************************************************************************/
+// CSaView::OnUpdatePlayerStop Menu update
+/***************************************************************************/
+void CSaView::OnUpdatePlayerResume(CCmdUI * pCmdUI) {
+
+	if (GetMainFrame().IsPlayerPaused()) {
+		pCmdUI->Enable(TRUE);
+	} else {
+		pCmdUI->Enable(FALSE);
+	}
+}
+
+/***************************************************************************/
+// CSaView::OnPlayerToggle Pause or Resume the player
+// The mainframe is informed and it will pause or resume the player. The player
+// message takes as wParam the player mode, in the lower word of lParam the
+// submode and in the higher word if it will be launched in full size (TRUE)
+// or small (FALSE). 
+// If the submode is -1, it stays as it was before.
+/***************************************************************************/
+void CSaView::OnPlayerToggle() {
+
+	if (GetMainFrame().IsPlayerPlaying()) {
+		// send message to pause or resume player
+		GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::PAUSED, MAKELONG(-1, FALSE));
+	} else {
+		// send message to start player
+		SendPlayMessage(ID_PLAYBACK_FILE, FALSE); 
+	}
+}
+
+/***************************************************************************/
+// CSaView::OnUpdatePlayerStop Menu update
+/***************************************************************************/
+void CSaView::OnUpdatePlayerToggle(CCmdUI * pCmdUI) {
+
+	if (GetMainFrame().IsPlayerPlaying()) {
+		pCmdUI->Enable(TRUE);
+	} else if (GetMainFrame().IsPlayerPaused()) {
+		pCmdUI->Enable(TRUE);
+	} else {
+		if (GetDocument()->GetDataSize()==0) {
+			pCmdUI->Enable(FALSE);
+			return;
+		}
+		CDlgPlayer * pPlayer = GetMainFrame().GetPlayer(false);
+		if (pPlayer==NULL) {
+			pCmdUI->Enable(TRUE);
+			return;
+		}
+		if (pPlayer->IsPaused()) {
+			if (pCmdUI->m_nID!=pPlayer->GetSubmode()) {
+				pCmdUI->Enable(FALSE);
+				return;
+			}
+		}
+
+		if (pPlayer->IsPlaying()) {
+			pCmdUI->Enable(FALSE);
+			return;
+		}
+
+		pCmdUI->Enable(TRUE);
+	}
 }
 
 /***************************************************************************/
@@ -2430,8 +2520,10 @@ void CSaView::OnUpdateGraphsZoomCursors(CCmdUI * pCmdUI) {
 // CSaView::OnGraphsZoomAll Zoom all
 /***************************************************************************/
 void CSaView::OnGraphsZoomAll() {
-    m_fZoom = 1.0;      // no zoom
-    ZoomIn(0, TRUE);    // Handle Zoom
+	// no zoom
+    m_fZoom = 1.0;
+	// Handle Zoom
+    ZoomIn(0, TRUE);    
 }
 
 /***************************************************************************/
@@ -2445,7 +2537,8 @@ void CSaView::OnUpdateGraphsZoomAll(CCmdUI * pCmdUI) {
 // CSaView::OnGraphsZoomIn Zoom in
 /***************************************************************************/
 void CSaView::OnGraphsZoomIn() {
-    ZoomIn(m_fZoom); // double zooming
+	// double zooming
+    ZoomIn(m_fZoom); 
 }
 
 /***************************************************************************/
@@ -3748,13 +3841,13 @@ void CSaView::OnUpdatePlayback(CCmdUI * pCmdUI) {
 // CSaView::OnUpdatePlayback Menu update
 /***************************************************************************/
 void CSaView::OnUpdatePlaybackPortion(CCmdUI * pCmdUI) {
+
     if (GetDocument()->GetDataSize()==0) {
         pCmdUI->Enable(FALSE);
         return;
     }
 
-    CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
-    CDlgPlayer * pPlayer = pMain->GetPlayer(false);
+    CDlgPlayer * pPlayer = GetMainFrame().GetPlayer(false);
     if (pPlayer==NULL) {
         pCmdUI->Enable(TRUE);
         return;
@@ -8305,15 +8398,13 @@ void CSaView::OnEditAddPhonetic() {
 
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetAnnotation(PHONETIC);
-    CPhonemicSegment * pPhonemic = (CPhonemicSegment *)GetAnnotation(PHONEMIC);
-    COrthographicSegment * pOrtho = (COrthographicSegment *)GetAnnotation(ORTHO);
     CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
     CGlossNatSegment * pGlossNat = (CGlossNatSegment *)GetAnnotation(GLOSS_NAT);
     CReferenceSegment * pReference = (CReferenceSegment *) GetAnnotation(REFERENCE);
-    CToneSegment * pTone = (CToneSegment *)GetAnnotation(TONE);
 
     pDoc->CheckPoint();
-    CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
+	//Fill new segment with default character
+    CSaString szString = SEGMENT_DEFAULT_CHAR; 
 
     int nInsertAt = pPhonetic->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
     if (nInsertAt != -1) {
@@ -10122,20 +10213,19 @@ void CSaView::OnSpectroFormants() {
         pDoc->GetSpectrogram(ab)->SetSpectroParm(parameters);
     }
 
-    CMainFrame * pMain = (CMainFrame *) AfxGetMainWnd();
     {
-        CSpectroParm parameters = *pMain->GetSpectrogramParmDefaults();
+        CSpectroParm parameters = *(GetMainFrame().GetSpectrogramParmDefaults());
         parameters.bShowFormants = bFormantSelected;
-        pMain->SetSpectrogramParmDefaults(parameters);
+        GetMainFrame().SetSpectrogramParmDefaults(parameters);
     }
 
     {
-        CSpectroParm parameters = *pMain->GetSnapshotParmDefaults();
+        CSpectroParm parameters = *(GetMainFrame().GetSnapshotParmDefaults());
         parameters.bShowFormants = bFormantSelected;
-        pMain->SetSnapshotParmDefaults(parameters);
+        GetMainFrame().SetSnapshotParmDefaults(parameters);
     }
 
-    if (bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled()) {
+    if ((bFormantSelected) && (pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())) {
         pDoc->RestartAllProcesses();
     }
 
@@ -10977,8 +11067,6 @@ void CSaView::OnFileSplitFile() {
     wstring phrasePath;
     int offsetSize;
     bool hasGloss;
-
-    POSITION pos = 0;
 
     do {
         retry = false;

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Audio+Sync"
-#define MyAppVersion "0.99.0.4"
+#define MyAppVersion "0.99.0.5"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "AS.exe"
@@ -84,6 +84,10 @@ Name: "{app}\components"
 Type: files; Name: "{app}\SAUtils.tlb"
 Type: files; Name: "{app}\yeti.mmedia.tlb"
 Type: files; Name: "{app}\yeti.wmfsdk.tlb"
+
+[InstallDelete]
+Type: files; Name: "{app}\SA MSEA Release Notes.txt"
+Type: files; Name: "{app}\SA MSEA Roadmap.txt"
 
 [Code]
 function VCRedistCheck(): Boolean;

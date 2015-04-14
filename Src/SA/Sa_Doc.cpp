@@ -2888,9 +2888,9 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
 /***************************************************************************/
 BOOL CSaDoc::SaveModified() {
 
-    CSaString szCaption, szGraphTitle;
     if (!IsModified()) {
-        return TRUE;    // ok to continue
+		// ok to continue
+        return TRUE;    
     }
 
     // we never save temporary overlay documents.
@@ -2899,55 +2899,80 @@ BOOL CSaDoc::SaveModified() {
     }
 
     // file is modified, change the file attribute to allow write operation
+	CString szCaption = GetTitle();
     CSaString szPathName = GetPathName();
+	CString nameNoExtension;
+
     if (!szPathName.IsEmpty()) {
         if (!SetFileAttributes(szPathName, (DWORD)m_fileStat.m_attribute)) {
             CSaString prompt;
-            AfxFormatString1(prompt, AFX_IDP_ASK_TO_SAVE, szPathName);
+            AfxFormatString1(prompt, IDP_ASK_TO_SAVE, szPathName);
             switch (AfxMessageBox(prompt, MB_YESNOCANCEL, AFX_IDP_ASK_TO_SAVE)) {
+			case IDCANCEL:
+				// don't continue
+				return FALSE;       
             case IDYES:
                 // If so, either Save or Update, as appropriate
                 if (!DoFileSave()) {
-                    return FALSE;    // don't continue
+					// don't continue
+                    return FALSE;    
                 }
                 break;
-
             case IDNO:
                 // If not saving changes, revert the document
+				SetModifiedFlag(FALSE);
+				SetTransModifiedFlag(FALSE);
                 return TRUE;
-                break;
-
             default:
+				ASSERT(FALSE);
                 return FALSE;
             }
         }
-    } else {
+		// get name based on file title of path name
+		nameNoExtension = FileUtils::GetFilename(szPathName).c_str();
+		nameNoExtension = FileUtils::RemoveExtension(nameNoExtension).c_str();
+	} else {
         // the pathname is empty, reset view title string
-        szCaption = GetTitle();                 // get the current view caption string
+		// get the current view caption string
         int nFind = szCaption.Find(':');
         if (nFind != -1) {
-            szGraphTitle = szCaption.Right(szCaption.GetLength() - nFind); // extract part right of and with :
-            szCaption = szCaption.Left(nFind);  // extract part left of :
+			// extract part left of :
+            szCaption = szCaption.Left(nFind);  
         }
-        SetTitle(szCaption);                    // write the new caption string
+		nameNoExtension = szCaption;
+		nameNoExtension = FileUtils::GetFilename(nameNoExtension).c_str();
+		nameNoExtension = FileUtils::RemoveExtension(nameNoExtension).c_str();
     }
-    // call the base class saving
-    BOOL bResult = CDocument::SaveModified();
 
-    if (bResult == TRUE) { // file has been saved or changes should be abandoned
+	CString prompt;
+	AfxFormatString1(prompt, IDP_ASK_TO_SAVE, nameNoExtension);
+	switch (AfxMessageBox(prompt, MB_YESNOCANCEL, AFX_IDP_ASK_TO_SAVE)) {
+	case IDCANCEL:
+		// don't continue
+		return FALSE;       
+	case IDYES:
+		// If so, either Save or Update, as appropriate
+		if (!DoFileSave())
+			// don't continue
+			return FALSE;       
+		break;
+	case IDNO:
         SetModifiedFlag(FALSE);
         SetTransModifiedFlag(FALSE);
-    }
-    // change the file attribute to read only
-    szPathName = GetPathName();
-    if (!szPathName.IsEmpty()) {
-        SetFileAttributes(szPathName, (DWORD)m_fileStat.m_attribute);
-    }
-    if (!szCaption.IsEmpty()) {
-        // set back the title string
-        szCaption = GetTitle(); // get the current view caption string
-        szCaption += szGraphTitle; // add the graph title
-        SetTitle(szCaption); // write the new caption string
+		return TRUE;
+	default:
+		ASSERT(FALSE);
+		break;
+	}
+
+	// the above code pretty much duplicates this call, except
+	// for the recovery manager code.
+	// we override the messages to be more explicit.
+	BOOL bResult = CDocument::SaveModified();
+	// file has been saved or changes should be abandoned
+    if (bResult == TRUE) { 
+        SetModifiedFlag(FALSE);
+        SetTransModifiedFlag(FALSE);
     }
     return bResult;
 }

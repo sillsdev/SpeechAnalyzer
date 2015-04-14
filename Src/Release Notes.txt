@@ -1,3 +1,12 @@
+AS - 0.99.0.5 4/13/2015
+- Modified install to remove old release notes and roadmap files (AS)
+- Added capability to start, pause and resume playback using the space bar. (AS)
+- Reduced playback scroll margin from 25% to 10% (AS/SA)
+- Added toolbar icons for merge and split
+- Updated about and splash screen icons
+- On initial opening of project, AS will zoom in by a factor of 4 in on the audio and scroll to position 0.
+- Changed file cancel/exit message to be more generic.
+
 AS - 0.99.0.4 4/11/2015
 - Hid 'Locate segments' and 'Locate phrases' (AS)
 - Shortened menu items for 'Speech Analyzer Help' to 'View Help' (AS/SA)

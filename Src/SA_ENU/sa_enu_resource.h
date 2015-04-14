@@ -140,7 +140,7 @@
 #define IDR_BAR_BASIC                   344
 #define IDD_TASKBAR                     345
 #define IDR_TASKBAR                     346
-#define IDR_BAR_SAB                     347
+#define IDR_BAR_AS                      347
 #define IDI_NEXT                        349
 #define IDI_PREV                        350
 #define IDI_UP                          351
@@ -1459,10 +1459,12 @@
 #define ID_POPUPGRAPH_MAGNIFY4          32962
 #define ID_POPUPGRAPH_MAGNIFYCUSTOM     32963
 #define ID_PLAYER_PAUSE                 32964
-#define ID_PLAYER_STOP                  32965
-#define ID_POPUPGRAPH_STYLE_LINE        32967
-#define ID_POPUPGRAPH_STYLE_SOLID       32968
-#define ID_RESTART_PROCESS              32969
+#define ID_PLAYER_RESUME                32965
+#define ID_PLAYER_TOGGLE                32966
+#define ID_PLAYER_STOP                  32967
+#define ID_POPUPGRAPH_STYLE_LINE        32968
+#define ID_POPUPGRAPH_STYLE_SOLID       32969
+#define ID_RESTART_PROCESS              32970
 #define ID_EXPORT_XML                   32999
 #define ID_EDIT_CURSOR_START_LEFT       33000
 #define ID_EDIT_CURSOR_START_RIGHT      33001
@@ -1833,6 +1835,7 @@
 #define IDS_ERROR_GENERATE_CV_NOPITCH   61352
 #define IDS_ERROR_AUTO_PARSE            61353
 #define IDS_SAB_QUERY_EXISTING_DATA     61353
+#define IDP_ASK_TO_SAVE                 61354
 
 // Next default values for new objects
 // 

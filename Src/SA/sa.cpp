@@ -449,7 +449,6 @@ BOOL CSaApp::InitInstance() {
     CSaString szNewPath = buffer;
     szNewPath = szNewPath + "\\";
     szNewPath = szNewPath + "Speech_Analyzer_Help.chm";
-    //szNewPath = szNewPath.Left(szNewPath.ReverseFind('\\')) + _T("\\Speech_Analyzer_Help.chm");
     free((void *)m_pszHelpFilePath);
     m_pszHelpFilePath = _tcsdup(szNewPath);
 
@@ -1432,6 +1431,10 @@ void CSaApp::FileOpen() {
 				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
 				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount());
 				pDoc2->DoFileSave();
+				POSITION pos = pDoc2->GetFirstViewPosition();
+			    CSaView * pView = (CSaView *)pDoc2->GetNextView(pos);
+				pView->ZoomIn(4);
+				pView->Scroll((DWORD)0);
 			}
 		}
 
@@ -1483,8 +1486,7 @@ CSaString CSaApp::GetDefaultDir(CSaString * pFilename) const {
         if (nFind != -1) {
             szPath = szPath.Left(nFind);
             CFileStatus status;
-            if ((CFile::GetStatus(szPath, status)) &&
-                    (status.m_attribute & CFile::directory)) {
+            if ((CFile::GetStatus(szPath, status)) && (status.m_attribute & CFile::directory)) {
                 return szPath + "\\";
             }
         }
@@ -1499,12 +1501,12 @@ CSaString CSaApp::GetDefaultDir(CSaString * pFilename) const {
             int nFind = szPath.ReverseFind('\\');
             if (nFind != -1) {
                 CFileStatus status;
-                if ((CFile::GetStatus(szPath.Left(nFind), status)) &&
-                        (status.m_attribute & CFile::directory)) {
+                if ((CFile::GetStatus(szPath.Left(nFind), status)) && (status.m_attribute & CFile::directory)) {
                     workingDir = szPath.Left(nFind + 1);
                     break;
                 } else {
-                    workingDir.Empty(); // directory does not exist
+					// directory does not exist
+                    workingDir.Empty(); 
                 }
             }
         }
@@ -1577,6 +1579,10 @@ void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
 				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount());
 				pDoc2->DoFileSave();
+				POSITION pos = pDoc2->GetFirstViewPosition();
+			    CSaView * pView = (CSaView *)pDoc2->GetNextView(pos);
+				pView->ZoomIn(4);
+				pView->Scroll((DWORD)0);
 			}
 		}
 

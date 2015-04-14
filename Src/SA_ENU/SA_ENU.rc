@@ -2971,7 +2971,7 @@ IDB_JAW                 BITMAP                  "RES\\JAW.BMP"
 IDB_TONGUE              BITMAP                  "RES\\TONGUE.BMP"
 IDR_BAR_ADVANCED        BITMAP                  "res\\IDR_BAR_ADVANCED.bmp"
 IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
-IDR_BAR_SAB             BITMAP                  "res\\IDR_BAR_SAB.bmp"
+IDR_BAR_AS              BITMAP                  "res\\IDR_BAR_SAB.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3077,7 +3077,7 @@ BEGIN
     BUTTON      IDD_TASKBAR_ICON
 END
 
-IDR_BAR_SAB TOOLBAR 16, 15
+IDR_BAR_AS TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_FILE_SAVE
     SEPARATOR
@@ -3085,6 +3085,8 @@ BEGIN
     BUTTON      ID_EDIT_REDO
     SEPARATOR
     BUTTON      ID_EDIT_ADD_MARKUP
+    BUTTON      ID_EDIT_SPLIT_MOVE_LEFT
+    BUTTON      ID_EDIT_MOVE_RIGHT_MERGE
     SEPARATOR
     BUTTON      ID_EDIT_SEGMENT_SIZE
     SEPARATOR
@@ -3775,6 +3777,7 @@ BEGIN
         MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOPTOR
         MENUITEM "Current &Window\tF11",        ID_PLAYBACK_WINDOW
         MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
+        MENUITEM "Resu&me\tSpace",              ID_PLAYER_RESUME
         MENUITEM "Pa&use\tSpace",               ID_PLAYER_PAUSE
         MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
     END
@@ -3782,6 +3785,7 @@ BEGIN
     BEGIN
         POPUP "Automatic &Markup"
         BEGIN
+            MENUITEM "Locate Phonetic &Segments...", ID_ADVANCED_SEGMENT
             MENUITEM "Locate &Words...",            ID_ADVANCED_PARSE_WORD
         END
         POPUP "Align &Transcription"
@@ -4554,7 +4558,7 @@ BEGIN
     VK_F9,          ID_PLAYBACK_LTOSTOP,    VIRTKEY, NOINVERT
     VK_F10,         ID_PLAYBACK_STOPTOR,    VIRTKEY, NOINVERT
     VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
-    " ",            ID_PLAYER_PAUSE,        ASCII,  NOINVERT
+    " ",            ID_PLAYER_TOGGLE,       ASCII,  NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
     "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
     "J",            ID_AUTO_GENERATE_CV_DATA, VIRTKEY, CONTROL, NOINVERT
@@ -5699,6 +5703,8 @@ BEGIN
     ID_POPUPGRAPH_MAGNIFYCUSTOM 
                             "Show graph data vertically magnified by a custom factor\nMagnify Custom"
     ID_PLAYER_PAUSE         "Pauses playing\nPause Playing"
+    ID_PLAYER_RESUME        "Resumes playing\nResume Playing"
+    ID_PLAYER_TOGGLE        "Pauses or Resumes playing\nPause or Resume Playing"
     ID_PLAYER_STOP          "Stops playing\nStop Playing"
     ID_POPUPGRAPH_STYLE_LINE "Choose graph display style line\nStyle Line"
     ID_POPUPGRAPH_STYLE_SOLID "Choose graph display style solid\nStyle Solid"
@@ -5836,7 +5842,9 @@ END
 
 STRINGTABLE
 BEGIN
+    ID_EDIT_SPLIT_MOVE_LEFT "Split and Move Left\nSplit and Move Left"
     ID_EDIT_MERGE           "Merge two segments into one segment"
+    ID_EDIT_MOVE_RIGHT_MERGE "Move Right and Merge\nMove Right and Merge"
     ID_EDIT_ADD_MARKUP      "Add markup\nAdd Markup"
 END
 
@@ -6241,6 +6249,7 @@ BEGIN
                             "Failed to generate Pitch data.\nThe operation has been aborted."
     IDS_SAB_QUERY_EXISTING_DATA 
                             "WARNING! There is existing segment data in the Reference, Gloss and/or Gloss Nat. segments.\nProceeding with the import process will overwrite the segment data.\nClick YES to proceed with the import process.\nClick NO to terminate."
+    IDP_ASK_TO_SAVE         "Save changes for this project '%1'?"
 END
 
 #endif    // English (United States) resources

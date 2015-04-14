@@ -317,13 +317,12 @@ void CAutoSave::Save(CSaDoc & document) {
 
     // what is our scenario?
     if (document.IsUsingTempFile()) {
+
         // a recorded file
         wstring original = document.GetTempFilename();
-
         if (original.length()==0) {
             return;
         }
-
         // extract the filename
         filename.append(original);
         filename = filename.substr(temp.length(),filename.length()-temp.length());
@@ -349,13 +348,8 @@ void CAutoSave::Save(CSaDoc & document) {
             return;
         }
 
-        filename = original;
-
-        // remove parent folder
-        size_t pos = filename.rfind('\\');
-        if (pos!=wstring::npos) {
-            filename = filename.substr(pos+1,filename.length()-pos-1);
-        }
+		filename = FileUtils::GetFilename(original.c_str());
+		size_t pos = original.rfind('\\');
 
 		CString extension = FileUtils::GetExtension(filename.c_str()).c_str();
 		isWave = (extension.CompareNoCase(L"wav")==0);
@@ -480,11 +474,8 @@ void CAutoSave::Close(LPCTSTR filename) {
         return;
     }
 
-    size_t pos = original.rfind('\\');
-    if (pos!=wstring::npos) {
-        original = original.substr(pos+1,original.length()-pos-1);
-    }
     // remove extension
+	original = FileUtils::GetFilename( original.c_str());
 	original = FileUtils::RemoveExtension(original.c_str());
     wstring root = original;
     wstring info = root + L".info";
@@ -513,12 +504,7 @@ void CAutoSave::Close(LPCTSTR filename) {
                 continue;
             }
             wstring path = finder.GetFilePath();
-            wstring fn = path;
-            // remove parent folder
-            size_t pos = fn.rfind('\\');
-            if (pos!=wstring::npos) {
-                fn = fn.substr(pos+1,fn.length()-pos-1);
-            }
+			wstring fn = FileUtils::GetFilename(path.c_str());
             if (fn.compare(info)==0) {
                 FileUtils::Remove(path.c_str());
             } else if (fn.compare(wave)==0) {
