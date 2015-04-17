@@ -9341,17 +9341,17 @@ void CSaView::OnEditSplitHere() {
 	EditSplitAt(position);
 }
 
-void CSaView::EditSplitAt( DWORD position) {
+DWORD CSaView::EditSplitAt( DWORD position) {
 
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
 	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
 	if (pSeg==NULL) {
-        return;
+        return -1;
     }
 	int sel = pSeg->FindWithin(position);
     if (sel==-1) {
-        return;
+        return -1;
     }
 	if (pApp->IsAudioSync()) {
 		pDoc->SplitSegment( pSeg, sel, position);
@@ -9364,8 +9364,9 @@ void CSaView::EditSplitAt( DWORD position) {
 		SetCursorPosition( START_CURSOR,newStart);
 		SetCursorPosition( STOP_CURSOR,newStop);
 		RefreshGraphs(TRUE,FALSE);
-		return;
+		return newStart;
 	}
+	
 	pDoc->SplitSegment( pSeg, sel, position);
 	int newsel = pSeg->GetNext(sel);
     DWORD newStart = pSeg->GetOffset(newsel);
@@ -9375,6 +9376,7 @@ void CSaView::EditSplitAt( DWORD position) {
     SetCursorPosition( START_CURSOR,newStart);
     SetCursorPosition( STOP_CURSOR,newStop);
     RefreshGraphs(TRUE,FALSE);
+	return newStart;
 }
 
 /***************************************************************************/
@@ -9592,6 +9594,7 @@ void CSaView::OnEditMoveLeftHere() {
 }
 
 void CSaView::EditMoveLeftAt( DWORD position) {
+
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
     CPhoneticSegment * pSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
@@ -9675,8 +9678,8 @@ void CSaView::OnEditSplitMoveLeftHere() {
 		return;
 	}
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
-    EditSplitAt(position);
-    EditMoveLeftAt(position);
+    DWORD newPosition = EditSplitAt(position);
+    EditMoveLeftAt(newPosition+1);
 }
 
 /**

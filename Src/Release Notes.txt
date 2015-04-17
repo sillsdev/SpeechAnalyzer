@@ -1,3 +1,6 @@
+AS - 0.99.0.8 4/17/2015
+- Fixed right-mouse-cursor split-move-left bug. Was only performing split operation.
+
 AS - 0.99.0.7(b) 4/17/2015
 - Changed default for boundaries on graph windows
 

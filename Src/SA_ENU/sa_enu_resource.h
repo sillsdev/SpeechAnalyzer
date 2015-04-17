@@ -1662,13 +1662,10 @@
 #define ID_EDIT_MOVE_RIGHT              33251
 #define ID_EDIT_MOVE_RIGHT_MERGE        33252
 #define ID_EDIT_ADD_MARKUP              33253
-#define ID_ACCELERATOR33255             33255
 #define ID_BUTTON33257                  33257
 #define ID_EDIT_SPLIT_HERE              33260
-#define ID_FILE_EXPORT                  33260
 #define ID_EDIT_MOVE_LEFT_HERE          33261
 #define ID_EDIT_SPLIT_MOVE_LEFT_HERE    33262
-#define ID_ALIGNTRANSCRIPTION_EXPORTCVDATA 33262
 #define ID_EDIT_MERGE_HERE              33263
 #define ID_EXPORT_CV_DATA               33264
 #define ID_EDIT_MOVE_RIGHT_HERE         33265

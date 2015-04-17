@@ -661,7 +661,7 @@ private:
 	void EditMoveLeft();
     void EditMoveLeftAt(DWORD position);
 	void EditSplit();
-	void EditSplitAt(DWORD position);
+	DWORD EditSplitAt(DWORD position);
 	void EditMerge();
 	void EditMergeAt(DWORD position);
 	DWORD CalculatePositionFromMouse();
