@@ -255,7 +255,7 @@
 \-parse
 \+segment 
 \segment_ms 20
-\minChange 17
+\minChange 16
 \minZeroCrossing 18
 \-segment
 \+pitch 
