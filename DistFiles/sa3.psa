@@ -434,7 +434,7 @@
 \annotall 0
 \annotnone 1
 \-annotallornonelist
-\boundariesall 0
+\boundariesall 1
 \transcriptionboundaries 1
 \drawstyleline 1
 \updateboundaries 1

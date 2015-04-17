@@ -1,3 +1,6 @@
+AS - 0.99.0.7(b) 4/17/2015
+- Changed default for boundaries on graph windows
+
 AS - 0.99.0.7 4/15/2015
 - Modified AS application ICON to be use different letter coloring.
 - Added 'Split','Move Left','Merge','Move Right','Split Move Left' and 'Move Right Merge' to graph popup window.  Allows splitting or merging based on cursor position (AS)
