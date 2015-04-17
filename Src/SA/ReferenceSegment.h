@@ -14,7 +14,7 @@ public:
     virtual BOOL Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration);
     int CheckPositionToMaster(ISaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode) const;
 	// add a segment
-    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true); 
+    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck); 
 
 private:
     virtual CFontTable * NewFontTable() const;

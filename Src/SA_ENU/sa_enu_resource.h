@@ -17,7 +17,7 @@
 #define IDR_MAINFRAME_SA                92
 #define IDR_MAINFRAME_AS                93
 #define IDR_SA_ANNTYPE                  94
-#define IDR_SA_ASTYPE                   95
+#define IDR_SA_AUDIOSYNC                95
 #define IDR_SA_WBTYPE                   96
 #define IDR_WORKBENCH                   97
 #define IDR_SA_MIDTYPE                  99
@@ -43,10 +43,11 @@
 #define IDD_INFORMATIONUSERPAGE         122
 #define IDC_SAMPLESIZE                  123
 #define IDD_OPTIONSVIEWPAGE             124
-#define IDR_SA_FLOATINGPOPUP            125
+#define IDR_SA_POPUP                    125
 #define IDR_SA_DISPLAYPLOT              126
-#define IDR_SA_DP_POPUP                 127
+#define IDR_SA_DISPLAYPLOT_POPUP        127
 #define IDR_MAINFRAME_SAS               128
+#define IDR_AS_POPUP                    129
 #define IDD_RECORDER                    135
 #define IDD_CHARTVOWELSPAGE             140
 #define IDD_CHARTCONSONANTSPAGE         141
@@ -140,7 +141,7 @@
 #define IDR_BAR_BASIC                   344
 #define IDD_TASKBAR                     345
 #define IDR_TASKBAR                     346
-#define IDR_BAR_AS                      347
+#define IDR_BAR_AUDIOSYNC               347
 #define IDI_NEXT                        349
 #define IDI_PREV                        350
 #define IDI_UP                          351
@@ -1662,6 +1663,16 @@
 #define ID_EDIT_MOVE_RIGHT_MERGE        33252
 #define ID_EDIT_ADD_MARKUP              33253
 #define ID_ACCELERATOR33255             33255
+#define ID_BUTTON33257                  33257
+#define ID_EDIT_SPLIT_HERE              33260
+#define ID_FILE_EXPORT                  33260
+#define ID_EDIT_MOVE_LEFT_HERE          33261
+#define ID_EDIT_SPLIT_MOVE_LEFT_HERE    33262
+#define ID_ALIGNTRANSCRIPTION_EXPORTCVDATA 33262
+#define ID_EDIT_MERGE_HERE              33263
+#define ID_EXPORT_CV_DATA               33264
+#define ID_EDIT_MOVE_RIGHT_HERE         33265
+#define ID_EDIT_MOVE_RIGHT_MERGE_HERE   33266
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1830,7 +1841,6 @@
 #define IDS_SAB_QUERY_AUTOSEGMENT_EXISTING_DATA 61334
 #define IDS_SAB_QUERY_AUTOPARSE         61335
 #define IDS_SAB_QUERY_AUTOSEGMENT       61335
-#define IDS_ERROR_GENERATE_CV_PHONETIC  61350
 #define IDS_ERROR_GENERATE_CV_TONE      61351
 #define IDS_ERROR_GENERATE_CV_NOPITCH   61352
 #define IDS_ERROR_AUTO_PARSE            61353
@@ -1843,7 +1853,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        387
-#define _APS_NEXT_COMMAND_VALUE         33257
+#define _APS_NEXT_COMMAND_VALUE         33267
 #define _APS_NEXT_CONTROL_VALUE         2116
 #define _APS_NEXT_SYMED_VALUE           105
 #endif

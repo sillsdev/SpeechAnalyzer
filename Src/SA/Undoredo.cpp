@@ -68,8 +68,6 @@ void CUndoRedoDoc::Undo(BOOL bAddRedo, BOOL bUndo) {
     }
 }
 
-
-
 /***************************************************************************/
 // CUndoRedoDoc::Redo - undo an undo
 /***************************************************************************/
@@ -95,6 +93,7 @@ void CUndoRedoDoc::Redo() {
 // before an operation that changes the document.
 /***************************************************************************/
 void CUndoRedoDoc::CheckPoint() {
+
     CMemFile * file = NULL;
     // SDM 1.06.8 (exceptions thrown below may still cause memory leaks)
     try {
@@ -130,8 +129,6 @@ void CUndoRedoDoc::ClearList(CObList * pList) {
     pList->RemoveAll();
 }
 
-
-
 /***************************************************************************/
 // CUndoRedoDoc::AddUndo - takes the file which should contain a saved
 // document state, and adds it to the undo stream.
@@ -145,8 +142,6 @@ void CUndoRedoDoc::AddUndo(CMemFile * file) {
     m_undolist.AddHead(file);
 }
 
-
-
 /***************************************************************************/
 // CUndoRedoDoc::AddRedo - takes the file, which should contain a saved
 // document state, and adds it to the redo stream.
@@ -158,8 +153,6 @@ void CUndoRedoDoc::AddRedo(CMemFile * file) {
         m_redolist.AddHead(file);
     }
 };
-
-
 
 /***************************************************************************/
 // CUndoRedoDoc::Store - stores the current state of the document in the file.
@@ -174,7 +167,6 @@ void CUndoRedoDoc::Store(CMemFile * file) {
         ar.Close();
     }
 }
-
 
 /***************************************************************************/
 // CUndoRedoDoc::Load - restores the document to the state stored in the file

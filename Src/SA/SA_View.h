@@ -70,6 +70,7 @@ class CRecGraphWnd;
 class CStopwatch;
 class CMainFrame;
 class CMusicPhraseSegment;
+class CPhoneticSegment;
 class CSegment;
 class CSaDoc;
 class CDlgAutoRecorder;
@@ -268,11 +269,10 @@ public:
     afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 
     void EnableScrolling(bool val);
-    void SelectSegment(CSegment * pSegment, int index);
+    void ToggleSegmentSelection(CSegment * pSegment, int index);
 
-    void EditMoveLeft();
-    bool CanMoveDataLeft( CSegment * pSegment, bool discrete);
 	bool AnySegmentHasData( CSegment * pSegment, int sel);
+	void SelectSegment();
 
 protected:
     BOOL PreCreateWindow(CREATESTRUCT & cs);
@@ -422,7 +422,8 @@ protected:
     afx_msg void OnUpdateSetupFnkeys(CCmdUI * pCmdUI);
     afx_msg void OnEditRemove();
     afx_msg void OnUpdateEditRemove(CCmdUI * pCmdUI);
-    afx_msg void OnEditSplit();
+    
+	afx_msg void OnEditSplit();
     afx_msg void OnUpdateEditSplit(CCmdUI * pCmdUI);
     afx_msg void OnEditMerge();
     afx_msg void OnUpdateEditMerge(CCmdUI * pCmdUI);
@@ -434,7 +435,21 @@ protected:
     afx_msg void OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI);
     afx_msg void OnEditMoveRightMerge();
     afx_msg void OnUpdateEditMoveRightMerge(CCmdUI * pCmdUI);
-    afx_msg void OnEditAutoAdd();
+    
+	afx_msg void OnEditSplitHere();
+    afx_msg void OnUpdateEditSplitHere(CCmdUI * pCmdUI);
+    afx_msg void OnEditMergeHere();
+    afx_msg void OnUpdateEditMergeHere(CCmdUI * pCmdUI);
+    afx_msg void OnEditMoveLeftHere();
+    afx_msg void OnUpdateEditMoveLeftHere(CCmdUI * pCmdUI);
+    afx_msg void OnEditMoveRightHere();
+    afx_msg void OnUpdateEditMoveRightHere(CCmdUI * pCmdUI);
+    afx_msg void OnEditSplitMoveLeftHere();
+    afx_msg void OnUpdateEditSplitMoveLeftHere(CCmdUI * pCmdUI);
+    afx_msg void OnEditMoveRightMergeHere();
+    afx_msg void OnUpdateEditMoveRightMergeHere(CCmdUI * pCmdUI);
+    
+	afx_msg void OnEditAutoAdd();
     afx_msg void OnUpdateEditAutoAdd(CCmdUI * pCmdUI);
     afx_msg void OnEditAutoAddStorySection();
     afx_msg void OnUpdateEditAutoAddStorySection(CCmdUI * pCmdUI);
@@ -559,6 +574,7 @@ protected:
     afx_msg void OnAdvancedSegment();
     afx_msg void OnUpdateAdvancedSegment(CCmdUI * pCmdUI);
 	afx_msg void OnGenerateCVData();
+	afx_msg void OnExportCVData();
     DECLARE_MESSAGE_MAP()
 
 private:
@@ -586,11 +602,8 @@ private:
     UINT GraphPtrtoID(CGraphWnd * pGraph);
     int  GraphPtrToOffset(CGraphWnd * pGraph);
     void ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly = FALSE);
-	// 09/27/2000 - DDO
     void ToggleDpGraph(UINT nID);
-	// 09/27/2000 - DDO
     void UpdateDpGraphsMenu(CCmdUI * pCmdUI, int nID);
-	// 09/24/2000 - DDO
     void MakeGraphArraysContiguous();
     BOOL GetGraphSubRect(const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anGraphID = NULL) const;
     void ArrangeMelogramGraphs(const CRect * pMeloRect, UINT * pGraphIDs);
@@ -628,32 +641,69 @@ private:
     BOOL AllowAutoAdd(bool story);
 
 	CMainFrame & GetMainFrame();
+	CSaApp & GetApp();
 
 	void ErrorMessage( int msg);
 	void ErrorMessage( int msg, LPCTSTR param);
 	void ErrorMessage( CSaString & msg);
 
-	UINT m_anGraphID[MAX_GRAPHS_NUMBER];    // array of graph IDs
-    UINT m_nLayout;                         // actual Layout number
+    bool CanMoveDataLeft( CSegment * pSegment, bool discrete);
+    bool CanMoveDataLeftAt( CPhoneticSegment * pSegment, DWORD position, bool discrete);
+    bool CanMoveDataRight(CSegment * pSegment);
+    bool CanMoveDataRightAt(CPhoneticSegment * pSegment, DWORD position);
+    bool CanSplit(CSegment * pSeg);
+    bool CanSplitAt(CPhoneticSegment * pSeg, DWORD position);
+    bool CanMerge(CSegment * pSeg);
+    bool CanMergeAt(CPhoneticSegment * pSeg, DWORD position);
+
+	void EditMoveRight();
+	void EditMoveRightAt(DWORD position);
+	void EditMoveLeft();
+    void EditMoveLeftAt(DWORD position);
+	void EditSplit();
+	void EditSplitAt(DWORD position);
+	void EditMerge();
+	void EditMergeAt(DWORD position);
+	DWORD CalculatePositionFromMouse();
+
+	// array of graph IDs
+	UINT m_anGraphID[MAX_GRAPHS_NUMBER];    
+	// actual Layout number
+    UINT m_nLayout;
     CSegmentSelection m_advancedSelection;
-    CGraphWnd * m_pFocusedGraph;            // pointer to focused graph
+	// pointer to focused graph
+    CGraphWnd * m_pFocusedGraph;
     CDlgPrintOptions * m_pPageLayout;
     CDlgPrintOptions * m_pPgLayoutBackup;
     CDlgPickOver * m_pPickOverlay;
-    UINT m_nFocusedID;                      // ID of focused graph
-    BOOL m_bLegendAll;                      // legend window show/hide all
-    BOOL m_bLegendNone;                     // legend window hide all
-    BOOL m_bXScaleAll;                      // x-scale window show/hide all
-    BOOL m_bXScaleNone;                     // x-scale window hide all
-    BOOL m_abAnnAll[ANNOT_WND_NUMBER];      // array of boolean, annotation window show/hide all
-    BOOL m_abAnnNone[ANNOT_WND_NUMBER];     // array of boolean, annotation window hide all
-    ECursorAlignment m_nCursorAlignment;    // cursor snap mode: align to sample, zero crossing, or fragment
-    BOOL m_bTranscriptionBoundaries;        // show transcription boundaries
-    BOOL m_bSegmentBoundaries;              // boundaries show/hide all
-    BOOL m_bUpdateBoundaries;               // boundaries updated or not in transcription editor
-    bool m_bEditBoundaries;                 // TRUE = INS pressed
-    bool m_bEditSegmentSize;                // TRUE = CTRL_SHIFT pressed
-    BOOL m_bDrawStyleLine;                  // graph drawing style line or solid
+	// ID of focused graph
+    UINT m_nFocusedID;
+	// legend window show/hide all
+    BOOL m_bLegendAll;
+	// legend window hide all
+    BOOL m_bLegendNone;
+	// x-scale window show/hide all
+    BOOL m_bXScaleAll;
+	// x-scale window hide all
+    BOOL m_bXScaleNone;
+	// array of boolean, annotation window show/hide all
+    BOOL m_abAnnAll[ANNOT_WND_NUMBER];
+	// array of boolean, annotation window hide all
+    BOOL m_abAnnNone[ANNOT_WND_NUMBER];
+	// cursor snap mode: align to sample, zero crossing, or fragment
+    ECursorAlignment m_nCursorAlignment;
+	// show transcription boundaries
+    BOOL m_bTranscriptionBoundaries;
+	// boundaries show/hide all
+    BOOL m_bSegmentBoundaries;
+	// boundaries updated or not in transcription editor
+    BOOL m_bUpdateBoundaries;
+	// TRUE = INS pressed
+    bool m_bEditBoundaries;
+	// TRUE = CTRL_SHIFT pressed
+    bool m_bEditSegmentSize;
+	// graph drawing style line or solid
+    BOOL m_bDrawStyleLine;
     DWORD m_dwDataPosition;                 // current start position of displayed data
     double m_fMagnify;                      // magnify factor
     double m_fZoom;                         // current zoom factor

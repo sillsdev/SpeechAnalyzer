@@ -365,23 +365,27 @@ void CPlotPOA::GraphHasFocus(BOOL bFocus) {
                 if ((bDynamicUpdate) && (m_dwAnimationFrame != UNDEFINED_OFFSET)) {
                     dwFrameIndex = m_dwAnimationFrame;
                 } else {
-                    DWORD dwStartCursorPosn = pView->GetStartCursorPosition();  // get start cursor position in bytes
+					// get start cursor position in bytes
+                    DWORD dwStartCursorPosn = pView->GetStartCursorPosition();  
                     dwFrameIndex = pFragments->GetFragmentIndex(dwStartCursorPosn / wSmpSize);
                 }
                 SFragParms FragParms = pFragments->GetFragmentParms(dwFrameIndex);
-                DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;     // frame start in bytes
-                DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;    // frame size in bytes
-                pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);  // highlight the fragment in the raw waveform
+				// frame start in bytes
+                DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
+				// frame size in bytes
+                DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
+				// highlight the fragment in the raw waveform
+                pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);  
                 pWavePlot->UpdateWindow();
             }
         } else if (!pView->IsAnimating()) {
             // not in focus and not animating
-            pWavePlot->SetHighLightArea(0, 0);  // turn off highlighting in raw waveform
+			// turn off highlighting in raw waveform
+            pWavePlot->ClearHighLightArea();
             pWavePlot->UpdateWindow();
         }
     }
 }
-
 
 /***************************************************************************/
 // CPlotPOA::AnimateFrame  Animate a single frame using the base plot class
@@ -393,7 +397,6 @@ void CPlotPOA::AnimateFrame(DWORD dwFrameIndex) {
     m_bShowModelData = FALSE;
     CPlotWnd::StandardAnimateFrame(dwFrameIndex);
 }
-
 
 /***************************************************************************/
 // CPlotPOA::EndAnimation  Terminate the animation with additional options

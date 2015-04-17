@@ -17,7 +17,7 @@ public:
     virtual int CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const;
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
 	// add a segment
-    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true); 
+    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck); 
 	// remove a segment
     virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck); 
 	virtual int Add( DWORD offset, DWORD duration);

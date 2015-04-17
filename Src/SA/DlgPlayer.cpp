@@ -497,6 +497,7 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
         m_nMode = PAUSED;
         m_pView->StopPlaybackTimer();
         m_pView->SetPlaybackFlash(true);
+		m_pView->SelectSegment();
         // start flashing paused button
         m_play.Flash(TRUE);
         m_VUBar.SetVU(0);

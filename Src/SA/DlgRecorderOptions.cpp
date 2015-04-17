@@ -187,7 +187,7 @@ void CDlgRecorderOptions::OnSourceAuto() {
 /***************************************************************************/
 void CDlgRecorderOptions::OnSource() {
     UpdateData(TRUE);
-    CSaDoc * pDoc = GetRecorder().GetDocument(); // cast document pointer
+    CSaDoc * pDoc = GetRecorder().GetDocument();
     SourceParm * pSourceParm = pDoc->GetSourceParm();
     CDlgRecorder::sourceInfo & m_source = CDlgRecorder::GetStaticSourceInfo();
     if (m_source.bEnable) {

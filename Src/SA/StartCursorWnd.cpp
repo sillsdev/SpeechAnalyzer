@@ -315,9 +315,9 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
                 (pView->GetEditBoundaries()==BOUNDARIES_EDIT_NULL) &&
                 ((pView->GetGraphUpdateMode() == STATIC_UPDATE) || (!pView->GetDynamicGraphCount()))) {
             if (dwCursor > m_dwStartDragPos) {
-                pWnd->SetHighLightArea(m_dwStartDragPos, dwCursor);
+                pWnd->SetHighLightArea(m_dwStartDragPos, dwCursor, TRUE, FALSE);
             } else {
-                pWnd->SetHighLightArea(dwCursor, m_dwStartDragPos);
+                pWnd->SetHighLightArea(dwCursor, m_dwStartDragPos, TRUE, FALSE);
             }
         }
 
@@ -433,8 +433,8 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     pGraph->UpdateStatusBar(m_dwStartDragPos, dwStopCursor);
     // clear the highlight area on mouse down
     CGraphWnd * pRaw = pView->GraphIDtoPtr(IDD_RAWDATA);
-    if (pRaw) {
-        pRaw->GetPlot()->SetHighLightArea(0, 0);
+    if (pRaw!=NULL) {
+        pRaw->GetPlot()->ClearHighLightArea();
     }
     // limit cursor movement to graph window
     pWnd->ClientToScreen(&rWnd);

@@ -119,7 +119,7 @@ IDI_DOWN                ICON                    "res\\down.ico"
 IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\SA.ico"
 IDR_SA_WBTYPE           ICON                    "RES\\SA_WB.ICO"
 IDR_SA_ANNTYPE          ICON                    "RES\\SA.ICO"
-IDR_SA_ASTYPE           ICON                    "RES\\AS.ICO"
+IDR_SA_AUDIOSYNC        ICON                    "RES\\AS.ICO"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2971,7 +2971,7 @@ IDB_JAW                 BITMAP                  "RES\\JAW.BMP"
 IDB_TONGUE              BITMAP                  "RES\\TONGUE.BMP"
 IDR_BAR_ADVANCED        BITMAP                  "res\\IDR_BAR_ADVANCED.bmp"
 IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
-IDR_BAR_AS              BITMAP                  "res\\IDR_BAR_SAB.bmp"
+IDR_BAR_AUDIOSYNC       BITMAP                  "res\\IDR_BAR_SAB.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3077,7 +3077,7 @@ BEGIN
     BUTTON      IDD_TASKBAR_ICON
 END
 
-IDR_BAR_AS TOOLBAR 16, 15
+IDR_BAR_AUDIOSYNC TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_FILE_SAVE
     SEPARATOR
@@ -3088,7 +3088,7 @@ BEGIN
     BUTTON      ID_EDIT_SPLIT_MOVE_LEFT
     BUTTON      ID_EDIT_MOVE_RIGHT_MERGE
     SEPARATOR
-    BUTTON      ID_EDIT_SEGMENT_SIZE
+    BUTTON      ID_EDIT_SEGMENT_BOUNDARIES
     SEPARATOR
     BUTTON      ID_GRAPHS_ZOOM_IN
     BUTTON      ID_GRAPHS_ZOOM_OUT
@@ -3261,8 +3261,8 @@ BEGIN
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
         MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
         MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
-        MENUITEM "Split and Move Left\tShitf+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShitf+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3539,7 +3539,7 @@ BEGIN
     END
 END
 
-IDR_SA_ASTYPE MENU
+IDR_SA_AUDIOSYNC MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3593,8 +3593,8 @@ BEGIN
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
         MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
         MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
-        MENUITEM "Split and Move Left\tShitf+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShitf+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3611,43 +3611,9 @@ BEGIN
             MENUITEM "Up Item\tAlt+Up",             ID_EDIT_UP
             MENUITEM "Down Item\tAlt+Down",         ID_EDIT_DOWN
         END
-        MENUITEM SEPARATOR
-        MENUITEM "&Find...\tCtrl+F",            ID_EDIT_FIND
-        MENUITEM "Find &Next...\tF3",           ID_EDIT_FIND_NEXT
-        MENUITEM "&Replace...",                 ID_EDIT_REPLACE
     END
     POPUP "&Graphs"
     BEGIN
-        MENUITEM "&Layout",                     ID_GRAPHS_LAYOUT
-        POPUP "T&ypes"
-        BEGIN
-            MENUITEM "Raw &Waveform",               IDD_RAWDATA
-            MENUITEM "&Intensity",                  IDD_LOUDNESS
-            MENUITEM "&Duration",                   IDD_DURATION
-            MENUITEM "C&hange",                     IDD_CHANGE
-            MENUITEM SEPARATOR
-            MENUITEM "&Raw Pitch",                  IDD_PITCH
-            MENUITEM "&Custom Pitch",               IDD_CHPITCH
-            MENUITEM "Sm&oothed Pitch",             IDD_SMPITCH
-            MENUITEM "A&uto Pitch",                 IDD_GRAPITCH
-            MENUITEM SEPARATOR
-            MENUITEM "Spectrogram",                 IDD_SPECTROGRAM
-            MENUITEM "Snapshot",                    IDD_SNAPSHOT
-            MENUITEM "S&pectrum",                   IDD_SPECTRUM
-            MENUITEM "&Zero Crossing",              IDD_ZCROSS
-            MENUITEM "&F1 v. F2",                   IDD_F1F2
-            MENUITEM "F2 v. F&1",                   IDD_F2F1
-            MENUITEM "(F&2-F1) v. F1",              IDD_F2F1F1
-            MENUITEM "F1 v. F2 v. F&3",             IDD_3D
-            MENUITEM SEPARATOR
-            MENUITEM "Me&logram",                   IDD_MELOGRAM
-            MENUITEM "Tonal Weighting Chart",       IDD_TWC
-            MENUITEM "Magnitude",                   IDD_MAGNITUDE
-            MENUITEM "&Staff",                      IDD_STAFF
-            MENUITEM SEPARATOR
-            MENUITEM "Pos&ition View",              IDD_RECORDING
-        END
-        MENUITEM SEPARATOR
         POPUP "&Transcription Bars"
         BEGIN
             POPUP "&Reference"
@@ -3785,25 +3751,17 @@ BEGIN
     BEGIN
         POPUP "Automatic &Markup"
         BEGIN
-            MENUITEM "Locate Phonetic &Segments...", ID_ADVANCED_SEGMENT
             MENUITEM "Locate &Words...",            ID_ADVANCED_PARSE_WORD
         END
         POPUP "Align &Transcription"
         BEGIN
             MENUITEM "Add &Reference Numbers...",   ID_AUTO_MARKUP_REFERENCE_DATA
             MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
-            MENUITEM "Generate CV Data...",         ID_AUTO_GENERATE_CV_DATA
+            MENUITEM "&Generate CV Data...",        ID_AUTO_GENERATE_CV_DATA
+            MENUITEM "&Export CV Data...",          ID_EXPORT_CV_DATA
         END
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
-    END
-    POPUP "&Window"
-    BEGIN
-        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
-        MENUITEM "&Tile Horizontal",            ID_WINDOW_TILE_HORZ
-        MENUITEM "Tile &Vertical",              ID_WINDOW_TILE_VERT
-        MENUITEM SEPARATOR
-        MENUITEM "&Retile Graphs\tCtrl+T",      ID_GRAPHS_TILE
     END
     POPUP "&Help"
     BEGIN
@@ -3812,7 +3770,7 @@ BEGIN
     END
 END
 
-IDR_SA_FLOATINGPOPUP MENU
+IDR_SA_POPUP MENU
 BEGIN
     POPUP "Popup Graph"
     BEGIN
@@ -3898,8 +3856,8 @@ BEGIN
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
         MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
         MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
-        MENUITEM "Split and Move Left\tShitf+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShitf+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM "&Edit\tF4",                   ID_EDIT_EDITOR
         MENUITEM "&View Boundaries",            ID_VIEW_TRANSCRIPTION_BOUNDARIES
         MENUITEM SEPARATOR
@@ -3999,6 +3957,93 @@ BEGIN
             MENUITEM "Klatt Waveform Synthesizer",  ID_KLATT_FRAGMENTS
             MENUITEM "Klatt IPA Text Synthesizer",  ID_KLATT_IPA_BLEND
             MENUITEM "&LPC Vocal Tract Synthesizer", ID_SYNTHESIS_VTRACT
+        END
+    END
+END
+
+IDR_AS_POPUP MENU
+BEGIN
+    POPUP "Popup Graph"
+    BEGIN
+        MENUITEM "&Split Segment Here",         ID_EDIT_SPLIT_HERE
+        MENUITEM "&Merge Segments Here",        ID_EDIT_MERGE_HERE
+        MENUITEM "Move Data &Left Here",        ID_EDIT_MOVE_LEFT_HERE
+        MENUITEM "Move Data &Right Here",       ID_EDIT_MOVE_RIGHT_HERE
+        MENUITEM "&Split and Move Left Here",   ID_EDIT_SPLIT_MOVE_LEFT_HERE
+        MENUITEM "Move &Right and Merge Here",  ID_EDIT_MOVE_RIGHT_MERGE_HERE
+        MENUITEM SEPARATOR
+        MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
+        MENUITEM SEPARATOR
+        MENUITEM "&Parameters...",              ID_GRAPHS_PARAMETERS
+        MENUITEM SEPARATOR
+        MENUITEM "&Transcription Bars...",      ID_SELECT_TRANSCRIPTION_BARS
+        POPUP "&View"
+        BEGIN
+            MENUITEM "Lege&nd ( y-axis )",          ID_POPUPGRAPH_LEGEND
+            MENUITEM "&Time-Scale ( x-axis )",      ID_POPUPGRAPH_XSCALE
+            MENUITEM "Gridline&s",                  ID_POPUPGRAPH_GRIDLINES
+            MENUITEM "Segment &Boundaries",         ID_BOUNDARIES_THIS
+            POPUP "Magn&ify"
+            BEGIN
+                MENUITEM "x&1",                         ID_POPUPGRAPH_MAGNIFY1
+                MENUITEM "x&2",                         ID_POPUPGRAPH_MAGNIFY2
+                MENUITEM "x&4",                         ID_POPUPGRAPH_MAGNIFY4
+                MENUITEM "&Custom...",                  ID_POPUPGRAPH_MAGNIFYCUSTOM
+            END
+        END
+    END
+    POPUP "Popup Transcription"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Add Markup\tAlt+M",           ID_EDIT_ADD_MARKUP
+        MENUITEM "&Remove\tDelete",             ID_EDIT_REMOVE
+        MENUITEM SEPARATOR
+        MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
+        MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
+        MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
+        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM SEPARATOR
+        MENUITEM "&View Boundaries",            ID_VIEW_TRANSCRIPTION_BOUNDARIES
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "Popup Toolbars"
+    BEGIN
+        MENUITEM "Basic",                       ID_VIEW_TOOLBAR
+        MENUITEM "Advanced",                    IDR_BAR_ADVANCED
+    END
+    POPUP "Popup Graph"
+    BEGIN
+        MENUITEM "&Split Segment Here",         ID_EDIT_SPLIT_HERE
+        MENUITEM "&Merge Segments Here",        ID_EDIT_MERGE_HERE
+        MENUITEM "Move Data &Left Here",        ID_EDIT_MOVE_LEFT_HERE
+        MENUITEM "Move Data &Right Here",       ID_EDIT_MOVE_RIGHT_HERE
+        MENUITEM "&Split and Move Left Here",   ID_EDIT_SPLIT_MOVE_LEFT_HERE
+        MENUITEM "Move &Right and Merge Here",  ID_EDIT_MOVE_RIGHT_MERGE_HERE
+        MENUITEM SEPARATOR
+        MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
+        MENUITEM SEPARATOR
+        MENUITEM "&Parameters...",              ID_GRAPHS_PARAMETERS
+        MENUITEM SEPARATOR
+        MENUITEM "&Transcription Bars...",      ID_SELECT_TRANSCRIPTION_BARS
+        POPUP "&View"
+        BEGIN
+            MENUITEM "Lege&nd ( y-axis )",          ID_POPUPGRAPH_LEGEND
+            MENUITEM "&Time-Scale ( x-axis )",      ID_POPUPGRAPH_XSCALE
+            MENUITEM "Gridline&s",                  ID_POPUPGRAPH_GRIDLINES
+            MENUITEM "Segment &Boundaries",         ID_BOUNDARIES_THIS
+            POPUP "Magn&ify"
+            BEGIN
+                MENUITEM "x&1",                         ID_POPUPGRAPH_MAGNIFY1
+                MENUITEM "x&2",                         ID_POPUPGRAPH_MAGNIFY2
+                MENUITEM "x&4",                         ID_POPUPGRAPH_MAGNIFY4
+                MENUITEM "&Custom...",                  ID_POPUPGRAPH_MAGNIFYCUSTOM
+            END
         END
     END
 END
@@ -4129,7 +4174,7 @@ BEGIN
     END
 END
 
-IDR_SA_DP_POPUP MENU
+IDR_SA_DISPLAYPLOT_POPUP MENU
 BEGIN
     POPUP "Popup Graph"
     BEGIN
@@ -4463,7 +4508,7 @@ BEGIN
     "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
 END
 
-IDR_SA_ASTYPE ACCELERATORS
+IDR_SA_AUDIOSYNC ACCELERATORS
 BEGIN
     "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
     "Q",            ID_EDIT_ADD_PHONETIC,   VIRTKEY, CONTROL, NOINVERT
@@ -5123,7 +5168,7 @@ BEGIN
     IDR_MAINFRAME_SA        "Speech Analyzer"
     IDR_MAINFRAME_AS        "Audio+Sync"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    IDR_SA_ASTYPE           "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
+    IDR_SA_AUDIOSYNC        "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
 END
 
 STRINGTABLE
@@ -5713,12 +5758,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_SA_FLOATINGPOPUP    "Change the current graph type to plot E\nPlot E"
+    IDR_SA_POPUP            "Change the current graph type to plot E\nPlot E"
 END
 
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME_SAS       "SA Server"
+    IDR_AS_POPUP            "Change the current graph type to plot E\nPlot E"
 END
 
 STRINGTABLE
@@ -6241,8 +6287,6 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERROR_GENERATE_CV_PHONETIC 
-                            "There are no phonetics segments.  Phonetic segments are needed to ceate CV data.\nAborting operation."
     IDS_ERROR_GENERATE_CV_TONE 
                             "There are pre-existing Tone Segments.  The data will be overwritten by this function.  Please remove the segments.\nAborting operation."
     IDS_ERROR_GENERATE_CV_NOPITCH 

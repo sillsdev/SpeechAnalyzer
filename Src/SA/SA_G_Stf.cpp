@@ -107,7 +107,7 @@ void CPlotStaff::GraphHasFocus(BOOL bFocus) {
             if (pMelogram) {
                 CPlotWnd * pMelPlot = pMelogram->GetPlot();
                 if (pMelPlot) {
-                    pMelPlot->SetHighLightArea(0, 0);
+                    pMelPlot->ClearHighLightArea();
                     pMelPlot->UpdateWindow();
                 }
             }

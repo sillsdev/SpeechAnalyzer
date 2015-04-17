@@ -39,9 +39,12 @@ private:
     double m_dMinSemitone;
     double m_dMaxSemitone;
     short m_nBinsPerSemitone;
-    BOOL  m_bSaveCursorPositions;  // determines whether to save the start/stop cursor positions
-    DWORD m_dwFrameStartSave;    // TCJ 6/23 - Save the 'dwFrameStart' value
-    DWORD m_dwFrameSizeSave;    // TCJ 6/23 - Save the 'dwFrameSize' value
+	// determines whether to save the start/stop cursor positions
+    BOOL  m_bSaveCursorPositions;  
+	// TCJ 6/23 - Save the 'dwFrameStart' value
+    DWORD m_dwFrameStartSave;
+	// TCJ 6/23 - Save the 'dwFrameSize' value
+    DWORD m_dwFrameSizeSave;
 
 // Operations
 protected:

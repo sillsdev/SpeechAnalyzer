@@ -115,7 +115,8 @@ class CPlotWnd : public CWnd {
 
     DECLARE_DYNCREATE(CPlotWnd)
 
-    friend CStartCursorWnd; // they need to access protected members
+	// they need to access protected members
+    friend CStartCursorWnd;
     friend CStopCursorWnd;
 
 public:
@@ -129,6 +130,7 @@ public:
     virtual void GraphHasFocus(BOOL bFocus);
     CGraphWnd * GetGraph(void);
     CPoint GetMousePointerPosition();
+	CPoint GetPopupMenuPosition();
     UINT GetMouseButtonState();
     void SetMousePointerPosition(CPoint point);
     void SetMouseButtonState(UINT state);
@@ -137,8 +139,10 @@ public:
     virtual void RemoveRtPlots();
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
-    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide boundaries
-    virtual void SetMagnify(double, BOOL bRedraw = FALSE);          // set magnify factor
+	// show or hide boundaries
+    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);
+	// set magnify factor
+    virtual void SetMagnify(double, BOOL bRedraw = FALSE);
     double GetMagnify();
     BOOL HaveBoundaries();
     BOOL HaveDrawingStyleLine();
@@ -146,38 +150,62 @@ public:
     bool HaveCursors();
     bool HavePrivateCursor();
     BOOL HaveGrid();
-    void SetLineDraw(BOOL bLine);                           // set line or solid drawing style
-    void SetDotsDraw(BOOL);                                 // set dots drawing style
-    void ShowCursors(bool bPrivate, bool bShow);            // set cursors visible/hidden
-    BOOL ShowGrid(BOOL bShow, BOOL bRedraw = FALSE);        // show or hide gridlines
-    void ScrollPlot(CSaView * pView, int nAmount, DWORD dwOldPos, DWORD dwFrame); // scroll plot and cursors
-    void RedrawPlot(BOOL bEntire = TRUE);                   // repaint plot (entire or partial)
-    virtual void SetStartCursor(CSaView * pView);           // position the start cursor window
-    virtual void SetStopCursor(CSaView * pView);            // position the stop cursor window
-    virtual void SetPlaybackCursor(CSaView * pView, bool scroll);// position the stop cursor window
+	// set line or solid drawing style
+    void SetLineDraw(BOOL bLine);
+	// set dots drawing style
+    void SetDotsDraw(BOOL);
+	// set cursors visible/hidden
+    void ShowCursors(bool bPrivate, bool bShow);
+	// show or hide gridlines
+    BOOL ShowGrid(BOOL bShow, BOOL bRedraw = FALSE);
+	// scroll plot and cursors
+    void ScrollPlot(CSaView * pView, int nAmount, DWORD dwOldPos, DWORD dwFrame);
+	// repaint plot (entire or partial)
+    void RedrawPlot(BOOL bEntire = TRUE);
+	// position the start cursor window
+    virtual void SetStartCursor(CSaView * pView);
+	// position the stop cursor window
+    virtual void SetStopCursor(CSaView * pView);
+	// position the stop cursor window
+    virtual void SetPlaybackCursor(CSaView * pView, bool scroll);
     void SetPlaybackFlash(bool val);
-    void MoveStartCursor(CSaView * pView, DWORD dwNewPositon); // move the start cursor window
-    void MoveStopCursor(CSaView * pView, DWORD dwNewPositon); // move the stop cursor window
+	// move the start cursor window
+    void MoveStartCursor(CSaView * pView, DWORD dwNewPositon);
+	// move the stop cursor window
+    void MoveStopCursor(CSaView * pView, DWORD dwNewPositon);
     CStartCursorWnd * GetStartCursorWnd();
     CStopCursorWnd * GetStopCursorWnd();
-    int  GetStartCursorPosition();                          // return the position in pixel coord. of the start cursor
-    int  GetStopCursorPosition();                           // return the position in pixel coord. of the stop cursor
-    void SetInitialPrivateCursor();                         // set the initial private cursor
-    int  GetPrivateCursorPosition();                        // return the position in pixel coord. of the private cursor
-    BOOL IsCanceled();                                      // return canceled state
-    virtual void RestartProcess();                          // restart canceled process
-    virtual DWORD GetAreaPosition();                        // return area position
-    virtual DWORD GetAreaLength(CRect * pRwnd = NULL);      // return area length
+	// return the position in pixel coord. of the start cursor
+    int  GetStartCursorPosition();
+	// return the position in pixel coord. of the stop cursor
+    int  GetStopCursorPosition();
+	// set the initial private cursor
+    void SetInitialPrivateCursor();
+	// return the position in pixel coord. of the private cursor
+    int  GetPrivateCursorPosition();
+    // return canceled state
+	BOOL IsCanceled();
+	// restart canceled process
+    virtual void RestartProcess();
+	// return area position
+    virtual DWORD GetAreaPosition();
+	// return area length
+    virtual DWORD GetAreaLength(CRect * pRwnd = NULL);
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
     DWORD GetHighLightPosition();
     DWORD GetHighLightLength();
-    virtual void  SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw = TRUE, BOOL bSecondSelection = FALSE); // set a highlighted area
-    DWORD CalcWaveOffsetAtPixel(CPoint pixel);               // calculate waveform sample byte offset at horizontal pixel position
+	// set a highlighted area
+    virtual void ClearHighLightArea(); 
+    virtual void SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL bSecondSelection); 
+	// calculate waveform sample byte offset at horizontal pixel position
+    DWORD CalcWaveOffsetAtPixel(CPoint pixel);
     virtual void GenderInfoChanged(int nGender);
     BOOL IsAnimationPlot();
     void SetAnimationFrame(DWORD dwFrameIndex);
-    virtual void AnimateFrame(DWORD dwFrameIndex);          // animate a single frame (fragment)
-    virtual void EndAnimation();                            // terminate animation and return to resting state
+	// animate a single frame (fragment)
+    virtual void AnimateFrame(DWORD dwFrameIndex);
+	// terminate animation and return to resting state
+    virtual void EndAnimation();
     virtual BOOL IsAreaGraph() const;
     void ChangePrivateCursorPosition(CPoint point);
     void GetPrivateCursorWindowRect(CRect * rect);
@@ -217,7 +245,8 @@ protected:
 
     virtual double GetProcessMultiplier() const;
     virtual double SetProcessMultiplier(double dScale);
-    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
@@ -250,7 +279,8 @@ protected:
     DWORD m_dwHighLightLength;              // highlighted area length
     BOOL m_bAnimationPlot;                  // TRUE = plot can be animated (defaults to FALSE)
     DWORD m_dwAnimationFrame;               // animation frame index
-    CPoint m_MousePointerPosn;              // mouse pointer position
+    CPoint m_MousePointerPos;               // mouse pointer position
+	CPoint m_PopupMenuPos;					// popup menu location
     UINT m_MouseButtonState;                // mouse button flags
     CBitmap * m_pBitmapSave;                // pointer to original bitmap
 

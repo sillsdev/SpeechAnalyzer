@@ -41,7 +41,7 @@ CGlossNatWnd::CGlossNatWnd(int nIndex) : CAnnotationWnd(nIndex) {
 }
 
 /***************************************************************************/
-// CReferenceWnd::OnDraw Drawing
+// CGlossNatWnd::OnDraw Drawing
 /***************************************************************************/
 void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 
@@ -64,14 +64,18 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     pDC->GetTextMetrics(&tm);
     // get window coordinates
     if (rWnd.Width() == 0) {
-        return;    // nothing to draw
+		// nothing to draw
+        return;    
     }
     // set font colors
-    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); // get pointer to colors from main frame
+	// get pointer to colors from main frame
+    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     Colors * pColors = pMainWnd->GetColors();
 
-    pDC->SetTextColor(pColors->cAnnotationFont[m_nIndex]); // set font color
-    pDC->SetBkMode(TRANSPARENT); // letters may overlap, so they must be transparent
+	// set font color
+    pDC->SetTextColor(pColors->cAnnotationFont[m_nIndex]);
+	// letters may overlap, so they must be transparent
+    pDC->SetBkMode(TRANSPARENT);
     // draw 3D window border
     CPen penDkgray(PS_SOLID, 1, pColors->cSysBtnShadow);
     CPen penLtgray(PS_SOLID, 1, pColors->cSysBtnHilite);
@@ -95,7 +99,8 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // then we don't want to draw the annotation text.
     //*******************************************************
     if (pGraph->IsPlotID(IDD_TWC)) {
-        pDC->SelectObject(pOldFont);  // set back old font
+		// set back old font
+        pDC->SelectObject(pOldFont);
         return;
     }
 
@@ -115,12 +120,16 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         if (pGraph->HavePrivateCursor()) {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
-            fDataStart = pView->GetStartCursorPosition(); // data index of first sample to display
-            dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize; // number of data points to display
+			// data index of first sample to display
+            fDataStart = pView->GetStartCursorPosition();
+			// number of data points to display
+            dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize;
         } else {
             // get necessary data from document and from view
-            fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
+			// data index of first sample to display
+            fDataStart = pView->GetDataPosition(rWnd.Width());
+			// number of data points to display
+            dwDataFrame = pView->AdjustDataFrame(rWnd.Width());
         }
     }
     if (dwDataFrame == 0) {
@@ -140,8 +149,10 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         if ((fDataStart > 0) && (pGlossNat->GetOffsetSize() > 1)) {
             double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
             for (nLoop = 1; nLoop < pGlossNat->GetOffsetSize(); nLoop++) {
-                if ((double)(pGlossNat->GetStop(nLoop)) > fStart) { // first string must be at lower position
-                    nLoop--; // this is it
+                if ((double)(pGlossNat->GetStop(nLoop)) > fStart) {
+					// first string must be at lower position
+					// this is it
+                    nLoop--;
                     break;
                 }
             }
@@ -164,28 +175,34 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 // calculate duration
                 nDisplayStop = round((pGlossNat->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
                 //SDM 1.06.2
-                if (m_bHintUpdateBoundaries) { // Show New Boundaries
+				// Show New Boundaries
+                if (m_bHintUpdateBoundaries) {
                     if (bSelect) {
                         nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
                         nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
-                    } else if (pGlossNat->GetSelection() == (nLoop+1)) { // Segment prior to selected segment
+                    } else if (pGlossNat->GetSelection() == (nLoop+1)) {
+						// Segment prior to selected segment
                         nDisplayStop = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
-                    } else if (pGlossNat->GetSelection() == (nLoop-1)) { // Segment after selected segment
+                    } else if (pGlossNat->GetSelection() == (nLoop-1)) {
+						// Segment after selected segment
                         nDisplayPos = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     }
                 }
                 if ((nDisplayStop - nDisplayPos) < 2) {
-                    nDisplayStop++;    // must be at least 2 to display a point
+					// must be at least 2 to display a point
+                    nDisplayStop++;
                 }
                 if ((nDisplayStop - nDisplayPos) < 2) {
-                    nDisplayPos--;    // must be at least 2 to display a point
+					// must be at least 2 to display a point
+                    nDisplayPos--;
                 }
                 // set rectangle to display string centered within
                 rWnd.SetRect(nDisplayPos, rWnd.top, nDisplayStop, rWnd.bottom);
                 // highlight background if selected character
                 COLORREF normalTextColor = pDC->GetTextColor();
                 if (bSelect) {
-                    normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText); // set highlighted text
+					// set highlighted text
+                    normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText);
                     CBrush brushHigh(pColors->cSysColorHilite);
                     CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
                     CBrush * pOldBrush = (CBrush *)pDC->SelectObject(&brushHigh);
@@ -203,8 +220,10 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 }
 
                 if (bNotEnough) {
-                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) { // even not enough space for at least two characters with dots
-                        pDC->DrawText(_T("*"), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP); // print first character
+                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) {
+						// even not enough space for at least two characters with dots
+						// print first character
+                        pDC->DrawText(_T("*"), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
                     } else {
                         // draw as many characters as possible and 3 dots
                         string = string.Left((nDisplayStop-nDisplayPos) / tm.tmAveCharWidth - 2) + "...";
@@ -240,6 +259,7 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         pDC->SelectObject(pOldBrush);
         pDC->SelectObject(pOldPen);
     }
-    pDC->SelectObject(pOldFont);  // set back old font
+	// set back old font
+    pDC->SelectObject(pOldFont);
 }
 

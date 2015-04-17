@@ -462,6 +462,8 @@
     <None Include="..\Release Notes.txt">
       <Filter>Release Notes</Filter>
     </None>
+    <None Include="res\icon2.ico" />
+    <None Include="..\..\..\..\..\Users\kg\Downloads\AS.ICO" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Release Notes">

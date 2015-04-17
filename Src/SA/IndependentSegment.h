@@ -16,7 +16,7 @@ public:
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
     DWORD CalculateDuration(ISaDoc * pDoc, const int nIndex) const;
     // add a segment
-    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true);
+    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck);
 	virtual int Add( DWORD offset, DWORD duration);
 	virtual void AddAt( int index, DWORD offset, DWORD duration);
 };

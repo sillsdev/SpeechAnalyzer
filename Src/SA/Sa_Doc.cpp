@@ -212,45 +212,50 @@ sabLoaded(false) {
     m_bTransModified = false;
     m_bTempOverlay = false;
     m_ID = -1;
-    m_apSegments[PHONETIC] = new CPhoneticSegment(PHONETIC);            // create phonetic segment object
-    m_apSegments[TONE] = new CToneSegment(TONE,PHONETIC);               // create tone segment object
-    m_apSegments[PHONEMIC] = new CPhonemicSegment(PHONEMIC,PHONETIC);   // create phonemic segment object
-    m_apSegments[ORTHO] = new COrthographicSegment(ORTHO,PHONETIC);            // create orthographic segment object
-    m_apSegments[GLOSS] = new CGlossSegment(GLOSS,PHONETIC);            // create gloss segment object
-    m_apSegments[GLOSS_NAT] = new CGlossNatSegment(GLOSS_NAT,GLOSS);    // create gloss nat. segment object
+	// create segments
+    m_apSegments[PHONETIC] = new CPhoneticSegment(PHONETIC);
+    m_apSegments[TONE] = new CToneSegment(TONE,PHONETIC);
+    m_apSegments[PHONEMIC] = new CPhonemicSegment(PHONEMIC,PHONETIC);
+    m_apSegments[ORTHO] = new COrthographicSegment(ORTHO,PHONETIC);
+    m_apSegments[GLOSS] = new CGlossSegment(GLOSS,PHONETIC);
+    m_apSegments[GLOSS_NAT] = new CGlossNatSegment(GLOSS_NAT,GLOSS);
     m_apSegments[REFERENCE] = new CReferenceSegment(REFERENCE,GLOSS);
     m_apSegments[MUSIC_PL1] = new CMusicPhraseSegment(MUSIC_PL1);
     m_apSegments[MUSIC_PL2] = new CMusicPhraseSegment(MUSIC_PL2);
     m_apSegments[MUSIC_PL3] = new CMusicPhraseSegment(MUSIC_PL3);
     m_apSegments[MUSIC_PL4] = new CMusicPhraseSegment(MUSIC_PL4);
-    m_bProcessBackground = TRUE;                        // enable background processing
-    m_pProcessAdjust = new CProcessAdjust(this);        // create data processing object
-    m_pProcessFragments = new CProcessFragments();      //create data processing object
-    m_pProcessLoudness = new CProcessLoudness();        // create data processing object
-    m_pProcessSmoothLoudness = new CProcessSmoothLoudness(); // create data processing object
-    m_pProcessPitch = new CProcessPitch();              // create data processing object
-    m_pProcessCustomPitch = new CProcessCustomPitch();  // create data processing object
-    m_pProcessSmoothedPitch = new CProcessSmoothedPitch(); // create data processing object
-    m_pProcessGrappl = new CProcessGrappl();            // create data processing object
-    m_pProcessMelogram = new CProcessMelogram();        // create data processing object CLW 4/5/00
-    m_pProcessChange = new CProcessChange();            // create data processing object
-    m_pProcessRaw = new CProcessRaw();                  // create data processing object
-    m_pProcessHilbert = new CProcessHilbert(m_pProcessRaw);// create data processing object
-    m_pProcessSpectrogram = NULL;                       // create data processing object
-    m_pProcessSnapshot = NULL;                          // create data processing object
-    m_pProcessFormants = new CProcessFormants();        // create data processing object
-    m_pProcessFormantTracker = new CProcessFormantTracker(*m_pProcessRaw, *m_pProcessHilbert, *m_pProcessGrappl);  // create data processing object
-    m_pProcessZCross = new CProcessZCross();            // create data processing object
-    m_pProcessSpectrum = new CProcessSpectrum();        // create data processing object
-    m_pProcessDurations = new CProcessDurations();      // create data processing object
-    m_pProcessGlottis = new CProcessGlottis();          // create data processing object
-    m_pProcessPOA = new CProcessPOA();                  // create data processing object
+    
+	// enable background processing
+	m_bProcessBackground = TRUE;
+	 
+	// create data processing object
+    m_pProcessAdjust = new CProcessAdjust(this);
+    m_pProcessFragments = new CProcessFragments();
+    m_pProcessLoudness = new CProcessLoudness();
+    m_pProcessSmoothLoudness = new CProcessSmoothLoudness();
+    m_pProcessPitch = new CProcessPitch();
+    m_pProcessCustomPitch = new CProcessCustomPitch();
+    m_pProcessSmoothedPitch = new CProcessSmoothedPitch();
+    m_pProcessGrappl = new CProcessGrappl();
+    m_pProcessMelogram = new CProcessMelogram();
+    m_pProcessChange = new CProcessChange();
+    m_pProcessRaw = new CProcessRaw();
+    m_pProcessHilbert = new CProcessHilbert(m_pProcessRaw);
+    m_pProcessSpectrogram = NULL;
+    m_pProcessSnapshot = NULL;
+    m_pProcessFormants = new CProcessFormants();
+    m_pProcessFormantTracker = new CProcessFormantTracker(*m_pProcessRaw, *m_pProcessHilbert, *m_pProcessGrappl);
+    m_pProcessZCross = new CProcessZCross();
+    m_pProcessSpectrum = new CProcessSpectrum();
+    m_pProcessDurations = new CProcessDurations();
+    m_pProcessGlottis = new CProcessGlottis();
+    m_pProcessPOA = new CProcessPOA();
     m_pProcessSDP[0] = NULL;
     m_pProcessSDP[1] = NULL;
     m_pProcessSDP[2] = NULL;
-    m_pProcessRatio = new CProcessRatio();              // create data processing object
-    m_pProcessTonalWeightChart = new CProcessTonalWeightChart(); // create data processing object CLW 11/4/99
-    m_pCreatedFonts = new CObArray;                     // create graph font array object
+    m_pProcessRatio = new CProcessRatio();
+    m_pProcessTonalWeightChart = new CProcessTonalWeightChart();
+    m_pCreatedFonts = new CObArray();
 
     //SDM 1.06.6U2
     m_dwDataSize = 0;
@@ -309,7 +314,7 @@ CSaDoc::~CSaDoc() {
 		m_pProcessGrappl = NULL;
     }
     if (m_pProcessMelogram) {
-        delete m_pProcessMelogram;    // CLW 4/5/00
+        delete m_pProcessMelogram;
 		m_pProcessMelogram = NULL;
     }
     if (m_pProcessChange) {
@@ -377,7 +382,6 @@ CSaDoc::~CSaDoc() {
         m_pProcessRatio = NULL;
     }
     if (m_pProcessTonalWeightChart) {
-		// CLW 11/5/99
         delete m_pProcessTonalWeightChart;    
         m_pProcessTonalWeightChart = NULL;
     }
@@ -1970,7 +1974,8 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
             }
         }
 
-        DeleteWaveFromUndo(); // delete wave undo entry
+		// delete wave undo entry
+        DeleteWaveFromUndo(); 
         if (!WriteDataFiles(target.c_str(), bSaveAudio, false)) {
             return FALSE;
         }
@@ -3555,10 +3560,10 @@ void CSaDoc::InvalidateAllProcesses() {
         m_pProcessGlottis->SetDataInvalid();
     }
     if (m_pProcessMelogram) {
-        m_pProcessMelogram->SetDataInvalid();    // CLW 4/5/00
+        m_pProcessMelogram->SetDataInvalid();
     }
     if (m_pProcessTonalWeightChart) {
-        m_pProcessTonalWeightChart->SetDataInvalid();    // CLW 10/24/00
+        m_pProcessTonalWeightChart->SetDataInvalid();
     }
     if (m_pProcessSDP[0]) {
         m_pProcessSDP[0]->SetDataInvalid();
@@ -3651,11 +3656,11 @@ void CSaDoc::RestartAllProcesses() {
         m_pProcessGlottis->RestartProcess();
     }
     if (m_pProcessMelogram && m_pProcessMelogram->IsCanceled()) {
-        m_pProcessMelogram->SetDataInvalid(); // CLW 4/5/00
+        m_pProcessMelogram->SetDataInvalid();
         m_pProcessMelogram->RestartProcess();
     }
     if (m_pProcessTonalWeightChart && m_pProcessTonalWeightChart->IsCanceled()) {
-        m_pProcessTonalWeightChart->SetDataInvalid(); // CLW 10/24/00
+        m_pProcessTonalWeightChart->SetDataInvalid();
         m_pProcessTonalWeightChart->RestartProcess();
     }
     if (m_pProcessRatio && m_pProcessRatio->IsCanceled()) {
@@ -4243,7 +4248,8 @@ void CSaDoc::DeleteWaveFromUndo() {
             // this is a wave entry
             Redo();
             while (CanUndo()) {
-                Undo(FALSE, FALSE);    // don't undo, simply remove undo from list with no redo
+				// don't undo, simply remove undo from list with no redo
+                Undo(FALSE, FALSE);    
             }
             m_bWaveUndoNow = FALSE;
         } else {
@@ -4367,6 +4373,7 @@ BOOL CSaDoc::AutoSnapUpdateNeeded(void) {
 // the cursors are aligned to the nearest phonetic segment
 /***************************************************************************/
 BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap) {
+
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
     CSegment * pSegment;
@@ -4391,7 +4398,8 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap) {
         if (pGraph) {
             for (int nInnerLoop = 0; nInnerLoop < ANNOT_WND_NUMBER; nInnerLoop++) {
                 if (pGraph->HaveAnnotation(nInnerLoop)) {
-                    pGraph->GetAnnotationWnd(nInnerLoop)->Invalidate();    // redraw annotation window
+					// redraw annotation window
+                    pGraph->GetAnnotationWnd(nInnerLoop)->Invalidate();    
                 }
             }
             if (pGraph->HaveBoundaries()) {
@@ -6488,7 +6496,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
 
                 szNext.Remove(0x0d);
                 szNext.Remove(0x0a);
-                SelectSegment(pGloss,nIndex);
+				pView->ToggleSegmentSelection(pGloss,nIndex);
                 pGloss->ReplaceSelectedSegment(this,szNext);
             };
         }
@@ -8088,131 +8096,6 @@ int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, 
     return result;
 }
 
-/**
-* Split the segments
-* @param pView the view to update
-* @param sel the selected phonetic segment
-* @param segmental true if there are multiple phonetic segments to a gloss segment
-*/
-void CSaDoc::SplitSegment( CPhoneticSegment * pSeg, int sel, bool segmental) {
-    
-	if (sel==-1) {
-        return;
-    }
-    
-	DWORD start = pSeg->GetOffset(sel);
-    DWORD duration = pSeg->GetDuration(sel);
-    DWORD newStopStart = start+(duration/2);
-
-    newStopStart = SnapCursor(STOP_CURSOR, newStopStart, newStopStart, GetDataSize(), SNAP_RIGHT);
-
-    CheckPoint();
-	bool modified = false;
-
-    for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
-        CSegment * pSeg = m_apSegments[n];
-        if (n==PHONETIC) {
-            modified |= pSeg->Split( start, newStopStart);
-        } else if ((pSeg->GetMasterIndex()==PHONETIC) && (!pSeg->Is(GLOSS))) {
-            modified |= pSeg->Split( start, newStopStart);
-        } else if (!segmental) {
-            modified |= pSeg->Split( start, newStopStart);
-        }
-    }
-
-    SetModifiedFlag((BOOL)modified|IsModified());
-	SetTransModifiedFlag(modified|IsTransModified());
-}
-
-bool CSaDoc::CanSplit(CSegment * pSeg) {
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-    if (pSeg==NULL) {
-        return false;
-    }
-    // no data
-    if (pSeg->GetOffsetSize()==0) {
-        return false;
-    }
-    int sel = pSeg->GetSelection();
-    if (sel==-1) {
-        return false;
-    }
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
-		int psel = FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		return true;
-	}
-    if (!pSeg->Is(PHONETIC)) {
-        return false;
-    }
-    return true;
-}
-
-bool CSaDoc::CanMerge(CSegment * pSeg) {
-
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
-    if (pSeg==NULL) {
-        return false;
-    }
-    // no data
-    if (pSeg->GetOffsetSize()==0) {
-        return false;
-    }
-	int sel = pSeg->GetSelection();
-	if (sel==-1) {
-		return false;
-	}
-	// can't merge first segment
-	if (sel==0) {
-		return false;
-	}
-
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetSegment(PHONETIC);
-		int psel = FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		// if we are in a segmental transcription, we can't merge left
-		if ((IsBoundary(pPhonetic,psel)) && (IsSegmental(pPhonetic,psel))) {
-			TRACE("current segment is boundary-segmental\n");
-			return false;
-		}
-		// if we are not segmental, but the segment to our
-		// left is segmental, we can not merge.
-		if ((IsBoundary(pPhonetic,psel)) && (IsSegmental(pPhonetic,psel-1))) {
-			TRACE("adjacent segment is boundary-segmental\n");
-			return false;
-		}
-		return true;
-	}
-
-    // phonetic not selected
-    if (!pSeg->Is(PHONETIC)) {
-        return false;
-    }
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-    // if we are in a segmental transcription, we can't merge left
-    if ((IsBoundary(pPhonetic,sel)) && (IsSegmental(pPhonetic,sel))) {
-        TRACE("current segment is boundary-segmental\n");
-        return false;
-    }
-    // if we are not segmental, but the segment to our
-    // left is segmental, we can not merge.
-    if ((IsBoundary(pPhonetic,sel)) && (IsSegmental(pPhonetic,sel-1))) {
-        TRACE("adjacent segment is boundary-segmental\n");
-        return false;
-    }
-
-    return true;
-}
-
 void CSaDoc::MergeSegments( CPhoneticSegment * pPhonetic, int sel) {
     
     if (sel==-1) {
@@ -8248,7 +8131,10 @@ void CSaDoc::MergeSegments( CPhoneticSegment * pPhonetic, int sel) {
 	SetTransModifiedFlag(modified|IsTransModified());
 }
 
-// determine if the transcriptions are segmental - multiple phonetic segments per
+/**
+* determine if the transcriptions are segmental - multiple phonetic segments per gloss
+* AudioSync works on non-segmental data
+*/
 bool CSaDoc::IsSegmental(CPhoneticSegment * pPhonetic, int sel) {
 
     CGlossSegment * pGloss = (CGlossSegment *)GetSegment(GLOSS);
@@ -8264,6 +8150,7 @@ bool CSaDoc::IsSegmental(CPhoneticSegment * pPhonetic, int sel) {
 
     DWORD start = pGloss->GetOffset(gsel);
     DWORD stop = pGloss->GetStop(gsel);
+	TRACE("gsel=%d start=%d stop=%d\n",gsel,start,stop);
 
     size_t count = 0;
     DWORD lastoffset = 0;
@@ -8279,6 +8166,7 @@ bool CSaDoc::IsSegmental(CPhoneticSegment * pPhonetic, int sel) {
         if (offset<start) {
             continue;
         }
+		TRACE("index=%d offset=%d\n",i,offset);
         count++;
     }
     return (count>1);
@@ -8300,7 +8188,7 @@ bool CSaDoc::IsBoundary(CPhoneticSegment * pPhonetic, int sel) {
 void CSaDoc::SelectSegment(CSegment * pSegment, int index) {
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
-    pView->SelectSegment(pSegment, index);
+    pView->ToggleSegmentSelection(pSegment, index);
 }
 
 /**
@@ -8437,40 +8325,6 @@ void CSaDoc::MoveDataLeft(DWORD offset) {
 
     SetModifiedFlag(modified|IsModified());
 	SetTransModifiedFlag(modified|IsTransModified());
-}
-
-bool CSaDoc::CanMoveDataRight(CSegment * pSeg) {
-    
-	if (pSeg==NULL) {
-        return false;
-    }
-    int sel = pSeg->GetSelection();
-    if (sel==-1) {
-        return false;
-    }
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
-		int psel = FindPhoneticIndex(pSeg,sel);
-		// can't get there from here...
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		bool segmental = IsSegmental(pPhonetic, psel);
-		return !segmental;
-	}
-	// standard case
-	// allow move right on last segment
-	// in sab mode, data is just swapped
-	// in non-sab mode, segment is added
-	if (!pSeg->Is(PHONETIC)) {
-		return false;
-	}
-	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	bool segmental = IsSegmental(pPhonetic, sel);
-	return !segmental;
 }
 
 void CSaDoc::MoveDataRight( DWORD offset) {
@@ -8738,6 +8592,7 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 			return;
 		}
 
+		// remove the segments the user told us to ignore
 		while (skipCount>0) {
 			pRef->RemoveAt(0,true);
 			pGlossNat->RemoveAt(0,true);
@@ -8748,6 +8603,9 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 			pPhonetic->RemoveAt(0,true);
 			skipCount--;
 		}
+
+		// walk through the segments are remove the spacing between segments
+		JoinSegmentBoundaries();
 	}
 
 	view.RefreshGraphs(TRUE,TRUE,TRUE);
@@ -9493,10 +9351,40 @@ void CSaDoc::ExportTimeTable( LPCTSTR filename,
 */
 void CSaDoc::GenerateCVData( CSaView & view) {
 
-    DWORD dwNext = 0;
-    DWORD dwIncrement = 0;
-	double sizeFactor = 0;
-    short int nResult = 0;
+    POSITION pos = GetFirstViewPosition();
+    CSaView * pView = (CSaView *)GetNextView(pos);
+
+    pView->SendMessage(WM_COMMAND, ID_PHONETIC_ALL);
+
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetSegment(PHONETIC);
+
+    // SDM1.5Test8.2
+	CSegment * pSaveGloss = m_apSegments[GLOSS];
+	CSegment * pSaveGlossNat = m_apSegments[GLOSS_NAT];
+	CSegment * pSaveRef = m_apSegments[REFERENCE];
+	m_apSegments[GLOSS] = new CGlossSegment(GLOSS,PHONETIC);
+	m_apSegments[GLOSS_NAT] = new CGlossNatSegment(GLOSS_NAT,GLOSS);
+	m_apSegments[REFERENCE] = new CReferenceSegment(REFERENCE,GLOSS);
+
+	// for the case of cancelled dependent processes
+    RestartAllProcesses(); 
+	// for the case of a cancelled process
+    pPhonetic->RestartProcess();
+	// clear data from previous run SDM 1.06.4
+    pPhonetic->SetDataInvalid(); 
+
+	// process data
+    short int nResult = LOWORD(pPhonetic->Process(NULL, this)); 
+    if (nResult == PROCESS_ERROR) {
+        // error segmenting
+        ErrorMessage(IDS_ERROR_SEGMENT);
+        return;
+    }
+    if (nResult == PROCESS_CANCELED) {
+        // error cancelled segmenting
+        ErrorMessage(IDS_CANCELED);
+        return;
+    }
 
 	// formants need pitch info
 	// SDM 1.5 Test 11.0
@@ -9507,12 +9395,92 @@ void CSaDoc::GenerateCVData( CSaView & view) {
 		ErrorMessage(IDS_ERROR_GENERATE_CV_NOPITCH);
 		return;
     } else if (nResult == PROCESS_CANCELED) {
+        ErrorMessage(IDS_CANCELED);
         return;
-    } else {
-		sizeFactor = (double)GetDataSize() / (double)(pPitch->GetDataSize() - 1);
 	}
 
-	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
+	// restore the segments
+	delete m_apSegments[GLOSS];
+	delete m_apSegments[GLOSS_NAT];
+	delete m_apSegments[REFERENCE];
+	m_apSegments[GLOSS] = pSaveGloss;
+	m_apSegments[GLOSS_NAT] = pSaveGlossNat;
+	m_apSegments[REFERENCE] = pSaveRef;
+    
+	CGlossSegment * pGloss = (CGlossSegment *)GetSegment(GLOSS);
+
+	double sizeFactor = (double)GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+
+	// Gloss segments need to be aligned to phonetic SDM 1.5Test8.2
+    if (!pGloss->IsEmpty()) {
+
+        DWORD dwDistance = 0;
+        BOOL bInsert = FALSE;
+		int nGloss = 0;
+        for ( nGloss=0; nGloss < pGloss->GetOffsetSize(); nGloss++) {
+            DWORD dwStart = pGloss->GetOffset(nGloss);
+            DWORD dwStop = dwStart + pGloss->GetDuration(nGloss);
+            DWORD dwTemp = dwStop;
+            int nPhonetic = pGloss->AdjustPositionToMaster(this, dwStart, dwTemp);
+
+            if (dwStart > pGloss->GetOffset(nGloss)) {
+                dwDistance = dwStart - pGloss->GetOffset(nGloss);
+            } else {
+                dwDistance = pGloss->GetOffset(nGloss) - dwStart;
+            }
+
+			// empty phonetic
+            bInsert = FALSE;
+            if (nPhonetic == -1) { 
+                bInsert = TRUE;
+                nPhonetic = 0;
+            } else if (dwDistance > GetBytesFromTime(MAX_AUTOSEGMENT_MOVE_GLOSS_TIME)) { 
+				// too far away
+                bInsert = TRUE;
+                if (dwStart < pGloss->GetOffset(nGloss)) {
+                    nPhonetic = pPhonetic->GetNext(nPhonetic);
+                }
+            } else if (nGloss && (dwStart == pGloss->GetOffset(nGloss-1))) { 
+				// last gloss attached to nearest phonetic
+                bInsert = TRUE;
+                nPhonetic = pPhonetic->GetNext(nPhonetic);
+            } else if ((pGloss->GetNext(nGloss) != -1) && ((dwStart+dwTemp)/2 <= pGloss->GetOffset(nGloss+1))) { 
+				// next gloss nearest to same phonetic
+                if ((pGloss->GetOffset(nGloss+1) < dwStart) ||
+                        (dwDistance > (pGloss->GetOffset(nGloss+1) - dwStart))) { 
+					// next gloss closer
+					bInsert = TRUE;
+                    // nPhonetic is correct
+                }
+            }
+
+            if (bInsert) {
+				// Insert in same location as old segment
+                dwStart = pGloss->GetOffset(nGloss); 
+                if (nPhonetic ==-1) {
+					// insert at end
+                    nPhonetic = pPhonetic->GetOffsetSize();    
+                }
+                int nPrevious = pPhonetic->GetPrevious(nPhonetic);
+                if (nPrevious != -1) {
+                    pPhonetic->Adjust(this, nPrevious, pPhonetic->GetOffset(nPrevious), dwStart - pPhonetic->GetOffset(nPrevious), false);
+                }
+                CSaString szEmpty = SEGMENT_DEFAULT_CHAR;
+                pPhonetic->Insert(nPhonetic, szEmpty, false, dwStart , pPhonetic->GetOffset(nPhonetic) - dwStart);
+            } else {
+                pGloss->Adjust(this, nGloss, dwStart, dwStop - dwStart, false);
+            }
+            if (nGloss > 0) { 
+				// Adjust previous gloss segment
+                pGloss->Adjust( this, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration( this, nGloss-1),false);
+            }
+        }
+		// early termination
+        if (nGloss > 0) { 
+			// Adjust previous gloss segment (last)
+            pGloss->Adjust( this, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration( this, nGloss-1),false);
+        }
+    }
 
 	CToneSegment * pTone = (CToneSegment*)GetSegment(TONE);
 	pTone->DeleteContents();
@@ -9522,7 +9490,6 @@ void CSaDoc::GenerateCVData( CSaView & view) {
 	* We need to scale the index as well
 	*/
 	for (int i=0;i<pPhonetic->GetOffsetSize();i++) {
-
 		DWORD offset = pPhonetic->GetOffset(i);
 		DWORD length = pPhonetic->GetDuration(i);
 		int dwSamples = 0;
@@ -9540,10 +9507,10 @@ void CSaDoc::GenerateCVData( CSaView & view) {
 		if ((dwSamples>0) && (bRes)) {
 			double fData = double(nData) / PRECISION_MULTIPLIER / dwSamples;
 			TRACE("pitch value = %f\n",fData);
-			pTone->Add( this, &view, offset, CSaString(L"V"));
+			pTone->Add( this, &view, offset, CSaString(L"V"), false, false);
 		} else {
 			TRACE("pitch value = none\n");
-			pTone->Add( this, &view, offset, CSaString(L"C"));
+			pTone->Add( this, &view, offset, CSaString(L"C"), false, false);
 		}
 	}
 }
@@ -9707,4 +9674,42 @@ int CSaDoc::FindPhoneticIndex( CSegment * pSeg, int sel) {
 		}
 	}
 	return -1;
+}
+
+/**
+* Walk through and determine the midpoint between any segment pair.
+* The midpoint because the new stop/start location
+* This is only useful for AudioSync
+*/
+void CSaDoc::JoinSegmentBoundaries() {
+
+	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
+	for (int i=0;i<pPhonetic->GetOffsetSize();i++) {
+		if (i==0) continue;
+		DWORD lastStart = pPhonetic->GetOffset(i-1);
+		DWORD lastStop = pPhonetic->GetStop(i-1);
+		DWORD start = pPhonetic->GetOffset(i);
+		DWORD stop = pPhonetic->GetStop(i);
+		if (lastStop==start) continue;
+		DWORD midPoint = (lastStop+start)/2;
+		// these calls use adjust dependent segments as well
+		pPhonetic->Adjust( this, i-1, lastStart, midPoint-lastStart, false);
+		pPhonetic->Adjust( this, i, midPoint, stop-midPoint, false);
+	}
+}
+
+/**
+* We do not support segmental segmentation in the 'split operation
+*/
+void CSaDoc::SplitSegment( CPhoneticSegment * pPhonetic, int sel, DWORD splitPosition) {
+
+	bool segmental = IsSegmental(pPhonetic, sel);
+	if (segmental) return;
+
+	CheckPoint();
+
+	bool modified = pPhonetic->SplitSegment( *this, sel, splitPosition);
+    
+	SetModifiedFlag((BOOL)modified|IsModified());
+	SetTransModifiedFlag(modified|IsTransModified());
 }

@@ -85,7 +85,8 @@ void CChartText::Init(UINT nID, int nMode, CFont * pFont, CWnd * pParent) {
 // CChartText::OnPaint Painting
 /***************************************************************************/
 void CChartText::OnPaint() {
-    CPaintDC dc(this); // device context for painting
+	// device context for painting
+    CPaintDC dc(this); 
     // get window coordinates
     CRect rWnd;
     GetClientRect(rWnd);
@@ -231,7 +232,8 @@ void CChartLine::Init(UINT nID, int nMode, CWnd * pParent) {
 // CChartLine::OnPaint Painting
 /***************************************************************************/
 void CChartLine::OnPaint() {
-    CPaintDC dc(this); // device context for painting
+	// device context for painting
+    CPaintDC dc(this); 
     // get window coordinates
     CRect rWnd;
     GetClientRect(rWnd);
@@ -437,24 +439,27 @@ void CChartChar::ChangeMode(int nMode) {
 // CChartChar::OnPaint Painting
 /***************************************************************************/
 void CChartChar::OnPaint() {
-    CPaintDC dc(this); // device context for painting
+	// device context for painting
+    CPaintDC dc(this);
     // get window coordinates
     CRect rWnd;
     GetClientRect(rWnd);
     // set the font
-    CFont * pOldFont = dc.SelectObject(m_pFont); // select actual font
+	// select actual font
+    CFont * pOldFont = dc.SelectObject(m_pFont); 
     CFont cRegularFont;
     dc.SetBkMode(TRANSPARENT);
     // draw the text
     if ((m_nMode & ICH_SELECTED) && ((m_nMode & ICH_BUBBLE) == 0)) {
-        dc.SetTextColor(GetSysColor(COLOR_HIGHLIGHTTEXT));    // set highlighted text
+		// set highlighted text
+        dc.SetTextColor(GetSysColor(COLOR_HIGHLIGHTTEXT));    
     }
-    // if ((m_nMode & ICH_GRAYED) && ((m_nMode & ICH_BUBBLE) == 0))
-    // dc.SetTextColor(GetSysColor(COLOR_GRAYTEXT)); // set highlighted text
-    rWnd.bottom--; // put the character one pixel higher
+	// put the character one pixel higher
+    rWnd.bottom--; 
     dc.DrawText(m_szChar, m_szChar.GetLength(), rWnd, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOCLIP);
     rWnd.bottom++;
-    dc.SelectObject(pOldFont); // allows for proper restoration
+	// allows for proper restoration
+    dc.SelectObject(pOldFont); 
     if (m_nMode & ICH_BUBBLE) {
         // draw the borders
         dc.MoveTo(rWnd.TopLeft());
@@ -537,7 +542,8 @@ void CChartChar::OnLButtonUp(UINT nFlags, CPoint point) {
         CRect rWnd;
         GetClientRect(rWnd);
         if (rWnd.PtInRect(point)) {
-            m_pCaller->SendMessage(WM_COMMAND, m_nID, 0); // notify caller
+			// notify caller
+            m_pCaller->SendMessage(WM_COMMAND, m_nID, 0); 
             m_pCaller->SendMessage(WM_USER_CHARSELECT, m_nID, (long)(&m_szChar));
         }
     }
@@ -551,15 +557,18 @@ void CChartChar::OnLButtonUp(UINT nFlags, CPoint point) {
 // is out of the character window, stop zoom.
 /***************************************************************************/
 void CChartChar::OnMouseMove(UINT nFlags, CPoint point) {
-    if (((m_nMode & ICH_NO_ZOOM) == 0) && ((m_nMode & ICH_GRAYED) == 0)) {
+    
+	if (((m_nMode & ICH_NO_ZOOM) == 0) && ((m_nMode & ICH_GRAYED) == 0)) {
         // check if cursor is in character window
         CRect rWnd;
         GetClientRect(rWnd);
         if (rWnd.PtInRect(point)) {
             if (m_pBubble == NULL) {
                 // no bubble (zoom) yet
-                SetCapture();                   // get all further mouse input
-                SetTimer(ID_TIMER_DELAY, ZOOM_DELAY, NULL);  // start the zoom timer
+				// get all further mouse input
+                SetCapture();
+				// start the zoom timer
+                SetTimer(ID_TIMER_DELAY, ZOOM_DELAY, NULL);
             }
         } else {
             m_bReadyToSelect = FALSE;
@@ -585,12 +594,14 @@ static void playSoundFile(const CString & szSoundFile);
 // CChartChar::OnTimer Timer event
 /***************************************************************************/
 void CChartChar::OnTimer(UINT nIDEvent) {
-    KillTimer(ID_TIMER_DELAY);
+    
+	KillTimer(ID_TIMER_DELAY);
     if (m_nPlayState == kStateIdle) {
         m_pBubble = new CChartChar;
 
         if (m_pLastBubble) {
-            m_pLastBubble->m_pCreator->m_pBubble = NULL; // Disconnect From Creator
+			// Disconnect From Creator
+            m_pLastBubble->m_pCreator->m_pBubble = NULL; 
             m_pLastBubble->DestroyWindow();
             delete m_pLastBubble;
         }
@@ -668,7 +679,8 @@ bool CheckIPAHelp() {
 }
 
 static void playSoundFile(const CString & szSoundFile) {
-    if (szSoundFile.IsEmpty()) {
+    
+	if (szSoundFile.IsEmpty()) {
         return;
     }
 

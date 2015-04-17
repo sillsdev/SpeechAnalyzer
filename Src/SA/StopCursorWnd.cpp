@@ -402,8 +402,8 @@ void CStopCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     pView->MoveStopCursor(dwCursor);
     // clear the highlight area on mouse down
     CGraphWnd * pRaw = pView->GraphIDtoPtr(IDD_RAWDATA);
-    if (pRaw) {
-        pRaw->GetPlot()->SetHighLightArea(0, 0);
+    if (pRaw!=NULL) {
+        pRaw->GetPlot()->ClearHighLightArea();
     }
     // update the status bar
     pGraph->UpdateStatusBar(dwStartCursor, dwCursor);

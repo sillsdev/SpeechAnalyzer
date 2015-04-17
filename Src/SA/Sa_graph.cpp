@@ -595,10 +595,8 @@ void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
 // CGraphWnd::GetSemitone Calculates semitones from a given frequency
 /***************************************************************************/
 double CGraphWnd::GetSemitone(double fFreq) {
-    // CLW 4/7/00
     // more accurate and compact way of calculating semitone
     // semi-tone 0 aligns with MIDI# 0 at 8.176Hz
-
     return log(fFreq / 440.0) / log(2.0) * 12.0 + 69.0;
 }
 

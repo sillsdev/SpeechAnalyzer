@@ -601,8 +601,8 @@ BOOL CDlgRecorder::CloseRecorder() {
 /***************************************************************************/
 BOOL CDlgRecorder::Apply(CDocument * pDocument) {
 
-    CSaDoc * pDoc = (CSaDoc *)pDocument; // cast document pointer
-    CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
+    CSaDoc * pDoc = (CSaDoc *)pDocument;
+    CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     // set file pointer to end of file (also end of 'data' chunk)
     mmioSeek(m_hmmioFile, 0, SEEK_END);
@@ -612,7 +612,8 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, m_szFileName);
         return FALSE;
     }
-    m_dwRecordSize = m_mmckinfoSubchunk.cksize; // get recorded data size
+	// get recorded data size
+    m_dwRecordSize = m_mmckinfoSubchunk.cksize;
     // get out of 'RIFF' chunk, to write RIFF size
     if (mmioAscend(m_hmmioFile, &m_mmckinfoParent, 0)) {
         // error writing RIFF chunk
@@ -663,7 +664,8 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
     mmioClose(m_hmmioFile, 0); // close file
 
     // set the sa parameters
-    pDoc->SetRecordTimeStamp(CTime::GetCurrentTime());
+	CTime time = CTime::GetCurrentTime();
+    pDoc->SetRecordTimeStamp(time);
     pDoc->SetRecordSampleSize((BYTE)fmtParm.wBitsPerSample);
     pDoc->SetNumberOfSamples(m_dwRecordSize / fmtParm.wBlockAlign);
     pDoc->SetRecordBandWidth(fmtParm.dwSamplesPerSec / 2);
@@ -967,8 +969,9 @@ void CDlgRecorder::OnCancel() {
 // CDlgRecorder::OnSettings Button settings hit
 /***************************************************************************/
 void CDlgRecorder::OnSettings() {
+
     SetRecorderMode(STOPPED);
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast document pointer
+    CSaDoc * pDoc = (CSaDoc *)m_pDoc;
 
     // get format parameters
     CFmtParm fmtParm;
@@ -1021,7 +1024,7 @@ void CDlgRecorder::OnSettings() {
         pDoc->SetFmtParm(&fmtParm);
 
         if (!GetStaticSourceInfo().bEnable) {
-            CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast document pointer
+            CSaDoc * pDoc = (CSaDoc *)m_pDoc;
             SourceParm * pSourceParm = pDoc->GetSourceParm();
 
             pSourceParm->szCountry.Empty();
@@ -1049,10 +1052,13 @@ void CDlgRecorder::OnSettings() {
 /***************************************************************************/
 void CDlgRecorder::OnApply() {
     if (m_pWave) {
-        m_pWave->Stop();    // stop recording
+		// stop recording
+        m_pWave->Stop();
     }
-    m_VUBar.SetVU(0); // reset the VU bar
-    if (m_bFileReady && !m_bFileApplied) { // file is ready but not yet applied
+	// reset the VU bar
+    m_VUBar.SetVU(0); 
+    if (m_bFileReady && !m_bFileApplied) { 
+		// file is ready but not yet applied
         if (!Apply(m_pDoc)) {
             m_bFileReady = FALSE;
             CloseRecorder();
@@ -1060,11 +1066,13 @@ void CDlgRecorder::OnApply() {
         }
         m_bFileApplied = TRUE;
     }
-    ClearFileName(); // file has been overtaken from document
-    CloseRecorder(); // close the recorder
+	// file has been overtaken from document
+    ClearFileName(); 
+	// close the recorder
+    CloseRecorder(); 
     sourceInfo & m_source = GetStaticSourceInfo();
     if (m_source.bEnable) {
-        CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast document pointer
+        CSaDoc * pDoc = (CSaDoc *)m_pDoc;
         SourceParm * pSourceParm = pDoc->GetSourceParm();
 
         pSourceParm->szCountry = m_source.source.szCountry;

@@ -364,12 +364,14 @@
     <ClCompile Include="WaveWarp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\..\Users\kg\Downloads\AS.ICO" />
     <None Include="..\Release Notes.txt" />
     <None Include="Annotation.cd" />
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />
     <None Include="Process.cd" />
     <None Include="Res\AS.ICO" />
+    <None Include="res\icon2.ico" />
     <None Include="Res\SA.ICO" />
     <None Include="segment selection.cd" />
     <None Include="Segments.cd" />

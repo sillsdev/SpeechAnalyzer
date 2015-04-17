@@ -125,6 +125,8 @@ public:
     virtual bool Match(int index, LPCTSTR find);
     virtual void Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
     int FindIndex(DWORD offset);
+    int FindIndex(DWORD offset,DWORD duration);
+	int FindWithin(DWORD offset);
     virtual int FindNext(int fromIndex, LPCTSTR strToFind);
     virtual int FindPrev(int fromIndex, LPCTSTR strToFind);
     // checks the position of the cursors for new segment
@@ -164,7 +166,7 @@ public:
 	// delete all contents of the segment arrays
     virtual void DeleteContents();
     // adjust position of segment
-	virtual void Adjust(ISaDoc * saDoc, int nIndex, DWORD dwNewOffset, DWORD dwNewDuration, bool segmental);
+	virtual void Adjust( ISaDoc * saDoc, int nIndex, DWORD dwNewOffset, DWORD dwNewDuration, bool segmental);
 	// adjust position of segment - local only
 	void Adjust( int nIndex, DWORD dwNewOffset, DWORD dwNewDuration);
 	// sets a new segment
@@ -206,6 +208,8 @@ public:
 	int GetLastNonEmptyValue();
 
 	virtual bool ContainsText( DWORD offset, DWORD duration);
+
+    bool SplitSegment( CSaDoc & document, int sel, DWORD splitPosition);
 
 protected:
     int GetReferenceCount(CSegment * pSegment, int sel);

@@ -116,17 +116,23 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
     /*********************************************************************/
     // start processing loop
     while (dwDataPos < dwDataEnd) {
-        DWORD dwWindowEnd = dwDataPos + nCalcDataLength * nSmpSize; // window loop end
-        int nZeroCount = 0; // counter for zero crossings
-        int nOldData, nData; // data holder
+		// window loop end
+        DWORD dwWindowEnd = dwDataPos + nCalcDataLength * nSmpSize;
+		// counter for zero crossings
+        int nZeroCount = 0;
+		// data holder
+        int nOldData, nData;
         // prepare old data
-        pBlockStart = pDoc->GetWaveData(dwDataPos); // get pointer to data block
+		// get pointer to data block
+        pBlockStart = pDoc->GetWaveData(dwDataPos);
         if (!pBlockStart) {
-            return Exit(PROCESS_ERROR);    // error, reading failed
+			// error, reading failed
+            return Exit(PROCESS_ERROR);
         }
         if ((dwDataPos / GetProcessBufferSize()) != nBlockNumber) {
-            nBlockNumber = (UINT)(dwDataPos / GetProcessBufferSize()); // new block loaded
-            pRawData = pBlockStart + dwDataPos % GetProcessBufferSize(); // CLW 9/28/98 (Mod)
+			// new block loaded
+            nBlockNumber = (UINT)(dwDataPos / GetProcessBufferSize());
+            pRawData = pBlockStart + dwDataPos % GetProcessBufferSize();
         }
         if (nSmpSize == 1) { // 8 bit data
             // read a byte
@@ -159,13 +165,16 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
             }
             ********************************************************************
             */
-            pBlockStart = pDoc->GetWaveData(dwDataPos); // get pointer to data block
+			// get pointer to data block
+            pBlockStart = pDoc->GetWaveData(dwDataPos);
             if (!pBlockStart) {
-                return Exit(PROCESS_ERROR);    // error, reading failed
+				// error, reading failed
+                return Exit(PROCESS_ERROR);
             }
             if ((dwDataPos / GetProcessBufferSize()) != nBlockNumber) {
-                nBlockNumber = (UINT)(dwDataPos / GetProcessBufferSize()); // new block loaded
-                pRawData = pBlockStart + dwDataPos % GetProcessBufferSize(); // CLW 9/28/98 (Mod)
+				// new block loaded
+                nBlockNumber = (UINT)(dwDataPos / GetProcessBufferSize());
+                pRawData = pBlockStart + dwDataPos % GetProcessBufferSize();
             }
             // read data
             if (nSmpSize == 1) { // 8 bit data

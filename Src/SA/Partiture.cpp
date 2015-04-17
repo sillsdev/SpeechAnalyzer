@@ -3635,11 +3635,12 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             char lpszTempFileName[144];
             OFSTRUCT ofTmp;
 
-            // TCJ 7/00 - 32bit conversion
+            // 32bit conversion
             char lpszTempPath[_MAX_PATH];
             GetTempPath(sizeof(lpszTempPath), lpszTempPath);
             GetTempFileName(lpszTempPath,"SIL",0,lpszTempFileName);
-            OpenFile(lpszTempFileName,&ofTmp,OF_DELETE); // Delete automatically created file
+			// Delete automatically created file
+            OpenFile(lpszTempFileName,&ofTmp,OF_DELETE);
             if (strlen(lpszTempFileName)>3)
                 strcpy_s(lpszTempFileName + strlen(lpszTempFileName) - 3,
                          _countof(lpszTempFileName)-strlen(lpszTempFileName) + 3,
@@ -3812,23 +3813,27 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             return 0;
         }
     }
-    case WM_APP + 4: { // pause MIDI
+    case WM_APP + 4: { 
+		// pause MIDI
         return PauseMidiFile(hWnd);
     }
-    case WM_APP + 5: { // stop MIDI
+    case WM_APP + 5: { 
+		// stop MIDI
         return StopMidiFile(hWnd);
     }
-    case WM_APP + 6: { // loop play selection
+    case WM_APP + 6: { 
+		// loop play selection
         struct SPartWindowData * pwd = (struct SPartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
         if (pwd) {
             char lpszTempFileName[144];
             OFSTRUCT ofTmp;
 
-            // TCJ 7/00 - 32bit conversion
+            // 32bit conversion
             char lpszTempPath[_MAX_PATH];
             GetTempPath(sizeof(lpszTempPath), lpszTempPath);
             GetTempFileName(lpszTempPath,"SIL",0,lpszTempFileName);
-            OpenFile(lpszTempFileName,&ofTmp,OF_DELETE); // Delete automatically created file
+			// Delete automatically created file
+            OpenFile(lpszTempFileName,&ofTmp,OF_DELETE); 
             if (strlen(lpszTempFileName)>3)
 
                 strcpy_s(lpszTempFileName + strlen(lpszTempFileName) - 3,

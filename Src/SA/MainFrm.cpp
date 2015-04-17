@@ -147,8 +147,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_UPDATE_COMMAND_UI(ID_SYNTHESIS_VTRACT, OnUpdateSynthesis)
     ON_COMMAND_EX(IDR_BAR_BASIC, OnBarCheck)
     ON_UPDATE_COMMAND_UI(IDR_BAR_BASIC, OnUpdateControlBarMenu)
-    ON_COMMAND_EX(IDR_BAR_AS, OnBarCheck)
-    ON_UPDATE_COMMAND_UI(IDR_BAR_AS, OnUpdateControlBarMenu)
+    ON_COMMAND_EX(IDR_BAR_AUDIOSYNC, OnBarCheck)
+    ON_UPDATE_COMMAND_UI(IDR_BAR_AUDIOSYNC, OnUpdateControlBarMenu)
     ON_COMMAND_EX(IDR_BAR_ADVANCED, OnBarCheck)
     ON_UPDATE_COMMAND_UI(IDR_BAR_ADVANCED, OnUpdateControlBarMenu)
     ON_COMMAND_EX(ID_VIEW_TASKBAR, OnBarCheck)
@@ -509,8 +509,10 @@ BOOL CMainFrame::IsPlayerPaused() {
 // CMainFrame::IsPlayerTestRun Returns TRUE if player runs function key test
 /***************************************************************************/
 BOOL CMainFrame::IsPlayerTestRun() {
-    if (CDlgPlayer::IsLaunched()) {         // player launched
-        return GetPlayer(false)->IsTestRun();   // return TRUE if player runs Fn test
+	// player launched
+    if (CDlgPlayer::IsLaunched()) {
+		// return TRUE if player runs Fn test
+        return GetPlayer(false)->IsTestRun();
     } else {
         return FALSE;
     }
@@ -520,16 +522,25 @@ BOOL CMainFrame::IsPlayerTestRun() {
 // CMainFrame::SetPlayerTimes  sets time indicators for layer
 /***************************************************************************/
 void CMainFrame::SetPlayerTimes() {
-    if (CDlgPlayer::IsLaunched()) {                                 // if player dialogue launched
+
+	// if player dialogue launched
+    if (CDlgPlayer::IsLaunched()) {                                 
         CRect rWnd;
-        GetPlayer(false)->SetPositionTime();                        // set the start time
-        CWnd * pWnd = GetPlayer(false)->GetDlgItem(IDC_POSITIONTIME); // get start LED indicator
-        pWnd->GetWindowRect(rWnd);                                  // get coordinates
+		// set the start time
+        GetPlayer(false)->SetPositionTime();
+		// get start LED indicator
+        CWnd * pWnd = GetPlayer(false)->GetDlgItem(IDC_POSITIONTIME); 
+		// get coordinates
+        pWnd->GetWindowRect(rWnd);
         pWnd->RedrawWindow(rWnd);
-        GetPlayer(false)->SetTotalTime();                           // set the stop time
-        pWnd = GetPlayer(false)->GetDlgItem(IDC_TOTALTIME);         // get stop LED indicator
-        pWnd->GetWindowRect(rWnd);                                  // get coordinates
-        pWnd->RedrawWindow(rWnd);                                   // update
+		// set the stop time
+        GetPlayer(false)->SetTotalTime();
+		// get stop LED indicator
+        pWnd = GetPlayer(false)->GetDlgItem(IDC_TOTALTIME);
+		// get coordinates
+        pWnd->GetWindowRect(rWnd);
+		// update
+        pWnd->RedrawWindow(rWnd);
     }
 }
 
@@ -537,6 +548,7 @@ void CMainFrame::SetPlayerTimes() {
 // CMainFrame::SetupFunctionKeys Start setup Fn-keys dialog in player
 /***************************************************************************/
 void CMainFrame::SetupFunctionKeys() {
+
     if (GetPlayer(false)) {
         GetPlayer(false)->SendMessage(WM_USER_SETUP_FNKEYS, 0, 0L);
     }
@@ -570,7 +582,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
                                     CRect(0,0,0,0), IDR_BAR_BASIC) ||
             (!m_wndToolBarBasic.LoadToolBar(IDR_BAR_BASIC))) {
         TRACE(_T("Failed to create toolbar\n"));
-        return -1; // failed to create
+		// failed to create
+        return -1; 
     }
 
     if (!m_wndToolBarAdvanced.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
@@ -578,22 +591,25 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
                                        CRect(0,0,0,0), IDR_BAR_ADVANCED) ||
             (!m_wndToolBarAdvanced.LoadToolBar(IDR_BAR_ADVANCED))) {
         TRACE(_T("Failed to create toolbar\n"));
-        return -1; // failed to create
+		// failed to create
+        return -1; 
     }
 
     if (!m_wndToolBarSAB.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
                                        | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
-                                       CRect(0,0,0,0), IDR_BAR_AS) ||
-            (!m_wndToolBarSAB.LoadToolBar(IDR_BAR_AS))) {
+                                       CRect(0,0,0,0), IDR_BAR_AUDIOSYNC) ||
+            (!m_wndToolBarSAB.LoadToolBar(IDR_BAR_AUDIOSYNC))) {
         TRACE(_T("Failed to create toolbar\n"));
-        return -1; // failed to create
+		// failed to create
+        return -1; 
     }
 
     // create data statusbar
     if ((!m_dataStatusBar.Create(this)) ||
             (!m_dataStatusBar.SetIndicators(dataIndicators, sizeof(dataIndicators)/sizeof(UINT)))) {
         TRACE(_T("Failed to create data status bar\n"));
-        return -1; // failed to create
+		// failed to create
+        return -1; 
     }
 
     // initialize data statusbar
@@ -602,7 +618,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     if ((!m_progressStatusBar.Create(this)) ||
         (!m_progressStatusBar.SetIndicators(progressIndicators, sizeof(progressIndicators)/sizeof(UINT)))) {
         TRACE(_T("Failed to create progress status bar\n"));
-        return -1; // failed to create
+		// failed to create
+        return -1; 
     }
 
     // initialize progress statusbar
@@ -823,7 +840,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
     if (toolSettings.m_bToolbar != AdvancedToolBarVisible()) {
         BOOL bAdvanced = toolSettings.m_bToolbar;
 		// change toolbar status
-		int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
+		int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
         ShowControlBar(GetControlBar(tbID), !bAdvanced, FALSE);
         ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, FALSE);	
     }
@@ -1398,7 +1415,7 @@ void CMainFrame::OnSaveWindowAsBMP() {
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
+	int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
     GetControlBar(tbID)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
@@ -1453,7 +1470,7 @@ void CMainFrame::OnCopyWindowAsBMP() {
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
+	int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
     GetControlBar(tbID)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
@@ -1964,7 +1981,6 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
     }
     obs.WriteEndMarker(psz_graphfontarray);
 
-    //  CLayoutMenu   m_LayoutMenu;   // layout menu embedded object
     BOOL bMaximized;
 
     //SDM 1.06.6U5 if there is an active child save its maximized state and normal size as the defaults
@@ -2035,7 +2051,7 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
 				// change toolbar status
                 BOOL bAdvanced = b;
 				CSaApp * pApp = (CSaApp*)AfxGetApp();
-				int tbID = (pApp->IsAudioSync())?IDR_BAR_AS:IDR_BAR_BASIC;
+				int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
                 ShowControlBar(GetControlBar(tbID),!bAdvanced, TRUE); 
                 ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); 
             }
@@ -2558,6 +2574,12 @@ int CMainFrame::GetMinThreshold() {
 CSegmentParm * CMainFrame::GetSegmentParm() {
     return &m_segmentParmDefaults;
 }
+void CMainFrame::SetSegmentParams( float width, int change, int zc) {
+	m_segmentParmDefaults.fSegmentWidth = width;
+	m_segmentParmDefaults.nChThreshold = change;
+	m_segmentParmDefaults.nZCThreshold = zc;
+}
+
 const CPitchParm * CMainFrame::GetPitchParmDefaults() const {
     return &m_pitchParmDefaults;
 }
@@ -2739,7 +2761,9 @@ void CMainFrame::SetPopup(int nPopup) {
 };
 
 int CMainFrame::GetPopup() const {
-    return m_nPopup ? m_nPopup : IDR_SA_FLOATINGPOPUP;
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	int nID = pApp->IsAudioSync()? IDR_AS_POPUP : IDR_SA_POPUP;
+    return (m_nPopup!=0) ? m_nPopup : nID;
 };
 
 void CMainFrame::SetToolSettings(CToolSettings settings, bool fullView) {

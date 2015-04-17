@@ -312,7 +312,9 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotWnd::CPlotWnd Constructor
 /***************************************************************************/
-CPlotWnd::CPlotWnd() {
+CPlotWnd::CPlotWnd() :
+m_MousePointerPos(UNDEFINED_OFFSET, UNDEFINED_OFFSET),
+m_PopupMenuPos(UNDEFINED_OFFSET, UNDEFINED_OFFSET) {
     m_bRtPlot = false;
     m_bInitialPlot = TRUE;
     m_pStartCursor = NULL;
@@ -330,7 +332,6 @@ CPlotWnd::CPlotWnd() {
     m_dwHighLightPosition = 0;
     m_dwHighLightLength = 0;
     m_pParent = NULL;
-    m_MousePointerPosn = CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET);
     m_MouseButtonState = 0;
     m_bAnimationPlot = FALSE;
     m_dwAnimationFrame = UNDEFINED_OFFSET;
@@ -391,8 +392,8 @@ CPlotWnd::~CPlotWnd() {
         if (pWaveGraph) {
             // there is a raw waveform graph
             CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
-            if (pWavePlot) {
-                pWavePlot->SetHighLightArea(0, 0);
+            if (pWavePlot!=NULL) {
+                pWavePlot->ClearHighLightArea();
                 pWavePlot->UpdateWindow();
             }
         }
@@ -1626,6 +1627,10 @@ DWORD CPlotWnd::GetAreaLength(CRect * pRwnd) {
     return 0;
 }
 
+void CPlotWnd::ClearHighLightArea() {
+	SetHighLightArea( 0, 0, TRUE, FALSE);
+}
+
 /***************************************************************************/
 // CPlotWnd::SetHighLightArea Sets a highlighted area
 // dwStart and dwStop contain the area that has to be highlighted (in raw
@@ -1656,7 +1661,7 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
     }
 
     if ((m_dwHighLightPosition == dwStart) &&
-            (m_dwHighLightLength == dwStop - dwStart)) {
+        (m_dwHighLightLength == (dwStop - dwStart))) {
         return;
     }
 
@@ -1664,8 +1669,10 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
         // calculate the actual and the new highlighted rectangles
         CRect rWnd;
         GetClientRect(rWnd);
-        double fDataPos = GetDataPosition(rWnd.Width());    // data index of first sample to display
-        DWORD dwDataFrame = AdjustDataFrame(rWnd.Width());  // number of data points to display
+		// data index of first sample to display
+        double fDataPos = GetDataPosition(rWnd.Width());
+		// number of data points to display
+        DWORD dwDataFrame = AdjustDataFrame(rWnd.Width());  
         ASSERT(rWnd.Width());
         double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
@@ -1702,10 +1709,11 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
         m_dwHighLightPosition = dwStart;
         m_dwHighLightLength = dwStop - dwStart;
     }
-    if (m_dwHighLightLength && !bSecondSelection) {
+
+    if ((m_dwHighLightLength>0) && (!bSecondSelection)) {
         // deselect segment, if one selected
         CSegment * pSegment = pView->FindSelectedAnnotation();
-        if (pSegment) {
+        if (pSegment!=NULL) {
             pView->ChangeAnnotationSelection(pSegment, pSegment->GetSelection(), 0, 0);
         }
     }
@@ -1841,29 +1849,33 @@ BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
 // the parent graph is called to do this.
 /***************************************************************************/
 void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
+
+	TRACE("OnRButtonDown %d,%d\n",point.x,point.y);
     // inform parent graph
     CGraphWnd * pWnd = (CGraphWnd *)GetParent();
-    pWnd->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); // send message to parent
+	// send message to parent
+    pWnd->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); 
+
     // handle the floating popup menu
     CMenu mPopup;
-    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) { // SDM 1.5Test8.5
+    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) { 
+		// SDM 1.5Test8.5
         // Show restricted submenu according to EXPERIMENTAL_ACCESS
         CMenu & pFloatingPopup = EXPERIMENTAL_ACCESS ? *mPopup.GetSubMenu(3) : *mPopup.GetSubMenu(0);
         ASSERT(pFloatingPopup.m_hMenu != NULL);
         // attach the layout menu
-        CMenu * mLayout = new CLayoutMenu;
+        CLayoutMenu layout;
         TCHAR szString[256]; // don't change the string
         if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND)) { // SDM 1.5Test8.5
-            if (mLayout) {
-                VERIFY(pFloatingPopup.ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)mLayout->m_hMenu, szString));
-            }
+            BOOL bResult = pFloatingPopup.ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)layout.m_hMenu, szString);
+			ASSERT(bResult);
         }
+
+		m_PopupMenuPos = point;
+
         // pop the menu up
         ClientToScreen(&point);
         pFloatingPopup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y,  AfxGetMainWnd());
-        if (mLayout) {
-            delete mLayout;
-        }
     }
     CWnd::OnRButtonDown(nFlags, point);
 }
@@ -1875,11 +1887,11 @@ void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 // the parent graph has to be informed.
 /***************************************************************************/
 void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point) {
-    //  m_MousePointerPosn = point;
-    //  m_MouseButtonState = nFlags;
-    // inform parent graph
+    
+	// inform parent graph
     CGraphWnd * pWnd = (CGraphWnd *)GetParent();
-    pWnd->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); // send message to parent
+	// send message to parent
+    pWnd->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); 
     // get client coordinates
     CRect rWnd;
     GetClientRect(rWnd);
@@ -1913,20 +1925,24 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point) {
                 rLine.top += CURSOR_WINDOW_HALFWIDTH;
                 rLine.bottom -= (CURSOR_WINDOW_HALFWIDTH - 1);
                 // move the private cursor window
-                InvalidateRect(rLine, TRUE); // redraw old cursor position
+				// redraw old cursor position
+                InvalidateRect(rLine, TRUE); 
                 rWnd.top = point.y - CURSOR_WINDOW_HALFWIDTH;
                 rWnd.bottom = point.y + CURSOR_WINDOW_HALFWIDTH;
-                m_PrivateCursor.MoveWindow(rWnd, FALSE); // move the cursor window to the new position
-                UpdateWindow(); // update this region before redrawing the cursor window
+				// move the cursor window to the new position
+                m_PrivateCursor.MoveWindow(rWnd, FALSE); 
+				// update this region before redrawing the cursor window
+                UpdateWindow(); 
                 rLine.SetRect(rWnd.left, CURSOR_WINDOW_HALFWIDTH, rWnd.right, CURSOR_WINDOW_HALFWIDTH + 1);
 
-                m_PrivateCursor.InvalidateRect(rLine, TRUE); // redraw new cursor line
-                m_PrivateCursor.UpdateWindow(); // update the cursor
+				// redraw new cursor line
+                m_PrivateCursor.InvalidateRect(rLine, TRUE); 
+				// update the cursor
+                m_PrivateCursor.UpdateWindow(); 
                 // and drag the cursor
                 m_PrivateCursor.SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(0, CURSOR_WINDOW_HALFWIDTH));
             } else {
                 // THIS CODE IS FOR VERTICAL CURSORS
-
                 // get the actual (old) position of cursor window
                 CRect rLine;
                 m_PrivateCursor.GetWindowRect(rLine);
@@ -1935,13 +1951,17 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point) {
                 rLine.left += CURSOR_WINDOW_HALFWIDTH;
                 rLine.right -= (CURSOR_WINDOW_HALFWIDTH - 1);
                 // move the private cursor window
-                InvalidateRect(rLine, TRUE); // redraw old cursor position
+				// redraw old cursor position
+                InvalidateRect(rLine, TRUE); 
                 rWnd.left = point.x - CURSOR_WINDOW_HALFWIDTH;
                 rWnd.right = point.x + CURSOR_WINDOW_HALFWIDTH;
                 rLine.SetRect(CURSOR_WINDOW_HALFWIDTH, rWnd.top, CURSOR_WINDOW_HALFWIDTH + 1, rWnd.bottom);
-                m_PrivateCursor.InvalidateRect(rLine, TRUE); // redraw new cursor line
-                m_PrivateCursor.MoveWindow(rWnd, FALSE); // move the cursor window to the new position
-                UpdateWindow(); // update this region before redrawing the cursor window
+				// redraw new cursor line
+                m_PrivateCursor.InvalidateRect(rLine, TRUE); 
+				// move the cursor window to the new position
+                m_PrivateCursor.MoveWindow(rWnd, FALSE); 
+				// update this region before redrawing the cursor window
+                UpdateWindow(); 
                 // and drag the cursor
                 m_PrivateCursor.SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(CURSOR_WINDOW_HALFWIDTH, 0));
             }
@@ -1954,7 +1974,8 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 // CPlotWnd::OnMouseMove
 /***************************************************************************/
 void CPlotWnd::OnMouseMove(UINT nFlags, CPoint point) {
-    m_MousePointerPosn = point;
+
+    m_MousePointerPos = point;
     m_MouseButtonState = nFlags;
     //TRACE("x/y %d %d\n",point.x,point.y);
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
@@ -2046,7 +2067,7 @@ void CPlotWnd::StandardEndAnimation() {
     CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
     if (pWaveGraph) {
         CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
-        pWavePlot->SetHighLightArea(0, 0);
+        pWavePlot->ClearHighLightArea();
     }
     RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 }
@@ -2084,7 +2105,7 @@ void CPlotWnd::GraphHasFocus(BOOL bFocus) {
                     pWavePlot->UpdateWindow();
                 } else if (!pView->IsAnimating()) {
                     // turn off highlighted area in raw data
-                    pWavePlot->SetHighLightArea(0, 0);
+                    pWavePlot->ClearHighLightArea();
                     pWavePlot->UpdateWindow();
                 }
             }
@@ -2427,7 +2448,11 @@ CGraphWnd * CPlotWnd::GetGraph(void) {
 }
 
 CPoint CPlotWnd::GetMousePointerPosition() {
-    return m_MousePointerPosn;
+    return m_MousePointerPos;
+}
+
+CPoint CPlotWnd::GetPopupMenuPosition() {
+	return m_PopupMenuPos;
 }
 
 UINT CPlotWnd::GetMouseButtonState() {
@@ -2435,7 +2460,7 @@ UINT CPlotWnd::GetMouseButtonState() {
 }
 
 void CPlotWnd::SetMousePointerPosition(CPoint point) {
-    m_MousePointerPosn = point;
+    m_MousePointerPos = point;
 }
 
 void CPlotWnd::SetMouseButtonState(UINT state) {

@@ -60,7 +60,7 @@ BOOL CParseParm::ReadProperties(CObjectIStream & obs) {
 }
 
 void CParseParm::Init() {
-    fBreakWidth = (float) 0.025;        // CLW 1.07a
+    fBreakWidth = (float) 0.025;
     fPhraseBreakWidth = (float) 0.5;
     nMaxThreshold = 10;
     nMinThreshold = 5;

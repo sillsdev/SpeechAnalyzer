@@ -344,14 +344,11 @@ public:
     int GetLastSegmentBeforePosition(int annotSetID, DWORD cursorPos);
 
     static int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & result);
-    void SplitSegment( CPhoneticSegment * pSeg, int sel, bool segmental);
-    bool CanSplit(CSegment * pSeg);
-    bool CanMerge(CSegment * pSeg);
     void MergeSegments( CPhoneticSegment * pSeg, int sel);
+	void SplitSegment( CPhoneticSegment * pPhonetic, int sel, DWORD splitPosition);
     bool IsSegmental(CPhoneticSegment * pSeg, int sel);
     bool IsBoundary(CPhoneticSegment * pPhonetic, int sel);
     void SelectSegment(CSegment * pSegment, int sel);
-    bool CanMoveDataRight(CSegment * pSegment);
     void MoveDataLeft(DWORD offset);
     void MoveDataRight(DWORD offset);
 	void DeselectAll();
@@ -466,6 +463,8 @@ private:
 	void UpdateReferenceBuffer();
 
 	void ErrorMessage( CSaString & msg);
+
+	void JoinSegmentBoundaries();
 
 	// SAB transcription data buffer
 	bool sabLoaded;

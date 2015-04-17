@@ -109,6 +109,7 @@
 #include "DlgHelpSFMMarkers.h"
 #include "Utils.h"
 #include "DlgASStart.h"
+#include "ScopedCursor.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -348,7 +349,7 @@ BOOL CSaApp::InitInstance() {
 
     // Register the application's document templates.
     // Document templates serve as the connection between documents, frame windows and views.
-    m_pDocTemplate = new CMultiDocTemplate((IsAudioSync()?IDR_SA_ASTYPE:IDR_SA_ANNTYPE),
+    m_pDocTemplate = new CMultiDocTemplate((IsAudioSync()?IDR_SA_AUDIOSYNC:IDR_SA_ANNTYPE),
                                            RUNTIME_CLASS(CSaDoc),
                                            RUNTIME_CLASS(CChildFrame),
                                            RUNTIME_CLASS(CSaView));
@@ -1044,26 +1045,36 @@ void CSaApp::ErrorMessage(CSaString & szText) {
 // the changed file into the list file.
 /***************************************************************************/
 void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument * pDoc) {
-    CSaDoc * pSaDoc = (CSaDoc *)pDoc;             // cast document pointer
+    
+	CSaDoc * pSaDoc = (CSaDoc *)pDoc;
     TCHAR szTemp[3];
     CSaString szEntry = "File";
     if (nID == -1) {
         // no valid entry, new file
         swprintf_s(szTemp, _T("%i"), m_nEntry);
-    } else {                                      // create entry number from ID
-        swprintf_s(szTemp, _T("%i"), nID);                 // create number for entry
+    } else {
+		// create entry number from ID
+		// create number for entry
+        swprintf_s(szTemp, _T("%i"), nID);
     }
-    szEntry += szTemp;                                     // create entry
+	// create entry
+    szEntry += szTemp;
     TCHAR szShortName[MAX_PATH];
     GetShortPathName(szFileName, szShortName, MAX_PATH);
-    WriteBatchString(_T("AudioFiles"), szEntry, szShortName); // set entry to changed or new file
-    if (nID == -1) {                              // no valid entry, new file
-        pSaDoc->SetID(m_nEntry++);                  // set the new ID
+	// set entry to changed or new file
+    WriteBatchString(_T("AudioFiles"), szEntry, szShortName);
+	// no valid entry, new file
+    if (nID == -1) {
+		// set the new ID
+        pSaDoc->SetID(m_nEntry++);
         szEntry = "DocID";
-        szEntry += szTemp;                          // create entry
-        WriteBatchString(_T("DocIDs"), szEntry, _T("0")); // set Doc ID to 0
+		// create entry
+        szEntry += szTemp;
+		// set Doc ID to 0
+        WriteBatchString(_T("DocIDs"), szEntry, _T("0"));
     }
-    m_bModified = TRUE;                           // file has been modified
+	// file has been modified
+    m_bModified = TRUE;
 }
 
 /***************************************************************************/
@@ -1425,6 +1436,7 @@ void CSaApp::FileOpen() {
 
 		CDlgASStart dlg;
 		if (dlg.DoModal()==IDOK) {
+	        CScopedCursor waitCursor(this);
 			SetOpenAsID(ID_FILE_OPEN);
 			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
 			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
@@ -1573,6 +1585,7 @@ void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 
 		CDlgASStart dlg;
 		if (dlg.DoModal()==IDOK) {
+	        CScopedCursor waitCursor(this);
 			SetOpenAsID(ID_FILE_OPEN);
 			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
 			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {

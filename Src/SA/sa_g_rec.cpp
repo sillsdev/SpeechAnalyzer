@@ -153,14 +153,24 @@ BOOL CPlotRecording::SetLegendScale() {
 // class do common jobs like drawing the cursors.
 /***************************************************************************/
 void CPlotRecording::OnPaint() {
+
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
 
-    ShowCursors(false,true); // The highlight area is disabled if cursors are not showing
-    // This is the priary place the highlight area is updated
-    CPlotRawData::SetHighLightArea((DWORD)pView->GetDataPosition(0), (DWORD)pView->GetDataPosition(0) + pView->GetDataFrame(), TRUE);
+    ShowCursors(false,true); 
+	// The highlight area is disabled if cursors are not showing
+    // This is the primary place the highlight area is updated
+    CPlotRawData::SetHighLightArea((DWORD)pView->GetDataPosition(0), (DWORD)pView->GetDataPosition(0) + pView->GetDataFrame(), TRUE, TRUE);
 
     CPlotRawData::OnPaint();
 }
 
+void CPlotRecording::ClearHighLightArea() {
+}
 
+void CPlotRecording::SetHighLightArea( DWORD /*dwStart*/, DWORD /*dwStop*/, BOOL /*bRedraw*/, BOOL /*bSecondSelection*/) {
+}
+
+double CPlotRecording::GetDataPosition(int) {
+    return 0L;
+}

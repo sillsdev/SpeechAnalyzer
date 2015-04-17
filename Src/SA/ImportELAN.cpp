@@ -90,7 +90,8 @@ BOOL CImportELAN::Import(EImportMode nMode) {
 // CImportELAN::AutoAlign Execute changes by request from batch file
 /***************************************************************************/
 void CImportELAN::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhonetic, LPCTSTR pPhonemic, LPCTSTR pOrtho, LPCTSTR pGloss, LPCTSTR pGlossNat) {
-    CTranscriptionDataSettings settings;
+    
+	CTranscriptionDataSettings settings;
 
     settings.m_bPhonetic = (pPhonetic != NULL);
     settings.m_bPhonemic = (pPhonemic != NULL);

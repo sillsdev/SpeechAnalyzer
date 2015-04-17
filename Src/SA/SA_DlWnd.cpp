@@ -128,23 +128,23 @@ void CLEDDisplay::SetTime(int nMin, int nSec) {
     rWnd.left = (rWnd.right - 5 * LED_DIGIT_WIDTH - 2 * LED_POINT_WIDTH - (7 * LED_DIGIT_SPACE - 1)) / 2;
     rWnd.right = rWnd.left + 5 * LED_DIGIT_WIDTH + 2 * LED_POINT_WIDTH + (7 * LED_DIGIT_SPACE - 1);
     if (chOldMinMSD != m_chMinMSD) {
-        InvalidateRect(rWnd, FALSE);    // value changed
+        InvalidateRect(rWnd, FALSE);
     } else {
         rWnd.left += LED_DIGIT_WIDTH + LED_DIGIT_SPACE;
         if (chOldMinLSD != m_chMinLSD) {
-            InvalidateRect(rWnd, FALSE);    // value changed
+            InvalidateRect(rWnd, FALSE);
         } else {
             rWnd.left += LED_DIGIT_WIDTH + LED_POINT_WIDTH + 2 * LED_DIGIT_SPACE;
             if (chOldSecMSD != m_chSecMSD) {
-                InvalidateRect(rWnd, FALSE);    // value changed
+                InvalidateRect(rWnd, FALSE);
             } else {
                 rWnd.left += LED_DIGIT_WIDTH + LED_DIGIT_SPACE;
                 if (chOldSecLSD != m_chSecLSD) {
-                    InvalidateRect(rWnd, FALSE);    // value changed
+                    InvalidateRect(rWnd, FALSE);
                 } else {
                     rWnd.left += LED_DIGIT_WIDTH + LED_POINT_WIDTH + 2 * LED_DIGIT_SPACE;
                     if (chOldSecDec != m_chSecDec) {
-                        InvalidateRect(rWnd, FALSE);    // value changed
+                        InvalidateRect(rWnd, FALSE);
                     } else {
                         return;
                     }
@@ -320,13 +320,18 @@ void CSliderVertical::SetPosition(int nVal) {
                        ((rWnd.right - m_rPos.Width()) / 2) + m_rPos.Width(),
                        nPos + m_rPos.Height());
         if (rOld.left == 0) {
-            InvalidateRect(NULL, TRUE);    // first paint, paint all new
+			// first paint, paint all new
+            InvalidateRect(NULL, TRUE);
         } else {
-            if (nOldPos != m_chPos) { // change
-                rOld.UnionRect(rOld, m_rPos); // create invalid rectangle
-                InvalidateRect(rOld, TRUE); // paint
+            if (nOldPos != m_chPos) {
+				// change
+				// create invalid rectangle
+                rOld.UnionRect(rOld, m_rPos);
+				// paint
+                InvalidateRect(rOld, TRUE);
             } else {
-                return;    // no change
+				// no change
+                return;
             }
         }
         UpdateWindow();
@@ -550,13 +555,18 @@ void CSliderHorizontal::SetPosition(int nVal) {
                        nPos + m_rPos.Width(),
                        ((rWnd.bottom - m_rPos.Height()) / 2) + m_rPos.Height());
         if (rOld.left == 0) {
-            InvalidateRect(NULL, TRUE);    // first paint, paint all new
+			// first paint, paint all new
+            InvalidateRect(NULL, TRUE);
         } else {
-            if (nOldPos != m_chPos) { // change
-                rOld.UnionRect(rOld, m_rPos); // create invalid rectangle
-                InvalidateRect(rOld, TRUE); // paint
+            if (nOldPos != m_chPos) {
+				// change
+				// create invalid rectangle
+                rOld.UnionRect(rOld, m_rPos);
+				// paint
+                InvalidateRect(rOld, TRUE);
             } else {
-                return;    // no change
+				// no change
+                return;
             }
         }
         UpdateWindow();
@@ -850,23 +860,28 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
             InvalidateRect(rUpdate, TRUE);
         }
         if ((m_chLOldVU == m_chLVU) && (m_chROldVU == m_chRVU)) {
-            return;    // no change
+			// no change
+            return;
         }
         // invalidate left channel
-        if (m_chLOldVU > m_chLVU) { // old left value was higher
+		// old left value was higher
+        if (m_chLOldVU > m_chLVU) {
             rUpdate.SetRect(nXLPos, nYPos - nPixelPerDivision * m_chLOldVU, nXLPos + VU_BAR_WIDTH, nYPos - nPixelPerDivision * m_chLVU);
         } else { // old left value was lower
             rUpdate.SetRect(nXLPos, nYPos - nPixelPerDivision * m_chLVU, nXLPos + VU_BAR_WIDTH, nYPos - nPixelPerDivision * m_chLOldVU);
         }
         InvalidateRect(rUpdate, TRUE);
         // invalidate right channel
-        if (m_chROldVU > m_chRVU) { // old right value was higher
+        if (m_chROldVU > m_chRVU) {
+			// old right value was higher
             rUpdate.SetRect(nXRPos, nYPos - nPixelPerDivision * m_chROldVU, nXRPos + VU_BAR_WIDTH, nYPos - nPixelPerDivision * m_chRVU);
-        } else { // old right value was lower
+        } else {
+			// old right value was lower
             rUpdate.SetRect(nXRPos, nYPos - nPixelPerDivision * m_chRVU, nXRPos + VU_BAR_WIDTH, nYPos - nPixelPerDivision * m_chROldVU);
         }
         InvalidateRect(rUpdate, TRUE);
-    } else { // horizontal bar
+    } else {
+		// horizontal bar
         int nPixelPerDivision = (rWnd.Width() - 4 - m_nTextSpace) / VU_BAR_DIVISIONS;
         // set invalid left rectangle
         int nYLPos = (rWnd.Height() - VU_CHANNEL_DISTANCE - 2 * VU_BAR_WIDTH) / 2;
@@ -890,19 +905,24 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
             InvalidateRect(rUpdate, TRUE);
         }
         if ((m_chLOldVU == m_chLVU) && (m_chROldVU == m_chRVU)) {
-            return;    // no change
+			// no change
+            return;
         }
         // invalidate left channel
-        if (m_chLOldVU > m_chLVU) { // old left value was higher
+        if (m_chLOldVU > m_chLVU) {
+			// old left value was higher
             rUpdate.SetRect(nXPos + nPixelPerDivision * m_chLVU, nYLPos, nXPos + nPixelPerDivision * m_chLOldVU, nYLPos + VU_BAR_WIDTH);
-        } else { // old left value was lower
+        } else {
+			// old left value was lower
             rUpdate.SetRect(nXPos + nPixelPerDivision * m_chLOldVU, nYLPos, nXPos + nPixelPerDivision * m_chLVU, nYLPos + VU_BAR_WIDTH);
         }
         InvalidateRect(rUpdate, TRUE);
         // invalidate right channel
-        if (m_chROldVU > m_chRVU) { // old right value was higher
+        if (m_chROldVU > m_chRVU) {
+			// old right value was higher
             rUpdate.SetRect(nXPos + nPixelPerDivision * m_chRVU, nYRPos, nXPos + nPixelPerDivision * m_chROldVU, nYRPos + VU_BAR_WIDTH);
-        } else { // old right value was lower
+        } else {
+			// old right value was lower
             rUpdate.SetRect(nXPos + nPixelPerDivision * m_chROldVU, nYRPos, nXPos + nPixelPerDivision * m_chRVU, nYRPos + VU_BAR_WIDTH);
         }
         InvalidateRect(rUpdate, TRUE);
@@ -1612,17 +1632,22 @@ void CSpinControl::MouseClick(UINT , CPoint point) {
     CRect rWnd, rUpper;
     GetClientRect(rWnd);
     rUpper.SetRect(rWnd.left, rWnd.top, rWnd.right, rWnd.bottom / 2);
-    if (rUpper.PtInRect(point)) { // mouseclick on upper button
+    if (rUpper.PtInRect(point)) {
+		// mouseclick on upper button
         m_bUpButtonDown = TRUE;
         m_bLowButtonDown = FALSE;
-        pWnd->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
+		// notify parent
+        pWnd->SendMessage(WM_COMMAND, m_nID, 0);
     } else {
         m_bUpButtonDown = FALSE;
         m_bLowButtonDown = TRUE;
-        pWnd->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
+		// notify parent
+        pWnd->SendMessage(WM_COMMAND, m_nID, 0);
     }
-    SetCapture(); // receive all mouse input
-    InvalidateRect(NULL, TRUE); // draw buttons, erase background
+	// receive all mouse input
+    SetCapture();
+	// draw buttons, erase background
+    InvalidateRect(NULL, TRUE);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1703,11 +1728,14 @@ void CSpinControl::OnLButtonDblClk(UINT nFlags, CPoint point) {
 // CSpinControl::OnLButtonUp Mouse left button up
 /***************************************************************************/
 void CSpinControl::OnLButtonUp(UINT nFlags, CPoint point) {
-    KillTimer(ID_TIMER_DELAY); // kill the mouse repeat timer
+
+	// kill the mouse repeat timer
+    KillTimer(ID_TIMER_DELAY);
     m_bUpButtonDown = FALSE;
     m_bLowButtonDown = FALSE;
     ReleaseCapture();
-    InvalidateRect(NULL, TRUE); // draw buttons, erase background
+    InvalidateRect(NULL, TRUE);
+	// draw buttons, erase background
     CWnd::OnLButtonUp(nFlags, point);
 }
 
@@ -2027,14 +2055,16 @@ void CToggleButton::Flash(BOOL bFlash) {
     if (!m_bSymbolFlash) {
         if (bFlash) {
             m_bSymbolFlash = TRUE;
-            SetTimer(ID_TIMER_DELAY, 500, NULL);             // start the mouse repeat timer with the keyboard delay
+			// start the mouse repeat timer with the keyboard delay
+            SetTimer(ID_TIMER_DELAY, 500, NULL);
         }
     } else {
         if (!bFlash) {
             m_bSymbolFlash = FALSE;
             m_bSymbolOff = FALSE;
             KillTimer(ID_TIMER_DELAY);
-            InvalidateRect(m_rSymbol, FALSE);   // redraw the symbol, don't erase the background
+			// redraw the symbol, don't erase the background
+            InvalidateRect(m_rSymbol, FALSE);
         }
     }
 }
@@ -2046,7 +2076,8 @@ void CToggleButton::Push() {
     if (!m_bButtonDown) {
         m_bButtonDown = TRUE;
         Flash(FALSE);
-        InvalidateRect(NULL, TRUE); // draw button, erase background
+		// draw button, erase background
+        InvalidateRect(NULL, TRUE);
     }
 }
 
@@ -2057,7 +2088,8 @@ void CToggleButton::Release() {
     if (m_bButtonDown) {
         m_bButtonDown = FALSE;
         Flash(FALSE);
-        InvalidateRect(NULL, TRUE); // draw button, erase background
+		// draw button, erase background
+        InvalidateRect(NULL, TRUE);
     }
 }
 
@@ -2100,8 +2132,10 @@ void CToggleButton::OnLButtonDown(UINT nFlags, CPoint point) {
     if (IsWindowEnabled()) {
         if (!m_bButtonDown) {
             m_bButtonDown = TRUE;
-            InvalidateRect(NULL, TRUE); // draw button, erase background
-            SetCapture(); // receive all mouse input
+			// draw button, erase background
+            InvalidateRect(NULL, TRUE);
+			// receive all mouse input
+            SetCapture();
         }
     }
     CWnd::OnLButtonDown(nFlags, point);
@@ -2118,8 +2152,10 @@ void CToggleButton::OnLButtonDblClk(UINT nFlags, CPoint point) {
     if (IsWindowEnabled()) {
         if (!m_bButtonDown) {
             m_bButtonDown = TRUE;
-            InvalidateRect(NULL, TRUE); // draw button, erase background
-            SetCapture(); // receive all mouse input
+			// draw button, erase background
+            InvalidateRect(NULL, TRUE);
+			// receive all mouse input
+            SetCapture();
         }
     }
     CWnd::OnLButtonDblClk(nFlags, point);
@@ -2132,7 +2168,8 @@ void CToggleButton::OnLButtonUp(UINT nFlags, CPoint point) {
     if (IsWindowEnabled()) {
         // inform parent
         CWnd * pWnd = GetParent();
-        pWnd->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
+		// notify parent
+        pWnd->SendMessage(WM_COMMAND, m_nID, 0);
     }
     ReleaseCapture();
     CWnd::OnLButtonUp(nFlags, point);
@@ -2143,7 +2180,8 @@ void CToggleButton::OnLButtonUp(UINT nFlags, CPoint point) {
 /***************************************************************************/
 void CToggleButton::OnTimer(UINT nIDEvent) {
     m_bSymbolOff = !m_bSymbolOff;
-    InvalidateRect(m_rSymbol, FALSE); // redraw the symbol, don't erase the background
+	// redraw the symbol, don't erase the background
+    InvalidateRect(m_rSymbol, FALSE);
     CWnd::OnTimer(nIDEvent);
 }
 
@@ -2151,7 +2189,8 @@ void CToggleButton::OnTimer(UINT nIDEvent) {
 // CToggleButton::OnEnable Enable/disable window
 /***************************************************************************/
 void CToggleButton::OnEnable(BOOL bEnable) {
-    Invalidate(); // redraw whole window
+	// redraw whole window
+    Invalidate();
     CWnd::OnEnable(bEnable);
 }
 

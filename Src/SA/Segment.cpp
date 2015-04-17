@@ -105,7 +105,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 CSegment::CSegment( EAnnotation type, int masterType) {
     m_nAnnotationType = type;
     m_nMasterType = masterType;
-    m_nSelection = - 1;                 // no segment selected
+	// no segment selected
+    m_nSelection = - 1;
 }
 
 /***************************************************************************/
@@ -124,7 +125,8 @@ void CSegment::DeleteContents() {
     m_Text.RemoveAll();
     m_Offset.RemoveAll();
     m_Duration.RemoveAll();
-    m_nSelection = -1; // SDM 1.5Test8.1 empty segments can not be selected
+	// SDM 1.5Test8.1 empty segments can not be selected
+    m_nSelection = -1; 
 }
 
 void CSegment::Serialize(CArchive & ar) {
@@ -242,9 +244,12 @@ void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace) {
     // get pointer to view
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-    pView->ChangeAnnotationSelection(this, m_nSelection);   // deselect // 1.5Test10.2
-    pView->ChangeAnnotationSelection(this, nSaveSelection); // select again // 1.5Test10.2
-    pView->RefreshGraphs(FALSE);                            // refresh the graphs between cursors
+	// deselect // 1.5Test10.2
+    pView->ChangeAnnotationSelection(this, m_nSelection);
+	// select again // 1.5Test10.2
+    pView->ChangeAnnotationSelection(this, nSaveSelection);
+	// refresh the graphs between cursors
+    pView->RefreshGraphs(FALSE);
 }
 
 /***************************************************************************
@@ -336,9 +341,11 @@ BOOL CSegment::Append(LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dw
 /***************************************************************************/
 void CSegment::SetSelection(int nIndex) {
     if (m_nSelection == nIndex) {
-        m_nSelection = -1;      // deselect
+		// deselect
+        m_nSelection = -1;
     } else {
-        m_nSelection = nIndex; // store the index
+		// store the index
+        m_nSelection = nIndex;
     }
 }
 
@@ -353,7 +360,8 @@ int CSegment::GetPrevious(int nIndex) const {
     // find out, which character is the reference
     int nReference = 0;
     if (nIndex >= 0) {
-        nReference = nIndex - 1; // user defined reference
+		// user defined reference
+        nReference = nIndex - 1; 
         if (nReference >= m_Offset.GetSize()) {
             nReference = m_Offset.GetSize() - 1;
         }
@@ -362,11 +370,13 @@ int CSegment::GetPrevious(int nIndex) const {
         if (m_nSelection != -1) {
             nReference = m_nSelection - 1;
         } else {
-            nReference = m_Offset.GetSize() - 1; // default for nothing has been selected yet
+			// default for nothing has been selected yet
+            nReference = m_Offset.GetSize() - 1; 
         }
     }
     if (nReference < 0) {
-        return -1; // there is no previous character
+		// there is no previous character
+        return -1; 
     }
     DWORD dwOffset = GetOffset(nReference);
     nReference--;
@@ -389,15 +399,18 @@ int CSegment::GetNext(int nIndex) const {
     // find out, which character is the reference
     int nReference = 0;
     if (nIndex >= 0) {
-        nReference = nIndex;    // user defined reference
-    } else {                    // take current selection
+		// user defined reference
+        nReference = nIndex;
+    } else {
+		// take current selection
         if (m_Offset.GetCount()==0) {
             return -1;
         }
         if (m_nSelection != -1) {
             nReference = m_nSelection;
         } else {
-            nReference = 0;     // default for nothing has been selected yet
+			// default for nothing has been selected yet
+            nReference = 0;     
         }
     }
     DWORD dwOffset = GetOffset(nReference);
@@ -406,7 +419,8 @@ int CSegment::GetNext(int nIndex) const {
         nReference++;
     }
     if (nReference == m_Offset.GetSize()) {
-        return -1; // no next character
+		// no next character
+        return -1;
     }
     return nReference;
 }
@@ -462,16 +476,19 @@ int CSegment::FindStop(DWORD dwStop) const {
 
     for (; nLoop >= 0; --nLoop) {
         if (GetStop(nLoop) < dwStop) {
-            return -1; // no match
+			// no match
+            return -1; 
         }
         if (GetStop(nLoop) == dwStop) {
             while (nLoop && GetStop(nLoop -1) == dwStop) {
                 --nLoop;
             }
-            return nLoop; // match
+			// match
+            return nLoop; 
         }
     }
-    return -1; // no match
+	// no match
+    return -1; 
 }
 
 /***************************************************************************
@@ -573,59 +590,53 @@ CSaString CSegment::GetSegmentString(int nIndex)   const {
 /**
 * Adjust the segment, but not it's dependents
 */
-void CSegment::Adjust( int nIndex, DWORD dwNewOffset, DWORD dwNewDuration) {
-	TRACE("Adjust index=%d offset=%d duration=%d\n",nIndex, dwNewOffset, dwNewDuration);
-	m_Offset[nIndex] = dwNewOffset;
-	m_Duration[nIndex] = dwNewDuration;
+void CSegment::Adjust( int nIndex, DWORD newOffset, DWORD newDuration) {
+	//TRACE("Adjust index=%d offset=%d duration=%d\n",nIndex, newOffset, newDuration);
+	m_Offset[nIndex] = newOffset;
+	m_Duration[nIndex] = newDuration;
 }
 
 /***************************************************************************/
 // CSegment::Adjust Adjusts positions of an annotation segment
 /***************************************************************************/
-void CSegment::Adjust( ISaDoc * pDoc, int nIndex, DWORD dwOffset, DWORD dwDuration, bool segmental) {
+void CSegment::Adjust( ISaDoc * pDoc, int nIndex, DWORD newOffset, DWORD newDuration, bool segmental) {
 
+	// for use later
     DWORD dwOldOffset = GetOffset(nIndex);
     DWORD dwOldStop = GetStop(nIndex);
-	//TRACE("Adjust %d %d start=%d end=%d\n",this->m_nAnnotationType,nIndex,dwOldOffset,dwOldStop);
-    // adjust this segment
-    for (int nLoop = nIndex; nLoop < m_Offset.GetSize(); nLoop++) {
-        if (GetOffset(nLoop) == dwOldOffset) {
-            m_Offset.SetAt(nLoop, dwOffset);          // set new offset
-            m_Duration.SetAt(nLoop, dwDuration);      // set new duration
-        } else {
-            break;
-        }
-    }
+
+	Adjust( nIndex, newOffset, newDuration);
 
     // adjust all dependent segments
     for (int nWnd = 0; nWnd < ANNOT_WND_NUMBER; nWnd++) {
         CSegment * pSegment = pDoc->GetSegment(nWnd);
-        if ((pSegment!=NULL) && (pSegment->GetMasterIndex() == m_nAnnotationType)) {
+		if ((pSegment!=NULL) && (pSegment->IsDependent(*this))) {
             // for segmental, only adjust segments that match the existing segment
             if (segmental) {
                 int nIndex = pSegment->FindOffset(dwOldOffset);
                 if (nIndex != -1) {
                     DWORD curOffset = pSegment->GetOffset(nIndex);
                     if (curOffset==dwOldOffset) {
-                        pSegment->Adjust(pDoc, nIndex, dwOffset, pSegment->GetStop(nIndex) - dwOffset, false);
+                        pSegment->Adjust(pDoc, nIndex, newOffset, pSegment->GetStop(nIndex) - newOffset, false);
                     }
                 }
                 nIndex = pSegment->FindStop(dwOldStop);
                 if (nIndex != -1) {
                     DWORD curOffset = pSegment->GetOffset(nIndex);
                     if (curOffset==dwOldOffset) {
-                        pSegment->Adjust(pDoc, nIndex, curOffset, dwOffset + dwDuration - curOffset, false);
+                        pSegment->Adjust(pDoc, nIndex, curOffset, newOffset + newDuration - curOffset, false);
                     }
                 }
             } else {
+				// nonsegmental - offset and duration should match
                 int nIndex = pSegment->FindOffset(dwOldOffset);
                 if (nIndex != -1) {
-                    pSegment->Adjust(pDoc, nIndex, dwOffset, pSegment->GetStop(nIndex) - dwOffset, false);
+                    pSegment->Adjust(pDoc, nIndex, newOffset, pSegment->GetStop(nIndex) - newOffset, false);
                 }
 
                 nIndex = pSegment->FindStop(dwOldStop);
                 if (nIndex != -1) {
-                    pSegment->Adjust(pDoc, nIndex, pSegment->GetOffset(nIndex), dwOffset + dwDuration - pSegment->GetOffset(nIndex), false);
+                    pSegment->Adjust(pDoc, nIndex, pSegment->GetOffset(nIndex), newOffset + newDuration - pSegment->GetOffset(nIndex), false);
                 }
             }
         }
@@ -872,8 +883,36 @@ long CSegment::Process(void * /*pCaller*/, ISaDoc * /*pDoc*/, int /*nProgress*/,
 * Find the index for the specified offset
 */
 int CSegment::FindIndex(DWORD offset) {
-    for (size_t i = 0; i < m_Offset.GetSize(); i++) {
+    for (INT_PTR i = 0; i < m_Offset.GetSize(); i++) {
         if (offset == m_Offset[i]) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/**
+* Find the segment the offset is located within
+* Returns -1 if not found
+* sound new-agey..
+*/
+int CSegment::FindWithin(DWORD offset) {
+    for (INT_PTR i = 0; i < m_Offset.GetSize(); i++) {
+		DWORD start = m_Offset[i];
+		DWORD stop = start + m_Duration[i];
+		if ((start<=offset)&&(offset<=stop)) {
+			return i;
+		}
+    }
+    return -1;
+}
+
+/**
+* Find the index for the specified offset and duration
+*/
+int CSegment::FindIndex( DWORD offset, DWORD duration) {
+    for (INT_PTR i = 0; i < m_Offset.GetSize(); i++) {
+        if ((offset == m_Offset[i]) && (duration==m_Duration[i])) {
             return i;
         }
     }
@@ -882,9 +921,10 @@ int CSegment::FindIndex(DWORD offset) {
 
 void CSegment::AdjustDuration( DWORD offset, DWORD duration) {
     // adjust this segment
-    for (int i = 0; i < m_Offset.GetSize(); i++) {
+    for (INT_PTR i = 0; i < m_Offset.GetSize(); i++) {
         if (m_Offset[i] == offset) {
-            m_Duration[i] = duration;      // set new duration
+			// set new duration
+            m_Duration[i] = duration;
         }
     }
 }
@@ -902,6 +942,7 @@ bool CSegment::Split( DWORD thisOffset, DWORD newStopStart) {
     if (index==-1) {
         return false;
     }
+
     // store old stop location
     DWORD stop = GetStop(index);
     // shorten segment
@@ -1264,6 +1305,7 @@ int CSegment::Add( DWORD offset, DWORD duration) {
 * Keeps offset values in sorted order
 */
 int CSegment::Add( LPCTSTR text, DWORD offset, DWORD duration) {
+
     ASSERT(m_Text.GetCount()==m_Offset.GetCount());
     ASSERT(m_Text.GetCount()==m_Duration.GetCount());
 	DWORD stop = offset + duration;
@@ -1306,5 +1348,39 @@ void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
     m_Duration.InsertAt(index,duration);
     ASSERT(m_Text.GetCount()==m_Offset.GetCount());
     ASSERT(m_Text.GetCount()==m_Duration.GetCount());
+}
+
+/**
+* Split the segments
+* @param pView the view to update
+* @param sel the selected phonetic segment
+* @param segmental true if there are multiple phonetic segments to a gloss segment
+* returns true if modified
+*/
+bool CSegment::SplitSegment( CSaDoc & document, int sel, DWORD splitPosition) {
+    
+	if (sel==-1) {
+        return false;
+    }
+    
+	DWORD offset = GetOffset(sel);
+    DWORD duration = GetDuration(sel);
+	splitPosition = (splitPosition==-1)?(offset+(duration/2)):splitPosition;
+    splitPosition = document.SnapCursor( STOP_CURSOR, splitPosition, splitPosition, GetDataSize(), SNAP_RIGHT);
+
+	bool modified = false;
+
+	modified |= Split( offset, splitPosition);
+
+    for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
+		CSegment * pSeg = document.GetSegment(n);
+		// only call our dependents
+		if (!pSeg->IsDependent(*this)) continue;
+        int nIndex = pSeg->FindIndex(offset,duration);
+        if (nIndex != -1) {
+            modified |= pSeg->SplitSegment( document, nIndex, splitPosition);
+        }
+    }
+	return modified;
 }
 

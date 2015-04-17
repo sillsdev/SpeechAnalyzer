@@ -274,7 +274,7 @@ void CPrivateCursorWnd::OnMouseMove(UINT nFlags, CPoint mousePoint) {
         // SDM 1.06.6U4
         ChangeCursorPosition(point);
     } else {
-        // TCJ 5/25/00 - Added support for horizontal cursor
+        // Added support for horizontal cursor
         // get pointer to parent plot
         CPlotWnd * pWnd = (CPlotWnd *)GetParent();
         CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
@@ -388,10 +388,13 @@ void CPrivateCursorWnd::ChangeCursorPosition(CPoint point) {
     // check if new cursor line position
     if (rOldLine != rNewLine) {
         // invalidate and update old position
-        pWnd->InvalidateRect(rOldLine, TRUE); // redraw old cursor position
-        MoveWindow(rNewWnd, FALSE); // move the cursor window to the new position
+		// redraw old cursor position
+        pWnd->InvalidateRect(rOldLine, TRUE);
+		// move the cursor window to the new position
+        MoveWindow(rNewWnd, FALSE);
         rNewLine.SetRect(rNewLine.left - rNewWnd.left, rNewLine.top, rNewLine.left - rNewWnd.left + 1, rNewLine.bottom);
-        InvalidateRect(rNewLine, TRUE); // redraw new cursor line
+		// redraw new cursor line
+        InvalidateRect(rNewLine, TRUE);
     }
     // update the status bar
     pGraph->UpdateStatusBar(0, 0, TRUE);
@@ -425,13 +428,16 @@ void CPrivateCursorWnd::ChangeHorizontalCursorPosition(CPoint point) {
     // check if new cursor line position
     if (rOldLine != rNewLine) {
         // invalidate and update old position
-        pWnd->InvalidateRect(rOldLine, TRUE); // redraw old cursor position
-        MoveWindow(rNewWnd, FALSE); // move the cursor window to the new position
+		// redraw old cursor position
+        pWnd->InvalidateRect(rOldLine, TRUE);
+		// move the cursor window to the new position
+        MoveWindow(rNewWnd, FALSE);
 
-        //  rNewLine.SetRect(rNewLine.left, rNewLine.top - rNewWnd.top, rNewLine.right, rNewLine.top - rNewWnd.top + 1);
+        // rNewLine.SetRect(rNewLine.left, rNewLine.top - rNewWnd.top, rNewLine.right, rNewLine.top - rNewWnd.top + 1);
         rNewLine.SetRect(rNewLine.left, rNewLine.top - rNewWnd.top + 8, rNewLine.right, rNewLine.top - rNewWnd.top + 1 + 8);
 
-        InvalidateRect(rNewLine, TRUE); // redraw new cursor line
+		// redraw new cursor line
+        InvalidateRect(rNewLine, TRUE);
     }
     // update the status bar
     pGraph->UpdateStatusBar(0, 0, TRUE);

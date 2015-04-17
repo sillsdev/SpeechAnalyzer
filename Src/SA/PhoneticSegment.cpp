@@ -210,68 +210,81 @@ void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
 // in the lower word of the long value and the end process progress percen-
 // tage in the higher word.
 /***************************************************************************/
-long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int nLevel) {
+long CPhoneticSegment::Process( void * pCaller, CSaDoc * pDoc, int nProgress, int nLevel) {
 
     //TRACE(_T("Process: CPhoneticSegment\n"));
     if (IsCanceled()) {
-        return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
+		// process canceled
+        return MAKELONG(PROCESS_CANCELED, nProgress);
     }
     if (IsDataReady()) {
-        return MAKELONG(--nLevel, nProgress);    // data is already ready
+		// data is already ready
+        return MAKELONG(--nLevel, nProgress);
     }
 
     // create change and zero crossing data, it is needed to do segmentation
-    CProcessChange * pChange = (CProcessChange *)pDoc->GetChange(); // get pointer to change object
-    pChange->Process(pCaller, pDoc, nProgress, ++nLevel); // process change data
+	// get pointer to change object
+    CProcessChange * pChange = (CProcessChange *)pDoc->GetChange();
+	// process change data
+    pChange->Process(pCaller, pDoc, nProgress, ++nLevel);
 
     // Finish fragmenting as needed.
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    long lResult = LOWORD(pFragments->Process(this, pDoc)); // process data
+	// process data
+    long lResult = LOWORD(pFragments->Process(this, pDoc));
 
     // ******** added by CLW 6/98 - 9/24/98 ******************************************
-    CProcessZCross * pZCross = (CProcessZCross *)pDoc->GetZCross(); // get pointer to zero crossing object
-    lResult = pZCross->Process(pCaller, pDoc, nProgress, nLevel); // process zero crossing data
+	// get pointer to zero crossing object
+    CProcessZCross * pZCross = (CProcessZCross *)pDoc->GetZCross();
+	// process zero crossing data
+    lResult = pZCross->Process(pCaller, pDoc, nProgress, nLevel);
     // *******************************************************************************
 
     nLevel = (short int)LOWORD(lResult);
     nProgress = HIWORD(lResult);
 
-    if (nLevel < 0) { // previous processing error
+	// previous processing error
+    if (nLevel < 0) {
         if ((nLevel == PROCESS_CANCELED)) {
-            CancelProcess(); // set your own cancel flag
+			// set your own cancel flag
+            CancelProcess();
         }
         return MAKELONG(nLevel, nProgress);
     }
 
     // start segmenting
-    BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_SEGMENTING, FALSE)) { // memory allocation failed
-        EndProcess(); // end data processing
+	// wait cursor
+    BeginWaitCursor(); 
+	// memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_SEGMENTING, FALSE)) { 
+		// end data processing
+        EndProcess(); 
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
-    DWORD dwLoopEnd = pChange->GetDataSize();; // end of loop
+	// end of loop
+    DWORD dwLoopEnd = pChange->GetDataSize();
     // prepare parameters
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
 	// get segment parameters // RLJ 1.5Test11.1A
     CSegmentParm * pSegParm = pMainFrame->GetSegmentParm(); 
-    // float fFactor = (float)pDoc->GetDataSize() / (float)dwLoopEnd; // size factor
     // fFactor based on frame-length for accuracy (CLW 1/20/98)
 	// size factor
     float fFactor = (float) CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) * pDoc->GetBlockAlign(); 
     // Flank Width needs to be rounded up to guarantee minimum width (CLW 1/19/98)
 	// flank width in process words
     DWORD dwFlankWidth = (DWORD)((pDoc->GetBytesFromTime(pSegParm->fSegmentWidth) + fFactor - 1) / 2 / fFactor); 
-    // DWORD dwFlankWidth = (DWORD)(pDoc->GetBytesFromTime(pSegParm->fSegmentWidth) / 2 / fFactor); // CLW 10/12/98
     if (!dwFlankWidth) {
         dwFlankWidth = 1;
     }
 
-    int nChThreshold = (int)((long)pChange->GetMaxValue() * (long)pSegParm->nChThreshold / 100); // change threshold
-    int nZCThreshold = pSegParm->nZCThreshold; // zero crossing threshold (CLW)
+	// change threshold
+    int nChThreshold = (int)((long)pChange->GetMaxValue() * (long)pSegParm->nChThreshold / 100); 
+	// zero crossing threshold (CLW)
+    int nZCThreshold = pSegParm->nZCThreshold; 
     DWORD dwLoopPos = 0;
     BOOL bRes = TRUE;
     DWORD dwFlankUp = 0;
@@ -291,8 +304,10 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
             }
         }
     }
-    pDoc->SetModifiedFlag(TRUE);		// document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
+	// document has been modified
+    pDoc->SetModifiedFlag(TRUE);
+	// transcription data has been modified
+    pDoc->SetTransModifiedFlag(TRUE);
     // invalidate parsing information
     pDoc->GetSegment(GLOSS)->SetDataInvalid();
 
@@ -307,15 +322,22 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
     //  - repeat until end of data
     // This yields better segmentation for fricatives.
     /*********************************************************************/
-    DWORD dwZCStart = 0; // start of zero crossing peak
-    DWORD dwZCStop = 0; // end of zero crossing peak
-    DWORD dwShortZCStart = 0; // start of previous peak if it was too short,
+	// start of zero crossing peak
+    DWORD dwZCStart = 0;
+	// end of zero crossing peak
+    DWORD dwZCStop = 0;
+	// start of previous peak if it was too short,
+    DWORD dwShortZCStart = 0; 
     // otherwise 0
-    DWORD dwShortZCStop = 0; // end of previous peak if short, otherwise 0
-    DWORD dwOldZCStart = 0; // start of last valid peak
-    DWORD dwOldZCStop = 0; // end of last valid peak
+	// end of previous peak if short, otherwise 0
+    DWORD dwShortZCStop = 0;
+	// start of last valid peak
+    DWORD dwOldZCStart = 0;
+	// end of last valid peak
+    DWORD dwOldZCStop = 0;
     DWORD dwLastSample = pDoc->GetDataSize() - pDoc->GetBlockAlign();
-    DWORD dwZBase; // candidate for zero crossing peak base
+	// candidate for zero crossing peak base
+    DWORD dwZBase;
     /*********************************************************************/
     DWORD dwChLoopEnd;
 
@@ -330,18 +352,21 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
             // read t-2 zero crossing data point
             int nOldZCData_2 =  pZCross->GetProcessedData(dwLoopPos++, &bRes);
             if (!bRes) {
-                return Exit(PROCESS_ERROR);    // error, reading zero crossing data failed
+				// error, reading zero crossing data failed
+                return Exit(PROCESS_ERROR);
             }
             // read t-1 zero crossing data point
             int nOldZCData_1 =  pZCross->GetProcessedData(dwLoopPos++, &bRes);
             if (!bRes) {
-                return Exit(PROCESS_ERROR);    // error, reading failed
+				// error, reading failed
+                return Exit(PROCESS_ERROR);
             }
             while ((!dwZCStop) && (dwLoopPos < dwLoopEnd)) {
                 // read current data point
                 int nZCData =  pZCross->GetProcessedData(dwLoopPos, &bRes);
                 if (!bRes) {
-                    return Exit(PROCESS_ERROR);    // error, reading failed
+					// error, reading failed
+                    return Exit(PROCESS_ERROR);
                 }
                 // check for start of peak
                 if (!dwZCStart) {
@@ -367,7 +392,8 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
             }
             // no ZCEnd, dwLoopPos = end of data (ZC peak was cut off at end of data)
             if ((!dwZCStop) && (dwLoopPos == dwLoopEnd)) {
-                dwZCStart = dwZCStop = dwLoopEnd;    // default to end of file
+				// default to end of file
+                dwZCStart = dwZCStop = dwLoopEnd;
             }
 
             // The next several lines check to see if the current peak or the
@@ -399,9 +425,7 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
                     dwZCStart = dwOldZCStart; 
 					// fast forward end of old segment to end of current
                     dwOldZCStop = dwZCStop; 
-					// CLW 1/20/98
                     dwSegmentStart = (DWORD)(((float)dwZCStart + 0.5F) * fFactor); 
-					// CLW 1/20/98
                     dwSegmentStop = (DWORD)(((float)dwZCStop + 0.5F) * fFactor); 
 					// store it
                     Adjust(pDoc, nSegmentIndex - 1, dwSegmentStart, dwSegmentStop - dwSegmentStart, false); 
@@ -459,14 +483,11 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
                         dwFlankDown++;
                         if ((dwFlankUp >= dwFlankWidth) && (dwFlankDown >= dwFlankWidth)) {
                             // segment start or stop found
-							// CLW mod 1/19/98
                             if ((!dwSegmentStart) && (nSegmentIndex > 0)) { 
-								// CLW 1/20/98
                                 dwSegmentStart = (DWORD)((float)dwHillTop * fFactor);    
                             } else { 
 								// start already found before
                                 if (!dwSegmentStop) {
-									// CLW 1/20/98
                                     dwSegmentStop = (DWORD)((float)dwHillTop * fFactor);    
                                 }
                                 // ready to store segment
@@ -495,22 +516,16 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
 		// look for new hill
         dwFlankUp = dwFlankDown = dwHillTop = 0; 
 
-        /*********************************************************************/
-        // Added by CLW 6/98 - 9/25/98
-        /*********************************************************************/
         // Store Zero Crossing segment
         if (dwZCStart == dwLoopEnd) {
             break;
         }
         {
             // Figure out start and stop
-			// CLW mod 1/19/98
             if ((!dwSegmentStart) && (nSegmentIndex)) { 
-				// CLW 1/20/98
                 dwSegmentStart = (DWORD)(((float)dwZCStart + 0.5F) * fFactor);    
             } else { 
 				// start already found before
-				// CLW 1/20/98
                 dwSegmentStop = (DWORD)(((float)dwZCStart + 0.5F) * fFactor); 
                 if (dwSegmentStop - dwSegmentStart > 2 * dwFlankWidth) {
                     // store previous segment
@@ -523,7 +538,6 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
                 dwSegmentStop = 0;
             }
             if (!dwSegmentStop) {
-				// CLW 1/20/98
                 dwSegmentStop = (DWORD)((float)dwZCStop * fFactor);
             }
             {

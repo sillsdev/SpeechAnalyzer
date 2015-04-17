@@ -222,7 +222,7 @@ enum EGender {
 #define SA_FLAG_HIGHPASS                0x0020
 
 // CECIL pitch default settings
-#define CECIL_PITCH_MAXFREQ             500 // CLW changed back 4/27/00
+#define CECIL_PITCH_MAXFREQ             500
 #define CECIL_PITCH_MINFREQ             40
 #define CECIL_PITCH_VOICING             32
 #define CECIL_PITCH_CHANGE              10

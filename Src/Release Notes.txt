@@ -1,3 +1,17 @@
+AS - 0.99.0.7 4/15/2015
+- Modified AS application ICON to be use different letter coloring.
+- Added 'Split','Move Left','Merge','Move Right','Split Move Left' and 'Move Right Merge' to graph popup window.  Allows splitting or merging based on cursor position (AS)
+- Rehid 'SFT Export', 'Normalize' and 'Locate Phonetic Segments' menu items.
+- Modified 'Merge' toolbar image.
+- Modified SAB import process so that all segments boundaries are averaged so that there are no gaps between boundaries.
+- Changed 'Edit Segments' toolbar function to 'Edit Boundaries' function.
+- Modified 'GenerateCV' function to perform phonetic segmentation and to provide an export dialog at the end of the operation.
+- Add feature to display full text of SELECTED gloss segment in PL1 window.
+
+AS - 0.99.0.6 4/14/2015
+- Added Export/SFT to AS menu
+- Modified highlighting so that segment stays selected after zoom in/out
+
 AS - 0.99.0.5 4/13/2015
 - Modified install to remove old release notes and roadmap files (AS)
 - Added capability to start, pause and resume playback using the space bar. (AS)

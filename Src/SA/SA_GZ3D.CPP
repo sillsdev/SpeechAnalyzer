@@ -553,10 +553,11 @@ void CFormantChart::EndAnimation(void) {
     CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
     if (pWaveGraph) {
         CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
-        pWavePlot->SetHighLightArea(0, 0);
+        pWavePlot->ClearHighLightArea();
     }
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); // get pointer to formants object
+	// get pointer to formants object
+    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); 
     CFormantParm * pFormantParms = pFormants->GetFormantParms();
     if (pFormantParms->bSmoothFormants) {
         pFormants->SmoothMedian(pDoc);
@@ -586,8 +587,10 @@ void CFormantChart::GraphHasFocus(BOOL bFocus) {
                 BOOL bCluster = (pFormants->GetFormantFrameCount() > 1);
                 if (bFocus && !bCluster) {
                     // Highlight raw data frame for which formants are calculated
-                    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
-                    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments(); // data should be ready -- dynamic mode enabled
+					// calculate sample size in bytes
+                    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());
+					// data should be ready -- dynamic mode enabled
+                    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments(); 
                     DWORD dwFrame = m_dwAnimationFrame;
                     if (dwFrame == UNDEFINED_OFFSET) {
                         dwFrame = pFragments->GetFragmentIndex(pView->GetStartCursorPosition()/wSmpSize);
@@ -599,7 +602,7 @@ void CFormantChart::GraphHasFocus(BOOL bFocus) {
                     pWavePlot->UpdateWindow();
                 } else if (!pView->IsAnimating()) {
                     // turn off highlighted area in raw data
-                    pWavePlot->SetHighLightArea(0, 0);
+                    pWavePlot->ClearHighLightArea();
                     pWavePlot->UpdateWindow();
                 }
             }
@@ -715,7 +718,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
             CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
             if (bDynamicUpdate && pWavePlot) {
                 // turn off highlighted area in raw data
-                pWavePlot->SetHighLightArea(0, 0);
+                pWavePlot->ClearHighLightArea();
                 pWavePlot->UpdateWindow();
             }
         }
@@ -979,7 +982,7 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
             CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
             if ((bDynamicUpdate) && (pWavePlot!=NULL)) {
                 // turn off highlighted area in raw data
-                pWavePlot->SetHighLightArea(0, 0);
+                pWavePlot->ClearHighLightArea();
                 pWavePlot->UpdateWindow();
             }
         }
@@ -1234,7 +1237,7 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
             CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
             if ((bDynamicUpdate) && (pWavePlot!=NULL)) {
                 // turn off highlighted area in raw data
-                pWavePlot->SetHighLightArea(0, 0);
+                pWavePlot->ClearHighLightArea();
                 pWavePlot->UpdateWindow();
             }
         }
@@ -1467,7 +1470,7 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
             CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
             if ((bDynamicUpdate) && (pWavePlot!=NULL)) {
                 // turn off highlighted area in raw data
-                pWavePlot->SetHighLightArea(0, 0);
+                pWavePlot->ClearHighLightArea();
                 pWavePlot->UpdateWindow();
             }
         }

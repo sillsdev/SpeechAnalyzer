@@ -122,22 +122,17 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
         SFragParms FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
         dwFrameStart = FragParms.dwOffset * wSmpSize;
         dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
-        /*
-        if (pWavePlot && (pView->IsAnimating() || pGraph == pView->GetFocusedGraphWnd()))
-        {
-        // highlight raw data frame for which spectrum is plotted
-        pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
-        pWavePlot->UpdateWindow();
-        }
-        */
-        SpectraSelected.bCepstralSpectrum = TRUE;    // turn off to reduce processing time
+		// turn off to reduce processing time
+        SpectraSelected.bCepstralSpectrum = TRUE;    
         SpectraSelected.bLpcSpectrum = TRUE;
     } else {
         // show raw, cepstrally-smoothed, and LPC spectra for all sample data between start and stop cursors (resting state)
         dwFrameStart = pView->GetStartCursorPosition();
         dwFrameSize = pView->GetStopCursorPosition() - dwFrameStart + wSmpSize;
-        SpectraSelected.bCepstralSpectrum = TRUE;         // display raw and cepstrally-smoothed power spectrum
-        SpectraSelected.bLpcSpectrum = TRUE;              // also LPC spectrum
+		// display raw and cepstrally-smoothed power spectrum
+        SpectraSelected.bCepstralSpectrum = TRUE;
+		// also LPC spectrum
+        SpectraSelected.bLpcSpectrum = TRUE;
     }
 
     // Construct eraser.
@@ -145,11 +140,12 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 
     // If frame is too long, exit.
     if (dwFrameSize > (DWORD)(MAX_FFT_LENGTH * wSmpSize)) {
-        pDC->FillRect(&rClip, &Eraser);  // clear the plot area
+		// clear the plot area
+        pDC->FillRect(&rClip, &Eraser);
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_CURCLOSER, &rWnd);
         if ((bDynamicUpdate) && (pWavePlot!=NULL)) {
             // turn off highlighted area in raw data
-            pWavePlot->SetHighLightArea(0, 0);
+            pWavePlot->ClearHighLightArea();
             pWavePlot->UpdateWindow();
         }
         if (pSpectrum->IsDataReady()) {
@@ -191,11 +187,13 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
         int nFirstX, nLastX, y;
         nFirstX = rClip.left;
         if (nFirstX > 0) {
-            nFirstX--;    // one pixel before to restore line entering left edge of clip region
+			// one pixel before to restore line entering left edge of clip region
+            nFirstX--;
         }
         nLastX = rClip.right;
         if (nLastX < rWnd.right) {
-            nLastX++;    // one pixel after to restore line exiting right edge of clip region
+			// one pixel after to restore line exiting right edge of clip region
+            nLastX++;
         }
 
         // Clear the plot area and set up grid.
@@ -204,9 +202,12 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 
         // Calculate plot scale factors.
         int   PlotYRange = rWnd.Height();
-        float PlotYScaleMax = (float)pSpectrumParms->nPwrUpperBound;    // max spectral intensity to plot
-        float PlotYScaleMin = (float)pSpectrumParms->nPwrLowerBound;    // min spectral intensity to plot
-        float PlotYScaleFac = (float)PlotYRange/(PlotYScaleMax - PlotYScaleMin);    // pixels per unit power
+		// max spectral intensity to plot
+        float PlotYScaleMax = (float)pSpectrumParms->nPwrUpperBound;
+		// min spectral intensity to plot
+        float PlotYScaleMin = (float)pSpectrumParms->nPwrLowerBound;
+		// pixels per unit power
+        float PlotYScaleFac = (float)PlotYRange/(PlotYScaleMax - PlotYScaleMin);
         float PlotXScaleMax = (float)nFreqUpperBound;
         float PlotXScaleMin = (float)nFreqLowerBound;
         float PlotXScale = (PlotXScaleMax - PlotXScaleMin) / (float)rWnd.Width();
@@ -224,7 +225,8 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
         short LBandEdge, UBandEdge;   // lower and upper band edges in Hz
 
         double MaxRawBandPwr = pSpectrum->GetSpectralPowerRange().Max.Raw;
-        if (pSpectrum->GetSpectralData(0).Raw != (float)UNDEFINED_DATA) { // undefined if plot type not requested
+		// undefined if plot type not requested
+        if (pSpectrum->GetSpectralData(0).Raw != (float)UNDEFINED_DATA) { 
             pDC->SelectObject(&penRaw);
             for (int x = nFirstX; x < nLastX; x++) {
                 // plot raw spectrum
@@ -234,7 +236,8 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
                     BandPwr += (double)pSpectrum->GetSpectralData(i).Raw;
                 }
                 if (UBandEdge != LBandEdge) {
-                    BandPwr /= (double)(UBandEdge - LBandEdge);    // average the power within the band
+					// average the power within the band
+                    BandPwr /= (double)(UBandEdge - LBandEdge);
                 }
                 if (pSpectrumParms->nScaleMode == DB) {
                     BandPwr = (BandPwr == 0.)?MIN_LOG_PWR:10.*log10((double)BandPwr) - pSpectrum->GetSpectralPowerRange().fdBRef;
@@ -268,7 +271,8 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
                         BandPwr += (double)pSpectrum->GetSpectralData(i).Smooth;
                     }
                     if (UBandEdge != LBandEdge) {
-                        BandPwr /= (double)(UBandEdge - LBandEdge);    // average the power within the band
+						// average the power within the band
+                        BandPwr /= (double)(UBandEdge - LBandEdge);
                     }
                     if (pSpectrumParms->nScaleMode == DB) {
                         BandPwr = (BandPwr == 0.)?MIN_LOG_PWR:10.*log10((double)BandPwr) - pSpectrum->GetSpectralPowerRange().fdBRef;

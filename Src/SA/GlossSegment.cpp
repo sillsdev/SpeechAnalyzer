@@ -162,7 +162,6 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
         dwBreakWidth = 1;
     }
 
-    // CLW 1.07a
 	int nMaxThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pMainFrame->GetMaxThreshold() / 100);
     int nMinThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pMainFrame->GetMinThreshold() / 100);
 
@@ -176,27 +175,36 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
     if (GetSelection() != -1) {
         SetSelection(-1);
     }
-    pDoc->SetModifiedFlag(TRUE);        // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
+	// document has been modified
+    pDoc->SetModifiedFlag(TRUE);
+	// transcription data has been modified
+    pDoc->SetTransModifiedFlag(TRUE);
 
-    DWORD dwBreakCount = dwBreakWidth;  // allow early word SDM 1.5Test 11.0
-    DWORD dwBreakStart = 0;             // the start of the break
-    DWORD dwBreakEnd = 0;               // the end of the break
+	// allow early word SDM 1.5Test 11.0
+    DWORD dwBreakCount = dwBreakWidth;
+	// the start of the break
+    DWORD dwBreakStart = 0;
+	// the end of the break
+    DWORD dwBreakEnd = 0;
 
-    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC); // get pointer to phonetic segment
-    pDoc->AutoSnapUpdate(); // Snap phonetic SDM 1.5Test11.0
+	// get pointer to phonetic segment
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
+	// Snap phonetic SDM 1.5Test11.0
+    pDoc->AutoSnapUpdate();
 
     // start processing
     DWORD dwLoopPos = 0;
 
     while (dwLoopPos < dwLoopEnd) {
-        // CLW 1.07a
         BOOL bRes = TRUE;
-        int nLoudnessData = pLoudness->GetProcessedData(dwLoopPos++, &bRes);         // read zero crossing data point
+		// read zero crossing data point
+        int nLoudnessData = pLoudness->GetProcessedData(dwLoopPos++, &bRes);
         if (!bRes) {
-            return Exit(PROCESS_ERROR);         // error, reading zero crossing data failed
+			// error, reading zero crossing data failed
+            return Exit(PROCESS_ERROR);
         }
-        if (nLoudnessData > nMaxThreshold) {    // point is over max threshold     // CLW 1.07a
+		// point is over max threshold 
+        if (nLoudnessData > nMaxThreshold) {
             // note end of break
             if (dwBreakCount >= dwBreakWidth) {
                 // ready to store gloss
@@ -286,7 +294,6 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
 			// end of valley
             dwBreakCount = 0; 
         } else {
-            // CLW 1.07a
 			// point is under min threshold
             if (nLoudnessData <= nMinThreshold) {   
                 // reset end of break

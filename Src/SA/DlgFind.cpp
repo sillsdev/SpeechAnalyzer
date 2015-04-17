@@ -425,7 +425,8 @@ void CDlgFind::OnSetFocusReplaceString() {
 // CDlgFind::OnNext - find the next match of the find string
 /***************************************************************************/
 void CDlgFind::OnNext() {
-    TRACE(">>>OnNext %d %d\n",m_curPos,m_beginFind);
+    
+	TRACE(">>>OnNext %d %d\n",m_curPos,m_beginFind);
     if (m_pMainFrame==NULL) {
         return;
     }
@@ -531,7 +532,8 @@ void CDlgFind::OnNext() {
 // backwards.
 /***************************************************************************/
 void CDlgFind::OnPrevious() {
-    if (m_pMainFrame==NULL) {
+    
+	if (m_pMainFrame==NULL) {
         return;
     }
     CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();

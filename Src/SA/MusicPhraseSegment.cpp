@@ -16,23 +16,27 @@ CMusicPhraseSegment::CMusicPhraseSegment(EAnnotation index, int master) :
 int CMusicPhraseSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL bOverlap) const {
     int nLength = GetOffsetSize();
     if (nLength == 0) {
-        return 0;           // no character yet, ok
+		// no character yet, ok
+        return 0;
     }
 
-    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(m_nSelection != -1)) { // segment selected (edit)
+	// segment selected (edit)
+    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(m_nSelection != -1)) { 
         return CIndependentSegment::CheckPosition(pDoc, dwStart, dwStop, nMode, bOverlap);
     } else if ((nMode==MODE_ADD)||(nMode==MODE_AUTOMATIC)) {
         // if segment is less than 20 ms, we can't add
         DWORD dwSize = dwStop-dwStart;
         if ((dwSize)  < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) {
-            return -1;    // segment too small
+			// segment too small
+            return -1;
         }
 
         int nLoop;
         for (nLoop = 0; nLoop < nLength; nLoop++) {
             DWORD dwOffset = GetOffset(nLoop);
             // are we before this segment?
-            if (dwStart <= dwOffset) { // this offset
+            if (dwStart <= dwOffset) {
+				// this offset
                 // did our stop overlap it's start?
                 if (dwStop > dwOffset) {
                     return -1;
@@ -41,14 +45,16 @@ int CMusicPhraseSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwSto
                 if ((nLoop > 0)&&(dwStart < GetStop(nLoop - 1))) {
                     return -1;
                 }
-                return nLoop; // ok
+				// ok
+                return nLoop;
             }
         }
         // we didn't find anything - is our start overlapping the last stop?
         if ((nLoop>0)&&(dwStart < GetStop(nLoop-1))) {
             return -1;
         }
-        return nLoop; // append at the end
+		// append at the end
+        return nLoop;
     } else {
         return -1;
     }

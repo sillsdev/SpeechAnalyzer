@@ -256,7 +256,7 @@
 \+segment 
 \segment_ms 20
 \minChange 17
-\minZeroCrossing 50
+\minZeroCrossing 18
 \-segment
 \+pitch 
 \RangeMode 0
@@ -391,7 +391,7 @@
 \showwnd 1
 \showwnd 1
 \showwnd 1
-\showwnd 0
+\showwnd 1
 \showwnd 0
 \showwnd 0
 \showwnd 0

@@ -50,7 +50,6 @@ protected:
     void Undo();
 
     // Generated message map functions
-    // CLW 1.07a
     virtual BOOL OnInitDialog();
     afx_msg void OnSegmentWidthScroll();
     afx_msg void OnChangeMinScroll();

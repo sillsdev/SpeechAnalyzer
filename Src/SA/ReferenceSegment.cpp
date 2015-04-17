@@ -88,14 +88,16 @@ void CReferenceSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaSt
 
     // insert or append the new dependent segment
     if (!Insert(nPos, szString, 0, dwStart, dwDuration)) {
-        pView->RefreshGraphs(TRUE);                                 // refresh the graphs between cursors
-        return;                                                     // return on error or not inserted.
+		// return on error or not inserted.
+        return;
     }
 
-    pDoc->SetModifiedFlag(TRUE);                                    // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);                               // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop);  // change the selection
-    pView->RefreshGraphs(FALSE);                                    // refresh the graphs between cursors
+	// document has been modified
+    pDoc->SetModifiedFlag(TRUE);
+	// transcription data has been modified
+    pDoc->SetTransModifiedFlag(TRUE);
+	// change the selection
+    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop);
 }
 
 CFontTable * CReferenceSegment::NewFontTable() const {

@@ -19,40 +19,29 @@ public:
     virtual ~CPlotRecording();
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotRecording * pTarg);
-
-
-    // Attributes
-private:
-    DWORD m_dwRecDataFrame;        // number of data points to display in the Recording plot window
-    //int   m_nInnerPixLeft;
-    //int   m_nInnerPixRight;
-
-    // Operations
-public:
-    virtual void SetMagnify(double, BOOL bRedraw = FALSE);      // set magnify factor
+	// set magnify factor
+    virtual void SetMagnify(double, BOOL bRedraw = FALSE);      
+	virtual void ClearHighLightArea();
     // don't want to allow clients to change selection if this is the recording plot
-    virtual void  SetHighLightArea(DWORD /*dwStart*/, DWORD /*dwStop*/, BOOL /*bRedraw*/ = TRUE, BOOL /*bSecondSelection*/ = FALSE) {
-        ;
-    }
+    virtual void SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL bSecondSelection);
 
 protected:
-    virtual double GetDataPosition(int) {
-        return 0L;   // 08/29/2000 - DDO
-    }
-    virtual DWORD AdjustDataFrame(int iWidth);                     // 08/29/2000 - DDO
-    virtual BOOL  SetLegendScale();                                // 08/29/2000 - DDO
-    //virtual BOOL  EraseBkgnd(CDC *pDC);                          // 10/24/2000 - DDO
-    //        void  SetHighlightInfo();                            // 10/24/2000 - DDO
+    virtual double GetDataPosition(int);
+    virtual DWORD AdjustDataFrame(int iWidth);
+    virtual BOOL SetLegendScale();
 
-    virtual DWORD GetAreaPosition();                         // return area position
-    virtual DWORD GetAreaLength(CRect * pRwnd = NULL);       // return area length
+	// return area position
+    virtual DWORD GetAreaPosition();
+	// return area length
+    virtual DWORD GetAreaLength(CRect * pRwnd = NULL);
 
-
-    // Generated message map functions
-protected:
     DECLARE_MESSAGE_MAP()
 
     virtual void OnPaint();
+
+private:
+	// number of data points to display in the Recording plot window
+    DWORD m_dwRecDataFrame;        
 };
 
 #endif //_sa_g_rec_H

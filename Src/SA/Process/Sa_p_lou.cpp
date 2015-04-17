@@ -399,24 +399,27 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT n
         }
     }
     // process data
-    if (nSmpSize > 1) { // 16 bit data
-        short int * lpSource = (short int *)pBlockStart; // cast pointer
+    if (nSmpSize > 1) { 
+		// 16 bit data
+		// cast pointer
+        short int * lpSource = (short int *)pBlockStart;
         short int * lpTarget;
         if (nBlock > 0) {
             lpTarget = (short int *)(pTarget + GetProcessBufferSize());
         }
-        // CLW 12/3/98
-        // else lpTarget = (short int *)(pTarget + GetProcessBufferSize() + nSmoothWidth + 2);
         else {
             lpTarget = (short int *)(pTarget + GetProcessBufferSize() + nSmoothWidth / 2);
         }
         int nDisplacement = nSmoothWidth / 2;
         do {
-            if (dwEnd == dwReloadPos) { // new data block has to be reloaded
-                DWORD dwNewDataPos = (DWORD)nBlock * GetProcessBufferSize() + nSmoothWidth / 2; // CLW 12/31/98
-                pBlockStart = pDoc->GetWaveData(dwNewDataPos, TRUE); // get data
+            if (dwEnd == dwReloadPos) { 
+				// new data block has to be reloaded
+                DWORD dwNewDataPos = (DWORD)nBlock * GetProcessBufferSize() + nSmoothWidth / 2;
+				// get data
+                pBlockStart = pDoc->GetWaveData(dwNewDataPos, TRUE);
                 if (!pBlockStart) {
-                    return NULL;    // reading failed
+					// reading failed
+                    return NULL;
                 }
                 lpSource = (short int *)pBlockStart;
             }
@@ -453,7 +456,8 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT n
             *lpTarget++ = (unsigned char)(*nAverage / nSmoothWidth);
             // drop first point and add next point to moving average
             *nAverage += *(lpSource + nSmoothWidth) - *lpSource;
-            lpSource++; // CLW 12/3/98 Was included on previous line
+			// CLW 12/3/98 Was included on previous line
+            lpSource++; 
         } while (--dwEnd);
     }
     // write the processed data block into the smoothed raw data temporary file

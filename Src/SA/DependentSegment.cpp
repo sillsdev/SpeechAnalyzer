@@ -337,15 +337,18 @@ void CDependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaSt
 	// get the offset and duration from master
     int nSegment = pDoc->GetSegment(m_nMasterType)->FindOffset(dwStart);
     if (nSegment == -1) {
-        return;    // return on error
+		// return on error
+        return;    
     }
 
     DWORD dwDuration = pDoc->GetSegment(m_nMasterType)->GetDuration(nSegment);
     DWORD dwStop = dwStart + dwDuration;
 
-    int nPos = CheckPosition(pDoc, dwStart, dwStop, MODE_ADD); // get the insert position
+	// get the insert position
+    int nPos = CheckPosition(pDoc, dwStart, dwStop, MODE_ADD); 
     if (nPos == -1) {
-        return;    // return on error
+		// return on error
+        return;    
     }
 
     // save state for undo ability
@@ -355,13 +358,16 @@ void CDependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaSt
 
     // insert or append the new dependent segment
     if (!Insert(nPos, szString, 0, dwStart, dwDuration)) {
-        return;    // return on error
+		// return on error
+        return;    
     }
 
-    pDoc->SetModifiedFlag(TRUE);				// document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);			// transcription data has been modified
-    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop); // change the selection
-    pView->RefreshGraphs(FALSE);				// refresh the graphs between cursors
+	// document has been modified
+    pDoc->SetModifiedFlag(TRUE);
+	// transcription data has been modified
+    pDoc->SetTransModifiedFlag(TRUE);
+	// change the selection
+    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop);
 }
 
 int CDependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL /*bUnused*/) const {

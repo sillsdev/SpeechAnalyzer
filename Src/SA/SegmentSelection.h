@@ -14,6 +14,7 @@
 //   1.5Test11.4
 //        SDM added SelectFromStopPosition virtual selections to handle phonemic/ortho/tone spanning multiple segments
 /////////////////////////////////////////////////////////////////////////////
+#include "AppDefs.h"
 
 class CSaView;
 class CSaString;
@@ -26,9 +27,10 @@ class CSaString;
 class CSegmentSelection {
 public:
     CSegmentSelection();
-    BOOL SelectFromPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, bool bFindExact);
-    BOOL SelectFromStopPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, bool bFindExact);
-    void Update(CSaView * pView, BOOL bClearVirtual = FALSE); //Update Selection Record
+    BOOL SelectFromPosition(CSaView * pView, int type, DWORD dwPosition, bool bFindExact);
+    BOOL SelectFromStopPosition(CSaView * pView, int type, DWORD dwPosition, bool bFindExact);
+	//Update Selection Record
+    void Update(CSaView * pView, BOOL bClearVirtual = FALSE); 
     CString GetSelectedAnnotationString(CSaView * pView, BOOL bRemoveDelimiter = TRUE) const;
     BOOL SetSelectedAnnotationString(CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
     DWORD GetSelectionStart();
@@ -40,7 +42,7 @@ protected:
     DWORD m_dwStart;
     DWORD m_dwStop;
     DWORD m_dwDuration;
-    int m_nIndex;
+    int m_nType;
     bool m_bVirtual;
 
 private:

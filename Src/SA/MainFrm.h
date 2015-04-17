@@ -110,6 +110,8 @@ public:
 	void SetMinThreshold(int value);
 
 	CSegmentParm * GetSegmentParm();
+	void SetSegmentParams( float width, int change, int zc);
+
     const CPitchParm * GetPitchParmDefaults() const;
     void SetPitchParmDefaults(const CPitchParm & cParm);
     const CMusicParm * GetMusicParmDefaults() const;

@@ -229,7 +229,8 @@ int CTextSegment::CheckPosition(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
 // CTextSegment::Add Add text segment
 /***************************************************************************/
 void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
-    int nPos = FindFromPosition(dwStart,TRUE);
+    
+	int nPos = FindFromPosition(dwStart,TRUE);
     if (nPos==-1) {
         nPos = FindFromPosition(dwStart,FALSE);
     } else {
@@ -273,9 +274,11 @@ void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString 
         Adjust(pDoc, nPos - 1, GetOffset(nPos - 1), CalculateDuration( pDoc, nPos -1), false);
     }
 
-    pDoc->SetModifiedFlag(TRUE); // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, nPos); // change the selection
-    pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
+	// document has been modified
+    pDoc->SetModifiedFlag(TRUE);
+	// transcription data has been modified
+    pDoc->SetTransModifiedFlag(TRUE); 
+	// change the selection
+    pView->ChangeAnnotationSelection(this, nPos);
 }
 

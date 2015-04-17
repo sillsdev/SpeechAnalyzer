@@ -77,7 +77,8 @@ CProgressStatusBar * CProcess::GetStatusBar() {
 // allocated.
 /***************************************************************************/
 bool CProcess::StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize) {
-    //TRACE(_T("StartProcess ID:%d\n"), nProcessID);
+    
+	//TRACE(_T("StartProcess ID:%d\n"), nProcessID);
     // get pointer to status bar
     CProgressStatusBar * pStatusBar = GetStatusBar();
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
@@ -90,13 +91,16 @@ bool CProcess::StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize) 
 
     // no previous process owner? you're the first, show to progress bar
     if (!pStatusBar->GetProcessOwner()) {
-        pMain->ShowDataStatusBar(FALSE);    // show the progress status bar
+		// show the progress status bar
+        pMain->ShowDataStatusBar(FALSE);    
     }
 
-    pStatusBar->SetProcessOwner(this, pCaller, nProcessID); // set the process owner
+	// set the process owner
+    pStatusBar->SetProcessOwner(this, pCaller, nProcessID); 
     if (dwBufferSize) {
         // allocate global buffer for the processed data
-        if (!m_lpBuffer) { // not yet allocated
+		// not yet allocated
+        if (!m_lpBuffer) { 
             m_lpBuffer = new char[dwBufferSize];
             if (!m_lpBuffer) {
                 // memory lock error

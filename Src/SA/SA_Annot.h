@@ -251,7 +251,8 @@ public:
     CAnnotationWnd(int nIndex);
     virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
-    int GetWindowHeight(); // return height of selected font
+	// return height of selected font
+    int GetWindowHeight();
     CFont * GetFont();
     // SDM 1.06.2
     void SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dwStop, bool bOverlap);
@@ -271,8 +272,10 @@ protected:
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 
-    int m_nIndex;                   // index of annotation window
-    bool m_bHintUpdateBoundaries;   // request for draw hint of updated boundaries
+	// index of annotation window
+    int m_nIndex;
+	// request for draw hint of updated boundaries
+    bool m_bHintUpdateBoundaries;
     DWORD m_dwHintStart,m_dwHintStop;
     bool m_bOverlap;
 
@@ -329,6 +332,7 @@ public:
 class CMusicPhraseWnd : public CAnnotationWnd {
 public:
     CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+    virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 
 #endif

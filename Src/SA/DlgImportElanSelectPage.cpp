@@ -7,6 +7,8 @@
 #define SAYMORE_TRANSCRIPTION L"Transcription"
 #define SAYMORE_TRANSLATION L"Phrase Free Translation"
 
+const DWORD_PTR UNASSIGNED = -1L;
+
 CDlgImportElanSelectPage::CDlgImportElanSelectPage() :
     CPropertyPage(IDD) {
 }
@@ -132,25 +134,25 @@ BOOL CDlgImportElanSelectPage::OnInitDialog() {
     int selection = pSheet->selection;
 
     int idx = refnum.AddString(L"");
-	refnum.SetItemData(idx,-1);
+	refnum.SetItemData(idx,UNASSIGNED);
     idx = phonetic.AddString(L"");
-	phonetic.SetItemData(idx,-1);
+	phonetic.SetItemData(idx,UNASSIGNED);
     idx = phonemic.AddString(L"");
-	phonemic.SetItemData(idx,-1);
+	phonemic.SetItemData(idx,UNASSIGNED);
     idx = ortho.AddString(L"");
-	ortho.SetItemData(idx,-1);
+	ortho.SetItemData(idx,UNASSIGNED);
     idx = gloss.AddString(L"");
-	gloss.SetItemData(idx,-1);
+	gloss.SetItemData(idx,UNASSIGNED);
     idx = glossNat.AddString(L"");
-	glossNat.SetItemData(idx,-1);
+	glossNat.SetItemData(idx,UNASSIGNED);
     idx = pl1.AddString(L"");
-	pl1.SetItemData(idx,-1);
+	pl1.SetItemData(idx,UNASSIGNED);
     idx = pl2.AddString(L"");
-	pl2.SetItemData(idx,-1);
+	pl2.SetItemData(idx,UNASSIGNED);
     idx = pl3.AddString(L"");
-	pl3.SetItemData(idx,-1);
+	pl3.SetItemData(idx,UNASSIGNED);
     idx = pl4.AddString(L"");
-	pl4.SetItemData(idx,-1);
+	pl4.SetItemData(idx,UNASSIGNED);
 
     for (size_t i=0; i<document.tiers.size(); i++) {
         idx = refnum.AddString(document.tiers[i].tierID.c_str());

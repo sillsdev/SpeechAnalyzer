@@ -281,7 +281,7 @@ bool grapplInit(pGrappl work,pGrappl_parms parms) {
             (SysParams->minpitch < 20) ||
             (SysParams->maxpitch > 4000) ||
             (SysParams->minpitch > 1000)) {
-        SysParams->error=E_badfrange;    // CLW 4/5/00
+        SysParams->error=E_badfrange;
     } else {
         if (SysParams->minpitch *5 > SysParams->maxpitch *4) {
             SysParams->error=E_badfgap;
@@ -296,7 +296,7 @@ bool grapplInit(pGrappl work,pGrappl_parms parms) {
     SysParams->smoothfreq=parms->smoothfreq;
     if ((SysParams->smoothfreq != 0L) &&
             ((SysParams->smoothfreq < 500L) || (SysParams->smoothfreq > 22000L))) {
-        SysParams->error=E_badsmooth;    // CLW 4/5/00
+        SysParams->error=E_badsmooth;
     }
     SysParams->sampfreq=parms->sampfreq;
     if ((SysParams->sampfreq < 5000L) || (SysParams->sampfreq > 96000L)) {
@@ -404,7 +404,7 @@ static bool update_data(pGrappl work,int16 init) {
         uint16 sampwidth,i;
 
         SysParams->loc_filterlen=(uint16)(SysParams->smoothfreq?(SysParams->sampfreq+
-                                          SysParams->smoothfreq/2)/SysParams->smoothfreq:1); // CLW 4/5/00
+                                          SysParams->smoothfreq/2)/SysParams->smoothfreq:1);
         sampwidth=(uint16)(((SysParams->maxlen16>>3)+SysParams->loc_filterlen)*
                            11L/10L+20);
         if (sampwidth >= Maxdata) {
