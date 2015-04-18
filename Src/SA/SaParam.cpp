@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "SaParam.h"
-#include "AppDefs.h"
 
 CSaParam::CSaParam() {
     wFlags = 0;

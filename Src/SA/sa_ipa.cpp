@@ -12,11 +12,8 @@
 // 1.5Test8.2
 //      SDM removed word delimiters from IPA::GetNext - NONE
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa_ipa.h"
-#include "appdefs.h"
-
 
 CFontTable::CFontTable() {
     m_wordDelimiter = SPACE_DELIMITER; //SDM 1.06.8

@@ -1,7 +1,6 @@
 #ifndef TRANSCRIPTIONHELPER_H
 #define TRANSCRIPTIONHELPER_H
 
-#include "AppDefs.h"
 #include "SaString.h"
 
 typedef std::list<CSaString> MarkerList;

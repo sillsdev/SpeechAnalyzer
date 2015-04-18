@@ -9,7 +9,6 @@
 #ifndef _SA_WAVE_H
 #define _SA_WAVE_H
 
-#include "AppDefs.h"
 #include <mmsystem.h>
 #include "FmtParm.h"
 #include "RecMixer.h"

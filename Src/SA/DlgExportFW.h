@@ -14,7 +14,6 @@
 #define _DGLEXPORTFW_H
 
 #include "objectostream.h"
-#include "AppDefs.h"
 #include "SaString.h"
 #include "ExportFWSettings.h"
 

@@ -1168,6 +1168,7 @@
 #define IDS_WINDOW_MUSIC_PL2            2012
 #define IDS_WINDOW_MUSIC_PL3            2013
 #define IDS_WINDOW_MUSIC_PL4            2014
+#define IDS_WINDOW_FULL_TEXT            2015
 #define IDC_FTRACKER_WINDOW_BANDWIDTH   2018
 #define IDC_FTRACKER_AZF_ADD_CONJUGATE_ZERO 2019
 #define IDC_FTRACKER_AZF_MOST_RECENT    2020
@@ -1397,8 +1398,8 @@
 #define ID_PLAYBACK_CURSORS             32832
 #define ID_PLAYBACK_WINDOW              32833
 #define ID_PLAYBACK_FILE                32834
-#define ID_PLAYBACK_LTOSTART            32835
-#define ID_PLAYBACK_STARTTOR            32836
+#define ID_PLAYBACK_LEFT_TO_START       32835
+#define ID_PLAYBACK_START_TO_RIGHT      32836
 #define ID_PLAYBACK_SPECIFIC            32837
 #define ID_PLAYBACK_ORIGINAL            32838
 #define ID_TOOLS_OPTIONS                32844
@@ -1564,8 +1565,8 @@
 #define ID_IMPORT_MIDI                  33128
 #define ID_EDIT_SEGMENT_SIZE            33129
 #define ID_FILE_OPENAS_NEW              33141
-#define ID_PLAYBACK_LTOSTOP             33142
-#define ID_PLAYBACK_STOPTOR             33143
+#define ID_PLAYBACK_LEFT_TO_STOP        33142
+#define ID_PLAYBACK_STOP_TO_RIGHT       33143
 #define ID_IMPORT_TIME_TABLE            33145
 #define ID_IMPORT_SFM                   33146
 #define ID_IMPORT_SAB                   33147
@@ -1648,7 +1649,6 @@
 #define ID_AUTOSAVE_ON                  33235
 #define ID_AUTOSAVE_OFF                 33236
 #define ID_TOOLS_ADJUST_SILENCE         33237
-#define ID_ACCELERATOR33238             33238
 #define ID_PLAYBACK_ENDCURSOR           33240
 #define ID_IMPORT_ELAN                  33242
 #define ID_EXPORT_LIFT                  33243
@@ -1662,7 +1662,6 @@
 #define ID_EDIT_MOVE_RIGHT              33251
 #define ID_EDIT_MOVE_RIGHT_MERGE        33252
 #define ID_EDIT_ADD_MARKUP              33253
-#define ID_BUTTON33257                  33257
 #define ID_EDIT_SPLIT_HERE              33260
 #define ID_EDIT_MOVE_LEFT_HERE          33261
 #define ID_EDIT_SPLIT_MOVE_LEFT_HERE    33262
@@ -1670,6 +1669,8 @@
 #define ID_EXPORT_CV_DATA               33264
 #define ID_EDIT_MOVE_RIGHT_HERE         33265
 #define ID_EDIT_MOVE_RIGHT_MERGE_HERE   33266
+#define ID_PLAYBACK_BEGINCURSOR         33267
+#define ID_HELP_KEYBOARD_SHORTCUTS      33271
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1843,6 +1844,27 @@
 #define IDS_ERROR_AUTO_PARSE            61353
 #define IDS_SAB_QUERY_EXISTING_DATA     61353
 #define IDP_ASK_TO_SAVE                 61354
+	#define IDS_GRAPH_TITLE_RAWDATA           61355       
+	#define IDS_GRAPH_TITLE_LOUDNESS   61356
+	#define IDS_GRAPH_TITLE_DURATION        61357            
+	#define IDS_GRAPH_TITLE_CHANGE          61358             
+	#define IDS_GRAPH_TITLE_PITCH           61359         
+	#define IDS_GRAPH_TITLE_CHPITCH         61360        
+	#define IDS_GRAPH_TITLE_SMPITCH         61361       
+	#define IDS_GRAPH_TITLE_GRAPITCH         61362           
+	#define IDS_GRAPH_TITLE_SPECTROGRAM       61363             
+	#define IDS_GRAPH_TITLE_SNAPSHOT         61364             
+	#define IDS_GRAPH_TITLE_SPECTRUM        61365             
+	#define IDS_GRAPH_TITLE_ZCROSS        61366       
+	#define IDS_GRAPH_TITLE_F1F2          61367           
+	#define IDS_GRAPH_TITLE_F2F1           61368           
+	#define IDS_GRAPH_TITLE_F2F1F1         61369        
+	#define IDS_GRAPH_TITLE_3D             61370   
+	#define IDS_GRAPH_TITLE_MELOGRAM        61371             
+	#define IDS_GRAPH_TITLE_TWC         61372
+	#define IDS_GRAPH_TITLE_MAGNITUDE       61373              
+	#define IDS_GRAPH_TITLE_STAFF          61374              
+	#define IDS_GRAPH_TITLE_RECORDING      61375          
 
 // Next default values for new objects
 // 
@@ -1850,7 +1872,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        387
-#define _APS_NEXT_COMMAND_VALUE         33267
+#define _APS_NEXT_COMMAND_VALUE         33275
 #define _APS_NEXT_CONTROL_VALUE         2116
 #define _APS_NEXT_SYMED_VALUE           105
 #endif

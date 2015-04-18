@@ -40,6 +40,7 @@
 #include "sa_wbch.h"
 #include "mainfrm.h"
 #include "DlgPlayer.h"
+#include "sa_ipa.h"
 
 //###########################################################################
 // CDlgEditor dialog
@@ -753,17 +754,16 @@ BOOL CDlgAnnotationEdit::OnInitDialog() {
                     pWnd->SetFont(pFont);
                 }
                 pWnd->SetWindowText(szText);
-                pWnd->SetSel(0,-1); // Select all text
+				// Select all text
+                pWnd->SetSel(0,-1);
             }
         } else {
             OnCancel();
         }
     }
-
-    return TRUE;  // return TRUE  unless you set the focus to a control
-
+	// return TRUE  unless you set the focus to a control
+    return TRUE;
 }
-
 
 //SDM 1.5Test10.0
 /***************************************************************************/

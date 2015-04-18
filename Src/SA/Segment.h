@@ -61,12 +61,12 @@
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
-#include "sa_ipa.h"  // Support for CFontTable
 #include "SaString.h"
 #include "process\Process.h"
 
 class CSaDoc;
 class CSaView;
+class CFontTable;
 
 //###########################################################################
 // CSegment data processing

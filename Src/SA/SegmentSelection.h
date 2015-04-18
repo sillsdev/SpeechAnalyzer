@@ -14,7 +14,6 @@
 //   1.5Test11.4
 //        SDM added SelectFromStopPosition virtual selections to handle phonemic/ortho/tone spanning multiple segments
 /////////////////////////////////////////////////////////////////////////////
-#include "AppDefs.h"
 
 class CSaView;
 class CSaString;
@@ -37,6 +36,7 @@ public:
     DWORD GetSelectionStop();
     int GetSelectionIndex();
     bool IsSelectionVirtual();
+	void DeselectAnnotations(CSaView & view);
 
 protected:
     DWORD m_dwStart;

@@ -27,6 +27,7 @@
 #include "sa_view.h"
 #include "mainfrm.h"
 #include "sa.h"
+#include "sa_ipa.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

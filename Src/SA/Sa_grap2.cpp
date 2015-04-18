@@ -93,7 +93,6 @@
 #include "sa_mplot.h"
 #include "objectostream.h"
 #include "time.h"
-#include <afxpriv.h>
 #include "PrivateCursorWnd.h"
 #include "ReferenceWnd.h"
 #include "GlossNatWnd.h"
@@ -229,6 +228,7 @@ void CGraphWnd::ChangeAnnotationSelection(int nIndex) {
 // CGraphWnd::OnCreate Window creation
 /***************************************************************************/
 int CGraphWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
+
     if (CMiniCaptionWnd::OnCreate(lpCreateStruct) == -1) {
         return -1;
     }

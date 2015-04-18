@@ -41,9 +41,12 @@
 #define _APPDEFS_H
 
 // system defines
-#define SM_CAPTION                      _T("Phonology Assistant") // caption text of SM  //Name changed  -ALB
-#define MMIO_BUFFER_SIZE                16384       // buffer size for wave data
-#define MAX_SCREEN_WIDTH                2048        // maximum width of screen in pixels
+// caption text of SM  //Name changed  -ALB
+#define SM_CAPTION                      _T("Phonology Assistant") 
+// buffer size for wave data
+#define MMIO_BUFFER_SIZE 16384
+// maximum width of screen in pixels
+#define MAX_SCREEN_WIDTH 2048
 
 // data processing defines
 enum ESearchOptions {

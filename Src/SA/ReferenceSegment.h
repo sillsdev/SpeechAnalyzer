@@ -2,7 +2,6 @@
 #define REFERENCE_SEGMENT_H
 
 #include "TextSegment.h"
-#include "AppDefs.h"
 
 class CReferenceSegment : public CTextSegment {
 public:

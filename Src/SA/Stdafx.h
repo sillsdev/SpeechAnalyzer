@@ -8,10 +8,14 @@
 #define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
 
 #define OEMRESOURCE         // necessary to use system bitmaps
-
+ 
+#include <afx.h>
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions (including VB)
 #include <afxtempl.h>
+#include <afxpriv.h>
+#include <afxmt.h>
+
 #include <mmsystem.h>       // multimedia extensions
 
 #include <afxdisp.h>        // MFC Automation classes
@@ -21,9 +25,9 @@
 #include <afxadv.h>
 #include <afxole.h>
 
-#include "htmlhelp.h"               // HTML Help support
+#include "htmlhelp.h"       // HTML Help support
 
-#pragma warning(push, 3)  // these files generate a lot of warnings at level 4
+#pragma warning(push, 3)	// these files generate a lot of warnings at level 4
 #pragma warning(disable : 4786) // identifier was truncated to 255 chars in browser
 #pragma warning(disable : 4275) // unmarked exported classes generate warning 4275
 #include <algorithm>
@@ -97,5 +101,7 @@ inline static int round(double value) {
 #include <zGraphLib.h>
 #include <sa_enu_resource.h>
 #include <custom_menu.h>
+
+#include "AppDefs.h"
 
 #endif

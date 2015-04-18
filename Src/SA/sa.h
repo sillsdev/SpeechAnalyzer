@@ -48,7 +48,6 @@
 
 #include "SaString.h"
 #include "sa_dlwnd.h"
-#include <afxmt.h>
 
 #import "SAUtils.tlb" no_namespace named_guids
 
@@ -191,6 +190,7 @@ protected:
     afx_msg BOOL OnIdle(LONG lCount);
     afx_msg void OnHelp();
     afx_msg void OnHelpContents();
+	afx_msg void OnHelpShortCuts();
     afx_msg void OnHelpMiscInfo();
     afx_msg void OnHelpTrouble();
     afx_msg void OnHelpWhatsNew();

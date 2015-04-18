@@ -1,8 +1,6 @@
 #ifndef SEGMENT_OPS
 #define SEGMENT_OPS
 
-#include "AppDefs.h"
-
 class CSaDoc;
 
 /**

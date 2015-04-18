@@ -239,10 +239,12 @@ int CPlotStaff::StopPlay(void) {
     if (StaffControl && ::SendMessage(StaffControl,(WPARAM)EM_GETMODIFY,0,0)) {
         CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument();
         pDoc->SetModifiedFlag(TRUE);
-        pDoc->SetTransModifiedFlag(TRUE); // transcription has been modified
+		// transcription has been modified
+        pDoc->SetTransModifiedFlag(TRUE); 
     }
 
-    m_pView->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L); // send message to stop player
+	// send message to stop player
+    m_pView->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L);
 
     if (StaffControl) {
         return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 5,0,NULL);

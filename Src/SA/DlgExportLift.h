@@ -14,7 +14,6 @@
 #define _DGLEXPORTLIFT_H
 
 #include "objectostream.h"
-#include "AppDefs.h"
 #include "SaString.h"
 #include "ExportLiftSettings.h"
 #include <list>

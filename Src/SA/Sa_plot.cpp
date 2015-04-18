@@ -1856,9 +1856,18 @@ void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 	// send message to parent
     pWnd->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); 
 
-    // handle the floating popup menu
+	CMainFrame * pMainWnd = (CMainFrame*)AfxGetMainWnd();
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	bool usingAS = pApp->IsAudioSync();
+	bool recordingWnd = (GetParent()->GetPlotID()==IDD_RECORDING);
+    if ((usingAS)&&(recordingWnd)) {
+	    CWnd::OnRButtonDown(nFlags, point);
+		return;
+	}
+
+	// handle the floating popup menu
     CMenu mPopup;
-    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) { 
+    if (mPopup.LoadMenu(pMainWnd->GetPopup())) { 
 		// SDM 1.5Test8.5
         // Show restricted submenu according to EXPERIMENTAL_ACCESS
         CMenu & pFloatingPopup = EXPERIMENTAL_ACCESS ? *mPopup.GetSubMenu(3) : *mPopup.GetSubMenu(0);

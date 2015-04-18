@@ -1,6 +1,5 @@
 #ifndef GLOSS_NAT_SEGMENT_H
 #define GLOSS_NAT_SEGMENT_H
-#include "AppDefs.h"
 
 #include "TextSegment.h"
 

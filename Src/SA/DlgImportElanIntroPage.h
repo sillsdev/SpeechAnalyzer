@@ -1,7 +1,6 @@
 #ifndef DLGIMPORTELANINTROPAGE_H
 #define DLGIMPORTELANINTROPAGE_H
 
-#include "AppDefs.h"
 #include "SaString.h"
 
 class CSaDoc;

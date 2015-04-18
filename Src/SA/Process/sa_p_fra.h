@@ -7,7 +7,6 @@
 #ifndef _SA_P_FRA_H
 #define _SA_P_FRA_H
 
-#include "appdefs.h"
 #include "Process\Process.h"
 
 //###########################################################################

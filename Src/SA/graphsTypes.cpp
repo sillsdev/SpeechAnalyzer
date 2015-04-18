@@ -241,7 +241,8 @@ void CDlgGraphsTypesCustom::OnOrder() {
 /***************************************************************************/
 void CDlgGraphsTypesCustom::OnOK() {
     if (m_cGraphs.GetCount(TRUE) == 0) {
-        m_cGraphs.SelectGraph(IDD_RAWDATA);    // no graph selected: set raw data
+		// no graph selected: set raw data
+        m_cGraphs.SelectGraph(IDD_RAWDATA);
     }
     EndDialog(IDOK);
 }

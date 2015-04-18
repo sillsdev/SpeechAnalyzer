@@ -2,7 +2,6 @@
 #include "SFMHelper.h"
 #include <iterator>
 #include "TextHelper.h"
-#include "AppDefs.h"
 #include "StringStream.h"
 #include <algorithm>
 

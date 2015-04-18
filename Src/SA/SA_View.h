@@ -164,7 +164,6 @@ public:
     void ChangeAnnotationSelection(CSegment *, int nIndex, DWORD dwStart, DWORD dwStop); 
 	// change the annotation selection
     void ChangeAnnotationSelection(CSegment *, int nIndex); 
-    void DeselectAnnotations(void);
 	// sets the focused graph pointer
     void SetFocusedGraph(CGraphWnd *);  
     CGraphWnd * GetFocusedGraphWnd();
@@ -273,7 +272,8 @@ public:
 
 	bool AnySegmentHasData( CSegment * pSegment, int sel);
 	void SelectSegment();
-
+	void DeselectAnnotations();
+	
 protected:
     BOOL PreCreateWindow(CREATESTRUCT & cs);
     void PartialCopy(const CSaView & fromThis);
@@ -309,6 +309,7 @@ protected:
     afx_msg void OnUpdateExportStaff(CCmdUI * pCmdUI);
     afx_msg void OnImportStaff();
     afx_msg void OnUpdateImportStaff(CCmdUI * pCmdUI);
+    afx_msg void OnPlaybackBeginCursor();
     afx_msg void OnPlaybackEndCursor();
     afx_msg void OnPlaybackCursors();
     afx_msg void OnPlaybackFile();
@@ -665,6 +666,9 @@ private:
 	void EditMerge();
 	void EditMergeAt(DWORD position);
 	DWORD CalculatePositionFromMouse();
+	static UINT GetGraphResourceID( UINT nID);
+
+	bool IsAudioSync();
 
 	// array of graph IDs
 	UINT m_anGraphID[MAX_GRAPHS_NUMBER];    
@@ -758,6 +762,7 @@ private:
     int lastBoundaryIndex;
     ECursorSelect lastBoundaryCursor;
     DWORD m_dwLastPlaybackPosition;
+	DWORD m_dwLastGloss;
 
 	// true if we should scroll during playback
     bool enableScrolling;

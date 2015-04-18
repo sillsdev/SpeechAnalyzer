@@ -8,7 +8,6 @@
 #ifndef CPROCESS_H
 #define CPROCESS_H
 
-#include "appdefs.h"
 #include "IProcess.h"
 
 // CProcess completion codes

@@ -12,7 +12,6 @@
 #ifndef _SA_P_SPG_H
 #define _SA_P_SPG_H
 
-#include "Appdefs.h"
 #include "SpectroParm.h"
 
 class CSpectroParm;

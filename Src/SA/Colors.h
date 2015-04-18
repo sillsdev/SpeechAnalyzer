@@ -1,7 +1,4 @@
 #ifndef _COLORS_H
-
-#include "appdefs.h"
-
 #define _COLORS_H
 
 class CObjectOStream;

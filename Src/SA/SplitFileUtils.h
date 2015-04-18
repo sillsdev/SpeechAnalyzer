@@ -1,8 +1,6 @@
 #ifndef SPLITFILEUTILS_H
 #define SPLITFILEUTILS_H
 
-#include "AppDefs.h"
-
 using std::wstring;
 
 class CSaView;

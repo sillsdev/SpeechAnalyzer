@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MusicPhraseSegment.h"
 #include "Sa_Doc.h"
+#include "sa_ipa.h"
 
 CMusicPhraseSegment::CMusicPhraseSegment(EAnnotation index, int master) :
     CIndependentSegment(index,master) {

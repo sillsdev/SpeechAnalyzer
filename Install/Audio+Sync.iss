@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Audio+Sync"
-#define MyAppVersion "0.99.0.8"
+#define MyAppVersion "0.99.0.9"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "AS.exe"
@@ -56,6 +56,8 @@ Source: "C:\Working\SIL\MSEA\DistFiles\uriparser\uriparser_copying"; DestDir: "{
 Source: "C:\Working\SIL\MSEA\DistFiles\iso639.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\sa3.psa"; DestDir: "{userdocs}\Speech Analyzer"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\Audio+Sync Help.pdf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\DistFiles\Keyboard Short-Cut Keys.pdf"; DestDir: "{app}"; Flags: ignoreversion
+
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

@@ -10,18 +10,13 @@
 // 1.06.5
 //      SDM Added function IsIPA()
 /////////////////////////////////////////////////////////////////////////////
-
-#ifndef INCLUDED_SA_IPA
-#define INCLUDED_SA_IPA
+#ifndef SA_IPA_H
+#define SA_IPA_H
 
 class CFontTable : public CFont {
-    // Constructor/Destructor
 public:
     CFontTable();
-    //  virtual ~CFontTable() = 0; // Pure Virtual Class
 
-    // Attributes
-public:
     enum tUnit {
         BYTE,
         CHARACTER,
@@ -29,25 +24,18 @@ public:
         NONE
     };
 
-    char m_wordDelimiter;
-
-    // Operations
-public:
     int GetLength(tUnit nInUnits, const CString & szString) const;
     virtual CString GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const = 0;
     CString GetRemainder(tUnit nInUnits, int nIndex, const CString & szString) const;
     void RemoveWordDelimiters(CString & szString) const;
-
     virtual BOOL IsIPA() const = 0;
+
+    char m_wordDelimiter;
 };
 
 class CFontTableIPA : public CFontTable {
-    // Constructor/Destructor
 public:
     CFontTableIPA();
-
-    // Attributes
-public:
 
 private:
     enum tGlyphType {
@@ -74,7 +62,6 @@ private:
         tPhoneticClassification phoneticType;
     } m_pChar[256];
 
-    // Operations
 public:
     CString GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const;
     virtual BOOL IsIPA() const {
@@ -103,17 +90,10 @@ private:
 
 
 class CFontTableANSI : public CFontTable {
-    // Constructor/Destructor
+
 public:
     CFontTableANSI() {};
 
-    // Attributes
-public:
-
-private:
-
-    // Operations
-public:
     int GetLength(tUnit nInUnits, const CString & szString) const;
     CString GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const;
     virtual BOOL IsIPA() const {

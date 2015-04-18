@@ -293,7 +293,6 @@
 #include <search.h>
 #include <math.h>
 #include "Lpc.h"
-#include "appdefs.h"
 
 static float fDbPowerRef[3] = {0.F, LPC_8BIT_DB_PWR_REF, LPC_16BIT_DB_PWR_REF};
 

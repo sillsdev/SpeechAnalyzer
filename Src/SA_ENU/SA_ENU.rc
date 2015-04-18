@@ -3045,8 +3045,9 @@ BEGIN
     BUTTON      ID_GRAPHS_ZOOM_CURSORS
     SEPARATOR
     BUTTON      ID_PLAYBACK_CURSORS
-    BUTTON      ID_PLAYBACK_LTOSTOP
-    BUTTON      ID_PLAYBACK_STOPTOR
+    BUTTON      ID_PLAYBACK_LEFT_TO_STOP
+    BUTTON      ID_PLAYBACK_STOP_TO_RIGHT
+    BUTTON      ID_PLAYBACK_BEGINCURSOR
     BUTTON      ID_PLAYBACK_ENDCURSOR
     BUTTON      ID_PLAYBACK_WINDOW
     BUTTON      ID_PLAYBACK_FILE
@@ -3096,6 +3097,7 @@ BEGIN
     BUTTON      ID_GRAPHS_ZOOM_CURSORS
     SEPARATOR
     BUTTON      ID_PLAYBACK_CURSORS
+    BUTTON      ID_PLAYBACK_BEGINCURSOR
     BUTTON      ID_PLAYBACK_ENDCURSOR
     BUTTON      ID_PLAYBACK_FILE
     BUTTON      ID_PLAYER_PAUSE
@@ -3459,10 +3461,11 @@ BEGIN
     END
     POPUP "&Playback"
     BEGIN
+        MENUITEM "&Begin Cursor -> File End\tF6", ID_PLAYBACK_BEGINCURSOR
         MENUITEM "&End Cursor -> File End\tF7", ID_PLAYBACK_ENDCURSOR
         MENUITEM "Between &Cursors\tF8",        ID_PLAYBACK_CURSORS
-        MENUITEM "&Left Window Border -> End Cursor\tF9", ID_PLAYBACK_LTOSTOP
-        MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOPTOR
+        MENUITEM "&Left Window Border -> End Cursor\tF9", ID_PLAYBACK_LEFT_TO_STOP
+        MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOP_TO_RIGHT
         MENUITEM "Current &Window\tF11",        ID_PLAYBACK_WINDOW
         MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
         MENUITEM "Pa&use\tSpace",               ID_PLAYER_PAUSE
@@ -3737,10 +3740,11 @@ BEGIN
     END
     POPUP "&Playback"
     BEGIN
+        MENUITEM "&Begin Cursor -> File End\tF6", ID_PLAYBACK_BEGINCURSOR
         MENUITEM "&End Cursor -> File End\tF7", ID_PLAYBACK_ENDCURSOR
         MENUITEM "Between &Cursors\tF8",        ID_PLAYBACK_CURSORS
-        MENUITEM "&Left Window Border -> End Cursor\tF9", ID_PLAYBACK_LTOSTOP
-        MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOPTOR
+        MENUITEM "&Left Window Border -> End Cursor\tF9", ID_PLAYBACK_LEFT_TO_STOP
+        MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOP_TO_RIGHT
         MENUITEM "Current &Window\tF11",        ID_PLAYBACK_WINDOW
         MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
         MENUITEM "Resu&me\tSpace",              ID_PLAYER_RESUME
@@ -3766,6 +3770,7 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
+        MENUITEM "&Keyboard Short-Cuts",        ID_HELP_KEYBOARD_SHORTCUTS
         MENUITEM "&About Audio+Sync",           ID_APP_ABOUT
     END
 END
@@ -4410,11 +4415,12 @@ END
 
 IDR_SA_ANNTYPE ACCELERATORS
 BEGIN
+    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
+    "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
+    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
     "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
     "Q",            ID_EDIT_ADD_PHONETIC,   VIRTKEY, CONTROL, NOINVERT
     VK_ADD,         ID_EDIT_ADD_PHONETIC,   VIRTKEY, ALT, NOINVERT
-    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
-    "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
     "1",            ID_EDIT_ADD_PHRASE_L1,  VIRTKEY, CONTROL, NOINVERT
     "2",            ID_EDIT_ADD_PHRASE_L2,  VIRTKEY, CONTROL, NOINVERT
     "3",            ID_EDIT_ADD_PHRASE_L3,  VIRTKEY, CONTROL, NOINVERT
@@ -4497,24 +4503,27 @@ BEGIN
     VK_F7,          ID_PLAY_F7,             VIRTKEY, CONTROL, NOINVERT
     VK_F8,          ID_PLAY_F8,             VIRTKEY, CONTROL, NOINVERT
     VK_F9,          ID_PLAY_F9,             VIRTKEY, CONTROL, NOINVERT
+    VK_F6,          ID_PLAYBACK_BEGINCURSOR, VIRTKEY, NOINVERT
     VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
     VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
     VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
-    VK_F9,          ID_PLAYBACK_LTOSTOP,    VIRTKEY, NOINVERT
-    VK_F10,         ID_PLAYBACK_STOPTOR,    VIRTKEY, NOINVERT
+    VK_F9,          ID_PLAYBACK_LEFT_TO_STOP, VIRTKEY, NOINVERT
+    VK_F10,         ID_PLAYBACK_STOP_TO_RIGHT, VIRTKEY, NOINVERT
     VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
     " ",            ID_PLAYER_PAUSE,        ASCII,  NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
-    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
+    VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
 END
 
 IDR_SA_AUDIOSYNC ACCELERATORS
 BEGIN
+    "J",            ID_AUTO_GENERATE_CV_DATA, VIRTKEY, CONTROL, NOINVERT
+    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
+    "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
+    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
     "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
     "Q",            ID_EDIT_ADD_PHONETIC,   VIRTKEY, CONTROL, NOINVERT
     VK_ADD,         ID_EDIT_ADD_PHONETIC,   VIRTKEY, ALT, NOINVERT
-    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
-    "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
     "1",            ID_EDIT_ADD_PHRASE_L1,  VIRTKEY, CONTROL, NOINVERT
     "2",            ID_EDIT_ADD_PHRASE_L2,  VIRTKEY, CONTROL, NOINVERT
     "3",            ID_EDIT_ADD_PHRASE_L3,  VIRTKEY, CONTROL, NOINVERT
@@ -4597,16 +4606,16 @@ BEGIN
     VK_F7,          ID_PLAY_F7,             VIRTKEY, CONTROL, NOINVERT
     VK_F8,          ID_PLAY_F8,             VIRTKEY, CONTROL, NOINVERT
     VK_F9,          ID_PLAY_F9,             VIRTKEY, CONTROL, NOINVERT
+    VK_F6,          ID_PLAYBACK_BEGINCURSOR, VIRTKEY, NOINVERT
     VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
     VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
     VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
-    VK_F9,          ID_PLAYBACK_LTOSTOP,    VIRTKEY, NOINVERT
-    VK_F10,         ID_PLAYBACK_STOPTOR,    VIRTKEY, NOINVERT
+    VK_F9,          ID_PLAYBACK_LEFT_TO_STOP, VIRTKEY, NOINVERT
+    VK_F10,         ID_PLAYBACK_STOP_TO_RIGHT, VIRTKEY, NOINVERT
     VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
     " ",            ID_PLAYER_TOGGLE,       ASCII,  NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
-    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
-    "J",            ID_AUTO_GENERATE_CV_DATA, VIRTKEY, CONTROL, NOINVERT
+    VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
 END
 
 IDR_SA_DISPLAYPLOT ACCELERATORS
@@ -5451,8 +5460,10 @@ BEGIN
     ID_PLAYBACK_CURSORS     "Plays between the cursors in the window\nPlay Between Cursors"
     ID_PLAYBACK_WINDOW      "Plays the wave file shown in the window\nPlay Window"
     ID_PLAYBACK_FILE        "Plays the entire wave file\nPlay File"
-    ID_PLAYBACK_LTOSTART    "Plays the wave file part between the left window border and the Begin cursor\nPlay Left -> Begin cursor"
-    ID_PLAYBACK_STARTTOR    "Plays the wave file part between the Begin cursor and the right window border\nPlay Begin cursor -> Right"
+    ID_PLAYBACK_LEFT_TO_START 
+                            "Plays the wave file part between the left window border and the Begin cursor\nPlay Left -> Begin cursor"
+    ID_PLAYBACK_START_TO_RIGHT 
+                            "Plays the wave file part between the Begin cursor and the right window border\nPlay Begin cursor -> Right"
     ID_TOOLS_OPTIONS        "User configuration\nConfiguration"
 END
 
@@ -5622,6 +5633,7 @@ BEGIN
     IDS_WINDOW_MUSIC_PL2    "Phrase L2"
     IDS_WINDOW_MUSIC_PL3    "Phrase L3"
     IDS_WINDOW_MUSIC_PL4    "Phrase L4"
+    IDS_WINDOW_FULL_TEXT    "Full Text"
 END
 
 STRINGTABLE
@@ -6063,8 +6075,10 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_PLAYBACK_LTOSTOP     "Plays between the left window border and the end cursor\nPlay Left -> End Cursor"
-    ID_PLAYBACK_STOPTOR     "Plays between the end cursor and the right window border\nPlay End Cursor -> Right"
+    ID_PLAYBACK_LEFT_TO_STOP 
+                            "Plays between the left window border and the end cursor\nPlay Left -> End Cursor"
+    ID_PLAYBACK_STOP_TO_RIGHT 
+                            "Plays between the end cursor and the right window border\nPlay End Cursor -> Right"
     ID_IMPORT_TIME_TABLE    "Import Time Table data\nImport Time Table"
     ID_IMPORT_SFM           "Import Standard Format Markers\nImport SFM"
     ID_IMPORT_SAB           "Import Audio+Sync Phrases\nImport Phrases"
@@ -6294,6 +6308,36 @@ BEGIN
     IDS_SAB_QUERY_EXISTING_DATA 
                             "WARNING! There is existing segment data in the Reference, Gloss and/or Gloss Nat. segments.\nProceeding with the import process will overwrite the segment data.\nClick YES to proceed with the import process.\nClick NO to terminate."
     IDP_ASK_TO_SAVE         "Save changes for this project '%1'?"
+END
+
+STRINGTABLE
+BEGIN
+    ID_PLAYBACK_BEGINCURSOR "Plays between the begin cursor and the end of the file\nPlay Begin Cursor -> File End"
+    ID_HELP_KEYBOARD_SHORTCUTS 
+                            "List available keyboard short-cut keys\nView short-cuts"
+	IDS_GRAPH_TITLE_RAWDATA             "Raw Waveform"               
+	IDS_GRAPH_TITLE_LOUDNESS         "Intensity"
+	IDS_GRAPH_TITLE_DURATION        "Duration"                   
+	IDS_GRAPH_TITLE_CHANGE        "Change"                     
+	IDS_GRAPH_TITLE_PITCH        "Raw Pitch"                  
+	IDS_GRAPH_TITLE_CHPITCH        "Custom Pitch"               
+	IDS_GRAPH_TITLE_SMPITCH        "Smoothed Pitch"             
+	IDS_GRAPH_TITLE_GRAPITCH        "Auto Pitch"                 
+	IDS_GRAPH_TITLE_SPECTROGRAM        "Spectrogram"                 
+	IDS_GRAPH_TITLE_SNAPSHOT        "Snapshot"                    
+	IDS_GRAPH_TITLE_SPECTRUM        "Spectrum"                   
+	IDS_GRAPH_TITLE_ZCROSS        "Zero Crossing"              
+	IDS_GRAPH_TITLE_F1F2        "F1 v. F2"                   
+	IDS_GRAPH_TITLE_F2F1        "F2 v. F1"                   
+	IDS_GRAPH_TITLE_F2F1F1        "(F2-F1) v. F1"              
+	IDS_GRAPH_TITLE_3D        "F1 v. F2 v. F3"             
+	IDS_GRAPH_TITLE_MELOGRAM        "Melogram"                   
+	IDS_GRAPH_TITLE_TWC        "Tonal Weighting Chart"       
+	IDS_GRAPH_TITLE_MAGNITUDE        "Magnitude"                   
+	IDS_GRAPH_TITLE_STAFF        "Staff"                      
+	IDS_GRAPH_TITLE_RECORDING        "Position View"              
+
+
 END
 
 #endif    // English (United States) resources

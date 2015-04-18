@@ -945,19 +945,23 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
 }
 
 CDlgPlayer * CMainFrame::GetPlayer(bool bCreate) {
+
     if (!CDlgPlayer::IsLaunched()) {
         // player dialog not launched
         if (!bCreate) {
             return NULL;
         }
         if (m_pDlgPlayer!=NULL) {
-            delete m_pDlgPlayer;        // delete old dialog object
+			// delete old dialog object
+            delete m_pDlgPlayer;
             m_pDlgPlayer = NULL;
         }
-        m_pDlgPlayer = new CDlgPlayer();    // create new player object
-
-        if (!CDlgPlayer::IsLaunched()) { // player dialog not launched
-            m_pDlgPlayer->Create();     // create player
+		// create new player object
+        m_pDlgPlayer = new CDlgPlayer();
+        if (!CDlgPlayer::IsLaunched()) { 
+			// player dialog not launched
+			// create player
+            m_pDlgPlayer->Create();     
         }
     }
     return m_pDlgPlayer;
@@ -986,9 +990,12 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam2, LPARAM lParam, SSpecific * pSpecifi
 
     TRACE("OnPlayer %s %x %x\n", CDlgPlayer::GetMode(mode), HIWORD(lParam), LOWORD(lParam));
 
-    CWnd * pWnd = GetActiveWindow(); // retrieve pointer to active window
-    if (!CDlgPlayer::IsLaunched()) { // player dialog not launched
-        GetPlayer(true); // get or create player object
+	// retrieve pointer to active window
+    CWnd * pWnd = GetActiveWindow(); 
+    if (!CDlgPlayer::IsLaunched()) {
+		// player dialog not launched
+		// get or create player object
+        GetPlayer(true); 
         BOOL bFnKey = FALSE;
         if (HIWORD(lParam) == (WORD) -1) {
             // function key call
@@ -1011,8 +1018,10 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam2, LPARAM lParam, SSpecific * pSpecifi
                 lParam = MAKELONG(LOWORD(lParam), FALSE);
             }
             GetPlayer(false)->SetPlayerMode(mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific);  // set player mode
-            if (GetPlayer(false)->IsFullSize()) { // player has full size, set it the active window
-                GetPlayer(false)->SetActiveWindow(); // set focus on player
+            if (GetPlayer(false)->IsFullSize()) { 
+				// player has full size, set it the active window
+				// set focus on player
+                GetPlayer(false)->SetActiveWindow(); 
                 GetPlayer(false)->ShowWindow(SW_SHOW);
             }
         }
@@ -1472,7 +1481,7 @@ void CMainFrame::OnCopyWindowAsBMP() {
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
     GetControlBar(tbID)->GetWindowRect(&rectToolbar);
-    AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
+    GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
     int nWidth = rectToolbar.right - rectToolbar.left;
     if (!GetControlBar(tbID)->IsFloating()) {

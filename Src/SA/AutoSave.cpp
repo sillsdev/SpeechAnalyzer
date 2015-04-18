@@ -5,7 +5,6 @@
 #include "sa.h"
 #include "Shlobj.h"
 #include <Windows.h>
-#include "AppDefs.h"
 
 static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData) {
 

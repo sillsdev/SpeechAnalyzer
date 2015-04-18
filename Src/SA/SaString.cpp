@@ -27,18 +27,6 @@ double ParseUtf8(const CSaString & sz, INT * att, double X, double Y) {
     return parse(szUtf8.c_str(), att, X, Y);
 }
 
-LONG mmioWriteUtf8(HMMIO hmmio, const CSaString & str, LONG cch) {
-    std::string szUtf8 = str.utf8();
-    return mmioWrite(hmmio, szUtf8.c_str(), cch);
-}
-
-LONG mmioReadUtf8(HMMIO hmmio, CSaString & str, LONG cch) {
-    array_ptr<char> strUtf8(cch);
-    LONG result = mmioRead(hmmio, strUtf8.get(), cch);
-    str.setUtf8(strUtf8.get());
-    return result;
-}
-
 bool ReadStreamString(CObjectIStream & stream, CSaString pszMarker, CSaString & szResult) {
     return ReadStreamString(stream, pszMarker.utf8().c_str(), szResult);
 }
@@ -51,4 +39,25 @@ bool ReadStreamString(CObjectIStream & stream, LPCSTR pszMarker, CSaString & szR
         szResult.setUtf8(buffer.get());
     }
     return result;
+}
+
+CSaString::CSaString() : CString() {
+}
+
+CSaString::CSaString(TCHAR ch, int nRepeat) : CString(ch, nRepeat) {
+}
+
+CSaString::CSaString(const CSaString & stringSrc) : CString(stringSrc) {
+}
+
+CSaString::CSaString(const CString & stringSrc) : CString(stringSrc) {
+}
+
+CSaString::CSaString(LPCSTR psz) : CString(psz) {
+}
+
+CSaString::CSaString(LPCWSTR psz) : CString(psz) {
+}
+
+CSaString::CSaString(const unsigned char * psz) : CString(psz) {
 }

@@ -40,7 +40,6 @@
 #include "taskbar.h"
 #include "fnkeys.h"
 #include "colors.h"
-#include "appdefs.h"
 #include "sourceParm.h"
 #include "SaString.h"
 #include "WaveformGeneratorSettings.h"
@@ -214,7 +213,7 @@ public:
     afx_msg void OnAutoSaveOff();
 
     // transcription fonts
-    CSaStringArray m_GraphFontFaces;        // array of graph font face strings
+    CStringArray m_GraphFontFaces;			// array of graph font face strings
     CUIntArray m_GraphFontSizes;            // array of graph font sizes
 
     friend CDisplayPlot;

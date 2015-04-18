@@ -385,10 +385,10 @@ CSaDoc::~CSaDoc() {
         delete m_pProcessTonalWeightChart;    
         m_pProcessTonalWeightChart = NULL;
     }
-    if (m_pCreatedFonts) {
+    if (m_pCreatedFonts!=NULL) {
         for (int i=0; i<m_pCreatedFonts->GetSize(); i++) {
-            CFontTable * pFont = (CFontTable *) m_pCreatedFonts->GetAt(i);
-            if (pFont) {
+            CFontTable * pFont = (CFontTable *)m_pCreatedFonts->GetAt(i);
+            if (pFont!=NULL) {
                 delete pFont;
             }
         }
@@ -6918,7 +6918,7 @@ CProcessGlottis * CSaDoc::GetGlottalWave() {
 CProcessTonalWeightChart * CSaDoc::GetTonalWeightChart() {
     return m_pProcessTonalWeightChart;
 }
-CFontTable  * CSaDoc::GetFont(int nIndex) {
+CFontTable * CSaDoc::GetFont(int nIndex) {
     return (CFontTable *)m_pCreatedFonts->GetAt(nIndex);
 }
 
@@ -8150,7 +8150,7 @@ bool CSaDoc::IsSegmental(CPhoneticSegment * pPhonetic, int sel) {
 
     DWORD start = pGloss->GetOffset(gsel);
     DWORD stop = pGloss->GetStop(gsel);
-	TRACE("gsel=%d start=%d stop=%d\n",gsel,start,stop);
+	//TRACE("gsel=%d start=%d stop=%d\n",gsel,start,stop);
 
     size_t count = 0;
     DWORD lastoffset = 0;
@@ -8166,7 +8166,7 @@ bool CSaDoc::IsSegmental(CPhoneticSegment * pPhonetic, int sel) {
         if (offset<start) {
             continue;
         }
-		TRACE("index=%d offset=%d\n",i,offset);
+		//TRACE("index=%d offset=%d\n",i,offset);
         count++;
     }
     return (count>1);
@@ -9101,7 +9101,8 @@ void CSaDoc::ExportTimeTable( LPCTSTR filename,
 						// SDM 1.5Test10.1
 						szString = GetSegment(GLOSS)->GetSegmentString(nIndex);
 						if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER)) {
-							szString = szString.Mid(1);    // Remove Word Delimiter
+							// Remove Word Delimiter
+							szString = szString.Mid(1);
 						}
 						szString += "\t";
 					} else {

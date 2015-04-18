@@ -1,7 +1,6 @@
 #ifndef TRANSCRIPTION_DATA_H
 #define TRANSCRIPTION_DATA_H
 
-#include "AppDefs.h"
 #include "TranscriptionHelper.h"
 
 class CTranscriptionData {

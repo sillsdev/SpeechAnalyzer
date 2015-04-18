@@ -32,7 +32,6 @@
 #include "Process\sa_p_sfmt.h"
 #include "Process\sa_p_gra.h"
 #include "Process\FormantTracker.h"
-#include "AppDefs.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

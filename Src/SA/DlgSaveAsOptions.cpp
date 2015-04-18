@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "sa.h"
 #include "DlgSaveAsOptions.h"
-#include "AppDefs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -5,12 +5,12 @@
 #include "Process\Process.h"
 #include "Segment.h"
 #include "Process\sa_p_fra.h"
-
 #include "math.h"
 #include "sa_doc.h"
 #include "sa_view.h"
 #include "sa_wbch.h"
 #include "mainfrm.h"
+#include "sa.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -90,10 +90,14 @@ DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
         int nPosition,
         int nWidth,
         DWORD * pStopCursor) {
-    CSaView * pView = (CSaView *)pSaView; // cast pointer
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument(); // get pointer to document
-    CPlotWnd * pPlot = (CPlotWnd *)GetParent(); // get pointer to parent plot
-    CGraphWnd * pGraph = (CGraphWnd *)pPlot->GetParent(); // get pointer to graph
+			// cast pointer
+    CSaView * pView = (CSaView *)pSaView;
+	// get pointer to document
+    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+	// get pointer to parent plot
+    CPlotWnd * pPlot = (CPlotWnd *)GetParent();
+	// get pointer to graph
+    CGraphWnd * pGraph = (CGraphWnd *)pPlot->GetParent();
     // get actual data position, frame and data size and alignment
     double fDataPos;
     DWORD dwDataFrame;
@@ -104,8 +108,10 @@ DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
         dwDataFrame = pPlot->GetAreaLength();
     } else {
         // get necessary data from document and from view
-        fDataPos = pView->GetDataPosition(nWidth); // data index of first sample to display
-        dwDataFrame = pView->AdjustDataFrame(nWidth); // number of data points to display
+		// data index of first sample to display
+        fDataPos = pView->GetDataPosition(nWidth);
+		// number of data points to display
+        dwDataFrame = pView->AdjustDataFrame(nWidth);
     }
     DWORD dwDataSize = pDoc->GetDataSize();
     DWORD nSmpSize = pDoc->GetSampleSize();
@@ -131,13 +137,14 @@ DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
 // CStartCursorWnd::OnPaint Painting
 /***************************************************************************/
 void CStartCursorWnd::OnPaint() {
-    CPaintDC dc(this); // device context for painting
-    CRect dummyRect(0,0,0,0); // needed for second OnDraw parameter which
+	// device context for painting
+    CPaintDC dc(this);
+	// needed for second OnDraw parameter which
+    CRect dummyRect(0,0,0,0);
     // is only used for printing
-
-    OnDraw(&dc,dummyRect); // shared between printing and display
+	// shared between printing and display
+    OnDraw(&dc,dummyRect);
 }
-
 
 /***************************************************************************/
 // CStartCursorWnd::OnDraw Painting
@@ -212,9 +219,11 @@ void CStartCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
             int oldRop = 0;
             if (FALSE && !pDC->IsPrinting()) {
                 if (bDarkBkg) {
-                    oldRop = pDC->SetROP2(R2_MASKPENNOT);    // set drawing mode for dark bkg
+					// set drawing mode for dark bkg
+                    oldRop = pDC->SetROP2(R2_MASKPENNOT);
                 } else {
-                    oldRop = pDC->SetROP2(R2_MERGEPENNOT);    // set drawing mode for light bkg
+					// set drawing mode for light bkg
+                    oldRop = pDC->SetROP2(R2_MERGEPENNOT);
                 }
             }
             pDC->MoveTo(rWnd.left, rClip.top);
@@ -261,16 +270,18 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
         int nLoop = pView->FindSelectedAnnotationIndex();
         if (nLoop!=-1) {
             if (m_nEditBoundaries == BOUNDARIES_EDIT_BOUNDARIES) {
-                pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwCursor, dwStopCursor, CSegment::LIMIT_MOVING_START_NO_OVERLAP); // Limit positions of cursors
+				// Limit positions of cursors
+                pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwCursor, dwStopCursor, CSegment::LIMIT_MOVING_START_NO_OVERLAP);
             } else if (m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE) {
-                pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwCursor, dwStopCursor,CSegment::LIMIT_MOVING_START); // Limit positions of cursors
+				// Limit positions of cursors
+                pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwCursor, dwStopCursor,CSegment::LIMIT_MOVING_START);
             } else {
                 // Added and modified from CStartCursorWnd::OnLButtonUp and modified by AKE 7/22/01 to deselect segment
                 // while cursor is moving
                 CSegment * pSegment = pView->FindSelectedAnnotation();
                 int nIndex = pSegment->GetSelection();
                 if ((dwStopCursor > pSegment->GetStop(nIndex)) ||
-                        (dwCursor < pSegment->GetOffset(nIndex))) {
+                    (dwCursor < pSegment->GetOffset(nIndex))) {
                     // Deselect segment
                     pView->DeselectAnnotations();
                 }
@@ -337,7 +348,8 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
     } else {
         if (point.x == CURSOR_WINDOW_HALFWIDTH) {
             // cursor is over the line
-            SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE)); // set size cursor
+			// set size cursor
+            SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
         }
     }
     // update the status bar
@@ -355,6 +367,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
 // the mouse pointer.
 /***************************************************************************/
 void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
+
     // get pointer to parent plot, parent graph and to view
     CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
@@ -374,8 +387,10 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 
     // set drag mode
     m_bCursorDrag = TRUE;
-    SetCapture(); // receive all mouse input
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE)); // set size cursor
+	// receive all mouse input
+    SetCapture(); 
+	// set size cursor
+    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE)); 
     // calculate parent client coordinates
     ClientToScreen(&point);
     pWnd->ScreenToClient(&point);
@@ -386,7 +401,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     CRect rWnd;
     pWnd->GetClientRect(rWnd);
     // calculate new start cursor position
-    DWORD dwStopCursor;
+    DWORD dwStopCursor = 0;
     m_dwStartDragPos = CalculateCursorPosition(pView, point.x, rWnd.Width(), &dwStopCursor);
     if (pView->GetStopCursorPosition() >= dwStopCursor) {
         dwStopCursor = pView->GetStopCursorPosition();
@@ -395,9 +410,10 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     int nLoop = pView->FindSelectedAnnotationIndex();
     if (nLoop!=-1) {
         if (m_nEditBoundaries == BOUNDARIES_EDIT_BOUNDARIES) {
-            pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), m_dwStartDragPos, dwStopCursor,CSegment::LIMIT_MOVING_START_NO_OVERLAP); // Limit positions of cursors
+            pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), m_dwStartDragPos, dwStopCursor,CSegment::LIMIT_MOVING_START_NO_OVERLAP); 
         } else if (m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE) {
-            pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), m_dwStartDragPos, dwStopCursor,CSegment::LIMIT_MOVING_START); // Limit positions of cursors
+			// Limit positions of cursors
+            pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), m_dwStartDragPos, dwStopCursor,CSegment::LIMIT_MOVING_START); 
         } else {
             // Moved from CStartCursorWnd::OnLButtonUp and modified by AKE 7/22/01 to deselect segment if
             // not editing segment boundaries in order to allow highlighting for cut and paste operation
@@ -405,7 +421,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
             if (pSegment!=NULL) {
                 int nIndex = pSegment->GetSelection();
                 if ((dwStopCursor > pSegment->GetStop(nIndex)) ||
-                        (m_dwStartDragPos < pSegment->GetOffset(nIndex))) {
+                    (m_dwStartDragPos < pSegment->GetOffset(nIndex))) {
                     // Deselect segment
                     pView->DeselectAnnotations();
                 }
@@ -424,7 +440,6 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     }
 
     // also check and deselect the advanced selection in the view
-
     // stop cursor is to move also
     pView->MoveStopCursor(dwStopCursor);
     // move start cursor
@@ -453,7 +468,6 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     SetFocus();
     ClipCursor(rWnd);
     CWnd::OnLButtonDown(nFlags, point);
-
 }
 
 /***************************************************************************/
@@ -548,7 +562,8 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
         pView->SetStartCursorPosition(pDoc->GetSegment(nLoop)->GetOffset(nIndex), SNAP_LEFT);
         pView->SetStopCursorPosition(pDoc->GetSegment(nLoop)->GetStop(nIndex), SNAP_RIGHT);
 
-        pDoc->CheckPoint(); // Save state
+		// Save state
+        pDoc->CheckPoint();
 
         // Reload cursor locations to new segment boundaries
         pView->SetStartCursorPosition(dwStartCursor, SNAP_LEFT);
@@ -570,7 +585,8 @@ void CStartCursorWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     ClientToScreen(&point);
     pWnd->ScreenToClient(&point);
-    pWnd->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); // send message to parent
+	// send message to parent
+    pWnd->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
     CWnd::OnRButtonDown(nFlags, point);
 }
 
@@ -585,7 +601,8 @@ void CStartCursorWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
         CSaView * pView = (CSaView *)pGraph->GetParent();
         int nLoop = pView->FindSelectedAnnotationIndex();
         if (nLoop != -1) {
-            if (pGraph->HaveAnnotation(nLoop)) { // Selected annotation is visible
+            if (pGraph->HaveAnnotation(nLoop)) { 
+				// Selected annotation is visible
                 CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
                 pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
             }

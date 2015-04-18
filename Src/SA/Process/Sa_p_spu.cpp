@@ -509,17 +509,22 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     fclose(SpectDump);
 #endif
     if (poSpectrum) {
-        delete poSpectrum;    // delete the spectrum object
+		// delete the spectrum object
+        delete poSpectrum;
     }
     if (poLpcObject) {
-        delete poLpcObject;    // delete the Lpc object
+		// delete the Lpc object
+        delete poLpcObject;
     }
 
     // free the temporary frame buffer
     delete [] stFrameParm.Start;
-    pDoc->GetWaveData(dwOldWaveBufferIndex, TRUE);  // restore wave buffer
-    nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
-    SetProgress(nProgress);          // update status bar with the progress and allow cancel (ESC key)
+	// restore wave buffer
+    pDoc->GetWaveData(dwOldWaveBufferIndex, TRUE);
+	// calculate the actual progress
+    nProgress = nProgress + (int)(100 / nLevel);
+	// update status bar with the progress and allow cancel (ESC key)
+    SetProgress(nProgress);
     EndProcess(nProgress >= 100);
     SetDataReady();
     EndWaitCursor();

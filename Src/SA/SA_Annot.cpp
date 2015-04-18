@@ -106,6 +106,7 @@
 #include "GlossNatSegment.h"
 #include "ReferenceSegment.h"
 #include "Process\Process.h"
+#include "sa_ipa.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -554,9 +555,6 @@ void CLegendWnd::OnPaint() {
     OnDraw(&dc,dummyRect1,dummyRect2,dummyRect3,NULL);
 }
 
-
-
-
 /***************************************************************************/
 // CLegendWnd::OnDraw Drawing
 // This function has to calculate the vertical scale in any case, because
@@ -611,7 +609,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
     }
 
     // calculate scale parameters
-    CalculateScale(pDC, &rPlotWnd); // calculate the scale
+	// calculate the scale
+    CalculateScale(pDC, &rPlotWnd); 
     // get window coordinates
     CRect rWnd;
 
@@ -621,8 +620,10 @@ void CLegendWnd::OnDraw(CDC * pDC,
         GetClientRect(rWnd);
     }
     if (rWnd.Height() == 0) {
-        pDC->SelectObject(pOldFont);  // set back old font
-        return; // nothing to draw
+		// set back old font
+        pDC->SelectObject(pOldFont);  
+		// nothing to draw
+        return; 
     }
 
     int YDown = rWnd.Height() - 23;
@@ -631,19 +632,25 @@ void CLegendWnd::OnDraw(CDC * pDC,
     ::MoveWindow(m_hUpButton,   6, YUp,  20, 20, TRUE);
 
     // get pointer view and document
+	CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     // set font colors
-    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); // get pointer to colors from main frame
+	// get pointer to colors from main frame
+    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); 
     Colors * pColors = pMainWnd->GetColors();
-    pDC->SetTextColor(pColors->cScaleFont); // set font color
-    pDC->SetBkMode(TRANSPARENT); // letters may overlap, so they must be transparent
-    int nBottom = rWnd.bottom; // save bottom
-    int nTop = rWnd.top; // save top
+	// set font color
+    pDC->SetTextColor(pColors->cScaleFont); 
+	// letters may overlap, so they must be transparent
+    pDC->SetBkMode(TRANSPARENT); 
+	// save bottom
+    int nBottom = rWnd.bottom;
+	// save top
+    int nTop = rWnd.top;
     rWnd.left += 2;
     rWnd.bottom = -2;
 
-    int StringIndex[] = {
+    int resourceIndex[] = {
         IDS_WINDOW_PHONETIC,
         IDS_WINDOW_TONE,
         IDS_WINDOW_PHONEMIC,
@@ -657,13 +664,20 @@ void CLegendWnd::OnDraw(CDC * pDC,
         IDS_WINDOW_MUSIC_PL4
     };
 
+	bool usingAS = pApp->IsAudioSync();
 
     CString szText;
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         int current = CGraphWnd::m_anAnnWndOrder[nLoop];
         if (pGraph->HaveAnnotation(current)) {
             // gloss window is visible
-            szText.LoadString(StringIndex[current]);
+			int rid = resourceIndex[current];
+			if (usingAS) {
+				if (rid==IDS_WINDOW_MUSIC_PL4) {
+					rid = IDS_WINDOW_FULL_TEXT;
+				}
+			}
+            szText.LoadString(rid);
             if (pDC->IsPrinting()) {
                 rWnd.bottom += printAnnotation[current].Height();
             } else {
@@ -702,45 +716,59 @@ void CLegendWnd::OnDraw(CDC * pDC,
         pDC->LineTo(rWnd.right - 1, rWnd.bottom);
     }
     pDC->SelectObject(pOldPen);
-    rWnd.right -= 1; // don't draw over the border
+	// don't draw over the border
+    rWnd.right -= 1; 
     if ((m_nScaleMode != NO_SCALE) || (rPlotWnd.Height() <= 0)) {
         if (rWnd.Height() < tm.tmHeight) {
-            pDC->SelectObject(pOldFont); // set back old font
-            return; // not enough space to draw scale
+			// set back old font
+            pDC->SelectObject(pOldFont);
+			// not enough space to draw scale
+            return;
         }
         // set default scale limits
-        int nTextTopLimit = rWnd.top + tm.tmHeight / 2; // upper text position limit
-        int nTextBottomLimit = nBottom - tm.tmHeight / 2; // lower text position limit
-        int nLineTopLimit = rWnd.top; // upper line position limit
-        int nLineBottomLimit = rWnd.bottom; // lower line position limit
+		// upper text position limit
+        int nTextTopLimit = rWnd.top + tm.tmHeight / 2;
+		// lower text position limit
+        int nTextBottomLimit = nBottom - tm.tmHeight / 2;
+		// upper line position limit
+        int nLineTopLimit = rWnd.top;
+		// lower line position limit
+        int nLineBottomLimit = rWnd.bottom;
         // draw the vertical dimension text
         if (!m_szScaleDimension.IsEmpty()) {
             // create the vertical font
             LOGFONT logFont;
-            m_font.GetObject(sizeof(LOGFONT), (void *)&logFont); // fill up logFont
-            logFont.lfEscapement = 900; // turn it 90 degrees
+			// fill up logFont
+            m_font.GetObject(sizeof(LOGFONT), (void *)&logFont);
+			// turn it 90 degrees
+            logFont.lfEscapement = 900;
             logFont.lfWeight = FW_BOLD;
 
             logFont.lfHeight = -13;
 
             swprintf_s(logFont.lfFaceName,32,_T("%s"), _T("Arial"));
             CFont vFont;
-            vFont.CreateFontIndirect(&logFont); // create the vertical font
-            pDC->SelectObject(&vFont); // select the vertical font
+			// create the vertical font
+            vFont.CreateFontIndirect(&logFont);
+			// select the vertical font
+            pDC->SelectObject(&vFont);
             TEXTMETRIC tmv;
             pDC->GetTextMetrics(&tmv);
             // enough space?
             int nHeight = (m_szScaleDimension.GetLength() + 2) * tmv.tmAveCharWidth;
-            if (nHeight < rWnd.Height()) { // draw the text
+            if (nHeight < rWnd.Height()) {
+				// draw the text
                 pDC->TextOut(rWnd.left, rWnd.bottom - (rWnd.Height() - nHeight) / 2, m_szScaleDimension);
             }
-            pDC->SelectObject(&m_font); // set back normal text font
+			// set back normal text font
+            pDC->SelectObject(&m_font);
         }
         // create line pen
         CPen pen(PS_SOLID, 1, pColors->cScaleLines);
         CPen * pOldPen = pDC->SelectObject(&pen);
         // draw the scale
-        int nHorPos = rWnd.right - 4; // vertical line horizontal position
+		// vertical line horizontal position
+        int nHorPos = rWnd.right - 4;
         // draw the vertical line
         pDC->MoveTo(nHorPos, rWnd.bottom - 1);
         if (fMagnify <= 1.0 || m_d3dOffset != 0.) {
@@ -757,7 +785,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
             pDC->MoveTo(nHorPos + 2, rWnd.top + 6);
             pDC->LineTo(nHorPos - 3, rWnd.top + 6);
             // modify the scale line limits
-            nLineTopLimit = rWnd.top + 7; // upper line position limit
+			// upper line position limit
+            nLineTopLimit = rWnd.top + 7;
         }
         if ((dScaleMinValue < 0) && ((fMagnify <= 1.0) || (dScaleMaxValue == 0))) {
             // draw down arrow
@@ -768,7 +797,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
             pDC->MoveTo(nHorPos + 2, rWnd.bottom - 4);
             pDC->LineTo(nHorPos - 2, rWnd.bottom - 4);
             // modify the scale line limits
-            nLineBottomLimit = rWnd.bottom - 6; // lower line position limit
+			// lower line position limit
+            nLineBottomLimit = rWnd.bottom - 6;
         }
         if (m_nScaleMode & SCALE) {
             if (m_nScaleMode & LOG10) {
@@ -814,7 +844,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
                     }
                     nLogDisp++;
                 }
-            } else { // linear scale
+            } else {
+				// linear scale
                 // draw the positive lines and numbers
                 if (m_dScaleMaxValue == 0) {
                     dScaleMinValue = m_dScaleMinValue;
@@ -908,13 +939,17 @@ void CLegendWnd::OnDraw(CDC * pDC,
             CRect rText(rWnd.left, nBottom - tm.tmHeight - 2, rWnd.right - 3, nBottom - 1);
             // create the bold font
             LOGFONT logFont;
-            m_font.GetObject(sizeof(LOGFONT), (void *)&logFont); // fill up logFont
+			// fill up logFont
+            m_font.GetObject(sizeof(LOGFONT), (void *)&logFont);
             logFont.lfWeight = FW_BOLD;
             CFont bFont;
-            bFont.CreateFontIndirect(&logFont); // create the bold font
-            pDC->SelectObject(&bFont); // select the bold font
+			// create the bold font
+            bFont.CreateFontIndirect(&logFont);
+			// select the bold font
+            pDC->SelectObject(&bFont);
             pDC->DrawText(*pszText, -1, rText, DT_SINGLELINE | DT_VCENTER | DT_RIGHT | DT_NOCLIP);
-            pDC->SelectObject(&m_font); // set back normal text font
+			// set back normal text font
+            pDC->SelectObject(&m_font);
         }
     }
     // create the recalculation button
@@ -963,7 +998,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
     } else {
         m_rRecalc.SetRect(0, 0, 0, 0);
     }
-    pDC->SelectObject(pOldFont);  // set back old font
+	// set back old font
+    pDC->SelectObject(pOldFont);
 
 }
 
@@ -977,7 +1013,8 @@ BOOL CLegendWnd::OnEraseBkgnd(CDC * pDC) {
     CBrush backBrush(pMainWnd->GetColors()->cScaleBkg);
     CBrush * pOldBrush = pDC->SelectObject(&backBrush);
     CRect rClip;
-    pDC->GetClipBox(&rClip); // erase the area needed
+	// erase the area needed
+    pDC->GetClipBox(&rClip);
     pDC->PatBlt(rClip.left, rClip.top, rClip.Width(), rClip.Height(), PATCOPY);
     pDC->SelectObject(pOldBrush);
     return TRUE;
@@ -994,7 +1031,8 @@ void CLegendWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     GetParent()->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
     // handle the floating popup menu
     CMenu mPopup;
-    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) { //SDM 1.5Test8.5
+    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) {
+		//SDM 1.5Test8.5
         CMenu & pFloatingPopup = *mPopup.GetSubMenu(0);
         ASSERT(pFloatingPopup.m_hMenu != NULL);
         // attach the layout menu
@@ -1069,8 +1107,10 @@ void CLegendWnd::OnMouseMove(UINT nFlags, CPoint point) {
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CPlotWnd * pPlot = pGraph->GetPlot();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    pPlot->SetMousePointerPosition(CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET)); // clear mouse position
-    pPlot->SetMouseButtonState(0);  // reset state
+	// clear mouse position
+    pPlot->SetMousePointerPosition(CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET));
+	// reset state
+    pPlot->SetMouseButtonState(0);
     const BOOL bForceUpdate = TRUE;
     pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), bForceUpdate);
     CWnd::OnMouseMove(nFlags, point);
@@ -1658,10 +1698,8 @@ CFont * CAnnotationWnd::GetFont() {
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-
     return pDoc->GetFont(m_nIndex);
 }
-
 
 /***************************************************************************/
 // CAnnotationWnd::GetWindowHeight
@@ -2532,7 +2570,7 @@ void CMusicPhraseWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 	}
 
 	// AudioSync only
-	if (m_nIndex!=MUSIC_PL1) {
+	if (m_nIndex!=MUSIC_PL4) {
 		CAnnotationWnd::OnDraw( pDC, printRect);
 		return;
 	}
@@ -2635,10 +2673,6 @@ void CMusicPhraseWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         return;
     }
 
-    // calculate the number of data samples per pixel
-    ASSERT(rWnd.Width());
-    double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
-
     // get pointer to annotation string
     if (pSegment->GetOffsetSize()==0) {
 		// restore context
@@ -2663,6 +2697,11 @@ void CMusicPhraseWnd::OnDraw(CDC * pDC, const CRect & printRect) {
             
     // put all characters width same offset in one string
     CString szAnnot = pSegment->GetText(nLoop);
+	if ((szAnnot.GetLength()>0) &&
+		((szAnnot[0]==WORD_DELIMITER)||(szAnnot[0]==TEXT_DELIMITER))) {
+		// remove delimiter
+		szAnnot = szAnnot.Mid(1).Trim();
+	}
 
     // check, if there is enough space to display the character(s)
 	BOOL bNotEnough = (szAnnot.GetLength() * tm.tmAveCharWidth) > rWnd.Width();

@@ -62,12 +62,14 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CMiniCaptionWnd::CMiniCaptionWnd() {
     // initialize variables
-    m_nCaption = MiniWithCaption; // default is minicaption with caption text style
+	// default is minicaption with caption text style
+    m_nCaption = MiniWithCaption;
 
     m_iNCHeight = GetSystemMetrics(SM_CYCAPTION) / 2;
     m_ixSizFrame = GetSystemMetrics(SM_CXFRAME);
     m_iySizFrame = GetSystemMetrics(SM_CYFRAME);
-    m_bFocus = FALSE; // window has no focus
+	// window has no focus
+    m_bFocus = FALSE;
 }
 
 /***************************************************************************/
@@ -112,10 +114,13 @@ BOOL CMiniCaptionWnd::PreCreateWindow(CREATESTRUCT & cs) {
     BOOL bRet = CWnd::PreCreateWindow(cs);
     // change the style
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    if (pMainWnd->GetCaptionStyle() == NoneThin) { // thin window border
+    if (pMainWnd->GetCaptionStyle() == NoneThin) {
+		// thin window border
         cs.style = WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER | WS_SYSMENU;
-    } else { // normal (thick frame) window border
-        if (pMainWnd->GetCaptionStyle() == Normal) { // normal window style
+    } else {
+		// normal (thick frame) window border
+        if (pMainWnd->GetCaptionStyle() == Normal) {
+			// normal window style
             cs.style = WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_THICKFRAME | WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_BORDER | WS_SYSMENU;
         } else {
             cs.style = WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_THICKFRAME | WS_BORDER | WS_SYSMENU;
@@ -192,7 +197,8 @@ void CMiniCaptionWnd::CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL
     }
 
     // set correction factor for Win95
-    int nCorr = 0; // correction because of 3D border for Win95
+	// correction because of 3D border for Win95
+    int nCorr = 0;
     if (wpl.showCmd != SW_SHOWMAXIMIZED) {
         nCorr = 1;
     }
@@ -209,10 +215,12 @@ void CMiniCaptionWnd::CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL
         prcNC->right = rcWnd.right - m_ixSizFrame + nCorr;
     }
     prcNC->bottom = prcNC->top + ncHeight + m_iySizFrame - nCorr;
-    prcNC->top += m_iySizFrame - nCorr; // avoids the frame
+	// avoids the frame
+    prcNC->top += m_iySizFrame - nCorr;
     // calculate vertical button position and sizes
     int nButtonTop, nButtonWidth, nButtonHeight, nButtonGap = 0;
-    nButtonGap = (ncHeight + 1) / 10; // gap between buttons and border and buttons
+	// gap between buttons and border and buttons
+    nButtonGap = (ncHeight + 1) / 10;
     nButtonTop = prcNC->top;
     if (m_nCaption != Normal) {
         nButtonWidth = MINICAPTION_HEIGHT + 1;
@@ -227,22 +235,26 @@ void CMiniCaptionWnd::CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL
     prcFrame->bottom = rcWnd.Height() - m_iySizFrame;
 
     // set system menu button rectangle (is icon in Win95)
-    prcSysMenu->left = prcNC->left + nButtonGap; // little gap on the left for Win95
+	// little gap on the left for Win95
+    prcSysMenu->left = prcNC->left + nButtonGap;
     prcSysMenu->right = prcSysMenu->left + nButtonWidth;
     prcSysMenu->top = nButtonTop;
     prcSysMenu->bottom = prcSysMenu->top + nButtonHeight;
 
     *prcRightmost = *prcSysMenu;
     // set rightmost button rectangle
-    prcRightmost->right = prcNC->right - nButtonGap; // little gap on the right for Win95
+	// little gap on the right for Win95
+    prcRightmost->right = prcNC->right - nButtonGap;
     prcRightmost->left = prcRightmost->right - nButtonWidth;
     // in Win95 the maximize button goes to the immediate left of close (rightmost)
     *prcRightOne = *prcRightmost;
-    prcRightOne->right = prcRightmost->left - nButtonGap; // leave a gap for Win95
+	// leave a gap for Win95
+    prcRightOne->right = prcRightmost->left - nButtonGap;
     prcRightOne->left = prcRightOne->right - nButtonWidth;
     // in Win95 the minimize button goes to the immediate left of maximize
     *prcRightTwo = *prcRightOne;
-    prcRightTwo->right = prcRightOne->left; // leave no gap
+	// leave no gap
+    prcRightTwo->right = prcRightOne->left;
     prcRightTwo->left = prcRightTwo->right - nButtonWidth;
 
     // the caption is everything else
@@ -262,7 +274,8 @@ void CMiniCaptionWnd::CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL
 /***************************************************************************/
 LRESULT CMiniCaptionWnd::OnNcHitTest(CPoint point) {
     if ((m_nCaption == None) || (m_nCaption == NoneThin) || (m_nCaption == Normal)) {
-        return CWnd::OnNcHitTest(point);    // no or normal caption window style
+		// no or normal caption window style
+        return CWnd::OnNcHitTest(point);
     }
 
     // get window placement information
@@ -282,22 +295,27 @@ LRESULT CMiniCaptionWnd::OnNcHitTest(CPoint point) {
     if (rcNC.PtInRect(point)) {
         // we're in the NC area. Are we in the menu box or other special area?
         if (rcSysMenu.PtInRect(point)) {
-            return HTSYSMENU;    // system menu area
+			// system menu area
+            return HTSYSMENU;
         }
         if (rcRightmost.PtInRect(point)) {
-            return HTCLOSE;    // rightmost button
+			// rightmost button
+            return HTCLOSE;
         }
-        if (rcRightTwo.PtInRect(point)) { // minimize for Win95, caption for Win31
+		// minimize for Win95, caption for Win31
+        if (rcRightTwo.PtInRect(point)) {
             return HTMINBUTTON;
         }
         if (rcRightOne.PtInRect(point)) {
-            return HTMAXBUTTON;    // second right button
+			// second right button
+            return HTMAXBUTTON;
         }
         // in minimized state and win95 caption has system menu function
         if (wpl.showCmd == SW_SHOWMINIMIZED) {
             return HTCAPTION;
         }
-        return HTCAPTION; // the rest is caption
+		// the rest is caption
+        return HTCAPTION;
     } else {
         // in minimized state room under caption (Win95) has system menu function
         if (wpl.showCmd == SW_SHOWMINIMIZED) {
@@ -315,10 +333,9 @@ void CMiniCaptionWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpn
     CWnd::OnNcCalcSize(bCalcValidRects, lpncsp);
 
     // modes - NoneThin, None, Mini, MiniWithCaption, Normal,
-    if ((m_nCaption == None) ||
-            (m_nCaption == NoneThin) ||
-            (m_nCaption == Normal)) {
-        return; // standard
+    if ((m_nCaption == None) || (m_nCaption == NoneThin) || (m_nCaption == Normal)) {
+		// standard
+        return;
     }
 
     // all window styles, get window placement information
@@ -332,7 +349,8 @@ void CMiniCaptionWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpn
         lpncsp->rgrc[0].top += m_iNCHeight - 1;
     } else {
         // window is maximized
-        lpncsp->rgrc[0].top += m_iNCHeight; // because of 3D border for Win95
+		// because of 3D border for Win95
+        lpncsp->rgrc[0].top += m_iNCHeight;
         lpncsp->rgrc[0].bottom -= 1;
         lpncsp->rgrc[0].left += 1;
         lpncsp->rgrc[0].right -= 1;
@@ -346,14 +364,16 @@ void CMiniCaptionWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpn
 }
 
 void CMiniCaptionWnd::OnNcPaint() {
-    CRect dummyRect(0,0,0,0); //this is used for the second parameter
+	//this is used for the second parameter
+    CRect dummyRect(0,0,0,0);
     // of OnNcDraw which is only really needed
     // for printing.
 
     // paint the standard frame
     CWnd::OnNcPaint();
     if (m_nCaption == NoneThin) {
-        return;    // nothing else to draw
+		// nothing else to draw
+        return;
     }
     CWindowDC dc(this);
     OnNcDraw(&dc, dummyRect, FALSE);
@@ -381,8 +401,10 @@ void Darken(COLORREF & c) {
 // Called from the framework, for painting of the NC area.
 /***************************************************************************/
 void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDoubleHeight) {
-    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    CSaView * pView = (CSaView *)GetParent(); // get pointer to parent view
+    
+	CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+	// get pointer to parent view
+    CSaView * pView = (CSaView *)GetParent();
     Colors * pColors = pMainWnd->GetColors();
 
     // get window placement information
@@ -401,7 +423,8 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
         pDisplayMemDC->CreateCompatibleDC(pDC);
 
         // draw the caption
-        if ((m_nCaption == Mini) || (m_nCaption == MiniWithCaption)) { // caption and bitmaps needed
+        if ((m_nCaption == Mini) || (m_nCaption == MiniWithCaption)) {
+			// caption and bitmaps needed
             // set the colors as appropriate for whether this window has focus
             pDC->SetBkMode(TRANSPARENT);
             CBrush bshCaption;
@@ -422,7 +445,8 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
 
             pDC->SetTextColor(textColor);
 
-            if (wpl.showCmd == SW_SHOWMINIMIZED) { // Win95 minimized
+            if (wpl.showCmd == SW_SHOWMINIMIZED) {
+				// Win95 minimized
                 // draw the caption background for minimized Win95 or normal size caption
                 rcWnd = rcNC;
                 // this rectangle is in absolute windows coordindates
@@ -442,8 +466,10 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
                 }
 
                 // draw the caption text
-                rcWnd.left = rcSysMenu.right+6;     // left text border
-                rcWnd.right = prcRightTwo.left - 1; // right text border
+				// left text border
+                rcWnd.left = rcSysMenu.right+6;
+				// right text border
+                rcWnd.right = prcRightTwo.left - 1;
                 rcWnd.bottom -= 1;
 
                 // create and select system font
@@ -462,28 +488,35 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
                 // fit text into window
                 TEXTMETRIC tm;
                 pDC->GetTextMetrics(&tm);
-                int nNumberChars = rcWnd.Width() / tm.tmAveCharWidth; // number of possible chars
+				// number of possible chars
+                int nNumberChars = rcWnd.Width() / tm.tmAveCharWidth;
                 if (szText.GetLength() > nNumberChars) {
-                    szText = szText.Left(nNumberChars - 2) + "...";    // limit text
+					// limit text
+                    szText = szText.Left(nNumberChars - 2) + "...";
                 }
                 // draw the text (left aligned for Win95, centered in Win31
                 pDC->DrawText(szText, -1, rcWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT);
-                pDC->SelectObject(pOldFont); // allows for proper restoration
+				// allows for proper restoration
+                pDC->SelectObject(pOldFont);
 
             } else {
                 // maximimized
                 if (pDC->IsPrinting()) {
                     pDC->FrameRect(&rcNC, &bshCaption);
                 } else {
-                    pDC->FillRect(&rcNC, &bshCaption); // normal case
+					// normal case
+                    pDC->FillRect(&rcNC, &bshCaption);
                 }
 
-                if (m_nCaption == MiniWithCaption) { // draw the miniaturized caption.
+				// draw the miniaturized caption.
+                if (m_nCaption == MiniWithCaption) {
                     rcWnd = rcNC;
 
                     // draw the caption text
-                    rcWnd.left = rcSysMenu.right + 2; // left text border
-                    rcWnd.right = prcRightTwo.left - 1; // right text border
+					// left text border
+                    rcWnd.left = rcSysMenu.right + 2;
+					// right text border
+                    rcWnd.right = prcRightTwo.left - 1;
                     rcWnd.bottom -= 2;
 
                     // create and select system font
@@ -506,14 +539,17 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
                     // fit text into window
                     TEXTMETRIC tm;
                     pDC->GetTextMetrics(&tm);
-                    int nNumberChars = rcWnd.Width() / tm.tmAveCharWidth; // number of possible chars
+					// number of possible chars
+                    int nNumberChars = rcWnd.Width() / tm.tmAveCharWidth;
                     if (szText.GetLength() > nNumberChars) {
-                        szText = szText.Left(nNumberChars - 2) + "...";    // limit text
+						// limit text
+                        szText = szText.Left(nNumberChars - 2) + "...";
                     }
 
                     // draw the text (left aligned for Win95, centered in Win31
                     pDC->DrawText(szText, -1, rcWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT);
-                    pDC->SelectObject(pOldFont); // allows for proper restoration
+					// allows for proper restoration
+                    pDC->SelectObject(pOldFont);
                 }
             }
 
@@ -532,29 +568,33 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
                 pbmp->LoadBitmap(IDB_MINICAP_ICON);
                 pbmpOld = (CBitmap *)pDisplayMemDC->SelectObject(pbmp);
                 pDC->StretchBlt(rcSysMenu.left, rcSysMenu.top, rcSysMenu.Width(), rcSysMenu.Height(), pDisplayMemDC, 0, 0, 32, 32, SRCCOPY);
-                delete pDisplayMemDC->SelectObject(pbmpOld); // deletes pbmp
+				// deletes pbmp
+                delete pDisplayMemDC->SelectObject(pbmpOld);
 
                 // go on on right. Close always in Win95, restore or max in Win31
                 pbmp = new CBitmap;
                 pbmp->LoadBitmap(IDB_MINICAP_CLOSE);
                 pbmpOld = (CBitmap *)pDisplayMemDC->SelectObject(pbmp);
                 pDC->BitBlt(rcRightmost.left, rcRightmost.top, rcRightmost.Width(), rcRightmost.Height(), pDisplayMemDC, 0,0, SRCCOPY);
-                delete pDisplayMemDC->SelectObject(pbmpOld); // deletes pbmp
+				// deletes pbmp
+                delete pDisplayMemDC->SelectObject(pbmpOld);
 
                 // draw the maximize (minimize/restore always in Win31) button
                 pbmp = new CBitmap;
                 pbmp->LoadBitmap((wpl.showCmd == SW_SHOWMAXIMIZED) ? IDB_MINICAP_RESTORE : IDB_MINICAP_MAXIMIZE);
                 pbmpOld = (CBitmap *)pDisplayMemDC->SelectObject(pbmp);
                 pDC->BitBlt(prcRightOne.left, prcRightOne.top, prcRightOne.Width(), prcRightOne.Height(), pDisplayMemDC, 0,0, SRCCOPY);
-                delete pDisplayMemDC->SelectObject(pbmpOld); // deletes pbmp
+				// deletes pbmp
+                delete pDisplayMemDC->SelectObject(pbmpOld);
 
                 // draw the minimize button (only Win95)
                 pbmp = new CBitmap;
                 pbmp->LoadBitmap((wpl.showCmd == SW_SHOWMINIMIZED) ? IDB_MINICAP_RESTORE : IDB_MINICAP_MINIMIZE);
                 pbmpOld = (CBitmap *)pDisplayMemDC->SelectObject(pbmp);
                 pDC->BitBlt(prcRightTwo.left, prcRightTwo.top, prcRightTwo.Width(), prcRightTwo.Height(), pDisplayMemDC, 0,0, SRCCOPY);
-                delete pDisplayMemDC->SelectObject(pbmpOld); // deletes pbmp
-            } // end if IsPrinting
+				// deletes pbmp
+                delete pDisplayMemDC->SelectObject(pbmpOld);
+            }
         } else {
             TRACE(_T("Caption requested\n"));
         }
@@ -613,11 +653,14 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
         rcWnd = rcNC;
         {
             rcWnd.left  = rcSysMenu.right - 1;
-            rcWnd.right = prcRightTwo.left + 5; // right text border
-            if (wpl.showCmd == SW_SHOWMINIMIZED) { // Win95 minimized
+			// right text border
+            rcWnd.right = prcRightTwo.left + 5;
+			// Win95 minimized
+            if (wpl.showCmd == SW_SHOWMINIMIZED) {
                 rcWnd.bottom--;
                 rcWnd.left --;
-                rcWnd.right++; // right text border
+				// right text border
+                rcWnd.right++;
             } else {
                 rcWnd.top++;
             }
@@ -708,9 +751,12 @@ BOOL CMiniCaptionWnd::OnEraseBkgnd(CDC * pDC) {
 // focus to this window. For this reason the parent view is called.
 /***************************************************************************/
 void CMiniCaptionWnd::OnNcLButtonDown(UINT nHitTest, CPoint point) {
-    // set focused graph in parent view
-    CSaView * pView = (CSaView *)GetParent(); // get pointer to parent view
-    CGraphWnd * pGraph = (CGraphWnd *)this; // cast pointer
+    
+	// set focused graph in parent view
+	// get pointer to parent view
+    CSaView * pView = (CSaView *)GetParent();
+	// cast pointer
+    CGraphWnd * pGraph = (CGraphWnd *)this;
     pView->SetFocusedGraph(pGraph);
     // if no caption window style there is nothing else to do
     if (m_nCaption == None) {
@@ -722,8 +768,8 @@ void CMiniCaptionWnd::OnNcLButtonDown(UINT nHitTest, CPoint point) {
     case HTMINBUTTON:
     case HTMAXBUTTON:
     case HTCLOSE:
+		// dont't call base class OnNcLButtonDown for this three buttons!
         return;
-        break; // dont't call base class OnNcLButtonDown for this three buttons!
     default:
         break;
     }
@@ -753,12 +799,15 @@ void CMiniCaptionWnd::OnNcLButtonDblClk(UINT nHitTest, CPoint point) {
     WINDOWPLACEMENT wpl;
     wpl.length = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(&wpl);
-    if (nHitTest == HTSYSMENU) { // system menu dblclk
-        if (wpl.showCmd == SW_SHOWMINIMIZED) { // in minimized state dblclk restores
+    if (nHitTest == HTSYSMENU) {
+		// system menu dblclk
+		// in minimized state dblclk restores
+        if (wpl.showCmd == SW_SHOWMINIMIZED) {
             wpl.showCmd = SW_RESTORE;
             SetWindowPlacement(&wpl);
         } else {
-            OnSysCommand(SC_CLOSE, 0L);    // close the window
+			// close the window
+            OnSysCommand(SC_CLOSE, 0L);
         }
     } else {
         // caption-dblclicking operations.
@@ -828,7 +877,8 @@ void CMiniCaptionWnd::OnNcLButtonUp(UINT nHitTest, CPoint point) {
 /***************************************************************************/
 void CMiniCaptionWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     // set focused graph in parent view
-    CSaView * pView = (CSaView *)GetParent(); // get pointer to parent view
+	// get pointer to parent view
+    CSaView * pView = (CSaView *)GetParent();
     pView->SetFocusedGraph((CGraphWnd *)this);
     CWnd::OnLButtonDown(nFlags, point);
 }
@@ -841,8 +891,10 @@ void CMiniCaptionWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 /***************************************************************************/
 void CMiniCaptionWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     // set focused graph in parent view
-    CSaView * pView = (CSaView *)GetParent(); // get pointer to parent view
-    pView->SetFocusedGraph((CGraphWnd *)this); // set focused graph
+	// get pointer to parent view
+    CSaView * pView = (CSaView *)GetParent();
+	// set focused graph
+    pView->SetFocusedGraph((CGraphWnd *)this);
     CWnd::OnRButtonDown(nFlags, point);
 }
 
@@ -911,7 +963,8 @@ void CMiniCaptionWnd::OnSysCommand(UINT nID, LPARAM lParam) {
         return;
     case SC_CLOSE:
         // this causes the parent to be notified and destroy me
-        GetParent()->PostMessage(WM_USER_GRAPH_DESTROYED, 0, (LONG)this); // inform parent
+		// inform parent
+        GetParent()->PostMessage(WM_USER_GRAPH_DESTROYED, 0, (LONG)this);
         break;
     case SC_MAXIMIZE:
     case SC_MINIMIZE:
@@ -939,7 +992,9 @@ void CMiniCaptionWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 }
 
 void CMiniCaptionWnd::DrawCaptionText(CDC * pDC, const CRect & rcWnd) {
-    CSaView * pView = (CSaView *)GetParent(); // get pointer to parent view
+
+	// get pointer to parent view
+    CSaView * pView = (CSaView *)GetParent();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     WINDOWPLACEMENT wpl;
     wpl.length = sizeof(WINDOWPLACEMENT);
@@ -975,14 +1030,16 @@ void CMiniCaptionWnd::DrawCaptionText(CDC * pDC, const CRect & rcWnd) {
     // fit text into window
     TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
-    int nNumberChars = rcWnd.Width() / tm.tmAveCharWidth; // number of possible chars
+	// number of possible chars
+    int nNumberChars = rcWnd.Width() / tm.tmAveCharWidth;
     if (szText.GetLength() > nNumberChars) {
-        szText = szText.Left(nNumberChars - 2) + "..."; // limit text
+		// limit text
+        szText = szText.Left(nNumberChars - 2) + "...";
     }
 
     // draw the text (left aligned for Win95, centered in Win31
     CRect copyRcWnd(rcWnd);
     pDC->DrawText(szText, -1, &copyRcWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT);
-
-    pDC->SelectObject(pOldFont); // allows for proper restoration
+	// allows for proper restoration
+    pDC->SelectObject(pOldFont);
 }

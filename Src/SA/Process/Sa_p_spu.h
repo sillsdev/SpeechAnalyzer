@@ -7,8 +7,6 @@
 #ifndef _SA_P_SPU_H
 #define _SA_P_SPU_H
 
-#include "appdefs.h"
-
 enum ESpectrum {CEPSTRAL_SPECTRUM = 0x0001, LPC_SPECTRUM = 0x0002};   // spectra selections
 
 struct SSpectProcSelect {

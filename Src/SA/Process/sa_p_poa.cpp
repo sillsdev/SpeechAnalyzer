@@ -191,10 +191,14 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
         pVocalTractModel->dNormCrossSectArea[i] = pLpcModel->pNormCrossSectArea[i];
     }
 
-    delete pLpcObject; // delete the Lpc object
-    pDoc->GetWaveData(dwOldWaveBufferIndex, TRUE);  // restore wave buffer
-    nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
-    SetProgress(nProgress);          // show progress and allow for cancel (ESC key)
+	// delete the Lpc object
+    delete pLpcObject; 
+	// restore wave buffer
+    pDoc->GetWaveData(dwOldWaveBufferIndex, TRUE);
+	// calculate the actual progress
+    nProgress = nProgress + (int)(100 / nLevel);
+	// show progress and allow for cancel (ESC key)
+    SetProgress(nProgress);
     EndProcess();
     SetDataReady();
     EndWaitCursor();

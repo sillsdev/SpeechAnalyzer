@@ -41,7 +41,7 @@ CDlgFnKeys::CDlgFnKeys(CWnd * pParent) : CDialog(CDlgFnKeys::IDD, pParent) {
     m_nDelay = 1000;
     m_nSpeed = 50;
     m_bRepeat = FALSE;
-    m_nPlayMode = 5;
+    m_nPlayMode = 6;
     m_bNoTest = FALSE;
     m_bTestRunning = FALSE;
     m_pDoc = NULL;
@@ -345,27 +345,30 @@ void CDlgFnKeys::OnSelchangeFnlist() {
         m_fnKeys.bRepeat[m_nSelection] = m_bRepeat;
         switch (m_nPlayMode) {
         case 0:
-            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_ENDCURSOR;
+            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_BEGINCURSOR;
             break;
         case 1:
-            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_CURSORS;
+            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_ENDCURSOR;
             break;
         case 2:
-            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_LTOSTART;
+            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_CURSORS;
             break;
         case 3:
-            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_STARTTOR;
+            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_LEFT_TO_START;
             break;
         case 4:
-            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_LTOSTOP;
+            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_START_TO_RIGHT;
             break;
         case 5:
-            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_STOPTOR;
+            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_LEFT_TO_STOP;
             break;
         case 6:
-            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_WINDOW;
+            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_STOP_TO_RIGHT;
             break;
         case 7:
+            m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_WINDOW;
+            break;
+        case 8:
             m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_FILE;
             break;
         }
@@ -377,29 +380,32 @@ void CDlgFnKeys::OnSelchangeFnlist() {
     m_nVolume = m_fnKeys.nVolume[m_nSelection];
     m_bRepeat = m_fnKeys.bRepeat[m_nSelection];
     switch (m_fnKeys.nMode[m_nSelection]) {
-    case ID_PLAYBACK_ENDCURSOR:
+    case ID_PLAYBACK_BEGINCURSOR:
         m_nPlayMode = 0;
         break;
-    case ID_PLAYBACK_CURSORS:
+    case ID_PLAYBACK_ENDCURSOR:
         m_nPlayMode = 1;
         break;
-    case ID_PLAYBACK_LTOSTART:
+    case ID_PLAYBACK_CURSORS:
         m_nPlayMode = 2;
         break;
-    case ID_PLAYBACK_STARTTOR:
+    case ID_PLAYBACK_LEFT_TO_START:
         m_nPlayMode = 3;
         break;
-    case ID_PLAYBACK_LTOSTOP:
+    case ID_PLAYBACK_START_TO_RIGHT:
         m_nPlayMode = 4;
         break;
-    case ID_PLAYBACK_STOPTOR:
+    case ID_PLAYBACK_LEFT_TO_STOP:
         m_nPlayMode = 5;
         break;
-    case ID_PLAYBACK_WINDOW:
+    case ID_PLAYBACK_STOP_TO_RIGHT:
         m_nPlayMode = 6;
         break;
-    case ID_PLAYBACK_FILE:
+    case ID_PLAYBACK_WINDOW:
         m_nPlayMode = 7;
+        break;
+    case ID_PLAYBACK_FILE:
+        m_nPlayMode = 8;
         break;
     }
     UpdateData(FALSE);
@@ -486,17 +492,22 @@ void CDlgFnKeys::OnTest() {
         BOOL bError = FALSE;
         switch (m_nPlayMode) {
         case 0:
+            //ID_PLAYBACK_BEGINCURSOR
+            dwStart = m_pView->GetStartCursorPosition();
+            dwSize = pDoc->GetDataSize()-dwStart;
+            break;
+        case 1:
             //ID_PLAYBACK_ENDCURSOR
             dwStart = m_pView->GetStopCursorPosition();
             dwSize = pDoc->GetDataSize()-dwStart;
             break;
-        case 1:
+        case 2:
             //ID_PLAYBACK_CURSORS
             dwStart = m_pView->GetStartCursorPosition();
             dwSize = m_pView->GetStopCursorPosition() - dwStart + wSmpSize;
             break;
-        case 2:
-            //ID_PLAYBACK_LTOSTART
+        case 3:
+            //ID_PLAYBACK_LEFT_TO_START
             dwStart = DWORD(m_pView->GetDataPosition(0));
             dwSize = m_pView->GetStartCursorPosition();
             if (dwSize > dwStart) {
@@ -505,8 +516,8 @@ void CDlgFnKeys::OnTest() {
                 bError = TRUE;
             }
             break;
-        case 3:
-            //ID_PLAYBACK_STARTTOR
+        case 4:
+            //ID_PLAYBACK_START_TO_RIGHT
             dwStart = m_pView->GetStartCursorPosition();
             dwSize = DWORD(m_pView->GetDataPosition(0) + m_pView->GetDataFrame());
             if (dwSize > dwStart) {
@@ -515,8 +526,8 @@ void CDlgFnKeys::OnTest() {
                 bError = TRUE;
             }
             break;
-        case 4:
-            //ID_PLAYBACK_LTOSTOP
+        case 5:
+            //ID_PLAYBACK_LEFT_TO_STOP
             dwStart = DWORD(m_pView->GetDataPosition(0));
 			TRACE("DataPosition=%lu\n",dwStart);
             dwSize = m_pView->GetStopCursorPosition();
@@ -526,8 +537,8 @@ void CDlgFnKeys::OnTest() {
                 bError = TRUE;
             }
             break;
-        case 5:
-            //ID_PLAYBACK_STOPTOR
+        case 6:
+            //ID_PLAYBACK_STOP_TO_RIGHT
             dwStart = m_pView->GetStopCursorPosition();
             dwSize = DWORD(m_pView->GetDataPosition(0) + m_pView->GetDataFrame());
             if (dwSize > dwStart) {
@@ -536,12 +547,12 @@ void CDlgFnKeys::OnTest() {
                 bError = TRUE;
             }
             break;
-        case 6:
+        case 7:
             //ID_PLAYBACK_WINDOW
             dwStart = DWORD(m_pView->GetDataPosition(0));
             dwSize = m_pView->GetDataFrame();
             break;
-        case 7:
+        case 8:
             //ID_PLAYBACK_FILE
             dwSize = pDoc->GetDataSize();
             break;

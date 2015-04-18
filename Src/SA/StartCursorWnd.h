@@ -11,13 +11,19 @@ class CStartCursorWnd : public CCursorWnd {
 public:
     CStartCursorWnd();
     virtual ~CStartCursorWnd();
-    virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
-                        const RECT & rect, CWnd * pParentWnd, UINT nID,
+    virtual BOOL Create(LPCTSTR lpszClassName, 
+						LPCTSTR lpszWindowName,
+						DWORD dwStyle,
+                        const RECT & rect,
+						CWnd * pParentWnd,
+						UINT nID,
                         CCreateContext * pContext = NULL);
     virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
-    void ResetPosition();                                                                   // reset old cursor position
-    DWORD CalculateCursorPosition(CView *, int nPosition, int nWidth, DWORD * pStopCursor); // calculate the current cursor position (in data samples)
+	// reset old cursor position
+    void ResetPosition();
+	// calculate the current cursor position (in data samples)
+    DWORD CalculateCursorPosition(CView *, int nPosition, int nWidth, DWORD * pStopCursor);
     BOOL IsDragging();
 
 protected:
@@ -31,12 +37,18 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-    CRect m_rWnd;               // cursor window coordinates
-    BOOL m_bCursorDrag;         // cursor drag by mouse
-    DWORD m_dwStartDragPos;     // cursor position when starting drag
-    DWORD m_dwDragPos;          // current drag position
-    int m_nEditBoundaries;      // editing boundaries
-    bool m_bSelectDrag;         // true if the user pressed control before or while dragging
+	// cursor window coordinates
+    CRect m_rWnd;
+	// cursor drag by mouse
+    BOOL m_bCursorDrag;
+	// cursor position when starting drag
+    DWORD m_dwStartDragPos;
+	// current drag position
+    DWORD m_dwDragPos;
+	// editing boundaries
+    int m_nEditBoundaries;
+	// true if the user pressed control before or while dragging
+    bool m_bSelectDrag;
 };
 
 #endif

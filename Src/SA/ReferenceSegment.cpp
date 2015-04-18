@@ -2,6 +2,7 @@
 #include "ReferenceSegment.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
+#include "sa_ipa.h"
 
 CReferenceSegment::CReferenceSegment(EAnnotation index, int master) : CTextSegment( index, master) {
 }

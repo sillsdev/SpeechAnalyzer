@@ -144,9 +144,12 @@ BOOL CSegmentSelection::SelectFromPosition( CSaView * pView, int type, DWORD dwP
     }
 
     // highlight possible insertion point
-    if ((nMaster == type) && (nMaster != PHONETIC) && (pSegment->GetSelection() == -1)) {
+    if ((nMaster == type) && 
+		(nMaster != PHONETIC) && 
+		(pSegment->GetSelection() == -1)) {
 
-        DWORD dwStart = dwPosition; // Start at current stop
+		// Start at current stop
+		DWORD dwStart = dwPosition; 
         DWORD dwStop;
 
         // Snap Start Position
@@ -154,7 +157,8 @@ BOOL CSegmentSelection::SelectFromPosition( CSaView * pView, int type, DWORD dwP
         dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
         if (pDoc->Is16Bit()) {
-            dwStop = (dwStop + 1) & ~1; // Round up
+			// Round up
+            dwStop = (dwStop + 1) & ~1;
         }
 
         dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
@@ -187,7 +191,8 @@ BOOL CSegmentSelection::SelectFromPosition( CSaView * pView, int type, DWORD dwP
             }
 
             if (pDoc->Is16Bit()) {
-                dwStop = (dwStop + 1) & ~1; // Round up
+				// Round up
+                dwStop = (dwStop + 1) & ~1;
             }
 
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetDataSize(), SNAP_RIGHT);
@@ -325,8 +330,10 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
             dwStart = 0;
         }
 
-        if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
-            dwStart = (dwStart + 1) & ~1; // Round up
+        if (pDoc->Is16Bit()) {
+			// SDM 1.5Test8.2
+			// Round up
+            dwStart = (dwStart + 1) & ~1;
         }
 
         dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, dwStart, SNAP_LEFT);
@@ -358,7 +365,8 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
             }
 
             if (pDoc->Is16Bit()) {
-                dwStart = (dwStart + 1) & ~1; // Round up
+				// Round up
+                dwStart = (dwStart + 1) & ~1;
             }
 
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetDataSize(), SNAP_RIGHT);
@@ -564,4 +572,14 @@ int CSegmentSelection::GetSelectionIndex() {
 
 bool CSegmentSelection::IsSelectionVirtual() {
     return m_bVirtual;
+}
+
+void CSegmentSelection::DeselectAnnotations( CSaView & view) {
+	CSegment * pSegment = view.FindSelectedAnnotation();
+    if (pSegment!=NULL) {
+        TRACE("deselecting annotation %lp\n",pSegment);
+        view.ChangeAnnotationSelection(pSegment, -1);
+    }
+    // clear virtual selection
+    Update( &view, TRUE);
 }

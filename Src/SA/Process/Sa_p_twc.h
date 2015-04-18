@@ -7,8 +7,6 @@
 #ifndef _SA_P_TWC_H
 #define _SA_P_TWC_H
 
-#include "appdefs.h"
-
 //###########################################################################
 // CProcessTonalWeightChart data processing
 

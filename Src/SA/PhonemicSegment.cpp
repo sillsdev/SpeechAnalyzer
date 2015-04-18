@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "PhonemicSegment.h"
+#include "sa_ipa.h"
 
-//###########################################################################
+//############################################################################
 // CPhonemicSegment data processing
 
 CPhonemicSegment::CPhonemicSegment(EAnnotation index, int master) : CDependentSegment(index,master) {
@@ -20,7 +21,8 @@ bool CPhonemicSegment::Filter() {
 }
 
 bool CPhonemicSegment::Filter(CString & text) {
-    TCHAR cIPASpaceReplace = 0xFFFD;        // Box Character
+	// Box Character
+    TCHAR cIPASpaceReplace = 0xFFFD;        
     bool bChanged = false;
     for (int i=0; i<text.GetLength(); i++) {
         if (text[i]==0) {

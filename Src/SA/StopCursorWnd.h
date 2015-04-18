@@ -8,14 +8,15 @@
 
 class CStopCursorWnd : public CCursorWnd {
 
-    // Construction/destruction/creation
 public:
     CStopCursorWnd();
     virtual ~CStopCursorWnd();
     virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT nID, CCreateContext * pContext = NULL);
     virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
-    void ResetPosition();                                                                       // reset old cursor position
-    DWORD CalculateCursorPosition(CView *, int nPosition, int nWidth, DWORD * pStartCursor);    // calculate the current cursor position (in data samples)
+	// reset old cursor position
+    void ResetPosition();
+	// calculate the current cursor position (in data samples)
+    DWORD CalculateCursorPosition(CView *, int nPosition, int nWidth, DWORD * pStartCursor);
     BOOL IsDragging();
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 
@@ -31,10 +32,14 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-    CRect    m_rWnd;                // cursor window coordinates
-    BOOL     m_bCursorDrag;         // cursor drag by mouse
-    DWORD    m_dwDragPos;           // current drag position
-    int      m_nEditBoundaries;     // editing boundaries
+	// cursor window coordinates
+    CRect m_rWnd;
+	// cursor drag by mouse
+    BOOL m_bCursorDrag;
+	// current drag position
+    DWORD m_dwDragPos;
+	// editing boundaries
+    int m_nEditBoundaries;
 
 };
 

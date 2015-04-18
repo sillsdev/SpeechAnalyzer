@@ -10,7 +10,6 @@
 #include "sa_graph.h"
 #include "SA_G_3dPitch.h"
 #include "Process\sa_p_3dPitch.h"
-#include "AppDefs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

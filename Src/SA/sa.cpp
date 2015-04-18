@@ -175,6 +175,7 @@ BEGIN_MESSAGE_MAP(CSaApp, CWinApp)
     ON_COMMAND(ID_FILE_RETURN, OnFileReturn)
     ON_UPDATE_COMMAND_UI(ID_FILE_RETURN, OnUpdateFileReturn)
     ON_COMMAND(ID_HELP_CONTENTS, OnHelpContents)
+	ON_COMMAND(ID_HELP_KEYBOARD_SHORTCUTS, OnHelpShortCuts)
     ON_COMMAND(ID_HELP_WHATS_NEW, OnHelpWhatsNew)
     ON_COMMAND(ID_HELP_SFMMARKERS, OnHelpSFMMarkers)
     ON_COMMAND(ID_HELP_TROUBLE, OnHelpTrouble)
@@ -1816,7 +1817,6 @@ void CSaApp::DisplayMessages() {
 // CSaApp::OnHelpContents Call Help Index (Table of Contents)
 /***************************************************************************/
 void CSaApp::OnHelpContents() {
-
 	if (IsAudioSync()) {
 		CSaString szAppPath = m_pszHelpFilePath;
 		szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
@@ -1825,6 +1825,13 @@ void CSaApp::OnHelpContents() {
 	} else {
 	    ::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);
 	}
+}
+
+void CSaApp::OnHelpShortCuts() {
+	CSaString szAppPath = m_pszHelpFilePath;
+	szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
+	CSaString szCommandLine = "\"" + szAppPath + _T("\\Keyboard Short-Cut Keys.pdf\"");
+	ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
 /***************************************************************************/

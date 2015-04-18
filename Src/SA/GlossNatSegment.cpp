@@ -2,6 +2,7 @@
 #include "GlossNatSegment.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
+#include "sa_ipa.h"
 
 CGlossNatSegment::CGlossNatSegment(EAnnotation index, int master) : CTextSegment(index, master) {
 }

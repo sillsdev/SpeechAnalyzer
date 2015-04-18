@@ -1,8 +1,6 @@
 #ifndef DLGSPLITFILE_H
 #define DLGSPLITFILE_H
 
-#include "appdefs.h"
-
 // CDlgSplitFile dialog
 class CDlgSplitFile : public CDialog {
 

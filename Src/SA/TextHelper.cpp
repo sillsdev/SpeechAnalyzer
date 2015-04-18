@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "TextHelper.h"
 #include "objectostream.h"
-#include "AppDefs.h"
 #include <iostream>
 
 using std::vector;

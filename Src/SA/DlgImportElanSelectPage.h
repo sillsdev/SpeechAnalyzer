@@ -1,7 +1,6 @@
 #ifndef DLGIMPORTELANSELECTPAGE_H
 #define DLGIMPORTELANSELECTPAGE_H
 
-#include "AppDefs.h"
 #include "ElanUtils.h"
 
 class CSaDoc;

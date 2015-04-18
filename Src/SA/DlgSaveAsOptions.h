@@ -2,7 +2,6 @@
 #define DLGSAVEASOPTIONS_H
 
 #include "mixer.h"
-#include "AppDefs.h"
 
 class CDlgSaveAsOptions : protected CFileDialog {
 

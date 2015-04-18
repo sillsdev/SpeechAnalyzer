@@ -1,7 +1,6 @@
 #ifndef DLGALIGNTRANSCRIPTIONDATATEXTPAGE_H
 #define DLGALIGNTRANSCRIPTIONDATATEXTPAGE_H
 
-#include "AppDefs.h"
 #include "SaString.h"
 
 class CSaDoc;

@@ -7,7 +7,6 @@
 #ifndef _SA_WBCH_H
 #define _SA_WBCH_H
 
-#include "appdefs.h"
 #include "Sa_dlWnd.h"
 
 //###########################################################################

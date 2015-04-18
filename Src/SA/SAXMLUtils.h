@@ -1,6 +1,5 @@
 #pragma once
 
-#include "AppDefs.h"
 #include "ElanUtils.h"
 #include "DlgImportElanSheet.h"
 #include <map>

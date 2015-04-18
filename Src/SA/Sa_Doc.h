@@ -35,7 +35,6 @@
 
 #include "undoredo.h"
 #include "SaString.h"
-#include "Appdefs.h"
 #include "sourceParm.h"
 #include "ISa_Doc.h"
 #include "TranscriptionData.h"

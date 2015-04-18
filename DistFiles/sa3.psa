@@ -1,4 +1,4 @@
-\+SaApp 0.99.0.4
+\+SaApp 0.99.0.9
 
 \+mainframe 
 
@@ -330,8 +330,8 @@
 \-spectrogramB
 \captionstyle 3
 \+graphfontarray 
-\graphfont Doulos SIL
-\graphfontsize 13
+\graphfont Courier
+\graphfontsize 8
 \graphfont Doulos SIL
 \graphfontsize 11
 \graphfont Doulos SIL
@@ -391,10 +391,10 @@
 \showwnd 1
 \showwnd 1
 \showwnd 1
+\showwnd 0
+\showwnd 0
+\showwnd 0
 \showwnd 1
-\showwnd 0
-\showwnd 0
-\showwnd 0
 \-annotwnd
 \-sagraph
 \-graphlist

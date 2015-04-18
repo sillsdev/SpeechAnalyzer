@@ -8,7 +8,6 @@
 #ifndef _SA_P_DOC_H
 #define _SA_P_DOC_H
 
-#include "appdefs.h"
 #include "IProcess.h"
 #include "FmtParm.h"
 

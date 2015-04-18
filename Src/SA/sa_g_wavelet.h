@@ -13,8 +13,6 @@
 #ifndef SA_G_WAVELET_H
 #define SA_G_WAVELET_H
 
-#include "AppDefs.h"
-
 #define sparsePaletteSize 30l                   // SDM 1.5Test10.3
 
 #define IDM_BUTTON1     300                     // used for the little arrow buttons on the side of the graph

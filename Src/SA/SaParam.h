@@ -1,5 +1,6 @@
-#pragma once
-#include <afx.h>
+#ifndef SAPARAM_H
+#define SAPARAM_H
+
 #include "SaString.h"
 #include "atltime.h"
 
@@ -21,3 +22,5 @@ public:
     DWORD       dwSignalBandWidth;  // minimum bandwidth ever found
     BYTE        byQuantization;     // sample quantization in bits
 };
+
+#endif

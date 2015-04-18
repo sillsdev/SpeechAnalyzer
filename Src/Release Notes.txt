@@ -1,3 +1,15 @@
+AS - 0.99.0.9 4/17/2015
+- Modified .PSA file to default the Phonetic font to courier-new, 8pt. (AS)
+- Modified .PSA file to display PL4, not PL1 (AS)
+- Modified code to render gloss text to PL4, not PL1. (AS)
+- Modified code so that gloss is selected during playback mode. (AS)
+- Modified 'Phrase L4' legend entry to read 'Full Text'. (AS)
+- 'ESC' now stops playback. (AS/SA)
+- Modified code so that selecting a phonetic segment enables boundary editing, and deselecting disable boundary editing. (AS)
+- Modified code so that any sort of 'play audio' operation disables boundary editing.  (AS)
+- Fixed bug where graph titles were not displayed. (AS/SA)
+- Disabled popup menu for recording graph. (AS)
+
 AS - 0.99.0.8 4/17/2015
 - Fixed right-mouse-cursor split-move-left bug. Was only performing split operation.
 

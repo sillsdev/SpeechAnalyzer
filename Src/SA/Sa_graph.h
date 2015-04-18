@@ -24,7 +24,6 @@
 
 #include "sa_plot.h"
 #include "sa_minic.h"
-#include "appdefs.h"
 #include "SaString.h"
 
 #define _SA_GRAPH_H
