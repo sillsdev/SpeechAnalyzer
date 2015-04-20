@@ -772,7 +772,8 @@ BOOL CDlgAnnotationEdit::OnInitDialog() {
 // disables VK_RETURN & VK_DELETE accelerators
 /***************************************************************************/
 BOOL CDlgAnnotationEdit::PreTranslateMessage(MSG * pMsg) {
-    CMainFrame * pMain = GetMainFrame();
+    
+	CMainFrame * pMain = GetMainFrame();
     // translate accelerators for frame and any children
     if ((pMain!=NULL) && (pMain->GetCurrSaView()) && (pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)) {
         switch (pMsg->wParam) {

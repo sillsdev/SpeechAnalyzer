@@ -72,7 +72,7 @@ CDisplayPlot::CDisplayPlot(CString & szPlot) {
     m_hNewMenu = m_pMainFrame->GetNewMenu();
 
     CMenu Menu;
-    Menu.LoadMenu(IDR_SA_DISPLAYPLOT);
+    Menu.LoadMenu(IDR_DISPLAYPLOT);
     m_pMainFrame->SetNewMenu(Menu.Detach());
     m_pMainFrame->OnUpdateFrameMenu(NULL);
     m_pMainFrame->DrawMenuBar();
@@ -80,11 +80,11 @@ CDisplayPlot::CDisplayPlot(CString & szPlot) {
     // disable accelerators
     m_hNewAccel = m_pMainFrame->GetNewAccel();
 
-    m_pMainFrame->SetNewAccel(::LoadAccelerators(AfxFindResourceHandle(MAKEINTRESOURCE(IDR_SA_DISPLAYPLOT),RT_ACCELERATOR), MAKEINTRESOURCE(IDR_SA_DISPLAYPLOT)));
+    m_pMainFrame->SetNewAccel(::LoadAccelerators(AfxFindResourceHandle(MAKEINTRESOURCE(IDR_DISPLAYPLOT),RT_ACCELERATOR), MAKEINTRESOURCE(IDR_DISPLAYPLOT)));
 
     // set popup
     m_nPopup = m_pMainFrame->GetPopup();
-    m_pMainFrame->SetPopup(IDR_SA_DISPLAYPLOT_POPUP);
+    m_pMainFrame->SetPopup(IDR_DISPLAYPLOT_POPUP);
 
     // Tile or maximize
     CDocList List;

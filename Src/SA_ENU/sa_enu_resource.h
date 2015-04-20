@@ -16,11 +16,11 @@
 #define ID_PREVIEW                      91
 #define IDR_MAINFRAME_SA                92
 #define IDR_MAINFRAME_AS                93
-#define IDR_SA_ANNTYPE                  94
-#define IDR_SA_AUDIOSYNC                95
-#define IDR_SA_WBTYPE                   96
-#define IDR_WORKBENCH                   97
-#define IDR_SA_MIDTYPE                  99
+#define IDR_SPEECHANALYZER                  94
+#define IDR_AUDIOSYNC                95
+#define IDR_WORKBENCH                   96
+#define IDS_WORKBENCH                   97
+#define IDR_SPEECHANALYZER_MIDTYPE                  99
 #define IDD_GRAPHSTYPES                 101
 #define IDD_PARAMETERSPITCHPAGE         103
 #define IDD_EXPORTFWRESULT              104
@@ -43,11 +43,11 @@
 #define IDD_INFORMATIONUSERPAGE         122
 #define IDC_SAMPLESIZE                  123
 #define IDD_OPTIONSVIEWPAGE             124
-#define IDR_SA_POPUP                    125
-#define IDR_SA_DISPLAYPLOT              126
-#define IDR_SA_DISPLAYPLOT_POPUP        127
+#define IDR_SPEECHANALYZER_POPUP                    125
+#define IDR_DISPLAYPLOT              126
+#define IDR_DISPLAYPLOT_POPUP        127
 #define IDR_MAINFRAME_SAS               128
-#define IDR_AS_POPUP                    129
+#define IDR_AUDIOSYNC_POPUP                    129
 #define IDD_RECORDER                    135
 #define IDD_CHARTVOWELSPAGE             140
 #define IDD_CHARTCONSONANTSPAGE         141
@@ -1168,7 +1168,7 @@
 #define IDS_WINDOW_MUSIC_PL2            2012
 #define IDS_WINDOW_MUSIC_PL3            2013
 #define IDS_WINDOW_MUSIC_PL4            2014
-#define IDS_WINDOW_FULL_TEXT            2015
+#define IDS_WINDOW_MUSIC_PL4_AS            2015
 #define IDC_FTRACKER_WINDOW_BANDWIDTH   2018
 #define IDC_FTRACKER_AZF_ADD_CONJUGATE_ZERO 2019
 #define IDC_FTRACKER_AZF_MOST_RECENT    2020
@@ -1285,6 +1285,8 @@
 #define IDC_CHECK_LOAD                  2116
 #define IDC_CHECK_LOAD_DATA             2117
 #define IDC_STATIC_TITLE                2118
+#define IDS_WINDOW_GLOSS_AS             2119
+#define IDS_WINDOW_REFERENCE_AS         2120
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1873,7 +1875,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        387
 #define _APS_NEXT_COMMAND_VALUE         33275
-#define _APS_NEXT_CONTROL_VALUE         2116
+#define _APS_NEXT_CONTROL_VALUE         2121
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

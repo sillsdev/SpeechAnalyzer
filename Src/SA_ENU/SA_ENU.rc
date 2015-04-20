@@ -117,9 +117,9 @@ IDI_PREV                ICON                    "res\\prev.ico"
 IDI_UP                  ICON                    "res\\up.ico"
 IDI_DOWN                ICON                    "res\\down.ico"
 IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\SA.ico"
-IDR_SA_WBTYPE           ICON                    "RES\\SA_WB.ICO"
-IDR_SA_ANNTYPE          ICON                    "RES\\SA.ICO"
-IDR_SA_AUDIOSYNC        ICON                    "RES\\AS.ICO"
+IDR_WORKBENCH           ICON                    "RES\\SA_WB.ICO"
+IDR_SPEECHANALYZER      ICON                    "RES\\SA.ICO"
+IDR_AUDIOSYNC           ICON                    "RES\\AS.ICO"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3172,7 +3172,7 @@ BEGIN
     END
 END
 
-IDR_SA_ANNTYPE MENU
+IDR_SPEECHANALYZER MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3542,7 +3542,7 @@ BEGIN
     END
 END
 
-IDR_SA_AUDIOSYNC MENU
+IDR_AUDIOSYNC MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3567,45 +3567,20 @@ BEGIN
         MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
         MENUITEM "Re&do\tCtrl+Y",               ID_EDIT_REDO
         MENUITEM SEPARATOR
-        POPUP "&Transcription"
-        BEGIN
-            MENUITEM "&Add Phonetic Segment\tCtrl+Q", ID_EDIT_ADD_PHONETIC
-            MENUITEM "Tr&anscription Editor\tF4",   ID_EDIT_EDITOR
-            MENUITEM "&Direct Edit\tF2",            ID_EDIT_INPLACE
-            MENUITEM "Re&move Segment\tDelete",     ID_EDIT_REMOVE
-            MENUITEM SEPARATOR
-            MENUITEM "Add &Syllable Segment\tCtrl+L", ID_EDIT_ADD_SYLLABLE
-            MENUITEM "Add Gloss &Word Segment\tCtrl+W", ID_EDIT_ADD_WORD
-            MENUITEM "Add Gloss &Bookmark\tCtrl+B", ID_EDIT_ADD_BOOKMARK
-            MENUITEM "Add Markup\tAlt+M",           ID_EDIT_ADD_MARKUP
-            MENUITEM "Add Phrase L&1 Segment\tCtrl+1", ID_EDIT_ADD_PHRASE_L1
-            MENUITEM "Add Phrase L&2 Segment\tCtrl+2", ID_EDIT_ADD_PHRASE_L2
-            MENUITEM "Add Phrase L&3 Segment\tCtrl+3", ID_EDIT_ADD_PHRASE_L3
-            MENUITEM "Add Phrase L&4 Segment\tCtrl+4", ID_EDIT_ADD_PHRASE_L4
-            MENUITEM "Add Wordlist &Record Markup\tAlt+Z", ID_EDIT_AUTO_ADD
-            MENUITEM "Add Text Breath &Group Markup\tAlt+X", ID_EDIT_AUTO_ADD_STORY_SECTION
-            MENUITEM SEPARATOR
-            MENUITEM "&Update All Boundaries",      ID_EDIT_AUTO_SNAP_UPDATE
-            MENUITEM SEPARATOR
-            MENUITEM "&Copy Phonetic Transcription to Phonemic", ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
-        END
         MENUITEM "Edit Segment &Boundaries\tINS", ID_EDIT_SEGMENT_BOUNDARIES
         MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
+        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
         MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
         MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
-        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
         MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
-        MENUITEM SEPARATOR
-        MENUITEM "Select &Waveform Segment\tCtrl+A", ID_EDIT_SELECTWAVEFORM_FAKE
-        MENUITEM "Select Wa&veform\tCtrl+ClickDrag", ID_EDIT_SELECTWAVEFORM_FAKE
         MENUITEM SEPARATOR
         POPUP "S&elect Segment"
         BEGIN
@@ -3763,6 +3738,7 @@ BEGIN
             MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
             MENUITEM "&Generate CV Data...",        ID_AUTO_GENERATE_CV_DATA
             MENUITEM "&Export CV Data...",          ID_EXPORT_CV_DATA
+            MENUITEM "Export SFT Data...",          ID_EXPORT_TIME_TABLE
         END
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
@@ -3775,7 +3751,7 @@ BEGIN
     END
 END
 
-IDR_SA_POPUP MENU
+IDR_SPEECHANALYZER_POPUP MENU
 BEGIN
     POPUP "Popup Graph"
     BEGIN
@@ -3966,16 +3942,17 @@ BEGIN
     END
 END
 
-IDR_AS_POPUP MENU
+IDR_AUDIOSYNC_POPUP MENU
 BEGIN
     POPUP "Popup Graph"
     BEGIN
+        MENUITEM "&Split and Move Left Here",   ID_EDIT_SPLIT_MOVE_LEFT_HERE
+        MENUITEM "Move &Right and Merge Here",  ID_EDIT_MOVE_RIGHT_MERGE_HERE
+        MENUITEM SEPARATOR
         MENUITEM "&Split Segment Here",         ID_EDIT_SPLIT_HERE
         MENUITEM "&Merge Segments Here",        ID_EDIT_MERGE_HERE
         MENUITEM "Move Data &Left Here",        ID_EDIT_MOVE_LEFT_HERE
         MENUITEM "Move Data &Right Here",       ID_EDIT_MOVE_RIGHT_HERE
-        MENUITEM "&Split and Move Left Here",   ID_EDIT_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Move &Right and Merge Here",  ID_EDIT_MOVE_RIGHT_MERGE_HERE
         MENUITEM SEPARATOR
         MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
         MENUITEM SEPARATOR
@@ -3999,17 +3976,18 @@ BEGIN
     END
     POPUP "Popup Transcription"
     BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "Add Markup\tAlt+M",           ID_EDIT_ADD_MARKUP
-        MENUITEM "&Remove\tDelete",             ID_EDIT_REMOVE
+        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
         MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
         MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
-        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM SEPARATOR
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Add Markup\tAlt+M",           ID_EDIT_ADD_MARKUP
+        MENUITEM "&Remove\tDelete",             ID_EDIT_REMOVE
         MENUITEM SEPARATOR
         MENUITEM "&View Boundaries",            ID_VIEW_TRANSCRIPTION_BOUNDARIES
         MENUITEM SEPARATOR
@@ -4024,12 +4002,13 @@ BEGIN
     END
     POPUP "Popup Graph"
     BEGIN
+        MENUITEM "&Split and Move Left Here",   ID_EDIT_SPLIT_MOVE_LEFT_HERE
+        MENUITEM "Move &Right and Merge Here",  ID_EDIT_MOVE_RIGHT_MERGE_HERE
+        MENUITEM SEPARATOR
         MENUITEM "&Split Segment Here",         ID_EDIT_SPLIT_HERE
         MENUITEM "&Merge Segments Here",        ID_EDIT_MERGE_HERE
         MENUITEM "Move Data &Left Here",        ID_EDIT_MOVE_LEFT_HERE
         MENUITEM "Move Data &Right Here",       ID_EDIT_MOVE_RIGHT_HERE
-        MENUITEM "&Split and Move Left Here",   ID_EDIT_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Move &Right and Merge Here",  ID_EDIT_MOVE_RIGHT_MERGE_HERE
         MENUITEM SEPARATOR
         MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
         MENUITEM SEPARATOR
@@ -4053,7 +4032,7 @@ BEGIN
     END
 END
 
-IDR_SA_WBTYPE MENU
+IDR_WORKBENCH MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -4095,7 +4074,7 @@ BEGIN
     END
 END
 
-IDR_SA_DISPLAYPLOT MENU
+IDR_DISPLAYPLOT MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -4179,7 +4158,7 @@ BEGIN
     END
 END
 
-IDR_SA_DISPLAYPLOT_POPUP MENU
+IDR_DISPLAYPLOT_POPUP MENU
 BEGIN
     POPUP "Popup Graph"
     BEGIN
@@ -4406,14 +4385,14 @@ END
 // Accelerator
 //
 
-IDR_SA_WBTYPE ACCELERATORS
+IDR_WORKBENCH ACCELERATORS
 BEGIN
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
     VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
 END
 
-IDR_SA_ANNTYPE ACCELERATORS
+IDR_SPEECHANALYZER ACCELERATORS
 BEGIN
     "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
     "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
@@ -4515,7 +4494,7 @@ BEGIN
     VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
 END
 
-IDR_SA_AUDIOSYNC ACCELERATORS
+IDR_AUDIOSYNC ACCELERATORS
 BEGIN
     "J",            ID_AUTO_GENERATE_CV_DATA, VIRTKEY, CONTROL, NOINVERT
     "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
@@ -4618,7 +4597,7 @@ BEGIN
     VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
 END
 
-IDR_SA_DISPLAYPLOT ACCELERATORS
+IDR_DISPLAYPLOT ACCELERATORS
 BEGIN
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
     "T",            ID_GRAPHS_TILE,         VIRTKEY, CONTROL, NOINVERT
@@ -5176,15 +5155,16 @@ BEGIN
     VS_COPYRIGHT            "© 1996-2015 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME_SA        "Speech Analyzer"
     IDR_MAINFRAME_AS        "Audio+Sync"
-    IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    IDR_SA_AUDIOSYNC        "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
+    IDR_SPEECHANALYZER      "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
+    IDR_AUDIOSYNC           "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
 END
 
 STRINGTABLE
 BEGIN
-    IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
-    IDR_WORKBENCH           "Workbench"
-    IDR_SA_MIDTYPE          "\nMID\nSA MIDI\nMIDI Files (*.mid)\n.mid\nmidFileType\nMID File Type"
+    IDR_WORKBENCH           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
+    IDS_WORKBENCH           "Workbench"
+    IDR_SPEECHANALYZER_MIDTYPE 
+                            "\nMID\nSA MIDI\nMIDI Files (*.mid)\n.mid\nmidFileType\nMID File Type"
 END
 
 STRINGTABLE
@@ -5633,7 +5613,13 @@ BEGIN
     IDS_WINDOW_MUSIC_PL2    "Phrase L2"
     IDS_WINDOW_MUSIC_PL3    "Phrase L3"
     IDS_WINDOW_MUSIC_PL4    "Phrase L4"
-    IDS_WINDOW_FULL_TEXT    "Full Text"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_WINDOW_REFERENCE_AS    "Reference"
+    IDS_WINDOW_GLOSS_AS     "Text"
+    IDS_WINDOW_MUSIC_PL4_AS "Full Text"
 END
 
 STRINGTABLE
@@ -5770,13 +5756,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_SA_POPUP            "Change the current graph type to plot E\nPlot E"
+    IDR_SPEECHANALYZER_POPUP "Change the current graph type to plot E\nPlot E"
 END
 
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME_SAS       "SA Server"
-    IDR_AS_POPUP            "Change the current graph type to plot E\nPlot E"
+    IDR_AUDIOSYNC_POPUP     "Change the current graph type to plot E\nPlot E"
 END
 
 STRINGTABLE
@@ -6308,6 +6294,11 @@ BEGIN
     IDS_SAB_QUERY_EXISTING_DATA 
                             "WARNING! There is existing segment data in the Reference, Gloss and/or Gloss Nat. segments.\nProceeding with the import process will overwrite the segment data.\nClick YES to proceed with the import process.\nClick NO to terminate."
     IDP_ASK_TO_SAVE         "Save changes for this project '%1'?"
+    IDS_GRAPH_TITLE_RAWDATA "Raw Waveform"
+    IDS_GRAPH_TITLE_LOUDNESS "Intensity"
+    IDS_GRAPH_TITLE_DURATION "Duration"
+    IDS_GRAPH_TITLE_CHANGE  "Change"
+    IDS_GRAPH_TITLE_PITCH   "Raw Pitch"
 END
 
 STRINGTABLE
@@ -6315,29 +6306,26 @@ BEGIN
     ID_PLAYBACK_BEGINCURSOR "Plays between the begin cursor and the end of the file\nPlay Begin Cursor -> File End"
     ID_HELP_KEYBOARD_SHORTCUTS 
                             "List available keyboard short-cut keys\nView short-cuts"
-	IDS_GRAPH_TITLE_RAWDATA             "Raw Waveform"               
-	IDS_GRAPH_TITLE_LOUDNESS         "Intensity"
-	IDS_GRAPH_TITLE_DURATION        "Duration"                   
-	IDS_GRAPH_TITLE_CHANGE        "Change"                     
-	IDS_GRAPH_TITLE_PITCH        "Raw Pitch"                  
-	IDS_GRAPH_TITLE_CHPITCH        "Custom Pitch"               
-	IDS_GRAPH_TITLE_SMPITCH        "Smoothed Pitch"             
-	IDS_GRAPH_TITLE_GRAPITCH        "Auto Pitch"                 
-	IDS_GRAPH_TITLE_SPECTROGRAM        "Spectrogram"                 
-	IDS_GRAPH_TITLE_SNAPSHOT        "Snapshot"                    
-	IDS_GRAPH_TITLE_SPECTRUM        "Spectrum"                   
-	IDS_GRAPH_TITLE_ZCROSS        "Zero Crossing"              
-	IDS_GRAPH_TITLE_F1F2        "F1 v. F2"                   
-	IDS_GRAPH_TITLE_F2F1        "F2 v. F1"                   
-	IDS_GRAPH_TITLE_F2F1F1        "(F2-F1) v. F1"              
-	IDS_GRAPH_TITLE_3D        "F1 v. F2 v. F3"             
-	IDS_GRAPH_TITLE_MELOGRAM        "Melogram"                   
-	IDS_GRAPH_TITLE_TWC        "Tonal Weighting Chart"       
-	IDS_GRAPH_TITLE_MAGNITUDE        "Magnitude"                   
-	IDS_GRAPH_TITLE_STAFF        "Staff"                      
-	IDS_GRAPH_TITLE_RECORDING        "Position View"              
+END
 
-
+STRINGTABLE
+BEGIN
+    IDS_GRAPH_TITLE_CHPITCH "Custom Pitch"
+    IDS_GRAPH_TITLE_SMPITCH "Smoothed Pitch"
+    IDS_GRAPH_TITLE_GRAPITCH "Auto Pitch"
+    IDS_GRAPH_TITLE_SPECTROGRAM "Spectrogram"
+    IDS_GRAPH_TITLE_SNAPSHOT "Snapshot"
+    IDS_GRAPH_TITLE_SPECTRUM "Spectrum"
+    IDS_GRAPH_TITLE_ZCROSS  "Zero Crossing"
+    IDS_GRAPH_TITLE_F1F2    "F1 v. F2"
+    IDS_GRAPH_TITLE_F2F1    "F2 v. F1"
+    IDS_GRAPH_TITLE_F2F1F1  "(F2-F1) v. F1"
+    IDS_GRAPH_TITLE_3D      "F1 v. F2 v. F3"
+    IDS_GRAPH_TITLE_MELOGRAM "Melogram"
+    IDS_GRAPH_TITLE_TWC     "Tonal Weighting Chart"
+    IDS_GRAPH_TITLE_MAGNITUDE "Magnitude"
+    IDS_GRAPH_TITLE_STAFF   "Staff"
+    IDS_GRAPH_TITLE_RECORDING "Position View"
 END
 
 #endif    // English (United States) resources

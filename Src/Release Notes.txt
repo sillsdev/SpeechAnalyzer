@@ -1,3 +1,9 @@
+AS - 0.99.0.10 4/20/2015
+- Disabled Transcription Editor dialog and inplace editing. (AS)
+- Added 'Export SFT Data...' to Tools menu (AS)
+- Modified menu order of graph and transcription popup menus (AS)
+- Modified transcription bar titles (AS)
+
 AS - 0.99.0.9 4/17/2015
 - Modified .PSA file to default the Phonetic font to courier-new, 8pt. (AS)
 - Modified .PSA file to display PL4, not PL1 (AS)

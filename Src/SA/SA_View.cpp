@@ -4559,6 +4559,11 @@ void CSaView::OnEditInplace() {
     m_advancedSelection.Update(this);
     int nAnnotationIndex = m_advancedSelection.GetSelectionIndex();
 
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	if (pApp->IsAudioSync()) {
+		return;
+	}
+
     if ((nAnnotationIndex != -1) &&
         (GetFocusedGraphWnd()!=NULL) &&
         (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex))) { 

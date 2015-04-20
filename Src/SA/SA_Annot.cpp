@@ -664,6 +664,20 @@ void CLegendWnd::OnDraw(CDC * pDC,
         IDS_WINDOW_MUSIC_PL4
     };
 
+    int resourceIndexAS[] = {
+        IDS_WINDOW_PHONETIC,
+        IDS_WINDOW_TONE,
+        IDS_WINDOW_PHONEMIC,
+        IDS_WINDOW_ORTHO,
+        IDS_WINDOW_GLOSS_AS,
+        IDS_WINDOW_GLOSS_NAT,
+        IDS_WINDOW_REFERENCE_AS,
+        IDS_WINDOW_MUSIC_PL1,
+        IDS_WINDOW_MUSIC_PL2,
+        IDS_WINDOW_MUSIC_PL3,
+        IDS_WINDOW_MUSIC_PL4_AS
+    };
+
 	bool usingAS = pApp->IsAudioSync();
 
     CString szText;
@@ -671,12 +685,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
         int current = CGraphWnd::m_anAnnWndOrder[nLoop];
         if (pGraph->HaveAnnotation(current)) {
             // gloss window is visible
-			int rid = resourceIndex[current];
-			if (usingAS) {
-				if (rid==IDS_WINDOW_MUSIC_PL4) {
-					rid = IDS_WINDOW_FULL_TEXT;
-				}
-			}
+			int rid = (usingAS)?resourceIndexAS[current]:resourceIndex[current];
             szText.LoadString(rid);
             if (pDC->IsPrinting()) {
                 rWnd.bottom += printAnnotation[current].Height();
@@ -2115,15 +2124,6 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         int index = pView->GetSelectionIndex();
         BOOL selected = !pView->SelectFromPosition(m_nIndex, dwPosition, false);
         TRACE("selection_index=%d selectpos=%d\n",index,selected);
-        //if (((CMainFrame *)AfxGetMainWnd())->IsEditAllowed() &&
-        //     (!pView->SelectFromPosition(m_nIndex, dwPosition, false)) &&
-        //     (pView->GetSelectionIndex()!=-1)) {
-            //SDM 1.5Test8.5
-            // Selection not changed
-        //    if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000)) {
-        //       OnCreateEdit();
-        //    }
-        //};
 
         // SDM 1.06.6U2
         if (pView->GetSelectionIndex() != -1) {
@@ -2162,15 +2162,19 @@ void CAnnotationWnd::OnLButtonDblClk(UINT nFlags, CPoint point) {
         CWnd::OnLButtonDblClk(nFlags, point);
         return;
     }
-    CSaView * pView = (CSaView *)pGraph->GetParent();
-    // if nothing selected select it
-    if (pView->GetDocument()->GetSegment(m_nIndex)->GetSelection() == -1) {
-        SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));    // send message to parent
-    }
-    AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_EDIT_EDITOR, 0L);
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	if (!pApp->IsAudioSync()) {
+		CSaView * pView = (CSaView *)pGraph->GetParent();
+		// if nothing selected select it
+		if (pView->GetDocument()->GetSegment(m_nIndex)->GetSelection() == -1) {
+			// send message to parent
+			SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));    
+		}
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_EDIT_EDITOR, 0L);
 
-    // disable slow click (timed out)
-    m_nSelectTickCount = GetTickCount() - DWORD(SLOW_CLICK_TIME_LIMIT * 1000);
+		// disable slow click (timed out)
+		m_nSelectTickCount = GetTickCount() - DWORD(SLOW_CLICK_TIME_LIMIT * 1000);
+	}
 
     CWnd::OnLButtonDblClk(nFlags, point);
 }

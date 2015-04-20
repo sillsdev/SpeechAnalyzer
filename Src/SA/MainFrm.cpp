@@ -1037,11 +1037,13 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam2, LPARAM lParam, SSpecific * pSpecifi
 // and on top of all other windows.
 /***************************************************************************/
 void CMainFrame::OnEditor() {
-    if (!IsEditAllowed()) {
+    
+	if (!IsEditAllowed()) {
         return;
     }
     if (m_pDlgEditor==NULL) {
-        m_pDlgEditor = new CDlgEditor(this);  // New Editor with view parent
+		// New Editor with view parent
+        m_pDlgEditor = new CDlgEditor(this);  
     }
     if (m_pDlgEditor!=NULL) {
         // Create window if necessary
@@ -1081,13 +1083,18 @@ LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/) {
 // CMainFrame::IsEditAllowed
 /***************************************************************************/
 BOOL CMainFrame::IsEditAllowed() {
-    if (m_pDisplayPlot!=NULL) {
+    
+	if (m_pDisplayPlot!=NULL) {
         return FALSE;
-    } else {
-        return TRUE;
     }
-}
 
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	if (pApp->IsAudioSync()) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
 
 /***************************************************************************/
 // CMainFrame::OnEditFind Launches the find dialog
@@ -2771,7 +2778,7 @@ void CMainFrame::SetPopup(int nPopup) {
 
 int CMainFrame::GetPopup() const {
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int nID = pApp->IsAudioSync()? IDR_AS_POPUP : IDR_SA_POPUP;
+	int nID = pApp->IsAudioSync()? IDR_AUDIOSYNC_POPUP : IDR_SPEECHANALYZER_POPUP;
     return (m_nPopup!=0) ? m_nPopup : nID;
 };
 

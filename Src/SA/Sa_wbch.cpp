@@ -448,7 +448,7 @@ void CSaWorkbenchView::OnInitialUpdate() {
     }
     // set up the documents title
     CSaString szTitle;
-    szTitle.LoadString(IDR_WORKBENCH);
+    szTitle.LoadString(IDS_WORKBENCH);
     szTitle = GetDocument()->GetTitle() + ": " + szTitle;
     GetDocument()->SetTitle(szTitle);
 }
