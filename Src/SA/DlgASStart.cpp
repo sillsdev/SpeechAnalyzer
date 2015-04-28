@@ -106,15 +106,32 @@ void CDlgASStart::OnClickedBrowseAudio() {
 
 void CDlgASStart::OnClickedBrowsePhrases() {
 
+	if ((audioFilename.GetLength()!=0) &&
+	    (FileUtils::FileExists(audioFilename))) {
+		// audio is OK
+		// update phrase if need be
+		CString datapath = FileUtils::ReplaceExtension( audioFilename, L".saxml").c_str();
+		if (FileUtils::FileExists(datapath)) {
+			int result = AfxMessageBox(IDS_RESTART_CONFIRM,MB_YESNO|MB_ICONQUESTION);
+			if (result!=IDYES) {
+				return;
+			}
+			::DeleteFile(datapath);
+			edit2.SetWindowTextW(L"");
+			phraseFilename = L"";
+			OnChange();
+		}
+	}
+
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-    CSaString szFilter = "Phrase Files (*.phrases) |*.phrases|Text Files (*.txt) |*.txt|All Files (*.*) |*.*||";
-    CFileDialog dlg(TRUE,_T("phrases"),phraseFilename,OFN_HIDEREADONLY,szFilter,NULL);
+	CSaString szFilter = "Phrase Files (*.phrases) |*.phrases|Text Files (*.txt) |*.txt|All Files (*.*) |*.*||";
+	CFileDialog dlg(TRUE,_T("phrases"),phraseFilename,OFN_HIDEREADONLY,szFilter,NULL);
 	CString defaultDir = pApp->GetDefaultDir();
-    dlg.m_ofn.lpstrInitialDir = defaultDir;
-    if (dlg.DoModal()!=IDOK) {
-        return;
-    }
-    phraseFilename = dlg.GetPathName();
+	dlg.m_ofn.lpstrInitialDir = defaultDir;
+	if (dlg.DoModal()!=IDOK) {
+		return;
+	}
+	phraseFilename = dlg.GetPathName();
 	// if they just selected something, and it's valid, enable segmentation and loading
 	if ((phraseFilename.GetLength()>0)&&(FileUtils::FileExists(phraseFilename))) {
 		segmentAudio = TRUE;
@@ -132,6 +149,9 @@ void CDlgASStart::OnChange() {
 	if (audioFilename.GetLength()==0) {
 		// let them edit but not get out
 		edit2.EnableWindow(FALSE);
+		CString title;
+		title.LoadStringW(IDS_BROWSE);
+		browse2.SetWindowTextW(title);
 		browse2.EnableWindow(FALSE);
 		checkbox1.EnableWindow(FALSE);
 		text1.EnableWindow(FALSE);
@@ -149,7 +169,10 @@ void CDlgASStart::OnChange() {
 			segmentAudio = FALSE;
 			loadData = FALSE;
 			edit2.EnableWindow(FALSE);
-			browse2.EnableWindow(FALSE);
+			CString title;
+			title.LoadStringW(IDS_RESTART_PROJECT);
+			browse2.SetWindowTextW(title);
+			browse2.EnableWindow(TRUE);
 			checkbox1.EnableWindow(FALSE);
 			text1.EnableWindow(FALSE);
 			combo1.EnableWindow(FALSE);
@@ -162,6 +185,9 @@ void CDlgASStart::OnChange() {
 				segmentAudio = FALSE;
 				loadData = FALSE;
 				edit2.EnableWindow(TRUE);
+				CString title;
+				title.LoadStringW(IDS_BROWSE);
+				browse2.SetWindowTextW(title);
 				browse2.EnableWindow(TRUE);
 				checkbox1.EnableWindow(FALSE);
 				text1.EnableWindow(FALSE);
@@ -171,6 +197,9 @@ void CDlgASStart::OnChange() {
 			} else if (FileUtils::FileExists(phraseFilename)) {
 				// valid phrase file
 				edit2.EnableWindow(TRUE);
+				CString title;
+				title.LoadStringW(IDS_BROWSE);
+				browse2.SetWindowTextW(title);
 				browse2.EnableWindow(TRUE);
 				// enable segmentation if need be
 				// this can happen with or without phrase file
@@ -193,6 +222,9 @@ void CDlgASStart::OnChange() {
 			} else {
 				// invalid phrase data
 				edit2.EnableWindow(TRUE);
+				CString title;
+				title.LoadStringW(IDS_BROWSE);
+				browse2.SetWindowTextW(title);
 				browse2.EnableWindow(TRUE);
 				segmentAudio = FALSE;
 				loadData = FALSE;
@@ -207,6 +239,9 @@ void CDlgASStart::OnChange() {
 		// audio file doesn't exist
 		// let them edit, but not exit
 		edit2.EnableWindow(FALSE);
+		CString title;
+		title.LoadStringW(IDS_BROWSE);
+		browse2.SetWindowTextW(title);
 		browse2.EnableWindow(FALSE);
 		checkbox1.EnableWindow(FALSE);
 		text1.EnableWindow(FALSE);

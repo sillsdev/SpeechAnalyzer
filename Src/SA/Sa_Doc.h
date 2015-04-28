@@ -33,28 +33,27 @@
 #ifndef _SA_DOC_H
 #define _SA_DOC_H
 
-#include "undoredo.h"
-#include "SaString.h"
-#include "sourceParm.h"
-#include "ISa_Doc.h"
-#include "TranscriptionData.h"
-#include "DlgAutoReferenceData.h"
-#include "AlignInfo.h"
-#include "ExportFWSettings.h"
-#include "ExportLiftSettings.h"
-#include "FmtParm.h"
-#include "AutoSave.h"
-#include "Process\ProcessDoc.h"
-#include "SaParam.h"
 #include <ElanUtils.h>
 #include <LiftUtils.h>
+#include "undoredo.h"
+#include "ISa_Doc.h"
+#include "sourceParm.h"
+#include "FmtParm.h"
+#include "SaParam.h"
+#include "TranscriptionData.h"
+#include "Process\ProcessDoc.h"
 #include "SegmentOps.h"
+#include "AutoSave.h"
 
 #import "SAUtils.tlb" no_namespace named_guids
 
 //###########################################################################
 // CSaDoc document
 
+class CAlignInfo;
+class CExportFWSettings;
+class CExportLiftSettings;
+class CSaString;
 class CSaView;
 class CFontTable;
 class CProcessAdjust;
@@ -89,9 +88,13 @@ class CDlgAutoReferenceData;
 class CTranscriptionDataSettings;
 class CMusicPhraseSegment;
 class CPhoneticSegment;
+class TranscriptionData;
+class CUndoRedoDoc;
+interface ISaDoc;
 
 class CSaDoc : public CUndoRedoDoc, public ISaDoc {
-    DECLARE_DYNCREATE(CSaDoc)
+    
+	DECLARE_DYNCREATE(CSaDoc)
 
 protected:
     CSaDoc();
@@ -351,8 +354,8 @@ public:
     void MoveDataLeft(DWORD offset);
     void MoveDataRight(DWORD offset);
 	void DeselectAll();
-	void ImportSAB( CSaView & view, LPCTSTR filename);
-	void ImportSAB( LPCTSTR filename, bool segmentAudio, bool loadData, int skipCount);
+	void ImportSAB( CSaView & view, LPCTSTR filename, int algorithm);
+	void ImportSAB( LPCTSTR filename, bool segmentAudio, bool loadData, int skipCount, int algorithm);
 	void SegmentAudio( );
 	void LoadData( );
 
@@ -406,8 +409,11 @@ public:
 						  bool bEntire,
 						  BOOL bMelogram);
 	void GenerateCVData( CSaView & view);
-	bool AutoSegment( CSaView & view, DWORD goal);
+	bool AutoSegment( CTranscriptionData & td, CSaView & view, DWORD goal, int algorithm, int skipCount, bool usingGL);
 	int FindPhoneticIndex( CSegment * pSeg, int index);
+
+	void ErrorMessage(UINT nTextID, LPCTSTR pszText1=NULL, LPCTSTR pszText2=NULL);
+	void ErrorMessage( CSaString & msg);
 
 protected:
     virtual void DeleteContents();
@@ -454,16 +460,10 @@ private:
 
     void CreateSAXML(LPCTSTR filename, Elan::CAnnotationDocument & document, map<EAnnotation,wstring> & assignments);
 
-    void ErrorMessage(UINT nTextID, LPCTSTR pszText1=NULL, LPCTSTR pszText2=NULL);
-
     void NormalizePhoneticDependencies();
     int GetInsertionIndex(CSegment * pSegment, DWORD offset);
 
 	void UpdateReferenceBuffer();
-
-	void ErrorMessage( CSaString & msg);
-
-	void JoinSegmentBoundaries();
 
 	// SAB transcription data buffer
 	bool sabLoaded;

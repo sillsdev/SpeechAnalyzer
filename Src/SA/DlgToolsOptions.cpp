@@ -1145,6 +1145,36 @@ BOOL CDlgOptionsAudioPage::OnInitDialog() {
     return TRUE;
 }
 
+// CDlgOptionsAudioPage property page
+// Displays all important controls to change the saving behaviour of this
+// application.
+
+BEGIN_MESSAGE_MAP(CDlgOptionsAudioSyncPage, CPropertyPage)
+END_MESSAGE_MAP()
+
+CDlgOptionsAudioSyncPage::CDlgOptionsAudioSyncPage() : CPropertyPage(CDlgOptionsAudioSyncPage::IDD) {
+}
+
+void CDlgOptionsAudioSyncPage::DoDataExchange(CDataExchange * pDX) {
+    CPropertyPage::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_COMBO_AUDIOSYNC_ALGORITHM, m_Algorithm);
+	if (pDX->m_bSaveAndValidate) {
+		m_nAlgorithm = m_Algorithm.GetCurSel();
+	}
+}
+
+BOOL CDlgOptionsAudioSyncPage::OnInitDialog() {
+    CPropertyPage::OnInitDialog();
+    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+	m_nAlgorithm = pMainWnd->GetAudioSyncAlgorithm();
+	m_Algorithm.SetCurSel(m_nAlgorithm);
+    return TRUE;
+}
+
+int CDlgOptionsAudioSyncPage::GetAlgorithm() {
+	return m_nAlgorithm;
+}
+
 //###########################################################################
 // CDlgToolsOptions property sheet
 // Displays all important controls to customize this application.
@@ -1170,6 +1200,10 @@ CDlgToolsOptions::CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent, bool full
         AddPage(&m_dlgSavePage);
     }
     AddPage(&m_dlgAudioPage);
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	if (pApp->IsAudioSync()) {
+		AddPage(&m_dlgAudioSyncPage);
+	}
 }
 
 /***************************************************************************/
@@ -1328,6 +1362,12 @@ CToolSettings CDlgToolsOptions::GetSettings(bool full) {
 
     // audio page
     settings.m_bShowAdvancedAudio = m_dlgAudioPage.m_bShowAdvancedAudio;
+
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	if (pApp->IsAudioSync()) {
+		settings.m_nAlgorithm = m_dlgAudioSyncPage.GetAlgorithm();
+	}
+
     return settings;
 }
 

@@ -384,7 +384,7 @@ void CDependentSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
         pDoc->CheckPoint();
     }
 
-    RemoveAt(sel,false);
+    ClearText(sel);
 
     // get pointer to view
     POSITION pos = pDoc->GetFirstViewPosition();

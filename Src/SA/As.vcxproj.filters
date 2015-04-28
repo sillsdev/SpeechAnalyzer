@@ -216,6 +216,7 @@
     <ClCompile Include="WaveInDevice.cpp" />
     <ClCompile Include="WaveOutDevice.cpp" />
     <ClCompile Include="WaveWarp.cpp" />
+    <ClCompile Include="AutoSegmentation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignInfo.h" />
@@ -445,6 +446,7 @@
     <ClInclude Include="WaveOutDevice.h" />
     <ClInclude Include="WaveWarp.h" />
     <ClInclude Include="picture.h" />
+    <ClInclude Include="AutoSegmentation.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AS.rc" />

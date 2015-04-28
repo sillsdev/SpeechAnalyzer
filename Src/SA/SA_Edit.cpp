@@ -788,7 +788,10 @@ BOOL CDlgAnnotationEdit::PreTranslateMessage(MSG * pMsg) {
             if (pWnd && pWnd->IsWindowEnabled()) {
                 pWnd->GetSel(nFirst, nLast);
             }
-            if ((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == 0 && nLast == nFirst) {
+            if (((pMsg->message == WM_KEYDOWN) || 
+				(pMsg->message == WM_SYSKEYDOWN)) && 
+				(nFirst == 0) && 
+				(nLast == nFirst)) {
                 OnOK();
                 GetView()->SendMessage(WM_COMMAND, ID_EDIT_PREVIOUS, 0);
                 GetView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
@@ -805,8 +808,8 @@ BOOL CDlgAnnotationEdit::PreTranslateMessage(MSG * pMsg) {
                 nLength = pWnd->LineLength();
             }
             if (((pMsg->message == WM_KEYDOWN) || (pMsg->message == WM_SYSKEYDOWN)) &&
-                    (nFirst == nLength) &&
-                    (nLast == nFirst)) {
+                (nFirst == nLength) &&
+                (nLast == nFirst)) {
                 OnOK();
                 GetView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);
                 GetView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);

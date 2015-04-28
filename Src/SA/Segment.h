@@ -134,13 +134,6 @@ public:
     DWORD GetDurationAt(int index) const;
     void InsertAt(int index, DWORD offset, DWORD duration);
     void InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration);
-	// remove text, offset and duration
-    virtual void RemoveAt(int index, bool remove);
-    virtual bool Split( DWORD start, DWORD newStopStart);
-    virtual bool Merge( DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
-    virtual bool MoveDataLeftSAB(DWORD offset, CString newText);
-    virtual bool MoveDataLeft(DWORD offset);
-    virtual bool MoveDataRight(DWORD offset, bool sab);
     void AdjustDuration(DWORD offset, DWORD duration);
     virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
 	// insert a new segment
@@ -155,16 +148,23 @@ public:
     /** returns true if there are no offsets */
     BOOL IsEmpty() const;
 
+	// remove a segment
+    virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);
+	// remove text, offset and duration
+    virtual void RemoveAt(int index);
+	// delete all contents of the segment arrays
+    virtual void DeleteContents();
+	// erase all text entries
+	void DeleteText();
+	// erase the text for a given element
+	void ClearText(int index);
+
     // modify internal data
 	// adjust cursors to appropriate snap position
     void AdjustCursorsToSnap(CDocument * pDoc);
 	// set selection
     void SetSelection(int nIndex);
-	// remove a segment
-    virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);
     virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace);
-	// delete all contents of the segment arrays
-    virtual void DeleteContents();
     // adjust position of segment
 	virtual void Adjust( ISaDoc * saDoc, int nIndex, DWORD dwNewOffset, DWORD dwNewDuration, bool segmental);
 	// adjust position of segment - local only
@@ -203,6 +203,7 @@ public:
     void ShrinkSegment( CSaDoc & document, DWORD sectionStart, DWORD sectionLength);  
 	// adjust segments to new file size
     void GrowSegment( CSaDoc & document, DWORD sectionStart, DWORD sectionLength);  
+
 	bool IsDependent( CSegment & parent);
 
 	int GetLastNonEmptyValue();
@@ -210,6 +211,11 @@ public:
 	virtual bool ContainsText( DWORD offset, DWORD duration);
 
     bool SplitSegment( CSaDoc & document, int sel, DWORD splitPosition);
+    virtual bool Split( DWORD start, DWORD newStopStart);
+    virtual bool Merge( DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
+    virtual bool MoveDataLeftSAB(DWORD offset, CString newText);
+    virtual bool MoveDataLeft(DWORD offset);
+    virtual bool MoveDataRight(DWORD offset, bool sab);
 
 protected:
     int GetReferenceCount(CSegment * pSegment, int sel);

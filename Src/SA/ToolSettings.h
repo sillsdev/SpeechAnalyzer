@@ -31,22 +31,28 @@ public:
     int m_nDlgYStyle;
 
     // color page
-    BOOL m_bColorsChanged;  // TRUE, if colors changed by user
-    Colors m_cColors;       // internal color structure
+	// TRUE, if colors changed by user
+    BOOL m_bColorsChanged;
+	// internal color structure
+    Colors m_cColors;       
     int m_nGraphSelect;
     int m_nAnnotationSelect;
     int m_nScaleSelect;
     int m_nOverlaySelect;
 
     //font page
-    BOOL m_bFontChanged;            // TRUE, if fonts changed by user
-    CStringArray m_GraphFonts;      // array of graph font face strings
-    CUIntArray m_GraphFontSizes;    // array of graph font sizes
-    BOOL m_bUseUnicodeEncoding;     // Experimental....
+	// TRUE, if fonts changed by user
+    BOOL m_bFontChanged;
+	// array of graph font face strings
+    CStringArray m_GraphFonts;
+	// array of graph font sizes
+    CUIntArray m_GraphFontSizes;
+	// Experimental....
+    BOOL m_bUseUnicodeEncoding;
 
     // save page
-    BOOL m_saveOpenFiles;           // tdg - 09/03/97
-    BOOL m_showStartupDlg;          // DDO - 08/03/00
+    BOOL m_saveOpenFiles;
+    BOOL m_showStartupDlg;
     CString m_szPermGraphs;
     CString m_szTempGraphs;
     CString m_szPermCurrLabel;
@@ -54,6 +60,9 @@ public:
 
     // audio page
     BOOL m_bShowAdvancedAudio;
+
+	// algorithm used for AudioSync import function
+	int m_nAlgorithm;
 };
 
 #endif

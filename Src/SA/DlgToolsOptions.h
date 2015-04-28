@@ -54,7 +54,7 @@ public:
     void SetGridStyle(int XStyle, int YStyle);
     void GetGridStyle(int * XStyle, int * YStyle);
 
-    enum { IDD = IDD_OPTIONSVIEWPAGE };
+    enum { IDD = IDD_OPTIONSVIEW_PAGE };
     BOOL m_bStatusbar;
     BOOL m_bToolbar;
     BOOL m_bScrollZoom;
@@ -75,7 +75,7 @@ public:
     static const int IndexToStyle[];
 
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
     afx_msg void OnModifiedStatusbar();
     afx_msg void OnModified();
@@ -87,10 +87,11 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-    CComboGridlines  m_xGridlines;
-    CComboGridlines  m_yGridlines;
-    CSpinControl     m_SpinAnimationRate;
-    BOOL m_bModified; // TRUE if page member data modified
+    CComboGridlines m_xGridlines;
+    CComboGridlines m_yGridlines;
+    CSpinControl m_SpinAnimationRate;
+	// TRUE if page member data modified
+    BOOL m_bModified;
 
 };
 
@@ -100,19 +101,23 @@ private:
 class CDlgOptionsColorPage : public CPropertyPage {
 
 public:
-    CDlgOptionsColorPage(); // standard constructor
+	// standard constructor
+    CDlgOptionsColorPage();
 
-    BOOL m_bColorsChanged;  // TRUE, if colors changed by user
-    Colors m_cColors;       // internal color structure
+	// TRUE, if colors changed by user
+    BOOL m_bColorsChanged;
+	// internal color structure
+    Colors m_cColors;
 
-    enum { IDD = IDD_OPTIONSCOLORSPAGE };
+    enum { IDD = IDD_OPTIONSCOLORS_PAGE };
     int m_nGraphSelect;
     int m_nAnnotationSelect;
     int m_nScaleSelect;
     int m_nOverlaySelect;
 
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+	// DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);
     void FillColorComboBoxInfo(BOOL bAddStrings);
     BOOL ChangeColor(COLORREF * pColor);
     virtual BOOL OnInitDialog();
@@ -139,16 +144,22 @@ protected:
 class CDlgOptionsFontPage : public CPropertyPage {
 
 public:
-    CDlgOptionsFontPage();  // standard constructor
-    ~CDlgOptionsFontPage(); // standard destructor
+	// standard constructor
+    CDlgOptionsFontPage();
+	// standard destructor
+    ~CDlgOptionsFontPage();
 
-    BOOL m_bFontChanged;            // TRUE, if fonts changed by user
-    CStringArray m_GraphFonts;      // array of graph font face strings
-    CUIntArray m_GraphFontSizes;    // array of graph font sizes
-    BOOL m_bUseUnicodeEncoding;     // Experimental....
+	// TRUE, if fonts changed by user
+    BOOL m_bFontChanged;
+	// array of graph font face strings
+    CStringArray m_GraphFonts;
+	// array of graph font sizes
+    CUIntArray m_GraphFontSizes;
+	// Experimental....
+    BOOL m_bUseUnicodeEncoding;
 
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
     afx_msg void OnFont();
     afx_msg void OnSelChangeAnnotList();
@@ -203,9 +214,9 @@ private:
 class CDlgOptionsAudioPage : public CPropertyPage {
 
 public:
-    CDlgOptionsAudioPage(); // standard constructor
+    CDlgOptionsAudioPage();
 
-    enum { IDD = IDD_OPTIONSAUDIOPAGE };
+    enum { IDD = IDD_OPTIONSAUDIO_PAGE };
     BOOL m_bShowAdvancedAudio;
 
 protected:
@@ -213,6 +224,26 @@ protected:
     virtual BOOL OnInitDialog();
 
     DECLARE_MESSAGE_MAP()
+};
+
+class CDlgOptionsAudioSyncPage : public CPropertyPage {
+
+public:
+    CDlgOptionsAudioSyncPage();
+	int GetAlgorithm();
+
+	enum { IDD = IDD_OPTIONSAUDIOSYNC_PAGE };
+
+protected:
+    virtual void DoDataExchange(CDataExchange * pDX);
+    virtual BOOL OnInitDialog();
+
+    DECLARE_MESSAGE_MAP()
+
+private:
+    CComboBox m_Algorithm;
+	int m_nAlgorithm;
+
 };
 
 class CDlgToolsOptions : public CPropertySheet {
@@ -229,15 +260,17 @@ public:
     CDlgOptionsFontPage m_dlgFontPage;
     CDlgOptionsSavePage m_dlgSavePage;
     CDlgOptionsAudioPage m_dlgAudioPage;
+    CDlgOptionsAudioSyncPage m_dlgAudioSyncPage;
 
     CToolSettings GetSettings(bool fullView);
 
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnApplyNow();
-    void ChangeButtons();                               // delete Apply button, move other buttons
+	// delete Apply button, move other buttons
+    void ChangeButtons();
 
     CButton m_cHelp;
     bool fullView;

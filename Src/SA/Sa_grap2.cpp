@@ -194,7 +194,8 @@ BOOL CGraphWnd::SetLegendScale(int nMode, double dMinValue, double dMaxValue, TC
     // set legend scale
     BOOL bNewScale = m_pLegend->SetScale(nMode, dMinValue, dMaxValue, pszDimension, nDivisions, d3dOffset);
     if (bNewScale && m_nPlotID != ID_GRAPHS_OVERLAY) {
-        RedrawGraph(TRUE, m_bLegend, FALSE);    // redraw whole graph
+		// redraw whole graph
+        RedrawGraph(TRUE, m_bLegend, FALSE);
     }
 
     return bNewScale && m_nPlotID != ID_GRAPHS_OVERLAY;
@@ -206,8 +207,9 @@ BOOL CGraphWnd::SetLegendScale(int nMode, double dMinValue, double dMaxValue, TC
 void CGraphWnd::SetXScale(int nMode, int nMinValue, int nMaxValue, TCHAR * pszDimension, int nDivisions, double d3dOffset) {
     if (m_bXScale) {
         // set x-scale scale
-        if (m_pXScale->SetScale(nMode, nMinValue, nMaxValue, pszDimension, nDivisions, d3dOffset) && m_nPlotID != ID_GRAPHS_OVERLAY) { // set x-scale scale
-            RedrawGraph(TRUE, TRUE);    // redraw whole graph
+        if (m_pXScale->SetScale(nMode, nMinValue, nMaxValue, pszDimension, nDivisions, d3dOffset) && m_nPlotID != ID_GRAPHS_OVERLAY) {
+			// redraw whole graph
+            RedrawGraph(TRUE, TRUE);    
         }
     }
 }
@@ -217,7 +219,8 @@ void CGraphWnd::SetXScale(int nMode, int nMinValue, int nMaxValue, TCHAR * pszDi
 //**************************************************************************/
 void CGraphWnd::ChangeAnnotationSelection(int nIndex) {
     if (m_abAnnWnd[nIndex]) {
-        m_apAnnWnd[nIndex]->Invalidate(TRUE);    // redraw
+		// redraw
+        m_apAnnWnd[nIndex]->Invalidate(TRUE);    
     }
 }
 

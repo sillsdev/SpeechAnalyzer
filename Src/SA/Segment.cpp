@@ -125,7 +125,7 @@ void CSegment::DeleteContents() {
     m_Text.RemoveAll();
     m_Offset.RemoveAll();
     m_Duration.RemoveAll();
-	// SDM 1.5Test8.1 empty segments can not be selected
+	// SDM 1.5Test8.1 empty segments cannot be selected
     m_nSelection = -1; 
 }
 
@@ -180,7 +180,7 @@ void CSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
         pDoc->CheckPoint();
     }
 
-    RemoveAt(sel,true);
+    RemoveAt(sel);
 
     // refresh ui
     pDoc->SetModifiedFlag(TRUE);                        // document has been modified
@@ -299,7 +299,7 @@ BOOL CSegment::SetAt(const CSaString & text, DWORD dwStart, DWORD dwDuration) {
         if (nIndex>=0) {
             // index was found
             // remove the existing string
-            RemoveAt(nIndex,true);
+            RemoveAt(nIndex);
             InsertAt(nIndex,(LPCTSTR)text,dwStart,dwDuration);
         } else {
             // index was at end of string
@@ -799,7 +799,7 @@ DWORD CSegment::GetDurationAt(int index) const {
 /**
 * remove text, offset and duration
 */
-void CSegment::RemoveAt(int index, bool remove) {
+void CSegment::RemoveAt(int index) {
     
 	ASSERT(index>=0);
     ASSERT(index<m_Offset.GetCount());
@@ -809,15 +809,26 @@ void CSegment::RemoveAt(int index, bool remove) {
     if (index>=m_Offset.GetCount()) {
         return;
     }
-    if (remove)  {
-        m_Text.RemoveAt(index);
-        m_Offset.RemoveAt(index);
-        m_Duration.RemoveAt(index);
-    } else {
-        m_Text[index] = "";
-    }
+    m_Text.RemoveAt(index);
+    m_Offset.RemoveAt(index);
+    m_Duration.RemoveAt(index);
 }
 
+/**
+* remove text, offset and duration
+*/
+void CSegment::ClearText(int index) {
+   
+	ASSERT(index>=0);
+    ASSERT(index<m_Text.GetCount());
+    if (index<0) {
+        return;
+    }
+    if (index>=m_Text.GetCount()) {
+        return;
+    }
+    m_Text[index] = "";
+}
 /*
 * Returns the text that is within the start and stop markers
 */
@@ -894,13 +905,13 @@ int CSegment::FindIndex(DWORD offset) {
 /**
 * Find the segment the offset is located within
 * Returns -1 if not found
-* sound new-agey..
+* sounds new-agey..
 */
 int CSegment::FindWithin(DWORD offset) {
     for (INT_PTR i = 0; i < m_Offset.GetSize(); i++) {
 		DWORD start = m_Offset[i];
 		DWORD stop = start + m_Duration[i];
-		if ((start<=offset)&&(offset<=stop)) {
+		if ((start<=offset)&&(offset<stop)) {
 			return i;
 		}
     }
@@ -970,7 +981,7 @@ bool CSegment::Merge( DWORD thisOffset, DWORD prevOffset, DWORD thisStop) {
     }
 
     // shorten text
-    RemoveAt(index,true);
+    RemoveAt(index);
     // increase segment size
     AdjustDuration(prevOffset,thisStop-prevOffset);
 	return true;
@@ -1183,7 +1194,8 @@ void CSegment::ShrinkSegment( CSaDoc & document, DWORD dwSectionStart, DWORD dwS
                     Adjust(  nIndex, dwOldOffset, dwSectionStart-dwOldOffset);
                 }
             } else {
-                bAdjusted = TRUE;    // segment ends before the cut region
+				// segment ends before the cut region
+                bAdjusted = TRUE;
             }
         } else if ((dwOldOffset+dwOldDuration) > (dwSectionStart+dwSectionLength)) {
             //Segment starts in cut region
@@ -1196,17 +1208,20 @@ void CSegment::ShrinkSegment( CSaDoc & document, DWORD dwSectionStart, DWORD dwS
         if (!bAdjusted) {
             // delete segment
 			TRACE("removing %d\n",nIndex);
-            RemoveAt(nIndex,true);
-            nIndex--; // segment deleted decrement to point to last segment
+            RemoveAt(nIndex);
+			// segment deleted decrement to point to last segment
+            nIndex--; 
         }
         if (nIndex==-1) {
             // GetNext does not work correctly for (nIndex==-1)
             nIndex = 0;
             if (IsEmpty()) {
-                return;    // nothing more to do
+				// nothing more to do
+                return;    
             }
         } else {
-            nIndex = GetNext(nIndex); // find next index
+			// find next index
+            nIndex = GetNext(nIndex); 
         }
     }
     // now change all the offsets of the following segment
@@ -1214,7 +1229,8 @@ void CSegment::ShrinkSegment( CSaDoc & document, DWORD dwSectionStart, DWORD dwS
         DWORD dwOldOffset = GetOffset(nIndex);
         DWORD dwOldDuration = GetDuration(nIndex);
         Adjust( nIndex, dwOldOffset - dwSectionLength, dwOldDuration);
-        nIndex = GetNext(nIndex); // find next index
+		// find next index
+        nIndex = GetNext(nIndex); 
     }
 }
 
@@ -1342,7 +1358,7 @@ void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
 		return;
 	}
 
-    TRACE("segment insertat type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,index,offset,duration);
+    //TRACE("segment insertat type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,index,offset,duration);
     m_Text.InsertAt(index,CString(text));
     m_Offset.InsertAt(index,offset);
     m_Duration.InsertAt(index,duration);
@@ -1384,3 +1400,9 @@ bool CSegment::SplitSegment( CSaDoc & document, int sel, DWORD splitPosition) {
 	return modified;
 }
 
+// remove all text content
+void CSegment::DeleteText() {
+	for (int i=0;i<m_Offset.GetCount();i++) {
+		m_Text[i] = L"";
+	}
+}

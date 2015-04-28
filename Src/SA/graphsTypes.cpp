@@ -505,7 +505,7 @@ void CDlgGraphTypesOrder::OnDown() {
     int nSelection = m_cList.GetCurSel();
 
     if (nSelection >= m_cList.GetCount() - 1) {
-        return;    // can not move down
+        return;    // cannot move down
     }
 
     SwapLayoutGraphs(nSelection);

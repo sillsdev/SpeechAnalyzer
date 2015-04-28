@@ -132,7 +132,8 @@ struct SDictionaryList {
 };
 
 SDictionaryList Dictionary[] = {
-    _T("American English - Male"), "c:\\mbrola\\voices\\us2", // filename placeholder
+	// filename placeholder
+    _T("American English - Male"), "c:\\mbrola\\voices\\us2", 
     _T("American English - Female"), "c:\\mbrola\\voices\\us1",
     0,0  // Null terminated list
 };
@@ -141,7 +142,8 @@ SDictionaryList Dictionary[] = {
 BOOL CDlgMbrola::OnInitDialog() {
     CPropertyPage::OnInitDialog();
 
-    m_cGrid.FakeArrowKeys(TRUE); // for some reason the arrow keys do not seem to work on a property sheet ??
+	// for some reason the arrow keys do not seem to work on a property sheet ??
+    m_cGrid.FakeArrowKeys(TRUE); 
 
     // Label Grid
     m_cGrid.SetTextMatrix(rowHeading,columnDescription, _T("ITEM #"));

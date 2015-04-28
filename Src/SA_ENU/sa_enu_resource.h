@@ -16,11 +16,11 @@
 #define ID_PREVIEW                      91
 #define IDR_MAINFRAME_SA                92
 #define IDR_MAINFRAME_AS                93
-#define IDR_SPEECHANALYZER                  94
-#define IDR_AUDIOSYNC                95
+#define IDR_SPEECHANALYZER              94
+#define IDR_AUDIOSYNC                   95
 #define IDR_WORKBENCH                   96
 #define IDS_WORKBENCH                   97
-#define IDR_SPEECHANALYZER_MIDTYPE                  99
+#define IDR_SPEECHANALYZER_MIDTYPE      99
 #define IDD_GRAPHSTYPES                 101
 #define IDD_PARAMETERSPITCHPAGE         103
 #define IDD_EXPORTFWRESULT              104
@@ -42,12 +42,12 @@
 #define IDC_NUMBERSAMPLES               121
 #define IDD_INFORMATIONUSERPAGE         122
 #define IDC_SAMPLESIZE                  123
-#define IDD_OPTIONSVIEWPAGE             124
-#define IDR_SPEECHANALYZER_POPUP                    125
-#define IDR_DISPLAYPLOT              126
-#define IDR_DISPLAYPLOT_POPUP        127
+#define IDD_OPTIONSVIEW_PAGE            124
+#define IDR_SPEECHANALYZER_POPUP        125
+#define IDR_DISPLAYPLOT                 126
+#define IDR_DISPLAYPLOT_POPUP           127
 #define IDR_MAINFRAME_SAS               128
-#define IDR_AUDIOSYNC_POPUP                    129
+#define IDR_AUDIOSYNC_POPUP             129
 #define IDD_RECORDER                    135
 #define IDD_CHARTVOWELSPAGE             140
 #define IDD_CHARTCONSONANTSPAGE         141
@@ -212,7 +212,7 @@
 #define IDS_ERROR_FORMATMONO            1008
 #define IDD_ADVANCEDSEGMENT             1008
 #define IDS_ERROR_DATACHUNK             1009
-#define IDD_OPTIONSCOLORSPAGE           1010
+#define IDD_OPTIONSCOLORS_PAGE          1010
 #define IDS_ERROR_NODATA                1010
 #define IDD_RECORDEROPTIONS             1011
 #define IDS_ERROR_READSACHUNK           1011
@@ -1168,7 +1168,7 @@
 #define IDS_WINDOW_MUSIC_PL2            2012
 #define IDS_WINDOW_MUSIC_PL3            2013
 #define IDS_WINDOW_MUSIC_PL4            2014
-#define IDS_WINDOW_MUSIC_PL4_AS            2015
+#define IDS_WINDOW_MUSIC_PL4_AS         2015
 #define IDC_FTRACKER_WINDOW_BANDWIDTH   2018
 #define IDC_FTRACKER_AZF_ADD_CONJUGATE_ZERO 2019
 #define IDC_FTRACKER_AZF_MOST_RECENT    2020
@@ -1195,7 +1195,7 @@
 #define IDC_MULTICHANNEL_COMBO          2039
 #define IDD_ADVANCEDPARSEWORD           2040
 #define IDD_ADVANCEDPARSEPHRASE         2041
-#define IDD_OPTIONSAUDIOPAGE            2042
+#define IDD_OPTIONSAUDIO_PAGE           2042
 #define IDC_SHOW_ADVANCED_OPTIONS       2043
 #define IDD_ANNOTATION_GLOSS_PAGE       2043
 #define IDD_ANNOTATION_IMPORT_REF       2044
@@ -1219,6 +1219,8 @@
 #define IDD_ANNOTATION_GLOSS_PAGE1      2051
 #define IDD_ANNOTATION_GLOSS_NAT_PAGE   2051
 #define IDC_FILENAME_COMBO              2052
+#define IDD_OPTIONSAUDIOSYNC            2052
+#define IDD_OPTIONSAUDIOSYNC_PAGE       2052
 #define IDC_BEGIN_SPIN                  2053
 #define IDC_END_SPIN                    2054
 #define IDC_FIRST_GLOSS_RADIO           2055
@@ -1287,6 +1289,8 @@
 #define IDC_STATIC_TITLE                2118
 #define IDS_WINDOW_GLOSS_AS             2119
 #define IDS_WINDOW_REFERENCE_AS         2120
+#define IDS_WINDOW_PHONETIC_AS          2121
+#define IDC_COMBO_AUDIOSYNC_ALGORITHM   2122
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1662,17 +1666,26 @@
 #define ID_EDIT_SPLIT_MOVE_LEFT         33249
 #define ID_EDIT_MERGE                   33250
 #define ID_EDIT_MOVE_RIGHT              33251
-#define ID_EDIT_MOVE_RIGHT_MERGE        33252
-#define ID_EDIT_ADD_MARKUP              33253
-#define ID_EDIT_SPLIT_HERE              33260
-#define ID_EDIT_MOVE_LEFT_HERE          33261
-#define ID_EDIT_SPLIT_MOVE_LEFT_HERE    33262
-#define ID_EDIT_MERGE_HERE              33263
-#define ID_EXPORT_CV_DATA               33264
-#define ID_EDIT_MOVE_RIGHT_HERE         33265
-#define ID_EDIT_MOVE_RIGHT_MERGE_HERE   33266
-#define ID_PLAYBACK_BEGINCURSOR         33267
-#define ID_HELP_KEYBOARD_SHORTCUTS      33271
+#define ID_EDIT_MOVE_RIGHT_MERGE_NEXT   33252
+#define ID_EDIT_MOVE_RIGHT_MERGE_PREV   33253
+#define ID_EDIT_ADD_MARKUP              33254
+#define ID_EXPORT_CV_DATA               33255
+#define ID_PLAYBACK_BEGINCURSOR         33256
+#define ID_HELP_KEYBOARD_SHORTCUTS      33257
+#define ID_POPUPTRANSCRIPTION_NEXTERROR 33258
+#define ID_POPUPTRANSCRIPTION_PREVIOUSERROR 33259
+#define ID_NEXT_ERROR                   33260
+#define ID_PREVIOUS_ERROR               33261
+#define ID_SPLIT_MOVE_LEFT_AT           33262
+#define ID_MOVE_RIGHT_MERGE_NEXT_AT     33263
+#define ID_MOVE_RIGHT_MERGE_PREV_AT     33264
+#define ID_SPLIT_HERE                   33265
+#define ID_MOVE_LEFT_HERE               33266
+#define ID_SPLIT_MOVE_LEFT_HERE         33267
+#define ID_MERGE_HERE                   33268
+#define ID_MOVE_RIGHT_HERE              33269
+#define ID_MOVE_RIGHT_MERGE_NEXT_HERE   33270
+#define ID_MOVE_RIGHT_MERGE_PREV_HERE   33271
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1846,36 +1859,39 @@
 #define IDS_ERROR_AUTO_PARSE            61353
 #define IDS_SAB_QUERY_EXISTING_DATA     61353
 #define IDP_ASK_TO_SAVE                 61354
-	#define IDS_GRAPH_TITLE_RAWDATA           61355       
-	#define IDS_GRAPH_TITLE_LOUDNESS   61356
-	#define IDS_GRAPH_TITLE_DURATION        61357            
-	#define IDS_GRAPH_TITLE_CHANGE          61358             
-	#define IDS_GRAPH_TITLE_PITCH           61359         
-	#define IDS_GRAPH_TITLE_CHPITCH         61360        
-	#define IDS_GRAPH_TITLE_SMPITCH         61361       
-	#define IDS_GRAPH_TITLE_GRAPITCH         61362           
-	#define IDS_GRAPH_TITLE_SPECTROGRAM       61363             
-	#define IDS_GRAPH_TITLE_SNAPSHOT         61364             
-	#define IDS_GRAPH_TITLE_SPECTRUM        61365             
-	#define IDS_GRAPH_TITLE_ZCROSS        61366       
-	#define IDS_GRAPH_TITLE_F1F2          61367           
-	#define IDS_GRAPH_TITLE_F2F1           61368           
-	#define IDS_GRAPH_TITLE_F2F1F1         61369        
-	#define IDS_GRAPH_TITLE_3D             61370   
-	#define IDS_GRAPH_TITLE_MELOGRAM        61371             
-	#define IDS_GRAPH_TITLE_TWC         61372
-	#define IDS_GRAPH_TITLE_MAGNITUDE       61373              
-	#define IDS_GRAPH_TITLE_STAFF          61374              
-	#define IDS_GRAPH_TITLE_RECORDING      61375          
+#define IDS_GRAPH_TITLE_RAWDATA         61355
+#define IDS_GRAPH_TITLE_LOUDNESS        61356
+#define IDS_GRAPH_TITLE_DURATION        61357
+#define IDS_GRAPH_TITLE_CHANGE          61358
+#define IDS_GRAPH_TITLE_PITCH           61359
+#define IDS_GRAPH_TITLE_CHPITCH         61360
+#define IDS_GRAPH_TITLE_SMPITCH         61361
+#define IDS_GRAPH_TITLE_GRAPITCH        61362
+#define IDS_GRAPH_TITLE_SPECTROGRAM     61363
+#define IDS_GRAPH_TITLE_SNAPSHOT        61364
+#define IDS_GRAPH_TITLE_SPECTRUM        61365
+#define IDS_GRAPH_TITLE_ZCROSS          61366
+#define IDS_GRAPH_TITLE_F1F2            61367
+#define IDS_GRAPH_TITLE_F2F1            61368
+#define IDS_GRAPH_TITLE_F2F1F1          61369
+#define IDS_GRAPH_TITLE_3D              61370
+#define IDS_GRAPH_TITLE_MELOGRAM        61371
+#define IDS_GRAPH_TITLE_TWC             61372
+#define IDS_GRAPH_TITLE_MAGNITUDE       61373
+#define IDS_GRAPH_TITLE_STAFF           61374
+#define IDS_GRAPH_TITLE_RECORDING       61375
+#define IDS_RESTART_PROJECT             61376
+#define IDS_BROWSE                      61377
+#define IDS_RESTART_CONFIRM             61378
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        387
-#define _APS_NEXT_COMMAND_VALUE         33275
-#define _APS_NEXT_CONTROL_VALUE         2121
+#define _APS_NEXT_RESOURCE_VALUE        388
+#define _APS_NEXT_COMMAND_VALUE         33289
+#define _APS_NEXT_CONTROL_VALUE         2123
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

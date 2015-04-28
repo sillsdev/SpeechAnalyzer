@@ -1,3 +1,22 @@
+AS - 0.99.0.11 4/27/2015
+- (#1) Added 'A', 'S' and 'D' keys to control 'Join Prev', 'Split' and 'Join Next' respectively for operations based on the green 'start cursor location.  These keyboard operations are in addition the existing methods: Edit menu, Transcription popup menu, Graph popup menu, and accelerator key strokes.
+The user must click (and release) on the graph or transcription line with the mouse, and then use one of the three keys to perform the split or join operations.  The operation is based on the location of the green 'start' cursor.  The user does not need to click the mouse button if the green start cursor is already correctly located.
+The accelerator keys for the Edit and Transcription Popup menus have also been changed to match these keys.  They are now Ctrl-Shift-A, Ctrl-Shift-S and Ctrl-Shift D.
+- (#2) Fixed problem with enabling of 'edit boundaries' when performing merge/split.
+- (#3) Removed word and text delimiters from Gloss transcription display. (AS)
+- (#4) The transcription heading 'Gloss English' was changed to 'Text.
+- (#5) The .PSA file was changed to hide the 'Gloss National' transcription field by default.
+- (#6) The transcription heading 'Phonetic' was changed to 'Segment.
+- (#7) The operation of the space bar was modified.  Before it was used to start or PAUSE playback.  It now either starts or STOPS playback.  
+Also, it now always starts or restarts from the green 'start' cursor location.
+By default AS place the green start cursor near the beginning of audio on startup.
+- (#9) The wording 'Move Data' was changed to 'Move Text'.
+- (#10a) The wording for the split and merge operations was changed.  All three context menus (edit, transcription popup, graph popup) were modified.
+- (#10b) A new 'Join with Next' function was implemented.  Menu items were added.
+- (#12) The startup dialog box now replaces the text file 'browse' button with 'Restart Project' if an existing .SAXML file exists.  If the user clicks this button, a message box will be displayed to confirm the request before deleting the .SAXML file.  After the file is deleted, the user will be able to select a new text file an perform resegmentation.
+- (#15) No change. See #12
+- Fixed problem that was still allowed in-place editing to work. (AS)
+
 AS - 0.99.0.10 4/20/2015
 - Disabled Transcription Editor dialog and inplace editing. (AS)
 - Added 'Export SFT Data...' to Tools menu (AS)

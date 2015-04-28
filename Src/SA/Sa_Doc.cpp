@@ -82,79 +82,94 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "sa_doc.h"
-#include "sa_plot.h"
-#include "sa_graph.h"
-#include "Segment.h"
-#include "sa.h"
-#include "sa_view.h"
-#include "sa_wbch.h"
-#include "mainfrm.h"
-#include "sa_g_stf.h"
-#include "TranscriptionDataSettings.h"
-#include "SFMHelper.h"
-#include "TextHelper.h"
-#include "TranscriptionHelper.h"
-#include "Shlobj.h"
+#include "AlignInfo.h"
 #include "ArchiveTransfer.h"
-#include "ReferenceSegment.h"
-#include "GlossSegment.h"
+#include "AutoSave.h"
+#include "ClipboardHelper.h"
+#include "DependentSegment.h"
+#include "DlgAutoRecorder.h"
+#include "DlgAutoReferenceData.h"
+#include "DlgExportFW.h"
+#include "DlgExportFWResult.h"
+#include "DlgExportLiftResult.h"
+#include "DlgImportElanSheet.h"
+#include "DlgImportSFMRef.h"
+#include "DlgInsertSilence.h"
+#include "DlgMultichannel.h"
+#include "DlgPlayer.h"
+#include "DlgSaveAsOptions.h"
+#include "ExportFWSettings.h"
+#include "ExportLiftSettings.h"
+#include "FileEncodingHelper.h"
+#include "FileUtils.h"
+#include "FmtParm.h"
 #include "GlossNatSegment.h"
+#include "GlossSegment.h"
+#include "IndependentSegment.h"
+#include "ISa_Doc.h"
+#include "LiftUtils.h"
+#include "mainfrm.h"
+#include "MusicPhraseSegment.h"
+#include "objectistream.h"
+#include "objectostream.h"
 #include "OrthoSegment.h"
 #include "PhonemicSegment.h"
 #include "PhoneticSegment.h"
-#include "ToneSegment.h"
-#include "MusicPhraseSegment.h"
-#include "IndependentSegment.h"
-#include "DependentSegment.h"
-#include "FileUtils.h"
-#include "SplitFileUtils.h"
-#include "ClipboardHelper.h"
-#include "Process\Process.h"
-#include "Process\ProcessDoc.h"
-#include "Process\sa_w_adj.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_pit.h"
-#include "Process\sa_p_cpi.h"
-#include "Process\sa_p_spi.h"
-#include "Process\sa_p_gra.h"
-#include "Process\sa_p_mel.h"
-#include "Process\sa_p_cha.h"
-#include "Process\sa_p_raw.h"
-#include "Process\sa_p_spg.h"
-#include "Process\sa_p_sfmt.h"
-#include "Process\sa_p_spu.h"
-#include "Process\sa_p_fmt.h"
-#include "Process\sa_p_zcr.h"
-#include "Process\sa_p_dur.h"
-#include "Process\sa_p_glo.h"
-#include "Process\sa_p_poa.h"
-#include "Process\sa_p_rat.h"
-#include "Process\sa_p_twc.h"
 #include "Process\FormantTracker.h"
 #include "Process\Hilbert.h"
-#include "objectostream.h"
-#include "objectistream.h"
-#include <io.h>
-#include "FileEncodingHelper.h"
+#include "Process\Process.h"
+#include "Process\ProcessDoc.h"
+#include "Process\sa_p_cha.h"
+#include "Process\sa_p_cpi.h"
+#include "Process\sa_p_dur.h"
+#include "Process\sa_p_fmt.h"
+#include "Process\sa_p_fra.h"
+#include "Process\sa_p_fra.h"
+#include "Process\sa_p_glo.h"
+#include "Process\sa_p_gra.h"
+#include "Process\sa_p_lou.h"
+#include "Process\sa_p_mel.h"
+#include "Process\sa_p_pit.h"
+#include "Process\sa_p_poa.h"
+#include "Process\sa_p_rat.h"
+#include "Process\sa_p_raw.h"
+#include "Process\sa_p_sfmt.h"
+#include "Process\sa_p_spg.h"
+#include "Process\sa_p_spi.h"
+#include "Process\sa_p_spu.h"
+#include "Process\sa_p_twc.h"
+#include "Process\sa_p_zcr.h"
+#include "Process\sa_w_adj.h"
+#include "ReferenceSegment.h"
+#include "sa.h"
 #include "SaParam.h"
-#include "ScopedCursor.h"
-#include "WaveUtils.h"
-#include "StringUtils.h"
+#include "SaString.h"
 #include "SAXMLUtils.h"
-#include "LiftUtils.h"
+#include "sa_graph.h"
+#include "sa_g_stf.h"
+#include "sa_plot.h"
+#include "sa_view.h"
+#include "sa_wbch.h"
+#include "ScopedCursor.h"
+#include "Segment.h"
+#include "SegmentOps.h"
+#include "SFMHelper.h"
+#include "Shlobj.h"
+#include "sourceParm.h"
+#include "SplitFileUtils.h"
+#include "StringUtils.h"
+#include "TextHelper.h"
+#include "ToneSegment.h"
+#include "TranscriptionData.h"
+#include "TranscriptionDataSettings.h"
+#include "TranscriptionHelper.h"
+#include "undoredo.h"
+#include "WaveUtils.h"
+#include <ElanUtils.h>
+#include <io.h>
+#include <LiftUtils.h>
 #include <uriparser/uri.h>
-#include "DlgInsertSilence.h"
-#include "DlgImportElanSheet.h"
-#include "DlgExportLiftResult.h"
-#include "DlgImportSFMRef.h"
-#include "DlgMultichannel.h"
-#include "DlgSaveAsOptions.h"
-#include "DlgPlayer.h"
-#include "DlgExportFW.h"
-#include "DlgExportFWResult.h"
-#include "DlgAutoRecorder.h"
+#include "AutoSegmentation.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -502,6 +517,7 @@ void CSaDoc::SetUttParm(const CUttParm * pUttParm, BOOL bOriginal) {
 // a new document.
 /***************************************************************************/
 void CSaDoc::DeleteContents() {
+
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // reset and clear all data members
 	// plain raw data
@@ -8409,7 +8425,7 @@ void CSaDoc::DeselectAll() {
 /**
 * Normal method called during 'import SAB menu item
 */
-void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename) {
+void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename, int algorithm) {
 
 	CheckPoint();
 
@@ -8481,13 +8497,14 @@ void CSaDoc::ImportSAB( CSaView & view, LPCTSTR filename) {
 		autoSegment = true;
 	}
 
-	ImportSAB( filename, autoSegment, true, 0);
+	CMainFrame * pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	ImportSAB( filename, autoSegment, true, 0, pMainFrame->GetAudioSyncAlgorithm());
 }
 
 /**
 * Called during AS startup
 */
-void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int skipCount) {
+void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int skipCount, int algorithm) {
 
 	if ((!autoSegment)&&(!loadData)) return;
 
@@ -8561,11 +8578,6 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 	CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
 	CGlossNatSegment * pGlossNat = (CGlossNatSegment*)GetSegment(GLOSS_NAT);
 
-	CToneSegment * pTone = (CToneSegment*)GetSegment(TONE);
-	COrthographicSegment * pOrtho = (COrthographicSegment*)GetSegment(ORTHO);
-	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
-	CPhonemicSegment * pPhonemic = (CPhonemicSegment*)GetSegment(PHONEMIC);
-
     // get reference to view
     POSITION pos = GetFirstViewPosition();
     CSaView & view = (CSaView &)*GetNextView(pos);
@@ -8585,27 +8597,14 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 	}
 
 	if (autoSegment) {
+		
 		DWORD goal = (usingGL)?gl.size():gn.size();
 		goal += skipCount;
-		if (!AutoSegment( view, goal)) {
+		
+		if (!AutoSegment( td, view, goal, algorithm, skipCount, usingGL)) {
 			view.RefreshGraphs(TRUE,TRUE,TRUE);
 			return;
 		}
-
-		// remove the segments the user told us to ignore
-		while (skipCount>0) {
-			pRef->RemoveAt(0,true);
-			pGlossNat->RemoveAt(0,true);
-			pGloss->RemoveAt(0,true);
-			pTone->RemoveAt(0,true);
-			pOrtho->RemoveAt(0,true);
-			pPhonemic->RemoveAt(0,true);
-			pPhonetic->RemoveAt(0,true);
-			skipCount--;
-		}
-
-		// walk through the segments are remove the spacing between segments
-		JoinSegmentBoundaries();
 	}
 
 	view.RefreshGraphs(TRUE,TRUE,TRUE);
@@ -9507,10 +9506,10 @@ void CSaDoc::GenerateCVData( CSaView & view) {
 		}
 		if ((dwSamples>0) && (bRes)) {
 			double fData = double(nData) / PRECISION_MULTIPLIER / dwSamples;
-			TRACE("pitch value = %f\n",fData);
+			//TRACE("pitch value = %f\n",fData);
 			pTone->Add( this, &view, offset, CSaString(L"V"), false, false);
 		} else {
-			TRACE("pitch value = none\n");
+			//TRACE("pitch value = none\n");
 			pTone->Add( this, &view, offset, CSaString(L"C"), false, false);
 		}
 	}
@@ -9521,129 +9520,14 @@ void CSaDoc::GenerateCVData( CSaView & view) {
 * we find the 'goal'
 * ..Or end in defeat...
 */
-bool CSaDoc::AutoSegment( CSaView & view, DWORD goal) {
+bool CSaDoc::AutoSegment( CTranscriptionData & td, CSaView & view, DWORD goal, int algorithm, int skipCount, bool usingGL) {
 
 	TRACE("Attempting to locate %d segments\n",goal);
-
-    // get parse parameters document member data
-    // store new data
-    CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
-    ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-	
-    RestartAllProcesses();
-
-	view.RefreshGraphs(TRUE);
-
-	// divide and conquer until we find the answer
-	int maxBreakWidth = 999;
-	int minBreakWidth = 1;
-	int nextBreakWidth = (maxBreakWidth+minBreakWidth)/2;
-
-	// processing is done on the gloss segment, but we will copy it
-	// to the gloss or gloss_nat when we are done.
-
-    CSegment * pSegment = m_apSegments[GLOSS];
-
-	unsigned int error = 100000;
-	int bestWidth = -1;
-
-	// search based on least error
-	while (true) {
-
-		nextBreakWidth = (maxBreakWidth+minBreakWidth)/2.0f;
-
-		TRACE("max=%d min=%d next=%d\n",maxBreakWidth,minBreakWidth,nextBreakWidth);
-
-		pMainFrame->SetPhraseBreakWidth((float)(nextBreakWidth)/1000.0f);
-
-		DeleteSegmentContents(PHONETIC);
-		DeleteSegmentContents(PHONEMIC);
-		DeleteSegmentContents(ORTHO);
-		DeleteSegmentContents(TONE);
-	    DeleteSegmentContents(GLOSS);
-		DeleteSegmentContents(GLOSS_NAT);
-		DeleteSegmentContents(REFERENCE);
-
-		pSegment->RestartProcess(); // for the case of a cancelled process
-		pSegment->SetDataInvalid(); // SDM 1.5Test10.7
-
-		// segment the data
-		short int nResult = LOWORD(pSegment->Process(NULL, this));
-		if (nResult == PROCESS_ERROR) {
-			// error parsing
-			ErrorMessage(IDS_ERROR_PARSE);
-			return false;
-		}
-		if (nResult == PROCESS_CANCELED) {
-			// error canceled parsing
-			ErrorMessage(IDS_CANCELED);
-			return false;
-		}
-
-		DWORD count = pSegment->GetOffsetSize();
-		TRACE("found %d segments\n",count);
-
-		if (count==goal) {
-			return true;
-		}
-
-		// sigh - we must continue
-		unsigned int thisError = (goal<count)?count-goal:goal-count;
-		if (thisError < error) {
-			error = thisError;
-			bestWidth = nextBreakWidth;
-		}
-		if (count>goal) {
-			// we found too many, we need to raise the break width
-			minBreakWidth = nextBreakWidth;
-		} else {
-			// we found too few, we need to lower the break width
-			maxBreakWidth = nextBreakWidth;
-		}
-		if ((maxBreakWidth-minBreakWidth)<=1) {
-			break;
-		}
+	CAutoSegmentation worker;
+	if (algorithm==1) {
+		return worker.PhoneticMatching(*this,td,skipCount,usingGL);
 	}
-
-	// we failed
-	// run it one more time with the best result
-	pMainFrame->SetPhraseBreakWidth((float)(bestWidth)/1000.0f);
-
-	DeleteSegmentContents(PHONETIC);
-	DeleteSegmentContents(PHONEMIC);
-	DeleteSegmentContents(ORTHO);
-	DeleteSegmentContents(TONE);
-	DeleteSegmentContents(GLOSS);
-	DeleteSegmentContents(GLOSS_NAT);
-	DeleteSegmentContents(REFERENCE);
-
-	// for the case of a cancelled process
-	pSegment->RestartProcess();
-	// SDM 1.5Test10.7
-	pSegment->SetDataInvalid(); 
-	// segment the data
-	short int nResult = LOWORD(pSegment->Process(NULL, this));
-	if (nResult == PROCESS_ERROR) {
-		// error parsing
-		ErrorMessage(IDS_ERROR_PARSE);
-		return false;
-	}
-	if (nResult == PROCESS_CANCELED) {
-		// error canceled parsing
-		ErrorMessage(IDS_CANCELED);
-		return false;
-	}
-	DWORD count = pSegment->GetOffsetSize();
-	TRACE("found %d segments\n",count);
-
-	CString param1;
-	param1.Format(L"%d",goal);
-	CString param2;
-	param2.Format(L"%d",pSegment->GetOffsetSize());
-    CSaString msg;
-    AfxFormatString2(msg,IDS_ERROR_SAB_AUTOPARSE_FAIL,param1,param2);
-	ErrorMessage(msg);
-	return false;
+	return worker.DivideAndConquer(*this,view,goal,skipCount);
 }
 
 void CSaDoc::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
@@ -9675,28 +9559,6 @@ int CSaDoc::FindPhoneticIndex( CSegment * pSeg, int sel) {
 		}
 	}
 	return -1;
-}
-
-/**
-* Walk through and determine the midpoint between any segment pair.
-* The midpoint because the new stop/start location
-* This is only useful for AudioSync
-*/
-void CSaDoc::JoinSegmentBoundaries() {
-
-	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetSegment(PHONETIC);
-	for (int i=0;i<pPhonetic->GetOffsetSize();i++) {
-		if (i==0) continue;
-		DWORD lastStart = pPhonetic->GetOffset(i-1);
-		DWORD lastStop = pPhonetic->GetStop(i-1);
-		DWORD start = pPhonetic->GetOffset(i);
-		DWORD stop = pPhonetic->GetStop(i);
-		if (lastStop==start) continue;
-		DWORD midPoint = (lastStop+start)/2;
-		// these calls use adjust dependent segments as well
-		pPhonetic->Adjust( this, i-1, lastStart, midPoint-lastStart, false);
-		pPhonetic->Adjust( this, i, midPoint, stop-midPoint, false);
-	}
 }
 
 /**

@@ -23,22 +23,28 @@ CToolSettings::CToolSettings() {
     m_nDlgYStyle = 0;
 
     // color page
-    m_bColorsChanged = FALSE;  // TRUE, if colors changed by user
+	// TRUE, if colors changed by user
+    m_bColorsChanged = FALSE;
     m_nGraphSelect = 0;
     m_nAnnotationSelect = 0;
     m_nScaleSelect = 0;
     m_nOverlaySelect = 0;
 
     //font page
-    m_bFontChanged = FALSE;            // TRUE, if fonts changed by user
-    m_bUseUnicodeEncoding = FALSE;     // Experimental....
+	// TRUE, if fonts changed by user
+    m_bFontChanged = FALSE;
+	// Experimental....
+    m_bUseUnicodeEncoding = FALSE;
 
     // save page
-    m_saveOpenFiles = FALSE;           // tdg - 09/03/97
-    m_showStartupDlg = FALSE;          // DDO - 08/03/00
+    m_saveOpenFiles = FALSE;
+    m_showStartupDlg = FALSE;
 
     // audio page
     m_bShowAdvancedAudio = FALSE;
+
+	// audiosync page
+	m_nAlgorithm = 0;
 }
 
 CToolSettings::CToolSettings(const CToolSettings & right) {
@@ -96,5 +102,9 @@ CToolSettings & CToolSettings::operator=(const CToolSettings & right) {
 
     // audio page
     m_bShowAdvancedAudio = right.m_bShowAdvancedAudio;
+
+	// audiosync page
+	m_nAlgorithm = right.m_nAlgorithm;
+
     return *this;
 }

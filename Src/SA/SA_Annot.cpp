@@ -592,7 +592,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
     TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
     // calculate new scale with magnify
-    double fMagnify = pGraph->GetMagnify(); // get magnify
+	// get magnify
+    double fMagnify = pGraph->GetMagnify(); 
     double dScaleMinValue = m_dScaleMinValue;
     double dScaleMaxValue = dScaleMinValue + (m_dScaleMaxValue - dScaleMinValue) / fMagnify;
     if (m_dScaleMinValue < 0) {
@@ -665,7 +666,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
     };
 
     int resourceIndexAS[] = {
-        IDS_WINDOW_PHONETIC,
+        IDS_WINDOW_PHONETIC_AS,
         IDS_WINDOW_TONE,
         IDS_WINDOW_PHONEMIC,
         IDS_WINDOW_ORTHO,
@@ -2392,118 +2393,144 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 
     // get pointer to gloss strings
     CGlossSegment * pGloss = (CGlossSegment *)pDoc->GetSegment(m_nIndex);
-    if (pGloss->GetOffsetSize()>0) {
-        // array is not empty
-        // get pointer to gloss offset and duration arrays
-        CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
-        // position prepare loop. Find first string to display in clipping rect
-        int nLoop = 0;
-        if ((fDataStart > 0) && (pGloss->GetOffsetSize() > 1)) {
-            double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
-            for (nLoop = 1; nLoop < pGloss->GetOffsetSize(); nLoop++) {
-                if ((double)(pGloss->GetStop(nLoop)) > fStart) {
-					// first string must be at lower position
-					// this is it
-                    nLoop--;
-                    break;
-                }
+    if (pGloss->GetOffsetSize()==0) {
+		// nothing to process.
+		// restore and quit
+		// set back old font
+		pDC->SelectObject(pOldFont);
+		pView->UpdateSelection();
+		return;
+	}
+
+    // array is not empty
+    // get pointer to gloss offset and duration arrays
+    CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
+    // position prepare loop. Find first string to display in clipping rect
+    int nLoop = 0;
+    if ((fDataStart > 0) && (pGloss->GetOffsetSize() > 1)) {
+        double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
+        for (nLoop = 1; nLoop < pGloss->GetOffsetSize(); nLoop++) {
+            if ((double)(pGloss->GetStop(nLoop)) > fStart) {
+				// first string must be at lower position
+				// this is it
+                nLoop--;
+                break;
             }
         }
-        if (nLoop < pGloss->GetOffsetSize()) {
-            // there is something to display
-            // display loop
-            int nDisplayPos = 0;
-            int nDisplayStop = 0;
-            CString string;
-            do {
-                string.Empty();
-                // get the string to display
-                string = pGloss->GetText(nLoop);
-                // insert a space after the delimiter
-                if (string.GetLength() > 1) {
-                    CString szSpace = " ";
-                    string = string.GetAt(0) + szSpace + string.Right(string.GetLength() - 1);
-                }
-                nDisplayPos = round((pGloss->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
-                // check if the character is selected
-                BOOL bSelect = FALSE;
-                if (pGloss->GetSelection() == nLoop) {
-                    bSelect = TRUE;
-                }
-                // calculate duration
-                nDisplayStop = round((pGloss->GetStop(nLoop)- fDataStart)/ fBytesPerPix);
-                //SDM 1.06.2
-                if (m_bHintUpdateBoundaries) {
-					// Show New Boundaries
-                    if (bSelect) {
-                        nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
-                        nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
-                    } else if (pGloss->GetSelection() == (nLoop+1)) {
-						// Segment prior to selected segment
-                        // SDM 1.5Test11.1
-                        int nIndex = pPhonetic->GetPrevious(pPhonetic->FindOffset(m_dwHintStart));
-                        DWORD dwStop = pPhonetic->GetStop(nIndex);
-                        nDisplayStop = round((dwStop - fDataStart)/ fBytesPerPix);
-                    } else if (pGloss->GetSelection() == (nLoop-1)) {
-						// Segment after selected segment
-                        // SDM 1.5Test11.1
-                        int nIndex = pPhonetic->GetNext(pPhonetic->FindStop(m_dwHintStop));
-                        DWORD dwStart = pPhonetic->GetOffset(nIndex);
-                        nDisplayPos = round((dwStart - fDataStart)/ fBytesPerPix);
-                    }
-                }
-                if ((nDisplayStop - nDisplayPos) < 2) {
-					// must be at least 2 to display a point
-                    nDisplayStop++;
-                }
-                if ((nDisplayStop - nDisplayPos) < 2) {
-					// must be at least 2 to display a point
-                    nDisplayPos--;
-                }
-                // set rectangle to display string centered within
-                rWnd.SetRect(nDisplayPos, rWnd.top, nDisplayStop, rWnd.bottom);
-                // highlight background if selected character
-                COLORREF normalTextColor = pDC->GetTextColor();
-                if (bSelect) {
-					// set highlighted text
-                    normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText);
-                    CBrush brushHigh(pColors->cSysColorHilite);
-                    CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
-                    CBrush * pOldBrush = (CBrush *)pDC->SelectObject(&brushHigh);
-                    CPen * pOldPen = pDC->SelectObject(&penHigh);
-                    pDC->Rectangle(rWnd.left, rWnd.top - 1, rWnd.right, rWnd.bottom);
-                    pDC->SelectObject(pOldBrush);
-                    pDC->SelectObject(pOldPen);
-                }
-
-                DrawTranscriptionBorders(pDC,rWnd,pColors);
-
-				// not enough space
-                if ((nDisplayStop-nDisplayPos) <= (string.GetLength() * tm.tmAveCharWidth)) {
-					// even not enough space for at least two characters with dots
-                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) {
-                        // draw only first character
-                        TCHAR c = string.GetAt(0);
-						// print first character
-                        pDC->DrawText(&c, 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
-                    } else {
-                        // draw as many characters as possible and 3 dots
-                        string = string.Left((nDisplayStop-nDisplayPos) / tm.tmAveCharWidth - 2) + "...";
-                        pDC->DrawText((LPCTSTR)string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
-                    }
-                } else { // enough space to display string
-                    TCHAR c = string.GetAt(0);
-                    pDC->DrawText((LPCTSTR)&c, 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
-                    CString temp = string.Right(string.GetLength()-1);
-                    pDC->DrawText((LPCTSTR)temp, string.GetLength() - 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
-                }
-                if (bSelect) {
-					// set back old text color
-                    pDC->SetTextColor(normalTextColor);
-                }
-            } while ((nDisplayPos < rClip.right) && (++nLoop < pGloss->GetOffsetSize()));
-        }
     }
+
+    if (nLoop >= pGloss->GetOffsetSize()) {
+		// no data to display
+		// set back old font
+		pDC->SelectObject(pOldFont);
+		pView->UpdateSelection();
+		return;
+	}
+
+    // there is something to display
+    // display loop
+    int nDisplayPos = 0;
+    int nDisplayStop = 0;
+    CString string;
+	CString szSpace = " ";
+    do {
+        string.Empty();
+
+        // get the string to display
+        string = pGloss->GetText(nLoop);
+
+		if (string.GetLength()>1) {
+			CSaApp * pApp = (CSaApp*)AfxGetApp();
+			if (pApp->IsAudioSync()) {
+				if ((string[0]==WORD_DELIMITER)||(string[0]==TEXT_DELIMITER)) {
+					string = string.Mid(1);
+				}
+				string = string.Trim();
+				string = szSpace + string;
+			} else {
+				// insert a space after the delimiter
+				string = string.GetAt(0) + szSpace + string.Right(string.GetLength() - 1);
+			}
+		}
+
+		nDisplayPos = round((pGloss->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
+        // check if the character is selected
+        BOOL bSelect = FALSE;
+        if (pGloss->GetSelection() == nLoop) {
+            bSelect = TRUE;
+        }
+        // calculate duration
+        nDisplayStop = round((pGloss->GetStop(nLoop)- fDataStart)/ fBytesPerPix);
+        //SDM 1.06.2
+        if (m_bHintUpdateBoundaries) {
+			// Show New Boundaries
+            if (bSelect) {
+                nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
+                nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
+            } else if (pGloss->GetSelection() == (nLoop+1)) {
+				// Segment prior to selected segment
+                // SDM 1.5Test11.1
+                int nIndex = pPhonetic->GetPrevious(pPhonetic->FindOffset(m_dwHintStart));
+                DWORD dwStop = pPhonetic->GetStop(nIndex);
+                nDisplayStop = round((dwStop - fDataStart)/ fBytesPerPix);
+            } else if (pGloss->GetSelection() == (nLoop-1)) {
+				// Segment after selected segment
+                // SDM 1.5Test11.1
+                int nIndex = pPhonetic->GetNext(pPhonetic->FindStop(m_dwHintStop));
+                DWORD dwStart = pPhonetic->GetOffset(nIndex);
+                nDisplayPos = round((dwStart - fDataStart)/ fBytesPerPix);
+            }
+        }
+        if ((nDisplayStop - nDisplayPos) < 2) {
+			// must be at least 2 to display a point
+            nDisplayStop++;
+        }
+        if ((nDisplayStop - nDisplayPos) < 2) {
+			// must be at least 2 to display a point
+            nDisplayPos--;
+        }
+        // set rectangle to display string centered within
+        rWnd.SetRect(nDisplayPos, rWnd.top, nDisplayStop, rWnd.bottom);
+        // highlight background if selected character
+        COLORREF normalTextColor = pDC->GetTextColor();
+        if (bSelect) {
+			// set highlighted text
+            normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText);
+            CBrush brushHigh(pColors->cSysColorHilite);
+            CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
+            CBrush * pOldBrush = (CBrush *)pDC->SelectObject(&brushHigh);
+            CPen * pOldPen = pDC->SelectObject(&penHigh);
+            pDC->Rectangle(rWnd.left, rWnd.top - 1, rWnd.right, rWnd.bottom);
+            pDC->SelectObject(pOldBrush);
+            pDC->SelectObject(pOldPen);
+        }
+
+        DrawTranscriptionBorders(pDC,rWnd,pColors);
+
+		// not enough space
+        if ((nDisplayStop-nDisplayPos) <= (string.GetLength() * tm.tmAveCharWidth)) {
+			// even not enough space for at least two characters with dots
+            if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) {
+                // draw only first character
+                TCHAR c = string.GetAt(0);
+				// print first character
+                pDC->DrawText(&c, 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
+            } else {
+                // draw as many characters as possible and 3 dots
+                string = string.Left((nDisplayStop-nDisplayPos) / tm.tmAveCharWidth - 2) + "...";
+                pDC->DrawText((LPCTSTR)string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
+            }
+        } else { // enough space to display string
+            TCHAR c = string.GetAt(0);
+            pDC->DrawText((LPCTSTR)&c, 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
+            CString temp = string.Right(string.GetLength()-1);
+            pDC->DrawText((LPCTSTR)temp, string.GetLength() - 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
+        }
+        if (bSelect) {
+			// set back old text color
+            pDC->SetTextColor(normalTextColor);
+        }
+    } while ((nDisplayPos < rClip.right) && (++nLoop < pGloss->GetOffsetSize()));
 
 	// set back old font
     pDC->SelectObject(pOldFont);

@@ -424,7 +424,7 @@ BEGIN
     GROUPBOX        "Sampling Rate",IDC_STATIC,6,6,66,53
 END
 
-IDD_OPTIONSCOLORSPAGE DIALOGEX 0, 0, 276, 154
+IDD_OPTIONSCOLORS_PAGE DIALOGEX 0, 0, 276, 154
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Colors"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -539,7 +539,7 @@ BEGIN
     LTEXT           "The start dialog will only show when no files get loaded at startup.",IDC_STATIC6,186,152,86,36
 END
 
-IDD_OPTIONSAUDIOPAGE DIALOGEX 0, 0, 282, 194
+IDD_OPTIONSAUDIO_PAGE DIALOGEX 0, 0, 282, 194
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_HSCROLL
 CAPTION "Audio"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -1776,7 +1776,7 @@ BEGIN
     LTEXT           "Please select a segmentation \nmethod for the table.  ",IDC_STATIC,15,6,106,29
 END
 
-IDD_OPTIONSVIEWPAGE DIALOGEX 0, 0, 276, 153
+IDD_OPTIONSVIEW_PAGE DIALOGEX 0, 0, 276, 153
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "View"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
@@ -2530,18 +2530,18 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,47,141,50,14
 END
 
-IDD_AUDIOSYNC_STARTUP DIALOGEX 0, 0, 357, 149
+IDD_AUDIOSYNC_STARTUP DIALOGEX 0, 0, 377, 149
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio+Sync Project Start"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Audio Recording",IDC_STATIC,8,15,53,8
     EDITTEXT        IDC_EDIT_AUDIO_FILENAME,7,26,290,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE1,300,26,50,14
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE1,300,26,70,14
     LTEXT           "Text for Alignment",IDC_STATIC,8,47,60,8
     EDITTEXT        IDC_EDIT_PHRASE_FILENAME,7,58,290,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE2,301,57,49,14
-    GROUPBOX        "Processing",IDC_STATIC,7,75,343,44
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE2,300,58,70,14
+    GROUPBOX        "Processing",IDC_STATIC,6,75,355,44
     CONTROL         "Automatically segment the audio recording and skip the first ",IDC_CHECK_SEGMENT_AUDIO,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,88,206,10
     COMBOBOX        IDC_COMBO_SKIP,220,86,25,74,CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP
@@ -2550,6 +2550,18 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,102,144,10
     DEFPUSHBUTTON   "OK",IDOK,127,128,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,181,128,50,14
+END
+
+IDD_OPTIONSAUDIOSYNC_PAGE DIALOGEX 0, 0, 282, 193
+STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_HSCROLL
+CAPTION "AudioSync"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Import Algorithm Selection",IDC_STATIC,3,5,275,99
+    LTEXT           "This selection allows you to define which algorithm will be used to segment the AudioSync wave file.",IDC_STATIC,9,17,264,18
+    LTEXT           "'Divide and Conquer' performs the segmentation by trying to find the best value to be used to find gaps between phrases.",IDC_STATIC,17,37,255,19
+    LTEXT           "'Phonetic Matching' performs segmentation by matching phonetic characters lengths with gloss word lengths.",IDC_STATIC,17,58,255,17
+    COMBOBOX        IDC_COMBO_AUDIOSYNC_ALGORITHM,9,87,197,47,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 
@@ -2606,7 +2618,7 @@ BEGIN
         BOTTOMMARGIN, 141
     END
 
-    IDD_OPTIONSCOLORSPAGE, DIALOG
+    IDD_OPTIONSCOLORS_PAGE, DIALOG
     BEGIN
     END
 
@@ -2621,6 +2633,11 @@ BEGIN
 
     IDD_OPTIONSSAVEPAGE, DIALOG
     BEGIN
+    END
+
+    IDD_OPTIONSAUDIO_PAGE, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 183
     END
 
     IDD_PLAYER, DIALOG
@@ -2745,7 +2762,7 @@ BEGIN
     BEGIN
     END
 
-    IDD_OPTIONSVIEWPAGE, DIALOG
+    IDD_OPTIONSVIEW_PAGE, DIALOG
     BEGIN
         BOTTOMMARGIN, 150
     END
@@ -2910,9 +2927,13 @@ BEGIN
     IDD_AUDIOSYNC_STARTUP, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 350
+        RIGHTMARGIN, 370
         TOPMARGIN, 7
         BOTTOMMARGIN, 142
+    END
+
+    IDD_OPTIONSAUDIOSYNC_PAGE, DIALOG
+    BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -3087,7 +3108,7 @@ BEGIN
     SEPARATOR
     BUTTON      ID_EDIT_ADD_MARKUP
     BUTTON      ID_EDIT_SPLIT_MOVE_LEFT
-    BUTTON      ID_EDIT_MOVE_RIGHT_MERGE
+    BUTTON      ID_EDIT_MOVE_RIGHT_MERGE_PREV
     SEPARATOR
     BUTTON      ID_EDIT_SEGMENT_BOUNDARIES
     SEPARATOR
@@ -3261,10 +3282,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
-        MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
+        MENUITEM "Move Text &Left\tShift+G",    ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Text &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
         MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM "Move Right and Merge Next\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE_NEXT
+        MENUITEM "Move Right and Merge Prev\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE_PREV
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3570,12 +3592,14 @@ BEGIN
         MENUITEM "Edit Segment &Boundaries\tINS", ID_EDIT_SEGMENT_BOUNDARIES
         MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
-        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM "Split and Move Left\tShift+Ctrl+S", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Join with &Next Segment\tShift+Ctrl+D", ID_EDIT_MOVE_RIGHT_MERGE_NEXT
+        MENUITEM "Join with &Previous Segment\tShift+Ctrl+A", ID_EDIT_MOVE_RIGHT_MERGE_PREV
+        MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
-        MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
+        MENUITEM "Move Text &Left\tShift+G",    ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Text &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3730,6 +3754,7 @@ BEGIN
     BEGIN
         POPUP "Automatic &Markup"
         BEGIN
+            MENUITEM "Locate Phonetic &Segments...", ID_ADVANCED_SEGMENT
             MENUITEM "Locate &Words...",            ID_ADVANCED_PARSE_WORD
         END
         POPUP "Align &Transcription"
@@ -3835,10 +3860,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
         MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
-        MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
+        MENUITEM "Move Text &Left\tShift+G",    ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Text &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
         MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM "Move Right and Merge Next\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE_NEXT
+        MENUITEM "Move Right and Merge Prev\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE_PREV
         MENUITEM "&Edit\tF4",                   ID_EDIT_EDITOR
         MENUITEM "&View Boundaries",            ID_VIEW_TRANSCRIPTION_BOUNDARIES
         MENUITEM SEPARATOR
@@ -3946,13 +3972,9 @@ IDR_AUDIOSYNC_POPUP MENU
 BEGIN
     POPUP "Popup Graph"
     BEGIN
-        MENUITEM "&Split and Move Left Here",   ID_EDIT_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Move &Right and Merge Here",  ID_EDIT_MOVE_RIGHT_MERGE_HERE
-        MENUITEM SEPARATOR
-        MENUITEM "&Split Segment Here",         ID_EDIT_SPLIT_HERE
-        MENUITEM "&Merge Segments Here",        ID_EDIT_MERGE_HERE
-        MENUITEM "Move Data &Left Here",        ID_EDIT_MOVE_LEFT_HERE
-        MENUITEM "Move Data &Right Here",       ID_EDIT_MOVE_RIGHT_HERE
+        MENUITEM "&Split Segment Here",         ID_SPLIT_MOVE_LEFT_HERE
+        MENUITEM "Join With &Prev Segment",     ID_MOVE_RIGHT_MERGE_PREV_HERE
+        MENUITEM "Join With &Next Segment",     ID_MOVE_RIGHT_MERGE_NEXT_HERE
         MENUITEM SEPARATOR
         MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
         MENUITEM SEPARATOR
@@ -3976,13 +3998,12 @@ BEGIN
     END
     POPUP "Popup Transcription"
     BEGIN
-        MENUITEM "Split and Move Left\tShift+Ctrl+G", ID_EDIT_SPLIT_MOVE_LEFT
-        MENUITEM "Move Right and Merge\tShift+Ctrl+H", ID_EDIT_MOVE_RIGHT_MERGE
+        MENUITEM "Split Segment\tShift+Ctrl+S", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Join With Next Segment\tShift+Ctrl+D", ID_EDIT_MOVE_RIGHT_MERGE_NEXT
+        MENUITEM "Join With &Prev Segment\tShift+Ctrl+A", ID_EDIT_MOVE_RIGHT_MERGE_PREV
         MENUITEM SEPARATOR
-        MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
-        MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
-        MENUITEM "Move Data &Left\tShift+G",    ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Data &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
+        MENUITEM "Move Text &Left\tShift+G",    ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Text &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
         MENUITEM SEPARATOR
         MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
         MENUITEM SEPARATOR
@@ -4002,13 +4023,9 @@ BEGIN
     END
     POPUP "Popup Graph"
     BEGIN
-        MENUITEM "&Split and Move Left Here",   ID_EDIT_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Move &Right and Merge Here",  ID_EDIT_MOVE_RIGHT_MERGE_HERE
-        MENUITEM SEPARATOR
-        MENUITEM "&Split Segment Here",         ID_EDIT_SPLIT_HERE
-        MENUITEM "&Merge Segments Here",        ID_EDIT_MERGE_HERE
-        MENUITEM "Move Data &Left Here",        ID_EDIT_MOVE_LEFT_HERE
-        MENUITEM "Move Data &Right Here",       ID_EDIT_MOVE_RIGHT_HERE
+        MENUITEM "&Split Segment Here",         ID_SPLIT_MOVE_LEFT_HERE
+        MENUITEM "Join With &Prev Segment",     ID_MOVE_RIGHT_MERGE_PREV_HERE
+        MENUITEM "Join With &Next Segment",     ID_MOVE_RIGHT_MERGE_NEXT_HERE
         MENUITEM SEPARATOR
         MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
         MENUITEM SEPARATOR
@@ -4429,7 +4446,8 @@ BEGIN
     "H",            ID_EDIT_MERGE,          VIRTKEY, CONTROL, NOINVERT
     "G",            ID_EDIT_MOVE_LEFT,      VIRTKEY, SHIFT, NOINVERT
     "H",            ID_EDIT_MOVE_RIGHT,     VIRTKEY, SHIFT, NOINVERT
-    "H",            ID_EDIT_MOVE_RIGHT_MERGE, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "H",            ID_EDIT_MOVE_RIGHT_MERGE_NEXT, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "H",            ID_EDIT_MOVE_RIGHT_MERGE_PREV, VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_RIGHT,       ID_EDIT_NEXT,           VIRTKEY, ALT, NOINVERT
     VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
     "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
@@ -4496,59 +4514,49 @@ END
 
 IDR_AUDIOSYNC ACCELERATORS
 BEGIN
+    " ",            ID_PLAYER_TOGGLE,       ASCII,  NOINVERT
+    VK_F4,          ID_EDIT_EDITOR,         VIRTKEY, NOINVERT
+    VK_F3,          ID_EDIT_FIND_NEXT,      VIRTKEY, NOINVERT
+    VK_F2,          ID_EDIT_INPLACE,        VIRTKEY, NOINVERT
+    VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
+    VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
+    VK_INSERT,      ID_EDIT_SEGMENT_BOUNDARIES, VIRTKEY, NOINVERT
+    VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
+    "D",            ID_MOVE_RIGHT_MERGE_NEXT_AT, VIRTKEY, NOINVERT
+    "A",            ID_MOVE_RIGHT_MERGE_PREV_AT, VIRTKEY, NOINVERT
+    VK_F6,          ID_PLAYBACK_BEGINCURSOR, VIRTKEY, NOINVERT
+    VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
+    VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
+    VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
+    VK_F9,          ID_PLAYBACK_LEFT_TO_STOP, VIRTKEY, NOINVERT
+    VK_F10,         ID_PLAYBACK_STOP_TO_RIGHT, VIRTKEY, NOINVERT
+    VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
+    VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
+    VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
+    "S",            ID_SPLIT_MOVE_LEFT_AT,  VIRTKEY, NOINVERT
     "J",            ID_AUTO_GENERATE_CV_DATA, VIRTKEY, CONTROL, NOINVERT
-    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
     "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
-    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
-    "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
     "Q",            ID_EDIT_ADD_PHONETIC,   VIRTKEY, CONTROL, NOINVERT
-    VK_ADD,         ID_EDIT_ADD_PHONETIC,   VIRTKEY, ALT, NOINVERT
     "1",            ID_EDIT_ADD_PHRASE_L1,  VIRTKEY, CONTROL, NOINVERT
     "2",            ID_EDIT_ADD_PHRASE_L2,  VIRTKEY, CONTROL, NOINVERT
     "3",            ID_EDIT_ADD_PHRASE_L3,  VIRTKEY, CONTROL, NOINVERT
     "4",            ID_EDIT_ADD_PHRASE_L4,  VIRTKEY, CONTROL, NOINVERT
     "L",            ID_EDIT_ADD_SYLLABLE,   VIRTKEY, CONTROL, NOINVERT
     "W",            ID_EDIT_ADD_WORD,       VIRTKEY, CONTROL, NOINVERT
-    "Z",            ID_EDIT_AUTO_ADD,       VIRTKEY, ALT, NOINVERT
-    "X",            ID_EDIT_AUTO_ADD_STORY_SECTION, VIRTKEY, ALT, NOINVERT
-    VK_LEFT,        ID_EDIT_BOUNDARY_START_LEFT, VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_RIGHT,       ID_EDIT_BOUNDARY_START_RIGHT, VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_LEFT,        ID_EDIT_BOUNDARY_STOP_LEFT, VIRTKEY, SHIFT, ALT, NOINVERT
-    VK_RIGHT,       ID_EDIT_BOUNDARY_STOP_RIGHT, VIRTKEY, SHIFT, ALT, NOINVERT
     "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
     VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    "C",            ID_EDIT_COPY_MEASUREMENTS, VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_LEFT,        ID_EDIT_CURSOR_START_LEFT, VIRTKEY, CONTROL, NOINVERT
     VK_RIGHT,       ID_EDIT_CURSOR_START_RIGHT, VIRTKEY, CONTROL, NOINVERT
-    VK_LEFT,        ID_EDIT_CURSOR_STOP_LEFT, VIRTKEY, SHIFT, NOINVERT
-    VK_RIGHT,       ID_EDIT_CURSOR_STOP_RIGHT, VIRTKEY, SHIFT, NOINVERT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
     "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
-    VK_DOWN,        ID_EDIT_DOWN,           VIRTKEY, ALT, NOINVERT
-    VK_F4,          ID_EDIT_EDITOR,         VIRTKEY, NOINVERT
     "F",            ID_EDIT_FIND,           VIRTKEY, CONTROL, NOINVERT
-    VK_F3,          ID_EDIT_FIND_NEXT,      VIRTKEY, NOINVERT
-    VK_F2,          ID_EDIT_INPLACE,        VIRTKEY, NOINVERT
     "H",            ID_EDIT_MERGE,          VIRTKEY, CONTROL, NOINVERT
-    "G",            ID_EDIT_MOVE_LEFT,      VIRTKEY, SHIFT, NOINVERT
-    "H",            ID_EDIT_MOVE_RIGHT,     VIRTKEY, SHIFT, NOINVERT
-    "H",            ID_EDIT_MOVE_RIGHT_MERGE, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_RIGHT,       ID_EDIT_NEXT,           VIRTKEY, ALT, NOINVERT
-    VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
     "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
     "N",            ID_EDIT_PASTENEW,       VIRTKEY, CONTROL, NOINVERT
-    VK_LEFT,        ID_EDIT_PREVIOUS,       VIRTKEY, ALT, NOINVERT
     "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
-    VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
-    VK_INSERT,      ID_EDIT_SEGMENT_BOUNDARIES, VIRTKEY, NOINVERT
     "E",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
     "A",            ID_EDIT_SELECTWAVEFORM, VIRTKEY, CONTROL, NOINVERT
     "G",            ID_EDIT_SPLIT,          VIRTKEY, CONTROL, NOINVERT
-    "G",            ID_EDIT_SPLIT_MOVE_LEFT, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
     "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
-    VK_UP,          ID_EDIT_UP,             VIRTKEY, ALT, NOINVERT
     "I",            ID_FILE_INFORMATION,    VIRTKEY, CONTROL, NOINVERT
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
@@ -4559,8 +4567,6 @@ BEGIN
     VK_RETURN,      ID_GRAPHS_ZOOM_CURSORS, VIRTKEY, CONTROL, NOINVERT
     VK_NEXT,        ID_GRAPHS_ZOOM_IN,      VIRTKEY, CONTROL, NOINVERT
     VK_PRIOR,       ID_GRAPHS_ZOOM_OUT,     VIRTKEY, CONTROL, NOINVERT
-    VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
-    VK_TAB,         ID_NEXT_GRAPH,          VIRTKEY, SHIFT, NOINVERT
     VK_F1,          ID_PLAY_F1,             VIRTKEY, CONTROL, NOINVERT
     VK_F10,         ID_PLAY_F10,            VIRTKEY, CONTROL, NOINVERT
     VK_F11,         ID_PLAY_F11,            VIRTKEY, CONTROL, NOINVERT
@@ -4569,7 +4575,6 @@ BEGIN
     VK_F14,         ID_PLAY_F14,            VIRTKEY, CONTROL, NOINVERT
     VK_F15,         ID_PLAY_F15,            VIRTKEY, CONTROL, NOINVERT
     VK_F16,         ID_PLAY_F16,            VIRTKEY, CONTROL, NOINVERT
-    VK_F17,         ID_PLAY_F17,            VIRTKEY, SHIFT, NOINVERT
     VK_F18,         ID_PLAY_F18,            VIRTKEY, CONTROL, NOINVERT
     VK_F19,         ID_PLAY_F19,            VIRTKEY, CONTROL, NOINVERT
     VK_F2,          ID_PLAY_F2,             VIRTKEY, CONTROL, NOINVERT
@@ -4585,16 +4590,33 @@ BEGIN
     VK_F7,          ID_PLAY_F7,             VIRTKEY, CONTROL, NOINVERT
     VK_F8,          ID_PLAY_F8,             VIRTKEY, CONTROL, NOINVERT
     VK_F9,          ID_PLAY_F9,             VIRTKEY, CONTROL, NOINVERT
-    VK_F6,          ID_PLAYBACK_BEGINCURSOR, VIRTKEY, NOINVERT
-    VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
-    VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
-    VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
-    VK_F9,          ID_PLAYBACK_LEFT_TO_STOP, VIRTKEY, NOINVERT
-    VK_F10,         ID_PLAYBACK_STOP_TO_RIGHT, VIRTKEY, NOINVERT
-    VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
-    " ",            ID_PLAYER_TOGGLE,       ASCII,  NOINVERT
-    VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
-    VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
+    "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
+    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
+    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
+    VK_ADD,         ID_EDIT_ADD_PHONETIC,   VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_AUTO_ADD,       VIRTKEY, ALT, NOINVERT
+    "X",            ID_EDIT_AUTO_ADD_STORY_SECTION, VIRTKEY, ALT, NOINVERT
+    VK_DOWN,        ID_EDIT_DOWN,           VIRTKEY, ALT, NOINVERT
+    VK_RIGHT,       ID_EDIT_NEXT,           VIRTKEY, ALT, NOINVERT
+    VK_LEFT,        ID_EDIT_PREVIOUS,       VIRTKEY, ALT, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    VK_UP,          ID_EDIT_UP,             VIRTKEY, ALT, NOINVERT
+    VK_LEFT,        ID_EDIT_BOUNDARY_START_LEFT, VIRTKEY, CONTROL, ALT, NOINVERT
+    VK_RIGHT,       ID_EDIT_BOUNDARY_START_RIGHT, VIRTKEY, CONTROL, ALT, NOINVERT
+    VK_LEFT,        ID_EDIT_CURSOR_STOP_LEFT, VIRTKEY, SHIFT, NOINVERT
+    VK_RIGHT,       ID_EDIT_CURSOR_STOP_RIGHT, VIRTKEY, SHIFT, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "G",            ID_EDIT_MOVE_LEFT,      VIRTKEY, SHIFT, NOINVERT
+    "H",            ID_EDIT_MOVE_RIGHT,     VIRTKEY, SHIFT, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    VK_TAB,         ID_NEXT_GRAPH,          VIRTKEY, SHIFT, NOINVERT
+    VK_F17,         ID_PLAY_F17,            VIRTKEY, SHIFT, NOINVERT
+    "C",            ID_EDIT_COPY_MEASUREMENTS, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "D",            ID_EDIT_MOVE_RIGHT_MERGE_NEXT, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "A",            ID_EDIT_MOVE_RIGHT_MERGE_PREV, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "S",            ID_EDIT_SPLIT_MOVE_LEFT, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_LEFT,        ID_EDIT_BOUNDARY_STOP_LEFT, VIRTKEY, SHIFT, ALT, NOINVERT
+    VK_RIGHT,       ID_EDIT_BOUNDARY_STOP_RIGHT, VIRTKEY, SHIFT, ALT, NOINVERT
 END
 
 IDR_DISPLAYPLOT ACCELERATORS
@@ -4831,7 +4853,7 @@ BEGIN
     0
 END
 
-IDD_OPTIONSVIEWPAGE DLGINIT
+IDD_OPTIONSVIEW_PAGE DLGINIT
 BEGIN
     IDC_VIEWCAPTION, 0x403, 25, 0
 0x6f4e, 0x4220, 0x7261, 0x202c, 0x6e55, 0x6973, 0x617a, 0x6c62, 0x2065, 
@@ -5129,6 +5151,17 @@ BEGIN
 0x0034, 
     IDC_COMBO_SKIP, 0x403, 2, 0
 0x0035, 
+    0
+END
+
+IDD_OPTIONSAUDIOSYNC_PAGE DLGINIT
+BEGIN
+    IDC_COMBO_AUDIOSYNC_ALGORITHM, 0x403, 19, 0
+0x6944, 0x6976, 0x6564, 0x6120, 0x646e, 0x4320, 0x6e6f, 0x7571, 0x7265, 
+"\000" 
+    IDC_COMBO_AUDIOSYNC_ALGORITHM, 0x403, 18, 0
+0x6850, 0x6e6f, 0x7465, 0x6369, 0x4d20, 0x7461, 0x6863, 0x6e69, 0x0067, 
+
     0
 END
 
@@ -5613,13 +5646,14 @@ BEGIN
     IDS_WINDOW_MUSIC_PL2    "Phrase L2"
     IDS_WINDOW_MUSIC_PL3    "Phrase L3"
     IDS_WINDOW_MUSIC_PL4    "Phrase L4"
+    IDS_WINDOW_MUSIC_PL4_AS "Full Text"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_WINDOW_REFERENCE_AS    "Reference"
     IDS_WINDOW_GLOSS_AS     "Text"
-    IDS_WINDOW_MUSIC_PL4_AS "Full Text"
+    IDS_WINDOW_REFERENCE_AS "Reference"
+    IDS_WINDOW_PHONETIC_AS  "Segment"
 END
 
 STRINGTABLE
@@ -5788,7 +5822,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_ERROR_WRITETONE     "Failed writing tone chunk into file '%1'."
-    IDS_ERROR_PASTEFORMAT   "The format of the wave data on the clipboard differs from the one in the wave file. This wave data can not be pasted into this file."
+    IDS_ERROR_PASTEFORMAT   "The format of the wave data on the clipboard differs from the one in the wave file. This wave data cannot be pasted into this file."
     IDS_ERROR_PASTENEW      "The paste operation to a new file failed."
     IDS_ERROR_TAT_NO_REFERENCE 
                             "The current graph does not contain any usable Reference segments.  The import operation will not be performed."
@@ -5886,10 +5920,18 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_EDIT_SPLIT_MOVE_LEFT "Split and Move Left\nSplit and Move Left"
+    ID_EDIT_MOVE_LEFT       "Move text left"
+    ID_EDIT_SPLIT_MOVE_LEFT "Split selected segment and move text left\nSplit And Move Text Left"
     ID_EDIT_MERGE           "Merge two segments into one segment"
-    ID_EDIT_MOVE_RIGHT_MERGE "Move Right and Merge\nMove Right and Merge"
+    ID_EDIT_MOVE_RIGHT      "Move text right"
+    ID_EDIT_MOVE_RIGHT_MERGE_NEXT 
+                            "Move right and merge with next segment\nMove right and merge"
+    ID_EDIT_MOVE_RIGHT_MERGE_PREV 
+                            "Move right and merge with previous segment\nMove Right And Merge"
     ID_EDIT_ADD_MARKUP      "Add markup\nAdd Markup"
+    ID_PLAYBACK_BEGINCURSOR "Plays between the begin cursor and the end of the file\nPlay Begin Cursor -> File End"
+    ID_HELP_KEYBOARD_SHORTCUTS 
+                            "List available keyboard short-cut keys\nView short-cuts"
 END
 
 STRINGTABLE
@@ -6303,13 +6345,6 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_PLAYBACK_BEGINCURSOR "Plays between the begin cursor and the end of the file\nPlay Begin Cursor -> File End"
-    ID_HELP_KEYBOARD_SHORTCUTS 
-                            "List available keyboard short-cut keys\nView short-cuts"
-END
-
-STRINGTABLE
-BEGIN
     IDS_GRAPH_TITLE_CHPITCH "Custom Pitch"
     IDS_GRAPH_TITLE_SMPITCH "Smoothed Pitch"
     IDS_GRAPH_TITLE_GRAPITCH "Auto Pitch"
@@ -6326,6 +6361,22 @@ BEGIN
     IDS_GRAPH_TITLE_MAGNITUDE "Magnitude"
     IDS_GRAPH_TITLE_STAFF   "Staff"
     IDS_GRAPH_TITLE_RECORDING "Position View"
+END
+
+STRINGTABLE
+BEGIN
+    ID_SPLIT_MOVE_LEFT_HERE "Split segment at mouse location"
+    ID_MOVE_RIGHT_MERGE_NEXT_HERE 
+                            "Join segment at mouse location with next segment"
+    ID_MOVE_RIGHT_MERGE_PREV_HERE 
+                            "Join segment at mouse location with previous segment"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_RESTART_PROJECT     "Restart Project..."
+    IDS_BROWSE              "Browse..."
+    IDS_RESTART_CONFIRM     "Do you wish to delete the existing text segmentation and restart the project?\nAll existing work will be lost!\nThis operation cannot be undone!"
 END
 
 #endif    // English (United States) resources

@@ -1409,15 +1409,15 @@ void CSaApp::OnFileRecord() {
 	// use auto naming
     OpenBlankView(true); 
 
-    CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
-    ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+    CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
+    ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
 	// give editor a chance to close
-    pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0); 
+    pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0); 
 
     // launch recorder in this new view
 	// send message to start recorder
-    pMDIFrameWnd->MDIGetActive()->GetActiveView()->SendMessage(WM_USER_RECORDER, 0, 0); 
+    pMainFrame->MDIGetActive()->GetActiveView()->SendMessage(WM_USER_RECORDER, 0, 0); 
 }
 
 /***************************************************************************/
@@ -1430,10 +1430,10 @@ void CSaApp::FileOpen() {
 	if (IsAudioSync()) {
 		// terry wants to see somthing behind the dialog...
 		CDocument * pTemp = OpenBlankView(true);                 
-		CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
-		ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+		CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
+		ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 		// give editor a chance to close
-		pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
+		pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
 
 		CDlgASStart dlg;
 		if (dlg.DoModal()==IDOK) {
@@ -1442,7 +1442,7 @@ void CSaApp::FileOpen() {
 			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
 			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
 				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
-				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount());
+				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount(),pMainFrame->GetAudioSyncAlgorithm());
 				pDoc2->DoFileSave();
 				POSITION pos = pDoc2->GetFirstViewPosition();
 			    CSaView * pView = (CSaView *)pDoc2->GetNextView(pos);
@@ -1459,10 +1459,10 @@ void CSaApp::FileOpen() {
 		// uses auto naming
 		CDocument * pDoc = OpenBlankView(true);
 		// this allows screen to be drawn
-		CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
-		ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+		CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
+		ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 		// give editor a chance to close
-		pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
+		pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
 
 		SetOpenAsID(id);
 
@@ -1575,14 +1575,12 @@ void CSaApp::OnFileOpenMA() {
 /***************************************************************************/
 void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 
-    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+    CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
 	if (IsAudioSync()) {
 		// terry wants to see something behind the dialog box
 		CDocument * pTemp = OpenBlankView(true);                 
-		CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
-		ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 		// give editor a chance to close
-		pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
+		pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
 
 		CDlgASStart dlg;
 		if (dlg.DoModal()==IDOK) {
@@ -1591,7 +1589,7 @@ void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
 			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
 				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
-				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount());
+				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount(),pMainFrame->GetAudioSyncAlgorithm());
 				pDoc2->DoFileSave();
 				POSITION pos = pDoc2->GetFirstViewPosition();
 			    CSaView * pView = (CSaView *)pDoc2->GetNextView(pos);
@@ -1605,7 +1603,7 @@ void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 		}
 	} else {
 		CDlgStartMode dlg;
-		dlg.m_nDataMode = pMainWnd->GetStartDataMode();
+		dlg.m_nDataMode = pMainFrame->GetStartDataMode();
 		dlg.m_bShowDontShowAgainOption = bAppIsStartingUp;
 		dlg.DoModal();
 	}

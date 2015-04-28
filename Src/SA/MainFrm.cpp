@@ -256,6 +256,7 @@ CMainFrame::CMainFrame() {
     m_bShowStartupDlg = TRUE;    // DDO - 08/03/00
     m_bSaveOpenFiles = FALSE;    // tdg - 09/03/97
     m_bShowAdvancedAudio = FALSE;
+	m_nAlgorithm = 0;
 
     // init the graph fonts with default
     try {
@@ -941,6 +942,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
     m_bShowStartupDlg = toolSettings.m_showStartupDlg;
     m_bSaveOpenFiles = toolSettings.m_saveOpenFiles;
     m_bShowAdvancedAudio = toolSettings.m_bShowAdvancedAudio;
+	m_nAlgorithm = toolSettings.m_nAlgorithm;
     return 0;
 }
 
@@ -1892,7 +1894,7 @@ static LPCSTR psz_placementMain      = "placementMain";
 static LPCSTR psz_placementEditor    = "placementEditor";
 static LPCSTR psz_showstartupdlg     = "showstartupdlg";
 static LPCSTR psz_showadvancedaudio  = "showadvancedaudio";
-static LPCSTR psz_saveopenfiles      = "saveopenfiles";  //tdg 09/03/97
+static LPCSTR psz_saveopenfiles      = "saveopenfiles";
 static LPCSTR psz_statusbar          = "statusbar";
 static LPCSTR psz_statusposreadout   = "statusposreadout";
 static LPCSTR psz_statuspitchreadout = "statuspitchreadout";
@@ -1912,6 +1914,7 @@ static LPCSTR psz_bAnimate           = "Animate";
 static LPCSTR psz_animationRate      = "AnimationRate";
 static LPCSTR psz_graphUpdateMode    = "GraphUpdateMode";
 static LPCSTR psz_cursorMode         = "CursorMode";
+static LPCSTR psz_importalgorithm	 = "importalgorithm";
 
 // SDM 1.06.6U5 save maximized state of MDIChild (SaView)
 static LPCSTR psz_bMaxView           = "DefaultMaximizeView";
@@ -1956,21 +1959,22 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
     // SA to save settings.
     // obs.WriteBool(psz_saveonexit, m_bSaveOnExit);
     //*****************************************************
-    obs.WriteInteger(psz_startmode, m_nStartDataMode);      // DDO - 08/03/00
-    obs.WriteBool(psz_showstartupdlg, m_bShowStartupDlg);   // DDO - 08/03/00
-    obs.WriteBool(psz_saveopenfiles, m_bSaveOpenFiles);     // tdg - 09/03/97
+    obs.WriteInteger(psz_startmode, m_nStartDataMode);
+    obs.WriteBool(psz_showstartupdlg, m_bShowStartupDlg);
+    obs.WriteBool(psz_saveopenfiles, m_bSaveOpenFiles);
     obs.WriteBool(psz_showadvancedaudio, m_bShowAdvancedAudio);
     obs.WriteBool(psz_statusbar , m_bStatusBar);
     obs.WriteInteger(psz_statusposreadout, m_nStatusPosReadout);
     obs.WriteInteger(psz_statuspitchreadout, m_nStatusPitchReadout);
     obs.WriteBool(psz_toolbar, AdvancedToolBarVisible());
     obs.WriteBool(psz_taskbar, TaskBarVisible());
-    obs.WriteBool(psz_toneAbove, m_bToneAbove);  //SDM 1.5Test8.2
+    obs.WriteBool(psz_toneAbove, m_bToneAbove);
     obs.WriteBool(psz_scrollzoom, m_bScrollZoom);
     obs.WriteInteger(psz_graphUpdateMode, m_nGraphUpdateMode);
     obs.WriteBool(psz_bAnimate, m_bAnimate);
     obs.WriteInteger(psz_animationRate, m_nAnimationRate);
     obs.WriteInteger(psz_cursorMode, m_nCursorAlignment);
+	obs.WriteInteger(psz_importalgorithm, m_nAlgorithm);
 
     m_colors.WriteProperties(obs);
     m_fnKeys.WriteProperties(obs);
@@ -2032,12 +2036,11 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
 
     while (!obs.bAtEnd()) {
         WINDOWPLACEMENT wpl;
-        //     if ( obs.bReadBool(psz_saveonexit, m_bSaveOnExit));                        // DDO - 08/03/00 Don't need setting anymore.
-
-        if (obs.bReadInteger(psz_startmode, m_nStartDataMode));                     // DDO - 08/03/00
-        else if (obs.bReadBool(psz_showstartupdlg, m_bShowStartupDlg));             // DDO - 08/03/00
-        else if (obs.bReadBool(psz_saveopenfiles, m_bSaveOpenFiles));               // tdg - 09/03/97
+        if (obs.bReadInteger(psz_startmode, m_nStartDataMode));
+        else if (obs.bReadBool(psz_showstartupdlg, m_bShowStartupDlg));
+        else if (obs.bReadBool(psz_saveopenfiles, m_bSaveOpenFiles));
         else if (obs.bReadBool(psz_showadvancedaudio, m_bShowAdvancedAudio));
+		else if (obs.bReadInteger(psz_importalgorithm, m_nAlgorithm));
         else if (obs.bReadWindowPlacement(psz_placementMain, wpl)) {
             if (wpl.showCmd == SW_SHOWMINIMIZED) {
                 wpl.showCmd = SW_SHOWNORMAL;
@@ -2548,6 +2551,9 @@ BOOL CMainFrame::GetSaveOpenFiles(void) {
 BOOL CMainFrame::GetShowAdvancedAudio(void) {
     return m_bShowAdvancedAudio;
 }
+int CMainFrame::GetAudioSyncAlgorithm() {
+	return m_nAlgorithm;
+}
 void CMainFrame::SetShowStartupDlg(BOOL bShow) {
     m_bShowStartupDlg = bShow;
 }
@@ -2787,6 +2793,7 @@ void CMainFrame::SetToolSettings(CToolSettings settings, bool fullView) {
         toolSettings = settings;
     } else {
         toolSettings.m_bShowAdvancedAudio = settings.m_bShowAdvancedAudio;
+		toolSettings.m_nAlgorithm = settings.m_nAlgorithm;
     }
 }
 

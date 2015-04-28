@@ -423,7 +423,10 @@ protected:
     afx_msg void OnUpdateSetupFnkeys(CCmdUI * pCmdUI);
     afx_msg void OnEditRemove();
     afx_msg void OnUpdateEditRemove(CCmdUI * pCmdUI);
-    
+	afx_msg void OnNextError();
+	afx_msg void OnPreviousError();
+
+	// operations based on edit menu and transcription segment selection
 	afx_msg void OnEditSplit();
     afx_msg void OnUpdateEditSplit(CCmdUI * pCmdUI);
     afx_msg void OnEditMerge();
@@ -434,22 +437,35 @@ protected:
     afx_msg void OnUpdateEditMoveRight(CCmdUI * pCmdUI);
     afx_msg void OnEditSplitMoveLeft();
     afx_msg void OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI);
-    afx_msg void OnEditMoveRightMerge();
-    afx_msg void OnUpdateEditMoveRightMerge(CCmdUI * pCmdUI);
+    afx_msg void OnEditMoveRightMergeNext();
+    afx_msg void OnUpdateEditMoveRightMergeNext(CCmdUI * pCmdUI);
+    afx_msg void OnEditMoveRightMergePrev();
+    afx_msg void OnUpdateEditMoveRightMergePrev(CCmdUI * pCmdUI);
     
-	afx_msg void OnEditSplitHere();
-    afx_msg void OnUpdateEditSplitHere(CCmdUI * pCmdUI);
-    afx_msg void OnEditMergeHere();
-    afx_msg void OnUpdateEditMergeHere(CCmdUI * pCmdUI);
-    afx_msg void OnEditMoveLeftHere();
-    afx_msg void OnUpdateEditMoveLeftHere(CCmdUI * pCmdUI);
-    afx_msg void OnEditMoveRightHere();
-    afx_msg void OnUpdateEditMoveRightHere(CCmdUI * pCmdUI);
-    afx_msg void OnEditSplitMoveLeftHere();
-    afx_msg void OnUpdateEditSplitMoveLeftHere(CCmdUI * pCmdUI);
-    afx_msg void OnEditMoveRightMergeHere();
-    afx_msg void OnUpdateEditMoveRightMergeHere(CCmdUI * pCmdUI);
-    
+	// operations based on beginning mouse cursor and accelerator
+	afx_msg void OnSplitMoveLeftAt();
+	afx_msg void OnUpdateSplitMoveLeftAt(CCmdUI * pCmdUI);
+	afx_msg void OnMoveRightMergePrevAt();
+	afx_msg void OnUpdateMoveRightMergePrevAt(CCmdUI * pCmdUI);
+	afx_msg void OnMoveRightMergeNextAt();
+	afx_msg void OnUpdateMoveRightMergeNextAt(CCmdUI * pCmdUI);
+
+	// operations based on mouse position and popup
+	afx_msg void OnSplitHere();
+	afx_msg void OnUpdateSplitHere(CCmdUI * pCmdUI);
+	afx_msg void OnMergeHere();
+	afx_msg void OnUpdateMergeHere(CCmdUI * pCmdUI);
+    afx_msg void OnMoveLeftHere();
+    afx_msg void OnUpdateMoveLeftHere(CCmdUI * pCmdUI);
+	afx_msg void OnMoveRightHere();
+    afx_msg void OnUpdateMoveRightHere(CCmdUI * pCmdUI);
+	afx_msg void OnSplitMoveLeftHere();
+	afx_msg void OnUpdateSplitMoveLeftHere(CCmdUI * pCmdUI);
+    afx_msg void OnMoveRightMergeNextHere();
+    afx_msg void OnUpdateMoveRightMergeNextHere(CCmdUI * pCmdUI);
+    afx_msg void OnMoveRightMergePrevHere();
+    afx_msg void OnUpdateMoveRightMergePrevHere(CCmdUI * pCmdUI);
+
 	afx_msg void OnEditAutoAdd();
     afx_msg void OnUpdateEditAutoAdd(CCmdUI * pCmdUI);
     afx_msg void OnEditAutoAddStorySection();
@@ -649,22 +665,28 @@ private:
 	void ErrorMessage( CSaString & msg);
 
     bool CanMoveDataLeft( CSegment * pSegment, bool discrete);
-    bool CanMoveDataLeftAt( CPhoneticSegment * pSegment, DWORD position, bool discrete);
+    bool CanMoveDataLeftAt(CSaDoc * pDoc, CPhoneticSegment * pSegment, DWORD position, bool discrete);
     bool CanMoveDataRight(CSegment * pSegment);
+    bool CanMoveDataRightNext(CSegment * pSegment);
+    bool CanMoveDataRightSel(CSegment * pSegment, int sel);
     bool CanMoveDataRightAt(CPhoneticSegment * pSegment, DWORD position);
+    bool CanMoveDataRightNextAt(CPhoneticSegment * pSegment, DWORD position);
     bool CanSplit(CSegment * pSeg);
-    bool CanSplitAt(CPhoneticSegment * pSeg, DWORD position);
+    bool CanSplitAt(CSaDoc * pDoc,CPhoneticSegment * pSeg, DWORD position);
     bool CanMerge(CSegment * pSeg);
+    bool CanMergeNext(CSegment * pSeg);
     bool CanMergeAt(CPhoneticSegment * pSeg, DWORD position);
+    bool CanMergeSel(CPhoneticSegment * pSeg, int sel);
 
-	void EditMoveRight();
-	void EditMoveRightAt(DWORD position);
+    void EditMoveRight();
+    void EditMoveRightNext();
 	void EditMoveLeft();
     void EditMoveLeftAt(DWORD position);
 	void EditSplit();
 	DWORD EditSplitAt(DWORD position);
 	void EditMerge();
 	void EditMergeAt(DWORD position);
+
 	DWORD CalculatePositionFromMouse();
 	static UINT GetGraphResourceID( UINT nID);
 
@@ -703,7 +725,7 @@ private:
 	// boundaries updated or not in transcription editor
     BOOL m_bUpdateBoundaries;
 	// TRUE = INS pressed
-    bool m_bEditBoundaries;
+    bool bEditBoundaries;
 	// TRUE = CTRL_SHIFT pressed
     bool m_bEditSegmentSize;
 	// graph drawing style line or solid

@@ -88,6 +88,7 @@ public:
     void SetShowStartupDlg(BOOL bShow);
     void SetStartDataMode(int nMode);
     CDlgPlayer * GetPlayer(bool bCreate = false);
+	int GetAudioSyncAlgorithm();
 
     // kg 32-bit conversion
     void DestroyPlayer();
@@ -280,6 +281,7 @@ protected:
     BOOL                m_bSaveOpenFiles;			// if True, save current open files to re-load them next time   //tdg 09/03/97
     BOOL                m_bStatusBar;				// status bar on/off
     BOOL                m_bShowAdvancedAudio;
+	int					m_nAlgorithm;				// AudioSync import algorithm
     int                 m_nStatusPosReadout;		// status bar position readout mode
     int                 m_nStatusPitchReadout;		// status bar pitch readout mode
     BOOL                m_bToneAbove;				// tone Above phonetic
@@ -297,7 +299,7 @@ protected:
     void WriteDefaultViewToTempFile();
     void ReadDefaultViewFromTempFile();
 
-    // Default values for various parameters                     // RLJ 11.1A
+    // Default values for various parameters
     CSaView      *      m_pDefaultViewConfig;       // holds the default view for when a doc is newly opened.
     BOOL                m_bDefaultMaximizeView;     // maximize view if no other view open
     int                 m_nDefaultHeightView;       // default view height

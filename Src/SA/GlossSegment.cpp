@@ -52,12 +52,12 @@ void CGlossSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
         if (pSegment->GetMasterIndex()==GLOSS) {
             int nIndex = pSegment->FindOffset(dwOldOffset);
             if (nIndex != -1) {
-                pSegment->RemoveAt(nIndex,true);
+                pSegment->RemoveAt(nIndex);
             }
         }
     }
 
-    RemoveAt(sel,true);
+    RemoveAt(sel);
 
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
@@ -262,11 +262,11 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
                                     //TRACE("stop %d %d\n",dwPhoneticOffset,dwPhoneticStop);
                                     if (dwPhoneticStop > dwPhoneticOffset) {
                                         // adjust the duration
-                                        TRACE("adjust offset[%d] %lu %lu %lu\n",previousSeg,dwPhoneticOffset,dwPhoneticStop,dwPhoneticStop - dwPhoneticOffset);
+                                        //TRACE("adjust offset[%d] %lu %lu %lu\n",previousSeg,dwPhoneticOffset,dwPhoneticStop,dwPhoneticStop - dwPhoneticOffset);
                                         pPhonetic->Adjust( pDoc, previousSeg, dwPhoneticOffset, dwPhoneticStop - dwPhoneticOffset, false);
                                         DWORD offset = pPhonetic->GetOffset(previousSeg);
                                         DWORD duration = pPhonetic->GetDuration(previousSeg);
-                                        TRACE("adjusted offset[%d]=%lu %lu %lu\n",previousSeg,offset,(offset+duration),duration);
+                                        //TRACE("adjusted offset[%d]=%lu %lu %lu\n",previousSeg,offset,(offset+duration),duration);
                                         if ((offset+duration)>=dwGlossStart) {
                                             //TRACE("moving gloss start %lu->%lu\n",dwGlossStart,(offset+duration));
                                             dwGlossStart = offset+duration+1;

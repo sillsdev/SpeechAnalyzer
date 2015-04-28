@@ -117,7 +117,7 @@ enum ECharType {         // character types
 #define ICH_GRAYED       0x0001  // displays the character grayed (no selection, no zoom)
 #define ICH_SELECTED     0x0002  // displays the character selected (invers)
 #define ICH_NO_ZOOM     0x0010  // disables zoom on mouse move
-#define ICH_DISABLED    0x0020  // can not be selected
+#define ICH_DISABLED    0x0020  // cannot be selected
 #define ICH_BUBBLE       0x8000  // this window is a bubble window (zoom)
 
 class CDlgCharChart;

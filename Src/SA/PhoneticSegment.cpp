@@ -59,7 +59,7 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) 
     DWORD dwStop = pView->GetStopCursorPosition();
 
     DWORD dwOldOffset = GetOffset(m_nSelection);
-    RemoveAt(m_nSelection,true);
+    RemoveAt(m_nSelection);
     if (dwOldOffset == -1) {
         return;
     }
@@ -167,7 +167,7 @@ void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
             // start matches
             if (pSegment->GetStop(nIndex) == dwOldStop) {
                 // stop and start match
-                pSegment->RemoveAt(nIndex,true);
+                pSegment->RemoveAt(nIndex);
             } else {
                 // start matches, stop doesn't
                 DWORD offset = GetOffset(sel);
@@ -186,7 +186,7 @@ void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
         }
     }
 
-    RemoveAt(sel,true);
+    RemoveAt(sel);
 
     // get pointer to view
     POSITION pos = pDoc->GetFirstViewPosition();
