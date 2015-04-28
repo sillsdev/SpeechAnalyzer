@@ -1,3 +1,13 @@
+AS - 0.99.0.12 4/28/2015
+- Changed word 'Prev' to 'Previous'
+- Modified split and join operations so that they leave the gloss transcription selected, not the phonetic.
+- Removed extra exclamation mark from project restart confirmation text.
+- Modified open/start dialog so that it remembers the name of the last used directories for the audio and phrases file.
+- Modified open/start dialog so that it clears the phrases filename if the audiofilename changes.
+- Removed Cut/Copy/Paste and 'Paste As New' from AS menus.
+- Added selection of GLOSS field on open/reopen of a project file.
+- Added code to export Audacity label files along with .sft file (AS)
+
 AS - 0.99.0.11 4/27/2015
 - (#1) Added 'A', 'S' and 'D' keys to control 'Join Prev', 'Split' and 'Join Next' respectively for operations based on the green 'start cursor location.  These keyboard operations are in addition the existing methods: Edit menu, Transcription popup menu, Graph popup menu, and accelerator key strokes.
 The user must click (and release) on the graph or transcription line with the mouse, and then use one of the three keys to perform the split or join operations.  The operation is based on the location of the green 'start' cursor.  The user does not need to click the mouse button if the green start cursor is already correctly located.

@@ -91,15 +91,30 @@ BOOL CDlgASStart::OnInitDialog() {
 void CDlgASStart::OnClickedBrowseAudio() {
 
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-    CSaString szFilter = "MP3 Files (*.mp3) |*.mp3|WAV Files (*.wav) |*.wav|All Files (*.*) |*.*||";
-    CFileDialog dlg(TRUE,_T("mp3"),audioFilename,OFN_HIDEREADONLY,szFilter,NULL);
 	CString defaultDir = pApp->GetDefaultDir();
+	defaultDir = pApp->GetProfileString(L"AudioSync",L"LastAudio",defaultDir);
+  
+	CString oldname = audioFilename;
+
+	CSaString szFilter = "MP3 Files (*.mp3) |*.mp3|WAV Files (*.wav) |*.wav|All Files (*.*) |*.*||";
+    CFileDialog dlg(TRUE,_T("mp3"),audioFilename,OFN_HIDEREADONLY|OFN_FILEMUSTEXIST,szFilter,NULL);
     dlg.m_ofn.lpstrInitialDir = defaultDir;
     if (dlg.DoModal()!=IDOK) {
         return;
     }
     audioFilename = dlg.GetPathName();
+	defaultDir = FileUtils::GetParentFolder(audioFilename).c_str();
+	pApp->WriteProfileStringW(L"AudioSync",L"LastAudio",defaultDir);
+
 	UpdateData(FALSE);
+
+	if (oldname.CompareNoCase(audioFilename)!=0) {
+		// if they changed it, get rid of the phrases name, but look for a xml file just in case
+		// OnChange will handle that...
+		edit2.SetWindowTextW(L"");
+		phraseFilename = L"";
+	}
+
 	OnChange();
 	edit1.SetSel(-1);
 }
@@ -124,14 +139,19 @@ void CDlgASStart::OnClickedBrowsePhrases() {
 	}
 
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	CString defaultDir = pApp->GetDefaultDir();
+	defaultDir = pApp->GetProfileString(L"AudioSync",L"LastPhrase",defaultDir);
+
 	CSaString szFilter = "Phrase Files (*.phrases) |*.phrases|Text Files (*.txt) |*.txt|All Files (*.*) |*.*||";
 	CFileDialog dlg(TRUE,_T("phrases"),phraseFilename,OFN_HIDEREADONLY,szFilter,NULL);
-	CString defaultDir = pApp->GetDefaultDir();
 	dlg.m_ofn.lpstrInitialDir = defaultDir;
 	if (dlg.DoModal()!=IDOK) {
 		return;
 	}
 	phraseFilename = dlg.GetPathName();
+	defaultDir = FileUtils::GetParentFolder(phraseFilename).c_str();
+	pApp->WriteProfileStringW(L"AudioSync",L"LastPhrase",defaultDir);
+
 	// if they just selected something, and it's valid, enable segmentation and loading
 	if ((phraseFilename.GetLength()>0)&&(FileUtils::FileExists(phraseFilename))) {
 		segmentAudio = TRUE;

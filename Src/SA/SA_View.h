@@ -675,13 +675,14 @@ private:
     bool CanSplitAt(CSaDoc * pDoc,CPhoneticSegment * pSeg, DWORD position);
     bool CanMerge(CSegment * pSeg);
     bool CanMergeNext(CSegment * pSeg);
-    bool CanMergeAt(CPhoneticSegment * pSeg, DWORD position);
+    bool CanMergeAt(CSaDoc * pDoc,CPhoneticSegment * pSeg, DWORD position);
+    bool CanMergeAtNext(CSaDoc * pDoc,CPhoneticSegment * pSeg, DWORD position);
     bool CanMergeSel(CPhoneticSegment * pSeg, int sel);
 
     void EditMoveRight();
     void EditMoveRightNext();
 	void EditMoveLeft();
-    void EditMoveLeftAt(DWORD position);
+    void EditMoveLeftAt(CSaDoc * pDoc,DWORD position);
 	void EditSplit();
 	DWORD EditSplitAt(DWORD position);
 	void EditMerge();

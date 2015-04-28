@@ -3592,19 +3592,12 @@ BEGIN
         MENUITEM "Edit Segment &Boundaries\tINS", ID_EDIT_SEGMENT_BOUNDARIES
         MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
-        MENUITEM "Split and Move Left\tShift+Ctrl+S", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Split in Half and Move Left\tShift+Ctrl+S", ID_EDIT_SPLIT_MOVE_LEFT
         MENUITEM "Join with &Next Segment\tShift+Ctrl+D", ID_EDIT_MOVE_RIGHT_MERGE_NEXT
         MENUITEM "Join with &Previous Segment\tShift+Ctrl+A", ID_EDIT_MOVE_RIGHT_MERGE_PREV
         MENUITEM SEPARATOR
-        MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
-        MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
         MENUITEM "Move Text &Left\tShift+G",    ID_EDIT_MOVE_LEFT
         MENUITEM "Move Text &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
-        MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
         MENUITEM SEPARATOR
         POPUP "S&elect Segment"
         BEGIN
@@ -3973,7 +3966,7 @@ BEGIN
     POPUP "Popup Graph"
     BEGIN
         MENUITEM "&Split Segment Here",         ID_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Join With &Prev Segment",     ID_MOVE_RIGHT_MERGE_PREV_HERE
+        MENUITEM "Join With &Previous Segment", ID_MOVE_RIGHT_MERGE_PREV_HERE
         MENUITEM "Join With &Next Segment",     ID_MOVE_RIGHT_MERGE_NEXT_HERE
         MENUITEM SEPARATOR
         MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
@@ -3998,9 +3991,9 @@ BEGIN
     END
     POPUP "Popup Transcription"
     BEGIN
-        MENUITEM "Split Segment\tShift+Ctrl+S", ID_EDIT_SPLIT_MOVE_LEFT
+        MENUITEM "Split Segment in Half\tShift+Ctrl+S", ID_EDIT_SPLIT_MOVE_LEFT
         MENUITEM "Join With Next Segment\tShift+Ctrl+D", ID_EDIT_MOVE_RIGHT_MERGE_NEXT
-        MENUITEM "Join With &Prev Segment\tShift+Ctrl+A", ID_EDIT_MOVE_RIGHT_MERGE_PREV
+        MENUITEM "Join With &Previous Segment\tShift+Ctrl+A", ID_EDIT_MOVE_RIGHT_MERGE_PREV
         MENUITEM SEPARATOR
         MENUITEM "Move Text &Left\tShift+G",    ID_EDIT_MOVE_LEFT
         MENUITEM "Move Text &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
@@ -4011,10 +4004,6 @@ BEGIN
         MENUITEM "&Remove\tDelete",             ID_EDIT_REMOVE
         MENUITEM SEPARATOR
         MENUITEM "&View Boundaries",            ID_VIEW_TRANSCRIPTION_BOUNDARIES
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
     END
     POPUP "Popup Toolbars"
     BEGIN
@@ -4024,7 +4013,7 @@ BEGIN
     POPUP "Popup Graph"
     BEGIN
         MENUITEM "&Split Segment Here",         ID_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Join With &Prev Segment",     ID_MOVE_RIGHT_MERGE_PREV_HERE
+        MENUITEM "Join With &Previous Segment", ID_MOVE_RIGHT_MERGE_PREV_HERE
         MENUITEM "Join With &Next Segment",     ID_MOVE_RIGHT_MERGE_NEXT_HERE
         MENUITEM SEPARATOR
         MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
@@ -5921,11 +5910,11 @@ END
 STRINGTABLE
 BEGIN
     ID_EDIT_MOVE_LEFT       "Move text left"
-    ID_EDIT_SPLIT_MOVE_LEFT "Split selected segment and move text left\nSplit And Move Text Left"
+    ID_EDIT_SPLIT_MOVE_LEFT "Split selected segment in half and move text left\nSplit in Half and Move Text Left"
     ID_EDIT_MERGE           "Merge two segments into one segment"
     ID_EDIT_MOVE_RIGHT      "Move text right"
     ID_EDIT_MOVE_RIGHT_MERGE_NEXT 
-                            "Move right and merge with next segment\nMove right and merge"
+                            "Move right and merge with next segment\nMove Right and Merge"
     ID_EDIT_MOVE_RIGHT_MERGE_PREV 
                             "Move right and merge with previous segment\nMove Right And Merge"
     ID_EDIT_ADD_MARKUP      "Add markup\nAdd Markup"
@@ -6365,7 +6354,7 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_SPLIT_MOVE_LEFT_HERE "Split segment at mouse location"
+    ID_SPLIT_MOVE_LEFT_HERE "Split segment at mouse location and move text left"
     ID_MOVE_RIGHT_MERGE_NEXT_HERE 
                             "Join segment at mouse location with next segment"
     ID_MOVE_RIGHT_MERGE_PREV_HERE 
@@ -6376,7 +6365,7 @@ STRINGTABLE
 BEGIN
     IDS_RESTART_PROJECT     "Restart Project..."
     IDS_BROWSE              "Browse..."
-    IDS_RESTART_CONFIRM     "Do you wish to delete the existing text segmentation and restart the project?\nAll existing work will be lost!\nThis operation cannot be undone!"
+    IDS_RESTART_CONFIRM     "Do you wish to delete the existing text segmentation and restart the project?\nAll existing work will be lost!\nThis operation cannot be undone."
 END
 
 #endif    // English (United States) resources

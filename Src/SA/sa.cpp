@@ -1448,6 +1448,7 @@ void CSaApp::FileOpen() {
 			    CSaView * pView = (CSaView *)pDoc2->GetNextView(pos);
 				pView->ZoomIn(4);
 				pView->Scroll((DWORD)0);
+				pView->SelectFromPosition(GLOSS,0,false);
 			}
 		}
 
@@ -1595,6 +1596,7 @@ void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 			    CSaView * pView = (CSaView *)pDoc2->GetNextView(pos);
 				pView->ZoomIn(4);
 				pView->Scroll((DWORD)0);
+				pView->SelectFromPosition(GLOSS,0,false);
 			}
 		}
 
@@ -1697,14 +1699,18 @@ void CSaApp::FileReturn(BOOL bHide) {
 /***************************************************************************/
 CWnd * CSaApp::IsAppRunning() {
 
-    CWnd * pTopWnd = AfxGetMainWnd()->GetWindow(GW_HWNDFIRST); // get pointer to first toplevel window
+	// get pointer to first toplevel window
+    CWnd * pTopWnd = AfxGetMainWnd()->GetWindow(GW_HWNDFIRST); 
     while (pTopWnd != NULL) {
         CSaString szCaption;
-        pTopWnd->GetWindowText(szCaption); // get caption text
+		// get caption text
+        pTopWnd->GetWindowText(szCaption); 
         if (szCaption.Left(m_szCallingApp.GetLength()) == m_szCallingApp) {
-            return pTopWnd; //found
+			//found
+            return pTopWnd; 
         }
-        pTopWnd = pTopWnd->GetWindow(GW_HWNDNEXT); // get pointer to next toplevel window
+		// get pointer to next toplevel window
+        pTopWnd = pTopWnd->GetWindow(GW_HWNDNEXT); 
     }
     return NULL;
 }
@@ -1713,16 +1719,16 @@ CWnd * CSaApp::IsAppRunning() {
 // CSaApp::OnUpdateFileReturn Menu update
 /***************************************************************************/
 void CSaApp::OnUpdateFileReturn(CCmdUI * pCmdUI) {
-
-    pCmdUI->Enable(GetBatchMode()); // enabled only if batch mode
+	// enabled only if batch mode
+    pCmdUI->Enable(GetBatchMode()); 
 }
 
 /***************************************************************************/
 // CSaApp::OnUpdateAppExit Menu update
 /***************************************************************************/
 void CSaApp::OnUpdateAppExit(CCmdUI * pCmdUI) {
-
-    pCmdUI->Enable(!GetBatchMode()); // enabled only if no batch mode
+	// enabled only if no batch mode
+    pCmdUI->Enable(!GetBatchMode()); 
 }
 
 /***************************************************************************/
@@ -1739,8 +1745,9 @@ BOOL CSaApp::OnIdle(LONG lCount) {
     // SDM 1.06.5 Send mainframe idle update message
     if (lCount <= 0) {
         if ((pMainWnd->m_hWnd != NULL) &&
-                (pMainWnd->IsWindowVisible())) {
-            pMainWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0L); // SDM 32 bit conversion
+            (pMainWnd->IsWindowVisible())) {
+			// SDM 32 bit conversion
+            pMainWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0L); 
         }
 
     }
@@ -1749,7 +1756,8 @@ BOOL CSaApp::OnIdle(LONG lCount) {
     DisplayMessages();
 
     if (bMore) {
-        return TRUE;    // more idle processing necessary
+		// more idle processing necessary
+        return TRUE;
     }
 
     // get active document
@@ -1757,14 +1765,15 @@ BOOL CSaApp::OnIdle(LONG lCount) {
 
     // perform pitch processing if not already done
     if ((pSaDoc) &&
-            (pSaDoc->IsBackgroundProcessing()) &&
-            (pSaDoc->GetDataSize())) {
+        (pSaDoc->IsBackgroundProcessing()) &&
+        (pSaDoc->GetDataSize())) {
         CProcessGrappl * pAutoPitch = pSaDoc->GetGrappl();
         if (!pAutoPitch->IsDataReady()) {
             if (pAutoPitch->IsCanceled()) {
                 pSaDoc->EnableBackgroundProcessing(FALSE);
             } else {
-                short int nResult = LOWORD(pAutoPitch->Process(this, pSaDoc)); // process data
+				// process data
+                short int nResult = LOWORD(pAutoPitch->Process(this, pSaDoc));
                 if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
                     pAutoPitch->SetDataInvalid();
                     pSaDoc->EnableBackgroundProcessing(FALSE);
@@ -1778,7 +1787,8 @@ BOOL CSaApp::OnIdle(LONG lCount) {
         // run fragmenter if not already done
         CProcessFragments * pFragmenter = pSaDoc->GetFragments();
         if (!pFragmenter->IsDataReady()) {
-            short int nResult = LOWORD(pFragmenter->Process(this, pSaDoc)); // process data
+			// process data
+            short int nResult = LOWORD(pFragmenter->Process(this, pSaDoc));
             if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_NO_DATA) || (nResult == PROCESS_CANCELED)) {
                 pFragmenter->SetDataInvalid();
                 pSaDoc->EnableBackgroundProcessing(FALSE);

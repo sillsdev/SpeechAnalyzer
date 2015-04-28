@@ -114,30 +114,24 @@ bool FileUtils::CreateFolder(LPCTSTR path) {
 }
 
 void FileUtils::AppendDirSep(LPTSTR path, size_t size) {
-
     size_t len = wcslen(path);
     if (len == 0) {
         return;
     }
-
     if (path[len - 1] == '\\') {
         return;
     }
-
     wcscat_s(path,size,L"\\");
 }
 
 void FileUtils::AppendDirSep(wstring & path) {
-
     size_t len = path.length();
     if (len == 0) {
         return;
     }
-
     if (path[len - 1] == '\\') {
         return;
     }
-
     path.append(L"\\");
 }
 
@@ -279,6 +273,25 @@ wstring FileUtils::GetFilename(LPCTSTR path) {
     if (pos!=wstring::npos) {
         result = result.substr(pos+1,result.length()-pos-1);
     }
+	return result;
+}
+
+wstring FileUtils::GetParentFolder(LPCTSTR path) {
+    wchar_t buffer[MAX_PATH];
+    swprintf_s(buffer,_countof(buffer),path);
+    wchar_t drive[_MAX_DRIVE];
+    wchar_t dir[_MAX_DIR];
+    wchar_t fname[_MAX_FNAME];
+    wchar_t ext[_MAX_EXT];
+    _wsplitpath_s(buffer, drive, dir, fname, ext);
+
+	wstring result;
+	result.append(drive);
+	result.append(dir);
+    size_t pos = result.rfind('\\');
+    if (pos==wstring::npos) {
+		result.append(L"\\");
+	}
 	return result;
 }
 
