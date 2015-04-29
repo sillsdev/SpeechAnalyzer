@@ -1,11 +1,12 @@
 #ifndef DLGWAVENOTIFYOBJ_H
 #define DLGWAVENOTIFYOBJ_H
 
-#include "sa_doc.h"
 #include "sa_dlwnd.h"
 #include "sa_wave.h"
 #include "fnkeys.h"
 #include "IWaveNotifiable.h"
+
+class CSaDoc;
 
 class CDlgWaveNotifyObj : public CWaveNotifyObj {
 public:

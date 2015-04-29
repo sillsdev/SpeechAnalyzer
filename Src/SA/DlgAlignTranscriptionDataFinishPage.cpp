@@ -5,11 +5,9 @@
 #include "DlgAlignTranscriptionDataFinishPage.h"
 #include "DlgAlignTranscriptionDataSheet.h"
 #include "TranscriptionDataSettings.h"
-
-class CSaDoc;
+#include "Sa_Doc.h"
 
 // CDlgAlignTranscriptionDataFinishPage
-
 CDlgAlignTranscriptionDataFinishPage::CDlgAlignTranscriptionDataFinishPage(CSaDoc * pSaDoc) :
     CPropertyPage(CDlgAlignTranscriptionDataFinishPage::IDD),
     m_pSaDoc(pSaDoc) {

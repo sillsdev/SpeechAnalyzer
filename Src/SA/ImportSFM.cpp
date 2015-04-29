@@ -14,6 +14,7 @@
 #include "SFMHelper.h"
 #include "FileEncodingHelper.h"
 #include "StringStream.h"
+#include "Sa_Doc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -15,7 +15,7 @@
 //    1.5Test8.1
 //         SDM Added m_anAnnWndOrder[]
 //    06/06/2000
-//         RLJ Added bSetProperties(int nNewID)
+//         RLJ Added SetProperties(int nNewID)
 //    09/27/2000
 //         DDO Added the function IsAnnotationVisible() so outsiders can
 //             get the visible state of a particular annotation for a graph.
@@ -41,36 +41,27 @@ class CObjectIStream;
 class CGraphWnd : public CMiniCaptionWnd {
     DECLARE_DYNCREATE(CGraphWnd)
 
-    // Construction/destruction/creation
 public:
     CGraphWnd();
     CGraphWnd(UINT nID);
-    CGraphWnd(const CGraphWnd & toBeCopied);    // copy constructor
-    CGraphWnd & operator=(const CGraphWnd &);   // assignment operator
+	// copy constructor
+    CGraphWnd(const CGraphWnd & toBeCopied);
+	// assignment operator
+    CGraphWnd & operator=(const CGraphWnd &);
     virtual ~CGraphWnd();
     CPlotWnd * NewPlotFromID(UINT plotID);
     BOOL IsIDincluded(UINT id);
-    void WriteProperties(CObjectOStream & obs); // Save (Project) Settings
-    BOOL ReadProperties(CObjectIStream & obs);  // Autoloading
-    BOOL bSetProperties(int nNewID);            // Set graph's default properties (needed for "FileOpenAs->Phonetic/Music Analysis")
+	// Save (Project) Settings
+    void WriteProperties(CObjectOStream & obs);
+	// Autoloading
+    BOOL ReadProperties(CObjectIStream & obs);
+	// Set graph's default properties (needed for "FileOpenAs->Phonetic/Music Analysis")
+    BOOL SetProperties(int nNewID);
     void HideCursors();
     void ShowCursors();
+	CPoint GetPopupMenuPosition();
 
-protected:
-    CPlotWnd * m_pPlot;                         // plot window
-    UINT m_nPlotID;                             // ID of plot window
-    CLegendWnd * m_pLegend;                     // legend window embedded object
-    CXScaleWnd * m_pXScale;                     // x-scale window embedded object
-    BOOL m_bLegend;                             // TRUE = legend window shown
-    BOOL m_bXScale;                             // TRUE = x-scale window shown
-    CAnnotationWnd * m_apAnnWnd[ANNOT_WND_NUMBER]; // array of pointers to the annotation window objects
-    BOOL m_abAnnWnd[ANNOT_WND_NUMBER];          // array of boolean, TRUE if annotation window shown
-    BOOL m_bAreaGraph;                          // TRUE = this is a area processed graph
-    static DWORD m_dwLastStartCursor;           // last updated status bar start cursor position
-    static DWORD m_dwLastStopCursor;            // last updated status bar stop cursor position
-
-public:
-    static EAnnotation m_anAnnWndOrder[ANNOT_WND_NUMBER]; // order to display annotation windows
+	static EAnnotation m_anAnnWndOrder[ANNOT_WND_NUMBER]; // order to display annotation windows
     void RemoveRtPlots();
     void SetGraphFocus(BOOL bFocus);
     void PartialCopy(const CGraphWnd & toBeCopied);
@@ -139,8 +130,8 @@ public:
     BOOL IsCanceled();
     void AnimateFrame(DWORD dwFrameIndex);
     void EndAnimation();
+	void SetPopupMenuLocation( CPoint point);
 
-    // Generated message map functions
 protected:
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -153,6 +144,31 @@ protected:
 
     void Copy(const CGraphWnd & toBeCopied);
     void Clear(void);
+
+	// plot window
+    CPlotWnd * m_pPlot;
+	// ID of plot window
+    UINT m_nPlotID;
+	// legend window embedded object
+    CLegendWnd * m_pLegend;
+	// x-scale window embedded object
+    CXScaleWnd * m_pXScale;
+	// TRUE = legend window shown
+    BOOL m_bLegend;
+	// TRUE = x-scale window shown
+    BOOL m_bXScale;
+	// array of pointers to the annotation window objects
+    CAnnotationWnd * m_apAnnWnd[ANNOT_WND_NUMBER];
+	// array of boolean, TRUE if annotation window shown
+    BOOL m_abAnnWnd[ANNOT_WND_NUMBER];
+	// TRUE = this is a area processed graph
+    BOOL m_bAreaGraph;
+	// last updated status bar start cursor position
+    static DWORD m_dwLastStartCursor;
+	// last updated status bar stop cursor position
+    static DWORD m_dwLastStopCursor;
+	// popup menu location
+	CPoint m_PopupMenuPos;
 };
 
 //###########################################################################

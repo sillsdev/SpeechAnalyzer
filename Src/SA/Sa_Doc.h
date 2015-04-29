@@ -408,24 +408,7 @@ public:
 						  int nCalculationMethod,
 						  bool bEntire,
 						  BOOL bMelogram);
-	void ExportAudacityLabelFile( LPCTSTR filename,
-								  BOOL bGloss,
-								  BOOL bGlossNat,
-								  CString szIntervalTime,
-								  BOOL bSegmentEnd,
-								  BOOL bMagnitude,
-								  BOOL bOrtho,
-								  BOOL bPhonemic,
-								  BOOL bPhonetic,
-								  BOOL bPitch,
-								  BOOL bReference,
-								  BOOL bSegmentStart,
-								  BOOL bSampleTime,
-								  BOOL bTone,
-								  BOOL bZeroCrossings,
-								  int nSampleRate,
-								  int nCalculationMethod,
-								  bool bEntire);
+	void ExportAudacityLabelFile( LPCTSTR filename);
 	void GenerateCVData( CSaView & view);
 	bool AutoSegment( CTranscriptionData & td, CSaView & view, DWORD goal, int algorithm, int skipCount, bool usingGL);
 	int FindPhoneticIndex( CSegment * pSeg, int index);

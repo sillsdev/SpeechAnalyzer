@@ -14,12 +14,14 @@
 #ifndef DLGPLAYER_H
 #define DLGPLAYER_H
 
-#include "sa_doc.h"
 #include "sa_dlwnd.h"
 #include "sa_wave.h"
 #include "fnkeys.h"
 #include "DlgWaveNotifyObj.h"
 #include "IWaveNotifiable.h"
+
+class CSaDoc;
+class CSaView;
 
 //###########################################################################
 // CDlgPlayer dialog

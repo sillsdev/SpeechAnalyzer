@@ -54,13 +54,13 @@ using std::ifstream;
 using std::ios;
 using std::ios_base;
 using std::istringstream;
+using std::list;
 using std::logic_error;
 using std::map;
 using std::ofstream;
 using std::streampos;
 using std::string;
 using std::stringstream;
-using std::vector;
 using std::vector;
 using std::wifstream;
 using std::wistringstream;
@@ -93,6 +93,8 @@ inline static int round(double value) {
 //#define EXPERIMENTAL_ACCESS (GetKeyState(VK_CONTROL) < 0)
 
 #define EXPERIMENTAL_ACCESS true
+
+#define CONTROLLED_ACCESS (GetKeyState(VK_CONTROL) < 0)
 
 #define PROGRAMMER_ACCESS ((GetKeyState(VK_CONTROL) & GetKeyState(VK_SHIFT)) < 0)
 

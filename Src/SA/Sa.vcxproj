@@ -167,6 +167,7 @@
     <ClCompile Include="DlgSelectTranscriptionBars.cpp" />
     <ClCompile Include="DlgWaveformGenerator.cpp" />
     <ClCompile Include="DlgWaveNotifyObj.cpp" />
+    <ClCompile Include="DocList.cpp" />
     <ClCompile Include="ExportFWSettings.cpp" />
     <ClCompile Include="ExportLiftSettings.cpp" />
     <ClCompile Include="FileEncodingHelper.cpp" />

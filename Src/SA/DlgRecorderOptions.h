@@ -1,11 +1,12 @@
 #ifndef DLGRECORDEROPTIONS_H
 #define DLGRECORDEROPTIONS_H
 
-#include "sa_doc.h"
 #include "sa_dlwnd.h"
 #include "sa_wave.h"
 #include "fnkeys.h"
 #include "DlgRecorder.h"
+
+class CSaDoc;
 
 class CDlgRecorderOptions : public CDialog {
 

@@ -362,7 +362,6 @@ void CPlotWnd::CopyTo(CPlotWnd * pTarg) {
     pTarg->m_dwHighLightLength = 0;
 }
 
-
 /***************************************************************************/
 // CPlotWnd::~CPlotWnd Destructor
 /***************************************************************************/
@@ -1852,9 +1851,9 @@ void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 
 	TRACE("OnRButtonDown %d,%d\n",point.x,point.y);
     // inform parent graph
-    CGraphWnd * pWnd = (CGraphWnd *)GetParent();
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
 	// send message to parent
-    pWnd->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); 
+    pGraph->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); 
 
 	CMainFrame * pMainWnd = (CMainFrame*)AfxGetMainWnd();
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
@@ -1866,25 +1865,23 @@ void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 	}
 
 	// handle the floating popup menu
-    CMenu mPopup;
-    if (mPopup.LoadMenu(pMainWnd->GetPopup())) { 
-		// SDM 1.5Test8.5
+    CMenu menu;
+    if (menu.LoadMenu(pMainWnd->GetPopup())) { 
         // Show restricted submenu according to EXPERIMENTAL_ACCESS
-        CMenu & pFloatingPopup = EXPERIMENTAL_ACCESS ? *mPopup.GetSubMenu(3) : *mPopup.GetSubMenu(0);
-        ASSERT(pFloatingPopup.m_hMenu != NULL);
+        CMenu & popup = EXPERIMENTAL_ACCESS ? *menu.GetSubMenu(3) : *menu.GetSubMenu(0);
+        ASSERT(popup.m_hMenu != NULL);
         // attach the layout menu
         CLayoutMenu layout;
-        TCHAR szString[256]; // don't change the string
-        if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND)) { // SDM 1.5Test8.5
-            BOOL bResult = pFloatingPopup.ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)layout.m_hMenu, szString);
+		// don't change the string
+        TCHAR szString[256]; 
+        if (popup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND)) {
+            BOOL bResult = popup.ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)layout.m_hMenu, szString);
 			ASSERT(bResult);
         }
-
-		m_PopupMenuPos = point;
-
+		pGraph->SetPopupMenuLocation(point);
         // pop the menu up
         ClientToScreen(&point);
-        pFloatingPopup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y,  AfxGetMainWnd());
+        popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y,  pMainWnd);
     }
     CWnd::OnRButtonDown(nFlags, point);
 }
@@ -2458,10 +2455,6 @@ CGraphWnd * CPlotWnd::GetGraph(void) {
 
 CPoint CPlotWnd::GetMousePointerPosition() {
     return m_MousePointerPos;
-}
-
-CPoint CPlotWnd::GetPopupMenuPosition() {
-	return m_PopupMenuPos;
 }
 
 UINT CPlotWnd::GetMouseButtonState() {

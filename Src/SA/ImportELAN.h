@@ -2,8 +2,9 @@
 #define IMPORT_ELAN_H
 
 #include "SaString.h"
-#include "Sa_Doc.h"
 #include "StringStream.h"
+
+class CSaDoc;
 
 class CImportELAN {
 public:

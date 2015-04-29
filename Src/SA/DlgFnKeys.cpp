@@ -12,6 +12,8 @@
 #include "Process\sa_p_fra.h"
 #include "Process\Process.h"
 #include "objectostream.h"
+#include "Sa_Doc.h"
+#include "SA_View.h"
 
 //###########################################################################
 // CDlgFnKeys dialog

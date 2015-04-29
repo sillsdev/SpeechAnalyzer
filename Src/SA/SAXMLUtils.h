@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SAXMLUTILS_H
+#define SAXMLUTILS_H
 
 #include "ElanUtils.h"
 #include "DlgImportElanSheet.h"
@@ -14,4 +15,6 @@ public:
 	static void AddPhraseSegments( EAnnotation atype, xercesc_3_1::DOMDocument * doc, xercesc_3_1::DOMElement & element, Elan::CAnnotationDocument & document,Elan::CTier & tier);
 	static Elan::CTier * FindTier( Elan::CAnnotationDocument & document, wstring tierid);
 };
+
+#endif
 

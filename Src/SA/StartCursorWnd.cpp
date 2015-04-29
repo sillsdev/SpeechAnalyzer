@@ -245,7 +245,8 @@ void CStartCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
 
     // get pointer to parent plot, graph, and view
-    CPlotWnd * pWnd = (CPlotWnd *)GetParent(); // get parent plot
+	// get parent plot
+    CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     // calculate parent client coordinates
@@ -352,6 +353,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
             SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
         }
     }
+
     // update the status bar
     const BOOL bForceUpdate = TRUE;
     pGraph->UpdateStatusBar(dwCursor, dwStopCursor, bForceUpdate);

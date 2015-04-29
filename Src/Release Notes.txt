@@ -1,3 +1,16 @@
+AS - 0.99.0.13 4/29/2015
+- Fixed Audacity Label file output so that the extra tab is not generated, and empty refid fields are skipped.
+- Hid transcription bar menu items.
+- Hid parameters menu item.
+- Changed application name to 'Audio-Sync'
+- Modified file/edit split-join operations to use green begin cursor location instead of selected transcription field.
+- Modified toolbar to include 'merge previous' button. 
+- Modified toolbar tooltips for split-join operations.
+- Modified toolbar to use green begin-cursor location instead of selected transcription field.
+- Modified transcription right-click popmenu to use perform same operation as graph right-click popupmenu.  Operation is performed at mouse cursor location.
+- The Tools/Options menu item is only enabled if CTRL key is pressed at time menu is displayed.
+- Moved Audio-Sync under the SIL directory
+
 AS - 0.99.0.12 4/28/2015
 - Changed word 'Prev' to 'Previous'
 - Modified split and join operations so that they leave the gloss transcription selected, not the phonetic.

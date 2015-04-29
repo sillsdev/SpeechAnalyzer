@@ -14,12 +14,13 @@
 #ifndef DLGAUTORECORDER_H
 #define DLGAUTORECORDER_H
 
-#include "sa_doc.h"
 #include "sa_dlwnd.h"
 #include "sa_wave.h"
 #include "AlignInfo.h"
 #include "DlgWaveNotifyObj.h"
 #include "IWaveNotifiable.h"
+
+class CSaDoc;
 
 //###########################################################################
 // CDlgAutoRecorder dialog

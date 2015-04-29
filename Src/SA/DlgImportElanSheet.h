@@ -4,8 +4,9 @@
 #include "DlgImportElanIntroPage.h"
 #include "DlgImportElanSelectPage.h"
 #include "DlgImportElanFinishPage.h"
-#include "sa_doc.h"
 #include "ElanUtils.h"
+
+class CSaDoc;
 
 typedef map<EAnnotation,wstring> ElanMap;
 

@@ -11,6 +11,7 @@
 #include "TranscriptionData.h"
 #include "Process\SA_P_GRA.H"
 #include <iomanip>
+#include "Sa_Doc.h"
 
 #define BREAK_WIDTH 300.0f
 #define MIN_PHONE_ERROR 0.70f

@@ -19,7 +19,7 @@
 //         RLJ Add SetSpectroAB call so we know which set (A or B) of
 //             parameters to save.
 //    06/06/2000
-//         RLJ Added bSetProperties(int nNewID)
+//         RLJ Added SetProperties(int nNewID)
 //    06/17/2000
 //         RLJ Extend FileOpenAs to support not only Phonetic/Music Analysis,
 //               but also OpenScreenF, OpenScreenG, OpenScreenI, OpenScreenK,
@@ -223,9 +223,6 @@ void CGraphWnd::ChangeAnnotationSelection(int nIndex) {
         m_apAnnWnd[nIndex]->Invalidate(TRUE);    
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CGraphWnd message handlers
 
 /***************************************************************************/
 // CGraphWnd::OnCreate Window creation
@@ -777,12 +774,12 @@ BOOL CGraphWnd::ReadProperties(CObjectIStream & obs) {
 }
 
 /***************************************************************************/
-// CGraphWnd::bSetProperties Set graph's default properties
+// CGraphWnd::SetProperties Set graph's default properties
 //
 // Set default properties for specified graph
 // (needed for "FileOpenAs->Phonetic/Music Analysis")
 /***************************************************************************/
-BOOL CGraphWnd::bSetProperties(int nID) {
+BOOL CGraphWnd::SetProperties(int nID) {
     m_bXScale = !(nID == IDD_MAGNITUDE || nID == IDD_STAFF || nID == IDD_POA);
     m_bLegend = !(nID == IDD_POA);
 
@@ -880,4 +877,12 @@ void CGraphWnd::ShowCursors() {
     if (m_pPlot!=NULL) {
         m_pPlot->ShowCursors();
     }
+}
+
+CPoint CGraphWnd::GetPopupMenuPosition() {
+	return m_PopupMenuPos;
+}
+
+void CGraphWnd::SetPopupMenuLocation( CPoint point) {
+	m_PopupMenuPos = point;
 }

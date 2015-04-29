@@ -2,8 +2,9 @@
 #define IMPORT_SFM_H
 
 #include "SaString.h"
-#include "Sa_Doc.h"
 #include "StringStream.h"
+
+class CSaDoc;
 
 class CImportSFM {
 public:

@@ -1,12 +1,15 @@
 #ifndef DLGRECORDER_H
 #define DLGRECORDER_H
 
-#include "sa_doc.h"
 #include "sa_dlwnd.h"
 #include "sa_wave.h"
 #include "fnkeys.h"
 #include "DlgWaveNotifyObj.h"
 #include "IWaveNotifiable.h"
+#include "sourceParm.h"
+
+class CSaDoc;
+class CSaView;
 
 class CDlgRecorder : public CDialog, public IWaveNotifiable {
 public:

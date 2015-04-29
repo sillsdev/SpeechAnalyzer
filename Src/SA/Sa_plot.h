@@ -130,7 +130,6 @@ public:
     virtual void GraphHasFocus(BOOL bFocus);
     CGraphWnd * GetGraph(void);
     CPoint GetMousePointerPosition();
-	CPoint GetPopupMenuPosition();
     UINT GetMouseButtonState();
     void SetMousePointerPosition(CPoint point);
     void SetMouseButtonState(UINT state);
@@ -256,33 +255,57 @@ protected:
 
     virtual void OnPaint();
 
-    BOOL m_bInitialPlot;                    // TRUE = initial plot
+	// TRUE = initial plot
+    BOOL m_bInitialPlot;
     CString m_szPlotName;
     CGraphWnd * m_pParent;
-    CPlotHelperWnd m_HelperWnd;             // helper window embedded object
-    CStartCursorWnd * m_pStartCursor;       // start cursor window embedded object
-    CStopCursorWnd * m_pStopCursor;         // stop cursor window embedded object
-    CPrivateCursorWnd m_PrivateCursor;      // private cursor window embedded object
-    CPrivateCursorWnd m_PlaybackCursor;     // private cursor window embedded object
-    CProcess * m_pLastProcess;              // pointer to MRU process
-    CProcessAreaData * m_pAreaProcess;      // pointer to area process (needs deleting)
-    bool m_bBoundaries;                     // TRUE = boundaries shown
-    BOOL m_bLineDraw;                       // TRUE = drawing style is line
-    BOOL m_bDotDraw;                        // TRUE = drawing style is dots
-    bool m_bCursors;                        // TRUE = cursors visible
-    bool m_bPrivateCursor;                  // TRUE = private cursor visible
-    BOOL m_bGrid;                           // TRUE = gridlines visible
-    double m_fMagnify;                      // magnify factor
-    double m_fVScale;                       // vertical scale
+	// helper window embedded object
+    CPlotHelperWnd m_HelperWnd;
+	// start cursor window embedded object
+    CStartCursorWnd * m_pStartCursor;
+	// stop cursor window embedded object
+    CStopCursorWnd * m_pStopCursor;
+	// private cursor window embedded object
+    CPrivateCursorWnd m_PrivateCursor;
+	// private cursor playback
+    CPrivateCursorWnd m_PlaybackCursor;
+	// pointer to MRU process
+    CProcess * m_pLastProcess;
+	// pointer to area process (needs deleting)
+    CProcessAreaData * m_pAreaProcess;
+	// TRUE = boundaries shown
+    bool m_bBoundaries;
+	// TRUE = drawing style is line
+    BOOL m_bLineDraw;
+	// TRUE = drawing style is dots
+    BOOL m_bDotDraw;
+	// TRUE = cursors visible
+    bool m_bCursors;
+	// TRUE = private cursor visible
+    bool m_bPrivateCursor;
+	// TRUE = gridlines visible
+    BOOL m_bGrid;
+	// magnify factor
+    double m_fMagnify;
+	// vertical scale
+    double m_fVScale;
     double m_dProcessMultiplier;
-    DWORD m_dwHighLightPosition;            // highlighted area position
-    DWORD m_dwHighLightLength;              // highlighted area length
-    BOOL m_bAnimationPlot;                  // TRUE = plot can be animated (defaults to FALSE)
-    DWORD m_dwAnimationFrame;               // animation frame index
-    CPoint m_MousePointerPos;               // mouse pointer position
-	CPoint m_PopupMenuPos;					// popup menu location
-    UINT m_MouseButtonState;                // mouse button flags
-    CBitmap * m_pBitmapSave;                // pointer to original bitmap
+	// highlighted area position
+    DWORD m_dwHighLightPosition;
+	// highlighted area length
+    DWORD m_dwHighLightLength;
+	// TRUE = plot can be animated (defaults to FALSE)
+    BOOL m_bAnimationPlot;
+	// animation frame index
+    DWORD m_dwAnimationFrame;
+	// mouse pointer position
+    CPoint m_MousePointerPos;
+	// popup menu location
+	CPoint m_PopupMenuPos;
+	// mouse button flags
+    UINT m_MouseButtonState;
+	// pointer to original bitmap
+    CBitmap * m_pBitmapSave;
 
     DECLARE_MESSAGE_MAP()
 

@@ -1313,7 +1313,7 @@ void CSaApp::OnAppAbout() {
 		}
 
 		// set the text values
-		aboutDlg->ProdName = _T("Audio+Sync");
+		aboutDlg->ProdName = _T("Audio-Sync");
 		CSaString szVersion = GetVersionString();
 		CSaString szBuild;
 		szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
@@ -1828,7 +1828,7 @@ void CSaApp::OnHelpContents() {
 	if (IsAudioSync()) {
 		CSaString szAppPath = m_pszHelpFilePath;
 		szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-		CSaString szCommandLine = "\"" + szAppPath + _T("\\Audio+Sync Help.pdf\"");
+		CSaString szCommandLine = "\"" + szAppPath + _T("\\Audio-Sync Help.pdf\"");
 		ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 	} else {
 	    ::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);

@@ -19,7 +19,7 @@
 //         RLJ Add SetSpectroAB call so we know which set (A or B) of
 //             parameters to save.
 //    06/06/2000
-//         RLJ Added bSetProperties(int nNewID)
+//         RLJ Added SetProperties(int nNewID)
 //    06/17/2000
 //         RLJ Extend FileOpenAs to support not only Phonetic/Music Analysis,
 //               but also OpenScreenF, OpenScreenG, OpenScreenI, OpenScreenK,
@@ -139,7 +139,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CGraphWnd::CGraphWnd Constructor
 /***************************************************************************/
-CGraphWnd::CGraphWnd(UINT nID) {
+CGraphWnd::CGraphWnd(UINT nID) :
+m_PopupMenuPos(UNDEFINED_OFFSET,UNDEFINED_OFFSET) {
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         m_apAnnWnd[nLoop] = NULL;
         m_abAnnWnd[nLoop] = FALSE;
@@ -161,7 +162,8 @@ CGraphWnd::CGraphWnd(UINT nID) {
 
 EAnnotation CGraphWnd::m_anAnnWndOrder[] = { REFERENCE, PHONETIC, TONE, PHONEMIC, ORTHO, GLOSS, GLOSS_NAT, MUSIC_PL1, MUSIC_PL2, MUSIC_PL3, MUSIC_PL4};
 
-CGraphWnd::CGraphWnd(const  CGraphWnd & toBeCopied) {
+CGraphWnd::CGraphWnd(const  CGraphWnd & toBeCopied) :
+m_PopupMenuPos(UNDEFINED_OFFSET,UNDEFINED_OFFSET) {
     Copy(toBeCopied);
 }
 
@@ -179,17 +181,21 @@ CGraphWnd & CGraphWnd::operator=(const CGraphWnd & fromThis) {
 void CGraphWnd::Clear(void) {
     if (m_pPlot) {
         delete m_pPlot;
+		m_pPlot = NULL;
     }
     if (m_pLegend) {
         delete m_pLegend;
+		m_pLegend = NULL;
     }
     if (m_pXScale) {
         delete m_pXScale;
+		m_pXScale = NULL;
     }
 
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         if (m_apAnnWnd[nLoop]) {
             delete m_apAnnWnd[nLoop];
+			m_apAnnWnd[nLoop] = NULL;
         }
     }
 }
@@ -208,7 +214,8 @@ void CGraphWnd::Copy(const CGraphWnd & fromThis) {
 
         CMultiPlotWnd * pPlot = (CMultiPlotWnd *)fromThis.GetPlot();
         if (pPlot && pPlot->IsKindOf(RUNTIME_CLASS(CMultiPlotWnd))) {
-            m_nPlotID = pPlot->GetBasePlotID();  // save base plot
+			// save base plot
+            m_nPlotID = pPlot->GetBasePlotID();  
         }
     }
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {

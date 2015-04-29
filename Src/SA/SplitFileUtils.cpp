@@ -8,6 +8,7 @@
 #include "sa.h"
 #include "MainFrm.h"
 #include <FileUtils.h>
+#include "Sa_Doc.h"
 
 /**
 * Generate a file name for a split file

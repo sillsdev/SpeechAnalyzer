@@ -7,7 +7,8 @@
 #include "dlgaligntranscriptiondatasegmentbypage.h"
 #include "dlgaligntranscriptiondatafinishpage.h"
 #include "DlgAlignTranscriptionDataImportRefPage.h"
-#include "sa_doc.h"
+
+class CSaDoc;
 
 class CTranscriptionDataSettings;
 

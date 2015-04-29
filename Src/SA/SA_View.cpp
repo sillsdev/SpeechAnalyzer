@@ -795,7 +795,7 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
 
         case CREATE_FROMSCRATCH:  // Use program defaults
             if (*pGraph) {
-                (*pGraph)->bSetProperties(nID);
+                (*pGraph)->SetProperties(nID);
                 m_WeJustReadTheProperties = TRUE;
             }
             break;
@@ -4846,7 +4846,7 @@ void CSaView::OnImportSAB() {
 		// remove extension
         szTitle = szTitle.Left(nFind);    
     }
-    CSaString szFilter = "Audio+Sync Phrases (*.phrases) |*.phrases|All Files (*.*) |*.*||";
+    CSaString szFilter = "Audio-Sync Phrases (*.phrases) |*.phrases|All Files (*.*) |*.*||";
     CFileDialog dlgFile(TRUE,_T("phrases"),szTitle,OFN_HIDEREADONLY,szFilter,NULL);
     if (dlgFile.DoModal()!=IDOK) {
         return;
@@ -7316,7 +7316,7 @@ void CSaView::PrintPageTitle(CDC * pDC, int titleAreaHeight) {
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
     CSaString szTitle;
 	if (pApp->IsAudioSync()) {
-		szTitle = "Audio+Sync - ";
+		szTitle = "Audio-Sync - ";
 	} else {
 		szTitle = "Speech Analyzer - ";
 	}
@@ -10840,7 +10840,10 @@ void CSaView::OnMoveStopCursorHere() {
 	// get pointer to document
     CSaDoc * pDoc = GetDocument();
 
-	CPoint point = pPlot->GetPopupMenuPosition();
+	CPoint point = m_pFocusedGraph->GetPopupMenuPosition();
+	if ((point.x==UNDEFINED_OFFSET)&&(point.y==UNDEFINED_OFFSET)) {
+		return;
+	}
 
     // calculate plot client coordinates
     CRect rWnd;
@@ -11989,6 +11992,7 @@ void CSaView::SelectSegment() {
 /**
 * Returns the graph position according the current mouse location
 * Returns -1 if we can't determine it
+* We either accept input from the graph, or the transcription bars
 */
 DWORD CSaView::CalculatePositionFromMouse() {
 
@@ -12008,7 +12012,10 @@ DWORD CSaView::CalculatePositionFromMouse() {
 	// get pointer to document
     CSaDoc * pDoc = GetDocument();
 
-	CPoint point = pPlot->GetPopupMenuPosition();
+	CPoint point = m_pFocusedGraph->GetPopupMenuPosition();
+	if ((point.x==UNDEFINED_OFFSET)&&(point.y==UNDEFINED_OFFSET)) {
+		return -1;
+	}
 
     // calculate plot client coordinates
     CRect rWnd;

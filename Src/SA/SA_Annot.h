@@ -75,78 +75,82 @@ public:
 
     // Attributes
 private:
-    int     m_nScaleMode;       // scale mode
-    int     m_nGridDivisions;
-    double  m_dScaleMinValue;   // scale min value
-    double  m_dScaleMaxValue;   // scale max value
-    double   m_d3dOffset;        // scale offset when used with 3d zgraph
-    CString m_szScaleDimension; // scale dimension text
-    CFont   m_font;             // legend character font
-    HFONT hButtonFont;    // font for play/stop/pause/loop buttons
-    HWND  hPlayButton;
-    HWND  hPlayBothButton;
-    HWND  hPlayWaveButton;
-    HWND  hPauseButton;
-    HWND  hStopButton;
-    HWND  hLoopButton;
-    HWND  hVoiceButton;
-    HWND  hTempoButton;
-    HWND  hConvertButton;
-    HWND  hImportButton;
-    HWND  hExportButton;
-    HWND    hUpButton;          // For TWC legend buttons
-    HWND    hDownButton;        // For TWC legend buttons
-    BOOL    m_bRecalculate;     // TRUE, if scale has to be recalculated
-    int     m_nHeightUsed;      // window height, used for last calculation
-    int     m_nDivisionsUsed;      // window height, used for last calculation
-    double  m_fMagnifyUsed;     // magnify factor, used for last calculation
-    double  m_dFirstGridPos;    // position of first gridline
-    double  m_fGridDistance;    // gridline distance in pixels
-    double   m_fBase;            // base scale distance in numbers
-    double  m_fNumbPerPix;      // numbers per pixel
-    CRect   m_rRecalc;          // rectangle of recalculate button
-    BOOL    m_bRecalcUp;        // status of recalculation button
-    HWND  m_hUpButton;    // Up   button window for TWC legend (to adjust Semitone # offset)
-    HWND  m_hDownButton;    // Down button window for TWC legend (to adjust Semitone # offset)
+	// scale mode
+    int m_nScaleMode;       
+    int m_nGridDivisions;
+	// scale min value
+    double m_dScaleMinValue;
+	// scale max value
+    double m_dScaleMaxValue;
+	// scale offset when used with 3d zgraph
+    double m_d3dOffset;
+	// scale dimension text
+    CString m_szScaleDimension;
+	// legend character font
+    CFont m_font;
+	// font for play/stop/pause/loop buttons
+    HFONT hButtonFont;
+    HWND hPlayButton;
+    HWND hPlayBothButton;
+    HWND hPlayWaveButton;
+    HWND hPauseButton;
+    HWND hStopButton;
+    HWND hLoopButton;
+    HWND hVoiceButton;
+    HWND hTempoButton;
+    HWND hConvertButton;
+    HWND hImportButton;
+    HWND hExportButton;
+	// For TWC legend buttons
+    HWND hUpButton;
+	// For TWC legend buttons
+    HWND hDownButton;
+	// TRUE, if scale has to be recalculated
+    BOOL m_bRecalculate;
+	// window height, used for last calculation
+    int m_nHeightUsed;
+	// window height, used for last calculation
+    int m_nDivisionsUsed;
+	// magnify factor, used for last calculation
+    double m_fMagnifyUsed;
+	// position of first gridline
+    double m_dFirstGridPos;
+	// gridline distance in pixels
+    double m_fGridDistance;
+	// base scale distance in numbers
+    double m_fBase;
+	// numbers per pixel
+    double m_fNumbPerPix;
+	// rectangle of recalculate button
+    CRect m_rRecalc;
+	// status of recalculation button
+    BOOL m_bRecalcUp;
+	// Up button window for TWC legend (to adjust Semitone # offset)
+    HWND m_hUpButton;
+	// Down button window for TWC legend (to adjust Semitone # offset)
+    HWND m_hDownButton;
 
     // Operations
 public:
-    int GetWindowWidth(); // return width of legend window
-    BOOL SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.); // set legend scale
-    void CalculateScale(CDC *, CRect *); // calculate new scale
-    CFont * GetFont() {
-        return &m_font;   // return selected font
-    }
-    int GetScaleMode() {
-        return m_nScaleMode;   // return scale mode
-    }
-    double GetFirstGridPosition() {
-        return m_dFirstGridPos;   // return position of first gridline
-    }
-    double GetGridDistance() {
-        return m_fGridDistance;   // return distance between gridlines
-    }
-    CString * GetDimensionText() {
-        return &m_szScaleDimension;   // return pointer to dimension text
-    }
-    double GetScaleBase() {
-        return m_fBase;   // return base of scale
-    }
-    double GetScaleMaxValue() {
-        return m_dScaleMaxValue;   // return max scale value
-    }
-    double GetScaleMinValue() {
-        return m_dScaleMinValue;   // return min scale value
-    }
+	// return width of legend window
+    int GetWindowWidth(); 
+	// set legend scale
+    BOOL SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.); 
+	// calculate new scale
+    void CalculateScale(CDC *, CRect *);
+    CFont * GetFont();
+    int GetScaleMode();
+    double GetFirstGridPosition();
+    double GetGridDistance();
+    CString * GetDimensionText();
+    double GetScaleBase();
+    double GetScaleMaxValue();
+    double GetScaleMinValue();
     void OnDraw(CDC * pDC,
                 const CRect & printRect,
                 const CRect & printPlotWnd,
                 const CRect & printXscaleRect,
                 const CRect * printAnnotation);
-
-private:
-    virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
-
 
     // Generated message map functions
 protected:
@@ -160,6 +164,9 @@ protected:
     afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
     afx_msg void OnSetFocus(CWnd * pOldWnd);
     DECLARE_MESSAGE_MAP()
+
+private:
+    virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
 };
 
 //###########################################################################
@@ -182,50 +189,59 @@ public:
 
     // Attributes
 private:
-    int     m_nScaleMode;       // scale mode
-    int     m_nGridDivisions;
-    double   m_fScaleMinValue;   // scale min value
-    double   m_fScaleMaxValue;   // scale max value
-    double   m_d3dOffset;        // scale offset when used with 3d zgraph
-    CString m_szScaleDimension; // scale dimension text
-    CFont   m_font;             // legend character font
-    BOOL    m_bRecalculate;     // TRUE, if scale has to be recalculated
-    int     m_nWidthUsed;       // window width, used for last calculation
-    int     m_nDivisionsUsed;    // divisions used for last calculation
-    double   m_fMinValueUsed;    // scale min value, used for last calculation
-    double   m_fMaxValueUsed;    // scale max value, used for last calculation
+	// scale mode
+    int m_nScaleMode;
+    int m_nGridDivisions;
+	// scale min value
+    double m_fScaleMinValue;
+	// scale max value
+    double m_fScaleMaxValue;
+	// scale offset when used with 3d zgraph
+    double m_d3dOffset;
+	// scale dimension text
+    CString m_szScaleDimension;
+	// legend character font
+    CFont m_font;
+	// TRUE, if scale has to be recalculated
+    BOOL m_bRecalculate;
+	// window width, used for last calculation
+    int m_nWidthUsed;
+	// divisions used for last calculation
+    int m_nDivisionsUsed;
+	// scale min value, used for last calculation
+    double m_fMinValueUsed;
+	// scale max value, used for last calculation
+    double m_fMaxValueUsed;
     // calculation results
-    double     m_fFirstGridPos;    // position of first large gridline
-    double   m_fGridDistance;    // gridline distance in pixels
-    double   m_fBase;            // base scale distance in numbers
-    double   m_fNumbPerPix;      // numbers per pixel
-    double   m_fPosition;        // position of first gridline (large or small)
-    BOOL    m_bLargeLine;       // TRUE, if first gridline is large
+	// position of first large gridline
+    double m_fFirstGridPos;
+	// gridline distance in pixels
+    double m_fGridDistance;
+	// base scale distance in numbers
+    double m_fBase;
+	// numbers per pixel
+    double m_fNumbPerPix;
+	// position of first gridline (large or small)
+    double m_fPosition;
+	// TRUE, if first gridline is large
+    BOOL m_bLargeLine;
 
     // Operations
 public:
-    int GetWindowHeight(); // return height of x-scale window
+	// return height of x-scale window
+    int GetWindowHeight();
     BOOL SetScale(int nMode, double dMinValue, double nMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.);
-    void CalculateScale(CDC *, int nWidth); // calculate new scale
-    CFont * GetFont() {
-        return &m_font;   // return selected font
-    }
-    int GetScaleMode() {
-        return m_nScaleMode;   // return scale mode
-    }
-    double GetFirstGridPosition() {
-        return m_fFirstGridPos;   // return position of first gridline
-    }
-    double GetGridDistance() {
-        return m_fGridDistance;   // return distance between gridlines
-    }
-    CString * GetDimensionText() {
-        return &m_szScaleDimension;   // return pointer to dimension text
-    }
+	// calculate new scale
+    void CalculateScale(CDC *, int nWidth);
+    CFont * GetFont();
+    int GetScaleMode();
+    double GetFirstGridPosition();
+    double GetGridDistance();
+    CString * GetDimensionText();
     void OnDraw(CDC * pDC, const CRect & printRect, const CRect & printPlotWnd);
 
 private:
-    int GetTWCXScaleWindowHeight();     // 09/27/2000 - DDO
+    int GetTWCXScaleWindowHeight();
     virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
 
     // Generated message map functions
@@ -276,15 +292,15 @@ protected:
     int m_nIndex;
 	// request for draw hint of updated boundaries
     bool m_bHintUpdateBoundaries;
-    DWORD m_dwHintStart,m_dwHintStop;
+    DWORD m_dwHintStart;
+	DWORD m_dwHintStop;
     bool m_bOverlap;
+    bool m_bTranscriptionBoundary;
 
     DECLARE_MESSAGE_MAP()
 
-protected:
-    bool m_bTranscriptionBoundary;
-
 private:
+	bool m_bHoverOver;
     DWORD m_nSelectTickCount;
 };
 
@@ -293,7 +309,7 @@ private:
 
 class CPhoneticWnd : public CAnnotationWnd {
 public:
-    CPhoneticWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+    CPhoneticWnd(int nIndex);
 };
 
 //###########################################################################
@@ -301,7 +317,7 @@ public:
 
 class CToneWnd : public CAnnotationWnd {
 public:
-    CToneWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+    CToneWnd(int nIndex);
 };
 
 //###########################################################################
@@ -309,7 +325,7 @@ public:
 
 class CPhonemicWnd : public CAnnotationWnd {
 public:
-    CPhonemicWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+    CPhonemicWnd(int nIndex);
 };
 
 //###########################################################################
@@ -317,7 +333,7 @@ public:
 
 class COrthographicWnd : public CAnnotationWnd {
 public:
-    COrthographicWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+    COrthographicWnd(int nIndex);
 };
 
 //###########################################################################
@@ -325,13 +341,13 @@ public:
 
 class CGlossWnd : public CAnnotationWnd {
 public:
-    CGlossWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+    CGlossWnd(int nIndex);
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 
 class CMusicPhraseWnd : public CAnnotationWnd {
 public:
-    CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+    CMusicPhraseWnd(int nIndex);
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 

@@ -30,6 +30,7 @@
 #include "objectostream.h"
 #include "DlgPlayer.h"
 #include "SaParam.h"
+#include "Sa_Doc.h"
 
 //###########################################################################
 // CDlgAutoRecorder dialog

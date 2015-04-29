@@ -781,7 +781,7 @@ void CMainFrame::OnToolsOptions() {
 }
 
 void CMainFrame::OnUpdateToolsOptions(CCmdUI * pCmdUI) {
-    pCmdUI->Enable(TRUE);
+    pCmdUI->Enable(CONTROLLED_ACCESS);
 }
 
 /***************************************************************************/

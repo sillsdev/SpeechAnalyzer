@@ -3569,12 +3569,11 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
     }
 
     if ((pView->GetGraphIndexForIDD(IDD_F1F2) >= 0) ||
-            (pView->GetGraphIndexForIDD(IDD_F2F1) >= 0) ||
-            (pView->GetGraphIndexForIDD(IDD_F2F1F1) >= 0) ||
-            (pView->GetGraphIndexForIDD(IDD_3D) >= 0)) {
+        (pView->GetGraphIndexForIDD(IDD_F2F1) >= 0) ||
+        (pView->GetGraphIndexForIDD(IDD_F2F1F1) >= 0) ||
+        (pView->GetGraphIndexForIDD(IDD_3D) >= 0)) {
         AddPage(&m_dlgFormantsPage);
         m_dlgFormantsPage.m_bAccess = EXPERIMENTAL_ACCESS;
-
         if (nFocusedID == IDD_F1F2 || nFocusedID == IDD_F2F1 || nFocusedID == IDD_F2F1F1 || nFocusedID == IDD_3D) {
             nPage = GetPageCount() - 1;
         }
@@ -3609,21 +3608,21 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
 
     if (PROGRAMMER_ACCESS) {
         m_pDlgResearchPage = new CDlgParametersResearchPage;
-
         AddPage(m_pDlgResearchPage);
     }
 
     if (PROGRAMMER_ACCESS) {
         m_pDlgFTrackerPage = new CDlgParametersFormantTracker;
-
         AddPage(m_pDlgFTrackerPage);
     }
 
     if (!GetPageCount()) {
-        AddPage(&m_dlgRawdataPage);    // add a page (must have at least one page
+		// add a page (must have at least one page
+        AddPage(&m_dlgRawdataPage);    
     }
 
-    EnableStackedTabs(FALSE); // set for scrolling tabs style
+	// set for scrolling tabs style
+    EnableStackedTabs(FALSE); 
 
     SetActivePage(nPage);
 }

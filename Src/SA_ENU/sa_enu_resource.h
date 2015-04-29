@@ -1686,6 +1686,7 @@
 #define ID_MOVE_RIGHT_HERE              33269
 #define ID_MOVE_RIGHT_MERGE_NEXT_HERE   33270
 #define ID_MOVE_RIGHT_MERGE_PREV_HERE   33271
+#define ID_BUTTON33289                  33289
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1890,7 +1891,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        388
-#define _APS_NEXT_COMMAND_VALUE         33289
+#define _APS_NEXT_COMMAND_VALUE         33290
 #define _APS_NEXT_CONTROL_VALUE         2123
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
