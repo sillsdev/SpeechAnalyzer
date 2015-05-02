@@ -218,6 +218,7 @@
     <ClCompile Include="WaveWarp.cpp" />
     <ClCompile Include="AutoSegmentation.cpp" />
     <ClCompile Include="DocList.cpp" />
+    <ClCompile Include="LegendWnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignInfo.h" />
@@ -448,6 +449,7 @@
     <ClInclude Include="WaveWarp.h" />
     <ClInclude Include="picture.h" />
     <ClInclude Include="AutoSegmentation.h" />
+    <ClInclude Include="LegendWnd.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AS.rc" />

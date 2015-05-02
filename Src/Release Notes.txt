@@ -1,3 +1,8 @@
+AS - 0.99.0.14 5/1/2015
+- Fixed missing stop toolbar icon.
+- Fixed multiple-undo problem and reselection of original transcription item.
+- Made improvements to Phonetic-Matching algorithm.
+
 AS - 0.99.0.13 4/29/2015
 - Fixed Audacity Label file output so that the extra tab is not generated, and empty refid fields are skipped.
 - Hid transcription bar menu items.

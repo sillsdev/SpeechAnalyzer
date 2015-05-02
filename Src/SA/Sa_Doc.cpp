@@ -4133,7 +4133,7 @@ BOOL CSaDoc::PasteClipboardToWave(HGLOBAL hData, WAVETIME insertTime) {
 ***************************************************************************/
 BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repetitions) {
 
-    TRACE("start=%d %d\n",insertAt, repetitions);
+    //TRACE("start=%d %d\n",insertAt, repetitions);
 
     CURSORPOS dwSilenceSize = toCursor(silence);
 
@@ -8127,7 +8127,6 @@ void CSaDoc::MergeSegments( CPhoneticSegment * pPhonetic, int sel) {
     }
     bool segmental = IsSegmental(pPhonetic, sel);
 
-    CheckPoint();
 	bool modified = false;
 
     DWORD thisOffset = pPhonetic->GetOffset(sel);
@@ -8266,8 +8265,6 @@ typedef map<EAnnotation,CString> SABMap;
 
 void CSaDoc::MoveDataLeft(DWORD offset) {
     
-	CheckPoint();
-
 	bool modified = false;
 
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
@@ -8348,7 +8345,6 @@ void CSaDoc::MoveDataLeft(DWORD offset) {
 
 void CSaDoc::MoveDataRight( DWORD offset) {
     
-	CheckPoint();
 	bool modified = false;
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	if (pApp->IsAudioSync()) {
@@ -8604,7 +8600,7 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 		DWORD goal = (usingGL)?gl.size():gn.size();
 		goal += skipCount;
 		
-		if (!AutoSegment( td, view, goal, algorithm, skipCount, usingGL)) {
+		if (!AutoSegment( filename, td, view, goal, algorithm, skipCount, usingGL)) {
 			view.RefreshGraphs(TRUE,TRUE,TRUE);
 			return;
 		}
@@ -8623,7 +8619,6 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 			DWORD limit = pGloss->GetOffsetSize()-1;
 			int i=0;
 			while (glit!=glend) {
-				
 				// insert gloss
 				CString text = (*glit).Trim();
 				if (text.GetLength()==0) {
@@ -8646,7 +8641,6 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 			DWORD limit = pGlossNat->GetOffsetSize()-1;
 			int i=0;
 			while (gnit!=gnend) {
-
 				// insert gloss
 				CString text = (*gnit).Trim();
 				pGlossNat->SetText(i,text);
@@ -9572,14 +9566,14 @@ void CSaDoc::GenerateCVData( CSaView & view) {
 * we find the 'goal'
 * ..Or end in defeat...
 */
-bool CSaDoc::AutoSegment( CTranscriptionData & td, CSaView & view, DWORD goal, int algorithm, int skipCount, bool usingGL) {
+bool CSaDoc::AutoSegment( LPCTSTR filename, CTranscriptionData & td, CSaView & view, DWORD goal, int algorithm, int skipCount, bool usingGL) {
 
 	TRACE("Attempting to locate %d segments\n",goal);
 	CAutoSegmentation worker;
 	if (algorithm==1) {
-		return worker.PhoneticMatching(*this,td,skipCount,usingGL);
+		return worker.DoPhoneticMatching(filename,*this,td,skipCount,usingGL);
 	}
-	return worker.DivideAndConquer(*this,view,goal,skipCount);
+	return worker.DoDivideAndConquer(*this,view,goal,skipCount);
 }
 
 void CSaDoc::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
@@ -9620,8 +9614,6 @@ void CSaDoc::SplitSegment( CPhoneticSegment * pPhonetic, int sel, DWORD splitPos
 
 	bool segmental = IsSegmental(pPhonetic, sel);
 	if (segmental) return;
-
-	CheckPoint();
 
 	bool modified = pPhonetic->SplitSegment( *this, sel, splitPosition);
     

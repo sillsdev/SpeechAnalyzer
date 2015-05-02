@@ -1354,7 +1354,7 @@ void CSegment::InsertAt(int index, DWORD offset, DWORD duration) {
 void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
 	ASSERT(index>=0);
     if (index<0) {
-		TRACE("invalid index giveon on InsertAt\n");
+		TRACE("invalid index given on InsertAt\n");
 		return;
 	}
 

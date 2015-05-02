@@ -54,7 +54,6 @@
 //         DDO Added a fix so the legend on the melogram and magnitude
 //             is turned on by default when there is no TWC graph.
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
@@ -107,6 +106,7 @@
 #include "Process\sa_p_zcr.h"
 #include "Process\FormantTracker.h"
 #include "objectostream.h"
+#include "LegendWnd.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

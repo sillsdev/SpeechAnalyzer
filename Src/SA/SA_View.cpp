@@ -8179,7 +8179,7 @@ void CSaView::MoveBoundary(bool start, bool left) {
 
     DWORD dwStart = GetStartCursorPosition();
     DWORD dwStop = GetStopCursorPosition();
-    TRACE("start=%d stop=%d\n",dwStart,dwStop);
+    //TRACE("start=%d stop=%d\n",dwStart,dwStop);
 
     // record the original cursor positions
     if (!overlap) {
@@ -8230,7 +8230,7 @@ void CSaView::MoveBoundary(bool start, bool left) {
         dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, snap);
     }
 
-    TRACE("start=%d stop=%d\n",dwStart,dwStop);
+    //TRACE("start=%d stop=%d\n",dwStart,dwStop);
 
     // on edit boundaries, we push the other cursor if we run into it.
     // we need to manage restore a 'pushed' cursor to it's original position
@@ -8249,7 +8249,7 @@ void CSaView::MoveBoundary(bool start, bool left) {
                     TRACE("recovering\n");
                     dwStop = lastBoundaryStopCursor;
                 }
-                TRACE("start=%d stop1=%d stop2=%d last=%d startgap=%d\n",dwStart,a,dwStop,lastBoundaryStopCursor,startGap);
+                //TRACE("start=%d stop1=%d stop2=%d last=%d startgap=%d\n",dwStart,a,dwStop,lastBoundaryStopCursor,startGap);
             }
             dwStop = (dwStop<minStop)?minStop:dwStop;
             dwStop = (dwStop>maxStop)?maxStop:dwStop;
@@ -9359,6 +9359,8 @@ void CSaView::OnUpdateEditSplit(CCmdUI * pCmdUI) {
 * CSaView::OnEditSplit
 **/
 void CSaView::OnEditSplit() {
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	EditSplit();
 }
 
@@ -9434,12 +9436,13 @@ void CSaView::OnSplitHere() {
 	if (position==-1) {
 		return;
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
 	EditSplitAt(position);
 }
 
 DWORD CSaView::EditSplitAt( DWORD position) {
-
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
 	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
@@ -9490,6 +9493,8 @@ void CSaView::OnUpdateEditMerge(CCmdUI * pCmdUI) {
 // CSaView::OnEditMerge
 /***************************************************************************/
 void CSaView::OnEditMerge() {
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	EditMerge();
 }
 
@@ -9565,6 +9570,8 @@ void CSaView::OnMergeHere() {
 	if (position==-1) {
 		return;
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
 	EditMergeAt(position);
 }
@@ -9619,6 +9626,8 @@ void CSaView::OnUpdateEditMoveLeft(CCmdUI * pCmdUI) {
 * The selection should be on the segment to be filled - a blank segment
 **/
 void CSaView::OnEditMoveLeft() {
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	EditMoveLeft();
 }
 
@@ -9695,11 +9704,12 @@ void CSaView::OnUpdateMoveLeftHere(CCmdUI * pCmdUI) {
 * The selection should be on the segment to be filled - a blank segment
 **/
 void CSaView::OnMoveLeftHere() {
-	CSaDoc * pDoc = GetDocument();
 	DWORD position = CalculatePositionFromMouse();
 	if (position==-1) {
 		return;
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
 	EditMoveLeftAt(pDoc,position);
 }
@@ -9762,6 +9772,8 @@ void CSaView::OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI) {
 * CSaView::OnEditSplitMoveLeft
 **/
 void CSaView::OnEditSplitMoveLeft() {
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	EditSplit();
 	EditMoveLeft();
 }
@@ -9789,11 +9801,12 @@ void CSaView::OnUpdateSplitMoveLeftHere(CCmdUI * pCmdUI) {
 * CSaView::OnEditSplitMoveLeftHere
 **/
 void CSaView::OnSplitMoveLeftHere() {
-	CSaDoc * pDoc = GetDocument();
 	DWORD position = CalculatePositionFromMouse();
 	if (position==-1) {
 		return;
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
     DWORD newPosition = EditSplitAt(position);
     EditMoveLeftAt(pDoc,newPosition+1);
@@ -9811,6 +9824,8 @@ void CSaView::OnUpdateEditMoveRight(CCmdUI * pCmdUI) {
 * CSaView::OnEditMoveRight
 **/
 void CSaView::OnEditMoveRight() {
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	EditMoveRight();
 }
 
@@ -9943,17 +9958,17 @@ void CSaView::OnUpdateMoveRightHere(CCmdUI * pCmdUI) {
 }
 
 /**
-* CSaView::OnEditMoveRightHere
+* CSaView::OnMoveRightHere
 **/
 void CSaView::OnMoveRightHere() {
 	DWORD position = CalculatePositionFromMouse();
 	if (position==-1) {
 		return;
 	}
-	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
+	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
     if (pSeg==NULL) {
         return;
@@ -10016,6 +10031,8 @@ void CSaView::OnUpdateEditMoveRightMergeNext(CCmdUI * pCmdUI) {
 // CSaView::OnEditMoveRightMergeNext
 /***************************************************************************/
 void CSaView::OnEditMoveRightMergeNext() {
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
     EditMoveRightNext();
     EditMerge();
 }
@@ -10038,6 +10055,8 @@ void CSaView::OnUpdateEditMoveRightMergePrev(CCmdUI * pCmdUI) {
 // CSaView::OnEditMoveRightMergePrev
 /***************************************************************************/
 void CSaView::OnEditMoveRightMergePrev() {
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
     EditMoveRight();
     EditMerge();
 }
@@ -10074,6 +10093,8 @@ void CSaView::OnMoveRightMergeNextHere() {
 	if (position==-1) {
 		return;
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	// select the new annotation
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
     EditMoveRightNext();
@@ -10100,6 +10121,8 @@ void CSaView::OnMoveRightMergePrevHere() {
 	if (position==-1) {
 		return;
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	// select the new annotation
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
     EditMoveRight();
@@ -12396,7 +12419,7 @@ bool CSaView::CanSplitAt( CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position
 	// if it's too near a start or stop cursor - ignore it
 	DWORD start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
-	TRACE("start=%d position=%d stop=%d\n",start,position,stop);
+	//TRACE("start=%d position=%d stop=%d\n",start,position,stop);
 	DWORD error = ((start>position)?(start-position):(position-start));
 	if (error<3) {
 		return false;
@@ -12742,19 +12765,18 @@ void CSaView::OnPreviousError() {
 
 // split and join operations based on begin cursor
 void CSaView::OnSplitMoveLeftAt() {
-	TRACE("OnSplitMoveLeftAt\n");
-	CSaDoc * pDoc = GetDocument();
 	DWORD position = m_dwStartCursor;
 	if (position==-1) {
 		return;
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
     DWORD newPosition = EditSplitAt(position);
     EditMoveLeftAt(pDoc,newPosition+1);
 }
 
 void CSaView::OnUpdateSplitMoveLeftAt(CCmdUI * pCmdUI) {
-	TRACE("OnUpdateSplitMoveLeftAt\n");
 	CSaDoc * pDoc = GetDocument();
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
@@ -12770,7 +12792,6 @@ void CSaView::OnUpdateSplitMoveLeftAt(CCmdUI * pCmdUI) {
 }
 
 void CSaView::OnUpdateMoveRightMergePrevAt(CCmdUI * pCmdUI) {
-	TRACE("OnUpdateMoveRightMergePrevAt\n");
 	CSaDoc * pDoc = GetDocument();
     CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
 	DWORD position = m_dwStartCursor;
@@ -12787,18 +12808,18 @@ void CSaView::OnUpdateMoveRightMergePrevAt(CCmdUI * pCmdUI) {
 }
 
 void CSaView::OnMoveRightMergePrevAt() {
-	TRACE("OnMoveRightMergePrevAt\n");
 	DWORD position = m_dwStartCursor;
 	if (position==-1) {
 		return;
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
     EditMoveRight();
     EditMerge();
 }
 
 void CSaView::OnUpdateMoveRightMergeNextAt(CCmdUI * pCmdUI) {
-	TRACE("OnUpdateMoveRightMergeNextAt\n");
 	CSaDoc * pDoc = GetDocument();
     CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
@@ -12816,11 +12837,12 @@ void CSaView::OnUpdateMoveRightMergeNextAt(CCmdUI * pCmdUI) {
 }
 
 void CSaView::OnMoveRightMergeNextAt() {
-	TRACE("OnMoveRightMergeNextAt\n");
 	DWORD position = m_dwStartCursor;
 	if (position==-1) { 
 		return; 
 	}
+	CSaDoc * pDoc = GetDocument();
+	pDoc->CheckPoint();
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
     EditMoveRightNext();
     EditMerge();

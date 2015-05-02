@@ -178,6 +178,7 @@
     <ClCompile Include="ImportELAN.cpp" />
     <ClCompile Include="ImportSFM.cpp" />
     <ClCompile Include="IndependentSegment.cpp" />
+    <ClCompile Include="LegendWnd.cpp" />
     <ClCompile Include="Lpc.cpp" />
     <ClCompile Include="MusicPhraseSegment.cpp" />
     <ClCompile Include="ObjectIStream.cpp" />
@@ -433,6 +434,7 @@
     <ClInclude Include="ImportSFM.h" />
     <ClInclude Include="IndependentSegment.h" />
     <ClInclude Include="IWaveNotifiable.h" />
+    <ClInclude Include="LegendWnd.h" />
     <ClInclude Include="Lpc.h" />
     <ClInclude Include="mshflexgrid.h" />
     <ClInclude Include="MusicPhraseSegment.h" />

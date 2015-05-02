@@ -26,21 +26,16 @@ public:
 private:
     RECT LastSize;
     HWND StaffControl;
-    CSaView * m_pView;         // DDO - 08/14/00
+    CSaView * m_pView;
 
-    char * NoteNum2Name(double dMIDINumber, char * sMusique, size_t len, BOOL bHalfFlatSharp); // DDO - 08/14/00
+    char * NoteNum2Name(double dMIDINumber, char * sMusique, size_t len, BOOL bHalfFlatSharp);
     double QNotes2Dur(double dNoteQtrNotes, char * sDuration, size_t len);
     double Note2String(double dNoteQtrNotes, double dMIDINumber, CString & sMusique, double dNoteTol, BOOL bHalfFlatSharp);
 
     // Operations
 public:
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-    void SetFocusedGraph(CGraphWnd * cgw) {
-        if (m_pView) {
-            m_pView->SetFocusedGraph(cgw);
-        }
-        OnSetFocus(cgw);
-    };
+    void SetFocusedGraph(CGraphWnd * cgw);
     void SetWindowText(LPCTSTR lpsz);
     void SetModifiedFlag(BOOL Modified);
     int GetWindowText(LPTSTR lpsz, int cbMax);
@@ -62,11 +57,7 @@ public:
 
     // Generated message map functions
 protected:
-    afx_msg void OnSetFocus(CWnd *) {
-        if ((HWND)StaffControl) {
-            ::SetFocus((HWND)StaffControl);
-        }
-    }
+    afx_msg void OnSetFocus(CWnd *);
     afx_msg void OnParentNotify(UINT msg,LPARAM lParam);
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     DECLARE_MESSAGE_MAP()

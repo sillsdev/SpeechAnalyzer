@@ -4,7 +4,6 @@
 // Author: Urs Ruchti
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_spi.h"
@@ -12,9 +11,9 @@
 #include "Process\sa_p_spi.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
-
 #include "sa_doc.h"
 #include "sa_view.h"
+#include "LegendWnd.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

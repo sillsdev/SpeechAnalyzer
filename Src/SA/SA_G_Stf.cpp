@@ -779,3 +779,16 @@ int CPlotStaff::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     return 0;
 }
 
+void CPlotStaff::SetFocusedGraph(CGraphWnd * cgw) {
+    if (m_pView) {
+        m_pView->SetFocusedGraph(cgw);
+    }
+    OnSetFocus(cgw);
+}
+
+void CPlotStaff::OnSetFocus(CWnd *) {
+    if ((HWND)StaffControl) {
+        ::SetFocus((HWND)StaffControl);
+    }
+}
+ 

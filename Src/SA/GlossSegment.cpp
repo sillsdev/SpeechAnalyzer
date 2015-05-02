@@ -10,6 +10,7 @@
 #include "ScopedCursor.h"
 #include "ReferenceSegment.h"
 #include "GlossNatSegment.h"
+#include "SA_View.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

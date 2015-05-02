@@ -20,7 +20,6 @@
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "DlgVowelFormants.h"
-
 #include <malloc.h>
 #include "sa_doc.h"
 #include "sa.h"
@@ -28,6 +27,7 @@
 #include "sa_wbch.h"
 #include "mainfrm.h"
 #include "Process\FormantTracker.h"
+#include "LegendWnd.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

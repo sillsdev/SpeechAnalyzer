@@ -410,7 +410,7 @@ public:
 						  BOOL bMelogram);
 	void ExportAudacityLabelFile( LPCTSTR filename);
 	void GenerateCVData( CSaView & view);
-	bool AutoSegment( CTranscriptionData & td, CSaView & view, DWORD goal, int algorithm, int skipCount, bool usingGL);
+	bool AutoSegment( LPCTSTR filename, CTranscriptionData & td, CSaView & view, DWORD goal, int algorithm, int skipCount, bool usingGL);
 	int FindPhoneticIndex( CSegment * pSeg, int index);
 
 	void ErrorMessage(UINT nTextID, LPCTSTR pszText1=NULL, LPCTSTR pszText2=NULL);

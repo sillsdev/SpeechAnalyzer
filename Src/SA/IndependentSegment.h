@@ -2,9 +2,9 @@
 #define INDEPENDENTSEGMENT_H
 
 #include "Segment.h"
-#include "SA_View.h"
 
 class CSaDoc;
+class CSaView;
 
 //###########################################################################
 // CIndependentSegment data processing

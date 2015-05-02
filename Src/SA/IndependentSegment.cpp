@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IndependentSegment.h"
 #include "Sa_Doc.h"
+#include "SA_View.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

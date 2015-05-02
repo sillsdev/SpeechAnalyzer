@@ -32,7 +32,6 @@
 //       SDM Revised PlotStandardPaint to be more object oriented and more
 //           maintainable.  Included the drawing object declarations here
 /***************************************************************************/
-
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "Process\Process.h"
@@ -42,7 +41,6 @@
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "Segment.h"
-
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_view.h"
@@ -51,6 +49,7 @@
 #include "math.h"
 #include "string.h"
 #include "PrivateCursorWnd.h"
+#include "LegendWnd.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

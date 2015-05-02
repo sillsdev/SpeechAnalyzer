@@ -22,7 +22,6 @@
 //           maintainable.  Included the drawing object declarations here
 //
 /////////////////////////////////////////////////////////////////////////////
-
 #ifndef _SA_PLOT_H
 #define _SA_PLOT_H
 
@@ -38,6 +37,7 @@ class CSaDoc;
 class CSaView;
 class CProcess;
 class CProcessAreaData;
+class CLegendWnd;
 
 #define IDM_CONVERT          106 // was 105
 #define IDM_CONVERT_DYNAMIC  107 // was 106

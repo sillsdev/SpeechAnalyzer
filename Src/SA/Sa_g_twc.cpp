@@ -8,7 +8,6 @@
 //  07/20/2000
 //         RLJ Added support for Up (/\) and Down (\/) buttons in TWC legend
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_twc.h"
@@ -17,10 +16,10 @@
 #include "Process\sa_p_twc.h"
 #include "Process\sa_p_mel.h"
 #include "sa_graph.h"
-
 #include "sa_doc.h"
 #include "sa_view.h"
 #include "mainfrm.h"
+#include "LegendWnd.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
