@@ -868,9 +868,6 @@ void CSaView::SendPlayMessage( WORD Int1, WORD Int2) {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackCursors() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_CURSORS, FALSE); 
 }
@@ -879,10 +876,6 @@ void CSaView::OnPlaybackCursors() {
 // CSaView::OnPlaybackSegment Playback current selected segment
 /***************************************************************************/
 DWORD CSaView::OnPlaybackSegment() {
-
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
 
     DWORD dwStart = GetStartCursorPosition();
     DWORD dwStop = GetStopCursorPosition();
@@ -911,10 +904,8 @@ DWORD CSaView::OnPlaybackSegment() {
 // CSaView::OnPlaybackWord Playback current selected word
 /***************************************************************************/
 DWORD CSaView::OnPlaybackWord() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
-    // find actual gloss segment for playback
+
+	// find actual gloss segment for playback
     CSaDoc * pDoc = GetDocument();
     if (pDoc==NULL) {
 		//no document
@@ -977,10 +968,8 @@ DWORD CSaView::OnPlaybackWord() {
 // CSaView::OnPlaybackPhraseL1 Playback current selected phrase
 /***************************************************************************/
 DWORD CSaView::OnPlaybackPhraseL1() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
-    // find actual gloss segment for playback
+
+	// find actual gloss segment for playback
     CSaDoc * pDoc = GetDocument();
     if (!pDoc) {
 		//no document
@@ -1049,9 +1038,6 @@ DWORD CSaView::OnPlaybackPhraseL1() {
 /***************************************************************************/
 void CSaView::OnPlaybackSlow() {
 
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
     enum {
         Player_Slow = 25
     };
@@ -1078,9 +1064,7 @@ void CSaView::OnPlaybackSlow() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackFile() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
+
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_FILE, FALSE); 
 }
@@ -1093,9 +1077,7 @@ void CSaView::OnPlaybackFile() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackWindow() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
+
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_WINDOW, FALSE);
 }
@@ -1108,9 +1090,7 @@ void CSaView::OnPlaybackWindow() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackLeftToStart() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
+
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_LEFT_TO_START, FALSE);
 }
@@ -1123,9 +1103,7 @@ void CSaView::OnPlaybackLeftToStart() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackStartToRight() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
+
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_START_TO_RIGHT, FALSE); 
 }
@@ -1138,9 +1116,7 @@ void CSaView::OnPlaybackStartToRight() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackLeftToStop() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
+
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_LEFT_TO_STOP, FALSE); 
 }
@@ -1153,9 +1129,7 @@ void CSaView::OnPlaybackLeftToStop() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackBeginCursor() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
+
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_BEGINCURSOR, FALSE);
 }
@@ -1168,9 +1142,7 @@ void CSaView::OnPlaybackBeginCursor() {
 // or small (FALSE).
 /***************************************************************************/
 void CSaView::OnPlaybackEndCursor() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
+
 	// send message to start player
     SendPlayMessage(ID_PLAYBACK_ENDCURSOR, FALSE); 
 }
@@ -1215,9 +1187,7 @@ void CSaView::OnUpdatePlayerPause(CCmdUI * pCmdUI) {
 // If the submode is -1, it stays as it was before.
 /***************************************************************************/
 void CSaView::OnPlayerResume() {
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
+
 	if (GetMainFrame().IsPlayerPaused()) {
 		// send message to start player
 		SendPlayMessage(ID_PLAYBACK_FILE, FALSE); 
@@ -1246,9 +1216,6 @@ void CSaView::OnUpdatePlayerResume(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnPlayerToggle() {
 
-	if (IsAudioSync()) {
-		bEditBoundaries = false;
-	}
 	if (GetMainFrame().IsPlayerPlaying()) {
 		// send message to pause or resume player
 		GetMainFrame().SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
@@ -4564,11 +4531,6 @@ void CSaView::OnEditInplace() {
     m_advancedSelection.Update(this);
     int nAnnotationIndex = m_advancedSelection.GetSelectionIndex();
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		return;
-	}
-
     if ((nAnnotationIndex != -1) &&
         (GetFocusedGraphWnd()!=NULL) &&
         (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex))) { 
@@ -4589,11 +4551,6 @@ void CSaView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
         CView::OnChar(nChar, nRepCnt, nFlags);
         return;
     }
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		return;
-	}
 
     if ((nAnnotationIndex != -1) &&
         (GetFocusedGraphWnd()!=NULL) &&
@@ -5900,23 +5857,6 @@ void CSaView::ChangeAnnotationSelection( CSegment * pSegment, int nSelection, DW
             }
         }
     }
-
-	// cause the phrase list to be redrawn
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		if (pSegment->Is(GLOSS)) {
-			for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) {
-				if (m_apGraphs[nGraphLoop]!=NULL) {
-					m_apGraphs[nGraphLoop]->GetAnnotationWnd(MUSIC_PL4)->InvalidateRect(NULL,TRUE); 
-				}
-			}
-			bEditBoundaries = false;
-		} else if (pSegment->Is(PHONETIC)) {
-			bEditBoundaries = (nSelection!=-1)?true:false;
-		} else {
-			bEditBoundaries = false;
-		}
-	}
 }
 
 void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection) {
@@ -6672,19 +6612,6 @@ void CSaView::SetPlaybackPosition( DWORD dwNewPos, int nSpeed, BOOL bEstimate) {
             m_apGraphs[nLoop]->SetPlaybackPosition(this,enableScrolling);
         }
     }
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		if (GetMainFrame().IsPlayerPlaying()) {
-			CSaDoc * pDoc = GetDocument();
-			CGlossSegment * pGloss = (CGlossSegment*)pDoc->GetSegment(GLOSS);
-			DWORD index = pGloss->FindWithin(m_dwLastPlaybackPosition);
-			if (index != m_dwLastGloss) {
-				m_advancedSelection.SelectFromPosition( this, GLOSS, m_dwLastPlaybackPosition, true);
-				m_dwLastGloss = index;
-			}
-		}
-	}
 }
 
 // SDM 1.5Test10.5
@@ -7313,13 +7240,7 @@ void CSaView::PrintPageTitle(CDC * pDC, int titleAreaHeight) {
     
 	// load file name
 	CSaString szDocTitle(GetDocument()->GetTitle()); 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-    CSaString szTitle;
-	if (pApp->IsAudioSync()) {
-		szTitle = "Audio-Sync - ";
-	} else {
-		szTitle = "Speech Analyzer - ";
-	}
+	CSaString szTitle = "Speech Analyzer - ";
 
     int nFind = szDocTitle.Find(':');
     if (nFind != -1) {
@@ -9365,7 +9286,7 @@ void CSaView::OnEditSplit() {
 }
 
 void CSaView::EditSplit() {
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
+
 	CSaDoc * pDoc = GetDocument();
     CSegment * pSeg = FindSelectedAnnotation();
     if (pSeg==NULL) {
@@ -9375,26 +9296,6 @@ void CSaView::EditSplit() {
     if (sel==-1) {
         return;
     }
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic index\n");
-			return;
-		}
-		pDoc->SplitSegment( pPhonetic, psel, -1);
-
-		int newsel = pSeg->GetNext(sel);
-		DWORD newStart = pSeg->GetOffset(newsel);
-		DWORD newStop = pSeg->GetStop(newsel);
-		m_advancedSelection.DeselectAnnotations(*this);
-		pSeg->SetSelection(newsel);
-		SetCursorPosition( START_CURSOR,newStart);
-		SetCursorPosition( STOP_CURSOR,newStop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
-		return;
-	}
     if (!pSeg->Is(PHONETIC)) {
         return;
     }
@@ -9443,7 +9344,7 @@ void CSaView::OnSplitHere() {
 }
 
 DWORD CSaView::EditSplitAt( DWORD position) {
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
+
 	CSaDoc * pDoc = GetDocument();
 	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
 	if (pSeg==NULL) {
@@ -9453,20 +9354,6 @@ DWORD CSaView::EditSplitAt( DWORD position) {
     if (sel==-1) {
         return -1;
     }
-	if (pApp->IsAudioSync()) {
-		pDoc->SplitSegment( pSeg, sel, position);
-
-		int newsel = pSeg->GetNext(sel);
-		DWORD newStart = pSeg->GetOffset(newsel);
-		DWORD newStop = pSeg->GetStop(newsel);
-		m_advancedSelection.DeselectAnnotations(*this);
-		pSeg->SetSelection(newsel);
-		SetCursorPosition( START_CURSOR,newStart);
-		SetCursorPosition( STOP_CURSOR,newStop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
-		return newStart;
-	}
 	
 	pDoc->SplitSegment( pSeg, sel, position);
 	int newsel = pSeg->GetNext(sel);
@@ -9500,7 +9387,6 @@ void CSaView::OnEditMerge() {
 
 void CSaView::EditMerge() {
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
     CSegment * pSeg = FindSelectedAnnotation();
     if (pSeg==NULL) {
@@ -9510,25 +9396,7 @@ void CSaView::EditMerge() {
     if (sel==-1) {
         return;
     }
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return;
-		}
-		pDoc->MergeSegments(pPhonetic,psel);
-		int newsel = pSeg->GetPrevious(sel);
-		DWORD newStart = pSeg->GetOffset(newsel);
-		DWORD newStop = pSeg->GetStop(newsel);
-		m_advancedSelection.DeselectAnnotations(*this);
-		m_advancedSelection.SelectFromPosition( this, GLOSS, newStart, false);
-		SetCursorPosition(START_CURSOR,newStart);
-		SetCursorPosition(STOP_CURSOR,newStop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
-		return;
-	}
+
 	// standard case
     if (!pSeg->Is(PHONETIC)) {
         return;
@@ -9577,7 +9445,7 @@ void CSaView::OnMergeHere() {
 }
 
 void CSaView::EditMergeAt(DWORD position) {
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
+
 	CSaDoc * pDoc = GetDocument();
 	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
     if (pSeg==NULL) {
@@ -9587,19 +9455,7 @@ void CSaView::EditMergeAt(DWORD position) {
     if (sel==-1) {
         return;
     }
-	if (pApp->IsAudioSync()) {
-		pDoc->MergeSegments(pSeg,sel);
-		int newsel = pSeg->GetPrevious(sel);
-		DWORD newStart = pSeg->GetOffset(newsel);
-		DWORD newStop = pSeg->GetStop(newsel);
-		m_advancedSelection.DeselectAnnotations(*this);
-		pSeg->SetSelection(newsel);
-		SetCursorPosition(START_CURSOR,newStart);
-		SetCursorPosition(STOP_CURSOR,newStop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
-		return;
-	}
+
 	// standard case
     pDoc->MergeSegments( pSeg, sel);
 	int newsel = pSeg->GetPrevious(sel);
@@ -9632,7 +9488,7 @@ void CSaView::OnEditMoveLeft() {
 }
 
 void CSaView::EditMoveLeft() {
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
+
 	CSaDoc * pDoc = GetDocument();
 	CSegment * pSeg = FindSelectedAnnotation();
     if (pSeg==NULL) {
@@ -9649,25 +9505,8 @@ void CSaView::EditMoveLeft() {
 		TRACE("segment contains data\n");
 		return;
 	}
-	if (pApp->IsAudioSync()) {
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return;
-		}
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		DWORD start = pPhonetic->GetOffset(psel);
-		DWORD stop = pSeg->GetStop(sel);
-		pDoc->MoveDataLeft(start);
-		m_advancedSelection.DeselectAnnotations(*this);
-		m_advancedSelection.SelectFromPosition( this, GLOSS, start, false);
-		SetCursorPosition(START_CURSOR,start);
-		SetCursorPosition(STOP_CURSOR,stop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
-		return;
-	}
-    if (!pSeg->Is(PHONETIC)) {
+
+	if (!pSeg->Is(PHONETIC)) {
 		TRACE("selected segment is not PHONETIC\n");
 		return;
 	}
@@ -9715,8 +9554,8 @@ void CSaView::OnMoveLeftHere() {
 }
 
 void CSaView::EditMoveLeftAt( CSaDoc * pDoc, DWORD position) {
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-    CPhoneticSegment * pSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
+
+	CPhoneticSegment * pSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
     if (pSeg==NULL) {
 		TRACE("segment not found\n");
 		return;
@@ -9731,19 +9570,8 @@ void CSaView::EditMoveLeftAt( CSaDoc * pDoc, DWORD position) {
 		TRACE("segment contains data\n");
 		return;
 	}
-	if (pApp->IsAudioSync()) {
-		DWORD start = pSeg->GetOffset(sel);
-		DWORD stop = pSeg->GetStop(sel);
-		pDoc->MoveDataLeft(start);
-		m_advancedSelection.DeselectAnnotations(*this);
-		m_advancedSelection.SelectFromPosition( this, GLOSS, start, false);
-		SetCursorPosition(START_CURSOR,start);
-		SetCursorPosition(STOP_CURSOR,stop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
-		return;
-	}
-    DWORD start = pSeg->GetOffset(sel);
+
+	DWORD start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
     pDoc->MoveDataLeft(start);
 	m_advancedSelection.DeselectAnnotations(*this);
@@ -9830,7 +9658,6 @@ void CSaView::OnEditMoveRight() {
 }
 
 void CSaView::EditMoveRight() {
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
     CSegment * pSeg = FindSelectedAnnotation();
     if (pSeg==NULL) {
@@ -9840,28 +9667,6 @@ void CSaView::EditMoveRight() {
     if (sel==-1) {
         return;
     }
-	if (pApp->IsAudioSync()) {
-		// we are just going to hope that no one uses 
-		// getselection in the lower code..
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return;
-		}
-	    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		DWORD start = pPhonetic->GetOffset(psel);
-		pDoc->MoveDataRight(start);
-
-		start = pSeg->GetOffset(psel);
-		DWORD stop = pSeg->GetStop(psel);
-		m_advancedSelection.DeselectAnnotations(*this);
-		pSeg->SetSelection(sel);
-		SetCursorPosition(START_CURSOR,start);
-		SetCursorPosition(STOP_CURSOR,stop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
-		return;
-	}
 
 	// standard case
 	if (!pSeg->Is(PHONETIC)) {
@@ -9885,7 +9690,6 @@ void CSaView::EditMoveRight() {
 **/
 void CSaView::EditMoveRightNext() {
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CSaDoc * pDoc = GetDocument();
     CSegment * pSeg = FindSelectedAnnotation();
     if (pSeg==NULL) {
@@ -9898,29 +9702,6 @@ void CSaView::EditMoveRightNext() {
 
 	sel += 1;
 	if (sel>=pSeg->GetOffsetSize()) {
-		return;
-	}
-
-	if (pApp->IsAudioSync()) {
-		// we are just going to hope that no one uses 
-		// getselection in the lower code..
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return;
-		}
-	    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		DWORD start = pPhonetic->GetOffset(psel);
-		pDoc->MoveDataRight(start);
-
-		start = pSeg->GetOffset(psel);
-		DWORD stop = pSeg->GetStop(psel);
-		m_advancedSelection.DeselectAnnotations(*this);
-		pSeg->SetSelection(sel);
-		SetCursorPosition(START_CURSOR,start);
-		SetCursorPosition(STOP_CURSOR,stop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
 		return;
 	}
 
@@ -9968,7 +9749,6 @@ void CSaView::OnMoveRightHere() {
 	CSaDoc * pDoc = GetDocument();
 	pDoc->CheckPoint();
 	m_advancedSelection.SelectFromPosition( this, PHONETIC, position, false);
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
 	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
     if (pSeg==NULL) {
         return;
@@ -9977,28 +9757,7 @@ void CSaView::OnMoveRightHere() {
     if (sel==-1) {
         return;
     }
-	if (pApp->IsAudioSync()) {
-		// we are just going to hope that no one uses 
-		// getselection in the lower code..
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return;
-		}
-	    CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		DWORD start = pPhonetic->GetOffset(psel);
-		pDoc->MoveDataRight(start);
 
-		start = pSeg->GetOffset(psel);
-		DWORD stop = pSeg->GetStop(psel);
-		m_advancedSelection.DeselectAnnotations(*this);
-		pSeg->SetSelection(sel);
-		SetCursorPosition(START_CURSOR,start);
-		SetCursorPosition(STOP_CURSOR,stop);
-		bEditBoundaries = false;
-		RefreshGraphs(TRUE,FALSE);
-		return;
-	}
 	// standard case
 	if (!pSeg->Is(PHONETIC)) {
 		return;
@@ -11468,23 +11227,6 @@ void CSaView::OnAddReferenceData() {
         }
     }
 
-	// save a copy of the text file if everything is good...
-	if (pApp->IsAudioSync()) {
-		if (!dlg.mUsingNumbers) {
-			CString sabFile = dlg.mLastImport;
-			// create new filename
-			CSaString target = pDoc->GetPathName();
-			if (target.IsEmpty()) {
-				target = pDoc->GetFilenameFromTitle().c_str(); // get the current view caption string
-			}
-			target = FileUtils::ReplaceExtension( (LPCTSTR)target, L".sab").c_str();
-			if (FileUtils::FileExists(sabFile)) {
-				FileUtils::Copy( sabFile, target);
-				pDoc->ClearSABLoaded();
-			}
-		}
-	}
-
     // do it for real
     pDoc->AddReferenceData(dlg,selection);
 
@@ -12002,14 +11744,7 @@ CSaApp & CSaView::GetApp() {
 * Selects the gloss segment at the present playback cursor position
 */
 void CSaView::SelectSegment() {
-
-	if (!GetApp().IsAudioSync()) return;
-
-	// find the playback cursor location
-	DWORD pos = GetPlaybackCursorPosition();
-	// find the matching gloss segment
-	m_advancedSelection.SelectFromPosition( this, GLOSS, pos, false);
-	TRACE("selecting segment\n");
+	return;
 }
 
 /**
@@ -12101,18 +11836,6 @@ bool CSaView::CanMoveDataLeft( CSegment * pSeg, bool discrete) {
 		}
 	}
 
-	if (GetApp().IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		// can't get there from here...
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		bool segmental = pDoc->IsSegmental( pPhonetic, psel);
-		return !segmental;
-	}
-
 	// standard case
 	if (sel==pSeg->GetOffsetSize()-1) {
 		return false;
@@ -12143,20 +11866,6 @@ bool CSaView::CanMoveDataLeftAt( CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD p
 		}
 	}
 
-	if (GetApp().IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		// can't get there from here...
-		if (psel==-1) {
-			return false;
-		}
-		bool segmental = pDoc->IsSegmental( pPhonetic, psel);
-		if (segmental) {
-			return false;
-		}
-		return true;
-	}
-
 	// standard case
 	if (sel==pSeg->GetOffsetSize()-1) {
 		return false;
@@ -12182,18 +11891,6 @@ bool CSaView::CanMoveDataRight( CSegment * pSeg) {
     }
 
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		// can't get there from here...
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		bool segmental = pDoc->IsSegmental(pPhonetic, psel);
-		return !segmental;
-	}
 
 	// standard case
 	// allow move right on last segment
@@ -12226,19 +11923,6 @@ bool CSaView::CanMoveDataRightNext( CSegment * pSeg) {
 	}
 
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		// can't get there from here...
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		bool segmental = pDoc->IsSegmental(pPhonetic, psel);
-		TRACE("segmental=%d\n",segmental);
-		return !segmental;
-	}
 
 	// standard case
 	// allow move right on last segment
@@ -12265,18 +11949,6 @@ bool CSaView::CanMoveDataRightSel( CSegment * pSeg, int sel) {
 	}
 
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		// can't get there from here...
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		bool segmental = pDoc->IsSegmental(pPhonetic, psel);
-		return !segmental;
-	}
 
 	// standard case
 	// allow move right on last segment
@@ -12299,18 +11971,6 @@ bool CSaView::CanMoveDataRightAt( CPhoneticSegment * pSeg, DWORD position) {
         return false;
     }
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		// can't get there from here...
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		bool segmental = pDoc->IsSegmental(pPhonetic, psel);
-		return !segmental;
-	}
 
 	// standard case
 	// allow move right on last segment
@@ -12337,18 +11997,6 @@ bool CSaView::CanMoveDataRightNextAt( CPhoneticSegment * pSeg, DWORD position) {
 		return false;
 	}
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		// can't get there from here...
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		bool segmental = pDoc->IsSegmental(pPhonetic, psel);
-		return !segmental;
-	}
 
 	// standard case
 	// allow move right on last segment
@@ -12381,19 +12029,7 @@ bool CSaView::CanSplit(CSegment * pSeg) {
     }
 
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		if (pDoc->IsSegmental( pPhonetic, psel)) return false;
-
-		return true;
-	}
-    if (!pSeg->Is(PHONETIC)) {
+	if (!pSeg->Is(PHONETIC)) {
         return false;
     }
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
@@ -12429,18 +12065,6 @@ bool CSaView::CanSplitAt( CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position
 		return false;
 	}
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			return false;
-		}
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-		if (pDoc->IsSegmental( pPhonetic, psel)) {
-			return false;
-		}
-		return true;
-	}
     if (!pSeg->Is(PHONETIC)) {
         return false;
     }
@@ -12470,28 +12094,6 @@ bool CSaView::CanMerge(CSegment * pSeg) {
 	}
 
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		// if we are in a segmental transcription, we can't merge left
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel))) {
-			//TRACE("current segment is boundary-segmental\n");
-			return false;
-		}
-		// if we are not segmental, but the segment to our
-		// left is segmental, we cannot merge.
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel-1))) {
-			//TRACE("adjacent segment is boundary-segmental\n");
-			return false;
-		}
-		return true;
-	}
-
     // phonetic not selected
     if (!pSeg->Is(PHONETIC)) {
         return false;
@@ -12531,28 +12133,6 @@ bool CSaView::CanMergeNext(CSegment * pSeg) {
 	}
 
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		// if we are in a segmental transcription, we can't merge left
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel))) {
-			//TRACE("current segment is boundary-segmental\n");
-			return false;
-		}
-		// if we are not segmental, but the segment to our
-		// left is segmental, we cannot merge.
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel-1))) {
-			//TRACE("adjacent segment is boundary-segmental\n");
-			return false;
-		}
-		return true;
-	}
-
     // phonetic not selected
     if (!pSeg->Is(PHONETIC)) {
         return false;
@@ -12588,28 +12168,6 @@ bool CSaView::CanMergeAt(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position)
 	// can't merge first segment
 	if (sel==0) {
 		return false;
-	}
-
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		// if we are in a segmental transcription, we can't merge left
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel))) {
-			//TRACE("current segment is boundary-segmental\n");
-			return false;
-		}
-		// if we are not segmental, but the segment to our
-		// left is segmental, we cannot merge.
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel-1))) {
-			//TRACE("adjacent segment is boundary-segmental\n");
-			return false;
-		}
-		return true;
 	}
 
     // phonetic not selected
@@ -12652,28 +12210,6 @@ bool CSaView::CanMergeAtNext(CSaDoc * pDoc,CPhoneticSegment * pSeg, DWORD positi
 		return false;
 	}
 
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		// if we are in a segmental transcription, we can't merge left
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel))) {
-			//TRACE("current segment is boundary-segmental\n");
-			return false;
-		}
-		// if we are not segmental, but the segment to our
-		// left is segmental, we cannot merge.
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel-1))) {
-			//TRACE("adjacent segment is boundary-segmental\n");
-			return false;
-		}
-		return true;
-	}
-
     // phonetic not selected
     if (!pSeg->Is(PHONETIC)) {
         return false;
@@ -12710,27 +12246,6 @@ bool CSaView::CanMergeSel(CPhoneticSegment * pSeg, int sel) {
 	}
 
 	CSaDoc * pDoc = GetDocument();
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
-		int psel = pDoc->FindPhoneticIndex(pSeg,sel);
-		if (psel==-1) {
-			TRACE("cant find matching phonetic segment\n");
-			return false;
-		}
-		// if we are in a segmental transcription, we can't merge left
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel))) {
-			//TRACE("current segment is boundary-segmental\n");
-			return false;
-		}
-		// if we are not segmental, but the segment to our
-		// left is segmental, we cannot merge.
-		if ((pDoc->IsBoundary(pPhonetic,psel)) && (pDoc->IsSegmental(pPhonetic,psel-1))) {
-			//TRACE("adjacent segment is boundary-segmental\n");
-			return false;
-		}
-		return true;
-	}
 
     // phonetic not selected
     if (!pSeg->Is(PHONETIC)) {
@@ -12753,10 +12268,6 @@ bool CSaView::CanMergeSel(CPhoneticSegment * pSeg, int sel) {
 
 void CSaView::DeselectAnnotations() {
 	m_advancedSelection.DeselectAnnotations(*this);
-}
-bool CSaView::IsAudioSync() {
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	return pApp->IsAudioSync();
 }
 void CSaView::OnNextError() {
 }

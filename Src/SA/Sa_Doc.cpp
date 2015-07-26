@@ -830,10 +830,7 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
     // if the return value is false, the file is not in an acceptable format
     if (!IsStandardWaveFormat(wave_file_name.c_str())) {
         // tell the user what's going on!
-		CSaApp * pApp = (CSaApp*)AfxGetApp();
-		if (!pApp->IsAudioSync()) {
-			AfxMessageBox(IDS_SUPPORT_WAVE_COPY, MB_OK|MB_ICONWARNING,0);
-		}
+		AfxMessageBox(IDS_SUPPORT_WAVE_COPY, MB_OK|MB_ICONWARNING,0);
         // convert to wave will select or merge the channels.
         // the output will be a single channel file
         m_bUsingTempFile = true;
@@ -2020,8 +2017,6 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 /***************************************************************************/
 BOOL CSaDoc::WriteDataFiles( LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipboardFile) {
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-
     CScopedCursor waitCursor(this);
 
     DWORD dwDataSize = m_dwDataSize;
@@ -2075,15 +2070,6 @@ BOOL CSaDoc::WriteDataFiles( LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipb
     saAudioDocWriter->Release();
     saAudioDocWriter = NULL;
     CoUninitialize();
-
-	if (pApp->IsAudioSync()) {
-		// write the timing file
-		wstring target = FileUtils::ReplaceExtension(pszPathName,L".sft");
-		ExportTimeTable(target.c_str(),FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,"20",TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE,FALSE,0,1,true,FALSE);
-		// export audacity label file.
-		target = FileUtils::ReplaceExtension(pszPathName,L".txt");
-		ExportAudacityLabelFile(target.c_str());
-	}
 
     return TRUE;
 }
@@ -5100,17 +5086,6 @@ void CSaDoc::SaveSection( bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESave
 		FileUtils::Rename(from.c_str(),to.c_str());
     }
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		// look for and copy the .sab file
-		// if it's the same, just leave the sab file alone
-		if (!sameFile) {
-			wstring from = FileUtils::ReplaceExtension(oldFile,L".sab");
-			wstring to = FileUtils::ReplaceExtension(newFile,L".sab");
-			FileUtils::Copy(from.c_str(),to.c_str());
-		}
-	}
-
     // change the file attribute to read only
     CFile::SetStatus(newFile, m_fileStat);
 }
@@ -7335,7 +7310,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.125");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.127");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -8213,52 +8188,7 @@ void CSaDoc::SelectSegment(CSegment * pSegment, int index) {
 * find and load in the .SAB file mapping
 */
 void CSaDoc::UpdateReferenceBuffer() {
-	
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (!pApp->IsAudioSync()) return;
-
-	if (sabLoaded) return;
-
-	// get the name of the SAB file
-	CSaString target = GetPathName();
-	if (target.IsEmpty()) {
-		target = GetFilenameFromTitle().c_str(); // get the current view caption string
-	}
-	target = FileUtils::ReplaceExtension( (LPCTSTR)target, L".sab").c_str();
-	if (!FileUtils::FileExists(target)) {
-		TRACE("file does not exist\n");
-		return;
-	}
-
-	// read in the data and store it in a map
-    // data should be fully validated by dialog!
-    CFileEncodingHelper feh(target);
-    if (!feh.CheckEncoding(true)) {
-		return;
-    }
-    wistringstream stream;
-    if (!feh.ConvertFileToUTF16(stream)) {
-		return;
-    }
-	// load in everything possible
-    if (!ImportTranscription(stream,true,true,true,true,true,sabBuffer,true,false)) {
-        CString msg;
-        msg.LoadStringW(IDS_AUTO_REF_MAIN_1);
-        CString msg2;
-        msg2.LoadStringW(IDS_AUTO_REF_MAIN_2);
-        msg.Append(msg2);
-        msg2.LoadStringW(IDS_AUTO_REF_MAIN_3);
-        msg.Append(msg2);
-        AfxMessageBox(msg,MB_OK|MB_ICONEXCLAMATION);
-        return;
-    }
-
-	sabLoaded = true;
-
-    //CString ref = sabBuffer.m_szPrimary;
-    //TranscriptionDataMap & map = sabBuffer.m_TranscriptionData;
-    //MarkerList::iterator begin = find(map[ref].begin(),map[ref].end(),dlg.mBeginRef);
-    //MarkerList::iterator end = find(map[ref].begin(),map[ref].end(),dlg.mEndRef);
+	return;
 }
 
 typedef map<EAnnotation,CString> SABMap;
@@ -8267,76 +8197,10 @@ void CSaDoc::MoveDataLeft(DWORD offset) {
     
 	bool modified = false;
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-
-		UpdateReferenceBuffer();
-
-		SABMap entry;
-
-		// find the data for the entry after the last available segment
-		CReferenceSegment * pRef = (CReferenceSegment*)GetSegment(REFERENCE);
-		size_t last = pRef->GetLastNonEmptyValue();
-		if (last!=-1) {
-			// find the last reference number
-			CString lastRef = pRef->GetText(last);
-			// there is a reference number
-			MarkerList & ml = sabBuffer.GetMarkerList(REFERENCE);
-			MarkerList::iterator rit = ml.begin();
-			CString ref = pRef->GetDefaultText();
-			int i=0;
-			while (rit!=ml.end()) {
-				if (lastRef.Compare(*rit)==0) {
-					// grab the next one
-					rit++;
-					i++;
-					if (rit!=ml.end()) {
-						ref = *rit;
-					}
-					break;
-				}
-				rit++;
-				i++;
-			}
-
-			if (rit!=ml.end()) {
-				// we found our marker
-				// pull in all other markers
-				entry[REFERENCE] = ref;
-				entry[PHONETIC] = sabBuffer.GetValue(PHONETIC,i);
-				entry[TONE] = sabBuffer.GetValue(TONE,i);
-				entry[PHONEMIC] = sabBuffer.GetValue(PHONEMIC,i);
-				entry[ORTHO] = sabBuffer.GetValue(ORTHO,i);
-				CString temp = sabBuffer.GetValue(GLOSS,i);
-				if ((temp.GetLength()>0)&&(temp[0]!=WORD_DELIMITER)) {
-					temp = WORD_DELIMITER + temp;
-				}
-				entry[GLOSS] = temp;
-				entry[GLOSS_NAT] = sabBuffer.GetValue(GLOSS_NAT,i);
-				entry[MUSIC_PL1] = sabBuffer.GetValue(MUSIC_PL1,i);
-				entry[MUSIC_PL2] = sabBuffer.GetValue(MUSIC_PL2,i);
-				entry[MUSIC_PL3] = sabBuffer.GetValue(MUSIC_PL3,i);
-				entry[MUSIC_PL4] = sabBuffer.GetValue(MUSIC_PL4,i);
-			}
-		}
-
-		for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
-			CSegment * pSeg = m_apSegments[n];
-			SABMap::iterator it = entry.find((EAnnotation)n);
-			// do we have an entry?
-			CString text;
-			if (it!=entry.end()) {
-				text = entry[(EAnnotation)n];
-			}
-			modified |= pSeg->MoveDataLeftSAB(offset,text);
-		}
-
-	} else {
-		// non-sab case
-		for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
-			CSegment * pSeg = m_apSegments[n];
-			modified |= pSeg->MoveDataLeft(offset);
-		}
+	// non-sab case
+	for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
+		CSegment * pSeg = m_apSegments[n];
+		modified |= pSeg->MoveDataLeft(offset);
 	}
 
     SetModifiedFlag(modified|IsModified());
@@ -8346,17 +8210,9 @@ void CSaDoc::MoveDataLeft(DWORD offset) {
 void CSaDoc::MoveDataRight( DWORD offset) {
     
 	bool modified = false;
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
-			CSegment * pSeg = m_apSegments[n];
-			modified |= pSeg->MoveDataRight(offset, true);
-		}
-	} else {
-		for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
-			CSegment * pSeg = m_apSegments[n];
-			modified |= pSeg->MoveDataRight(offset, false);
-		}
+	for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
+		CSegment * pSeg = m_apSegments[n];
+		modified |= pSeg->MoveDataRight(offset, false);
 	}
     SetModifiedFlag((BOOL)modified|IsModified());
 	SetTransModifiedFlag(modified|IsTransModified());

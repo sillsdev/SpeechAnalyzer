@@ -2287,13 +2287,9 @@ void CAboutTitle::OnPaint() {
     dc.SetBkMode(TRANSPARENT); // letters overlap, so they must be transparent
     // get the title text
     CString szText;
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-	    szText.LoadString(IDR_MAINFRAME_AS);
-	} else {
-		szText.LoadString(IDR_MAINFRAME_SA);
-	}
-    // get window coordinates
+	szText.LoadString(IDR_MAINFRAME_SA);
+
+	// get window coordinates
     CRect rWnd;
     GetClientRect(rWnd);
     rWnd.left +=4; // to adjust to center

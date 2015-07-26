@@ -141,7 +141,6 @@
 #define IDR_BAR_BASIC                   344
 #define IDD_TASKBAR                     345
 #define IDR_TASKBAR                     346
-#define IDR_BAR_AUDIOSYNC               347
 #define IDI_NEXT                        349
 #define IDI_PREV                        350
 #define IDI_UP                          351
@@ -168,7 +167,6 @@
 #define IDB_ECHOU                       382
 #define IDB_HPU                         383
 #define IDB_LPU                         384
-#define IDD_AUDIOSYNC_STARTUP           385
 #define IDC_HIGHPASS                    502
 #define ID_STATUSPANE_EMPTY             700
 #define ID_STATUSPANE_1                 701
@@ -1227,7 +1225,6 @@
 #define IDC_RADIO_FILE                  2056
 #define IDC_EDIT1                       2057
 #define IDC_FILENAME_PREFIX             2057
-#define IDC_EDIT_AUDIO_FILENAME         2057
 #define IDC_BEGIN_LABEL                 2058
 #define IDC_END_LABEL                   2059
 #define IDC_BEGIN_COMBO                 2060
@@ -1249,7 +1246,6 @@
 #define IDC_STATIC_SFM_COUNT            2079
 #define IDC_EDIT2                       2080
 #define IDC_FILENAME_SUFFIX             2080
-#define IDC_EDIT_PHRASE_FILENAME        2080
 #define IDC_MSFLEXGRID1                 2081
 #define IDC_MFCPROPERTYGRID1            2082
 #define IDC_RADIO1                      2083
@@ -1278,15 +1274,9 @@
 #define IDC_LIST_ORTHO                  2107
 #define IDC_LIST_GLOSS                  2108
 #define IDC_LIST_GLOSS_NAT              2109
-#define IDC_COMBO_SKIP                  2110
 #define IDC_GLOSS_NAT                   2111
-#define IDC_BUTTON_BROWSE1              2112
 #define IDC_GLOSS_NAT_ENABLED           2113
-#define IDC_BUTTON_BROWSE2              2114
-#define IDC_CHECK_SEGMENT_AUDIO         2115
 #define IDC_CHECK_LOAD                  2116
-#define IDC_CHECK_LOAD_DATA             2117
-#define IDC_STATIC_TITLE                2118
 #define IDS_WINDOW_GLOSS_AS             2119
 #define IDS_WINDOW_REFERENCE_AS         2120
 #define IDS_WINDOW_PHONETIC_AS          2121

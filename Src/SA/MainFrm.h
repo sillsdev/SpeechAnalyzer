@@ -322,7 +322,6 @@ protected:
     CProgressStatusBar  m_progressStatusBar;   // status control bar embedded object for progress
     CToolBar            m_wndToolBarBasic;
     CToolBar            m_wndToolBarAdvanced;
-    CToolBar            m_wndToolBarSAB;
     CTaskBar            m_wndTaskBar;
     CSaWorkbenchView  * m_pWorkbenchView;      // workbench view
     bool                m_bFindOnly;           // find/replace is only find

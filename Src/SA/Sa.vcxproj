@@ -145,7 +145,6 @@
     <ClCompile Include="DependentSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
-    <ClCompile Include="DlgASStart.cpp" />
     <ClCompile Include="DlgExportFW.cpp" />
     <ClCompile Include="DlgExportFWResult.cpp" />
     <ClCompile Include="DlgExportLift.cpp" />
@@ -383,7 +382,6 @@
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="array_ptr.h" />
     <ClInclude Include="AutoSegmentation.h" />
-    <ClInclude Include="DlgASStart.h" />
     <ClInclude Include="DlgAutoRecorder.h" />
     <ClInclude Include="AutoSave.h" />
     <ClInclude Include="ChildFrame.h" />

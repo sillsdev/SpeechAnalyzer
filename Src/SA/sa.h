@@ -167,7 +167,6 @@ public:
     virtual CDocument * OpenDocumentFile(LPCTSTR lpszFileName);
 
     bool IsSAServer() const;
-    bool IsAudioSync() const;
 
 	CString GetVersionString();
 

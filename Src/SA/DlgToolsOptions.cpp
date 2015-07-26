@@ -1200,10 +1200,6 @@ CDlgToolsOptions::CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent, bool full
         AddPage(&m_dlgSavePage);
     }
     AddPage(&m_dlgAudioPage);
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		AddPage(&m_dlgAudioSyncPage);
-	}
 }
 
 /***************************************************************************/
@@ -1363,12 +1359,7 @@ CToolSettings CDlgToolsOptions::GetSettings(bool full) {
     // audio page
     settings.m_bShowAdvancedAudio = m_dlgAudioPage.m_bShowAdvancedAudio;
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		settings.m_nAlgorithm = m_dlgAudioSyncPage.GetAlgorithm();
-	}
-
-    return settings;
+	return settings;
 }
 
 void CDlgToolsOptions::ApplyNow() {

@@ -1183,68 +1183,6 @@ void CAnnotationWnd::OnMouseMove(UINT nFlags, CPoint point) {
 	// reset state
     pPlot->SetMouseButtonState(0);
 
-	/*
-	if (pApp->IsAudioSync()) {
-		// inform parent plot
-		// find out, which character has been clicked
-		CRect rWnd;
-		GetClientRect(rWnd);
-		// check if area graph type
-		double fDataStart = 0;
-		DWORD dwDataFrame = 0;
-		if (pGraph->IsAreaGraph()) {
-			// get necessary data from area plot
-			fDataStart = pGraph->GetPlot()->GetAreaPosition();
-			dwDataFrame = pGraph->GetPlot()->GetAreaLength();
-		} else {
-			// check if graph has private cursor
-			if (pGraph->HavePrivateCursor()) {
-				// get necessary data from between public cursors
-				WORD wSmpSize = WORD(pDoc->GetSampleSize());
-				// data index of first sample to display
-				fDataStart = (LONG)pView->GetStartCursorPosition();
-				// number of data points to display
-				dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize;
-			} else {
-				// get necessary data from document and from view
-				// data index of first sample to display
-				fDataStart = pView->GetDataPosition(rWnd.Width());
-				// number of data points to display
-				dwDataFrame = pView->AdjustDataFrame(rWnd.Width());
-			}
-		}
-	
-		bool onBoundary = false;
-		LONG dwPosition = 0;
-		// data is available
-		if (dwDataFrame != 0) { 
-			ASSERT(rWnd.Width());
-			double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
-			// calculate clicked data position
-			dwPosition = (LONG)((double)point.x * fBytesPerPix + (double)fDataStart);
-			CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
-			for (int i=0;i<pSeg->GetOffsetSize();i++) {
-				DWORD start = pSeg->GetOffset(i);
-				DWORD diff = (start>dwPosition)?start-dwPosition:dwPosition-start;
-				if (diff<20000) {
-					onBoundary=true;
-					break;
-				}
-			}
-		}
-
-		if ((!onBoundary)&&(m_bHoverOver)) {
-			TRACE("hover off\n");
-			m_bHoverOver = false;
-			::SetCursor(pApp->LoadStandardCursor(IDC_ARROW));
-		} else if ((onBoundary)&&(!m_bHoverOver)) {
-			TRACE("hover on\n");
-			m_bHoverOver = true;
-			::SetCursor(pApp->LoadCursor(IDC_MFINGERN));
-		}
-	}
-	*/
-
     const BOOL bForceUpdate = TRUE;
     pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), bForceUpdate);
     CWnd::OnMouseMove(nFlags, point);
@@ -1261,18 +1199,15 @@ void CAnnotationWnd::OnLButtonDblClk(UINT nFlags, CPoint point) {
         CWnd::OnLButtonDblClk(nFlags, point);
         return;
     }
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (!pApp->IsAudioSync()) {
-		CSaView * pView = (CSaView *)pGraph->GetParent();
-		// if nothing selected select it
-		if (pView->GetDocument()->GetSegment(m_nIndex)->GetSelection() == -1) {
-			// send message to parent
-			SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));    
-		}
-		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_EDIT_EDITOR, 0L);
-		// disable slow click (timed out)
-		m_nSelectTickCount = GetTickCount() - DWORD(SLOW_CLICK_TIME_LIMIT * 1000);
+	CSaView * pView = (CSaView *)pGraph->GetParent();
+	// if nothing selected select it
+	if (pView->GetDocument()->GetSegment(m_nIndex)->GetSelection() == -1) {
+		// send message to parent
+		SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));    
 	}
+	AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_EDIT_EDITOR, 0L);
+	// disable slow click (timed out)
+	m_nSelectTickCount = GetTickCount() - DWORD(SLOW_CLICK_TIME_LIMIT * 1000);
     CWnd::OnLButtonDblClk(nFlags, point);
 }
 
@@ -1534,17 +1469,8 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         string = pGloss->GetText(nLoop);
 
 		if (string.GetLength()>1) {
-			CSaApp * pApp = (CSaApp*)AfxGetApp();
-			if (pApp->IsAudioSync()) {
-				if ((string[0]==WORD_DELIMITER)||(string[0]==TEXT_DELIMITER)) {
-					string = string.Mid(1);
-				}
-				string = string.Trim();
-				string = szSpace + string;
-			} else {
-				// insert a space after the delimiter
-				string = string.GetAt(0) + szSpace + string.Right(string.GetLength() - 1);
-			}
+			// insert a space after the delimiter
+			string = string.GetAt(0) + szSpace + string.Right(string.GetLength() - 1);
 		}
 
 		nDisplayPos = round((pGloss->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
@@ -1687,167 +1613,7 @@ void CAnnotationWnd::DrawTranscriptionBorders(CDC * pDC, CRect rWnd, Colors * pC
 // For AS, for PL1 only, display the unabbreviated contents of gloss
 /***************************************************************************/
 void CMusicPhraseWnd::OnDraw(CDC * pDC, const CRect & printRect) {
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (!pApp->IsAudioSync()) {
-		CAnnotationWnd::OnDraw( pDC, printRect);
-		return;
-	}
-
-	// AudioSync only
-	if (m_nIndex!=MUSIC_PL4) {
-		CAnnotationWnd::OnDraw( pDC, printRect);
-		return;
-	}
-
-    // get window coordinates
-	// get invalid region
-    CRect rWnd;
-    CRect rClip;
-
-    if (pDC->IsPrinting()) {
-        rClip = printRect;
-        rWnd  = printRect;
-    } else {
-        GetClientRect(rWnd);
-        pDC->GetClipBox(&rClip);
-        pDC->LPtoDP(&rClip);
-    }
-
-    if (rWnd.Width() == 0) {
-		// nothing to draw
-        return;
-    }
-
-    // get pointer to graph, view and document
-    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    // get pointer to annotation offset and duration arrays
-    CGlossSegment * pSegment = (CGlossSegment*)pDoc->GetSegment(GLOSS);
-
-    // select annotation font
-    //SDM 1.06.4
-    CFont * pOldFont = pDC->SelectObject(GetFont());
-    // get text metrics
-    TEXTMETRIC tm;
-    pDC->GetTextMetrics(&tm);
-
-    // set font colors
-	// get pointer to colors from main frame
-    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    Colors * pColors = pMainWnd->GetColors();
-
-	// set font color
-    pDC->SetTextColor(pColors->cAnnotationFont[GLOSS]);
-	// letters may overlap, so they must be transparent
-    pDC->SetBkMode(TRANSPARENT);
-    // draw 3D window border
-    CPen penDkgray(PS_SOLID, 1, pColors->cSysBtnShadow);
-    CPen penLtgray(PS_SOLID, 1, pColors->cSysBtnHilite);
-    CPen * pOldPen = pDC->SelectObject(&penDkgray);
-
-    // draw bottom border
-    pDC->MoveTo(rClip.left, rWnd.bottom - 1);
-    pDC->LineTo(rClip.right, rWnd.bottom - 1);
-    pDC->SelectObject(&penLtgray);
-    pDC->MoveTo(rClip.left, rWnd.top);
-    pDC->LineTo(rClip.right, rWnd.top);
-    pDC->SelectObject(pOldPen);
-
-    //*******************************************************
-    // 09/27/2000 - DDO If the graph is the TWC graph
-    // then we don't want to draw the annotation text.
-    //*******************************************************
-    if (pGraph->IsPlotID(IDD_TWC)) {
-		// set back old font
-        pDC->SelectObject(pOldFont);
-        return;
-    }
-
-    // SDM 1.06.6
-    // Exclude Boundaries
-    rWnd.SetRect(rWnd.left, rWnd.top + 1, rWnd.right, rWnd.bottom - 1);
-
-    // check if area graph type
-    double fDataStart;
-    DWORD dwDataFrame;
-    if (pGraph->IsAreaGraph()) {
-        // get necessary data from area plot
-        fDataStart = pGraph->GetPlot()->GetAreaPosition();
-        dwDataFrame = pGraph->GetPlot()->GetAreaLength();
-    } else {
-        // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
-            // get necessary data from between public cursors
-            WORD wSmpSize = WORD(pDoc->GetSampleSize());
-			// data index of first sample to display
-            fDataStart = (double)pView->GetStartCursorPosition(); 
-			// number of data points to display
-            dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; 
-        } else {
-            // get necessary data from document and from view
-			// data index of first sample to display
-            fDataStart = pView->GetDataPosition(rWnd.Width());
-			// number of data points to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); 
-        }
-    }
-    if (dwDataFrame == 0) {
-		// nothing to draw
-        return;
-    }
-
-    // get pointer to annotation string
-    if (pSegment->GetOffsetSize()==0) {
-		// restore context
-		pView->UpdateSelection();
-		pDC->SelectObject(pOldFont);
-		return;
-	}
-
-	int nLoop = pSegment->GetSelection();
-	if (nLoop == -1) {
-		// restore context
-		pView->UpdateSelection();
-		pDC->SelectObject(pOldFont);
-		return;
-	}
-
-
-    // there is something to display
-    // Create Font For "*"
-    CFont cFontAsterisk;
-    cFontAsterisk.CreateFont(tm.tmHeight, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE|DEFAULT_PITCH,_T("MS Sans Serif"));
-            
-    // put all characters width same offset in one string
-    CString szAnnot = pSegment->GetText(nLoop);
-	if ((szAnnot.GetLength()>0) &&
-		((szAnnot[0]==WORD_DELIMITER)||(szAnnot[0]==TEXT_DELIMITER))) {
-		// remove delimiter
-		szAnnot = szAnnot.Mid(1).Trim();
-	}
-
-    // check, if there is enough space to display the character(s)
-	BOOL bNotEnough = (szAnnot.GetLength() * tm.tmAveCharWidth) > rWnd.Width();
-    if (bNotEnough) {
-        // not enough space, draw dot or star with MS Sans Serif
-        pDC->SelectObject(cFontAsterisk);
-        pDC->DrawText(_T("."), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
-        //SDM 1.06.4
-        // reselect specific annotation font
-        pDC->SelectObject(GetFont());
-    } else {
-        // enough space to display character(s), draw the string
-        pDC->DrawText( szAnnot, szAnnot.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
-    }
-
-    //SDM 1.06.5
-    //keep up to date of changes force redraw of deselected virtual selections
-    // get current selection information
-    pView->UpdateSelection();
-	// set back old font
-    pDC->SelectObject(pOldFont);
+	CAnnotationWnd::OnDraw( pDC, printRect);
 }
 
 CFont * CXScaleWnd::GetFont() {

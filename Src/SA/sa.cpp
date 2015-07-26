@@ -108,7 +108,6 @@
 #include <direct.h>
 #include "DlgHelpSFMMarkers.h"
 #include "Utils.h"
-#include "DlgASStart.h"
 #include "ScopedCursor.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
@@ -350,7 +349,7 @@ BOOL CSaApp::InitInstance() {
 
     // Register the application's document templates.
     // Document templates serve as the connection between documents, frame windows and views.
-    m_pDocTemplate = new CMultiDocTemplate((IsAudioSync()?IDR_AUDIOSYNC:IDR_SPEECHANALYZER),
+    m_pDocTemplate = new CMultiDocTemplate(IDR_SPEECHANALYZER,
                                            RUNTIME_CLASS(CSaDoc),
                                            RUNTIME_CLASS(CChildFrame),
                                            RUNTIME_CLASS(CSaView));
@@ -383,14 +382,10 @@ BOOL CSaApp::InitInstance() {
             //splash->Show();
             szSplashText.LoadString(IDS_SPLASH_LOADING);
             splash->Message = (_bstr_t)szSplashText;
-			CSaApp * pApp = (CSaApp*)AfxGetApp();
-			if (pApp->IsAudioSync()) {
-		        szSplashText.LoadString(IDR_MAINFRAME_AS);
-			} else {
-	            szSplashText.LoadString(IDR_MAINFRAME_SA);
-			}
+            szSplashText.LoadString(IDR_MAINFRAME_SA);
             splash->ProdName = (_bstr_t)szSplashText;
             // load version info
+			CSaApp * pApp = (CSaApp*)AfxGetApp();
 			CSaString szVersion = pApp->GetVersionString();
             szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
             // Beta version display
@@ -427,14 +422,8 @@ BOOL CSaApp::InitInstance() {
     // create main MDI Frame window
     CMainFrame * pMainFrame = new CMainFrame();
     if (!IsSAServer()) {
-		if (IsAudioSync()) {
-			if (!pMainFrame->LoadFrame(IDR_MAINFRAME_AS)) {
-				return FALSE;
-			}
-		} else {
-			if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SA)) {
-				return FALSE;
-			}
+		if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SA)) {
+			return FALSE;
 		}
     } else if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SAS)) {
         return FALSE;
@@ -1303,81 +1292,42 @@ void CSaApp::OnAppAbout() {
 	CoInitialize(NULL);
 	IAboutDlgPtr aboutDlg;
 
-	if (IsAudioSync()) {
-		HRESULT createResult = aboutDlg.CreateInstance(__uuidof(ASAboutDlg));
-		if (createResult) {
-			CSaString szCreateResult;
-			szCreateResult.Format(_T("%x"), createResult);
-			ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("AboutDlg.CreateInstance()"), szCreateResult);
-			return;
-		}
-
-		// set the text values
-		aboutDlg->ProdName = _T("Audio-Sync");
-		CSaString szVersion = GetVersionString();
-		CSaString szBuild;
-		szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
-		int nBuildIndex = szVersion.Find(_T("Build"));
-		if (nBuildIndex > 0) {
-			szBuild = szVersion.Mid(nBuildIndex, szVersion.GetLength() - nBuildIndex - 1);
-			szVersion = szVersion.Left(nBuildIndex - 2);
-		}
-
-		// Remove RC number
-		int nRCIndex = szVersion.Find(_T("RC"));
-		if (nRCIndex > 0) {
-			szVersion = szVersion.Left(nRCIndex - 1);
-		}
-
-		CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);;
-		aboutDlg->ProdVersion = (_bstr_t)szVersion;
-		aboutDlg->Copyright = (_bstr_t)szCopyright;
-		aboutDlg->DriveLetter = _T("C");
-		aboutDlg->Build = (_bstr_t)szBuild;
-
-		// now show it
-		aboutDlg->ShowDialog();
-
-		aboutDlg->Release();
-		aboutDlg = NULL;
-	} else {
-		HRESULT createResult = aboutDlg.CreateInstance(__uuidof(SAAboutDlg));
-		if (createResult) {
-			CSaString szCreateResult;
-			szCreateResult.Format(_T("%x"), createResult);
-			ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("AboutDlg.CreateInstance()"), szCreateResult);
-			return;
-		}
-
-		// set the text values
-		aboutDlg->ProdName = _T("Speech Analyzer");
-		CSaString szVersion = GetVersionString();
-		CSaString szBuild;
-		szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
-		int nBuildIndex = szVersion.Find(_T("Build"));
-		if (nBuildIndex > 0) {
-			szBuild = szVersion.Mid(nBuildIndex, szVersion.GetLength() - nBuildIndex - 1);
-			szVersion = szVersion.Left(nBuildIndex - 2);
-		}
-
-		// Remove RC number
-		int nRCIndex = szVersion.Find(_T("RC"));
-		if (nRCIndex > 0) {
-			szVersion = szVersion.Left(nRCIndex - 1);
-		}
-
-		CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);;
-		aboutDlg->ProdVersion = (_bstr_t)szVersion;
-		aboutDlg->Copyright = (_bstr_t)szCopyright;
-		aboutDlg->DriveLetter = _T("C");
-		aboutDlg->Build = (_bstr_t)szBuild;
-
-		// now show it
-		aboutDlg->ShowDialog();
-
-		aboutDlg->Release();
-		aboutDlg = NULL;
+	HRESULT createResult = aboutDlg.CreateInstance(__uuidof(SAAboutDlg));
+	if (createResult) {
+		CSaString szCreateResult;
+		szCreateResult.Format(_T("%x"), createResult);
+		ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("AboutDlg.CreateInstance()"), szCreateResult);
+		return;
 	}
+
+	// set the text values
+	aboutDlg->ProdName = _T("Speech Analyzer");
+	CSaString szVersion = GetVersionString();
+	CSaString szBuild;
+	szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
+	int nBuildIndex = szVersion.Find(_T("Build"));
+	if (nBuildIndex > 0) {
+		szBuild = szVersion.Mid(nBuildIndex, szVersion.GetLength() - nBuildIndex - 1);
+		szVersion = szVersion.Left(nBuildIndex - 2);
+	}
+
+	// Remove RC number
+	int nRCIndex = szVersion.Find(_T("RC"));
+	if (nRCIndex > 0) {
+		szVersion = szVersion.Left(nRCIndex - 1);
+	}
+
+	CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);;
+	aboutDlg->ProdVersion = (_bstr_t)szVersion;
+	aboutDlg->Copyright = (_bstr_t)szCopyright;
+	aboutDlg->DriveLetter = _T("C");
+	aboutDlg->Build = (_bstr_t)szBuild;
+
+	// now show it
+	aboutDlg->ShowDialog();
+
+	aboutDlg->Release();
+	aboutDlg = NULL;
 
     CoUninitialize();
 }
@@ -1427,68 +1377,29 @@ void CSaApp::OnFileRecord() {
 /***************************************************************************/
 void CSaApp::FileOpen() {
 
-	if (IsAudioSync()) {
-		// terry wants to see somthing behind the dialog...
-		CDocument * pTemp = OpenBlankView(true);                 
-		CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
-		ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-		// give editor a chance to close
-		pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
+	int id = GetOpenAsID();
+	// uses auto naming
+	CDocument * pDoc = OpenBlankView(true);
+	// this allows screen to be drawn
+	CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
+	ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+	// give editor a chance to close
+	pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
 
-		CDlgASStart dlg;
-		if (dlg.DoModal()==IDOK) {
-	        CScopedCursor waitCursor(this);
-			SetOpenAsID(ID_FILE_OPEN);
-			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
-			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
-				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
-				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount(),pMainFrame->GetAudioSyncAlgorithm());
-				pDoc2->DoFileSave();
-				POSITION pos = pDoc2->GetFirstViewPosition();
-			    CSaView * pView = (CSaView *)pDoc2->GetNextView(pos);
-				pView->ZoomIn(4);
-				pView->Scroll((DWORD)0);
-				pView->SelectFromPosition(GLOSS,0,false);
-			}
-		}
+	SetOpenAsID(id);
 
-		if (pTemp!=NULL) {
-			pTemp->OnCloseDocument();
-		}
-	} else {
-	    int id = GetOpenAsID();
-		// uses auto naming
-		CDocument * pDoc = OpenBlankView(true);
-		// this allows screen to be drawn
-		CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
-		ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-		// give editor a chance to close
-		pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
+	CString extension = _T("wav");
+	CString filename = _T("*.wav");
+	CString filter = _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Files (*.saxml) |*.saxml|Speech Analyzer Workbench Files (*.wb) |*.wb|ELAN Files (*.eaf)|*.eaf||");
+	CDlgFileOpen dlg( extension, filename, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, filter);
+	CString defaultDir = GetDefaultDir();
+	dlg.m_ofn.lpstrInitialDir = defaultDir;
+	if (dlg.DoModal() == IDOK) {
+		OpenDocumentFile(dlg.GetPathName());
+	}
 
-		SetOpenAsID(id);
-
-		CString extension;
-		CString filename;
-		CString filter;
-		if (IsAudioSync()) {
-			extension = _T("mp3");
-			filename = _T("*.mp3");
-			filter = _T("MP3 Files (*.mp3)|*.mp3|WAV Files (*.wav)|*.wav|WMA Files (*.wma )|*.wma|Speech Analyzer Files (*.saxml) |*.saxml||");
-		} else {
-			extension = _T("wav");
-			filename = _T("*.wav");
-			filter = _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Files (*.saxml) |*.saxml|Speech Analyzer Workbench Files (*.wb) |*.wb|ELAN Files (*.eaf)|*.eaf||");
-		}
-		CDlgFileOpen dlg( extension, filename, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, filter);
-		CString defaultDir = GetDefaultDir();
-		dlg.m_ofn.lpstrInitialDir = defaultDir;
-		if (dlg.DoModal() == IDOK) {
-			OpenDocumentFile(dlg.GetPathName());
-		}
-
-		if (pDoc!=NULL) {
-			pDoc->OnCloseDocument();
-		}
+	if (pDoc!=NULL) {
+		pDoc->OnCloseDocument();
 	}
 }
 
@@ -1577,38 +1488,10 @@ void CSaApp::OnFileOpenMA() {
 void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
-	if (IsAudioSync()) {
-		// terry wants to see something behind the dialog box
-		CDocument * pTemp = OpenBlankView(true);                 
-		// give editor a chance to close
-		pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
-
-		CDlgASStart dlg;
-		if (dlg.DoModal()==IDOK) {
-	        CScopedCursor waitCursor(this);
-			SetOpenAsID(ID_FILE_OPEN);
-			CDocument * pDoc = OpenDocumentFile(dlg.audioFilename);
-			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
-				CSaDoc * pDoc2 = (CSaDoc*)pDoc;
-				pDoc2->ImportSAB( dlg.phraseFilename, dlg.segmentAudio, dlg.loadData, dlg.GetSkipCount(),pMainFrame->GetAudioSyncAlgorithm());
-				pDoc2->DoFileSave();
-				POSITION pos = pDoc2->GetFirstViewPosition();
-			    CSaView * pView = (CSaView *)pDoc2->GetNextView(pos);
-				pView->ZoomIn(4);
-				pView->Scroll((DWORD)0);
-				pView->SelectFromPosition(GLOSS,0,false);
-			}
-		}
-
-		if (pTemp!=NULL) {
-			pTemp->OnCloseDocument();
-		}
-	} else {
-		CDlgStartMode dlg;
-		dlg.m_nDataMode = pMainFrame->GetStartDataMode();
-		dlg.m_bShowDontShowAgainOption = bAppIsStartingUp;
-		dlg.DoModal();
-	}
+	CDlgStartMode dlg;
+	dlg.m_nDataMode = pMainFrame->GetStartDataMode();
+	dlg.m_bShowDontShowAgainOption = bAppIsStartingUp;
+	dlg.DoModal();
 }
 
 /***************************************************************************/
@@ -1825,14 +1708,7 @@ void CSaApp::DisplayMessages() {
 // CSaApp::OnHelpContents Call Help Index (Table of Contents)
 /***************************************************************************/
 void CSaApp::OnHelpContents() {
-	if (IsAudioSync()) {
-		CSaString szAppPath = m_pszHelpFilePath;
-		szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-		CSaString szCommandLine = "\"" + szAppPath + _T("\\Audio-Sync Help.pdf\"");
-		ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
-	} else {
-	    ::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);
-	}
+    ::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);
 }
 
 void CSaApp::OnHelpShortCuts() {
@@ -2403,9 +2279,6 @@ BOOL CSaApp::ReadSettings() {
 /***************************************************************************/
 CSaString CSaApp::GetStartupMessage( CSaString szLastVersion) {
     CSaString msg;
-	if (IsAudioSync()) {
-		return msg;
-	}
     if ((szLastVersion[0] < '2') || (szLastVersion[0] > '9')) {
         szLastVersion = "2.7";
     }
@@ -2510,10 +2383,6 @@ CString CSaApp::GetMRUFilePath(int i) const {
 
 bool CSaApp::IsSAServer() const {
 	return (CSaString(m_pszExeName).CompareNoCase(L"saserver") == 0);
-}
-
-bool CSaApp::IsAudioSync() const {
-    return (CSaString(m_pszExeName).CompareNoCase(L"as") == 0);
 }
 
 // Name:        CSingleInstanceData

@@ -1855,13 +1855,6 @@ void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     pGraph->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); 
 
 	CMainFrame * pMainWnd = (CMainFrame*)AfxGetMainWnd();
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	bool usingAS = pApp->IsAudioSync();
-	bool recordingWnd = (GetParent()->GetPlotID()==IDD_RECORDING);
-    if ((usingAS)&&(recordingWnd)) {
-	    CWnd::OnRButtonDown(nFlags, point);
-		return;
-	}
 
 	// handle the floating popup menu
     CMenu menu;

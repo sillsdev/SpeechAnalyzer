@@ -147,8 +147,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_UPDATE_COMMAND_UI(ID_SYNTHESIS_VTRACT, OnUpdateSynthesis)
     ON_COMMAND_EX(IDR_BAR_BASIC, OnBarCheck)
     ON_UPDATE_COMMAND_UI(IDR_BAR_BASIC, OnUpdateControlBarMenu)
-    ON_COMMAND_EX(IDR_BAR_AUDIOSYNC, OnBarCheck)
-    ON_UPDATE_COMMAND_UI(IDR_BAR_AUDIOSYNC, OnUpdateControlBarMenu)
     ON_COMMAND_EX(IDR_BAR_ADVANCED, OnBarCheck)
     ON_UPDATE_COMMAND_UI(IDR_BAR_ADVANCED, OnUpdateControlBarMenu)
     ON_COMMAND_EX(ID_VIEW_TASKBAR, OnBarCheck)
@@ -596,18 +594,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
         return -1; 
     }
 
-    if (!m_wndToolBarSAB.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
-                                       | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
-                                       CRect(0,0,0,0), IDR_BAR_AUDIOSYNC) ||
-            (!m_wndToolBarSAB.LoadToolBar(IDR_BAR_AUDIOSYNC))) {
-        TRACE(_T("Failed to create toolbar\n"));
-		// failed to create
-        return -1; 
-    }
-
     // create data statusbar
     if ((!m_dataStatusBar.Create(this)) ||
-            (!m_dataStatusBar.SetIndicators(dataIndicators, sizeof(dataIndicators)/sizeof(UINT)))) {
+        (!m_dataStatusBar.SetIndicators(dataIndicators, sizeof(dataIndicators)/sizeof(UINT)))) {
         TRACE(_T("Failed to create data status bar\n"));
 		// failed to create
         return -1; 
@@ -629,23 +618,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
     m_wndToolBarBasic.EnableDocking(CBRS_ALIGN_ANY);
     m_wndToolBarAdvanced.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndToolBarSAB.EnableDocking(CBRS_ALIGN_ANY);
 
 	// Creates CDockBar objects
     EnableDocking(CBRS_ALIGN_ANY);
 
     DockControlBar(&m_wndToolBarBasic, AFX_IDW_DOCKBAR_TOP);
     DockControlBar(&m_wndToolBarAdvanced, AFX_IDW_DOCKBAR_TOP);
-    DockControlBar(&m_wndToolBarSAB, AFX_IDW_DOCKBAR_TOP);
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		ShowControlBar(&m_wndToolBarBasic, FALSE, FALSE);
-		ShowControlBar(&m_wndToolBarSAB, TRUE, FALSE);
-	} else {
-		ShowControlBar(&m_wndToolBarBasic, TRUE, FALSE);
-		ShowControlBar(&m_wndToolBarSAB, FALSE, FALSE);
-	}
+	ShowControlBar(&m_wndToolBarBasic, TRUE, FALSE);
     ShowControlBar(&m_wndToolBarAdvanced, FALSE, FALSE);
 
     // Create Task Bar last this affects its position Z-Order and therefore layout behavior
@@ -834,15 +813,12 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
         }
     }
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-
     m_nStatusPitchReadout = toolSettings.m_nPitchMode;
     // apply to toolbar
     if (toolSettings.m_bToolbar != AdvancedToolBarVisible()) {
         BOOL bAdvanced = toolSettings.m_bToolbar;
 		// change toolbar status
-		int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
-        ShowControlBar(GetControlBar(tbID), !bAdvanced, FALSE);
+        ShowControlBar(GetControlBar(IDR_BAR_BASIC), !bAdvanced, FALSE);
         ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, FALSE);	
     }
     // apply to taskbar
@@ -1089,11 +1065,6 @@ BOOL CMainFrame::IsEditAllowed() {
 	if (m_pDisplayPlot!=NULL) {
         return FALSE;
     }
-
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		return FALSE;
-	}
 
 	return TRUE;
 }
@@ -1429,11 +1400,11 @@ void CMainFrame::OnSaveScreenAsBMP() {
 // CMainFrame::OnSaveWindowAsBMP
 /***************************************************************************/
 void CMainFrame::OnSaveWindowAsBMP() {
-    CDib dib;
+
+	CDib dib;
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
+	int tbID = IDR_BAR_BASIC;
     GetControlBar(tbID)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
@@ -1487,8 +1458,7 @@ void CMainFrame::OnCopyWindowAsBMP() {
     CDib dib;
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
+	int tbID = IDR_BAR_BASIC;
     GetControlBar(tbID)->GetWindowRect(&rectToolbar);
     GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
@@ -2069,14 +2039,13 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
             if (b != AdvancedToolBarVisible()) {
 				// change toolbar status
                 BOOL bAdvanced = b;
-				CSaApp * pApp = (CSaApp*)AfxGetApp();
-				int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
-                ShowControlBar(GetControlBar(tbID),!bAdvanced, TRUE); 
+                ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, TRUE); 
                 ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); 
             }
         } else if (obs.bReadBool(psz_taskbar, b)) {
             if (b != TaskBarVisible()) {
-                ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),b, TRUE); // change toolbar status
+				// change taskbar status
+                ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),b, TRUE); 
             }
         } else if (obs.bReadBool(psz_toneAbove, b)) {
             //SDM 1.5Test8.2
@@ -2783,8 +2752,7 @@ void CMainFrame::SetPopup(int nPopup) {
 };
 
 int CMainFrame::GetPopup() const {
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int nID = pApp->IsAudioSync()? IDR_AUDIOSYNC_POPUP : IDR_SPEECHANALYZER_POPUP;
+	int nID = IDR_SPEECHANALYZER_POPUP;
     return (m_nPopup!=0) ? m_nPopup : nID;
 };
 

@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,125
+ FILEVERSION 3,1,0,127
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.125"
+            VALUE "FileVersion", "v3.1.0.127"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -67,7 +67,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME_SA        ICON                    "RES\\SA.ICO"
-IDR_MAINFRAME_AS        ICON                    "RES\\AS.ICO"
 IDR_MAINFRAME_SAS       ICON                    "RES\\SA.ICO"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2530,28 +2529,6 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,47,141,50,14
 END
 
-IDD_AUDIOSYNC_STARTUP DIALOGEX 0, 0, 377, 149
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Audio-Sync Project Start"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Audio Recording",IDC_STATIC,8,15,53,8
-    EDITTEXT        IDC_EDIT_AUDIO_FILENAME,7,26,290,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE1,300,26,70,14
-    LTEXT           "Text for Alignment",IDC_STATIC,8,47,60,8
-    EDITTEXT        IDC_EDIT_PHRASE_FILENAME,7,58,290,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE2,300,58,70,14
-    GROUPBOX        "Processing",IDC_STATIC,6,75,355,44
-    CONTROL         "Automatically segment the audio recording and skip the first ",IDC_CHECK_SEGMENT_AUDIO,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,88,206,10
-    COMBOBOX        IDC_COMBO_SKIP,220,86,25,74,CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP
-    LTEXT           "segments.",IDC_STATIC_TITLE,250,89,34,8
-    CONTROL         "Automatically fill the segments with text.",IDC_CHECK_LOAD_DATA,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,102,144,10
-    DEFPUSHBUTTON   "OK",IDOK,127,128,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,181,128,50,14
-END
-
 IDD_OPTIONSAUDIOSYNC_PAGE DIALOGEX 0, 0, 282, 193
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_HSCROLL
 CAPTION "AudioSync"
@@ -2924,14 +2901,6 @@ BEGIN
         BOTTOMMARGIN, 156
     END
 
-    IDD_AUDIOSYNC_STARTUP, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 370
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 142
-    END
-
     IDD_OPTIONSAUDIOSYNC_PAGE, DIALOG
     BEGIN
     END
@@ -2992,7 +2961,6 @@ IDB_JAW                 BITMAP                  "RES\\JAW.BMP"
 IDB_TONGUE              BITMAP                  "RES\\TONGUE.BMP"
 IDR_BAR_ADVANCED        BITMAP                  "res\\IDR_BAR_ADVANCED.bmp"
 IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
-IDR_BAR_AUDIOSYNC       BITMAP                  "res\\IDR_BAR_SAB.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3099,33 +3067,6 @@ BEGIN
     BUTTON      IDD_TASKBAR_ICON
 END
 
-IDR_BAR_AUDIOSYNC TOOLBAR 16, 15
-BEGIN
-    BUTTON      ID_FILE_SAVE
-    SEPARATOR
-    BUTTON      ID_EDIT_UNDO
-    BUTTON      ID_EDIT_REDO
-    SEPARATOR
-    BUTTON      ID_EDIT_ADD_MARKUP
-    BUTTON      ID_SPLIT_MOVE_LEFT_AT
-    BUTTON      ID_MOVE_RIGHT_MERGE_PREV_AT
-    BUTTON      ID_MOVE_RIGHT_MERGE_NEXT_AT
-    SEPARATOR
-    BUTTON      ID_EDIT_SEGMENT_BOUNDARIES
-    SEPARATOR
-    BUTTON      ID_GRAPHS_ZOOM_IN
-    BUTTON      ID_GRAPHS_ZOOM_OUT
-    BUTTON      ID_GRAPHS_ZOOM_ALL
-    BUTTON      ID_GRAPHS_ZOOM_CURSORS
-    SEPARATOR
-    BUTTON      ID_PLAYBACK_CURSORS
-    BUTTON      ID_PLAYBACK_BEGINCURSOR
-    BUTTON      ID_PLAYBACK_ENDCURSOR
-    BUTTON      ID_PLAYBACK_FILE
-    BUTTON      ID_PLAYER_PAUSE
-    BUTTON      ID_PLAYER_STOP
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3170,27 +3111,6 @@ BEGIN
         MENUITEM "&Using Help",                 ID_HELP_USINGHELP
         MENUITEM SEPARATOR
         MENUITEM "&About Speech Analyzer",      ID_APP_ABOUT
-    END
-END
-
-IDR_MAINFRAME_AS MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM SEPARATOR
-        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
-        MENUITEM SEPARATOR
-        MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Tools"
-    BEGIN
-        MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
-        MENUITEM "&About Audio-Sync",           ID_APP_ABOUT
     END
 END
 
@@ -3565,131 +3485,6 @@ BEGIN
     END
 END
 
-IDR_AUDIOSYNC MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "&Close",                      ID_FILE_CLOSE
-        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
-        MENUITEM SEPARATOR
-        POPUP "&Import"
-        BEGIN
-            MENUITEM "Audio+&Sync Phrases (.phrases)", ID_IMPORT_SAB
-        END
-        MENUITEM SEPARATOR
-        MENUITEM "Infor&mation...\tCtrl+I",     ID_FILE_INFORMATION
-        MENUITEM SEPARATOR
-        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
-        MENUITEM SEPARATOR
-        MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM "Re&do\tCtrl+Y",               ID_EDIT_REDO
-        MENUITEM SEPARATOR
-        MENUITEM "Edit Segment &Boundaries\tINS", ID_EDIT_SEGMENT_BOUNDARIES
-        MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
-        MENUITEM SEPARATOR
-        MENUITEM "Split at Begin Cursor\tS",    ID_SPLIT_MOVE_LEFT_AT
-        MENUITEM "Join with &Previous Segment\tA", ID_MOVE_RIGHT_MERGE_PREV_AT
-        MENUITEM "Join with &Next Segment\tD",  ID_MOVE_RIGHT_MERGE_NEXT_AT
-        MENUITEM SEPARATOR
-        MENUITEM "Move Text &Left\tShift+G",    ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Text &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
-        MENUITEM SEPARATOR
-        POPUP "S&elect Segment"
-        BEGIN
-            MENUITEM "Next Item\tAlt+Right",        ID_EDIT_NEXT
-            MENUITEM "Previous Item\tAlt+Left",     ID_EDIT_PREVIOUS
-            MENUITEM "Up Item\tAlt+Up",             ID_EDIT_UP
-            MENUITEM "Down Item\tAlt+Down",         ID_EDIT_DOWN
-        END
-    END
-    POPUP "&Graphs"
-    BEGIN
-        POPUP "&View"
-        BEGIN
-            POPUP "Lege&nd ( y-axis )"
-            BEGIN
-                MENUITEM "&All Graphs",                 ID_LEGEND_ALL
-                MENUITEM "&This Graph",                 ID_POPUPGRAPH_LEGEND
-                MENUITEM "&Waveform Only",              ID_LEGEND_RAWDATA
-                MENUITEM "&No Graphs",                  ID_LEGEND_NONE
-            END
-            POPUP "Time Scale ( &x-axis )"
-            BEGIN
-                MENUITEM "&All Graphs",                 ID_XSCALE_ALL
-                MENUITEM "&This Graph",                 ID_POPUPGRAPH_XSCALE
-                MENUITEM "&Waveform Only",              ID_XSCALE_RAWDATA
-                MENUITEM "&No Graphs",                  ID_XSCALE_NONE
-            END
-            MENUITEM "Transcription Boundaries",    ID_VIEW_TRANSCRIPTION_BOUNDARIES
-            POPUP "Segment &Boundaries"
-            BEGIN
-                MENUITEM "&All Graphs",                 ID_BOUNDARIES_ALL
-                MENUITEM "&This Graph",                 ID_BOUNDARIES_THIS
-                MENUITEM "&Waveform Only",              ID_BOUNDARIES_RAWDATA
-                MENUITEM "&No Graphs",                  ID_BOUNDARIES_NONE
-            END
-            MENUITEM "",                            1
-            POPUP "&Zoom"
-            BEGIN
-                MENUITEM "Step &In\tCtrl+PgDn",         ID_GRAPHS_ZOOM_IN
-                MENUITEM "Step &Out\tCtrl+PgUp",        ID_GRAPHS_ZOOM_OUT
-                MENUITEM "&Full\tCtrl+Home",            ID_GRAPHS_ZOOM_ALL
-                MENUITEM "Cursors\tCtrl+Enter",         ID_GRAPHS_ZOOM_CURSORS
-            END
-            POPUP "Magn&ify"
-            BEGIN
-                MENUITEM "x&1",                         ID_GRAPHS_MAGNIFY1
-                MENUITEM "x&2",                         ID_GRAPHS_MAGNIFY2
-                MENUITEM "x&4",                         ID_GRAPHS_MAGNIFY4
-                MENUITEM "&Custom...",                  ID_GRAPHS_MAGNIFYCUSTOM
-            END
-        END
-    END
-    POPUP "&Playback"
-    BEGIN
-        MENUITEM "&Begin Cursor -> File End\tF6", ID_PLAYBACK_BEGINCURSOR
-        MENUITEM "&End Cursor -> File End\tF7", ID_PLAYBACK_ENDCURSOR
-        MENUITEM "Between &Cursors\tF8",        ID_PLAYBACK_CURSORS
-        MENUITEM "&Left Window Border -> End Cursor\tF9", ID_PLAYBACK_LEFT_TO_STOP
-        MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOP_TO_RIGHT
-        MENUITEM "Current &Window\tF11",        ID_PLAYBACK_WINDOW
-        MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
-        MENUITEM "Resu&me\tSpace",              ID_PLAYER_RESUME
-        MENUITEM "Pa&use\tSpace",               ID_PLAYER_PAUSE
-        MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
-    END
-    POPUP "&Tools"
-    BEGIN
-        POPUP "Automatic &Markup"
-        BEGIN
-            MENUITEM "Locate Phonetic &Segments...", ID_ADVANCED_SEGMENT
-            MENUITEM "Locate &Words...",            ID_ADVANCED_PARSE_WORD
-        END
-        POPUP "Align &Transcription"
-        BEGIN
-            MENUITEM "Add &Reference Numbers...",   ID_AUTO_MARKUP_REFERENCE_DATA
-            MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
-            MENUITEM "&Generate CV Data...",        ID_AUTO_GENERATE_CV_DATA
-            MENUITEM "&Export CV Data...",          ID_EXPORT_CV_DATA
-            MENUITEM "Export SFT Data...",          ID_EXPORT_TIME_TABLE
-        END
-        MENUITEM SEPARATOR
-        MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "View &Help\tF1",              ID_HELP_CONTENTS
-        MENUITEM "&Keyboard Short-Cuts",        ID_HELP_KEYBOARD_SHORTCUTS
-        MENUITEM "&About Audio-Sync",           ID_APP_ABOUT
-    END
-END
-
 IDR_SPEECHANALYZER_POPUP MENU
 BEGIN
     POPUP "Popup Graph"
@@ -3961,94 +3756,6 @@ BEGIN
             MENUITEM "Klatt Waveform Synthesizer",  ID_KLATT_FRAGMENTS
             MENUITEM "Klatt IPA Text Synthesizer",  ID_KLATT_IPA_BLEND
             MENUITEM "&LPC Vocal Tract Synthesizer", ID_SYNTHESIS_VTRACT
-        END
-    END
-END
-
-IDR_AUDIOSYNC_POPUP MENU
-BEGIN
-    POPUP "Popup Graph"
-    BEGIN
-        MENUITEM "&Split Segment Here",         ID_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Join With &Previous Segment", ID_MOVE_RIGHT_MERGE_PREV_HERE
-        MENUITEM "Join With &Next Segment",     ID_MOVE_RIGHT_MERGE_NEXT_HERE
-        MENUITEM SEPARATOR
-        MENUITEM "&Move End Cursor Here",       ID_MOVE_STOP_CURSOR_HERE
-        MENUITEM SEPARATOR
-        POPUP "&View"
-        BEGIN
-            MENUITEM "Lege&nd ( y-axis )",          ID_POPUPGRAPH_LEGEND
-            MENUITEM "&Time-Scale ( x-axis )",      ID_POPUPGRAPH_XSCALE
-            MENUITEM "Gridline&s",                  ID_POPUPGRAPH_GRIDLINES
-            MENUITEM "Segment &Boundaries",         ID_BOUNDARIES_THIS
-            POPUP "Magn&ify"
-            BEGIN
-                MENUITEM "x&1",                         ID_POPUPGRAPH_MAGNIFY1
-                MENUITEM "x&2",                         ID_POPUPGRAPH_MAGNIFY2
-                MENUITEM "x&4",                         ID_POPUPGRAPH_MAGNIFY4
-                MENUITEM "&Custom...",                  ID_POPUPGRAPH_MAGNIFYCUSTOM
-            END
-        END
-    END
-    POPUP "Popup Transcription"
-    BEGIN
-        MENUITEM "&Split Segment Here",         ID_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Join With &Previous Segment", ID_MOVE_RIGHT_MERGE_PREV_HERE
-        MENUITEM "Join With &Next Segment",     ID_MOVE_RIGHT_MERGE_NEXT_HERE
-        MENUITEM SEPARATOR
-        MENUITEM "Move Text &Left\tShift+G",    ID_EDIT_MOVE_LEFT
-        MENUITEM "Move Text &Right\tShift+H",   ID_EDIT_MOVE_RIGHT
-        MENUITEM SEPARATOR
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "Add Markup\tAlt+M",           ID_EDIT_ADD_MARKUP
-        MENUITEM "&Remove\tDelete",             ID_EDIT_REMOVE
-        MENUITEM SEPARATOR
-        MENUITEM "&View Boundaries",            ID_VIEW_TRANSCRIPTION_BOUNDARIES
-    END
-    POPUP "Popup Toolbars"
-    BEGIN
-        MENUITEM "Basic",                       ID_VIEW_TOOLBAR
-        MENUITEM "Advanced",                    IDR_BAR_ADVANCED
-    END
-    POPUP "Popup Experimental"
-    BEGIN
-        MENUITEM "&Split Segment Here",         ID_SPLIT_MOVE_LEFT_HERE
-        MENUITEM "Join With &Previous Segment", ID_MOVE_RIGHT_MERGE_PREV_HERE
-        MENUITEM "Join With &Next Segment",     ID_MOVE_RIGHT_MERGE_NEXT_HERE
-        MENUITEM SEPARATOR
-        MENUITEM "&Move End Cursor Here",       ID_MOVE_STOP_CURSOR_HERE
-        MENUITEM SEPARATOR
-        POPUP "&View"
-        BEGIN
-            MENUITEM "Lege&nd ( y-axis )",          ID_POPUPGRAPH_LEGEND
-            MENUITEM "&Time-Scale ( x-axis )",      ID_POPUPGRAPH_XSCALE
-            MENUITEM "Gridline&s",                  ID_POPUPGRAPH_GRIDLINES
-            MENUITEM "Segment &Boundaries",         ID_BOUNDARIES_THIS
-            POPUP "Magn&ify"
-            BEGIN
-                MENUITEM "x&1",                         ID_POPUPGRAPH_MAGNIFY1
-                MENUITEM "x&2",                         ID_POPUPGRAPH_MAGNIFY2
-                MENUITEM "x&4",                         ID_POPUPGRAPH_MAGNIFY4
-                MENUITEM "&Custom...",                  ID_POPUPGRAPH_MAGNIFYCUSTOM
-            END
-        END
-    END
-    POPUP "Popup Legend"
-    BEGIN
-        POPUP "&View"
-        BEGIN
-            MENUITEM "Lege&nd ( y-axis )",          ID_POPUPGRAPH_LEGEND
-            MENUITEM "&Time-Scale ( x-axis )",      ID_POPUPGRAPH_XSCALE
-            MENUITEM "Gridline&s",                  ID_POPUPGRAPH_GRIDLINES
-            MENUITEM "Segment &Boundaries",         ID_BOUNDARIES_THIS
-            POPUP "Magn&ify"
-            BEGIN
-                MENUITEM "x&1",                         ID_POPUPGRAPH_MAGNIFY1
-                MENUITEM "x&2",                         ID_POPUPGRAPH_MAGNIFY2
-                MENUITEM "x&4",                         ID_POPUPGRAPH_MAGNIFY4
-                MENUITEM "&Custom...",                  ID_POPUPGRAPH_MAGNIFYCUSTOM
-            END
         END
     END
 END
@@ -4516,113 +4223,6 @@ BEGIN
     VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
 END
 
-IDR_AUDIOSYNC ACCELERATORS
-BEGIN
-    " ",            ID_PLAYER_TOGGLE,       ASCII,  NOINVERT
-    VK_F4,          ID_EDIT_EDITOR,         VIRTKEY, NOINVERT
-    VK_F3,          ID_EDIT_FIND_NEXT,      VIRTKEY, NOINVERT
-    VK_F2,          ID_EDIT_INPLACE,        VIRTKEY, NOINVERT
-    VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
-    VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
-    VK_INSERT,      ID_EDIT_SEGMENT_BOUNDARIES, VIRTKEY, NOINVERT
-    VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
-    "D",            ID_MOVE_RIGHT_MERGE_NEXT_AT, VIRTKEY, NOINVERT
-    "A",            ID_MOVE_RIGHT_MERGE_PREV_AT, VIRTKEY, NOINVERT
-    VK_F6,          ID_PLAYBACK_BEGINCURSOR, VIRTKEY, NOINVERT
-    VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
-    VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
-    VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
-    VK_F9,          ID_PLAYBACK_LEFT_TO_STOP, VIRTKEY, NOINVERT
-    VK_F10,         ID_PLAYBACK_STOP_TO_RIGHT, VIRTKEY, NOINVERT
-    VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
-    VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
-    VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
-    "S",            ID_SPLIT_MOVE_LEFT_AT,  VIRTKEY, NOINVERT
-    "J",            ID_AUTO_GENERATE_CV_DATA, VIRTKEY, CONTROL, NOINVERT
-    "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
-    "Q",            ID_EDIT_ADD_PHONETIC,   VIRTKEY, CONTROL, NOINVERT
-    "1",            ID_EDIT_ADD_PHRASE_L1,  VIRTKEY, CONTROL, NOINVERT
-    "2",            ID_EDIT_ADD_PHRASE_L2,  VIRTKEY, CONTROL, NOINVERT
-    "3",            ID_EDIT_ADD_PHRASE_L3,  VIRTKEY, CONTROL, NOINVERT
-    "4",            ID_EDIT_ADD_PHRASE_L4,  VIRTKEY, CONTROL, NOINVERT
-    "L",            ID_EDIT_ADD_SYLLABLE,   VIRTKEY, CONTROL, NOINVERT
-    "W",            ID_EDIT_ADD_WORD,       VIRTKEY, CONTROL, NOINVERT
-    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    VK_LEFT,        ID_EDIT_CURSOR_START_LEFT, VIRTKEY, CONTROL, NOINVERT
-    VK_RIGHT,       ID_EDIT_CURSOR_START_RIGHT, VIRTKEY, CONTROL, NOINVERT
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
-    "F",            ID_EDIT_FIND,           VIRTKEY, CONTROL, NOINVERT
-    "H",            ID_EDIT_MERGE,          VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
-    "N",            ID_EDIT_PASTENEW,       VIRTKEY, CONTROL, NOINVERT
-    "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
-    "E",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
-    "A",            ID_EDIT_SELECTWAVEFORM, VIRTKEY, CONTROL, NOINVERT
-    "G",            ID_EDIT_SPLIT,          VIRTKEY, CONTROL, NOINVERT
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
-    "I",            ID_FILE_INFORMATION,    VIRTKEY, CONTROL, NOINVERT
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
-    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
-    "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
-    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
-    "T",            ID_GRAPHS_TILE,         VIRTKEY, CONTROL, NOINVERT
-    VK_HOME,        ID_GRAPHS_ZOOM_ALL,     VIRTKEY, CONTROL, NOINVERT
-    VK_RETURN,      ID_GRAPHS_ZOOM_CURSORS, VIRTKEY, CONTROL, NOINVERT
-    VK_NEXT,        ID_GRAPHS_ZOOM_IN,      VIRTKEY, CONTROL, NOINVERT
-    VK_PRIOR,       ID_GRAPHS_ZOOM_OUT,     VIRTKEY, CONTROL, NOINVERT
-    VK_F1,          ID_PLAY_F1,             VIRTKEY, CONTROL, NOINVERT
-    VK_F10,         ID_PLAY_F10,            VIRTKEY, CONTROL, NOINVERT
-    VK_F11,         ID_PLAY_F11,            VIRTKEY, CONTROL, NOINVERT
-    VK_F12,         ID_PLAY_F12,            VIRTKEY, CONTROL, NOINVERT
-    VK_F13,         ID_PLAY_F13,            VIRTKEY, CONTROL, NOINVERT
-    VK_F14,         ID_PLAY_F14,            VIRTKEY, CONTROL, NOINVERT
-    VK_F15,         ID_PLAY_F15,            VIRTKEY, CONTROL, NOINVERT
-    VK_F16,         ID_PLAY_F16,            VIRTKEY, CONTROL, NOINVERT
-    VK_F18,         ID_PLAY_F18,            VIRTKEY, CONTROL, NOINVERT
-    VK_F19,         ID_PLAY_F19,            VIRTKEY, CONTROL, NOINVERT
-    VK_F2,          ID_PLAY_F2,             VIRTKEY, CONTROL, NOINVERT
-    VK_F20,         ID_PLAY_F20,            VIRTKEY, CONTROL, NOINVERT
-    VK_F21,         ID_PLAY_F21,            VIRTKEY, CONTROL, NOINVERT
-    VK_F22,         ID_PLAY_F22,            VIRTKEY, CONTROL, NOINVERT
-    VK_F23,         ID_PLAY_F23,            VIRTKEY, CONTROL, NOINVERT
-    VK_F24,         ID_PLAY_F24,            VIRTKEY, CONTROL, NOINVERT
-    VK_F3,          ID_PLAY_F3,             VIRTKEY, CONTROL, NOINVERT
-    VK_F4,          ID_PLAY_F4,             VIRTKEY, CONTROL, NOINVERT
-    VK_F5,          ID_PLAY_F5,             VIRTKEY, CONTROL, NOINVERT
-    VK_F6,          ID_PLAY_F6,             VIRTKEY, CONTROL, NOINVERT
-    VK_F7,          ID_PLAY_F7,             VIRTKEY, CONTROL, NOINVERT
-    VK_F8,          ID_PLAY_F8,             VIRTKEY, CONTROL, NOINVERT
-    VK_F9,          ID_PLAY_F9,             VIRTKEY, CONTROL, NOINVERT
-    "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
-    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
-    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
-    VK_ADD,         ID_EDIT_ADD_PHONETIC,   VIRTKEY, ALT, NOINVERT
-    "Z",            ID_EDIT_AUTO_ADD,       VIRTKEY, ALT, NOINVERT
-    "X",            ID_EDIT_AUTO_ADD_STORY_SECTION, VIRTKEY, ALT, NOINVERT
-    VK_DOWN,        ID_EDIT_DOWN,           VIRTKEY, ALT, NOINVERT
-    VK_RIGHT,       ID_EDIT_NEXT,           VIRTKEY, ALT, NOINVERT
-    VK_LEFT,        ID_EDIT_PREVIOUS,       VIRTKEY, ALT, NOINVERT
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
-    VK_UP,          ID_EDIT_UP,             VIRTKEY, ALT, NOINVERT
-    VK_LEFT,        ID_EDIT_BOUNDARY_START_LEFT, VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_RIGHT,       ID_EDIT_BOUNDARY_START_RIGHT, VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_LEFT,        ID_EDIT_CURSOR_STOP_LEFT, VIRTKEY, SHIFT, NOINVERT
-    VK_RIGHT,       ID_EDIT_CURSOR_STOP_RIGHT, VIRTKEY, SHIFT, NOINVERT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
-    "G",            ID_EDIT_MOVE_LEFT,      VIRTKEY, SHIFT, NOINVERT
-    "H",            ID_EDIT_MOVE_RIGHT,     VIRTKEY, SHIFT, NOINVERT
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
-    VK_TAB,         ID_NEXT_GRAPH,          VIRTKEY, SHIFT, NOINVERT
-    VK_F17,         ID_PLAY_F17,            VIRTKEY, SHIFT, NOINVERT
-    "C",            ID_EDIT_COPY_MEASUREMENTS, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "D",            ID_EDIT_MOVE_RIGHT_MERGE_NEXT, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "A",            ID_EDIT_MOVE_RIGHT_MERGE_PREV, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "S",            ID_EDIT_SPLIT_MOVE_LEFT, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_LEFT,        ID_EDIT_BOUNDARY_STOP_LEFT, VIRTKEY, SHIFT, ALT, NOINVERT
-    VK_RIGHT,       ID_EDIT_BOUNDARY_STOP_RIGHT, VIRTKEY, SHIFT, ALT, NOINVERT
-END
-
 IDR_DISPLAYPLOT ACCELERATORS
 BEGIN
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
@@ -4635,15 +4235,6 @@ BEGIN
 END
 
 IDR_MAINFRAME_SA ACCELERATORS
-BEGIN
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
-    "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
-    "T",            ID_TOOLS_SELFTEST,      VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
-    VK_CANCEL,      ID_TOOLS_SELFTEST,      VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
-    VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
-END
-
-IDR_MAINFRAME_AS ACCELERATORS
 BEGIN
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
@@ -5138,23 +4729,6 @@ BEGIN
 0x6552, 0x2066, 0x202b, 0x6c47, 0x736f, 0x0073, 
     IDC_SPLIT_PHRASE_CONVENTION, 0x403, 12, 0
 0x6850, 0x6172, 0x6573, 0x5420, 0x7865, 0x0074, 
-    0
-END
-
-IDD_AUDIOSYNC_STARTUP DLGINIT
-BEGIN
-    IDC_COMBO_SKIP, 0x403, 2, 0
-0x0030, 
-    IDC_COMBO_SKIP, 0x403, 2, 0
-0x0031, 
-    IDC_COMBO_SKIP, 0x403, 2, 0
-0x0032, 
-    IDC_COMBO_SKIP, 0x403, 2, 0
-0x0033, 
-    IDC_COMBO_SKIP, 0x403, 2, 0
-0x0034, 
-    IDC_COMBO_SKIP, 0x403, 2, 0
-0x0035, 
     0
 END
 
