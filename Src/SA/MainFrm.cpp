@@ -624,8 +624,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
     DockControlBar(&m_wndToolBarBasic, AFX_IDW_DOCKBAR_TOP);
     DockControlBar(&m_wndToolBarAdvanced, AFX_IDW_DOCKBAR_TOP);
-	ShowControlBar(&m_wndToolBarBasic, TRUE, FALSE);
-    ShowControlBar(&m_wndToolBarAdvanced, FALSE, FALSE);
+	ShowControlBar(&m_wndToolBarBasic, FALSE, FALSE);
+    ShowControlBar(&m_wndToolBarAdvanced, TRUE, FALSE);
 
     // Create Task Bar last this affects its position Z-Order and therefore layout behavior
     // Last in the Z-Order is preferrable for the task bar
