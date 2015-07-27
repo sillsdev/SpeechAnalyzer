@@ -774,7 +774,6 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
     
 	if (nID != ID_GRAPHS_OVERLAY) {
         (*pGraph) = new CGraphWnd(nID);
-
         switch (how) {
         case CREATE_FROMSTREAM:
             ASSERT(pObs);
@@ -793,7 +792,7 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
             }
             break;
 
-        case CREATE_FROMSCRATCH:  // Use program defaults
+        case CREATE_FROMSCRATCH:	// Use program defaults
             if (*pGraph) {
                 (*pGraph)->SetProperties(nID);
                 m_WeJustReadTheProperties = TRUE;

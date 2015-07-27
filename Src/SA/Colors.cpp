@@ -18,27 +18,26 @@ void Colors::WriteProperties(CObjectOStream & obs) {
 
     obs.WriteBeginMarker(psz_plotcolors);
     obs.WriteCOLORREF(psz_rgb, cPlotBkg);
-#define wc(rgb) obs.WriteCOLORREF(psz_rgb, rgb)
-    wc(cPlotHiBkg);
-    wc(cPlotAxes);
-    wc(cPlotData[0]);
-    wc(cPlotData[1]);
-    wc(cPlotData[2]);
-    wc(cPlotData[3]);
-    wc(cPlotData[4]);
-    wc(cPlotData[5]);
-    wc(cPlotHiData);
-    wc(cPlotBoundaries);
-    wc(cPlotGrid);
-    wc(cPlotStartCursor);
-    wc(cPlotStopCursor);
-    wc(cPlotPrivateCursor);
+    obs.WriteCOLORREF(psz_rgb, cPlotHiBkg);
+    obs.WriteCOLORREF(psz_rgb, cPlotAxes);
+    obs.WriteCOLORREF(psz_rgb, cPlotData[0]);
+    obs.WriteCOLORREF(psz_rgb, cPlotData[1]);
+    obs.WriteCOLORREF(psz_rgb, cPlotData[2]);
+    obs.WriteCOLORREF(psz_rgb, cPlotData[3]);
+    obs.WriteCOLORREF(psz_rgb, cPlotData[4]);
+    obs.WriteCOLORREF(psz_rgb, cPlotData[5]);
+    obs.WriteCOLORREF(psz_rgb, cPlotHiData);
+    obs.WriteCOLORREF(psz_rgb, cPlotBoundaries);
+    obs.WriteCOLORREF(psz_rgb, cPlotGrid);
+    obs.WriteCOLORREF(psz_rgb, cPlotStartCursor);
+    obs.WriteCOLORREF(psz_rgb, cPlotStopCursor);
+    obs.WriteCOLORREF(psz_rgb, cPlotPrivateCursor);
     obs.WriteEndMarker(psz_plotcolors);
 
     obs.WriteBeginMarker(psz_scalecolors);
-    wc(cScaleBkg);
-    wc(cScaleLines);
-    wc(cScaleFont);
+    obs.WriteCOLORREF(psz_rgb, cScaleBkg);
+    obs.WriteCOLORREF(psz_rgb, cScaleLines);
+    obs.WriteCOLORREF(psz_rgb, cScaleFont);
     obs.WriteEndMarker(psz_scalecolors);
 
     int i=0;
@@ -126,6 +125,7 @@ void Colors::GreyScale(COLORREF & rgb) {
 // otherwise with a custom setup.
 /***************************************************************************/
 void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
+
     if (bPrinting) {
         // setup colors for b/w printing.
 
@@ -166,55 +166,68 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
 
     } else if (bSystem) {
         // use system colors
-        cPlotBkg            = GetSysColor(COLOR_WINDOW);
-        cPlotHiBkg          = GetSysColor(COLOR_HIGHLIGHT);
+        cPlotBkg            = RGB(225,255,255);
+        cPlotHiBkg          = RGB(0,128,192);
         cPlotAxes           = GetSysColor(COLOR_WINDOWTEXT);
         cPlotData[0]        = GetSysColor(COLOR_WINDOWTEXT);
-        cPlotData[1]        = RGB(255, 160, 0); // orange
+        cPlotData[1]        = RGB(255, 128, 0);
         cPlotData[2]        = RGB(0, 0, 255); // blue. Was GetSysColor(COLOR_ACTIVEBORDER);
         cPlotData[3]        = GetSysColor(COLOR_WINDOWFRAME);
         cPlotData[4]        = RGB(0, 0, 255); // blue. Was GetSysColor(COLOR_MENU);
         cPlotData[5]        = GetSysColor(COLOR_HIGHLIGHT);
         cPlotHiData         = GetSysColor(COLOR_HIGHLIGHTTEXT);
         cPlotBoundaries     = GetSysColor(COLOR_GRAYTEXT);
-        cPlotGrid           = GetSysColor(COLOR_BTNSHADOW);
+        cPlotGrid           = RGB(0, 0, 0);
         cPlotStartCursor    = RGB(0, 128, 0); // dark green
         cPlotStopCursor     = RGB(255, 0, 0); // red
         cPlotPrivateCursor  = RGB(0, 0, 255); // blue
+
         for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             cAnnotationBkg[nLoop] = GetSysColor(COLOR_BTNFACE);
+        }
+		// overrides
+        cAnnotationBkg[0] = RGB(255,255,200);
+        cAnnotationBkg[1] = RGB(255,232,200);
+        cAnnotationBkg[2] = RGB(202,255,202);
+        cAnnotationBkg[3] = RGB(200,225,255);
+        cAnnotationBkg[4] = RGB(244,213,255);
+        cAnnotationBkg[5] = RGB(244,235,185);
+        cAnnotationBkg[6] = RGB(220,220,175);
+
+        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             cAnnotationFont[nLoop] = GetSysColor(COLOR_BTNTEXT);
         }
-        cScaleBkg           = GetSysColor(COLOR_BTNFACE);
-        cScaleLines         = GetSysColor(COLOR_HIGHLIGHT);
-        cScaleFont          = GetSysColor(COLOR_HIGHLIGHT);
+
+        cScaleBkg           = RGB(250,250,230);
+        cScaleLines         = RGB(0,0,255);
+        cScaleFont          = RGB(0,0,255);
         SetupSystemColors();
     } else {
         // custom set
 
-        cPlotBkg            = RGB(0, 0, 0);     // black
-        cPlotHiBkg          = RGB(0, 0, 128);   // dark blue
-        cPlotAxes           = RGB(255, 255, 255); // white
-        cPlotData[0]        = RGB(0, 255, 0);   // green
-        cPlotData[1]        = RGB(255, 128, 0); // orange
+        cPlotBkg            = RGB(0, 0, 0);			// black
+        cPlotHiBkg          = RGB(0, 0, 128);		// dark blue
+        cPlotAxes           = RGB(255, 255, 255);	// white
+        cPlotData[0]        = RGB(0, 255, 0);		// green
+        cPlotData[1]        = RGB(255, 128, 0);		// orange
         cPlotData[2]        = RGB(128,   0, 0);
         cPlotData[3]        = RGB(192 , 0, 0);
         cPlotData[4]        = RGB(0, 192, 0);
         cPlotData[5]        = RGB(128, 0, 128);
-        cPlotHiData         = RGB(255, 255, 0); // yellow
-        cPlotBoundaries     = RGB(128, 0, 64);  // brown
-        cPlotGrid           = RGB(192, 192, 192); // light gray
-        cPlotStartCursor    = RGB(0, 255, 255); // light blue
-        cPlotStopCursor     = RGB(255, 0, 0);   // red
-        cPlotPrivateCursor  = RGB(255, 255, 0); // yellow
+        cPlotHiData         = RGB(255, 255, 0);		// yellow
+        cPlotBoundaries     = RGB(128, 0, 64);		// brown
+        cPlotGrid           = RGB(192, 192, 192);	// light gray
+        cPlotStartCursor    = RGB(0, 255, 255);		// light blue
+        cPlotStopCursor     = RGB(255, 0, 0);		// red
+        cPlotPrivateCursor  = RGB(255, 255, 0);		// yellow
 
         for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             cAnnotationBkg[nLoop]  = RGB(192, 192, 192); // light gray
-            cAnnotationFont[nLoop] = RGB(0, 0, 160); // dark blue
+            cAnnotationFont[nLoop] = RGB(0, 0, 160);	// dark blue
         }
-        cScaleBkg           = RGB(192, 192, 192); // light gray
-        cScaleLines         = RGB(64, 128, 128); // dark green gray
-        cScaleFont          = RGB(64, 128, 128); // dark green gray
+        cScaleBkg           = RGB(192, 192, 192);	// light gray
+        cScaleLines         = RGB(64, 128, 128);	// dark green gray
+        cScaleFont          = RGB(64, 128, 128);	// dark green gray
         SetupSystemColors();
     }
 }

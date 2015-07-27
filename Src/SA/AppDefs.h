@@ -74,23 +74,23 @@ enum EUpdateMode {
 #define MAX_ANIMATION_RATE              60          // animation rate limited only by processor speed
 
 // annotation windows defines
-#define PHONETIC_DEFAULT_FONT           _T("Doulos SIL") // default font faces
+#define PHONETIC_DEFAULT_FONT           _T("Courier") // default font faces
 #define TONE_DEFAULT_FONT               _T("Doulos SIL")
 #define PHONEMIC_DEFAULT_FONT           _T("Doulos SIL")
 #define ORTHOGRAPHIC_DEFAULT_FONT       _T("Doulos SIL")
-#define GLOSS_DEFAULT_FONT              _T("Doulos SIL")
+#define GLOSS_DEFAULT_FONT              _T("Charis SIL")
 #define GLOSS_NAT_DEFAULT_FONT          _T("Doulos SIL")
 #define REFERENCE_DEFAULT_FONT          _T("Doulos SIL")
 #define MUSIC_PHRASE_DEFAULT_FONT       _T("Doulos SIL")
 
-#define PHONETIC_DEFAULT_FONTSIZE       12          // default font point sizes
-#define TONE_DEFAULT_FONTSIZE           18
+#define PHONETIC_DEFAULT_FONTSIZE       8          // default font point sizes
+#define TONE_DEFAULT_FONTSIZE           11
 #define PHONEMIC_DEFAULT_FONTSIZE       12
-#define ORTHOGRAPHIC_DEFAULT_FONTSIZE   10
-#define GLOSS_DEFAULT_FONTSIZE          10
-#define GLOSS_NAT_DEFAULT_FONTSIZE      10
-#define REFERENCE_DEFAULT_FONTSIZE      12
-#define MUSIC_PHRASE_DEFAULT_FONTSIZE   12
+#define ORTHOGRAPHIC_DEFAULT_FONTSIZE   12
+#define GLOSS_DEFAULT_FONTSIZE          11
+#define GLOSS_NAT_DEFAULT_FONTSIZE      12
+#define REFERENCE_DEFAULT_FONTSIZE      11
+#define MUSIC_PHRASE_DEFAULT_FONTSIZE   11
 
 #define WORD_DELIMITER                  _T('#')         // '#' delimits words in text annotation windows
 #define TEXT_DELIMITER                  _T('!')         // '!' delimits text in text annotation windows
@@ -99,18 +99,18 @@ enum EUpdateMode {
 
 #define SEGMENT_DEFAULT_CHAR            _T('\xFFFD')    // default 0xFFFD
 
-#define MIN_EDIT_SEGMENT_TIME           (0.005 /*5ms*/)
-#define MIN_ADD_SEGMENT_TIME            (0.020 /*20ms*/)
-#define DEFAULT_ADD_SEGMENT_TIME        (0.100 /*100ms*/)
-#define MAX_AUTOSEGMENT_MOVE_GLOSS_TIME (0.050 /*50ms*/)
-#define ADD_SYLLABLE_TIME               (0.010 /*10ms*/)
-#define CURSOR_MOVE_AUTOREPEAT_FIRST    (0.500 /*500ms*/)
-#define MAX_ADD_JOIN_TIME               (0.010 /*10ms*/)
-#define CURSOR_MOVE_AUTOREPEAT_RATE     (0.25 /*Scroll Quarter Speed of Recording*/)
-#define SLOW_CLICK_TIME_LIMIT           (3.0 /* 3 Seconds */)
-#define EXPORT_FORMANT_SIZE             (0.005 /* 5 mSec*/)
+#define MIN_EDIT_SEGMENT_TIME           (0.005	/*5ms*/)
+#define MIN_ADD_SEGMENT_TIME            (0.020	/*20ms*/)
+#define DEFAULT_ADD_SEGMENT_TIME        (0.100	/*100ms*/)
+#define MAX_AUTOSEGMENT_MOVE_GLOSS_TIME (0.050	/*50ms*/)
+#define ADD_SYLLABLE_TIME               (0.010	/*10ms*/)
+#define CURSOR_MOVE_AUTOREPEAT_FIRST    (0.500	/*500ms*/)
+#define MAX_ADD_JOIN_TIME               (0.010	/*10ms*/)
+#define CURSOR_MOVE_AUTOREPEAT_RATE     (0.25	/*Scroll Quarter Speed of Recording*/)
+#define SLOW_CLICK_TIME_LIMIT           (3.0	/*3 Seconds*/)
+#define EXPORT_FORMANT_SIZE             (0.005	/*5 mSec*/)
 // view layout
-#define MAX_GRAPHS_NUMBER               10           // max number of graphs in MDI child window
+#define MAX_GRAPHS_NUMBER               10          // max number of graphs in MDI child window
 #define LINE_SCROLL_PIXELWIDTH          4           // number of pixels to scroll on line scroll
 #define ZOOM_SCROLL_RESOLUTION          10          // zoom scroll steps per page (window)
 #define CURSOR_WINDOW_HALFWIDTH         8           // half width of cursor windows

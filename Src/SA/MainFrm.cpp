@@ -270,6 +270,7 @@ CMainFrame::CMainFrame() {
             m_GraphFontFaces.Add(MUSIC_PHRASE_DEFAULT_FONT);
             m_GraphFontFaces.Add(MUSIC_PHRASE_DEFAULT_FONT);
             m_GraphFontFaces.Add(MUSIC_PHRASE_DEFAULT_FONT);
+
             m_GraphFontSizes.Add(PHONETIC_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(TONE_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(PHONEMIC_DEFAULT_FONTSIZE);
@@ -292,6 +293,7 @@ CMainFrame::CMainFrame() {
             m_GraphFontFaces.SetAt(MUSIC_PL2, MUSIC_PHRASE_DEFAULT_FONT);
             m_GraphFontFaces.SetAt(MUSIC_PL3, MUSIC_PHRASE_DEFAULT_FONT);
             m_GraphFontFaces.SetAt(MUSIC_PL4, MUSIC_PHRASE_DEFAULT_FONT);
+
             m_GraphFontSizes.SetAt(PHONETIC, PHONETIC_DEFAULT_FONTSIZE);
             m_GraphFontSizes.SetAt(TONE, TONE_DEFAULT_FONTSIZE);
             m_GraphFontSizes.SetAt(PHONEMIC, PHONEMIC_DEFAULT_FONTSIZE);
@@ -760,7 +762,7 @@ void CMainFrame::OnToolsOptions() {
 }
 
 void CMainFrame::OnUpdateToolsOptions(CCmdUI * pCmdUI) {
-    pCmdUI->Enable(CONTROLLED_ACCESS);
+	pCmdUI->Enable(TRUE);
 }
 
 /***************************************************************************/

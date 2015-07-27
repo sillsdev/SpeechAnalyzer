@@ -487,16 +487,12 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
 }
 
 BOOL CGraphWnd::IsIDincluded(UINT id) {
-    return (m_nPlotID == ID_GRAPHS_OVERLAY) ?
-           ((CMultiPlotWnd *)m_pPlot)->IsIDincluded(id)
-           : (m_nPlotID == id);
+    return (m_nPlotID == ID_GRAPHS_OVERLAY) ? ((CMultiPlotWnd *)m_pPlot)->IsIDincluded(id) : (m_nPlotID == id);
 }
 
-CPlotWnd  * CGraphWnd::NewPlotFromID(UINT plotID)
+CPlotWnd  * CGraphWnd::NewPlotFromID(UINT plotID) {
 
-{
-    CPlotWnd * pPlot = NULL;
-
+	CPlotWnd * pPlot = NULL;
     // create plot window object depending on which type of graph it is
     switch (plotID) {
     case IDD_RAWDATA:
@@ -779,6 +775,7 @@ BOOL CGraphWnd::ReadProperties(CObjectIStream & obs) {
 // (needed for "FileOpenAs->Phonetic/Music Analysis")
 /***************************************************************************/
 BOOL CGraphWnd::SetProperties(int nID) {
+
     m_bXScale = !(nID == IDD_MAGNITUDE || nID == IDD_STAFF || nID == IDD_POA);
     m_bLegend = !(nID == IDD_POA);
 
@@ -805,7 +802,7 @@ BOOL CGraphWnd::SetProperties(int nID) {
     SetLineDraw(nID != IDD_MAGNITUDE);
 
     for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
-        m_abAnnWnd[i] = ((nID == IDD_RAWDATA) && (i == 0));
+        m_abAnnWnd[i] = (nID == IDD_RAWDATA);
     }
 
     return TRUE;

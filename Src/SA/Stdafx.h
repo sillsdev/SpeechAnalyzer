@@ -94,8 +94,6 @@ inline static int round(double value) {
 
 #define EXPERIMENTAL_ACCESS true
 
-#define CONTROLLED_ACCESS (GetKeyState(VK_CONTROL) < 0)
-
 #define PROGRAMMER_ACCESS ((GetKeyState(VK_CONTROL) & GetKeyState(VK_SHIFT)) < 0)
 
 #include <SA_DSP.h>
