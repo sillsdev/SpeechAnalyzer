@@ -1,5 +1,4 @@
-<h1>SpeechAnalyzer</h1>
-<p>Speech Analyzer is a computer program that can be used for the acoustic analysis of speech sounds.</p>
+<p>Speech Analyzer is a software application that can be used for the acoustic analysis of speech sounds.</p>
 <p>You can use the program to do the following tasks:</p>
 <ul>
 <li>Perform fundamental frequency, spectrographic and spectral analysis, and duration measurements.</li>
