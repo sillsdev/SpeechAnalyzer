@@ -3,6 +3,8 @@ Install bug fixes.
 Changed application install name from 'Speech Analyzer MSEA Beta' to 'Speech Analyzer MSEA'.
 Branched audio-sync project.
 Removed audio-sync code dependencies and resources.
+Implemented color options for reference, gloss nat, and taskbar pages.
+Added 'Pastel' color set and made it the default for SA.
 
 SA - 3.1.0.126 7/1/2015
 -First build after AS release.

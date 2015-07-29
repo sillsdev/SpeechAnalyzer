@@ -24,11 +24,12 @@ CToolSettings::CToolSettings() {
 
     // color page
 	// TRUE, if colors changed by user
-    m_bColorsChanged = FALSE;
+    m_bColorsChanged = false;
     m_nGraphSelect = 0;
     m_nAnnotationSelect = 0;
     m_nScaleSelect = 0;
     m_nOverlaySelect = 0;
+    m_nTaskbarSelect = 0;
 
     //font page
 	// TRUE, if fonts changed by user
@@ -79,6 +80,7 @@ CToolSettings & CToolSettings::operator=(const CToolSettings & right) {
     m_nAnnotationSelect = right.m_nAnnotationSelect;
     m_nScaleSelect = right.m_nScaleSelect;
     m_nOverlaySelect = right.m_nOverlaySelect;
+    m_nTaskbarSelect = right.m_nTaskbarSelect;
 
     //font page
     m_bFontChanged = right.m_bFontChanged;

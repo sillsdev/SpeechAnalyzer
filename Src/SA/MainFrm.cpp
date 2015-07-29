@@ -636,13 +636,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
         return -1; // failed to create
     }
 
-    ShowControlBar(&m_wndTaskBar, TRUE, FALSE);
-    SetupTaskBar(m_wndTaskBar);
+    ShowControlBar( &m_wndTaskBar, TRUE, FALSE);
+	m_wndTaskBar.Setup();
 
     // init the colors
-    m_colors.SetupDefault();
+    m_colors.SetupColors( Colors::PASTEL);
     // setup function keys default
-    m_fnKeys.SetupDefault();
+    m_fnKeys.SetupDefaultKeys();
 
     return 0;
 }
@@ -828,6 +828,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
         BOOL bTaskbar = toolSettings.m_bTaskbar;
         ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),bTaskbar, FALSE); // change taskbar status
     }
+
     // apply tone position
     if (toolSettings.m_bToneAbove != m_bToneAbove) {
         m_bToneAbove = !m_bToneAbove;
@@ -882,9 +883,9 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
     }
 
     if ((toolSettings.m_bXGrid != m_grid.bXGrid) ||
-            (toolSettings.m_bYGrid != m_grid.bYGrid) ||
-            (toolSettings.m_nDlgXStyle != m_grid.nXStyle) ||
-            (toolSettings.m_nDlgYStyle != m_grid.nYStyle)) {
+        (toolSettings.m_bYGrid != m_grid.bYGrid) ||
+        (toolSettings.m_nDlgXStyle != m_grid.nXStyle) ||
+        (toolSettings.m_nDlgYStyle != m_grid.nYStyle)) {
         m_grid.bXGrid = toolSettings.m_bXGrid;
         m_grid.bYGrid = toolSettings.m_bYGrid;
         m_grid.nXStyle = toolSettings.m_nDlgXStyle;
@@ -892,13 +893,16 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
         // tell about the change to all views
         SendMessageToMDIDescendants(WM_USER_GRAPH_GRIDCHANGED, 0, 0L);
     }
+
     // apply graph colors
     if (toolSettings.m_bColorsChanged) {
-        toolSettings.m_bColorsChanged = FALSE;
+        toolSettings.m_bColorsChanged = false;
         m_colors = toolSettings.m_cColors;
         // tell about the change to all views
         SendMessageToMDIDescendants(WM_USER_GRAPH_COLORCHANGED, 0, 0L);
+		m_wndTaskBar.Invalidate(TRUE);
     }
+
     // apply graph fonts
     if (toolSettings.m_bFontChanged) {
         // get pointer to active document

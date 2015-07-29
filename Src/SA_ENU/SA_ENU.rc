@@ -436,15 +436,20 @@ BEGIN
     PUSHBUTTON      "...",IDC_CHGCOLOR_SCALE,168,65,12,13
     COMBOBOX        IDC_COLORSOVERLAY,62,83,104,286,CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "...",IDC_CHGCOLOR_OVRLY,168,83,12,13
+    COMBOBOX        IDC_COLORSTASKBAR,62,101,104,286,CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "...",IDC_CHGCOLOR_TASKBAR,168,101,12,13
     PUSHBUTTON      "Basic",IDC_DEFAULT,192,29,56,14
-    PUSHBUTTON      "Default Colors",IDC_SYSTEM,192,65,56,14
+    PUSHBUTTON      "System Colors",IDC_SYSTEM,192,64,56,14
+    PUSHBUTTON      "Pastel Colors",IDC_PASTEL,192,99,56,14
     GROUPBOX        "Windows Setup",IDC_STATIC,6,6,265,139
     LTEXT           "Graph",IDC_STATIC,14,31,42,8
     LTEXT           "Transcription",IDC_STATIC,14,49,42,8
     LTEXT           "Scale",IDC_STATIC,14,67,42,8
     LTEXT           "Overlay",IDC_OVERCOLOR,14,85,42,8
-    LTEXT           "Reset colors to 16 color mode.",IDC_STATIC1,193,45,73,20
-    LTEXT           "Reset colors to SA default colors.",IDC_STATIC2,193,81,73,20
+    LTEXT           "Taskbar",IDC_TASKBARCOLOR,14,103,42,8
+    LTEXT           "Reset colors to 16 color mode.",IDC_STATIC1,193,45,73,17
+    LTEXT           "Reset colors to SA soft colors.",IDC_STATIC2,193,115,73,18
+    LTEXT           "Reset colors to SA system colors.",IDC_STATIC3,192,80,73,18
 END
 
 IDD_RECORDER DIALOG 0, 0, 334, 91

@@ -252,7 +252,7 @@ struct SDPParm {
     BOOL         bAverage;          // TRUE, if average used
 };                                  // SDP parameters
 
-enum EAnnotation {                  // annotation windows
+enum EAnnotation {						// annotation windows
     PHONETIC=0,
     TONE,
     PHONEMIC,

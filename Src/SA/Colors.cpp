@@ -10,6 +10,7 @@ static LPCSTR psz_annotationbkg = "annotationbkg";
 static LPCSTR psz_annotationfont = "annotationfont";
 static LPCSTR psz_plotcolors = "plotcolors";
 static LPCSTR psz_scalecolors = "scalecolors";
+static LPCSTR psz_taskbar = "taskbar";
 static LPCSTR psz_overlay = "overlay";
 
 
@@ -41,7 +42,6 @@ void Colors::WriteProperties(CObjectOStream & obs) {
     obs.WriteEndMarker(psz_scalecolors);
 
     int i=0;
-
     obs.WriteBeginMarker(psz_annotationbkg);
     for (; i<ANNOT_WND_NUMBER; i++) {
         obs.WriteCOLORREF(psz_rgb, cAnnotationBkg[i]);
@@ -54,12 +54,18 @@ void Colors::WriteProperties(CObjectOStream & obs) {
     }
     obs.WriteEndMarker(psz_annotationfont);
 
+    obs.WriteBeginMarker(psz_taskbar);
+    obs.WriteCOLORREF(psz_rgb, cTaskbarPhoneticBkg);
+    obs.WriteCOLORREF(psz_rgb, cTaskbarMusicBkg);
+    obs.WriteCOLORREF(psz_rgb, cTaskbarFont);
+    obs.WriteEndMarker(psz_taskbar);
+
     obs.WriteEndMarker(psz_colors);
 }
 
 BOOL Colors::ReadProperties(CObjectIStream & obs) {
-    int i = 0;
-
+    
+	int i = 0;
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_colors)) {
         return FALSE;
     }
@@ -67,26 +73,25 @@ BOOL Colors::ReadProperties(CObjectIStream & obs) {
     while (!obs.bAtEnd()) {
         if (obs.bReadBeginMarker(psz_plotcolors)) {
             obs.bReadCOLORREF(psz_rgb, cPlotBkg);
-#define RC(rgb) obs.bReadCOLORREF(psz_rgb, rgb)
-            RC(cPlotHiBkg);
-            RC(cPlotAxes);
-            RC(cPlotData[0]);
-            RC(cPlotData[1]);
-            RC(cPlotData[2]);
-            RC(cPlotData[3]);
-            RC(cPlotData[4]);
-            RC(cPlotData[5]);
-            RC(cPlotHiData);
-            RC(cPlotBoundaries);
-            RC(cPlotGrid);
-            RC(cPlotStartCursor);
-            RC(cPlotStopCursor);
-            RC(cPlotPrivateCursor);
+            obs.bReadCOLORREF(psz_rgb, cPlotHiBkg);
+            obs.bReadCOLORREF(psz_rgb, cPlotAxes);
+            obs.bReadCOLORREF(psz_rgb, cPlotData[0]);
+            obs.bReadCOLORREF(psz_rgb, cPlotData[1]);
+            obs.bReadCOLORREF(psz_rgb, cPlotData[2]);
+            obs.bReadCOLORREF(psz_rgb, cPlotData[3]);
+            obs.bReadCOLORREF(psz_rgb, cPlotData[4]);
+            obs.bReadCOLORREF(psz_rgb, cPlotData[5]);
+            obs.bReadCOLORREF(psz_rgb, cPlotHiData);
+            obs.bReadCOLORREF(psz_rgb, cPlotBoundaries);
+            obs.bReadCOLORREF(psz_rgb, cPlotGrid);
+            obs.bReadCOLORREF(psz_rgb, cPlotStartCursor);
+            obs.bReadCOLORREF(psz_rgb, cPlotStopCursor);
+            obs.bReadCOLORREF(psz_rgb, cPlotPrivateCursor);
             obs.SkipToEndMarker(psz_plotcolors);
         } else if (obs.bReadBeginMarker(psz_scalecolors)) {
-            RC(cScaleBkg);
-            RC(cScaleLines);
-            RC(cScaleFont);
+            obs.bReadCOLORREF(psz_rgb, cScaleBkg);
+            obs.bReadCOLORREF(psz_rgb, cScaleLines);
+            obs.bReadCOLORREF(psz_rgb, cScaleFont);
             obs.SkipToEndMarker(psz_scalecolors);
         } else if (obs.bReadBeginMarker(psz_annotationbkg)) {
             for (; i<ANNOT_WND_NUMBER; i++) {
@@ -98,37 +103,36 @@ BOOL Colors::ReadProperties(CObjectIStream & obs) {
                 obs.bReadCOLORREF(psz_rgb, cAnnotationFont[i]);
             }
             obs.SkipToEndMarker(psz_annotationfont);
-        } else if (obs.bEnd(psz_colors)) {
+        } else if (obs.bReadBeginMarker(psz_taskbar)) {
+            obs.bReadCOLORREF(psz_rgb, cTaskbarPhoneticBkg);
+            obs.bReadCOLORREF(psz_rgb, cTaskbarMusicBkg);
+            obs.bReadCOLORREF(psz_rgb, cTaskbarFont);
+            obs.SkipToEndMarker(psz_taskbar);
+		} else if (obs.bEnd(psz_colors)) {
             break;
         }
     }
-
     return TRUE;
 }
-
-
 
 void Colors::GreyScale(COLORREF & rgb) {
     BYTE r = GetRValue(rgb);
     BYTE g = GetGValue(rgb);
     BYTE b = GetBValue(rgb);
     BYTE grey = (BYTE)(((r*30) + (g*59) + (b*11))/100);
-
     rgb = RGB(grey,grey,grey);
 }
-
-
 
 /***************************************************************************/
 // Colors::SetupDefaultColors Set the default colors
 // If the flag bSystem is TRUE, it sets up the colors with system defaults,
 // otherwise with a custom setup.
 /***************************************************************************/
-void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
+void Colors::SetupColors( EColorSet colorSet) {
 
-    if (bPrinting) {
+	switch (colorSet) {
+	case PRINTING:
         // setup colors for b/w printing.
-
         GreyScale(cPlotBkg);
         GreyScale(cPlotHiBkg);
         GreyScale(cPlotAxes);
@@ -153,7 +157,12 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         GreyScale(cScaleBkg);
         GreyScale(cScaleLines);
         GreyScale(cScaleFont);
-        GreyScale(cSysBtnHilite);
+
+        GreyScale(cTaskbarPhoneticBkg);
+        GreyScale(cTaskbarMusicBkg);
+        GreyScale(cTaskbarFont);
+		
+		GreyScale(cSysBtnHilite);
         GreyScale(cSysBtnShadow);
         GreyScale(cSysBtnFace);
         GreyScale(cSysBtnText);
@@ -164,7 +173,76 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         GreyScale(cSysInActiveCap);
         GreyScale(cSysInActiveCapText);
 
-    } else if (bSystem) {
+		break;
+
+	case DEFAULT:
+        cPlotBkg            = RGB(0, 0, 0);			// black
+        cPlotHiBkg          = RGB(0, 0, 128);		// dark blue
+        cPlotAxes           = RGB(255, 255, 255);	// white
+        cPlotData[0]        = RGB(0, 255, 0);		// green
+        cPlotData[1]        = RGB(255, 128, 0);		// orange
+        cPlotData[2]        = RGB(128,   0, 0);
+        cPlotData[3]        = RGB(192 , 0, 0);
+        cPlotData[4]        = RGB(0, 192, 0);
+        cPlotData[5]        = RGB(128, 0, 128);
+        cPlotHiData         = RGB(255, 255, 0);		// yellow
+        cPlotBoundaries     = RGB(128, 0, 64);		// brown
+        cPlotGrid           = RGB(192, 192, 192);	// light gray
+        cPlotStartCursor    = RGB(0, 255, 255);		// light blue
+        cPlotStopCursor     = RGB(255, 0, 0);		// red
+        cPlotPrivateCursor  = RGB(255, 255, 0);		// yellow
+        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+            cAnnotationBkg[nLoop]  = RGB(192, 192, 192);	// light gray
+            cAnnotationFont[nLoop] = RGB(0, 0, 160);		// dark blue
+        }
+
+        cScaleBkg           = RGB(192, 192, 192);	// light gray
+        cScaleLines         = RGB(64, 128, 128);	// dark green gray
+        cScaleFont          = RGB(64, 128, 128);	// dark green gray
+
+        cTaskbarPhoneticBkg = RGB(192, 192, 192);	// light gray
+        cTaskbarMusicBkg	= RGB(192, 192, 192);	// light gray
+        cTaskbarFont		= RGB(0, 0, 160);		// dark blue
+		
+		SetupSystemColors();
+		break;
+
+	default:
+	case SYSTEM:
+        // use system colors
+        cPlotBkg            = GetSysColor(COLOR_WINDOW);
+        cPlotHiBkg          = GetSysColor(COLOR_HIGHLIGHT);
+        cPlotAxes           = GetSysColor(COLOR_WINDOWTEXT);
+        cPlotData[0]        = GetSysColor(COLOR_WINDOWTEXT);
+        cPlotData[1]        = RGB(255, 160, 0);		// orange
+        cPlotData[2]        = RGB(0, 0, 255);		// blue. Was GetSysColor(COLOR_ACTIVEBORDER);
+        cPlotData[3]        = GetSysColor(COLOR_WINDOWFRAME);
+        cPlotData[4]        = RGB(0, 0, 255);		// blue. Was GetSysColor(COLOR_MENU);
+        cPlotData[5]        = GetSysColor(COLOR_HIGHLIGHT);
+        cPlotHiData         = GetSysColor(COLOR_HIGHLIGHTTEXT);
+        cPlotBoundaries     = GetSysColor(COLOR_GRAYTEXT);
+        cPlotGrid           = GetSysColor(COLOR_BTNSHADOW);
+        cPlotStartCursor    = RGB(0, 128, 0);	// dark green
+        cPlotStopCursor     = RGB(255, 0, 0);	// red
+        cPlotPrivateCursor  = RGB(0, 0, 255);	// blue
+
+		for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+            cAnnotationBkg[nLoop] = GetSysColor(COLOR_BTNFACE);
+            cAnnotationFont[nLoop] = GetSysColor(COLOR_BTNTEXT);
+        }
+
+        cScaleBkg = GetSysColor(COLOR_BTNFACE);
+        cScaleLines = GetSysColor(COLOR_HIGHLIGHT);
+        cScaleFont = GetSysColor(COLOR_HIGHLIGHT);
+
+        cTaskbarPhoneticBkg = GetSysColor(COLOR_3DSHADOW);
+        cTaskbarMusicBkg = GetSysColor(COLOR_3DSHADOW);
+        cTaskbarFont = GetSysColor(COLOR_WINDOW);
+		
+		SetupSystemColors();
+		break;
+
+	case PASTEL:
         // use system colors
         cPlotBkg            = RGB(225,255,255);
         cPlotHiBkg          = RGB(0,128,192);
@@ -181,7 +259,6 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         cPlotStartCursor    = RGB(0, 128, 0); // dark green
         cPlotStopCursor     = RGB(255, 0, 0); // red
         cPlotPrivateCursor  = RGB(0, 0, 255); // blue
-
         for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             cAnnotationBkg[nLoop] = GetSysColor(COLOR_BTNFACE);
         }
@@ -193,43 +270,21 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         cAnnotationBkg[4] = RGB(244,213,255);
         cAnnotationBkg[5] = RGB(244,235,185);
         cAnnotationBkg[6] = RGB(220,220,175);
-
         for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             cAnnotationFont[nLoop] = GetSysColor(COLOR_BTNTEXT);
         }
 
-        cScaleBkg           = RGB(250,250,230);
-        cScaleLines         = RGB(0,0,255);
-        cScaleFont          = RGB(0,0,255);
-        SetupSystemColors();
-    } else {
-        // custom set
+        cScaleBkg = RGB(250,250,230);
+        cScaleLines = RGB(0,0,255);
+        cScaleFont = RGB(0,0,255);
 
-        cPlotBkg            = RGB(0, 0, 0);			// black
-        cPlotHiBkg          = RGB(0, 0, 128);		// dark blue
-        cPlotAxes           = RGB(255, 255, 255);	// white
-        cPlotData[0]        = RGB(0, 255, 0);		// green
-        cPlotData[1]        = RGB(255, 128, 0);		// orange
-        cPlotData[2]        = RGB(128,   0, 0);
-        cPlotData[3]        = RGB(192 , 0, 0);
-        cPlotData[4]        = RGB(0, 192, 0);
-        cPlotData[5]        = RGB(128, 0, 128);
-        cPlotHiData         = RGB(255, 255, 0);		// yellow
-        cPlotBoundaries     = RGB(128, 0, 64);		// brown
-        cPlotGrid           = RGB(192, 192, 192);	// light gray
-        cPlotStartCursor    = RGB(0, 255, 255);		// light blue
-        cPlotStopCursor     = RGB(255, 0, 0);		// red
-        cPlotPrivateCursor  = RGB(255, 255, 0);		// yellow
+        cTaskbarPhoneticBkg = RGB(220,220,175);
+        cTaskbarMusicBkg = RGB(180,180,135);
+        cTaskbarFont = RGB(0,0,0);
 
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-            cAnnotationBkg[nLoop]  = RGB(192, 192, 192); // light gray
-            cAnnotationFont[nLoop] = RGB(0, 0, 160);	// dark blue
-        }
-        cScaleBkg           = RGB(192, 192, 192);	// light gray
-        cScaleLines         = RGB(64, 128, 128);	// dark green gray
-        cScaleFont          = RGB(64, 128, 128);	// dark green gray
         SetupSystemColors();
-    }
+		break;
+	}
 }
 
 /***************************************************************************/

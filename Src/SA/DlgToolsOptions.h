@@ -105,7 +105,7 @@ public:
     CDlgOptionsColorPage();
 
 	// TRUE, if colors changed by user
-    BOOL m_bColorsChanged;
+    bool m_bColorsChanged;
 	// internal color structure
     Colors m_cColors;
 
@@ -114,6 +114,7 @@ public:
     int m_nAnnotationSelect;
     int m_nScaleSelect;
     int m_nOverlaySelect;
+    int m_nTaskbarSelect;
 
 protected:
 	// DDX/DDV support
@@ -122,17 +123,20 @@ protected:
     BOOL ChangeColor(COLORREF * pColor);
     virtual BOOL OnInitDialog();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    afx_msg void OnDefault();
-    afx_msg void OnSystem();
+    afx_msg void OnDefaultColors();
+    afx_msg void OnSystemColors();
+    afx_msg void OnPastelColors();
     afx_msg void OnChgColorAnnot();
     afx_msg void OnChgColorGraph();
     afx_msg void OnChgColorOvrly();
+    afx_msg void OnChgColorTaskbar();
     afx_msg void OnChgColorScale();
 
     CComboColor m_GraphItemColors;
     CComboColor m_AnnotItemColors;
     CComboColor m_ScaleItemColors;
     CComboColor m_OvrlyItemColors;
+    CComboColor m_TaskbarItemColors;
     CFont m_Font;
 
     DECLARE_MESSAGE_MAP()

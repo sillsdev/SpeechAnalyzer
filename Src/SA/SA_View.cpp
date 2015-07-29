@@ -6320,9 +6320,9 @@ void CSaView::OnBeginPrinting(CDC * pDC, CPrintInfo * /*pInfo*/) {
     if (m_pPageLayout->bIsHiRes()) {
         if (!isColor) {
             m_saveColors = *GetMainFrame().GetColors();
-            GetMainFrame().GetColors()->SetupDefault(TRUE, TRUE);
+            GetMainFrame().GetColors()->SetupColors(Colors::PRINTING);
         }
-    } else if (m_bPrintPreviewInProgress && !isColor && m_pCDibForPrint) {
+    } else if ((m_bPrintPreviewInProgress) && (!isColor) && (m_pCDibForPrint)) {
         m_pCDibForPrint->GoGreyScale();
     }
 }

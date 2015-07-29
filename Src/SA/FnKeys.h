@@ -30,10 +30,9 @@ public:
     UINT  nVolume[26];    // play volume in %
     UINT  nSpeed[26];     // replay speed in %
     UINT  nMode[26];      // replay mode
-
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
-    void SetupDefault(void);
+    void SetupDefaultKeys();
 };
 
 #endif  //_FNKEYS_H

@@ -7,9 +7,11 @@ class CObjectIStream;
 class Colors {
 public:
 
+	enum EColorSet {PRINTING, DEFAULT, SYSTEM, PASTEL};
+
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
-    void SetupDefault(BOOL bSystem= TRUE, BOOL bPrinting= FALSE);
+    void SetupColors( EColorSet val);
     void SetupSystemColors();
 
     COLORREF cPlotBkg;              // plot background color
@@ -22,9 +24,11 @@ public:
     COLORREF cPlotStartCursor;      // plot start cursor color
     COLORREF cPlotStopCursor;       // plot stop cursor color
     COLORREF cPlotPrivateCursor;    // plot private cursor color
-    COLORREF cScaleBkg;             // scale windows background color
+    
+	COLORREF cScaleBkg;             // scale windows background color
     COLORREF cScaleLines;           // scale window lines color
     COLORREF cScaleFont;            // scale window font color
+
     COLORREF cSysBtnHilite;         // system button hilite color
     COLORREF cSysBtnShadow;         // system button shadow color
     COLORREF cSysBtnFace;           // system button face color
@@ -39,6 +43,10 @@ public:
 
     COLORREF cAnnotationBkg[ANNOT_WND_NUMBER];	// annotation window background color
     COLORREF cAnnotationFont[ANNOT_WND_NUMBER]; // annotation window font color
+
+	COLORREF cTaskbarPhoneticBkg;
+	COLORREF cTaskbarMusicBkg;
+	COLORREF cTaskbarFont;
 
 protected:
     static void GreyScale(COLORREF & rgb);

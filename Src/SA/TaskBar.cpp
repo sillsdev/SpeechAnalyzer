@@ -14,20 +14,12 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CTaskPage::~CTaskPage() {
-    delete m_pImageList[0];
-    delete m_pImageList[1];
-    delete m_pImageList[2];
-}
-
 /////////////////////////////////////////////////////////////////////////////
 // CTaskBar dialog
 
-
 IMPLEMENT_DYNAMIC(CTaskBar, CDialogBar)
 
-CTaskBar::CTaskBar()
-    : CDialogBar() {
+CTaskBar::CTaskBar() : CDialogBar() {
     m_nHotItem = -1;
     m_nSelectedPage = -1;
 }
@@ -56,7 +48,8 @@ void CTaskBar::DoDataExchange(CDataExchange * pDX) {
 
 // Adjust position of buttons & list based on current size and selected page
 void CTaskBar::UpdateLayout() {
-    CRect rWnd;
+    
+	CRect rWnd;
 
     GetClientRect(rWnd);
 
@@ -76,12 +69,9 @@ void CTaskBar::UpdateLayout() {
     for (int i = 0; i < nButtons; i++) {
         // position top buttons
         CRect rButton(rWnd);
-
         rButton.top = i*kButtonHeight;
         rButton.top += i > m_nSelectedPage ? rList.Height() - 1 : 0;
-
         rButton.bottom = rButton.top + kButtonHeight;
-
         m_pPageButtons[i]->MoveWindow(rButton);
     }
 
@@ -96,18 +86,14 @@ void CTaskBar::UpdateLayout() {
         m_cList.MoveWindow(rList, TRUE);
 
         if (m_nSelectedPage >= 0) {
-            CTaskPage * pPage = m_pPages[m_nSelectedPage];
 
-            m_cList.SetImageList(pPage->m_pImageList[0], LVSIL_NORMAL);
-            m_cList.SetImageList(pPage->m_pImageList[1], LVSIL_SMALL);
-            m_cList.SetImageList(pPage->m_pImageList[2], LVSIL_STATE);
+			CTaskPage * pPage = m_pPages[m_nSelectedPage];
+            m_cList.SetImageList( &(pPage->imageList), LVSIL_NORMAL);
 
             // insert items
-            for (int i=0; i < (int) pPage->m_cItemList.size(); i++) {
-                CSaTaskItem & item = pPage->m_cItemList[i];
-
+            for (int i=0; i < (int) pPage->itemList.size(); i++) {
+                CSaTaskItem & item = pPage->itemList[i];
                 item.pszText = item.szLabel.GetBuffer(0);
-
                 int nResult = m_cList.InsertItem(&item);
                 if (nResult != i) {
                     TRACE(_T("Item insert failed\n"));
@@ -116,7 +102,7 @@ void CTaskBar::UpdateLayout() {
             }
 
             // Shift items down
-            for (int i=(int) pPage->m_cItemList.size()-1; i >= 0 ; i--) {
+            for (int i=(int) pPage->itemList.size()-1; i >= 0 ; i--) {
                 POINT point;
                 m_cList.GetItemPosition(i, &point);
                 point.y += 6;
@@ -136,6 +122,7 @@ BEGIN_MESSAGE_MAP(CTaskBar, CDialogBar)
     ON_NOTIFY(NM_CUSTOMDRAW, IDC_TASK_LIST, OnDrawTaskItem)
     ON_COMMAND_RANGE(kSelectPageFirst, kSelectPageLast, OnSelectPage)
     ON_UPDATE_COMMAND_UI_RANGE(kSelectPageFirst, kSelectPageLast, OnSelectPageUpdate)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -143,14 +130,15 @@ END_MESSAGE_MAP()
 
 // Initialize dialog, set list style, update layout
 LRESULT CTaskBar::HandleInitDialog(WPARAM, LPARAM) {
-    if (CDialogBar::HandleInitDialog(0,0)) {
+
+	if (CDialogBar::HandleInitDialog(0,0)) {
         return FALSE;
     }
 
-    UpdateData(FALSE); // Attach List control
+	// Attach List control
+    UpdateData(FALSE); 
 
     m_cList.SetExtendedStyle(LVS_EX_ONECLICKACTIVATE | LVS_EX_INFOTIP);
-    OnSysColorChange(); // Set colors
 
     UpdateLayout();
 
@@ -185,11 +173,9 @@ BOOL CTaskBar::SetStatusText(int nHit) {
     return CDialogBar::SetStatusText(nHit);
 }
 
-
 // Handle dialog resizing by updating the layout
 void CTaskBar::OnSize(UINT nType, int cx, int cy) {
     CDialogBar::OnSize(nType, cx, cy);
-
     if (m_hWnd && cx > 0 && cy > 0) {
         UpdateLayout();
     }
@@ -198,13 +184,10 @@ void CTaskBar::OnSize(UINT nType, int cx, int cy) {
 // Task item was clicked fire command
 void CTaskBar::OnTaskItem(NMHDR * pNMHDR, LRESULT * pResult) {
     NMLISTVIEW * pNMListView = (NMLISTVIEW *)pNMHDR;
-
     if (pNMListView->iItem >= 0) {
         GetOwner()->SendMessage(WM_COMMAND, m_cList.GetItemData(pNMListView->iItem));
     }
-
     m_cList.SetItemState(pNMListView->iItem, 0, UINT(-1)); // Clear any state setting
-
     *pResult = 0;
 }
 
@@ -212,11 +195,9 @@ void CTaskBar::OnTaskItem(NMHDR * pNMHDR, LRESULT * pResult) {
 // hide focus rect on button & remove default button rect
 void CTaskBar::OnSelectPage(UINT wPageID) {
     int nPage = wPageID - kSelectPageFirst;
-
     if (nPage < (int) m_pPages.size() && m_nSelectedPage != nPage) {
         m_nSelectedPage = nPage;
         m_nHotItem = -1;
-
         UpdateLayout();
     }
 }
@@ -230,39 +211,26 @@ void CTaskBar::OnSelectPageUpdate(CCmdUI * /*pCmdUI*/) {
 // The pPage item must be allocated using operator new()
 // ownership/responsibility is transferred to CTaskBar
 void CTaskBar::AddPage(CTaskPage * pPage) {
-    ASSERT(m_hWnd != NULL);
 
-    CTaskButton * pButton =
-        new CTaskButton(pPage->m_szPageName, this, kSelectPageFirst + m_pPages.size());
-
+	ASSERT(m_hWnd != NULL);
+    CTaskButton * pButton = new CTaskButton(pPage->m_szPageName, this, kSelectPageFirst + m_pPages.size());
     pButton->SetFont(m_cList.GetFont());
-
     m_pPages.push_back(pPage);
     m_pPageButtons.push_back(pButton);
-
     if (m_nSelectedPage == -1) {
         m_nSelectedPage = 0;
     }
 }
 
-// Update task bar colors
-void CTaskBar::OnSysColorChange() {
-    CDialogBar::OnSysColorChange();
-
-    if (m_cList.m_hWnd) {
-        m_cList.SetBkColor(GetSysColor(COLOR_3DSHADOW));
-        m_cList.SetTextColor(GetSysColor(COLOR_WINDOW));
-        m_cList.SetTextBkColor(GetSysColor(COLOR_3DSHADOW));
-    }
-}
-
 // Manually add button rect for hovering
-void CTaskBar::OnDrawTaskItem(NMHDR * pNMHDR, LRESULT * pResult) {
+void CTaskBar::OnDrawTaskItem( NMHDR * pNMHDR, LRESULT * pResult) {
+
     NMLVCUSTOMDRAW * lplvcd = (NMLVCUSTOMDRAW *)pNMHDR;
     NMCUSTOMDRAW & cd = lplvcd->nmcd;
 
     if (cd.dwDrawStage == CDDS_PREPAINT) {
-        *pResult = CDRF_NOTIFYITEMDRAW; // We want to be notified as each item is drawn
+		// We want to be notified as each item is drawn
+        *pResult = CDRF_NOTIFYITEMDRAW; 
         return;
     }
 
@@ -278,11 +246,13 @@ void CTaskBar::OnDrawTaskItem(NMHDR * pNMHDR, LRESULT * pResult) {
             m_nHotItem = m_cList.GetHotItem();
             // Clear any stuck state information
             if (m_cList.GetItemState(nOldHotItem, UINT(-1))) {
-                m_cList.SetItemState(nOldHotItem, 0, UINT(-1));    // Clear any state setting
+				// Clear any state setting
+                m_cList.SetItemState(nOldHotItem, 0, UINT(-1));    
             }
             // hover item changed, we need to force a redraw to erase the old hover item icon
             m_cList.RedrawItems(nOldHotItem, nOldHotItem);
-            SetStatusText(-1);  //update the status bar too
+			//update the status bar too
+            SetStatusText(-1);  
         }
 
         if (i == m_nHotItem) {
@@ -305,17 +275,14 @@ void CTaskBar::OnDrawTaskItem(NMHDR * pNMHDR, LRESULT * pResult) {
             pDC->SelectObject(&pOldPen);
         }
     }
-    lplvcd->clrText = GetSysColor(COLOR_WINDOW);
-    lplvcd->clrTextBk = GetSysColor(COLOR_3DSHADOW);
 
     *pResult = CDRF_NEWFONT;
 }
 
 
-
-
 // Populate TaskBar with Icons, Labels, and Commands
-void SetupTaskBar(CTaskBar & cTaskBar) {
+void CTaskBar::Setup() {
+
     static const LVITEM itemTemplate = {
         LVIF_IMAGE | LVIF_INDENT | LVIF_PARAM | LVIF_STATE | LVIF_TEXT, // UINT mask
         0, // int iItem
@@ -336,65 +303,48 @@ void SetupTaskBar(CTaskBar & cTaskBar) {
 #endif
     };
 
-    cTaskBar.Clear();
+    Clear();
 
     // Create page 1
-    CTaskPage * pPage = new CTaskPage;
-
-    pPage->m_szPageName = "Phonetic";
-    pPage->m_pImageList[0] = new CImageList();
-
-    pPage->m_pImageList[0]->Create(IDR_TASKBAR,30,32,RGB(192,192,192));
-
+	CTaskPage * pPage = new CTaskPage(L"Phonetic");
     for (int i = 0; i < 6; i++) {
         CSaTaskItem lvitem = itemTemplate;
         int nConfiguration = i;
         LPARAM nCommand = nConfiguration + ID_GRAPHTYPES_SELECT_FIRST;
         UINT anNewGraphID[MAX_GRAPHS_NUMBER];
         int nLayout = -1;
-
         CDlgGraphsTypes::GetStandardCheckedGraphs(nConfiguration, &anNewGraphID[0], &nLayout, &lvitem.szLabel, &lvitem.szTip);
         lvitem.iItem = i;
         lvitem.lParam = nCommand;
-        lvitem.iImage = nLayout - ID_LAYOUT_FIRST;;
-
-        pPage->m_cItemList.push_back(lvitem);
+        lvitem.iImage = nLayout - ID_LAYOUT_FIRST;
+        pPage->itemList.push_back(lvitem);
     }
-
-
-    cTaskBar.AddPage(pPage);
+    AddPage(pPage);
 
     // Create page 1
-    pPage = new CTaskPage;
-
-    pPage->m_szPageName = "Music";
-    pPage->m_pImageList[0] = new CImageList();
-
-    pPage->m_pImageList[0]->Create(IDR_TASKBAR,30,32,RGB(192,192,192));
-
-    for (int i = 0; i < 6; i++) {
+    pPage = new CTaskPage(L"Music");
+        for (int i = 0; i < 6; i++) {
         CSaTaskItem lvitem = itemTemplate;
         int nConfiguration = i + 6;
         LPARAM nCommand = nConfiguration + ID_GRAPHTYPES_SELECT_FIRST;
         UINT anNewGraphID[MAX_GRAPHS_NUMBER];
         int nLayout = -1;
-
         CDlgGraphsTypes::GetStandardCheckedGraphs(nConfiguration, &anNewGraphID[0], &nLayout, &lvitem.szLabel, &lvitem.szTip);
         lvitem.iItem = i;
         lvitem.lParam = nCommand;
-        lvitem.iImage = nLayout - ID_LAYOUT_FIRST;;
-
-        pPage->m_cItemList.push_back(lvitem);
+        lvitem.iImage = nLayout - ID_LAYOUT_FIRST;
+        pPage->itemList.push_back(lvitem);
     }
 
-    cTaskBar.AddPage(pPage);
-    cTaskBar.UpdateLayout();
+    AddPage(pPage);
+    UpdateLayout();
 }
 
 void CTaskBar::OnSetfocusTaskList(NMHDR * pNMHDR, LRESULT * pResult) {
-    UNUSED_ALWAYS(pNMHDR);
-    CMainFrame * pWnd = (CMainFrame *)AfxGetMainWnd();
+    
+	UNUSED_ALWAYS(pNMHDR);
 
+	CMainFrame * pWnd = (CMainFrame *)AfxGetMainWnd();
     CSaView * pView = pWnd->GetCurrSaView();
 
     if (pView) {
@@ -429,48 +379,70 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CTaskButton message handlers
-
+// draws the button for the taskbar page
 void CTaskButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
-    CDC cDC;
-
-    cDC.Attach(lpDrawItemStruct->hDC);
+    
+	CDC dc;
+    dc.Attach(lpDrawItemStruct->hDC);
 
     BOOL bUp = (lpDrawItemStruct->itemState & ODS_SELECTED) == 0;
-
     if (bUp && m_bSelected && (lpDrawItemStruct->itemState & ODS_FOCUS)) {
         GetParent()->SetFocus();
     }
-
-    m_bSelected = !bUp;
-
+    
+	m_bSelected = !bUp;
     CRect r(lpDrawItemStruct->rcItem);
 
     // Draw outer rect
-    cDC.Draw3dRect(&r,
+    dc.Draw3dRect(&r,
                    GetSysColor(bUp ? COLOR_3DHILIGHT : COLOR_3DDKSHADOW),
                    GetSysColor(!bUp ? COLOR_3DHILIGHT : COLOR_3DDKSHADOW));
 
     r.DeflateRect(1,1);
 
-    cDC.Draw3dRect(&r,
+    dc.Draw3dRect(&r,
                    GetSysColor(bUp ? COLOR_3DLIGHT : COLOR_3DSHADOW),
                    GetSysColor(!bUp ? COLOR_3DLIGHT : COLOR_3DSHADOW));
 
     CString szCaption;
 
     GetWindowText(szCaption);
-    cDC.SetTextColor(GetSysColor(COLOR_BTNTEXT));
-    cDC.SetBkColor(GetSysColor(COLOR_BTNFACE));
-    cDC.DrawText(szCaption, &r, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	// the taskbar label button
+    dc.SetTextColor(GetSysColor(COLOR_BTNTEXT));
+    dc.SetBkColor(GetSysColor(COLOR_BTNFACE));
+
+    dc.DrawText(szCaption, &r, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 }
 
 
 void CTaskBar::OnGetInfoTip(NMHDR * pNMHDR, LRESULT * pResult) {
     NMLVGETINFOTIP * pInfo = (NMLVGETINFOTIP *)pNMHDR;
     CTaskPage * pPage = m_pPages[m_nSelectedPage];
-    if (pPage->m_cItemList.size() >= (unsigned) pInfo->iItem) {
-        wcsncpy_s(pInfo->pszText, pInfo->cchTextMax, pPage->m_cItemList[pInfo->iItem].szTip, pInfo->cchTextMax);
+    if (pPage->itemList.size() >= (unsigned) pInfo->iItem) {
+        wcsncpy_s(pInfo->pszText, pInfo->cchTextMax, pPage->itemList[pInfo->iItem].szTip, pInfo->cchTextMax);
     }
-
     *pResult = 0;
+}
+
+CTaskPage::CTaskPage( LPCTSTR szCaption) {
+	m_szPageName = szCaption;
+    imageList.Create(IDR_TASKBAR,30,32,RGB(192,192,192));
+}
+
+CTaskPage::~CTaskPage() {
+}
+
+CSaTaskItem::CSaTaskItem(const LVITEM item) : LVITEM(item) {
+}
+
+void CTaskBar::OnPaint() {
+	CMainFrame * pFrame = (CMainFrame*)AfxGetMainWnd();
+	if (pFrame!=NULL) {
+		Colors * pColors = pFrame->GetColors();
+		COLORREF background = (m_nSelectedPage==1)?pColors->cTaskbarMusicBkg:pColors->cTaskbarPhoneticBkg;
+		m_cList.SetBkColor(background);
+		m_cList.SetTextBkColor(background);
+		m_cList.SetTextColor(pColors->cTaskbarFont);
+	}
+	CControlBar::OnPaint();
 }

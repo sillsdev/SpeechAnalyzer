@@ -47,14 +47,12 @@ BOOL CFnKeys::ReadProperties(CObjectIStream & obs) {
     return TRUE;
 }
 
-
-
-void CFnKeys::SetupDefault() {
+void CFnKeys::SetupDefaultKeys() {
     for (int nLoop = 0; nLoop < 24; nLoop++) {
-        bRepeat[nLoop]   = FALSE; // repeat disabled
-        nDelay[nLoop]   = 1000; // default repeat delay time
-        nVolume[nLoop]   = 50; // play volume
-        nSpeed[nLoop]   = 100; // replay speed
-        nMode[nLoop]   = ID_PLAYBACK_FILE; // replay mode
+        bRepeat[nLoop] = FALSE;		// repeat disabled
+        nDelay[nLoop] = 1000;		// default repeat delay time
+        nVolume[nLoop] = 50;		// play volume
+        nSpeed[nLoop] = 100;		// replay speed
+        nMode[nLoop] = ID_PLAYBACK_FILE; // replay mode
     }
 }
