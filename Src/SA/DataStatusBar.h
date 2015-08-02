@@ -1,23 +1,19 @@
 /////////////////////////////////////////////////////////////////////////////
-// sa_sbar.h:
-// Interface of the CSaDataStatusBar
-//           CSaProgressStatusBar classes.
+// DataStatusBar.h:
+// Interface of the CDataStatusBar classes.
 // Author: Urs Ruchti
 // copyright 2000 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-#ifndef _SA_SBAR_H
+#ifndef DATASTATUSBAR_H
+#define DATASTATUSBAR_H
 
 #include "sa_dlWnd.h"
-
-#define _SA_SBAR_H
 
 //###########################################################################
 // CDataStatusBar window
 
 /////////////////////////////////////////////////////////////////////////////
 // CDataStatusBar defines
-
-#define SB_FONT_SIZE  -10 // status bar font size
 
 class CDataStatusBar : public CStatusBar {
 
@@ -51,47 +47,6 @@ public:
 protected:
     afx_msg void OnPaint();
     DECLARE_MESSAGE_MAP()
-};
-
-//###########################################################################
-// CProgressStatusBar window
-
-/////////////////////////////////////////////////////////////////////////////
-// CProgressStatusBar defines
-
-#define SB_FONT_SIZE  -10 // status bar font size
-
-class CProgressStatusBar : public CStatusBar {
-
-public:
-    CProgressStatusBar();
-    virtual ~CProgressStatusBar();
-
-    void Init(); // initialisation
-    void SetProcessOwner(void * pProcess, void * pCaller, int nProcessID = -1); // save the process owner
-    void * GetProcessOwner();       // return the process owner
-    void * GetProcessCaller();      // return the process caller
-    void InitProgress();            // initialisation of progress bar
-    void SetProgress(int nVal);     // set progress bar
-    int  GetProgress();             // get progress
-    BOOL SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate = TRUE);
-    void GetItemRect(int nPaneID, LPRECT lpRect);
-    void SetIsPrintingFlag(BOOL isPrinting);
-    virtual void DelayShow();
-    BOOL InProcessMessageLoop() const;
-
-protected:
-    void MessageLoop(); // do windows message loop
-
-    DECLARE_MESSAGE_MAP()
-
-private:
-    CFont * m_pFont;                // status bar font
-    void * m_pProcessOwner;         // process owner
-    void * m_pProcessCaller;        // process caller
-    CProgressBar m_ProgressBar;     // progress bar object
-    BOOL m_bIsPrinting;
-    int m_nInMessageLoop;
 };
 
 #endif

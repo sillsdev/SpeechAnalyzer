@@ -158,23 +158,23 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 string.Empty();
                 // get the string to display
                 string = pReference->GetText(nLoop);
-                nDisplayPos = round((pReference->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
+                nDisplayPos = round2Int((pReference->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
                 if (pReference->GetSelection() == nLoop) {
                     bSelect = TRUE;
                 }
                 // calculate duration
-                nDisplayStop = round((pReference->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
+                nDisplayStop = round2Int((pReference->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
                 //SDM 1.06.2
                 if (m_bHintUpdateBoundaries) { // Show New Boundaries
                     if (bSelect) {
-                        nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
-                        nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
+                        nDisplayPos = round2Int((m_dwHintStart - fDataStart)/ fBytesPerPix);
+                        nDisplayStop = round2Int((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     } else if (pReference->GetSelection() == (nLoop+1)) { // Segment prior to selected segment
-                        nDisplayStop = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
+                        nDisplayStop = round2Int((m_dwHintStart - fDataStart)/ fBytesPerPix);
                     } else if (pReference->GetSelection() == (nLoop-1)) { // Segment after selected segment
-                        nDisplayPos = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
+                        nDisplayPos = round2Int((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     }
                 }
                 if ((nDisplayStop - nDisplayPos) < 2) {

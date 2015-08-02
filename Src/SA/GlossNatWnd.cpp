@@ -166,26 +166,26 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 string.Empty();
                 // get the string to display
                 string = pGlossNat->GetText(nLoop);
-                nDisplayPos = round((pGlossNat->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
+                nDisplayPos = round2Int((pGlossNat->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
                 if (pGlossNat->GetSelection() == nLoop) {
                     bSelect = TRUE;
                 }
                 // calculate duration
-                nDisplayStop = round((pGlossNat->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
+                nDisplayStop = round2Int((pGlossNat->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
                 //SDM 1.06.2
 				// Show New Boundaries
                 if (m_bHintUpdateBoundaries) {
                     if (bSelect) {
-                        nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
-                        nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
+                        nDisplayPos = round2Int((m_dwHintStart - fDataStart)/ fBytesPerPix);
+                        nDisplayStop = round2Int((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     } else if (pGlossNat->GetSelection() == (nLoop+1)) {
 						// Segment prior to selected segment
-                        nDisplayStop = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
+                        nDisplayStop = round2Int((m_dwHintStart - fDataStart)/ fBytesPerPix);
                     } else if (pGlossNat->GetSelection() == (nLoop-1)) {
 						// Segment after selected segment
-                        nDisplayPos = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
+                        nDisplayPos = round2Int((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     }
                 }
                 if ((nDisplayStop - nDisplayPos) < 2) {

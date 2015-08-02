@@ -101,12 +101,12 @@ Float CKSynth::next_voice_sample(void) {
             synth.glottis_open = TRUE;
             synth.pulse = TRUE;
             synth.voicing_time = 0;
-            synth.F0 = round(pars.F0*10.);
-            synth.FL = round(pars.FL);
-            synth.OQ = round(pars.OQ);
+            synth.F0 = round2Int(pars.F0*10.);
+            synth.FL = round2Int(pars.FL);
+            synth.OQ = round2Int(pars.OQ);
             synth.SQ = pars.SQ;
-            synth.DI = round(pars.DI);
-            synth.AV = round(pars.AV);
+            synth.DI = round2Int(pars.DI);
+            synth.AV = round2Int(pars.AV);
             synth.TL = pars.TL;
             synth.voicing_amp = synth.AV ? dB2amp(spkrdef.GV+synth.AV+A_AV) : 0;
             if (synth.FL) {
@@ -118,19 +118,19 @@ Float CKSynth::next_voice_sample(void) {
             } else {
                 freq = synth.F0 / 10.;
             }
-            synth.pulse_freq = round(spkrdef.SR / freq);
-            synth.period_ctr = round(synth.pulse_freq * synth.OQ / 100.);
+            synth.pulse_freq = round2Int(spkrdef.SR / freq);
+            synth.period_ctr = round2Int(synth.pulse_freq * synth.OQ / 100.);
             synth.close_time = synth.pulse_freq - synth.period_ctr;
             if (synth.DI)
                 if (!synth.close_shortened) {
                     synth.close_shortened = TRUE;
-                    synth.close_time -= round(synth.close_time * synth.DI / 100.);
+                    synth.close_time -= round2Int(synth.close_time * synth.DI / 100.);
                     synth.voicing_amp *= 1. - synth.DI / 100.;
-                    synth.TL += round(synth.DI / 4.25); /** not quite right **/
+                    synth.TL += round2Int(synth.DI / 4.25); /** not quite right **/
                 } else {
                     /* previous close shortened */
                     synth.close_shortened = FALSE;
-                    synth.close_time += round(synth.close_time * synth.DI / 100.);
+                    synth.close_time += round2Int(synth.close_time * synth.DI / 100.);
                 }
             else { /* no diplophonia */
                 synth.close_shortened = FALSE;
@@ -140,7 +140,7 @@ Float CKSynth::next_voice_sample(void) {
             if (spkrdef.SS == 3) {  /* LF source corner rounding */
                 synth.TL += 2;
             }
-            spectral_tilt.InterPolePair(round(0.375 * tilt[synth.TL]),
+            spectral_tilt.InterPolePair(round2Int(0.375 * tilt[synth.TL]),
                                         tilt[synth.TL], spkrdef.SR);
             if (synth.TL > 10) {
                 spectral_tilt.InterAdjustGain(1.0 + (synth.TL-10)*(synth.TL-10) / 1000.);
@@ -158,7 +158,7 @@ Float CKSynth::next_voice_sample(void) {
             case 1:  /* impulsive source */
                 synth.voicing_state = FALSE;
                 temp = (Float) synth.pulse_freq * synth.OQ / 100.;
-                glottal_pulse.InterPolePair(0, round(10000. / temp), spkrdef.SR);
+                glottal_pulse.InterPolePair(0, round2Int(10000. / temp), spkrdef.SR);
                 glottal_pulse.InterAdjustGain(0.002675 * temp * temp); /* -51.3 dB */
                 break;
 
@@ -173,7 +173,7 @@ Float CKSynth::next_voice_sample(void) {
                         bw_lf[synth.SQ / 10 - 10]) / 10.;
                 bw = (bw_lf[synth.SQ / 10 - 10] + (synth.SQ % 10) * temp) *
                      200. / (synth.pulse_freq * synth.OQ / 100.);
-                glottal_pulse.InterPolePair(round(freq), round(bw), spkrdef.SR);
+                glottal_pulse.InterPolePair(round2Int(freq), round2Int(bw), spkrdef.SR);
                 temp = (e0_lf[synth.SQ / 10 - 9] -
                         e0_lf[synth.SQ / 10 - 10]) / 10.;
                 glottal_pulse.InterAdjustGain((e0_lf[synth.SQ / 10 - 10] +

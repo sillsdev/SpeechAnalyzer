@@ -172,7 +172,7 @@ long CProcessIIRFilter::ProcessForward(ISaDoc * pDoc, IProcess * pLowerProcess, 
             int nData = ReadSourceData(dwDataPos, wSrcSmpSize, pDoc);
             dwDataPos += wSrcSmpSize;
             // process data
-            nData = round(m_zForwardTransform.Tick(double(nData)));
+            nData = round2Int(m_zForwardTransform.Tick(double(nData)));
             if (nData > m_nMaxValue) {
                 m_nMaxValue = nData;
             }
@@ -204,7 +204,7 @@ long CProcessIIRFilter::ProcessForward(ISaDoc * pDoc, IProcess * pLowerProcess, 
             while (dwDataPos < dwBlockEnd) {
                 // process data
                 dwDataPos+= wSrcSmpSize;
-                int nData = round(m_zForwardTransform.Tick(0.0));
+                int nData = round2Int(m_zForwardTransform.Tick(0.0));
                 StoreWaveData(nData, wDstSmpSize, pTargetData);
                 pTargetData += wDstSmpSize;
             }
@@ -265,7 +265,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, ISaDoc * pDoc, int & nPro
         dwDataPos-= wSmpSize;
         int nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
         // process data
-        nData = round(m_zReverseTransform.Tick(double(nData)));
+        nData = round2Int(m_zReverseTransform.Tick(double(nData)));
     }
 
     HPSTR pTargetData = NULL;       // pointers to target data
@@ -297,7 +297,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, ISaDoc * pDoc, int & nPro
             int nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
 
             // process data
-            nData = round(m_zReverseTransform.Tick(double(nData)));
+            nData = round2Int(m_zReverseTransform.Tick(double(nData)));
 
             if (nData > m_nMaxValue) {
                 m_nMaxValue = nData;
@@ -392,7 +392,7 @@ void CProcessIIRFilter::SetFilterFilter(bool bSet) {
     m_bFilterFilter = bSet;
 }
 
-int CProcessIIRFilter::round(double value) {
+int CProcessIIRFilter::round2Int(double value) {
     return (value >= 0.) ? int(value + 0.5) : int(value - 0.5);
 }
 

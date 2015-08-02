@@ -119,7 +119,7 @@ DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
     ASSERT(nWidth);
     double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
     // calculate the start cursor position
-    DWORD dwCursor = (DWORD) round(fDataPos/nSmpSize + ((double)nPosition) * fSamplesPerPix);
+    DWORD dwCursor = (DWORD) round2Int(fDataPos/nSmpSize + ((double)nPosition) * fSamplesPerPix);
     dwCursor = dwCursor*nSmpSize;
     // check the range
     if (dwCursor >= (dwDataSize - (DWORD)nSmpSize)) {

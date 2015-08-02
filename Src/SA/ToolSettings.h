@@ -32,13 +32,14 @@ public:
 
     // color page
 	// TRUE, if colors changed by user
-    BOOL m_bColorsChanged;
+    bool m_bColorsChanged;
 	// internal color structure
     Colors m_cColors;       
     int m_nGraphSelect;
     int m_nAnnotationSelect;
     int m_nScaleSelect;
     int m_nOverlaySelect;
+    int m_nTaskbarSelect;
 
     //font page
 	// TRUE, if fonts changed by user

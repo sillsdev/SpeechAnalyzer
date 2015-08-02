@@ -376,7 +376,12 @@ public:
 	void ClearTranscriptionCount();
 	void RevertAllTranscriptionChanges();
 
-	void SaveSection( bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESaveArea saveArea, EFileFormat fileFormat);
+	void SaveSection( bool sameFile, 
+					  LPCTSTR oldFile, 
+					  LPCTSTR newFile, 
+					  ESaveArea saveArea, 
+					  EFileFormat fileFormat,
+					  ESamplingRate samplingRate);
 
 	bool IsTempWaveEmpty();
 	CString GetTempWave();

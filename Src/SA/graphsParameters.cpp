@@ -1575,7 +1575,7 @@ void CDlgParametersSpectrumPage::Apply() {
 
             double ratio = (pSpecParm->nFreqScaleRange + 1)/double(nFreqScaleOld + 1);
 
-            point.x = round(point.x *ratio);
+            point.x = round2Int(point.x *ratio);
 
             // full scale to half scale
             CRect rPlotWnd;

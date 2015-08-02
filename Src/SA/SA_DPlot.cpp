@@ -46,12 +46,11 @@ CDisplayPlot::CDisplayPlot(CString & szPlot) {
 	// change toolbar status
     m_bToolBar = m_pMainFrame->AdvancedToolBarVisible();
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_BASIC), FALSE, TRUE); 
-    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_AUDIOSYNC), FALSE, TRUE); 
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), FALSE, TRUE); 
 
-    // disable toolbar
+    // disable taskbar
+	// change taskbar status
     m_bTaskBar = m_pMainFrame->TaskBarVisible();
-	// change toolbar status
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(ID_VIEW_TASKBAR), FALSE, TRUE); 
 
     // disable scrolling zoom
@@ -139,11 +138,8 @@ CDisplayPlot::~CDisplayPlot() {
     }
 
 	// restore toolbar
-    BOOL bAdvanced = m_bToolBar;
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int tbID = (pApp->IsAudioSync())?IDR_BAR_AUDIOSYNC:IDR_BAR_BASIC;
-    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(tbID),!bAdvanced, TRUE); 
-    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE);
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_BASIC),!m_bToolBar, TRUE); 
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), m_bToolBar, TRUE);
 
     // restore taskbar
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(ID_VIEW_TASKBAR),!m_bTaskBar, TRUE); // change toolbar status

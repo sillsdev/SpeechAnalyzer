@@ -314,7 +314,7 @@ void CProcessButterworth::SetReverse(BOOL bSet) {
     m_bReverse = bSet;
 }
 
-int CProcessButterworth::round(double value) {
-    return (value >= 0.) ? int(value + 0.5) : int(value - 0.5);
+int CProcessButterworth::round2Int(double value) {
+    return (value >= 0.0) ? int(value + 0.5) : int(value - 0.5);
 }
 

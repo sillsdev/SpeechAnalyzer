@@ -284,7 +284,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
             CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); // get pointer to colors from main frame
             Colors * pColors = pMainWnd->GetColors();
             pDC->SetTextColor(pColors->cScaleFont); // set font color
-            pDC->SetBkMode(TRANSPARENT); // letters may overlap, so they must be transparent
+            pDC->SetBkMode(TRANSPARENT);			// letters may overlap, so they must be transparent
 
             TCHAR szText[128];
             swprintf_s(szText, _countof(szText), _T("%% Error: %6.2f"), pVocalTract->dErrorRatio * 100.);

@@ -1353,7 +1353,7 @@ dspError_t CSpectrogram::GetFormants(SFormantFreq * fmnt) {
 
     // Convert from indices to frequencies
     uint32 i = 0;
-    for (uint32 i = 1; i <= numPeaksFound; i++) {
+    for ( i = 1; i <= numPeaksFound; i++) {
         fmnt->F[i] *= m_SpectScale;
     }
 

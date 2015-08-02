@@ -117,7 +117,7 @@ DWORD CStopCursorWnd::CalculateCursorPosition(CView * pSaView, int nPosition, in
     double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
 
     // calculate the start cursor position
-    DWORD dwCursor = (DWORD) round(fDataPos/nSmpSize + ((double)nPosition) * fSamplesPerPix);
+    DWORD dwCursor = (DWORD) round2Int(fDataPos/nSmpSize + ((double)nPosition) * fSamplesPerPix);
     dwCursor = dwCursor*nSmpSize;
     // check for minimum position
     if (dwCursor < (DWORD)nSmpSize) {

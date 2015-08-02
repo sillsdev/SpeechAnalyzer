@@ -68,7 +68,7 @@ using std::wofstream;
 using std::wstring;
 using std::wstringstream;
 
-inline static int round(double value) {
+inline static int round2Int(double value) {
     return (int)floor(value + 0.5);
 }
 
@@ -93,8 +93,6 @@ inline static int round(double value) {
 //#define EXPERIMENTAL_ACCESS (GetKeyState(VK_CONTROL) < 0)
 
 #define EXPERIMENTAL_ACCESS true
-
-#define CONTROLLED_ACCESS (GetKeyState(VK_CONTROL) < 0)
 
 #define PROGRAMMER_ACCESS ((GetKeyState(VK_CONTROL) & GetKeyState(VK_SHIFT)) < 0)
 

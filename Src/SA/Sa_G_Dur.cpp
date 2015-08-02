@@ -183,20 +183,20 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
 
         if (nSymbol > 0) {
             DWORD dwPrevDuration = pProcess->GetProcessedData(nSymbol-1);
-            rBar.top = rBar.bottom - round(dwPrevDuration * m_fVScale);
+            rBar.top = rBar.bottom - round2Int(dwPrevDuration * m_fVScale);
         }
 
         while (pSegment->GetOffset(nSymbol) <= dwDataEnd) {
             DWORD dwDuration = pProcess->GetProcessedData(nSymbol);
 
-            rBar.left = round((pSegment->GetOffset(nSymbol) - fDataPos) *
+            rBar.left = round2Int((pSegment->GetOffset(nSymbol) - fDataPos) *
                               fHPixPerByte);
             pDC->MoveTo(rBar.left, rBar.bottom);  // space before segment
 
-            rBar.top = rBar.bottom - round(dwDuration * m_fVScale);
+            rBar.top = rBar.bottom - round2Int(dwDuration * m_fVScale);
             pDC->LineTo(rBar.left, rBar.top);        // left side of bar
 
-            rBar.right = round((pSegment->GetStop(nSymbol) - fDataPos) * fHPixPerByte);
+            rBar.right = round2Int((pSegment->GetStop(nSymbol) - fDataPos) * fHPixPerByte);
             pDC->LineTo(rBar.right, rBar.top);  // bar top (duration level)
 
             pDC->LineTo(rBar.right, rBar.bottom);  // right side of bar

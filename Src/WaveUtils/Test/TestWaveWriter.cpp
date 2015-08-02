@@ -18,7 +18,6 @@ TEST(WaveWriteTest, InvalidParams_01) {
     WORD formatTag = 0;
     WORD channels = 0;
     DWORD samplesPerSec = 0;
-    WORD blockAlign = 0;
     vector<char> buffer;
 
     for (int i=0; i<22050; i++) {
@@ -71,7 +70,6 @@ TEST(WaveWriteTest, ExtractChannel_01) {
     WORD channels = 0;
     DWORD samplesPerSec = 0;
     WORD blockAlign = 0;
-    DWORD length = 0;
 
     //TODO handle memory during exceptions
     vector<char> buffer;
@@ -84,8 +82,8 @@ TEST(WaveWriteTest, ExtractChannel_01) {
     WORD newBlockAlign = blockAlign/channels;
     WORD remainder = blockAlign-newBlockAlign;
     DWORD l = 0;
-    for (int i=0; i<numSamples; i++) {
-        for (int j=0; j<newBlockAlign; j++) {
+    for (DWORD i=0; i<numSamples; i++) {
+        for (WORD j=0; j<newBlockAlign; j++) {
             newBuffer.push_back(buffer[l++]);
         }
         l += remainder;
@@ -105,7 +103,6 @@ TEST(WaveWriteTest, ExtractChannel_02) {
     WORD channels = 0;
     DWORD samplesPerSec = 0;
     WORD blockAlign = 0;
-    DWORD length = 0;
 
     //TODO handle memory during exceptions
     vector<char> buffer;

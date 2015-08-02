@@ -690,9 +690,7 @@ private:
 
 	DWORD CalculatePositionFromMouse();
 	static UINT GetGraphResourceID( UINT nID);
-
-	bool IsAudioSync();
-
+	
 	// array of graph IDs
 	UINT m_anGraphID[MAX_GRAPHS_NUMBER];    
 	// actual Layout number

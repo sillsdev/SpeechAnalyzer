@@ -5,24 +5,19 @@
 // CTaskBar dialog
 class CSaTaskItem : public LVITEM {
 public:
-    CSaTaskItem(const LVITEM item) : LVITEM(item) {
-        ;
-    }
+    CSaTaskItem(const LVITEM item);
     CString szLabel;
     CString szTip;
 };
 
 class CTaskPage {
 public:
-    CTaskPage() {
-        m_pImageList[0] = m_pImageList[1] = m_pImageList[2] = NULL;
-    }
+    CTaskPage( LPCTSTR szCaption);
     virtual ~CTaskPage();
-
-
-    CString m_szPageName;
-    std::vector<CSaTaskItem> m_cItemList;
-    CImageList * m_pImageList[3]; // normal, small, state
+    
+	CString m_szPageName;
+    std::vector<CSaTaskItem> itemList;
+    CImageList imageList;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -49,6 +44,7 @@ public:
 
     void AddPage(CTaskPage * pPage);
     void Clear();
+	void Setup();
 
     int SelectPage(int nPage);
     void UpdateLayout();
@@ -57,7 +53,6 @@ public:
 
 protected:
     afx_msg void OnSize(UINT nType, int cx, int cy);
-    afx_msg void OnSysColorChange();
     afx_msg void OnSetfocusTaskList(NMHDR * pNMHDR, LRESULT * pResult);
     afx_msg void OnGetInfoTip(NMHDR * pNMHDR, LRESULT * pResult);
     afx_msg void OnTaskItem(NMHDR * pNMHDR, LRESULT * pResult);
@@ -68,19 +63,19 @@ protected:
     afx_msg LRESULT OnSizeParent(WPARAM wParam, LPARAM lParam);
     virtual void OnUpdateCmdUI(CFrameWnd * pTarget, BOOL bDisableIfNoHndler);
     virtual BOOL SetStatusText(int nHit);
-    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);
 
     std::vector<CTaskPage *> m_pPages;
     int m_nSelectedPage;
     int m_nHotItem;
-    CSize m_cAvailableSize;
     std::vector<CButton *> m_pPageButtons;
+    CListCtrl m_cList;
+
     enum { IDD = IDD_TASKBAR };
-    CListCtrl   m_cList;
 
     DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnPaint();
 };
-
-void SetupTaskBar(CTaskBar & m_wndTaskBar);
 
 #endif

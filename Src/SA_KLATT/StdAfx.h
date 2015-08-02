@@ -29,7 +29,7 @@ typedef double Float;
 typedef short INT16;
 enum BOOL { FALSE = 0, TRUE = 1};
 
-inline int round(Float f) {
+inline int round2Int(Float f) {
     return (int)((f >= 0) ? f + 0.5 : f - 0.5);
 }
 

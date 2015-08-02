@@ -23,6 +23,7 @@ CDlgSaveAsOptions::CDlgSaveAsOptions( LPCTSTR lpszDefExt,
     mSaveArea(saveEntire),
     mShowFiles(showNew),
     mFileFormat(((stereo)?formatStereo:formatMono)),
+	mSamplingRate(ESamplingRate::samplingRate22K),
 	mOriginalPath( lpszFileName),
 	mStereo(stereo),
 	mSaveAs(saveAs) {
@@ -54,6 +55,7 @@ void CDlgSaveAsOptions::DoDataExchange(CDataExchange * pDX) {
     DDX_Radio(pDX, IDC_SAVEAS_ENTIRE, (int &)mSaveArea);
     DDX_Radio(pDX, IDC_SAVEAS_OPEN, (int &)mShowFiles);
     DDX_Radio(pDX, IDC_SAVEAS_STEREO, (int &)mFileFormat);
+	DDX_Radio(pDX, IDC_SAVEAS_22K, (int&)mSamplingRate);
 }
 
 BEGIN_MESSAGE_MAP(CDlgSaveAsOptions, CFileDialog)

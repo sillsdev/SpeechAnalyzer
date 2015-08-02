@@ -21,7 +21,7 @@ void Lift::dumpChildren(Element & element) {
 
 void Lift::removeElement(Element & parent, Element & element) {
     try {
-        printf("removing %s (%lp) from %s (%lp)\n",utf8(element.localname).c_str(), element, utf8(parent.localname).c_str(), parent);
+        printf("removing %s (%p) from %s (%p)\n",utf8(element.localname).c_str(), &element, utf8(parent.localname).c_str(), &parent);
         dumpChildren(element);
         parent.removeElement(element.id);
     } catch (logic_error & e) {

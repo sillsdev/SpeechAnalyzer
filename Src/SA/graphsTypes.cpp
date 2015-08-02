@@ -502,10 +502,11 @@ END_MESSAGE_MAP()
 // CDlgGraphTypesOrder message handlers
 
 void CDlgGraphTypesOrder::OnDown() {
-    int nSelection = m_cList.GetCurSel();
-
+    
+	int nSelection = m_cList.GetCurSel();
     if (nSelection >= m_cList.GetCount() - 1) {
-        return;    // cannot move down
+		// cannot move down
+        return;    
     }
 
     SwapLayoutGraphs(nSelection);
@@ -513,14 +514,16 @@ void CDlgGraphTypesOrder::OnDown() {
     OnGraphListChanged();
 
     m_cList.SetCurSel(nSelection + 1);
-    OnSelchangeList();  // Update buttons enables
+	// Update buttons enables
+    OnSelchangeList();  
 }
 
 void CDlgGraphTypesOrder::OnUp() {
-    int nSelection = m_cList.GetCurSel();
-
+    
+	int nSelection = m_cList.GetCurSel();
     if (nSelection <= 0) {
-        return;    // Can not move up
+		// Can not move up
+        return;
     }
 
     SwapLayoutGraphs(nSelection - 1);
@@ -532,8 +535,8 @@ void CDlgGraphTypesOrder::OnUp() {
 }
 
 void CDlgGraphTypesOrder::OnSelchangeList() {
-    int nSelection = m_cList.GetCurSel();
-
+    
+	int nSelection = m_cList.GetCurSel();
     CWnd * pUp = GetDlgItem(IDC_UP);
     if (pUp) {
         pUp->EnableWindow(nSelection > 0);
@@ -612,7 +615,6 @@ void CDlgGraphTypesOrder::OnPopulateList() {
     int nCount = m_cLayoutOrder.GetCount();
 
     m_cList.ResetContent();
-
     for (int i = 0; i < nCount; i++) {
         CString szDescription;
         UINT nID = m_cLayoutOrder[i];
@@ -630,7 +632,6 @@ void CDlgGraphTypesOrder::OnPopulateList() {
                 szDescription += CSaView::GetGraphTitle(IDD_MAGNITUDE);
             }
         }
-
         m_cList.AddString(szDescription);
     }
 }
@@ -1069,14 +1070,13 @@ void CDlgGraphsTypes::OnRemove() {
 }
 
 void CDlgGraphsTypes::OnSelchangeGraphTypes() {
-    UpdateData();
 
-
+	UpdateData();
     m_nConfiguration = m_cList.GetCurSel();
     CWnd * pWnd = GetDlgItem(IDC_REMOVE);
     const CGraphConfigurationVector & cGraphs = GetGraphConfigurationVector(m_nTaskType);
     if (pWnd) {
-        pWnd->EnableWindow(m_cList.GetCurSel()>= cGraphs.GetCountPredefinedSets());
+        pWnd->EnableWindow(m_cList.GetCurSel() >= cGraphs.GetCountPredefinedSets());
     }
 }
 
@@ -1107,7 +1107,7 @@ void CDlgGraphsTypes::OnTaskTypeChange(NMHDR * pNMHDR, LRESULT * pResult) {
     RecentTaskType() = m_nTaskType = m_cTaskType.GetCurSel();
 
     const CGraphConfigurationVector & cGraphs = GetGraphConfigurationVector(m_nTaskType);
-    PopulateList(m_cList, cGraphs, m_nTaskType == 1);
+    PopulateList( m_cList, cGraphs, m_nTaskType == 1);
 
     m_cList.SetCurSel(cGraphs.find(cCurrentConfig));
 

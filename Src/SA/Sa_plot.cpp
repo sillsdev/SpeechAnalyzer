@@ -556,7 +556,7 @@ void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCurs
         double fBytesPerPix = (double)dwDataFrame / (double)rNewWnd.Width();
         // calculate actual cursor position in pixel
         // SDM 1.06.6U4 calculate position based on pixel aligned graph
-        int nPixelPos = (int)round(((double)dwNewPosition - fDataPos) / fBytesPerPix);
+        int nPixelPos = (int)round2Int(((double)dwNewPosition - fDataPos) / fBytesPerPix);
         // set the coordinates for the cursor window
         rNewLine.SetRect(nPixelPos, 0, nPixelPos + 1, rNewWnd.bottom);
         //SDM 1.06.5
@@ -965,11 +965,11 @@ BOOL CPlotWnd::PlotPrePaintDots(CDC * pDC, int nTop, CRect rClip,
         double dScaleMinValue = pLegend->GetScaleMinValue();
         double fBase = pLegend->GetScaleBase();
         while (dXPos <= rClip.right + 2) {
-            int nXPos = round(dXPos);
+            int nXPos = round2Int(dXPos);
 
             int nLogDisp = (int)ceil(dScaleMinValue / pow(10, floor(fBase)));
             double fBasePos = (double)nTop + dYFirstGridPos + (fBase - floor(fBase)) * fYDistance;
-            int nYPos = round(fBasePos - log10((double)nLogDisp) * fYDistance);
+            int nYPos = round2Int(fBasePos - log10((double)nLogDisp) * fYDistance);
             while (nYPos > rClip.top) {
                 // set pixel
                 pDC->SetPixel(nXPos, nYPos, cColor);
@@ -984,17 +984,17 @@ BOOL CPlotWnd::PlotPrePaintDots(CDC * pDC, int nTop, CRect rClip,
                     fBasePos -= fYDistance;
                 }
                 nLogDisp++;
-                nYPos = round(fBasePos - log10((double)nLogDisp) * fYDistance);
+                nYPos = round2Int(fBasePos - log10((double)nLogDisp) * fYDistance);
             }
             dXPos = dXFirstGridPos + ++nXCount * fXDistance;
         }
     } else {
         // linear scale
         while (dXPos <= rClip.right + 2) {
-            int nXPos = round(dXPos);
+            int nXPos = round2Int(dXPos);
             double dYPos = dYFirstGridPos;
             while (dYPos < rClip.bottom) {
-                int nYPos = round(dYPos);
+                int nYPos = round2Int(dYPos);
                 // set pixel
                 pDC->SetPixel(nXPos, nYPos, cColor);
                 if (nStyle == 3) {
@@ -1085,7 +1085,7 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                     while (dPos <= rClip.right + 2) {
                         // draw a line
                         int Index = 0;
-                        int nPos = round(dPos);
+                        int nPos = round2Int(dPos);
                         for (double y=fGridPos-fGridDistance*8.5; y < rWnd.bottom;) {
                             if (bit[Index]&nPenPattern) {
                                 pDC->MoveTo(nPos, (int)y);
@@ -1152,7 +1152,7 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                 double fBase = pLegend->GetScaleBase();
                 int nLogDisp = (int)ceil(dScaleMinValue / pow(10, floor(fBase)));
                 double fBasePos = (double)rWnd.top + fYStartPos + (fBase - floor(fBase)) * fDistance;
-                int nPos = (int)round(fBasePos - log10((double)nLogDisp) * fDistance);
+                int nPos = (int)round2Int(fBasePos - log10((double)nLogDisp) * fDistance);
                 while (nPos > rClip.top) {
                     // draw a grid line
                     int Index = 0;
@@ -1169,7 +1169,7 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                         fBasePos -= fDistance;
                     }
                     nLogDisp++;
-                    nPos = (int)round(fBasePos - log10((double)nLogDisp) * fDistance);
+                    nPos = (int)round2Int(fBasePos - log10((double)nLogDisp) * fDistance);
                 }
             } else {
                 // linear scale
@@ -1180,11 +1180,11 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                 while (dPos < rClip.bottom) {
                     // draw a grid line
                     int Index = 0;
-                    int nPos = round(dPos);
+                    int nPos = round2Int(dPos);
                     for (double x = fGridPos-fGridDistance*8.5; x<rWnd.right;) {
                         if (bit[Index]&nPenPattern) {
-                            pDC->MoveTo((int)round(x), nPos);
-                            pDC->LineTo((int)round(x + fGridDistance), nPos);
+                            pDC->MoveTo((int)round2Int(x), nPos);
+                            pDC->LineTo((int)round2Int(x + fGridDistance), nPos);
                         }
                         Index = (Index+1)%8;
                         x += fGridDistance;
@@ -1331,8 +1331,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
             // draw bottom line
             CPen penAxes(PS_SOLID, 1, pColor->cPlotAxes);
             CPen * pOldPen = pDC->SelectObject(&penAxes);
-            pDC->MoveTo(rWnd.left, round(dCenterPos)); // draw the line
-            pDC->LineTo(rWnd.right, round(dCenterPos));
+            pDC->MoveTo(rWnd.left, round2Int(dCenterPos)); // draw the line
+            pDC->LineTo(rWnd.right, round2Int(dCenterPos));
             pDC->SelectObject(pOldPen);
         }
     }
@@ -1360,7 +1360,7 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
         pSegment = new CDrawSegmentLine(*pDC);
     } else {
         // Paint Solid
-        pSegment = new CDrawSegmentSolid(*pDC, nFlags & (PAINT_DB|PAINT_SEMITONES) ? rWnd.bottom : round(dCenterPos));
+        pSegment = new CDrawSegmentSolid(*pDC, nFlags & (PAINT_DB|PAINT_SEMITONES) ? rWnd.bottom : round2Int(dCenterPos));
     }
 
     int nLineThickness = GetPenThickness(); // Sometimes Based on VScale
@@ -1514,9 +1514,9 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip) {
                 int nDisplayPos; // position in pixels to display boundary
                 do {
                     // calculate start boundary
-                    nDisplayPos = round((pOffsets->GetOffset(nLoop) - fDataStart)/fBytesPerPix);
+                    nDisplayPos = round2Int((pOffsets->GetOffset(nLoop) - fDataStart)/fBytesPerPix);
                     // calculate stop boundary
-                    int nDurationPos = round((pOffsets->GetStop(nLoop) - fDataStart)/fBytesPerPix);
+                    int nDurationPos = round2Int((pOffsets->GetStop(nLoop) - fDataStart)/fBytesPerPix);
                     // next string start
                     nLoop = pDoc->GetSegment(PHONETIC)->GetNext(nLoop);
                     // draw the lines
@@ -1684,14 +1684,14 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
                     m_dwHighLightPosition = (DWORD)fDataPos;
                 }
                 // SDM 1.06.6U4 align selection to graph aligned to pixels
-                nHighLightPixLeft = round(((double)m_dwHighLightPosition - fDataPos) / fBytesPerPix);
-                nHighLightPixRight = round(((double)(m_dwHighLightPosition + m_dwHighLightLength) - fDataPos) / fBytesPerPix);
+                nHighLightPixLeft = round2Int(((double)m_dwHighLightPosition - fDataPos) / fBytesPerPix);
+                nHighLightPixRight = round2Int(((double)(m_dwHighLightPosition + m_dwHighLightLength) - fDataPos) / fBytesPerPix);
             }
         }
         // this is the actual highlighted rectangle in the plot
         CRect rOldHi(nHighLightPixLeft - 1, rWnd.top, nHighLightPixRight + 1, rWnd.bottom);
-        nHighLightPixLeft = round(((double)dwStart - fDataPos) / fBytesPerPix);
-        nHighLightPixRight = round(((double)dwStop - fDataPos) / fBytesPerPix);
+        nHighLightPixLeft = round2Int(((double)dwStart - fDataPos) / fBytesPerPix);
+        nHighLightPixRight = round2Int(((double)dwStop - fDataPos) / fBytesPerPix);
         // this is the new highlighted rectangle in the plot
         CRect rNewHi(nHighLightPixLeft - 1, rWnd.top, nHighLightPixRight + 1, rWnd.bottom);
 
@@ -1797,8 +1797,8 @@ BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
                 dwHighLightLength -= ((DWORD)fDataPos - m_dwHighLightPosition);
             }
             // SDM 1.06.6U4 align selection to graph aligned to pixels
-            nHighLightPixLeft = round(((double)dwHighLightPosition - fDataPos) / fBytesPerPix);
-            nHighLightPixRight = round(((double)(dwHighLightPosition + dwHighLightLength) - fDataPos) / fBytesPerPix);
+            nHighLightPixLeft = round2Int(((double)dwHighLightPosition - fDataPos) / fBytesPerPix);
+            nHighLightPixRight = round2Int(((double)(dwHighLightPosition + dwHighLightLength) - fDataPos) / fBytesPerPix);
         }
     }
     // get background color from main frame
@@ -1855,13 +1855,6 @@ void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     pGraph->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); 
 
 	CMainFrame * pMainWnd = (CMainFrame*)AfxGetMainWnd();
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	bool usingAS = pApp->IsAudioSync();
-	bool recordingWnd = (GetParent()->GetPlotID()==IDD_RECORDING);
-    if ((usingAS)&&(recordingWnd)) {
-	    CWnd::OnRButtonDown(nFlags, point);
-		return;
-	}
 
 	// handle the floating popup menu
     CMenu menu;
@@ -2181,7 +2174,7 @@ DWORD CPlotWnd::CalcWaveOffsetAtPixel(CPoint pixel) {
     double fSamplesPerPix = nWidth ? (double)dwDataFrame / (double)(nWidth*nSmpSize) : 0.;
 
     // calculate the start cursor position
-    DWORD dwWaveOffset = (DWORD)(nSmpSize*round(fDataPos/nSmpSize + pixel.x * fSamplesPerPix));
+    DWORD dwWaveOffset = (DWORD)(nSmpSize*round2Int(fDataPos/nSmpSize + pixel.x * fSamplesPerPix));
     return dwWaveOffset;
 }
 

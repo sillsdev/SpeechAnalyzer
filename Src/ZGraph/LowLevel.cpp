@@ -196,16 +196,12 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
         // Get The R,G,B Color Values From the Current Brush
 
         LOGBRUSH logBrush;
-        GetObject((HBRUSH)InteriorColor,
-                  sizeof(LOGBRUSH),
-                  (PWCHAR)&logBrush);
+        GetObject((HBRUSH)InteriorColor,sizeof(LOGBRUSH),(PWCHAR)&logBrush);
 
-        COLORREF CurrentColor = logBrush.lbColor;
+        COLORREF brushColor = logBrush.lbColor;
 
         // Now Create a Brush That's Shaded
-
-        zOldBrush = (HBRUSH)SelectObject(hDC,
-                                         (zNewBrush = zCreateShadingBrush(CurrentColor)));
+        zOldBrush = (HBRUSH)SelectObject(hDC, (zNewBrush = zCreateShadingBrush(brushColor)));
     }
 #endif
 
@@ -282,16 +278,12 @@ void zLowLevelGraphics::zDraw3DBar(INT left, INT top,
             // Get The R,G,B Color Values From the Current Brush
 
             LOGBRUSH logBrush;
-            GetObject((HBRUSH)InteriorColor,
-                      sizeof(LOGBRUSH),
-                      (PWCHAR)&logBrush);
+            GetObject((HBRUSH)InteriorColor, sizeof(LOGBRUSH), (PWCHAR)&logBrush);
 
-            COLORREF CurrentColor = logBrush.lbColor;
+            COLORREF brushColor = logBrush.lbColor;
 
             // Now Create a Brush That's Shaded
-
-            zOldBrush = (HBRUSH)SelectObject(hDC,
-                                             (zNewBrush = zCreateShadingBrush(CurrentColor)));
+            zOldBrush = (HBRUSH)SelectObject(hDC, (zNewBrush = zCreateShadingBrush(brushColor)));
         }
 #endif
 
@@ -1434,8 +1426,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
     default: {
 #ifdef WINDOWS_PLATFORM
         // Switch to Font for Drawing Symbols & Save Old Font
-        HFONT hOldFont = (HFONT) SelectObject(hDC,
-                                              GetStockObject(DEVICE_DEFAULT_FONT));
+        HFONT save = (HFONT) SelectObject(hDC, GetStockObject(DEVICE_DEFAULT_FONT));
 #endif
 
         //
@@ -1450,7 +1441,7 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
 
 #ifdef WINDOWS_PLATFORM
         // Switch Back to Old Font
-        SelectObject(hDC, hOldFont);
+        SelectObject(hDC, save);
 #endif
     }
     break ;

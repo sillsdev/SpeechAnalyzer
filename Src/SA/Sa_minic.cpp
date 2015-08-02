@@ -105,8 +105,7 @@ BOOL CMiniCaptionWnd::Create(LPCTSTR lpszClassName,
 /***************************************************************************/
 BOOL CMiniCaptionWnd::PreCreateWindow(CREATESTRUCT & cs) {
     // register the window class
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	int rezID = (pApp->IsAudioSync())?IDR_MAINFRAME_AS:IDR_MAINFRAME_SA;
+	int rezID = IDR_MAINFRAME_SA;
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0,
                                        LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(rezID)));

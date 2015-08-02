@@ -216,7 +216,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     // Generate spectrogram.
     for (int wLoop = 0; wLoop < nWidth; wLoop = (wLoop + SpgmSetting.SpectBatchLength)) {
         // now fill up the special raw data buffer
-        DWORD dwDataPos = dwDataStart + round(wLoop*fSpectraInterval)*wSmpSize;
+        DWORD dwDataPos = dwDataStart + round2Int(wLoop*fSpectraInterval)*wSmpSize;
         DWORD dwBufferStart = 0;
 
         if (dwDataPos > (DWORD)wHalfCalcWindow) {

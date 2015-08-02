@@ -36,7 +36,7 @@
 #define MAINFRM_H__
 
 #include "sa_menu.h"
-#include "sa_sbar.h"
+#include "ProgressStatusBar.h"
 #include "taskbar.h"
 #include "fnkeys.h"
 #include "colors.h"
@@ -46,6 +46,7 @@
 #include "ToolSettings.h"
 #include "SpectroParm.h"
 #include "SaParam.h"
+#include "DataStatusBar.h"
 
 class CDlgFind;
 class CSegment;
@@ -322,7 +323,6 @@ protected:
     CProgressStatusBar  m_progressStatusBar;   // status control bar embedded object for progress
     CToolBar            m_wndToolBarBasic;
     CToolBar            m_wndToolBarAdvanced;
-    CToolBar            m_wndToolBarSAB;
     CTaskBar            m_wndTaskBar;
     CSaWorkbenchView  * m_pWorkbenchView;      // workbench view
     bool                m_bFindOnly;           // find/replace is only find

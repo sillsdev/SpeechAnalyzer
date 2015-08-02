@@ -663,7 +663,6 @@ void CLegendWnd::OnDraw(CDC * pDC,
     ::MoveWindow(m_hUpButton,   6, YUp,  20, 20, TRUE);
 
     // get pointer view and document
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     // set font colors
@@ -695,28 +694,12 @@ void CLegendWnd::OnDraw(CDC * pDC,
         IDS_WINDOW_MUSIC_PL4
     };
 
-    int resourceIndexAS[] = {
-        IDS_WINDOW_PHONETIC_AS,
-        IDS_WINDOW_TONE,
-        IDS_WINDOW_PHONEMIC,
-        IDS_WINDOW_ORTHO,
-        IDS_WINDOW_GLOSS_AS,
-        IDS_WINDOW_GLOSS_NAT,
-        IDS_WINDOW_REFERENCE_AS,
-        IDS_WINDOW_MUSIC_PL1,
-        IDS_WINDOW_MUSIC_PL2,
-        IDS_WINDOW_MUSIC_PL3,
-        IDS_WINDOW_MUSIC_PL4_AS
-    };
-
-	bool usingAS = pApp->IsAudioSync();
-
     CString szText;
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         int current = CGraphWnd::m_anAnnWndOrder[nLoop];
         if (pGraph->HaveAnnotation(current)) {
             // gloss window is visible
-			int rid = (usingAS)?resourceIndexAS[current]:resourceIndex[current];
+			int rid = resourceIndex[current];
             szText.LoadString(rid);
             if (pDC->IsPrinting()) {
                 rWnd.bottom += printAnnotation[current].Height();
@@ -846,7 +829,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
                 int nLogPos = (int) floor(m_fBase);
                 int nLogDisp = (int) ceil(dScaleMinValue / pow(10, floor(m_fBase)));
                 double fPixelBase = rWnd.top + m_dFirstGridPos + (m_fBase - nLogPos) * m_fGridDistance;
-                int nPixelPos = round(fPixelBase);
+                int nPixelPos = round2Int(fPixelBase);
                 int nLastNumber = nPixelPos + 2 * tm.tmHeight;
                 int nBase = (int)pow(10, (double)nLogPos);
                 while (nPixelPos > nLineTopLimit) {
@@ -854,7 +837,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
                         nLogDisp = 1;
                         nLogPos++;
                         fPixelBase -= m_fGridDistance;
-                        nPixelPos = round(fPixelBase);
+                        nPixelPos = round2Int(fPixelBase);
                         if (nPixelPos > nLineTopLimit) {
                             // draw large line
                             pDC->MoveTo(nHorPos - 3, nPixelPos);
@@ -865,7 +848,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
                         nBase = (int)pow(10, (double)nLogPos);
                     } else {
                         // draw small line
-                        nPixelPos = round(fPixelBase - log10((double)nLogDisp) * m_fGridDistance);
+                        nPixelPos = round2Int(fPixelBase - log10((double)nLogDisp) * m_fGridDistance);
                         if (nPixelPos > nLineTopLimit) {
                             pDC->MoveTo(nHorPos - 2, nPixelPos);
                             pDC->LineTo(nHorPos, nPixelPos);
@@ -909,7 +892,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
                 // there are positive values or no magnify (we need at least the zero line)
                 for (double dLoop = dScaleMinLoopValue; m_fBase > 0 ? dLoop <= dScaleMaxLoopValue : dLoop >= dScaleMaxLoopValue; dLoop += (m_fBase / 2)) {
                     // calculate line position
-                    int nPos = round(rWnd.bottom - (double)(1 - m_d3dOffset)*(dLoop - dScaleMinValue) / m_fNumbPerPix);
+                    int nPos = round2Int(rWnd.bottom - (double)(1 - m_d3dOffset)*(dLoop - dScaleMinValue) / m_fNumbPerPix);
                     if (nPos <= nLineTopLimit) {
                         break;
                     }

@@ -25,6 +25,7 @@
 #include "sa.h"
 #include "sa_annot.h"
 #include "sa_view.h"
+#include "Colors.h"
 
 //###########################################################################
 // CDlgOptionsViewPage property page
@@ -267,7 +268,6 @@ void CDlgOptionsViewPage::OnChange() {
 }
 
 const int CDlgOptionsViewPage::IndexToStyle[] = {
-
     // refers to entries in StyleList in Init
     0,
     3,
@@ -329,11 +329,13 @@ void CDlgOptionsViewPage::EnableDynamicUpdate(BOOL bState) {
 // cation.
 
 BEGIN_MESSAGE_MAP(CDlgOptionsColorPage, CPropertyPage)
-    ON_BN_CLICKED(IDC_DEFAULT, OnDefault)
-    ON_BN_CLICKED(IDC_SYSTEM, OnSystem)
+    ON_BN_CLICKED(IDC_DEFAULT, OnDefaultColors)
+    ON_BN_CLICKED(IDC_SYSTEM, OnSystemColors)
+    ON_BN_CLICKED(IDC_PASTEL, OnPastelColors)
     ON_BN_CLICKED(IDC_CHGCOLOR_ANNOT, OnChgColorAnnot)
     ON_BN_CLICKED(IDC_CHGCOLOR_GRAPH, OnChgColorGraph)
     ON_BN_CLICKED(IDC_CHGCOLOR_OVRLY, OnChgColorOvrly)
+    ON_BN_CLICKED(IDC_CHGCOLOR_TASKBAR, OnChgColorTaskbar)
     ON_BN_CLICKED(IDC_CHGCOLOR_SCALE, OnChgColorScale)
 END_MESSAGE_MAP()
 
@@ -429,22 +431,24 @@ ColorComboInfo GraphColorsComboInfo[] = {
 };
 
 ColorComboInfo AnnotColorsComboInfo[] = {
-
     {_T("Phonetic Background"),    0L},
-    {_T("Phonetic Fonts"),         0L},
+    {_T("Phonetic Font"),          0L},
     {_T("Tone Background"),        0L},
-    {_T("Tone Fonts"),             0L},
+    {_T("Tone Font"),              0L},
     {_T("Phonemic Background"),    0L},
-    {_T("Phonemic Fonts"),         0L},
-    {_T("Orthographic Background"), 0L},
-    {_T("Orthographic Fonts"),      0L},
-    {_T("Gloss Background"),       0L},
-    {_T("Gloss Fonts"),            0L},
-    {NULL,                     0L}
+    {_T("Phonemic Font"),          0L},
+    {_T("Orthographic Background"),0L},
+    {_T("Orthographic Font"),      0L},
+    {_T("Gloss Eng. Background"),  0L},
+    {_T("Gloss Eng. Font"),        0L},
+    {_T("Gloss Nat. Background"),  0L},
+    {_T("Gloss Nat. Font"),        0L},
+    {_T("Reference Background"),   0L},
+    {_T("Reference Font"),         0L},
+    {NULL,                         0L}
 };
 
 ColorComboInfo ScaleColorsComboInfo[] = {
-
     {_T("Background"), 0L},
     {_T("Lines"),      0L},
     {_T("Fonts"),      0L},
@@ -452,13 +456,19 @@ ColorComboInfo ScaleColorsComboInfo[] = {
 };
 
 ColorComboInfo OvrlyColorsComboInfo[] = {
-
     {_T("Overlay 1 Data"), 0L},
     {_T("Overlay 2 Data"), 0L},
     {_T("Overlay 3 Data"), 0L},
     {_T("Overlay 4 Data"), 0L},
     {_T("Overlay 5 Data"), 0L},
     {NULL,             0L}
+};
+
+ColorComboInfo TaskbarColorsComboInfo[] = {
+    {_T("Phonetic Background"),	0L},
+    {_T("Music Background"),	0L},
+    {_T("Font"),				0L},
+    {NULL,                      0L}
 };
 
 /***************************************************************************/
@@ -470,7 +480,9 @@ CDlgOptionsColorPage::CDlgOptionsColorPage() : CPropertyPage(CDlgOptionsColorPag
     m_nAnnotationSelect = -1;
     m_nScaleSelect = -1;
     m_nOverlaySelect = -1;
-    m_cColors.SetupDefault(); // set the internal color structure back to default
+    m_nTaskbarSelect = -1;
+	// set the internal color structure back to default
+    m_cColors.SetupColors(Colors::SYSTEM); 
 }
 
 /***************************************************************************/
@@ -481,7 +493,8 @@ void CDlgOptionsColorPage::DoDataExchange(CDataExchange * pDX) {
     DDX_CBIndex(pDX, IDC_COLORSGRAPHSETUP, m_nGraphSelect);
     DDX_CBIndex(pDX, IDC_COLORSANNOTSETUP, m_nAnnotationSelect);
     DDX_CBIndex(pDX, IDC_COLORSSCALESETUP, m_nScaleSelect);
-    DDX_CBIndex(pDX, IDC_COLORSOVERLAY,    m_nOverlaySelect);
+    DDX_CBIndex(pDX, IDC_COLORSOVERLAY, m_nOverlaySelect);
+    DDX_CBIndex(pDX, IDC_COLORSTASKBAR, m_nTaskbarSelect);
 }
 
 /***************************************************************************/
@@ -499,7 +512,7 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings) {
         m_GraphItemColors.SetItemDataPtr(i, &GraphColorsComboInfo[i]);
     }
 
-    for (i = 0; AnnotColorsComboInfo[i].pszColorItem; i++) {
+    for (i = 0; (AnnotColorsComboInfo[i].pszColorItem!=NULL); i++) {
         if (bAddStrings) {
             m_AnnotItemColors.AddString(NULL);
         }
@@ -511,7 +524,7 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings) {
         m_AnnotItemColors.SetItemDataPtr(i, &AnnotColorsComboInfo[i]);
     }
 
-    for (i = 0; ScaleColorsComboInfo[i].pszColorItem; i++) {
+    for (i = 0; (ScaleColorsComboInfo[i].pszColorItem!=NULL); i++) {
         if (bAddStrings) {
             m_ScaleItemColors.AddString(NULL);
         }
@@ -519,12 +532,20 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings) {
         m_ScaleItemColors.SetItemDataPtr(i, &ScaleColorsComboInfo[i]);
     }
 
-    for (i = 0; OvrlyColorsComboInfo[i].pszColorItem; i++) {
+    for (i = 0; (OvrlyColorsComboInfo[i].pszColorItem!=NULL); i++) {
         if (bAddStrings) {
             m_OvrlyItemColors.AddString(NULL);
         }
         OvrlyColorsComboInfo[i].cColor = m_cColors.cPlotData[i];
         m_OvrlyItemColors.SetItemDataPtr(i, &OvrlyColorsComboInfo[i]);
+    }
+
+    for (i = 0; (TaskbarColorsComboInfo[i].pszColorItem!=NULL); i++) {
+        if (bAddStrings) {
+            m_TaskbarItemColors.AddString(NULL);
+        }
+        TaskbarColorsComboInfo[i].cColor = *(&m_cColors.cTaskbarPhoneticBkg + i);
+        m_TaskbarItemColors.SetItemDataPtr(i, &TaskbarColorsComboInfo[i]);
     }
 
     //************************************************************
@@ -538,6 +559,7 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings) {
         GetDlgItem(IDC_COLORSANNOTSETUP)->Invalidate();
         GetDlgItem(IDC_COLORSSCALESETUP)->Invalidate();
         GetDlgItem(IDC_COLORSOVERLAY)->Invalidate();
+        GetDlgItem(IDC_COLORSTASKBAR)->Invalidate();
     }
 }
 
@@ -547,7 +569,7 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings) {
 BOOL CDlgOptionsColorPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
-    m_bColorsChanged = FALSE;
+    m_bColorsChanged = false;
 
     //**************************************************************
     // The following added by DDO - 08/12/00
@@ -555,12 +577,14 @@ BOOL CDlgOptionsColorPage::OnInitDialog() {
     m_GraphItemColors.SubclassDlgItem(IDC_COLORSGRAPHSETUP, this);
     m_AnnotItemColors.SubclassDlgItem(IDC_COLORSANNOTSETUP, this);
     m_ScaleItemColors.SubclassDlgItem(IDC_COLORSSCALESETUP, this);
-    m_OvrlyItemColors.SubclassDlgItem(IDC_COLORSOVERLAY,    this);
+    m_OvrlyItemColors.SubclassDlgItem(IDC_COLORSOVERLAY, this);
+    m_TaskbarItemColors.SubclassDlgItem(IDC_COLORSTASKBAR, this);
     FillColorComboBoxInfo(TRUE);
     m_nGraphSelect      = 0;
     m_nAnnotationSelect = 0;
     m_nScaleSelect      = 0;
     m_nOverlaySelect    = 0;
+    m_nTaskbarSelect    = 0;
     UpdateData(FALSE);
 
     LOGFONT logFont;
@@ -585,7 +609,7 @@ BOOL CDlgOptionsColorPage::ChangeColor(COLORREF * pColor) {
     if (dlgColor.DoModal() == IDOK) {
         if (*pColor != dlgColor.m_cc.rgbResult) {
             *pColor = dlgColor.m_cc.rgbResult;
-            m_bColorsChanged = TRUE;
+            m_bColorsChanged = true;
             SetModified();
             FillColorComboBoxInfo(FALSE);
             return TRUE;
@@ -626,6 +650,18 @@ void CDlgOptionsColorPage::OnChgColorAnnot() {
 /***************************************************************************/
 // DDO - 08/12/00
 /***************************************************************************/
+void CDlgOptionsColorPage::OnChgColorOvrly() {
+
+    UpdateData(TRUE);
+    if (m_nOverlaySelect >= 0) {
+        ChangeColor(&(m_cColors.cPlotData[m_nOverlaySelect]));
+    }
+    GetDlgItem(IDC_COLORSOVERLAY)->SetFocus();
+}
+
+/***************************************************************************/
+// DDO - 08/12/00
+/***************************************************************************/
 void CDlgOptionsColorPage::OnChgColorScale() {
 
     UpdateData(TRUE);
@@ -638,35 +674,48 @@ void CDlgOptionsColorPage::OnChgColorScale() {
 /***************************************************************************/
 // DDO - 08/12/00
 /***************************************************************************/
-void CDlgOptionsColorPage::OnChgColorOvrly() {
+void CDlgOptionsColorPage::OnChgColorTaskbar() {
 
     UpdateData(TRUE);
-    if (m_nOverlaySelect >= 0) {
-        ChangeColor(&(m_cColors.cPlotData[m_nOverlaySelect]));
+    if (m_nTaskbarSelect >= 0) {
+		ChangeColor(&m_cColors.cTaskbarPhoneticBkg + m_nTaskbarSelect);
     }
-    GetDlgItem(IDC_COLORSOVERLAY)->SetFocus();
+    GetDlgItem(IDC_COLORSTASKBAR)->SetFocus();
 }
 
 /***************************************************************************/
-// CDlgOptionsColorPage::OnDefault Button default hit
+// CDlgOptionsColorPage::OnDefaultColors Button default hit
 /***************************************************************************/
-void CDlgOptionsColorPage::OnDefault() {
+void CDlgOptionsColorPage::OnDefaultColors() {
 
-    m_cColors.SetupDefault(FALSE);
-    m_bColorsChanged = TRUE;
+    m_cColors.SetupColors(Colors::DEFAULT);
+    m_bColorsChanged = true;
     SetModified();
-    FillColorComboBoxInfo(FALSE);  // DDO - 08/12/00
+    FillColorComboBoxInfo(FALSE);	// DDO - 08/12/00
 }
 
 /***************************************************************************/
-// CDlgOptionsColorPage::OnSystem Button system colors hit
+// CDlgOptionsColorPage::OnSystemColors Button system colors hit
 /***************************************************************************/
-void CDlgOptionsColorPage::OnSystem() {
+void CDlgOptionsColorPage::OnSystemColors() {
 
-    m_cColors.SetupDefault(); // set the internal color structure to system
-    m_bColorsChanged = TRUE;
+	// set the internal color structure to system
+    m_cColors.SetupColors(Colors::SYSTEM);
+    m_bColorsChanged = true;
     SetModified();
-    FillColorComboBoxInfo(FALSE);  // DDO - 08/12/00
+    FillColorComboBoxInfo(FALSE);	// DDO - 08/12/00
+}
+
+/***************************************************************************/
+// CDlgOptionsColorPage::OnPastelColors Button pastel colors hit
+/***************************************************************************/
+void CDlgOptionsColorPage::OnPastelColors() {
+
+	// set the internal color structure to pastel
+    m_cColors.SetupColors(Colors::PASTEL);
+    m_bColorsChanged = true;
+    SetModified();
+    FillColorComboBoxInfo(FALSE);
 }
 
 //###########################################################################
@@ -1200,10 +1249,6 @@ CDlgToolsOptions::CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent, bool full
         AddPage(&m_dlgSavePage);
     }
     AddPage(&m_dlgAudioPage);
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		AddPage(&m_dlgAudioSyncPage);
-	}
 }
 
 /***************************************************************************/
@@ -1338,6 +1383,7 @@ CToolSettings CDlgToolsOptions::GetSettings(bool full) {
         settings.m_nAnnotationSelect = m_dlgColorPage.m_nAnnotationSelect;
         settings.m_nScaleSelect = m_dlgColorPage.m_nScaleSelect;
         settings.m_nOverlaySelect = m_dlgColorPage.m_nOverlaySelect;
+        settings.m_nTaskbarSelect = m_dlgColorPage.m_nTaskbarSelect;
 
         //font page
         settings.m_bFontChanged = m_dlgFontPage.m_bFontChanged;
@@ -1363,12 +1409,7 @@ CToolSettings CDlgToolsOptions::GetSettings(bool full) {
     // audio page
     settings.m_bShowAdvancedAudio = m_dlgAudioPage.m_bShowAdvancedAudio;
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	if (pApp->IsAudioSync()) {
-		settings.m_nAlgorithm = m_dlgAudioSyncPage.GetAlgorithm();
-	}
-
-    return settings;
+	return settings;
 }
 
 void CDlgToolsOptions::ApplyNow() {

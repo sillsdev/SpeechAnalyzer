@@ -429,7 +429,7 @@ void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos) {
     if (bLessThanPage) {
         // prepare scrolling
         double fBytesPerPix = dwDataFrame / (double)rWnd.Width(); // calculate data samples per pixel
-        int nRealScroll = round((double)dwOldPos/fBytesPerPix)-round((double)dwNewPos/fBytesPerPix);
+        int nRealScroll = round2Int((double)dwOldPos/fBytesPerPix)-round2Int((double)dwNewPos/fBytesPerPix);
 
         if (nRealScroll) {
             // scroll the plot window
@@ -657,7 +657,7 @@ static void UpdatePitchStatusBarNote(double fPitchData, double fUncertainty, BOO
         // calculate frequency value
         double fFreqDecPlaces = (short)floor(-log10(fUncertainty) + .7);
         double fMultiplier = pow(10.0, -fFreqDecPlaces);
-        fPitchData = round(fPitchData / fMultiplier) * fMultiplier;
+        fPitchData = round2Int(fPitchData / fMultiplier) * fMultiplier;
         if (fFreqDecPlaces < 0.) {
             fFreqDecPlaces = 0.;
         }

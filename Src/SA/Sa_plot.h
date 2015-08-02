@@ -365,7 +365,7 @@ public:
     }
 
     virtual int GetX(double fSample) const {
-        return round(fSample);
+        return round2Int(fSample);
     }
     virtual double GetSample(int x) const {
         return x;
@@ -381,7 +381,7 @@ public:
     }
 
     virtual int GetX(double fSamples) const {
-        return round((fSamples - m_fSampleAtZero)*m_fXPerSample);
+        return round2Int((fSamples - m_fSampleAtZero)*m_fXPerSample);
     }
     virtual double GetSample(int x) const {
         return x*m_fSamplesPerX + m_fSampleAtZero;
@@ -400,7 +400,7 @@ public:
     }
 
     virtual int GetY(double fPos) const {
-        return round(fPos);
+        return round2Int(fPos);
     }
     virtual double GetValue(int y) const {
         return y;
@@ -416,7 +416,7 @@ public:
     }
 
     virtual int GetY(double fValue) const {
-        return round(fValue*m_fYPerValue + m_fYAtZero);
+        return round2Int(fValue*m_fYPerValue + m_fYAtZero);
     }
     virtual double GetValue(int y) const {
         return (y-m_fYAtZero)*m_fValuePerY;
@@ -437,7 +437,7 @@ public:
     }
 
     virtual int GetY(double fValue) const {
-        return round(fValue > 0 ? log10(fValue)*m_fLogScale + m_fLogOffset : m_fLogScale*100.);
+        return round2Int(fValue > 0 ? log10(fValue)*m_fLogScale + m_fLogOffset : m_fLogScale*100.);
     }
     virtual double GetValue(int y) const {
         return pow(10,(y-m_fLogOffset)*m_fLogInvScale);

@@ -602,7 +602,7 @@ public:
     };
 
     void load(Element * in) {
-        printf("loading range %lp\n",in);
+        printf("loading range %p\n",in);
         expect(in,name);
         load_attribute(id,in);
         load_attribute(guid,in);
@@ -752,7 +752,7 @@ public:
     };
 
     void load(Element * in) {
-        printf("loading ranges %lp\n",in);
+        printf("loading ranges %p\n",in);
         expect(in,name);
         load_element(range,in);
     };

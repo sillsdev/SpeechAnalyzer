@@ -646,7 +646,7 @@ void zGraph::zzShowXAxisNumbers(INT x_left, INT x_right) {
             // Show a Text String
             //
             if (i < zMAX_ITEM_TITLES  &&  ItemTitle[i] != NULL) {
-                swprintf_s(zbuf, _countof(zbuf), _T("%s"), ItemTitle[i]);
+                swprintf_s(zbuf, _countof(zbuf), _T("%s"), ItemTitle);
             } else {
                 // Alert User that Not Enough Item Titles Were Given
                 //  Or Perhaps There Are Too Many Axis Divisions!

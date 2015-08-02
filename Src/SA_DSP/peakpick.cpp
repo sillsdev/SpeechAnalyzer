@@ -313,7 +313,7 @@ dspError_t CPeakPicker::GetBumps(SBumpTableEntry ** ppBumpTable, uint32 * pBumpC
 
         if (bConcave) {
             float FirstDerivRoot;
-            dspError_t Err = m_pParabola->FindFirstDerivRoot(&FirstDerivRoot);
+            Err = m_pParabola->FindFirstDerivRoot(&FirstDerivRoot);
             if (!Err) {
                 if (FirstDerivRoot > 0.F) {
                     m_BumpTable[m_dwBumpCount].Distance = FirstDerivRoot;   // override default because peak actually to right of 0
@@ -325,7 +325,7 @@ dspError_t CPeakPicker::GetBumps(SBumpTableEntry ** ppBumpTable, uint32 * pBumpC
             }
             while (++y < pEnd) {
                 // flush (ignore) data until curve turns convex
-                dspError_t Err = m_pParabola->FitCurve(y-1, 3);   // fit the next 3 data points to a parabola
+                Err = m_pParabola->FitCurve(y-1, 3);   // fit the next 3 data points to a parabola
                 if (Err) {
                     return(Err);
                 }
@@ -428,7 +428,7 @@ dspError_t CPeakPicker::FindNextBump(SBumpTableEntry * pBump, const float ** ppS
         // Just in case the data points never turn convex, check to see if a peak occurs between y-1 and y
         // in the parabola and save the location and amplitude if it does.
         float FirstDerivRoot;
-        dspError_t Err = m_pParabola->FindFirstDerivRoot(&FirstDerivRoot);
+        Err = m_pParabola->FindFirstDerivRoot(&FirstDerivRoot);
         if (!Err) {
             if (FirstDerivRoot >= 0.F && FirstDerivRoot < 1.F) {
                 // peak found

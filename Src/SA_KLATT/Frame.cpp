@@ -116,7 +116,7 @@ void CKSynth::senswave(TEMPORAL * parameters, INT16 * wave) {
         sample = next_sample();
         if (sample <= 32767) {
             if (sample >= -32768) {
-                wave[index] = (INT16) round(sample);    /* round, not truncate */
+                wave[index] = (INT16) round2Int(sample);    /* round, not truncate */
             } else {
                 wave[index] = -32768;
             }

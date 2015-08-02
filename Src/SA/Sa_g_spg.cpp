@@ -490,7 +490,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC * pDC, CRect rWnd, CRect rClip, CSa
         for (int y = 0; y < rWnd.bottom; y++) {
             short nSpectrumIndex = (short) floor(fSpectrumIndex);
             double dBottom = fSpectrumIndex - nSpectrumIndex;
-            pBottom[y] = (unsigned char)round(dBottom * 128);
+            pBottom[y] = (unsigned char)round2Int(dBottom * 128);
             pIndex[y] = nSpectrumIndex;
 
             fSpectrumIndex += fSpectrumPointsPerPix;

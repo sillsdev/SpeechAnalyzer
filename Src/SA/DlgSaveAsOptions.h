@@ -22,6 +22,8 @@ public:
     ESaveArea mSaveArea;
     EShowFiles mShowFiles;
     EFileFormat mFileFormat;
+	ESamplingRate mSamplingRate;
+
     bool mStereo;
     bool mSaveAs;
 

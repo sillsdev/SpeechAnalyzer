@@ -142,10 +142,10 @@
     <ClCompile Include="AutoSegmentation.cpp" />
     <ClCompile Include="ChildFrame.cpp" />
     <ClCompile Include="ClipboardHelper.cpp" />
+    <ClCompile Include="DataStatusBar.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
-    <ClCompile Include="DlgASStart.cpp" />
     <ClCompile Include="DlgExportFW.cpp" />
     <ClCompile Include="DlgExportFWResult.cpp" />
     <ClCompile Include="DlgExportLift.cpp" />
@@ -345,7 +345,7 @@
     <ClCompile Include="sa_ipa.cpp" />
     <ClCompile Include="Sa_menu.cpp" />
     <ClCompile Include="Sa_minic.cpp" />
-    <ClCompile Include="Sa_sbar.cpp" />
+    <ClCompile Include="ProgressStatusBar.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="SA_View.cpp" />
     <ClCompile Include="Sa_wave.cpp" />
@@ -383,7 +383,7 @@
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="array_ptr.h" />
     <ClInclude Include="AutoSegmentation.h" />
-    <ClInclude Include="DlgASStart.h" />
+    <ClInclude Include="DataStatusBar.h" />
     <ClInclude Include="DlgAutoRecorder.h" />
     <ClInclude Include="AutoSave.h" />
     <ClInclude Include="ChildFrame.h" />
@@ -543,7 +543,7 @@
     <ClInclude Include="Sa_minic.h" />
     <ClInclude Include="SA_MPLOT.H" />
     <ClInclude Include="Sa_plot.h" />
-    <ClInclude Include="SA_SBAR.H" />
+    <ClInclude Include="ProgressStatusBar.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="SA_View.h" />
     <ClInclude Include="SA_W_DOC.H" />

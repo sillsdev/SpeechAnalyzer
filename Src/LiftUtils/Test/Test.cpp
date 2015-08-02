@@ -12,7 +12,7 @@
 #pragma comment( lib, "gtest_main")
 #pragma comment( lib, "uriparser")
 
-int round(double value) {
+int round2Int(double value) {
     return (int)floor(value + 0.5);
 }
 
