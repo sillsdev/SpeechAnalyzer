@@ -44,7 +44,7 @@ CWaveWriter::~CWaveWriter() {
 * up to the nearest byte size and the unused bytes are set to 0 and ignored.
 *
 */
-void CWaveWriter::write(LPCTSTR afilename, DWORD /*dwFlags*/, WORD bitsPerSample, WORD formatTag, WORD channels, DWORD samplesPerSec, vector<char> & buffer) {
+void CWaveWriter::Write(LPCTSTR afilename, DWORD /*dwFlags*/, WORD bitsPerSample, WORD formatTag, WORD channels, DWORD samplesPerSec, vector<char> & buffer) {
 
     if (bitsPerSample==0) {
         throw invalid_argument("bitsPerSample");

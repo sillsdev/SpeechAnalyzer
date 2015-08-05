@@ -19,5 +19,5 @@ using std::invalid_argument;
 * @param in the input data array
 * @param out the output data array
 */
-extern void extractChannel(WORD channel, WORD numChannels, WORD blockAlign, vector<char> & in, vector<char> & out);
+extern void ExtractChannel(WORD channel, WORD numChannels, WORD blockAlign, vector<char> & in, vector<char> & out);
 

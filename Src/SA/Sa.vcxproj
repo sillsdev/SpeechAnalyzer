@@ -289,6 +289,7 @@
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
     <ClCompile Include="ScopedCursor.cpp" />
+    <ClCompile Include="ScopedStatusBar.cpp" />
     <ClCompile Include="SegmentOps.cpp" />
     <ClCompile Include="SelfTest.cpp" />
     <ClCompile Include="SFMHelper.cpp" />
@@ -296,6 +297,7 @@
     <ClCompile Include="SplitFileUtils.cpp" />
     <ClCompile Include="StartCursorWnd.cpp" />
     <ClCompile Include="StopCursorWnd.cpp" />
+    <ClCompile Include="StopWatch.cpp" />
     <ClCompile Include="StringStream.cpp" />
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="DlgKlattAll.cpp" />
@@ -355,7 +357,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="StpWatch.cpp" />
     <ClCompile Include="TaskBar.cpp" />
     <ClCompile Include="Undoredo.cpp" />
     <ClCompile Include="UnicodeString.cpp" />
@@ -504,6 +505,7 @@
     <ClInclude Include="SA_Annot.h" />
     <ClInclude Include="sa_resource.h" />
     <ClInclude Include="ScopedCursor.h" />
+    <ClInclude Include="ScopedStatusBar.h" />
     <ClInclude Include="SegmentOps.h" />
     <ClInclude Include="SegmentSelection.h" />
     <ClInclude Include="SA_Asert.h" />
@@ -558,7 +560,7 @@
     <ClInclude Include="StartCursorWnd.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StopCursorWnd.h" />
-    <ClInclude Include="StpWatch.h" />
+    <ClInclude Include="StopWatch.h" />
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="DlgKlattAll.h" />

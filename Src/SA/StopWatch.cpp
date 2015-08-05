@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "stpwatch.h"
-
+#include "StopWatch.h"
 
 /***************************************************************************/
 // CStopwatch::CreateObject

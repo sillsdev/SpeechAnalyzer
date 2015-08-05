@@ -1,3 +1,7 @@
+SA - 3.1.0.128 8/4/2015
+Removed message that occurs when application is converting a incoming wave file to 16-bit format.  Text is now displayed on the status bar during the conversion.
+Modified the 'SaveAs' dialog so that the user now has the choice to downsample the file to 22khz or 44khz, dependent on the current wave file sample rate.
+
 SA - 3.1.0.127 7/26/2015
 Install bug fixes.
 Changed application install name from 'Speech Analyzer MSEA Beta' to 'Speech Analyzer MSEA'.

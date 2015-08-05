@@ -141,9 +141,9 @@ BEGIN
     CONTROL         "&Mono",IDC_SAVEAS_MONO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,187,35,52,10
     CONTROL         "&Right",IDC_SAVEAS_RIGHT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,187,49,47,10
     GROUPBOX        "File Format",IDC_GROUP_FILE_STATIC,181,8,78,56,WS_GROUP | WS_TABSTOP
-    CONTROL         "&22.050 KHz",IDC_SAVEAS_22K,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,270,22,55,10
-    CONTROL         "&44.100 KHz",IDC_SAVEAS_44K,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,270,35,55,10
-    CONTROL         "&48.000 KHz",IDC_SAVEAS_48K,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,270,49,55,10
+    CONTROL         "Sample1",IDC_SAVEAS_SAMPLE1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,270,22,66,10
+    CONTROL         "Sample2",IDC_SAVEAS_SAMPLE2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,270,35,66,10
+    CONTROL         "Sample3",IDC_SAVEAS_SAMPLE3,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,270,49,66,10
     GROUPBOX        "Sampling Rate",IDC_GROUP_SAMPLING_RATE,264,8,78,56,WS_GROUP | WS_TABSTOP
 END
 
@@ -5537,6 +5537,7 @@ BEGIN
     IDS_STATTXT_PROCESSWBGENERATOR 
                             "Processing signal generator. Please wait..."
     IDS_STATTXT_PROCESSRAW  "Opening wave data.  Please wait..."
+    IDS_CONVERT_WAVE        "Converting wave data to 16-bit format."
 END
 
 STRINGTABLE
@@ -5888,7 +5889,6 @@ STRINGTABLE
 BEGIN
     IDS_MC_CHANNEL_LEFT     "Channel %1 (Left)"
     IDS_MC_CHANNEL_RIGHT    "Channel %1 (Right)"
-    IDS_SUPPORT_WAVE_COPY   "This file format is not directly editable by Speech Analyzer.\nSpeech Analyzer will now make a copy of the file and convert it to a supported format.\nYou can use 'Save As' to save this copy."
     IDS_NO_CHOICE           "Select Export Type..."
     IDS_ROWS                "Rows"
     IDS_INTERLINEAR         "Interlinear"

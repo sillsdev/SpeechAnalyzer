@@ -169,12 +169,6 @@ enum EFileFormat {
     formatRight = 2
 };
 
-enum ESamplingRate {
-	samplingRate22K = 0,
-	samplingRate44k = 1,
-	samplingRate48k = 2
-};
-
 enum EGender {
     male = 0,
     female = 1,

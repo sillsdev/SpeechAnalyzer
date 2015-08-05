@@ -15,7 +15,8 @@ public:
     CWaveReader();
     ~CWaveReader();
 
-    void read(LPCTSTR filename, DWORD flags, WORD & bitsPerSample, WORD & formatTag, WORD & channels, DWORD & samplesPerSec, WORD & blockAlign, vector<char> & buffer);
+    void Read( LPCTSTR filename, DWORD flags, WORD & bitsPerSample, WORD & formatTag, WORD & channels, DWORD & samplesPerSec, WORD & blockAlign);
+    void Read( LPCTSTR filename, DWORD flags, WORD & bitsPerSample, WORD & formatTag, WORD & channels, DWORD & samplesPerSec, WORD & blockAlign, vector<char> & buffer);
 
 private:
     HMMIO hmmio;

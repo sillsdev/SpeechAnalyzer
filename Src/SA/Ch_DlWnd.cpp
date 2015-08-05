@@ -588,7 +588,7 @@ void CChartChar::OnMouseMove(UINT nFlags, CPoint point) {
     CWnd::OnMouseMove(nFlags, point);
 }
 
-static void playSoundFile(const CString & szSoundFile);
+static void PlaySoundFile(const CString & szSoundFile);
 
 /***************************************************************************/
 // CChartChar::OnTimer Timer event
@@ -639,7 +639,7 @@ void CChartChar::OnTimer(UINT nIDEvent) {
         }
 
         if (m_nPlayState == kStateSound) {
-            playSoundFile(m_szSoundFile);
+            PlaySoundFile(m_szSoundFile);
         }
 
         if (dwLength) {
@@ -678,7 +678,7 @@ bool CheckIPAHelp() {
     return (_taccess(szPathBuf,0)!=-1);
 }
 
-static void playSoundFile(const CString & szSoundFile) {
+static void PlaySoundFile(const CString & szSoundFile) {
     
 	if (szSoundFile.IsEmpty()) {
         return;

@@ -3,7 +3,7 @@
 
 using std::vector;
 
-void extractChannel(WORD channel, WORD numChannels, WORD blockAlign, vector<char> & in, vector<char> & out) {
+void ExtractChannel(WORD channel, WORD numChannels, WORD blockAlign, vector<char> & in, vector<char> & out) {
 
     out.clear();
     if (in.size()==0) {

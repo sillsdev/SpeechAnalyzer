@@ -7,6 +7,9 @@
 #include "errors.h"
 #include "mmreg.h"
 #include "msacm.h"
+#include <vector>
+
+using std::vector;
 
 #pragma comment( lib, "winmm" )
 #pragma comment( lib, "msacm32.lib")
@@ -39,6 +42,7 @@ public:
     };
 
     ECONVERT Resample(LPCTSTR infilename, LPCTSTR outfilename, IProgressUpdate & update);
+    ECONVERT Resample(LPCTSTR infilename, LPCTSTR outfilename, DWORD targetSamplesPerSec, IProgressUpdate & update);
 
 private:
     double Limit(double val);
@@ -59,7 +63,7 @@ private:
               double * coeffs,
               size_t upSmpFactor,
               size_t dwnSmpFactor,
-              double * datal,
+              vector<double> & datal,
               IProgressUpdate & progressUpdater);
 };
 

@@ -16,7 +16,7 @@ public:
     CWaveWriter();
     ~CWaveWriter();
 
-    void write(LPCTSTR filename, DWORD flags, WORD bitsPerSample, WORD formatTag, WORD channels, DWORD samplesPerSec, vector<char> & buffer);
+    void Write(LPCTSTR filename, DWORD flags, WORD bitsPerSample, WORD formatTag, WORD channels, DWORD samplesPerSec, vector<char> & buffer);
 
 private:
     HMMIO hmmio;

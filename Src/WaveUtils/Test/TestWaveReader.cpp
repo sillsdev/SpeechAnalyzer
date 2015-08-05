@@ -22,7 +22,7 @@ TEST(WaveReadTest, SimpleRead_01) {
     vector<char> buffer;
 
     CWaveReader wave;
-    wave.read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+    wave.Read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
     ASSERT_TRUE(channels==1)  << "expected stereo.";
     ASSERT_TRUE(bitsPerSample==16) << "expected 16 bits per sample";
     ASSERT_TRUE(formatTag==1) << "expected wave format";
@@ -44,7 +44,7 @@ TEST(WaveReadTest, SimpleRead_02) {
     vector<char> buffer;
 
     CWaveReader wave;
-    wave.read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+    wave.Read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
     ASSERT_TRUE(channels==4)  << "expected stereo.";
     ASSERT_TRUE(bitsPerSample==16) << "expected 16 bits per sample";
     ASSERT_TRUE(formatTag==1) << "expected wave format";
@@ -66,7 +66,7 @@ TEST(WaveReadTest, SimpleRead_03) {
     vector<char> buffer;
 
     CWaveReader wave;
-    wave.read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+    wave.Read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
     ASSERT_TRUE(channels==2)  << "expected stereo.";
     ASSERT_TRUE(bitsPerSample==24) << "expected 16 bits per sample";
     ASSERT_TRUE(formatTag==1) << "expected wave format";
@@ -88,7 +88,7 @@ TEST(WaveReadTest, SimpleRead_04) {
     vector<char> buffer;
 
     CWaveReader wave;
-    wave.read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+    wave.Read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
     ASSERT_TRUE(channels==2)  << "expected stereo.";
     ASSERT_TRUE(bitsPerSample==24) << "expected 16 bits per sample";
     ASSERT_TRUE(formatTag==1) << "expected wave format";

@@ -19,7 +19,8 @@ void test(LPCTSTR ifile) {
 
     wstring ifilename = buildSourcePath(ifile);
     wstring ofilename = buildResultPath(L"temp.wav");
-    CWaveResampler resampler;
+    
+	CWaveResampler resampler;
     CWaveResampler::ECONVERT result = resampler.Resample(ifilename.c_str(),ofilename.c_str(),updater);
     ASSERT_TRUE(result==CWaveResampler::EC_SUCCESS) << "expected success status";
 
@@ -31,9 +32,8 @@ void test(LPCTSTR ifile) {
     WORD blockAlign = 0;
     vector<char> buffer;
     CWaveReader reader;
-    reader.read(ofilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+    reader.Read(ofilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
     ASSERT_TRUE(bitsPerSample==16) << "expected 16 bits per sample";
-
 }
 
 TEST(Resampling, Test_01) {

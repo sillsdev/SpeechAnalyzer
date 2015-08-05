@@ -26,7 +26,7 @@ TEST(WaveWriteTest, InvalidParams_01) {
     }
 
     CWaveWriter writer;
-    EXPECT_THROW(writer.write(ofilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, buffer),invalid_argument);
+    EXPECT_THROW(writer.Write(ofilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, buffer),invalid_argument);
 };
 
 TEST(WaveWriteTest, SimpleWrite_01) {
@@ -46,12 +46,12 @@ TEST(WaveWriteTest, SimpleWrite_01) {
     }
 
     CWaveWriter writer;
-    writer.write(ofilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, buffer);
+    writer.Write(ofilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, buffer);
 
     wstring ifilename = ofilename;
     CWaveReader reader;
     flags = MMIO_READ | MMIO_DENYWRITE;
-    reader.read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+    reader.Read(ifilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
 
     ASSERT_TRUE(channels==2)  << "expected stereo.";
     ASSERT_TRUE(bitsPerSample==16) << "expected 16 bits per sample";
@@ -74,7 +74,7 @@ TEST(WaveWriteTest, ExtractChannel_01) {
     //TODO handle memory during exceptions
     vector<char> buffer;
     CWaveReader reader;
-    reader.read(ifilename.c_str(), MMIO_ALLOCBUF | MMIO_READ, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+    reader.Read(ifilename.c_str(), MMIO_ALLOCBUF | MMIO_READ, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
 
     DWORD numSamples = buffer.size()/blockAlign;
 
@@ -92,7 +92,7 @@ TEST(WaveWriteTest, ExtractChannel_01) {
     wstring ofilename = buildResultPath(L"left_ch.wav");
     WORD newChannels = 1;
     CWaveWriter writer;
-    writer.write(ofilename.c_str(), MMIO_CREATE | MMIO_WRITE, bitsPerSample, formatTag, newChannels, samplesPerSec, newBuffer);
+    writer.Write(ofilename.c_str(), MMIO_CREATE | MMIO_WRITE, bitsPerSample, formatTag, newChannels, samplesPerSec, newBuffer);
 };
 
 TEST(WaveWriteTest, ExtractChannel_02) {
@@ -107,13 +107,13 @@ TEST(WaveWriteTest, ExtractChannel_02) {
     //TODO handle memory during exceptions
     vector<char> buffer;
     CWaveReader reader;
-    reader.read(ifilename.c_str(),MMIO_ALLOCBUF | MMIO_READ, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+    reader.Read(ifilename.c_str(), MMIO_ALLOCBUF | MMIO_READ, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
 
     vector<char> newBuffer;
-    extractChannel(1,channels,blockAlign,buffer,newBuffer);
+    ExtractChannel(1,channels,blockAlign,buffer,newBuffer);
 
     wstring ofilename = buildResultPath(L"right_ch.wav");
     WORD newChannels = 1;
     CWaveWriter writer;
-    writer.write(ofilename.c_str(), MMIO_CREATE | MMIO_WRITE, bitsPerSample, formatTag, newChannels, samplesPerSec, newBuffer);
+    writer.Write(ofilename.c_str(), MMIO_CREATE | MMIO_WRITE, bitsPerSample, formatTag, newChannels, samplesPerSec, newBuffer);
 };

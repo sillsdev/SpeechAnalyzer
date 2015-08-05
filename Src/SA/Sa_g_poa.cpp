@@ -18,7 +18,7 @@
 #include "mainfrm.h"
 #include "sa_doc.h"
 #include "sa_view.h"
-#include "stpwatch.h"
+#include "StopWatch.h"
 #include "FaceDiag.h"
 #include "Process\sa_p_poa.h"
 #include "Lpc.h"

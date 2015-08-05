@@ -213,7 +213,10 @@
 #include "graphsTypes.h"
 #include "graphsParameters.h"
 
-#include "stpwatch.h"
+#include "StopWatch.h"
+
+#include "WaveUtils.h"
+#include "ScopedStatusBar.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -4668,6 +4671,7 @@ void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw) {
 // CSaView::OnKeyDown Keyboard interface
 /***************************************************************************/
 void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
+
     CProgressStatusBar * pStatusBar = NULL;
     CProcess * pProcessOwner = NULL;
     CRect rWnd;
@@ -8159,7 +8163,6 @@ void CSaView::MoveBoundary(bool start, bool left) {
             startGap = dwStart+minSeparation;
             dwStop = (dwStop<startGap)?startGap:dwStop;
             if (lastBoundaryStopCursor!=UNDEFINED_OFFSET) {
-                DWORD a = dwStop;
                 if ((left)&&(dwStop>startGap)) {
                     // 'pull' the stop cursor if necessary
                     dwStop = startGap;
@@ -11574,72 +11577,79 @@ void CSaView::OnUpdateFileSave(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnFileSaveAs() {
 
-	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	CSaDoc * pDoc = GetDocument();
-    const bool stereo = pDoc->GetNumChannels()>1;
+	CSaApp & app = *(CSaApp*)AfxGetApp();
+	CSaDoc & doc = *GetDocument();
+    const bool stereo = doc.GetNumChannels()>1;
 
     wstring original_name;
-	if (!pDoc->IsTempWaveEmpty()) {
-		original_name = pDoc->GetTempWave();
+	if (!doc.IsTempWaveEmpty()) {
+		original_name = doc.GetTempWave();
     } else {
-        original_name = pDoc->GetPathName();
+        original_name = doc.GetPathName();
     }
 
-    ESaveArea saveArea;
-    EShowFiles showFiles;
-    EFileFormat fileFormat;
-	ESamplingRate samplingRate;
-
-	bool sameFile = false;
 	wstring oldFile;
-	wstring newFile;
-	{
-		CString path = pDoc->GetPathName();
-		if (path.IsEmpty()) {
-			path = pDoc->GetFilenameFromTitle().c_str(); // get the current view caption string
-		}
-		path = FileUtils::ReplaceExtension( (LPCTSTR)path, L".wav").c_str();
 
-		CString defaultDir = pApp->GetDefaultDir();
-		oldFile = path;
-		CString extension = _T("wav");
-		CString filter = _T("WAV Files (*.wav)|*.wav||");
-		CDlgSaveAsOptions dlg( extension, path, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, filter, NULL, true, stereo);
-		if (dlg.DoModal()!=IDOK) {
-			return;
-		}
+	CString path = doc.GetPathName();
+	if (path.IsEmpty()) {
+		// get the current view caption string
+		path = doc.GetFilenameFromTitle().c_str(); 
+	}
+	path = FileUtils::ReplaceExtension( (LPCTSTR)path, L".wav").c_str();
 
-		sameFile = dlg.IsSameFile();
-		newFile = dlg.GetSelectedPath();
-		if (sameFile) {
-			dlg.mShowFiles = showNew; // There is only one file.
-			if ((stereo) && ((dlg.mFileFormat==formatMono) || (dlg.mFileFormat==formatRight))) {
-				((CSaApp *) AfxGetApp())->ErrorMessage(IDS_ERROR_NO_DUPE_FILENAME);
-				return;
-			}
-		} else if (pApp->IsFileOpened(newFile.c_str())) {
-			// error file already opened by SA
-			ErrorMessage(IDS_ERROR_FILEOPENED, newFile.c_str());
-			return;
-		}
-		saveArea = dlg.mSaveArea;
-		showFiles = dlg.mShowFiles;
-		fileFormat = dlg.mFileFormat;
-		samplingRate = dlg.mSamplingRate;
+	DWORD flags = MMIO_READ;
+	WORD bitsPerSample = 0;
+	WORD formatTag = 0;
+	WORD channels = 0;
+	DWORD samplesPerSec = 0;
+	WORD blockAlign = 0;
+	CWaveReader reader;
+	reader.Read( path, flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign);
+
+	CString defaultDir = app.GetDefaultDir();
+	oldFile = path;
+	CString extension = _T("wav");
+	CString filter = _T("WAV Files (*.wav)|*.wav||");
+	CDlgSaveAsOptions dlg( extension, path, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, filter, NULL, true, stereo, samplesPerSec);
+	if (dlg.DoModal()!=IDOK) {
+		return;
 	}
 
-	pDoc->SaveSection( sameFile, oldFile.c_str(), newFile.c_str(), saveArea, fileFormat, samplingRate);
+	if (dlg.IsSameFile()) {
+		// There is only one file.
+		dlg.mShowFiles = showNew; 
+		if ((stereo) && ((dlg.mFileFormat==formatMono) || (dlg.mFileFormat==formatRight))) {
+			app.ErrorMessage(IDS_ERROR_NO_DUPE_FILENAME);
+			return;
+		}
+	} else if (app.IsFileOpened(dlg.GetSelectedPath())) {
+		// error file already opened by SA
+		app.ErrorMessage(IDS_ERROR_FILEOPENED, dlg.GetSelectedPath());
+		return;
+	}
 
-    switch (showFiles) {
+	doc.SaveSection( dlg.IsSameFile(), path, dlg.GetSelectedPath(), dlg.mSaveArea, dlg.mFileFormat, dlg.mSamplingRate);
+
+	CScopedStatusBar scopedStatusBar(IDS_CONVERT_WAVE);
+
+	{
+		CWaveResampler resampler;
+		CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
+		if (result!=CWaveResampler::EC_SUCCESS) {
+			return;
+		}
+	}
+
+	switch (dlg.mShowFiles) {
     case showBoth:
 		// Open new document
-		pApp->OpenDocumentFile(newFile.c_str());         
+		app.OpenDocumentFile(dlg.GetSelectedPath());
         break;
     case showNew:
-		pDoc->CloseAutoSave(oldFile.c_str());
-        pDoc->OnCloseDocument();
+		doc.CloseAutoSave(path);
+        doc.OnCloseDocument();
 		// Open new document
-        pApp->OpenDocumentFile(newFile.c_str());         
+        app.OpenDocumentFile(dlg.GetSelectedPath());
         break;
     case showOriginal:
 		// show nothing

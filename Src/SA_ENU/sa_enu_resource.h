@@ -1102,9 +1102,12 @@
 #define IDC_SAVEAS_RIGHT                1916
 #define IDC_GROUP_FILE_STATIC           1917
 #define IDC_SAVEAS_22K                  1918
+#define IDC_SAVEAS_SAMPLE1              1918
 #define IDC_SAVEAS_44K                  1919
+#define IDC_SAVEAS_SAMPLE2              1919
 #define IDC_SAVEAS_RIGHT2               1920
 #define IDC_SAVEAS_48K                  1920
+#define IDC_SAVEAS_SAMPLE3              1920
 #define IDC_GROUP_SAMPLING_RATE         1921
 #define IDC_PASS_FILTER_FILTER          1926
 #define IDD_3D_PITCH                    1927
@@ -1340,6 +1343,7 @@
 #define IDS_STATTXT_PROCESSMEL          4041
 #define IDS_STATTXT_PROCESSWBGENERATOR  4042
 #define IDS_STATTXT_PROCESSRAW          4043
+#define IDS_CONVERT_WAVE                4044
 #define IDS_TASK_PAGE_BUTTON            4050
 #define IDS_STATTXT_ESCTOCANCEL         4100
 #define IDS_STATTXT_PROCESSDUR          4101
@@ -1384,7 +1388,6 @@
 #define IDS_MC_CHANNEL                  11023
 #define IDS_MC_CHANNEL_LEFT             11025
 #define IDS_MC_CHANNEL_RIGHT            11026
-#define IDS_SUPPORT_WAVE_COPY           11028
 #define IDS_NO_CHOICE                   11030
 #define IDS_ROWS                        11031
 #define IDS_INTERLINEAR                 11032

@@ -19,7 +19,7 @@
 #include "sa_view.h"
 #include "sa_wbch.h"
 #include "mainfrm.h"
-#include "stpwatch.h"
+#include "StopWatch.h"
 #include "Process\sa_p_fmt.h"
 #include "Process\sa_p_spu.h"
 

@@ -14,7 +14,8 @@ public:
                       LPCTSTR lpszFilter,
                       CWnd * pParentWnd,
                       bool saveAs,
-                      bool stereo);
+                      bool stereo,
+					  DWORD samplesPerSec);
 	virtual INT_PTR DoModal();
 	bool IsSameFile();
 	CString GetSelectedPath();
@@ -22,7 +23,7 @@ public:
     ESaveArea mSaveArea;
     EShowFiles mShowFiles;
     EFileFormat mFileFormat;
-	ESamplingRate mSamplingRate;
+	DWORD mSamplingRate;
 
     bool mStereo;
     bool mSaveAs;
@@ -37,6 +38,8 @@ protected:
 
 	// the original saveas filename
 	CString mOriginalPath;
+	int mSamplingChoice;
+	DWORD mOriginalSamplingRate;
 
     DECLARE_MESSAGE_MAP()
 };

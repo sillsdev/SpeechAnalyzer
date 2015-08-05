@@ -194,7 +194,7 @@ void CWaveResampler::Func(size_t bufferLen,
                           double * coeffs,
                           size_t upSmpFactor,
                           size_t dwnSmpFactor,
-                          double * datal,
+                          vector<double> & datal,
                           IProgressUpdate & progressUpdater) {
 
     size_t workIdx = 0;
@@ -254,6 +254,535 @@ void CWaveResampler::Func(size_t bufferLen,
 
         workIdx+=dwnSmpFactor;
     }
+}
+
+/**
+* Resamples .WAV files from another sampling rate to 22050 khz
+* the acm* functions will try to convert from other compression types outside of
+* PCM if possible.
+* This method uses 32-bit floating point to do the majority of the work.
+* The incoming default progress bar is 30%....
+*/
+CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * dst, DWORD targetSamplesPerSec, IProgressUpdate & progressUpdater) {
+
+    // yes, I could have used smart pointers...I was in a hurry.
+    size_t length = 0;
+    BYTE * data = NULL;
+    WORD wBitsPerSample = 0;
+    WORD wFormatTag = 0;
+    WORD nChannels = 0;
+    DWORD nSamplesPerSec = 0;
+    WORD nBlockAlign = 0;
+
+    // read in the data
+    {
+        //Creating new wav file.
+        HMMIO hmmio = mmioOpen(const_cast<TCHAR *>(src), 0, MMIO_ALLOCBUF | MMIO_READ);
+        if (hmmio==NULL) {
+            return EC_NOWAVE;
+        }
+
+        MMCKINFO waveChunk;
+        memset(&waveChunk,0,sizeof(waveChunk));
+        /* Tell Windows to locate a WAVE Group header somewhere in the file, and read it in.
+        This marks the start of any embedded WAVE format within the file */
+        waveChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E');
+        if (mmioDescend(hmmio, (LPMMCKINFO)&waveChunk, NULL, MMIO_FINDRIFF)) {
+            /* Oops! No embedded WAVE format within this file */
+            mmioClose(hmmio, 0);
+            return EC_NOWAVE;
+        }
+
+        MMCKINFO fmtChunk;
+        memset(&fmtChunk,0,sizeof(fmtChunk));
+        /* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
+        fmtChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
+        if (mmioDescend(hmmio, &fmtChunk, &waveChunk, MMIO_FINDCHUNK)) {
+            mmioClose(hmmio, 0);
+            return EC_READFAIL;
+        }
+
+        if ((fmtChunk.cksize==16)||(fmtChunk.cksize==18)) {
+            /* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
+            WAVEFORMATEX format;
+            memset(&format,0,sizeof(format));
+            if (mmioRead(hmmio, (HPSTR)&format, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) {
+                mmioClose(hmmio, 0);
+                return EC_READFAIL;
+            }
+
+            wFormatTag = format.wFormatTag;
+            nChannels = format.nChannels;
+            nSamplesPerSec = format.nSamplesPerSec;
+            nBlockAlign = format.nBlockAlign;
+            wBitsPerSample = format.wBitsPerSample;
+
+        } else if (fmtChunk.cksize==40) {
+
+            WAVEFORMATEXTENSIBLE waveInEx;
+            memset(&waveInEx,0,sizeof(WAVEFORMATEXTENSIBLE));
+            /* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
+            if (mmioRead(hmmio, (HPSTR)&waveInEx, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) {
+                mmioClose(hmmio, 0);
+                return EC_READFAIL;
+            }
+
+            wFormatTag = waveInEx.Format.wFormatTag;
+            nChannels = waveInEx.Format.nChannels;
+            nSamplesPerSec = waveInEx.Format.nSamplesPerSec;
+            nBlockAlign = waveInEx.Format.nBlockAlign;
+            wBitsPerSample = waveInEx.Format.wBitsPerSample;
+
+            if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_PCM) {
+                wFormatTag = WAVE_FORMAT_PCM;
+            } else if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_IEEE_FLOAT) {
+                wFormatTag = WAVE_FORMAT_IEEE_FLOAT;
+            }
+        } else {
+            mmioClose(hmmio, 0);
+            return EC_READFAIL;
+        }
+
+        if (mmioAscend(hmmio, &fmtChunk, 0)) {
+            mmioClose(hmmio, 0);
+            return EC_READFAIL;
+        }
+
+        if (wBitsPerSample==64) {
+            mmioClose(hmmio, 0);
+            return EC_NOTSUPPORTED;
+        }
+
+        // read the data chunk
+        MMCKINFO dataChunk;
+        memset(&dataChunk,0,sizeof(dataChunk));
+        /* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
+        dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
+        if (mmioDescend(hmmio, &dataChunk, NULL, MMIO_FINDCHUNK)) {
+            mmioClose(hmmio, 0);
+            return EC_NODATA;
+        }
+
+        length = dataChunk.cksize;
+        data = new BYTE[dataChunk.cksize];
+
+        /** read the data */
+        if (mmioRead(hmmio, (HPSTR)data, dataChunk.cksize) != (LRESULT)dataChunk.cksize) {
+            mmioClose(hmmio, 0);
+            delete [] data;
+            data = NULL;
+            return EC_READFAIL;
+        }
+
+        if (mmioAscend(hmmio, &dataChunk, 0)) {
+            mmioClose(hmmio, 0);
+            delete [] data;
+            data = NULL;
+            return EC_READFAIL;
+        }
+
+        // Close the file.
+        if (mmioClose(hmmio, 0)) {
+            delete [] data;
+            data = NULL;
+            return EC_READFAIL;
+        }
+    }
+
+    // convert incoming format if possible
+    if ((wFormatTag!=WAVE_FORMAT_PCM) && (wFormatTag!=WAVE_FORMAT_IEEE_FLOAT)) {
+
+        HACMSTREAM hacm = 0;
+        HACMDRIVER had = NULL;
+
+        WAVEFORMATEX fxSrc;
+        memset(&fxSrc,0,sizeof(fxSrc));
+        fxSrc.wFormatTag = wFormatTag;
+        fxSrc.nChannels = nChannels;
+        fxSrc.nSamplesPerSec = nSamplesPerSec;
+        fxSrc.nAvgBytesPerSec =  nSamplesPerSec*nBlockAlign;
+        fxSrc.nBlockAlign = nBlockAlign;
+        fxSrc.wBitsPerSample = wBitsPerSample;
+
+        WAVEFORMATEX fxDst;
+        memcpy(&fxDst,&fxSrc,sizeof(WAVEFORMATEX));
+
+        LPWAVEFILTER pwfltr = NULL;
+        DWORD_PTR dwCallback = 0;
+        DWORD_PTR dwInstance = 0;
+        DWORD fdwOpen = ACM_STREAMOPENF_NONREALTIME;
+        if (acmStreamOpen(&hacm,had,&fxSrc,&fxDst,pwfltr,dwCallback,dwInstance,fdwOpen)) {
+            delete [] data;
+            data = NULL;
+            return EC_CONVERTFORMATFAIL;
+        }
+
+        DWORD cbInput = length;
+        DWORD outputBytes = 0;
+        DWORD fdwSize = ACM_STREAMSIZEF_SOURCE;
+        if (acmStreamSize(hacm,cbInput,&outputBytes,fdwSize)) {
+            acmStreamClose(hacm,0);
+            delete [] data;
+            data = NULL;
+            return EC_CONVERTFORMATFAIL;
+        }
+
+        ACMSTREAMHEADER ash;
+        memset(&ash,0,sizeof(ACMSTREAMHEADER));
+        ash.cbStruct = sizeof(ACMSTREAMHEADER);
+        ash.fdwStatus = 0;
+        ash.dwUser = NULL;
+        ash.pbSrc = data;
+        ash.cbSrcLength = length;
+        ash.cbSrcLengthUsed = 0;
+        ash.dwSrcUser = NULL;
+        ash.pbDst = new BYTE[outputBytes];
+        ash.cbDstLength = outputBytes;
+        ash.cbDstLengthUsed = 0;
+        ash.dwDstUser = NULL;
+
+        if (acmStreamPrepareHeader(hacm,&ash,0)) {
+            acmStreamClose(hacm,0);
+            delete [] data;
+            data = NULL;
+            return EC_CONVERTFORMATFAIL;
+        }
+
+        if (acmStreamConvert(hacm,&ash,0)) {
+            acmStreamClose(hacm,0);
+            delete [] data;
+            data = NULL;
+            return EC_CONVERTFORMATFAIL;
+        }
+
+        if (acmStreamUnprepareHeader(hacm,&ash,0)) {
+            acmStreamClose(hacm,0);
+            delete [] data;
+            data = NULL;
+            return EC_CONVERTFORMATFAIL;
+        }
+
+        /* format type */
+        wFormatTag = fxDst.wFormatTag;
+        /* number of channels (i.e. mono, stereo...) */
+        nChannels = fxDst.nChannels;
+        /* sample rate */
+        nSamplesPerSec = fxDst.nSamplesPerSec;
+        /* block size of data */
+        nBlockAlign = fxDst.nBlockAlign;
+        /* number of bits per sample of mono data */
+        wBitsPerSample = fxDst.wBitsPerSample;
+
+        length = ash.cbDstLengthUsed;
+        delete [] data;
+        data = ash.pbDst;
+
+        if (acmStreamClose(hacm,0)) {
+            delete [] data;
+            data = NULL;
+            return EC_CONVERTFORMATFAIL;
+        }
+    }
+
+    if (data==NULL) {
+        return EC_SOFTWARE;
+    }
+
+    // convert everything to 32-bit float
+    double * datal = NULL;
+    {
+        size_t numSamples = length/nBlockAlign;
+        size_t bufferSize = numSamples*nChannels;
+        double * buffer = new double[bufferSize];
+
+        size_t j = 0;
+        size_t k = 0;
+        if (wFormatTag==WAVE_FORMAT_PCM) {
+
+            // if it's 32 bit, we also don't need to do this
+            switch (wBitsPerSample) {
+            case 16: {
+                for (size_t i=0; i<numSamples; i++) {
+                    for (unsigned int c=0; c<nChannels; c++) {
+                        unsigned long b0 = data[k++];
+                        unsigned long b1 = data[k++];
+                        unsigned long val = b1;
+                        val = val<<8L;
+                        val += b0;
+                        long result = ConvBitSize(val,16);
+                        result *= 0x10000;
+                        double temp = result;
+                        temp /= (double)0x7fffffff;
+                        temp = Limit(temp);
+                        buffer[j++]=temp;
+                    }
+                }
+            }
+            break;
+            case 24: {
+                for (size_t i=0; i<numSamples; i++) {
+                    for (unsigned int c=0; c<nChannels; c++) {
+                        unsigned long b0 = data[k++];
+                        unsigned long b1 = data[k++];
+                        unsigned long b2 = data[k++];
+                        unsigned long val = b2;
+                        val = val<<8L;
+                        val += b1;
+                        val = val<<8L;
+                        val += b0;
+                        long result = ConvBitSize(val,24);
+                        result *= 0x100;
+                        double temp = result;
+                        temp /= (double)0x7fffffff;
+                        temp = Limit(temp);
+                        buffer[j++]=temp;
+                    }
+                }
+            }
+            break;
+            case 32: {
+                for (size_t i=0; i<numSamples; i++) {
+                    for (unsigned int c=0; c<nChannels; c++) {
+                        unsigned long b0 = data[k++];
+                        unsigned long b1 = data[k++];
+                        unsigned long b2 = data[k++];
+                        unsigned long b3 = data[k++];
+                        unsigned long val = b3;
+                        val = val<<8L;
+                        val += b2;
+                        val = val<<8L;
+                        val += b1;
+                        val = val<<8L;
+                        val += b0;
+                        long result = ConvBitSize(val,32);
+                        double temp = result;
+                        temp /= (double)0x7fffffff;
+                        temp = Limit(temp);
+                        buffer[j++]=temp;
+                    }
+                }
+            }
+            break;
+            default:
+                delete [] buffer;
+                delete [] data;
+                data = NULL;
+                return EC_WRONGFORMAT;
+            }
+        } else if (wFormatTag==WAVE_FORMAT_IEEE_FLOAT) {
+            // assume float
+            switch (wBitsPerSample) {
+            case 32: {
+                float * samples = (float *)data;
+                for (size_t i=0; i<numSamples; i++) {
+                    int z = i*nChannels;
+                    for (unsigned int c=0; c<nChannels; c++) {
+                        double temp = samples[z+c];
+                        temp = Limit(temp);
+                        buffer[j++] = temp;
+                    }
+                }
+            }
+            break;
+            default:
+                delete [] buffer;
+                delete [] data;
+                data = NULL;
+                return EC_WRONGFORMAT;
+            }
+        } else {
+            delete [] buffer;
+            delete [] data;
+            data = NULL;
+            return EC_WRONGFORMAT;
+        }
+
+        length = bufferSize;
+        delete [] data;
+        data = NULL;
+        datal = buffer;
+    }
+
+    // at this point we have 32-bit PCM only
+    wBitsPerSample = 32;
+    nBlockAlign = 4*nChannels;
+    wFormatTag = WAVE_FORMAT_PCM;
+
+    // at this point the old data pointer is no longer used...
+
+    if (datal==NULL) {
+        // shouldn't be!
+        return EC_SOFTWARE;
+    }
+
+    vector<vector<double>> buffers;
+
+    // pull each channel into it's own buffer
+    for (size_t ch=0; ch<nChannels; ch++) {
+
+        size_t numSamples = length/nChannels;
+        size_t bufferSize = numSamples;
+        vector<double> buffer;
+
+        size_t k=0;
+        for (size_t i=0; i<numSamples; i++) {
+            double sum = 0;
+            for (size_t c=0; c<nChannels; c++) {
+                if (k>=length) {
+                    delete [] datal;
+                    datal = NULL;
+                    return EC_SOFTWARE;
+                }
+                if (ch==c) {
+                    sum += datal[k];
+                }
+                k++;
+            }
+            if (ch==nChannels) {
+                sum /= (double)nChannels;
+            } else {
+                // it's a single channel - do nothing
+            }
+            buffer.push_back(sum);
+        }
+
+        if (buffer.size()!=bufferSize) {
+            delete [] datal;
+            datal = NULL;
+            return EC_SOFTWARE;
+        }
+
+        buffers.push_back(buffer);
+    }
+
+    // this buffer isn't needed any more
+    delete [] datal;
+    datal = NULL;
+
+    /**
+    * we will be converting whatever the input format
+    * is into a 22khz, float sample
+
+    Initialize filter if sample rate conversion requested.  Otherwise,
+    if input and output file formats and sample word sizes are the same
+    indicate no conversion of any kind is required.
+    Allocate input and output buffers for processing.
+
+    Converts from one sampling rate to another.
+    In theory, the algorithm proceeds as follows:
+
+    1.  Up-sample the original signal to the Least Common Multiple
+    of the two sampling rates, padding in between sample values
+    with zeros.
+    2.  Smooth the signal with a Kaiser windowed low pass FIR filter
+    having a cutoff at half the lesser of the original and target
+    sampling frequencies and a stop-band rejection at or below the
+    full scale signal to quantization noise ratio of the shorter
+    of the input and output word lengths.
+    3.  Down-sample to the requested sampling frequency.
+
+    In practice, the steps are combined to minimize storage and expedite
+    processing.  This is accomplished by filtering only non-zero values
+    of the up-sampled signal at intervals of the down-sampling rate.
+
+    The function returns after a specified percentage of output samples,
+    designated by ProgIntv, are assembled in an output buffer and
+    saved to disk. The function should be called repeatedly until 100%
+    of the expected number of output samples has been calculated or a
+    fatal error has occurred.
+    */
+    // is there anything to do?
+    if ((nSamplesPerSec!=targetSamplesPerSec)) {
+        size_t newLength = 0;
+        for (int ch=0; ch<buffers.size(); ch++) {
+
+            // data is already in float
+            // convert to even number of samples (why?)
+            size_t numSamples = length/nChannels;
+            if ((numSamples-((numSamples/2)*2))>0)
+            {
+                numSamples--;
+            }
+
+            DWORD inSampleRate = nSamplesPerSec;
+            DWORD outSampleRate = targetSamplesPerSec;
+
+            // calculate lcm and size of buffer
+            unsigned long smpRateLCM = LCM(inSampleRate,outSampleRate);
+            size_t upSmpFactor = (smpRateLCM/(ULONG)inSampleRate);
+            size_t dwnSmpFactor = (smpRateLCM/(ULONG)outSampleRate);
+
+            // calculate the new work buffer size;
+            size_t workLen = numSamples*upSmpFactor;
+
+            // create the output buffer
+            size_t bufferLen = workLen/dwnSmpFactor;
+            if (bufferLen > 0x7fffffff) {
+                for (size_t chx=0; chx<buffers.size(); chx++) {
+					buffers[chx].clear();
+                }
+                return EC_TOOLARGE;
+            }
+
+            double * buffer = new double[bufferLen];
+
+            newLength = bufferLen;
+
+            {
+                // build the filter
+                size_t coeffsLen = 0;
+                double * coeffs = NULL;
+                CalculateCoefficients(nSamplesPerSec, wBitsPerSample, coeffs, coeffsLen);
+                // do the work!
+                Func( bufferLen, buffer, coeffsLen, coeffs, upSmpFactor, dwnSmpFactor, buffers[ch], progressUpdater);
+                delete [] coeffs;
+            }
+
+            // update results
+			buffers[ch].clear();
+			for (size_t i=0;i<bufferLen;i++) {
+				buffers[ch].push_back(buffer[i]);
+			}
+        }
+
+        length = newLength*nChannels;
+    }
+    nSamplesPerSec = targetSamplesPerSec;
+
+    // we now use the data at whatever frequency it comes in at
+
+    progressUpdater.SetProgress(95);
+
+    // convert the data to 16-bit for all channels
+    DWORD numSamples = length/nChannels;
+
+    {
+        vector<char> buffer;
+        for (size_t i=0; i<numSamples; i++) {
+            for (size_t ch=0; ch<buffers.size(); ch++) {
+                double dval = buffers[ch][i];
+                dval = Limit(dval);
+                long lval = (long)(dval*(double)0x7fffffff);
+                lval /= 0x10000;
+                __int16 ival = (__int16)lval;
+                BYTE lb = ival & 0xff;
+                BYTE hb = ival>>8;
+                buffer.push_back(lb);
+                buffer.push_back(hb);
+            }
+        }
+
+        CWaveWriter writer;
+        try {
+            writer.Write(dst, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE, 16, wFormatTag, nChannels, nSamplesPerSec, buffer);
+        } catch (wave_error & /*e*/) {
+            return EC_WRITEFAIL;
+        }
+    }
+
+    progressUpdater.SetProgress(100);
+
+    return EC_SUCCESS;
 }
 
 /**
@@ -691,7 +1220,6 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
     of the expected number of output samples has been calculated or a
     fatal error has occurred.
     */
-
     // we now use the data at whatever frequency it comes in at
 
     progressUpdater.SetProgress(95);
@@ -717,7 +1245,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
 
         CWaveWriter writer;
         try {
-            writer.write(dst, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE, 16, wFormatTag, nChannels, nSamplesPerSec, buffer);
+            writer.Write(dst, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE, 16, wFormatTag, nChannels, nSamplesPerSec, buffer);
         } catch (wave_error & /*e*/) {
             return EC_WRITEFAIL;
         }

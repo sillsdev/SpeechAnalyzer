@@ -381,7 +381,7 @@ public:
 					  LPCTSTR newFile, 
 					  ESaveArea saveArea, 
 					  EFileFormat fileFormat,
-					  ESamplingRate samplingRate);
+					  DWORD samplingRate);
 
 	bool IsTempWaveEmpty();
 	CString GetTempWave();
@@ -442,7 +442,7 @@ protected:
     LPCTSTR GetTag(EAnnotation val);
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
     LPCTSTR GetProcessFilename();
-
+	void ClearFileStatus( LPCTSTR filename);
     int m_nTranscriptionApplicationCount;
 
 private:

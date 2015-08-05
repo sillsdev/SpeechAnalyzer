@@ -18,18 +18,103 @@ CDlgSaveAsOptions::CDlgSaveAsOptions( LPCTSTR lpszDefExt,
 									  LPCTSTR lpszFilter, 
 									  CWnd * pParentWnd, 
 									  bool saveAs, 
-									  bool stereo) :
+									  bool stereo,
+									  DWORD samplesPerSec) :
     CFileDialog(FALSE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE),
     mSaveArea(saveEntire),
     mShowFiles(showNew),
     mFileFormat(((stereo)?formatStereo:formatMono)),
-	mSamplingRate(ESamplingRate::samplingRate22K),
-	mOriginalPath( lpszFileName),
+	mOriginalPath(lpszFileName),
 	mStereo(stereo),
-	mSaveAs(saveAs) {
+	mSaveAs(saveAs),
+	mSamplingRate(samplesPerSec),
+	mOriginalSamplingRate(samplesPerSec),
+	mSamplingChoice(0) {
     SetTemplate(IDD, IDD);
     m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
 	m_ofn.lpstrInitialDir = lpszDefaultDir;
+}
+
+BOOL CDlgSaveAsOptions::OnInitDialog() {
+    CFileDialog::OnInitDialog();
+    if (mSaveAs) {
+        if (mStereo) {
+            GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(TRUE);
+            GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(TRUE);
+            GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(TRUE);
+        } else {
+            GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(FALSE);
+            GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(FALSE);
+            GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(FALSE);
+        }
+    } else {
+        GetDlgItem(IDC_SAVEAS_STEREO)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_SAVEAS_MONO)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_SAVEAS_RIGHT)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_GROUP_FILE_STATIC)->ShowWindow(SW_HIDE);
+    }
+	// setup sampling rate choices
+	wchar_t buffer[20];
+	DWORD hi = mOriginalSamplingRate/1000;
+	DWORD low = mOriginalSamplingRate - (hi*1000);
+	wsprintf(buffer,L"%d.%03d Khz",hi,low);
+	if (mOriginalSamplingRate<22050) {
+		// upsampling not allowed
+		// sample rate is below 22.050 khz
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(buffer);
+		mSamplingChoice = 0;
+	} else if (mOriginalSamplingRate==22050) {
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22.050 Khz");
+		mSamplingChoice = 0;
+	} else if (mOriginalSamplingRate<44100) {
+		// choice between current rate, 22 and x
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->EnableWindow(TRUE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->EnableWindow(TRUE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22.050 Khz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->SetWindowTextW(buffer);
+		mSamplingChoice = 1;
+	} else if (mOriginalSamplingRate==44100) {
+		// choice between current rate, 22 and 44
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->EnableWindow(TRUE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->EnableWindow(TRUE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->EnableWindow(FALSE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22.050 Khz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->SetWindowTextW(L"44.100 Khz");
+		mSamplingChoice = 1;
+	} else {
+		// greater than 44100 khz
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->EnableWindow(TRUE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->EnableWindow(TRUE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->EnableWindow(TRUE);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22.050 Khz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->SetWindowTextW(L"44.100 Khz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE3)->SetWindowTextW(buffer);
+		mSamplingChoice = 2;
+	}
+	UpdateData(FALSE);
+    return TRUE;
 }
 
 INT_PTR CDlgSaveAsOptions::DoModal() {
@@ -55,7 +140,36 @@ void CDlgSaveAsOptions::DoDataExchange(CDataExchange * pDX) {
     DDX_Radio(pDX, IDC_SAVEAS_ENTIRE, (int &)mSaveArea);
     DDX_Radio(pDX, IDC_SAVEAS_OPEN, (int &)mShowFiles);
     DDX_Radio(pDX, IDC_SAVEAS_STEREO, (int &)mFileFormat);
-	DDX_Radio(pDX, IDC_SAVEAS_22K, (int&)mSamplingRate);
+	DDX_Radio(pDX, IDC_SAVEAS_SAMPLE1, (int&)mSamplingChoice);
+	if (pDX->m_bSaveAndValidate) {
+		if (mOriginalSamplingRate<22050) {
+			// only choice is current rate
+			mSamplingRate = mOriginalSamplingRate;
+		} else if (mOriginalSamplingRate==22050) {
+			// only choice is 22050
+			mSamplingRate = mOriginalSamplingRate;
+		} else if (mOriginalSamplingRate<44100) {
+			if (mSamplingChoice==0) {
+				mSamplingRate = 22050;
+			} else {
+				mSamplingRate = mOriginalSamplingRate;
+			}
+		} else if (mOriginalSamplingRate==44100) {
+			if (mSamplingChoice==0) {
+				mSamplingRate = 22050;
+			} else {
+				mSamplingRate = 44100;
+			}
+		} else {
+			if (mSamplingChoice==0) {
+				mSamplingRate = 22050;
+			} else if (mSamplingChoice==1) {
+				mSamplingRate = 44100;
+			} else {
+				mSamplingRate = mOriginalSamplingRate;
+			}
+		}
+	}
 }
 
 BEGIN_MESSAGE_MAP(CDlgSaveAsOptions, CFileDialog)
@@ -68,29 +182,12 @@ BEGIN_MESSAGE_MAP(CDlgSaveAsOptions, CFileDialog)
     ON_BN_CLICKED(IDC_SAVEAS_STEREO, OnClicked)
     ON_BN_CLICKED(IDC_SAVEAS_MONO, OnClicked)
     ON_BN_CLICKED(IDC_SAVEAS_RIGHT, OnClicked)
+    ON_BN_CLICKED(IDC_SAVEAS_SAMPLE1, OnClicked)
+    ON_BN_CLICKED(IDC_SAVEAS_SAMPLE2, OnClicked)
+    ON_BN_CLICKED(IDC_SAVEAS_SAMPLE3, OnClicked)
 END_MESSAGE_MAP()
 
 void CDlgSaveAsOptions::OnClicked() {
-    UpdateData(); // retrieve modified data
-}
-
-BOOL CDlgSaveAsOptions::OnInitDialog() {
-    CFileDialog::OnInitDialog();
-    if (mSaveAs) {
-        if (mStereo) {
-            GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(TRUE);
-            GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(TRUE);
-            GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(TRUE);
-        } else {
-            GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(FALSE);
-            GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(FALSE);
-            GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(FALSE);
-        }
-    } else {
-        GetDlgItem(IDC_SAVEAS_STEREO)->ShowWindow(SW_HIDE);
-        GetDlgItem(IDC_SAVEAS_MONO)->ShowWindow(SW_HIDE);
-        GetDlgItem(IDC_SAVEAS_RIGHT)->ShowWindow(SW_HIDE);
-        GetDlgItem(IDC_GROUP_FILE_STATIC)->ShowWindow(SW_HIDE);
-    }
-    return TRUE;
+	// retrieve modified data
+    UpdateData();
 }
