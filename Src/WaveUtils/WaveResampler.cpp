@@ -257,9 +257,8 @@ void CWaveResampler::Func(size_t bufferLen,
 }
 
 /**
-* Resamples .WAV files from another sampling rate to 22050 khz
-* the acm* functions will try to convert from other compression types outside of
-* PCM if possible.
+* Resamples .WAV files to 16-bit data
+* the acm* functions will try to convert from other compression types outside of PCM if possible.
 * This method uses 32-bit floating point to do the majority of the work.
 * The incoming default progress bar is 30%....
 */
@@ -792,7 +791,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
 * This method uses 32-bit floating point to do the majority of the work.
 * The incoming default progress bar is 30%....
 */
-CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * dst, IProgressUpdate & progressUpdater) {
+CWaveResampler::ECONVERT CWaveResampler::Normalize(LPCTSTR src, const TCHAR  * dst, IProgressUpdate & progressUpdater) {
 
     // yes, I could have used smart pointers...I was in a hurry.
     size_t length = 0;

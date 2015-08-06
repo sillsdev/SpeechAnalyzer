@@ -41,7 +41,7 @@ public:
         EC_USERABORT    =-12
     };
 
-    ECONVERT Resample(LPCTSTR infilename, LPCTSTR outfilename, IProgressUpdate & update);
+    ECONVERT Normalize(LPCTSTR infilename, LPCTSTR outfilename, IProgressUpdate & update);
     ECONVERT Resample(LPCTSTR infilename, LPCTSTR outfilename, DWORD targetSamplesPerSec, IProgressUpdate & update);
 
 private:

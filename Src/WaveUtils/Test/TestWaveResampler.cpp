@@ -21,7 +21,7 @@ void test(LPCTSTR ifile) {
     wstring ofilename = buildResultPath(L"temp.wav");
     
 	CWaveResampler resampler;
-    CWaveResampler::ECONVERT result = resampler.Resample(ifilename.c_str(),ofilename.c_str(),updater);
+    CWaveResampler::ECONVERT result = resampler.Normalize(ifilename.c_str(),ofilename.c_str(),updater);
     ASSERT_TRUE(result==CWaveResampler::EC_SUCCESS) << "expected success status";
 
     DWORD flags = MMIO_READ | MMIO_DENYWRITE;

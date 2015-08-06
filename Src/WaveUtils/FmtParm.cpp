@@ -1,4 +1,3 @@
-#include "Stdafx.h"
 #include "FmtParm.h"
 
 CFmtParm::CFmtParm() {
@@ -30,15 +29,4 @@ WAVEFORMATEX CFmtParm::GetWaveFormatEX() {
     formatEx.wBitsPerSample = wBitsPerSample;
     formatEx.cbSize = 0;
     return formatEx;
-}
-
-void CFmtParm::Trace() {
-    TRACE("WAVE FORMAT --------\n");
-    TRACE("wFormatTag=%d\n",wTag);
-    TRACE("channels=%d\n",wChannels);
-    TRACE("samples per sec=%d\n",dwSamplesPerSec);
-    TRACE("bytes per sec=%d\n",dwAvgBytesPerSec);
-    TRACE("block align=%d\n",wBlockAlign);
-    TRACE("bits per sample=%d\n",wBitsPerSample);
-    TRACE("--------------------\n");
 }

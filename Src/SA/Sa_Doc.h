@@ -212,7 +212,6 @@ public:
     BOOL LoadDataFiles(LPCTSTR pszPathName, bool bTemp = false);
     BOOL WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipboardFile);
     bool GetWaveFormatParams(LPCTSTR pszPathName, CFmtParm & fmtParm, DWORD & dwDataSize);
-    bool IsStandardWaveFormat(LPCTSTR pszPathName);
     bool IsMultiChannelWave(LPCTSTR pszPathName, int & channels);
     DWORD CheckWaveFormatForPaste(LPCTSTR pszPathName);
     DWORD CheckWaveFormatForOpen(LPCTSTR pszPathName);

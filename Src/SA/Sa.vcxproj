@@ -171,7 +171,6 @@
     <ClCompile Include="ExportFWSettings.cpp" />
     <ClCompile Include="ExportLiftSettings.cpp" />
     <ClCompile Include="FileEncodingHelper.cpp" />
-    <ClCompile Include="FmtParm.cpp" />
     <ClCompile Include="GlossNatSegment.cpp" />
     <ClCompile Include="GlossNatWnd.cpp" />
     <ClCompile Include="GlossSegment.cpp" />
@@ -422,7 +421,6 @@
     <ClInclude Include="ExportLiftSettings.h" />
     <ClInclude Include="FileEncodingHelper.h" />
     <ClInclude Include="FlexEditGrid.h" />
-    <ClInclude Include="FmtParm.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="GlossNatSegment.h" />
     <ClInclude Include="GlossNatWnd.h" />

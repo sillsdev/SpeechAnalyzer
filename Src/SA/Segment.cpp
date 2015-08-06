@@ -418,7 +418,7 @@ int CSegment::GetNext(int nIndex) const {
     while ((nReference < m_Offset.GetSize()) && (GetOffset(nReference) == dwOffset)) {
         nReference++;
     }
-    if (nReference == m_Offset.GetSize()) {
+    if (nReference >= m_Offset.GetSize()) {
 		// no next character
         return -1;
     }

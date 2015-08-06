@@ -8649,7 +8649,8 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
 
     pDoc->CheckPoint();
-    CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
+	//Fill new segment with default character
+    CSaString szString = SEGMENT_DEFAULT_CHAR; 
 
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
     if (nInsertAt != -1) {
@@ -8675,16 +8676,20 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
             }
         }
         pSeg->Insert(nInsertAt, szString, false, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
-        pDoc->SetModifiedFlag(TRUE);        // document has been modified
-        pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
+		// document has been modified
+        pDoc->SetModifiedFlag(TRUE);
+		// transcription data has been modified
+        pDoc->SetTransModifiedFlag(TRUE);   
         RefreshGraphs(TRUE);
         pSeg->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), true);
     } else {
         // Can we insert after selected segment
-        if (pSeg->GetSelection()!=-1) { // Phonetic Segment Selected
+        if (pSeg->GetSelection()!=-1) { 
+			// Phonetic Segment Selected
             int nSelection = pSeg->GetSelection();
-            DWORD dwStart = pSeg->GetStop(nSelection); // Start at current stop
+			// Start at current stop
+            DWORD dwStart = pSeg->GetStop(nSelection); 
             DWORD dwMaxStop;
             DWORD dwStop;
 
@@ -11630,13 +11635,15 @@ void CSaView::OnFileSaveAs() {
 
 	doc.SaveSection( dlg.IsSameFile(), path, dlg.GetSelectedPath(), dlg.mSaveArea, dlg.mFileFormat, dlg.mSamplingRate);
 
-	CScopedStatusBar scopedStatusBar(IDS_CONVERT_WAVE);
-
-	{
-		CWaveResampler resampler;
-		CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
-		if (result!=CWaveResampler::EC_SUCCESS) {
-			return;
+	if (!IsStandardWaveFormat( dlg.GetSelectedPath(), false)) {
+		// only downsample if they changed the sampling rate
+		if (samplesPerSec!=dlg.mSamplingRate) {
+			CScopedStatusBar scopedStatusBar(IDS_CONVERT_WAVE);
+			CWaveResampler resampler;
+			CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
+			if (result!=CWaveResampler::EC_SUCCESS) {
+				return;
+			}
 		}
 	}
 

@@ -1,6 +1,7 @@
 #ifndef FMTPARM_H
 #define FMTPARM_H
 
+#include <Windows.h>
 #include <MMSystem.h>
 
 class CFmtParm {
@@ -12,7 +13,6 @@ public:
     DWORD GetSampleSize() const;
     // create a WAVEFORMATEX structure from this object
     WAVEFORMATEX GetWaveFormatEX();
-    void Trace();
 
     WORD wTag;                      // format tag
     WORD wChannels;                 // number of channels

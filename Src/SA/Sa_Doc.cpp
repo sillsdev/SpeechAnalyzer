@@ -829,7 +829,7 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
 
     // assuming wave or audio file
     // if the return value is false, the file is not in an acceptable format
-    if (!IsStandardWaveFormat(wave_file_name.c_str())) {
+    if (!IsStandardWaveFormat(wave_file_name.c_str(),true)) {
         // convert to wave will select or merge the channels.
         // the output will be a single channel file
         m_bUsingTempFile = true;
@@ -1548,127 +1548,6 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
 }
 
 /***************************************************************************
-* CSaDoc::IsStandardWaveFormat
-* Checks basic format of a WAV file and populates CFmtParm.
-* Returns false if the file is not a wave file, a non-PCM file, or is not
-* in the standard PCM 16/8 bit format that SA uses.
-* No errors will be displayed.  Other code will attempt to read the file
-* and convert it.
-***************************************************************************/
-bool CSaDoc::IsStandardWaveFormat(LPCTSTR pszPathName) {
-
-    // open file
-    HMMIO hmmioFile = mmioOpen(const_cast<TCHAR *>(pszPathName), NULL, MMIO_READ | MMIO_DENYWRITE);
-    if (!hmmioFile) {
-        return false;
-    }
-
-    // locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
-    MMCKINFO mmckinfoParent;
-    mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
-    if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    CFmtParm fmtParm;
-    // find the format chunk. It should be a subchunk of the 'RIFF' parent chunk
-    MMCKINFO mmckinfoSubchunk;
-    // prepare search code
-    mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
-    LONG lError = mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK);
-    if (lError!=MMSYSERR_NOERROR) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // fmt chunk found
-    // read format tag
-    lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD));
-    if (lError == -1) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-	// check if PCM format
-    if (fmtParm.wTag != WAVE_FORMAT_PCM) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // read channel number
-    lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD));
-    if (lError == -1) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // read sampling rate
-    lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD));
-    if (lError == -1) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // read throughput
-    lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD));
-    if (lError == -1) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // read sampling rate for all channels
-    lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wBlockAlign, sizeof(WORD));
-    if (lError == -1) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // read sample word size
-    lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wBitsPerSample, sizeof(WORD));
-    if (lError == -1) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // if it's not in the expected 8/16 bit format, we will use the conversion routine
-    if ((fmtParm.wBitsPerSample != 16) && (fmtParm.wBitsPerSample != 8)) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // get out of 'fmt ' chunk
-    lError = mmioAscend(hmmioFile, &mmckinfoSubchunk, 0);
-    if (lError != MMSYSERR_NOERROR) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // determine how much sound data is in the file. Find the data subchunk
-    mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
-    lError = mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK);
-    if (lError != MMSYSERR_NOERROR) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // get the size of the data subchunk
-    DWORD dwDataSize = mmckinfoSubchunk.cksize;
-    if (dwDataSize == 0L) {
-        mmioClose(hmmioFile, 0);
-        return false;
-    }
-
-    // ascend out of the data chunk
-    mmioAscend(hmmioFile, &mmckinfoSubchunk, 0);
-
-    // close the wave file
-    mmioClose(hmmioFile, 0);
-
-    return true;
-}
-
-/***************************************************************************
 * CSaDoc::IsMultiChannelWave
 * Returns true if this is a standard wave file and it contains multi channel
 * data.
@@ -1746,7 +1625,14 @@ DWORD CSaDoc::CheckWaveFormatForPaste(LPCTSTR pszPathName) {
         return 0;
     }
 
-    fmtParm.Trace();
+    TRACE("WAVE FORMAT --------\n");
+    TRACE("wFormatTag=%d\n",fmtParm.wTag);
+    TRACE("channels=%d\n",fmtParm.wChannels);
+    TRACE("samples per sec=%d\n",fmtParm.dwSamplesPerSec);
+    TRACE("bytes per sec=%d\n",fmtParm.dwAvgBytesPerSec);
+    TRACE("block align=%d\n",fmtParm.wBlockAlign);
+    TRACE("bits per sample=%d\n",fmtParm.wBitsPerSample);
+    TRACE("--------------------\n");
 
     if (dwDataSize) {
         CFmtParm * pFmtParm = &fmtParm;
@@ -1804,7 +1690,7 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
     // if this errors, we will just continue on trying with ST_Audio
     {
 		CWaveResampler resampler;
-		CWaveResampler::ECONVERT result = resampler.Resample(pszPathName, m_szTempConvertedWave.c_str(), scopedStatusBar);
+		CWaveResampler::ECONVERT result = resampler.Normalize(pszPathName, m_szTempConvertedWave.c_str(), scopedStatusBar);
         if (result==CWaveResampler::EC_SUCCESS) {
             return true;
         } else if (result==CWaveResampler::EC_USERABORT) {
@@ -1982,11 +1868,11 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
         return false;
     }
 
-	CScopedStatusBar scopedStatusBar(IDS_CONVERT_WAVE);
-
-	{
+	// only convert if they changed the sampling rate.
+	if (samplesPerSec!=dlg.mSamplingRate) {
+		CScopedStatusBar scopedStatusBar(IDS_CONVERT_WAVE);
 		CWaveResampler resampler;
-		CWaveResampler::ECONVERT result = resampler.Resample ( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
+		CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
 		if (result!=CWaveResampler::EC_SUCCESS) {
 			return FALSE;
 		}
@@ -7317,7 +7203,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.128");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.129");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);

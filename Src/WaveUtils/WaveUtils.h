@@ -4,6 +4,7 @@
 #include "WaveWriter.h"
 #include "WaveError.h"
 #include "WaveResampler.h"
+#include "FmtParm.h"
 
 #include <stdexcept>
 
@@ -20,4 +21,5 @@ using std::invalid_argument;
 * @param out the output data array
 */
 extern void ExtractChannel(WORD channel, WORD numChannels, WORD blockAlign, vector<char> & in, vector<char> & out);
+extern bool IsStandardWaveFormat(LPCTSTR pszPathName, bool allow8Bit);
 

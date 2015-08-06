@@ -1,3 +1,6 @@
+SA - 3.1.0.129 8/6/2015
+Disabled 'SaveAs' wave resampling function if user didn't change sampling rate, or if the file is already in the standard 16-bit PCM format.
+
 SA - 3.1.0.128 8/4/2015
 Removed message that occurs when application is converting a incoming wave file to 16-bit format.  Text is now displayed on the status bar during the conversion.
 Modified the 'SaveAs' dialog so that the user now has the choice to downsample the file to 22khz or 44khz, dependent on the current wave file sample rate.

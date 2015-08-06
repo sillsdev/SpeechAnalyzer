@@ -55,9 +55,7 @@ BOOL CDlgSaveAsOptions::OnInitDialog() {
     }
 	// setup sampling rate choices
 	wchar_t buffer[20];
-	DWORD hi = mOriginalSamplingRate/1000;
-	DWORD low = mOriginalSamplingRate - (hi*1000);
-	wsprintf(buffer,L"%d.%03d Khz",hi,low);
+	wsprintf(buffer,L"%d Hz",mOriginalSamplingRate);
 	if (mOriginalSamplingRate<22050) {
 		// upsampling not allowed
 		// sample rate is below 22.050 khz
@@ -76,7 +74,7 @@ BOOL CDlgSaveAsOptions::OnInitDialog() {
 		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22.050 Khz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22050 Hz");
 		mSamplingChoice = 0;
 	} else if (mOriginalSamplingRate<44100) {
 		// choice between current rate, 22 and x
@@ -86,7 +84,7 @@ BOOL CDlgSaveAsOptions::OnInitDialog() {
 		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22.050 Khz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22050 Hz");
 		GetDlgItem(IDC_SAVEAS_SAMPLE2)->SetWindowTextW(buffer);
 		mSamplingChoice = 1;
 	} else if (mOriginalSamplingRate==44100) {
@@ -97,8 +95,8 @@ BOOL CDlgSaveAsOptions::OnInitDialog() {
 		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22.050 Khz");
-		GetDlgItem(IDC_SAVEAS_SAMPLE2)->SetWindowTextW(L"44.100 Khz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22050 Hz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->SetWindowTextW(L"44100 Hz");
 		mSamplingChoice = 1;
 	} else {
 		// greater than 44100 khz
@@ -108,8 +106,8 @@ BOOL CDlgSaveAsOptions::OnInitDialog() {
 		GetDlgItem(IDC_SAVEAS_SAMPLE1)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_SAVEAS_SAMPLE2)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_SAVEAS_SAMPLE3)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22.050 Khz");
-		GetDlgItem(IDC_SAVEAS_SAMPLE2)->SetWindowTextW(L"44.100 Khz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE1)->SetWindowTextW(L"22050 Hz");
+		GetDlgItem(IDC_SAVEAS_SAMPLE2)->SetWindowTextW(L"44100 Hz");
 		GetDlgItem(IDC_SAVEAS_SAMPLE3)->SetWindowTextW(buffer);
 		mSamplingChoice = 2;
 	}
