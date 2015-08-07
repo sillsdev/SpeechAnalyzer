@@ -1870,7 +1870,7 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 
 	// only convert if they changed the sampling rate.
 	if (samplesPerSec!=dlg.mSamplingRate) {
-		CScopedStatusBar scopedStatusBar(IDS_CONVERT_WAVE);
+		CScopedStatusBar scopedStatusBar(IDS_RESAMPLE_WAVE);
 		CWaveResampler resampler;
 		CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
 		if (result!=CWaveResampler::EC_SUCCESS) {
@@ -4979,8 +4979,14 @@ void CSaDoc::SaveSection( bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESave
 		FileUtils::Rename(from.c_str(),to.c_str());
     }
 
-    // change the file attribute to read only
-    CFile::SetStatus(newFile, m_fileStat);
+    // this routine is only used during saveas.
+	// IF we are making a copy, we will remove the read-only attribute.
+	if (sameFile) {
+	    CFile::SetStatus(newFile, m_fileStat);
+	} else {
+		m_fileStat.m_attribute &= ~CFile::readOnly;
+	    CFile::SetStatus(newFile, m_fileStat);
+	}
 }
 
 /***************************************************************************/

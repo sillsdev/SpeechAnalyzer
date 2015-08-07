@@ -74,7 +74,7 @@ enum EUpdateMode {
 #define MAX_ANIMATION_RATE              60          // animation rate limited only by processor speed
 
 // annotation windows defines
-#define PHONETIC_DEFAULT_FONT           _T("Courier") // default font faces
+#define PHONETIC_DEFAULT_FONT           _T("Doulos SIL") // default font faces
 #define TONE_DEFAULT_FONT               _T("Doulos SIL")
 #define PHONEMIC_DEFAULT_FONT           _T("Doulos SIL")
 #define ORTHOGRAPHIC_DEFAULT_FONT       _T("Doulos SIL")
@@ -83,7 +83,7 @@ enum EUpdateMode {
 #define REFERENCE_DEFAULT_FONT          _T("Doulos SIL")
 #define MUSIC_PHRASE_DEFAULT_FONT       _T("Doulos SIL")
 
-#define PHONETIC_DEFAULT_FONTSIZE       8          // default font point sizes
+#define PHONETIC_DEFAULT_FONTSIZE       12				// default font point sizes
 #define TONE_DEFAULT_FONTSIZE           11
 #define PHONEMIC_DEFAULT_FONTSIZE       12
 #define ORTHOGRAPHIC_DEFAULT_FONTSIZE   12

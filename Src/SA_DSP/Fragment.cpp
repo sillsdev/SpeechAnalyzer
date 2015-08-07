@@ -410,13 +410,11 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr) {
         /******************************************************************************/
     } else {
         // restore filter parms
-        nPitch = m_nPrevPitch;                                                 //set current pitch to previous value
-        if (nPitch > 0) {                                                      //if voiced,
-            nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1))/
-                             (short)m_wPitchScaleFac);                                    // scale and round value
-            //  to nearest whole number
-            wFltrLen = (uint16)((m_wSmpRate +
-                                 (uint16)nPitch) / (uint16)(nPitch<<1));                   // size filter length to
+        nPitch = m_nPrevPitch;													//set current pitch to previous value
+        if (nPitch > 0) {														//if voiced, scale and round value to nearest whole number
+            nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1))/(short)m_wPitchScaleFac);							
+            wFltrLen = (uint16)((m_wSmpRate + (uint16)nPitch) / (uint16)(nPitch<<1));		
+			// size filter length to
             //  pass fundamental,
             //  suppress even harmonics
             //  and attenuate odd

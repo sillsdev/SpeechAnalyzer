@@ -11635,15 +11635,14 @@ void CSaView::OnFileSaveAs() {
 
 	doc.SaveSection( dlg.IsSameFile(), path, dlg.GetSelectedPath(), dlg.mSaveArea, dlg.mFileFormat, dlg.mSamplingRate);
 
-	if (!IsStandardWaveFormat( dlg.GetSelectedPath(), false)) {
-		// only downsample if they changed the sampling rate
-		if (samplesPerSec!=dlg.mSamplingRate) {
-			CScopedStatusBar scopedStatusBar(IDS_CONVERT_WAVE);
-			CWaveResampler resampler;
-			CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
-			if (result!=CWaveResampler::EC_SUCCESS) {
-				return;
-			}
+	// only downsample if they changed the sampling rate
+	if (samplesPerSec!=dlg.mSamplingRate) {
+		CScopedStatusBar scopedStatusBar(IDS_RESAMPLE_WAVE);
+		CWaveResampler resampler;
+		CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
+		if (result!=CWaveResampler::EC_SUCCESS) {
+			app.ErrorMessage(IDS_ERROR_DOWNSAMPLE, dlg.GetSelectedPath());
+			return;
 		}
 	}
 

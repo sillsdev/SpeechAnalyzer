@@ -5391,6 +5391,7 @@ BEGIN
     IDS_ERROR_WRITERIFFCHUNK "Failed writing RIFF chunk into file '%1'."
     IDS_ERROR_WRITEDATACHUNK "Failed writing data chunk into file '%1'."
     IDS_ERROR_FILEWRITE     "Failed to save wave file '%1'."
+	IDS_ERROR_DOWNSAMPLE	"Unable to downsample wave file."
     IDS_ERROR_WRITEFORMATCHUNK "Failed writing format chunk into file '%1'."
     IDS_ERROR_FILEOPENED    "File '%1' is already used by SA. Choose another filepath or filename or close the file first."
     IDS_DEFAULTPROPERTIES   "There are no properties for this process."
@@ -5537,7 +5538,8 @@ BEGIN
     IDS_STATTXT_PROCESSWBGENERATOR 
                             "Processing signal generator. Please wait..."
     IDS_STATTXT_PROCESSRAW  "Opening wave data.  Please wait..."
-    IDS_CONVERT_WAVE        "Converting wave data to 16-bit format."
+    IDS_CONVERT_WAVE        "Converting wave data to 16-bit format..."
+    IDS_RESAMPLE_WAVE       "Downsampling wave data..."
 END
 
 STRINGTABLE

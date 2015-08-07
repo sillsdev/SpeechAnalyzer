@@ -262,7 +262,7 @@ void CWaveResampler::Func(size_t bufferLen,
 * This method uses 32-bit floating point to do the majority of the work.
 * The incoming default progress bar is 30%....
 */
-CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * dst, DWORD targetSamplesPerSec, IProgressUpdate & progressUpdater) {
+CWaveResampler::ECONVERT CWaveResampler::Resample( LPCTSTR src, const TCHAR  * dst, DWORD targetSamplesPerSec, IProgressUpdate & progressUpdater) {
 
     // yes, I could have used smart pointers...I was in a hurry.
     size_t length = 0;
