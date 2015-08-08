@@ -333,8 +333,7 @@ CProcessWbReverb::~CProcessWbReverb() {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                               int nLevel) {
+long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
     //  TRACE(_T("Process: CProcessWbReverb\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -353,31 +352,40 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         }
     }
     if ((nLevel == nOldLevel) && (IsDataReady())) {
-        return MAKELONG(--nLevel, nProgress);    // data is already ready
+		// data is already ready
+        return MAKELONG(--nLevel, nProgress);    
     } else {
         if ((nLevel == PROCESS_CANCELED)) {
-            CancelProcess();    // set your own cancel flag
+			// set your own cancel flag
+            CancelProcess();    
         }
         SetDataInvalid();
     }
 
-    if (nLevel < 0) { // previous processing error
+    if (nLevel < 0) { 
+		// previous processing error
         if ((nLevel == PROCESS_CANCELED)) {
-            CancelProcess();    // set your own cancel flag
+			// set your own cancel flag
+            CancelProcess();    
         }
         return MAKELONG(nLevel, nProgress);
     }
 
     // start process
-    BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBREV)) { // memory allocation failed
-        EndProcess(); // end data processing
+	// wait cursor
+    BeginWaitCursor(); 
+	// memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBREV)) { 
+		// end data processing
+        EndProcess(); 
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("REV"))) { // creating error
-        EndProcess(); // end data processing
+	// creating error
+    if (!CreateTempFile(_T("REV"))) { 
+		// end data processing
+        EndProcess(); 
         EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -387,31 +395,39 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     if (pLowerProcess) {
         dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
     } else {
-        dwDataSize = pDoc->GetDataSize();    // size of raw data
+		// size of raw data
+        dwDataSize = pDoc->GetDataSize();    
     }
     DWORD dwBufferSize = GetBufferSize();
     DWORD wSmpSize = pDoc->GetSampleSize();
-    HPSTR pSourceData, pBlockStart; // pointers to source data
-    HPSTR pTargetData; // pointers to target data
-    DWORD dwDataPos = 0; // data position pointer
+	// pointers to source data
+    HPSTR pSourceData, pBlockStart; 
+	// pointers to target data
+    HPSTR pTargetData; 
+	// data position pointer
+    DWORD dwDataPos = 0; 
     DWORD dwRangeStart = 0;
     DWORD dwRangeEnd = dwDataSize - wSmpSize;
 
     float fGain = (float)1.0 / (float)pow(10.0, (double)m_nGain / -20.0);
     DWORD dwFifoSize = pDoc->GetSamplesPerSec() * m_nDelay / 1000;
     // allocate the temporary global buffer for the fifo
-    HANDLE hFifo = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwFifoSize * 2); // fifo is 16 bit
+	// fifo is 16 bit
+    HANDLE hFifo = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwFifoSize * 2); 
     if (!hFifo) {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
-        return Exit(PROCESS_ERROR); // error, memory allocation
+		// error, memory allocation
+        return Exit(PROCESS_ERROR); 
     }
-    HPSTR lpFifo = (HPSTR)::GlobalLock(hFifo); // lock memory
+	// lock memory
+    HPSTR lpFifo = (HPSTR)::GlobalLock(hFifo); 
     if (!lpFifo) {
         // memory lock error
         ErrorMessage(IDS_ERROR_MEMLOCK);
         ::GlobalFree(hFifo);
-        return Exit(PROCESS_ERROR); // error, memory allocation
+		// error, memory allocation
+        return Exit(PROCESS_ERROR); 
     }
     // initialize fifo with silence
     short int * pFifo = (short int *)lpFifo;
@@ -432,7 +448,8 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         if (!pBlockStart) {
             ::GlobalUnlock(hFifo);
             ::GlobalFree(hFifo);
-            return Exit(PROCESS_ERROR); // error, reading failed
+			// error, reading failed
+            return Exit(PROCESS_ERROR); 
         }
         pSourceData = pBlockStart;
         pTargetData = m_lpBuffer;
@@ -445,10 +462,13 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         BYTE bData;
         while (dwDataPos < dwBlockEnd) {
             // read data
-            if (wSmpSize == 1) { // 8 bit data
-                bData = *pSourceData++; // data range is 0...255 (128 is center)
+			// 8 bit data
+            if (wSmpSize == 1) { 
+				// data range is 0...255 (128 is center)
+                bData = *pSourceData++; 
                 nData = bData - 128;
-            } else {              // 16 bit data
+            } else {
+				// 16 bit data
                 nData = *((short int *)pSourceData++);
                 pSourceData++;
                 dwDataPos++;
@@ -494,7 +514,8 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             if (IsCanceled()) {
                 ::GlobalUnlock(hFifo);
                 ::GlobalFree(hFifo);
-                return Exit(PROCESS_CANCELED); // process canceled
+				// process canceled
+                return Exit(PROCESS_CANCELED); 
             }
         }
         // result block is ready, store it
@@ -507,17 +528,21 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                 ::GlobalUnlock(hFifo);
                 ::GlobalFree(hFifo);
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                return Exit(PROCESS_ERROR); // error, writing failed
+				// error, writing failed
+                return Exit(PROCESS_ERROR); 
             }
         }
     }
     // free the fifo buffer
     ::GlobalUnlock(hFifo);
     ::GlobalFree(hFifo);
-    nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
+	// calculate the actual progress
+    nProgress = nProgress + (int)(100 / nLevel); 
     // close the temporary file and read the status
-    CloseTempFile(); // close the file
-    EndProcess((nProgress >= 95)); // end data processing
+	// close the file
+    CloseTempFile();
+	// end data processing
+    EndProcess((nProgress >= 95)); 
     EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);

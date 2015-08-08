@@ -1,6 +1,10 @@
 SA - 3.1.0.129 8/7/2015
-Disabled 'SaveAs' wave resampling function if user didn't change the sampling rate.
-Fixed 'SaveAs' problem for readonly files.  If the user is saving to a new file, the read-only attribute is cleared if it is set.  If saving to the same file, the user is warned and the operation is terminated.
+-Disabled 'SaveAs' wave resampling function if user didn't change the sampling rate.
+-Fixed 'SaveAs' problem for readonly files.  If the user is saving to a new file, the read-only attribute is cleared if it is set.  If saving to the same file, the user is warned and the operation is terminated.
+-Fixed GPF that occurs when saving a recording.
+-Modified shortcut keys for Shift-Tab and Alt-Tab.  Alt-Tab has been removed from usage.  Shift-Tab now selects the previous segment.
+-Fixed AltZ phrase list bug.
+-Modified wording is SaveAs dialog box.
 
 SA - 3.1.0.128 8/4/2015
 Removed message that occurs when application is converting a incoming wave file to 16-bit format.  Text is now displayed on the status bar during the conversion.

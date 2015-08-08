@@ -642,7 +642,7 @@ void CSaDoc::DeleteContents() {
 
 
     // delete temporary file
-    if (!m_szTempWave.IsEmpty()) {
+    if (IsUsingTempFile()) {
         // SDM 1.06.6U2
         try {
             FileUtils::Remove(m_szTempWave);
@@ -693,7 +693,7 @@ void CSaDoc::OnCloseDocument() {
     ASSERT(pFrame);
     ASSERT(pFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
-    if (!m_szTempWave.IsEmpty()) {
+    if (IsUsingTempFile()) {
         m_AutoSave.Close(m_szTempWave);
     } else {
         m_AutoSave.Close(GetPathName());
@@ -1754,8 +1754,7 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
     CSaApp & app = *(CSaApp *)AfxGetApp(); 
     CScopedCursor waitCursor(this);
 
-	if (!m_szTempWave.IsEmpty()) {
-
+	if (IsUsingTempFile()) {
         // check if the file already opened
         if (app.IsFileOpened(pszPathName)) {
             // error file already opened by SA
@@ -1828,8 +1827,14 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 	WORD channels = 0;
 	DWORD samplesPerSec = 0;
 	WORD blockAlign = 0;
-	CWaveReader reader;
-	reader.Read( oldFile, flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign);
+	
+	try {
+		CWaveReader reader;
+		reader.Read( oldFile, flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign);
+	} catch (wave_error e) {
+		app.ErrorMessage(IDS_ERROR_CANT_READ_WAVE_FILE, (LPCTSTR)oldFile);
+		return FALSE;
+	}
 
 	// need to save copy (return value is destroyed)
 	CString defaultDir = app.GetDefaultDir();
@@ -3086,7 +3091,7 @@ void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInitialU
 void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo info) {
     TRACE(L"Applying wave file  %s of %d at %f for %f\n",pszFileName,dwDataSize,info.dStart,info.dTotalLength);
     // save the temporary file
-    if (!m_szTempWave.IsEmpty()) {
+    if (IsUsingTempFile()) {
         FileUtils::Remove(m_szTempWave);
     }
 
@@ -7021,7 +7026,8 @@ bool CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
 * @return false on failure
 */
 bool CSaDoc::ConvertToMono(bool extractLeft, LPCTSTR filename) {
-    // do the work in a temporary file
+    
+	// do the work in a temporary file
     TCHAR tempfilename[_MAX_PATH];
     FileUtils::GetTempFileName(_T("MONO"), tempfilename, _countof(tempfilename));
     if (!CopyWave(filename, tempfilename)) {
@@ -7038,8 +7044,14 @@ bool CSaDoc::ConvertToMono(bool extractLeft, LPCTSTR filename) {
         //TODO handle memory during exceptions
         vector<char> buffer;
 
-        CWaveReader reader;
-        reader.Read(filename, MMIO_ALLOCBUF | MMIO_READ, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+		try {
+			CWaveReader reader;
+			reader.Read(filename, MMIO_ALLOCBUF | MMIO_READ, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+		} catch (wave_error e) {
+		    CSaApp & app = *(CSaApp *)AfxGetApp(); 
+			app.ErrorMessage(IDS_ERROR_CANT_READ_WAVE_FILE, filename);
+			return false;
+		}
 
         // is there anything for us to do?
         if (channels==1) {
@@ -8479,7 +8491,6 @@ int CSaDoc::GetWbProcess() {
 
 bool CSaDoc::HasFullName() {
 	return IsTempWaveEmpty();
-//	return (m_fileStat.m_szFullName[0] == 0);
 }
 
 void CSaDoc::CloseAutoSave( LPCTSTR file) {

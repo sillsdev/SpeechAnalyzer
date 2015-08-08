@@ -407,7 +407,8 @@ double CPlotStaff::Note2String(double dNoteQtrNotes, double dMIDINumber, CString
 /***************************************************************************/
 // CPlotStaff::Convert   DDO - 08/14/00 Moved here from sa_g_mbt.cpp
 /***************************************************************************/
-void CPlotStaff::Convert(void) {
+void CPlotStaff::Convert() {
+
     BeginWaitCursor();
 
     CString sMelody;
@@ -458,8 +459,7 @@ void CPlotStaff::Convert(void) {
     double dMinSemitone = pTWC->GetMinSemitone();
     double dMaxSemitone = pTWC->GetMaxSemitone();
     short nMaxBinValue = 0;
-    DWORD dwMaxBin = 0,
-          i;
+    DWORD dwMaxBin = 0, i;
     short int * pTWCData = NULL;
     pTWCData = (short int *)pTWC->GetProcessedData(0, TRUE);
     for (i=0; i<dwTWCDataLength; i++) {

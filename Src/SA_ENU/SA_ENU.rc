@@ -5557,6 +5557,8 @@ BEGIN
     IDS_LENGTH_EXCEEDED     "The .SAXML transcription file contains %1 segments that are located beyond the end of the audio data.\nThe segments have been ignored.\nIf you save this file, the segments will be permanently deleted."
     IDS_ERROR_NO_DUPE_FILENAME 
                             "You have specified that the audio file should be converted to mono, but the filename has not been changed.\nPlease specify a new filename so that your original data is not lost!"
+	IDS_ERROR_CANT_READ_WAVE_FILE
+							"Unable to read '%1'."
     IDS_ERROR_ELAN_DUPE     "The ELAN file contains references multiple .WAV files.  Speech Analyzer is unable to this file."
     IDS_ERROR_ELAN_NO_FILE  "Speech Analyzer was unable to find any exisiting .WAV file references in the ELAN file.  Please verify that the ELAN file uses a .WAV file, and that the .WAV file is available."
     IDS_AWIZ_CAPTION_IMPORT_ELAN "Import ELAN"

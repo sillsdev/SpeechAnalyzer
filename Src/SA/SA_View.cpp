@@ -11586,81 +11586,107 @@ void CSaView::OnFileSaveAs() {
 	CSaDoc & doc = *GetDocument();
     const bool stereo = doc.GetNumChannels()>1;
 
-    wstring original_name;
+	// a recording is stored in a temp file with a .tmp extension,
+	// but will have a title SAx.  supply both to the saveas dialog for display,
+	// but convert the temp file
+
+	// a normal recording has a full path.
+
+	CString path;
+	CString docname;
+	bool recording = false;
 	if (!doc.IsTempWaveEmpty()) {
-		original_name = doc.GetTempWave();
+		path = doc.GetTempWave();
+		docname = doc.GetPathName();
+		if (docname.IsEmpty()) {
+			// get the current view caption string
+			docname = doc.GetFilenameFromTitle().c_str(); 
+		}
+		docname = FileUtils::ReplaceExtension( (LPCTSTR)docname, L".wav").c_str();
+		recording = true;
     } else {
-        original_name = doc.GetPathName();
+		path = doc.GetPathName();
+		if (path.IsEmpty()) {
+			// get the current view caption string
+			path = doc.GetFilenameFromTitle().c_str(); 
+		}
+		path = FileUtils::ReplaceExtension( (LPCTSTR)path, L".wav").c_str();
+		docname = path;
     }
 
-	wstring oldFile;
-
-	CString path = doc.GetPathName();
-	if (path.IsEmpty()) {
-		// get the current view caption string
-		path = doc.GetFilenameFromTitle().c_str(); 
-	}
-	path = FileUtils::ReplaceExtension( (LPCTSTR)path, L".wav").c_str();
-
-	DWORD flags = MMIO_READ;
-	WORD bitsPerSample = 0;
-	WORD formatTag = 0;
-	WORD channels = 0;
+	// retrieve samples per second
 	DWORD samplesPerSec = 0;
-	WORD blockAlign = 0;
-	CWaveReader reader;
-	reader.Read( path, flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign);
+	{
+		DWORD flags = MMIO_READ;
+		WORD bitsPerSample = 0;
+		WORD formatTag = 0;
+		WORD channels = 0;
+		WORD blockAlign = 0;
+		try {
+			CWaveReader reader;
+			reader.Read( path, flags, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign);
+		} catch (wave_error e) {
+			app.ErrorMessage(IDS_ERROR_CANT_READ_WAVE_FILE, (LPCTSTR)path);
+			return;
+		}
+	}
 
 	CString defaultDir = app.GetDefaultDir();
-	oldFile = path;
 	CString extension = _T("wav");
 	CString filter = _T("WAV Files (*.wav)|*.wav||");
-	CDlgSaveAsOptions dlg( extension, path, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, filter, NULL, true, stereo, samplesPerSec);
+	CDlgSaveAsOptions dlg( extension, docname, defaultDir, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, filter, NULL, true, stereo, samplesPerSec);
 	if (dlg.DoModal()!=IDOK) {
 		return;
 	}
 
-	if (dlg.IsSameFile()) {
-		// There is only one file.
-		dlg.mShowFiles = showNew; 
-		if ((stereo) && ((dlg.mFileFormat==formatMono) || (dlg.mFileFormat==formatRight))) {
-			app.ErrorMessage(IDS_ERROR_NO_DUPE_FILENAME);
+	{
+		CScopedCursor waitCursor(this);
+
+		// is same file only applies when we have a regular document, not a recording
+		bool same = (recording)?false:dlg.IsSameFile();
+
+		if (same) {
+			// There is only one file.
+			dlg.mShowFiles = showNew; 
+			if ((stereo) && ((dlg.mFileFormat==formatMono) || (dlg.mFileFormat==formatRight))) {
+				app.ErrorMessage(IDS_ERROR_NO_DUPE_FILENAME);
+				return;
+			}
+		} else if (app.IsFileOpened(dlg.GetSelectedPath())) {
+			// error file already opened by SA
+			app.ErrorMessage(IDS_ERROR_FILEOPENED, dlg.GetSelectedPath());
 			return;
 		}
-	} else if (app.IsFileOpened(dlg.GetSelectedPath())) {
-		// error file already opened by SA
-		app.ErrorMessage(IDS_ERROR_FILEOPENED, dlg.GetSelectedPath());
-		return;
-	}
 
-	doc.SaveSection( dlg.IsSameFile(), path, dlg.GetSelectedPath(), dlg.mSaveArea, dlg.mFileFormat, dlg.mSamplingRate);
+		doc.SaveSection( same, path, dlg.GetSelectedPath(), dlg.mSaveArea, dlg.mFileFormat, dlg.mSamplingRate);
 
-	// only downsample if they changed the sampling rate
-	if (samplesPerSec!=dlg.mSamplingRate) {
-		CScopedStatusBar scopedStatusBar(IDS_RESAMPLE_WAVE);
-		CWaveResampler resampler;
-		CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
-		if (result!=CWaveResampler::EC_SUCCESS) {
-			app.ErrorMessage(IDS_ERROR_DOWNSAMPLE, dlg.GetSelectedPath());
-			return;
+		// only downsample if they changed the sampling rate
+		if (samplesPerSec!=dlg.mSamplingRate) {
+			CScopedStatusBar scopedStatusBar(IDS_RESAMPLE_WAVE);
+			CWaveResampler resampler;
+			CWaveResampler::ECONVERT result = resampler.Resample( dlg.GetSelectedPath(), dlg.GetSelectedPath(), dlg.mSamplingRate, scopedStatusBar);
+			if (result!=CWaveResampler::EC_SUCCESS) {
+				app.ErrorMessage(IDS_ERROR_DOWNSAMPLE, dlg.GetSelectedPath());
+				return;
+			}
+		}
+
+		switch (dlg.mShowFiles) {
+		case showBoth:
+			// Open new document
+			app.OpenDocumentFile(dlg.GetSelectedPath());
+			break;
+		case showNew:
+			doc.CloseAutoSave(path);
+			doc.OnCloseDocument();
+			// Open new document
+			app.OpenDocumentFile(dlg.GetSelectedPath());
+			break;
+		case showOriginal:
+			// show nothing
+			break;
 		}
 	}
-
-	switch (dlg.mShowFiles) {
-    case showBoth:
-		// Open new document
-		app.OpenDocumentFile(dlg.GetSelectedPath());
-        break;
-    case showNew:
-		doc.CloseAutoSave(path);
-        doc.OnCloseDocument();
-		// Open new document
-        app.OpenDocumentFile(dlg.GetSelectedPath());
-        break;
-    case showOriginal:
-		// show nothing
-        break;
-    }
 }
 
 /***************************************************************************/
