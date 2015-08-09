@@ -145,12 +145,12 @@ vector<Phonetic> CAutoSegmentation::GetPhones( CSaDoc & doc, wofstream & ofs ) {
 			nData += nHere;
 			dwSamples++;
 		}
-		if ((dwSamples>0) && (bRes)) {
-			double fData = double(nData) / PRECISION_MULTIPLIER / dwSamples;
+		//if ((dwSamples>0) && (bRes)) {
+			//double fData = double(nData) / PRECISION_MULTIPLIER / dwSamples;
 			//TRACE("pitch value = %f\n",fData);
-		} else {
+		//} else {
 			//TRACE("pitch value = none\n");
-		}
+		//}
 		result.push_back(phonetic);
 	}
 

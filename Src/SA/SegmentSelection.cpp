@@ -30,7 +30,7 @@
 
 CSegmentSelection::CSegmentSelection() {
     m_nType=(EAnnotation)-1;
-    m_bVirtual = FALSE;
+    m_bVirtual = false;
 }
 
 /***************************************************************************/
@@ -123,7 +123,7 @@ BOOL CSegmentSelection::SelectFromPosition( CSaView * pView, int type, DWORD dwP
             if (m_bVirtual) {
                 RefreshAnnotation(pView, m_nType);
             }
-            m_bVirtual = TRUE;
+            m_bVirtual = true;
             m_nType = type;
             m_dwStart = pMaster->GetOffset(nSelection);
             m_dwDuration = pMaster->GetDuration(nSelection);
@@ -135,7 +135,7 @@ BOOL CSegmentSelection::SelectFromPosition( CSaView * pView, int type, DWORD dwP
             if (m_bVirtual) {
                 RefreshAnnotation(pView, m_nType);
             }
-            m_bVirtual = FALSE;
+            m_bVirtual = false;
             m_nType = (EAnnotation)-1;
             m_dwStart = 0;
             m_dwDuration = 0;
@@ -198,7 +198,7 @@ BOOL CSegmentSelection::SelectFromPosition( CSaView * pView, int type, DWORD dwP
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetDataSize(), SNAP_RIGHT);
             dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, dwStop, SNAP_LEFT);
 
-            m_bVirtual = TRUE;
+            m_bVirtual = true;
             m_nType = type;
             m_dwStart = dwStart;
             m_dwDuration = dwStop-dwStart;
@@ -211,7 +211,7 @@ BOOL CSegmentSelection::SelectFromPosition( CSaView * pView, int type, DWORD dwP
             if (m_bVirtual) {
                 RefreshAnnotation(pView, m_nType);
             }
-            m_bVirtual = FALSE;
+            m_bVirtual = false;
             m_nType = (EAnnotation)-1;
             m_dwStart = 0;
             m_dwDuration = 0;
@@ -297,7 +297,7 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
             if (m_bVirtual) {
                 RefreshAnnotation(pView, m_nType);
             }
-            m_bVirtual = TRUE;
+            m_bVirtual = true;
             m_nType = type;
             m_dwStart = pMaster->GetOffset(nSelection);
             m_dwDuration = pMaster->GetDuration(nSelection);
@@ -309,7 +309,7 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
             if (m_bVirtual) {
                 RefreshAnnotation(pView, m_nType);
             }
-            m_bVirtual = FALSE;
+            m_bVirtual = false;
             m_nType = (EAnnotation)-1;
             m_dwStart = 0;
             m_dwDuration = 0;
@@ -372,7 +372,7 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetDataSize(), SNAP_RIGHT);
             dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, dwStop, SNAP_LEFT);
 
-            m_bVirtual = TRUE;
+            m_bVirtual = true;
             m_nType = type;
             m_dwStart = dwStart;
             m_dwDuration = dwStop-dwStart;
@@ -384,7 +384,7 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
             if (m_bVirtual) {
                 RefreshAnnotation(pView, m_nType);
             }
-            m_bVirtual = FALSE;
+            m_bVirtual = false;
             m_nType = (EAnnotation)-1;
             m_dwStart = 0;
             m_dwDuration = 0;
@@ -407,7 +407,7 @@ void CSegmentSelection::Update(CSaView * pView, BOOL bClearVirtual) {
         if (m_bVirtual) {
             RefreshAnnotation(pView, m_nType);
         }
-        m_bVirtual = FALSE;
+        m_bVirtual = false;
         m_nType = (EAnnotation)pView->FindSelectedAnnotationIndex();
 
         CSegment * pSegment = pView->GetDocument()->GetSegment(m_nType);
@@ -417,9 +417,9 @@ void CSegmentSelection::Update(CSaView * pView, BOOL bClearVirtual) {
         m_dwDuration = pSegment->GetDuration(nSelection);
         m_dwStop = m_dwStart + m_dwDuration;
     } else {
-        if (bClearVirtual && m_bVirtual) {
+        if ((bClearVirtual) && (m_bVirtual)) {
             RefreshAnnotation(pView, m_nType);
-            m_bVirtual = FALSE;
+            m_bVirtual = false;
         }
         if (!m_bVirtual) {
             m_nType = (EAnnotation)-1;

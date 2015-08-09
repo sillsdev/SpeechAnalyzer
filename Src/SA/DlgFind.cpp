@@ -143,8 +143,8 @@ void CDlgFind::SetEditFont() {
 
     if (pFont) {
         // change the font for the text controls
-        GetDlgItem(IDC_INPUTSTRING)->SetFont(pFont); // set the new font
-        GetDlgItem(IDC_REPLACESTRING)->SetFont(pFont); // set the new font
+        GetDlgItem(IDC_INPUTSTRING)->SetFont(pFont);	// set the new font
+        GetDlgItem(IDC_REPLACESTRING)->SetFont(pFont);	// set the new font
     }
 }
 
@@ -350,7 +350,8 @@ BOOL CDlgFind::OnInitDialog() {
     } else {
         SetupDialogForFindAndReplace();
     }
-    GotoDlgCtrl(GetDlgItem(IDC_INPUTSTRING)); // set focus to edit control
+	// set focus to edit control
+    GotoDlgCtrl(GetDlgItem(IDC_INPUTSTRING)); 
     m_nTextBoxInFocus = IDC_INPUTSTRING;
 
     return FALSE;  // return TRUE  unless you set the focus to a control

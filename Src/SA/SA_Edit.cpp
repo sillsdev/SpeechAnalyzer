@@ -257,6 +257,7 @@ void CDlgEditor::OnStopPhraseL1() {
 // Filter input stream dialog input
 /***************************************************************************/
 void CDlgEditor::OnUpdateInputstring() {
+
     if (!GetView()) {
         UpdateDialog();
         return;
@@ -296,7 +297,8 @@ void CDlgEditor::OnUpdateInputstring() {
 /***************************************************************************/
 void CDlgEditor::UpdateDialog() {
 
-    if ((!GetView())||(GetDoc()->GetDataSize()==0)) { // CSaView not active or no WAV data
+	// CSaView not active or no WAV data
+    if ((!GetView()) || (GetDoc()->GetDataSize()==0)) { 
         if (IsWindowVisible()) {
             ShowWindow(SW_HIDE);
         }
@@ -499,13 +501,14 @@ BOOL CDlgEditor::PreTranslateMessage(MSG * pMsg) {
 // Set Focus to edit control, or if disabled to next button
 /***************************************************************************/
 void CDlgEditor::OnActivate(UINT nState, CWnd * pWndOther, BOOL bMinimized) {
-    UpdateDialog();
+    
+	UpdateDialog();
 
     CDialog::OnActivate(nState, pWndOther, bMinimized);
 
     m_bActivated = (nState != WA_INACTIVE);
 
-    CEdit * pWnd = (CEdit *) GetDlgItem(IDC_INPUTSTRING);
+    CEdit * pWnd = (CEdit *)GetDlgItem(IDC_INPUTSTRING);
     if ((pWnd!=NULL) && (pWnd->IsWindowEnabled())) {
         pWnd->SetFocus();
     } else {

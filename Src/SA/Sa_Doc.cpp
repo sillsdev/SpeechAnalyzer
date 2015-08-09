@@ -1380,13 +1380,14 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
         }
     }
 
-    TRACE("beginning insertion at %d\n",nIndex);
+	TRACE("beginning insertion at %d\n",nIndex);
     while (saAudioDocRdr->ReadSegment((long)transType, &offset, &length, annotation)) {
         CSaString szString = *annotation;
         offset /= m_FmtParm.wChannels;
         length /= m_FmtParm.wChannels;
-        pSegment->Insert(nIndex, szString, false, offset+dwPos, length);
-        nIndex += szString.GetLength();
+		TRACE("type=%d offset=%d length=%d\n",transType, offset,length);
+        pSegment->Insert( nIndex, szString, false, offset+dwPos, length);
+        nIndex++;
     }
 
     free(annotation);
@@ -1394,7 +1395,8 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
     // apply input filter to transcription data
     if (pSegment->Filter()) {
         SetModifiedFlag(TRUE);
-        SetTransModifiedFlag(TRUE); // transcription data has been modified
+		// transcription data has been modified
+        SetTransModifiedFlag(TRUE); 
     }
 
     return TRUE;
@@ -7221,7 +7223,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.129");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.130");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);

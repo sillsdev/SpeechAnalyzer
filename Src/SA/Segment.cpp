@@ -106,7 +106,7 @@ CSegment::CSegment( EAnnotation type, int masterType) {
     m_nAnnotationType = type;
     m_nMasterType = masterType;
 	// no segment selected
-    m_nSelection = - 1;
+    m_nSelection = -1;
 }
 
 /***************************************************************************/
@@ -555,13 +555,17 @@ int CSegment::FindFromPosition(DWORD dwPosition, BOOL bWithin) const {
 
     // advance one position.  if index is negative - set to first position
     if (nLoop >=0) {
-        nLoop = GetNext(nLoop);  // selected character is one position higher
+		// selected character is one position higher
+        nLoop = GetNext(nLoop);  
     } else {
         nLoop = 0;
     }
 
     if (bWithin) {
-        if ((dwPosition < GetOffset(nLoop)) || (dwPosition > GetStop(nLoop))) {
+		//TRACE("offset[%d]=%d\n",i,m_Offset[i]);
+		DWORD tstart = GetOffset(nLoop);
+		DWORD tstop = GetStop(nLoop);
+        if ((dwPosition < tstart) || (dwPosition > tstop)) {
             return -1;
         }
     }
@@ -591,7 +595,7 @@ CSaString CSegment::GetSegmentString(int nIndex)   const {
 * Adjust the segment, but not it's dependents
 */
 void CSegment::Adjust( int nIndex, DWORD newOffset, DWORD newDuration) {
-	//TRACE("Adjust index=%d offset=%d duration=%d\n",nIndex, newOffset, newDuration);
+	TRACE("Adjust type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,nIndex, newOffset, newDuration);
 	m_Offset[nIndex] = newOffset;
 	m_Duration[nIndex] = newDuration;
 }
@@ -1358,7 +1362,9 @@ void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
 		return;
 	}
 
-    //TRACE("segment insertat type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,index,offset,duration);
+	if (m_nAnnotationType==ORTHO) {
+		TRACE("segment insertat type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,index,offset,duration);
+	}
     m_Text.InsertAt(index,CString(text));
     m_Offset.InsertAt(index,offset);
     m_Duration.InsertAt(index,duration);
