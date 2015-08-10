@@ -288,6 +288,7 @@
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
     <ClCompile Include="ScopedCursor.cpp" />
+    <ClCompile Include="ScopedFileProtection.cpp" />
     <ClCompile Include="ScopedStatusBar.cpp" />
     <ClCompile Include="SegmentOps.cpp" />
     <ClCompile Include="SelfTest.cpp" />
@@ -503,6 +504,7 @@
     <ClInclude Include="SA_Annot.h" />
     <ClInclude Include="sa_resource.h" />
     <ClInclude Include="ScopedCursor.h" />
+    <ClInclude Include="ScopedFileProtection.h" />
     <ClInclude Include="ScopedStatusBar.h" />
     <ClInclude Include="SegmentOps.h" />
     <ClInclude Include="SegmentSelection.h" />

@@ -44,7 +44,8 @@
 * @return returns an empty string if an error has occurred
 */
 wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameConvention convention, int index, LPCTSTR prefix, LPCTSTR suffix) {
-    wstring gloss(L"");
+    
+	wstring gloss(L"");
     wstring ref(L"");
     DWORD dwStart = 0;
     DWORD dwStop = 0;
@@ -55,7 +56,8 @@ wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameC
     // generate the filename based on the dialog selection
     switch (convention) {
 
-    case WFC_GLOSS:   //gloss
+    case WFC_GLOSS:   
+		//gloss
         gloss = g->GetSegmentString(index);
         if ((gloss.length()>0) && (gloss[0]=='#')) {
             gloss = gloss.substr(1);
@@ -159,7 +161,8 @@ wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameC
 * @return returns an empty string if an error has occurred
 */
 bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaView * pView, EPhraseFilenameConvention convention, int index, wstring & result, LPCTSTR prefix, LPCTSTR suffix) {
-    wstring gloss(L"");
+    
+	wstring gloss(L"");
     wstring ref(L"");
     wstring phrase(L"");
     int gindex = -1;
@@ -174,6 +177,8 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
 
     CString szNumber;
     szNumber.Format(L"%d",index);
+    CString szNumber1Based;
+    szNumber1Based.Format(L"%d",(index+1));
 
     CString szPhrase;
     szPhrase.LoadStringW(((type==MUSIC_PL1)?IDS_WINDOW_MUSIC_PL1:IDS_WINDOW_MUSIC_PL2));
@@ -191,7 +196,7 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
             ref = r->GetSegmentString(rindex);
         }
         if (ref.length()==0) {
-            pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+            pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szPhrase,(LPCTSTR)szNumber1Based);
             return false;
         }
         result = prefix;
@@ -211,7 +216,7 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
             }
         }
         if (gloss.length()==0) {
-            pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+            pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szPhrase,(LPCTSTR)szNumber1Based);
             return false;
         }
         result = prefix;
@@ -264,14 +269,14 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
         }
 
         // both are empty, complain about reference
-        pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+        pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szPhrase,(LPCTSTR)szNumber1Based);
         return false;
 
     default:
     case PFC_PHRASE:
         phrase = seg->GetSegmentString(index);
         if (phrase.length()==0) {
-            pApp->ErrorMessage(IDS_SPLIT_NO_PHRASE,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+            pApp->ErrorMessage(IDS_SPLIT_NO_PHRASE,(LPCTSTR)szPhrase,(LPCTSTR)szNumber1Based);
             return false;
         }
         result = prefix;
@@ -409,14 +414,19 @@ bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGlo
 
     CString szGloss;
     szGloss.LoadStringW(IDS_WINDOW_GLOSS);
+    CString szRef;
+    szRef.LoadStringW(IDS_WINDOW_REFERENCE_AS);
 
     CGlossSegment * g = (CGlossSegment *)pView->GetAnnotation(GLOSS);
 
     // loop through the gloss segments
     int nLoop = g->GetOffsetSize();
     for (int i=0; i<nLoop; i++) {
+
         CString szNumber;
         szNumber.Format(_T("%d"), i);
+        CString szNumber1Based;
+        szNumber1Based.Format(_T("%d"), (i+1));
 
         // check for empty gloss strings
         wstring gloss = g->GetSegmentString(i);
@@ -437,9 +447,15 @@ bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGlo
         * so, for this following check, it can only fail if the reference is empty
         */
         // can we piece the name together?
-        wstring splitname = GenerateWordSplitName(g, pView, convention, i, prefix, suffix);
+        wstring splitname = GenerateWordSplitName( g, pView, convention, i, prefix, suffix);
         if (splitname.length()==0) {
-            pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szGloss,(LPCTSTR)szNumber);
+			if (convention==WFC_GLOSS) {
+		        pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szGloss,(LPCTSTR)szNumber1Based);
+			} else if (convention==WFC_REF) {
+		        pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szRef,(LPCTSTR)szNumber1Based);
+			} else {
+		        pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szRef,(LPCTSTR)szNumber1Based);
+			}
             return false;
         }
     }

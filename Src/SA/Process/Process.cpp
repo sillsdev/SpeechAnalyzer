@@ -978,7 +978,7 @@ void CProcess::DeleteProcessFileName() {
     m_fileStatus.m_szFullName[0] = 0;
 }
 
-void CProcess::SetStatusFlag(long nStatus, BOOL bValue) {
+void CProcess::SetStatusFlag( long nStatus, BOOL bValue) {
     SetStatus(bValue ? GetStatus() | nStatus : GetStatus() & ~nStatus);
 }
 

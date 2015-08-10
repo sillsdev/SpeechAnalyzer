@@ -1,3 +1,8 @@
+SA - 3.1.0.131 8/9/2015
+- Fixed bug where autosave was not able to handle .wav files that were marked as 'readonly'
+- Abbreviated wording on tools/options/color tab.
+- Fixed bug in 'splitfile' feature where directory creation fails if an intermediate directory does not exist.
+
 SA - 3.1.0.130 8/8/2015
 -Fix for copy/paste bug.
 

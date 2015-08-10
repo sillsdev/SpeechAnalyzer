@@ -78,7 +78,7 @@ CSelfTestRunner::CSelfTestRunner() {
     result.summary.testspassed=0;
     result.summary.testsfailed=0;
 
-    CreateDirectory(m_szTestOutputPath.c_str(),NULL);
+    FileUtils::CreateFolder(m_szTestOutputPath.c_str());
 }
 
 

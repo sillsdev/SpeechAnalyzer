@@ -6993,7 +6993,12 @@ bool CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
     try {
         m_szRawDataWrk = backupTemp.c_str();
         if (!WriteDataFiles( szNewWave, true, usingClipboard)) {
-            AfxThrowFileException(CFileException::genericException, -1);
+			m_szRawDataWrk = szTempName;
+			m_dwDataSize = dwDataSize;
+			FileUtils::Remove(szNewWave);
+			FileUtils::Remove(backupTemp.c_str());
+			Undo(FALSE);
+			return false;
         }
         //Restore Document
         m_saParam.wFlags = wFlags;
@@ -7223,7 +7228,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.130");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.131");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);

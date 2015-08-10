@@ -5,6 +5,7 @@
 #include "sa.h"
 #include "Shlobj.h"
 #include <Windows.h>
+#include "ScopedFileProtection.h"
 
 static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData) {
 
@@ -270,7 +271,7 @@ private:
 
 void CAutoSave::Save(CSaDoc & document) {
 
-    //TRACE("autosave\n");
+    TRACE("autosave\n");
     if (updating) {
         return;
     }
@@ -294,7 +295,7 @@ void CAutoSave::Save(CSaDoc & document) {
 
     if (!FileUtils::FolderExists(autosavedir.c_str())) {
         //create directory ?
-        if (CreateDirectory(autosavedir.c_str(), NULL) ==0) {
+        if (FileUtils::CreateFolder(autosavedir.c_str()) ==0) {
             //an error has occured, process the error here
             TRACE("Unable to create autosave directory!\n");
             if (!error) {
@@ -394,9 +395,12 @@ void CAutoSave::Save(CSaDoc & document) {
         }
 
         // copy any transcription to the autosave directory
-        saving = true;
-        document.WriteDataFiles( currentwave.c_str(), isWave, false);
-        saving = false;
+		{
+			CScopedFileProtection fileprotection( currentwave.c_str());
+			saving = true;
+			document.WriteDataFiles( currentwave.c_str(), isWave, false);
+			saving = false;
+		}
 
         // rename it to the appropriate name
 		wstring oldname = FileUtils::ReplaceExtension(currentwave.c_str(),L".saxml");

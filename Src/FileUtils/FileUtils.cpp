@@ -98,19 +98,36 @@ bool FileUtils::FolderExists(LPCTSTR path) {
 }
 
 /**
-* create a non-exitent folder
+* create a non-existent folder
 */
 bool FileUtils::CreateFolder(LPCTSTR path) {
-    if (FolderExists(path)) {
+    
+	if (FolderExists(path)) {
         return true;
     }
     if (FileExists(path)) {
-        // it exists, but it's not a directory
+        // it exists, but it's not a folder
         return false;
     }
-    // it doesn't exist - create it!
-    CreateDirectory(path, NULL);
-    return true;
+
+	// split it and see if the parent exists
+	wstring parent = GetParentFolder(path);
+	if (FolderExists(parent.c_str())) {
+		// the parent is OK, just create this one
+		// it doesn't exist - create it!
+		// call the Win32 function
+		CreateDirectory(path,NULL);
+		return true;
+	}
+
+	// the parent folder doesn't exist - create that first
+	if (!CreateFolder(parent.c_str())) {
+		return false;
+	}
+	if (!CreateFolder(path)) {
+		return false;
+	}
+	return true;
 }
 
 void FileUtils::AppendDirSep(LPTSTR path, size_t size) {
@@ -276,10 +293,17 @@ wstring FileUtils::GetFilename(LPCTSTR path) {
 	return result;
 }
 
-wstring FileUtils::GetParentFolder(LPCTSTR path) {
-    wchar_t buffer[MAX_PATH];
-    swprintf_s(buffer,_countof(buffer),path);
-    wchar_t drive[_MAX_DRIVE];
+wstring FileUtils::GetParentFolder( LPCTSTR path) {
+
+	wstring temp = path;
+	if (temp[temp.size()-1]=='\\') {
+		temp = temp.substr(0,temp.size()-1);
+	}
+
+	wchar_t buffer[MAX_PATH];
+	swprintf_s(buffer,_countof(buffer),temp.c_str());
+
+	wchar_t drive[_MAX_DRIVE];
     wchar_t dir[_MAX_DIR];
     wchar_t fname[_MAX_FNAME];
     wchar_t ext[_MAX_EXT];

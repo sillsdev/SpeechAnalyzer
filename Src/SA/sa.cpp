@@ -2249,7 +2249,7 @@ BOOL CSaApp::ReadSettings() {
 
     if (!FileUtils::FolderExists(szPath)) {
         // it doesn't exist...
-        if (!CreateDirectory(szPath, NULL)) {
+        if (!FileUtils::CreateFolder(szPath)) {
             // and we can't create it.
             CString error = FormatGetLastError(GetLastError());
             CString msg;
@@ -2311,8 +2311,8 @@ void CSaApp::SetupNewUser() {
     CSaString szMusicLocation;
     szSamplesLocation = szDataLocation + _T("\\Samples");
     szMusicLocation = szSamplesLocation + _T("\\Music");
-    CreateDirectory(szSamplesLocation, NULL);
-    CreateDirectory(szMusicLocation, NULL);
+    FileUtils::CreateFolder(szSamplesLocation);
+    FileUtils::CreateFolder(szMusicLocation);
 
     // copy the samples into the samples folders
     CSaString szSearchPattern;

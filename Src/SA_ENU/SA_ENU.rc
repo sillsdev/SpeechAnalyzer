@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,130
+ FILEVERSION 3,1,0,131
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.130"
+            VALUE "FileVersion", "v3.1.0.131"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -442,18 +442,18 @@ BEGIN
     PUSHBUTTON      "...",IDC_CHGCOLOR_OVRLY,168,83,12,13
     COMBOBOX        IDC_COLORSTASKBAR,62,101,104,286,CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "...",IDC_CHGCOLOR_TASKBAR,168,101,12,13
-    PUSHBUTTON      "Basic",IDC_DEFAULT,192,29,56,14
-    PUSHBUTTON      "System Colors",IDC_SYSTEM,192,64,56,14
-    PUSHBUTTON      "Pastel Colors",IDC_PASTEL,192,99,56,14
+    PUSHBUTTON      "Basic",IDC_DEFAULT,189,29,56,14
+    PUSHBUTTON      "System Colors",IDC_SYSTEM,189,64,56,14
+    PUSHBUTTON      "Pastel Colors",IDC_PASTEL,189,99,56,14
     GROUPBOX        "Windows Setup",IDC_STATIC,6,6,265,139
     LTEXT           "Graph",IDC_STATIC,14,31,42,8
     LTEXT           "Transcription",IDC_STATIC,14,49,42,8
     LTEXT           "Scale",IDC_STATIC,14,67,42,8
     LTEXT           "Overlay",IDC_OVERCOLOR,14,85,42,8
     LTEXT           "Taskbar",IDC_TASKBARCOLOR,14,103,42,8
-    LTEXT           "Reset colors to 16 color mode.",IDC_STATIC1,193,45,73,17
-    LTEXT           "Reset colors to SA soft colors.",IDC_STATIC2,193,115,73,18
-    LTEXT           "Reset colors to SA system colors.",IDC_STATIC3,192,80,73,18
+    LTEXT           "Reset 16 color mode.",IDC_STATIC1,190,45,77,16
+    LTEXT           "Reset to soft colors.",IDC_STATIC2,190,115,77,16
+    LTEXT           "Reset system colors.",IDC_STATIC3,189,80,77,16
 END
 
 IDD_RECORDER DIALOG 0, 0, 334, 91
@@ -5391,7 +5391,6 @@ BEGIN
     IDS_ERROR_WRITERIFFCHUNK "Failed writing RIFF chunk into file '%1'."
     IDS_ERROR_WRITEDATACHUNK "Failed writing data chunk into file '%1'."
     IDS_ERROR_FILEWRITE     "Failed to save wave file '%1'."
-	IDS_ERROR_DOWNSAMPLE	"Unable to downsample wave file."
     IDS_ERROR_WRITEFORMATCHUNK "Failed writing format chunk into file '%1'."
     IDS_ERROR_FILEOPENED    "File '%1' is already used by SA. Choose another filepath or filename or close the file first."
     IDS_DEFAULTPROPERTIES   "There are no properties for this process."
@@ -5405,6 +5404,24 @@ BEGIN
     IDS_ERROR_READSPKRCHUNK "Failed reading speaker chunk from file '%1'."
     IDS_ERROR_WRITELANGCHUNK "Failed writing language chunk into file '%1'."
     IDS_ERROR_READLANGCHUNK "Failed reading language chunk from file '%1'."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_DOWNSAMPLE    "Unable to downsample wave file."
+    IDS_ERROR_WRITEREFCHUNK "Failed writing reference chunk into file '%1'."
+    IDS_ERROR_READREFCHUNK  "Failed reading reference chunk from file '%1'."
+    IDS_STATTXT_PROCESSFRA  "Fragmenting speech waveform.  Please wait..."
+    IDS_STATTXT_BACKGNDFRA  "Fragmenting waveform..."
+    IDS_STATTXT_BACKGNDGRA  "Processing auto pitch data..."
+    IDS_STATTXT_PROCESSTWC  "Processing tonal weighting chart. Please wait..."
+    IDS_STATTXT_PROCESSPOA  "Calculating vocal tract shape..."
+    IDS_STATTXT_PROCESSMEL  "Processing melogram data..."
+    IDS_STATTXT_PROCESSWBGENERATOR 
+                            "Processing signal generator. Please wait..."
+    IDS_STATTXT_PROCESSRAW  "Opening wave data.  Please wait..."
+    IDS_CONVERT_WAVE        "Converting wave data to 16-bit format..."
+    IDS_RESAMPLE_WAVE       "Downsampling wave data..."
 END
 
 STRINGTABLE
@@ -5527,23 +5544,6 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERROR_WRITEREFCHUNK "Failed writing reference chunk into file '%1'."
-    IDS_ERROR_READREFCHUNK  "Failed reading reference chunk from file '%1'."
-    IDS_STATTXT_PROCESSFRA  "Fragmenting speech waveform.  Please wait..."
-    IDS_STATTXT_BACKGNDFRA  "Fragmenting waveform..."
-    IDS_STATTXT_BACKGNDGRA  "Processing auto pitch data..."
-    IDS_STATTXT_PROCESSTWC  "Processing tonal weighting chart. Please wait..."
-    IDS_STATTXT_PROCESSPOA  "Calculating vocal tract shape..."
-    IDS_STATTXT_PROCESSMEL  "Processing melogram data..."
-    IDS_STATTXT_PROCESSWBGENERATOR 
-                            "Processing signal generator. Please wait..."
-    IDS_STATTXT_PROCESSRAW  "Opening wave data.  Please wait..."
-    IDS_CONVERT_WAVE        "Converting wave data to 16-bit format..."
-    IDS_RESAMPLE_WAVE       "Downsampling wave data..."
-END
-
-STRINGTABLE
-BEGIN
     IDS_TASK_PAGE_BUTTON    "Select Task Page\nSelect Page"
 END
 
@@ -5557,8 +5557,6 @@ BEGIN
     IDS_LENGTH_EXCEEDED     "The .SAXML transcription file contains %1 segments that are located beyond the end of the audio data.\nThe segments have been ignored.\nIf you save this file, the segments will be permanently deleted."
     IDS_ERROR_NO_DUPE_FILENAME 
                             "You have specified that the audio file should be converted to mono, but the filename has not been changed.\nPlease specify a new filename so that your original data is not lost!"
-	IDS_ERROR_CANT_READ_WAVE_FILE
-							"Unable to read '%1'."
     IDS_ERROR_ELAN_DUPE     "The ELAN file contains references multiple .WAV files.  Speech Analyzer is unable to this file."
     IDS_ERROR_ELAN_NO_FILE  "Speech Analyzer was unable to find any exisiting .WAV file references in the ELAN file.  Please verify that the ELAN file uses a .WAV file, and that the .WAV file is available."
     IDS_AWIZ_CAPTION_IMPORT_ELAN "Import ELAN"
@@ -5584,6 +5582,7 @@ BEGIN
                             "Unable to automatically parse the Gloss Segments.\n%1 Segments were provided, but only %2 were found.\nPlease manually parse the Gloss segments and retry importing the data file."
     IDS_SAB_QUERY_AUTOSEGMENT 
                             "There are no existing Gloss or Reference Segments.\nAudio Sync needs segments to be defined in order to import data.\nWould you like for Audio-Sync to automatically segment the audio data?\nClick YES to perform auto segmentation.\nClick NO to abort the import process."
+    IDS_ERROR_CANT_READ_WAVE_FILE "Unable to read '%1'."
 END
 
 STRINGTABLE
@@ -5845,10 +5844,10 @@ BEGIN
                             "Copy Phonetic Transcriptions to Phonemic Transcriptions"
     IDS_SPLIT_INCOMPLETE    "The split was not completed.  No segments were found."
     ID_AUTO_MARKUP_REFERENCE_DATA "Renumber the Reference Data"
-    IDS_SPLIT_NO_GLOSS      "An empty Gloss transcription field was found at %1 segment %2.\nPlease correct the transcription or rerun the Split File feature and use the checkbox to allow skipping of blank words."
-    IDS_SPLIT_NO_REF        "An empty Reference transcription field was found at %1 segment %2.\nPlease correct the transcription field or rerun the Split File feature with a different filenaming convention."
-    IDS_SPLIT_NO_WRITE      "An error occurred while writing '%1'.  Please make sure the directory is writeable."
-    IDS_SPLIT_NO_PHRASE     "An empty Phrase transcription field was found at %1 segment %2.\nPlease correct the transcription or rerun the Split File feature with a different filenaming convention."
+	IDS_SPLIT_NO_GLOSS      "An empty Gloss transcription field was found at %1 segment #%2.\nPlease correct the transcription or rerun the Split File feature and use the checkbox to allow skipping of blank words."
+	IDS_SPLIT_NO_REF        "An empty Reference transcription field was found at %1 segment #%2.\nPlease correct the transcription field or rerun the Split File feature without using the Reference field as part of the filenaming convention."
+    IDS_SPLIT_NO_WRITE      "An error occurred while writing '%1'.\nPlease make sure the directory is writeable."
+	IDS_SPLIT_NO_PHRASE     "An empty Phrase transcription field was found at %1 segment #%2.\nPlease correct the transcription or rerun the Split File feature without using the Phrase field as part of the filenaming convention."
     IDS_SPLIT_FOLDER_EXISTS "The '%1' directory already exists.\n\nClick ABORT to cancel split file processing.\nClick RETRY to return the Split File dialog box.\nClick IGNORE to overwrite the existing data."
     IDS_SPLIT_FILE_EXISTS   "A file with the name '%1' already exists.\n\nPlease remove the file or choose another split file directory path."
 END
