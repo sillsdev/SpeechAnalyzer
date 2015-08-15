@@ -354,6 +354,7 @@
 #define IDS_AUTO_PROCESSING             1103
 #define IDS_AUTO_PLAYING                1104
 #define IDC_RECORD                      1109
+#define IDD_EDITOR2                     1100
 #define IDC_FONTSGRAPHSETUP             1126
 #define IDC_FONT                        1130
 #define IDC_VOLUMEEDIT                  1131
@@ -1235,14 +1236,12 @@
 #define IDC_END_SPIN                    2054
 #define IDC_FIRST_GLOSS_RADIO           2055
 #define IDC_RADIO_FILE                  2056
-#define IDC_EDIT1                       2057
 #define IDC_FILENAME_PREFIX             2057
 #define IDC_BEGIN_LABEL                 2058
 #define IDC_END_LABEL                   2059
 #define IDC_BEGIN_COMBO                 2060
 #define IDC_END_COMBO                   2061
 #define IDC_CHECK_GLOSS_EMPTY           2062
-#define IDC_CHECK1                      2066
 #define IDC_CHECK_OVERWRITE             2066
 #define IDC_CHECK_USE_LAST_FILE         2066
 #define IDC_RADIO_FIELDWORKS            2067
@@ -1293,6 +1292,8 @@
 #define IDS_WINDOW_REFERENCE_AS         2120
 #define IDS_WINDOW_PHONETIC_AS          2121
 #define IDC_COMBO_AUDIOSYNC_ALGORITHM   2122
+#define IDC_EDIT_FOLDER                 2123
+#define IDC_BROWSE                      2124
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1333,7 +1334,7 @@
 #define IDS_ERROR_READSPKRCHUNK         4029
 #define IDS_ERROR_WRITELANGCHUNK        4030
 #define IDS_ERROR_READLANGCHUNK         4031
-#define IDS_ERROR_DOWNSAMPLE			4032
+#define IDS_ERROR_DOWNSAMPLE            4032
 #define IDS_ERROR_WRITEREFCHUNK         4034
 #define IDS_ERROR_READREFCHUNK          4035
 #define IDS_STATTXT_PROCESSFRA          4036
@@ -1345,7 +1346,7 @@
 #define IDS_STATTXT_PROCESSWBGENERATOR  4042
 #define IDS_STATTXT_PROCESSRAW          4043
 #define IDS_CONVERT_WAVE                4044
-#define IDS_RESAMPLE_WAVE                4045
+#define IDS_RESAMPLE_WAVE               4045
 #define IDS_TASK_PAGE_BUTTON            4050
 #define IDS_STATTXT_ESCTOCANCEL         4100
 #define IDS_STATTXT_PROCESSDUR          4101
@@ -1859,7 +1860,7 @@
 #define IDS_SAB_QUERY_AUTOSEGMENT_EXISTING_DATA 61334
 #define IDS_SAB_QUERY_AUTOPARSE         61335
 #define IDS_SAB_QUERY_AUTOSEGMENT       61335
-#define IDS_ERROR_CANT_READ_WAVE_FILE         61336
+#define IDS_ERROR_CANT_READ_WAVE_FILE   61336
 #define IDS_ERROR_GENERATE_CV_TONE      61351
 #define IDS_ERROR_GENERATE_CV_NOPITCH   61352
 #define IDS_ERROR_AUTO_PARSE            61353
@@ -1897,7 +1898,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        388
 #define _APS_NEXT_COMMAND_VALUE         33290
-#define _APS_NEXT_CONTROL_VALUE         2123
+#define _APS_NEXT_CONTROL_VALUE         2125
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

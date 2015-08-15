@@ -377,12 +377,6 @@ void CDlgExportFW::UpdateButtonState() {
     ctlButtonOK.EnableWindow(((valid)&&(selected))?TRUE:FALSE);
 }
 
-void CDlgExportFW::WriteFileUtf8(CFile * pFile, const CSaString szString) {
-
-    std::string szUtf8 = szString.utf8();
-    pFile->Write(szUtf8.c_str(), szUtf8.size());
-}
-
 /**
 * Return the registered fieldworks project directory
 * The FieldWorks application stores it's information under registry keys that are named

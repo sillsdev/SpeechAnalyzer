@@ -1430,10 +1430,12 @@ int SPartWindowData::ReplaceString(char * String,unsigned Begin,unsigned End) {
 
     if (String) {
         while (*String == '(') {
-            if (!strncmp(String+1,"CLEF",4)) { // display clef
+            if (!strncmp(String+1,"CLEF",4)) { 
+				// display clef
                 Clef = String[5]-'0';
                 String += 7;
-            } else if (!strncmp(String+1,"VX",2)) { // playback voice (instrument)
+            } else if (!strncmp(String+1,"VX",2)) { 
+				// playback voice (instrument)
                 Instrument  = (char)(String[3]-'0');
                 Instrument *= 10;
                 Instrument = (char)(Instrument + (String[4]-'0'));

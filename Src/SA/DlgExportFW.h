@@ -43,7 +43,6 @@ protected:
     void SetCheck(int nItem, BOOL bCheck);
     void GetCurrentPath(LPTSTR szBuffer, size_t size);
     void UpdateButtonState();
-    void WriteFileUtf8(CFile * pFile, const CSaString szString);
     CSaString GetFieldWorksProjectDirectory();
     bool SearchForValue(HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
 

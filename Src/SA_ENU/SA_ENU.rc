@@ -1590,6 +1590,33 @@ BEGIN
     PUSHBUTTON      "S&top",IDC_STOP_PHRASE_L1,195,90,45,12,NOT WS_TABSTOP
 END
 
+IDD_EDITOR2 DIALOGEX 0, 0, 249, 112
+STYLE DS_SETFONT | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU
+CAPTION "Transcription Editor"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_INPUTSTRING,5,10,180,52,ES_MULTILINE | WS_VSCROLL
+    PUSHBUTTON      "Wor&d",ID_EDIT_ADD_WORD,10,77,45,12,WS_GROUP
+    PUSHBUTTON      "Book&mark",ID_EDIT_ADD_BOOKMARK,10,91,45,12
+    PUSHBUTTON      "&Add",ID_EDIT_ADD_PHONETIC,70,76,45,12,WS_GROUP
+    PUSHBUTTON      "&Remove",ID_EDIT_REMOVE,70,91,45,12,NOT WS_TABSTOP
+    PUSHBUTTON      "IDB_UP",ID_EDIT_UP,141,71,19,17,BS_ICON | WS_GROUP | NOT WS_TABSTOP
+    PUSHBUTTON      "IDB_PREV",ID_EDIT_PREVIOUS,122,80,19,17,BS_ICON | WS_GROUP
+    DEFPUSHBUTTON   "IDB_NEXT",ID_EDIT_NEXT,160,80,19,17,BS_ICON | BS_CENTER | BS_VCENTER
+    PUSHBUTTON      "IDB_DOWN",ID_EDIT_DOWN,141,88,19,17,BS_ICON
+    PUSHBUTTON      "&Segment",IDC_PLAY_SEGMENT,195,61,45,12,WS_GROUP
+    PUSHBUTTON      "&Word",IDC_PLAY_WORD,195,75,45,12,NOT WS_TABSTOP
+    PUSHBUTTON      "S&top",IDC_STOP_WORD,195,75,45,12,NOT WS_TABSTOP
+    PUSHBUTTON      "&Close",IDOK,195,4,45,12,WS_GROUP
+    PUSHBUTTON      "I&PA Chart",IDC_CHARACTERCHART,195,34,45,12,WS_GROUP
+    GROUPBOX        "Add Gloss",IDC_GLOSS,5,64,55,45
+    GROUPBOX        "Segment",IDC_SEGMENTTEXT,65,64,120,45
+    GROUPBOX        "Playback",IDC_STATIC,190,52,55,56
+    PUSHBUTTON      "&Help",IDHELP,195,19,45,12
+    PUSHBUTTON      "Phrase &L1",IDC_PLAY_PHRASE_L1,195,90,45,12,NOT WS_TABSTOP
+    PUSHBUTTON      "S&top",IDC_STOP_PHRASE_L1,195,90,45,12,NOT WS_TABSTOP
+END
+
 IDD_ANNOTATION_EDIT DIALOG 0, 0, 579, 138
 STYLE DS_SETFONT | WS_POPUP
 FONT 8, "MS Sans Serif"
@@ -2428,32 +2455,32 @@ BEGIN
     COMBOBOX        IDC_COMBO_PL4,215,88,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
-IDD_EXPORT_LIFT DIALOGEX 0, 0, 291, 243
+IDD_EXPORT_LIFT DIALOGEX 0, 0, 291, 220
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Export Lift"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    CONTROL         "Reference",IDC_EXTAB_REFERENCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,57,65,12
-    CONTROL         "Phonetic",IDC_EXTAB_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,72,65,12
-    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,86,65,12
-    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,102,65,12
-    CONTROL         "Gloss English",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,118,65,12
-    CONTROL         "Gloss National",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,132,65,12
-    LTEXT           "For each transcription to be exported, please specify the language code that identifies the language used for the transcription.",IDC_STATIC,10,17,270,20
+    CONTROL         "Reference",IDC_EXTAB_REFERENCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,57,65,12
+    CONTROL         "Phonetic",IDC_EXTAB_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,72,65,12
+    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,86,65,12
+    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,102,65,12
+    CONTROL         "Gloss English",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,65,12
+    CONTROL         "Gloss National",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,132,65,12
+    LTEXT           "For each transcription to be exported, please specify the language code that identifies the language used for the transcription.",IDC_STATIC,14,17,261,20
     LTEXT           "Language Code",IDC_STATIC,96,44,52,8
     COMBOBOX        IDC_LIST_REFERENCE,95,57,50,58,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_LIST_PHONETIC,95,72,50,86,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_LIST_PHONEMIC,95,87,50,80,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_LIST_ORTHO,95,102,50,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_LIST_GLOSS,95,117,50,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "Cancel",IDCANCEL,177,219,50,14
-    DEFPUSHBUTTON   "Export",IDOK,123,219,50,14
-    GROUPBOX        "Include",IDC_STATIC,9,6,271,147
-    PUSHBUTTON      "&Help",IDHELP,231,219,50,14
-    EDITTEXT        IDC_EDIT_FIELDWORKS_FOLDER,10,172,271,14,ES_AUTOHSCROLL | WS_DISABLED
-    COMBOBOX        IDC_COMBO_FIELDWORKS_PROJECT,10,192,271,101,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "FieldWorks Project",IDC_STATIC_FIELDWORKS_PROJECT,9,159,270,8
     COMBOBOX        IDC_LIST_GLOSS_NAT,95,131,50,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Cancel",IDCANCEL,177,196,50,14
+    DEFPUSHBUTTON   "Export",IDOK,123,196,50,14
+    GROUPBOX        "Include",IDC_STATIC,9,6,271,147
+    PUSHBUTTON      "&Help",IDHELP,231,196,50,14
+    LTEXT           "Export Folder",IDC_STATIC_FIELDWORKS_PROJECT,15,156,260,8
+    EDITTEXT        IDC_EDIT_FOLDER,15,170,212,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_BROWSE,231,170,50,14
 END
 
 IDD_SELECT_TRANSCRIPTION_BARS DIALOGEX 0, 0, 116, 144
@@ -2879,7 +2906,7 @@ BEGIN
         LEFTMARGIN, 10
         RIGHTMARGIN, 281
         TOPMARGIN, 10
-        BOTTOMMARGIN, 233
+        BOTTOMMARGIN, 210
     END
 
     IDD_SELECT_TRANSCRIPTION_BARS, DIALOG
@@ -5844,10 +5871,10 @@ BEGIN
                             "Copy Phonetic Transcriptions to Phonemic Transcriptions"
     IDS_SPLIT_INCOMPLETE    "The split was not completed.  No segments were found."
     ID_AUTO_MARKUP_REFERENCE_DATA "Renumber the Reference Data"
-	IDS_SPLIT_NO_GLOSS      "An empty Gloss transcription field was found at %1 segment #%2.\nPlease correct the transcription or rerun the Split File feature and use the checkbox to allow skipping of blank words."
-	IDS_SPLIT_NO_REF        "An empty Reference transcription field was found at %1 segment #%2.\nPlease correct the transcription field or rerun the Split File feature without using the Reference field as part of the filenaming convention."
+    IDS_SPLIT_NO_GLOSS      "An empty Gloss transcription field was found at %1 segment #%2.\nPlease correct the transcription or rerun the Split File feature and use the checkbox to allow skipping of blank words."
+    IDS_SPLIT_NO_REF        "An empty Reference transcription field was found at %1 segment #%2.\nPlease correct the transcription field or rerun the Split File feature without using the Reference field as part of the filenaming convention."
     IDS_SPLIT_NO_WRITE      "An error occurred while writing '%1'.\nPlease make sure the directory is writeable."
-	IDS_SPLIT_NO_PHRASE     "An empty Phrase transcription field was found at %1 segment #%2.\nPlease correct the transcription or rerun the Split File feature without using the Phrase field as part of the filenaming convention."
+    IDS_SPLIT_NO_PHRASE     "An empty Phrase transcription field was found at %1 segment #%2.\nPlease correct the transcription or rerun the Split File feature without using the Phrase field as part of the filenaming convention."
     IDS_SPLIT_FOLDER_EXISTS "The '%1' directory already exists.\n\nClick ABORT to cancel split file processing.\nClick RETRY to return the Split File dialog box.\nClick IGNORE to overwrite the existing data."
     IDS_SPLIT_FILE_EXISTS   "A file with the name '%1' already exists.\n\nPlease remove the file or choose another split file directory path."
 END

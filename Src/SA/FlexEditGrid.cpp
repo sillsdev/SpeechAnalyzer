@@ -414,7 +414,8 @@ END_MESSAGE_MAP()
 // CFlexEditWnd message handlers
 
 void CFlexEditWnd::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
-    if (nChar != VK_RETURN) { // Ignore ENTER key.  we only really want a single line edit control
+    if (nChar != VK_RETURN) { 
+		// Ignore ENTER key.  we only really want a single line edit control
         CEdit::OnChar(nChar, nRepCnt, nFlags);
     }
 }

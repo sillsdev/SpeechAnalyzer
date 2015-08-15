@@ -322,6 +322,7 @@
     <ClCompile Include="Sa_start.cpp" />
     <ClCompile Include="DlgSaveAsOptions.cpp" />
     <ClCompile Include="Targview.cpp" />
+    <ClCompile Include="test.cpp" />
     <ClCompile Include="TextHelper.cpp" />
     <ClCompile Include="TextSegment.cpp" />
     <ClCompile Include="ToneSegment.cpp" />
@@ -568,6 +569,7 @@
     <ClInclude Include="DlgSynthesis.h" />
     <ClInclude Include="DlgVocalTract.h" />
     <ClInclude Include="TaskBar.h" />
+    <ClInclude Include="test.h" />
     <ClInclude Include="TextHelper.h" />
     <ClInclude Include="TextSegment.h" />
     <ClInclude Include="ToneSegment.h" />

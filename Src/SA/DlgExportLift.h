@@ -27,6 +27,7 @@ class CSaDoc;
 class CDlgExportLift : public CDialog {
 public:
     CDlgExportLift(LPCTSTR szDocTitle,
+				   LPCTSTR szPath,
                    BOOL gloss,
                    BOOL glossNat,
                    BOOL ortho,
@@ -43,25 +44,14 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
     void SetEnable(int nItem, BOOL bEnable);
     void SetCheck(int nItem, BOOL bCheck);
-    void GetCurrentPath(LPTSTR szBuffer, size_t size);
-    void UpdateButtonState();
-    void WriteFileUtf8(CFile * pFile, const CSaString szString);
-    CSaString GetFieldWorksProjectDirectory();
-    bool SearchForValue(HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
 
-    afx_msg void OnClickedExSfmInterlinear();
-    afx_msg void OnClickedExSfmMultirecord();
-    afx_msg void OnClickedBrowseFieldworks();
     afx_msg void OnHelpExportBasic();
-    afx_msg void OnSelchangeComboFieldworksProject();
-    afx_msg void OnKillfocusComboFieldworksProject();
+    afx_msg void OnClickedBrowse();
 
     enum { IDD = IDD_EXPORT_LIFT };
-    CEdit ctlEditFieldWorksFolder;
 
-    CComboBox ctlComboFieldWorksProject;
-    CStatic ctlStaticFieldWorksProject;
     CButton ctlButtonOK;
+    CEdit ctlEditFolder;
 
     BOOL bGlossDflt;
     BOOL bGlossNatDflt;

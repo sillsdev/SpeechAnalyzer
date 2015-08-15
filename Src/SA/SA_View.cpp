@@ -1406,8 +1406,24 @@ void CSaView::OnExportLift() {
         it++;
     }
 
-    CDlgExportLift dlg(title, gloss, glossNat, ortho, phonemic, phonetic, reference, codes);
+	// determine the export directory
+	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	CString exportDir = pApp->GetProfileString(L"Lift",L"LastExport",L"");;
+	if (exportDir.GetLength()==0) {
+        // Set the DataLocation path and write it to the registry
+        exportDir = GetShellFolderPath(CSIDL_PERSONAL);
+        if (exportDir.Right(1) != "\\") {
+            exportDir += _T("\\");
+        }
+        exportDir += _T("Speech Analyzer");
+	}
+    if (exportDir.Right(1) == "\\") {
+        exportDir = exportDir.Left(exportDir.GetLength() - 1);
+    }
+
+    CDlgExportLift dlg( title, exportDir, gloss, glossNat, ortho, phonemic, phonetic, reference, codes);
     if (dlg.DoModal()==IDOK) {
+		pApp->WriteProfileStringW(L"Lift",L"LastExport",dlg.settings.szPath);
         pDoc->DoExportLift(dlg.settings);
     }
 }

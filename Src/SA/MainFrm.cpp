@@ -1029,11 +1029,11 @@ void CMainFrame::OnEditor() {
     }
     if (m_pDlgEditor==NULL) {
 		// New Editor with view parent
-        m_pDlgEditor = new CDlgEditor(this);  
+        m_pDlgEditor = new CDlgEditor2(this);  
     }
     if (m_pDlgEditor!=NULL) {
         // Create window if necessary
-        m_pDlgEditor->CreateSafe(CDlgEditor::IDD, this, &m_wplDlgEditor);
+        m_pDlgEditor->CreateSafe(CDlgEditor2::IDD, this, &m_wplDlgEditor);
     }
 
     if ((m_pDlgEditor!=NULL) && (!m_pDlgEditor->IsWindowVisible())) {

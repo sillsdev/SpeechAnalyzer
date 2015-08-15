@@ -7168,7 +7168,7 @@ void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings) {
 
 }
 
-void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
+void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
 
     int dataCount = 0;
     int liftCount = 0;
@@ -7212,7 +7212,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
     if (!FileUtils::FolderExists(szPath)) {
         FileUtils::CreateFolder(szPath);
     }
-    wcscat_s(szPath,MAX_PATH,L"audio\\");
+    wcscat_s(szPath,MAX_PATH,L"media\\");
     if (!FileUtils::FolderExists(szPath)) {
         FileUtils::CreateFolder(szPath);
     }
