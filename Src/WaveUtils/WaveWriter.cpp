@@ -56,7 +56,7 @@ void CWaveWriter::Write(LPCTSTR afilename, DWORD /*dwFlags*/, WORD bitsPerSample
         throw invalid_argument("samplesPerSec");
     }
 
-    wchar_t filename[128];
+    wchar_t filename[MAX_PATH];
     memset(filename,0,_countof(filename));
     wcscpy_s(filename,_countof(filename),afilename);
 

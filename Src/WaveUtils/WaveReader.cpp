@@ -62,7 +62,7 @@ void CWaveReader::Read(LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WOR
     // empty the buffer
     buffer.clear();
 
-    wchar_t filename[128];
+    wchar_t filename[MAX_PATH];
     memset(filename,0,_countof(filename));
     wcscpy_s(filename,_countof(filename),afilename);
 
@@ -201,7 +201,7 @@ void CWaveReader::Read(LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WOR
 */
 void CWaveReader::Read(LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WORD & formatTag, WORD & channels, DWORD & samplesPerSec, WORD & blockAlign) {
 
-    wchar_t filename[128];
+    wchar_t filename[MAX_PATH];
     memset(filename,0,_countof(filename));
     wcscpy_s(filename,_countof(filename),afilename);
 

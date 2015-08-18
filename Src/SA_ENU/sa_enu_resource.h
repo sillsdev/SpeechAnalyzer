@@ -354,7 +354,6 @@
 #define IDS_AUTO_PROCESSING             1103
 #define IDS_AUTO_PLAYING                1104
 #define IDC_RECORD                      1109
-#define IDD_EDITOR2                     1100
 #define IDC_FONTSGRAPHSETUP             1126
 #define IDC_FONT                        1130
 #define IDC_VOLUMEEDIT                  1131

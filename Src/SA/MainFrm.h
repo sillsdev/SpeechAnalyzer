@@ -47,12 +47,12 @@
 #include "SpectroParm.h"
 #include "SaParam.h"
 #include "DataStatusBar.h"
-#include "test.h"
+#include "DlgEditor.h"
+
 class CDlgFind;
 class CSegment;
 class CSaDoc;
 class CSaView;
-class CDlgEditor2;
 class CDisplayPlot;
 class CDlgToolsOptions;
 class CDlgPlayer;
@@ -334,7 +334,7 @@ protected:
     // dialogs
     CDlgPlayer * m_pDlgPlayer;					// pointer to player dialog object
     CDlgFind * m_pDlgFind;						// pointer to find/replace dialog object
-    CDlgEditor2 * m_pDlgEditor;
+    CDlgEditor * m_pDlgEditor;
     WINDOWPLACEMENT m_wplDlgEditor;
     BOOL m_bIsPrinting;
     BOOL m_bPrintPreviewInProgress;

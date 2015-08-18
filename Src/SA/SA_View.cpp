@@ -654,7 +654,7 @@ CSaView & CSaView::operator=(const CSaView & right) {
 	m_pFocusedGraph = NULL; // no graph focused
 	m_pCDibForPrint = NULL;
 	m_pPgLayoutBackup = NULL;
-	m_pPickOverlay = new CDlgPickOver;
+	m_pPickOverlay = new CDlgPickOver();
 	m_z = 0;
 	m_WeJustReadTheProperties = FALSE;
 	m_pDocument = NULL;
@@ -730,7 +730,7 @@ void CSaView::Init() {
     m_bPrintPreviewInProgress = FALSE;
     m_pCDibForPrint = NULL;
     m_pPgLayoutBackup = NULL;
-    m_pPickOverlay = new CDlgPickOver;
+    m_pPickOverlay = new CDlgPickOver();
     m_eInitialShowCmd = SW_SHOWNORMAL;
     m_z = 0;
     m_WeJustReadTheProperties = FALSE;
@@ -817,10 +817,9 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
     (*pGraph)->ShowTranscriptionBoundaries(m_bTranscriptionBoundaries);
 
     switch (nID) {
-        //****************************************************
-        // Set properties for raw data graphs
-        //****************************************************
-    case IDD_RAWDATA:
+    
+	case IDD_RAWDATA:
+	    // Set properties for raw data graphs
         (*pGraph)->ShowGrid(TRUE);
         (*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
         if (!m_WeJustReadTheProperties) {
@@ -832,20 +831,19 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
         }
         break;
 
-        //****************************************************
-        // Do this for all graphs but RAW and POA.
-        //****************************************************
-    default:
-        if (nID != IDD_POA) {
-            (*pGraph)->ShowGrid(TRUE);
-            (*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
+	case IDD_POA:
+		// do nothing for POA
+		break;
 
-            if (!m_WeJustReadTheProperties) {
-                (*pGraph)->ShowLegend(m_bLegendAll);
-                (*pGraph)->ShowXScale(m_bXScaleAll);
-                for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
-                    (*pGraph)->ShowAnnotation((EAnnotation)i, m_abAnnAll[i]);
-                }
+    default:
+		// everything else....
+        (*pGraph)->ShowGrid(TRUE);
+        //(*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
+        if (!m_WeJustReadTheProperties) {
+            (*pGraph)->ShowLegend(m_bLegendAll);
+            (*pGraph)->ShowXScale(m_bXScaleAll);
+            for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
+                (*pGraph)->ShowAnnotation((EAnnotation)i, m_abAnnAll[i]);
             }
         }
         break;
@@ -4070,13 +4068,14 @@ void CSaView::OnAddOverlay() {
     // graphs that can be merged with it, (m_pPickOverlay) then
     // call ChangeGraph to merge them in.
     if (m_pFocusedGraph && CGraphWnd::IsMergeableGraph(m_pFocusedGraph, TRUE)) {
-        CSaDoc * pDoc = GetDocument(); // get pointer to document
+		// get pointer to document
+        CSaDoc * pDoc = GetDocument(); 
         m_pPickOverlay->ResetGraphsPtr();
 
-        //      m_pPickOverlay->SetGraphsPtr(m_apGraphs, m_pFocusedGraph);
         POSITION position = pDoc->GetTemplate()->GetFirstDocPosition();
         while (position != NULL) {
-            CDocument * pNextDoc = pDoc->GetTemplate()->GetNextDoc(position); // get pointer to document
+			// get pointer to document
+            CDocument * pNextDoc = pDoc->GetTemplate()->GetNextDoc(position); 
             if (pNextDoc) {
                 POSITION pos = pNextDoc->GetFirstViewPosition();
                 while (pos != NULL) {
@@ -4090,7 +4089,6 @@ void CSaView::OnAddOverlay() {
                 (m_pPickOverlay->GraphsCount())) {
             ChangeGraph(ID_GRAPHS_OVERLAY);
         }
-
     }
 }
 
@@ -4102,10 +4100,10 @@ void CSaView::OnUpdateAddOverlay(CCmdUI * pCmdUI) {
     if (m_pFocusedGraph && CGraphWnd::IsMergeableGraph(m_pFocusedGraph, TRUE)) {
         m_pPickOverlay->ResetGraphsPtr();
 
-        //      m_pPickOverlay->SetGraphsPtr(m_apGraphs, m_pFocusedGraph);
         POSITION position = GetDocument()->GetTemplate()->GetFirstDocPosition();
         while (position != NULL) {
-            CDocument * pDoc = GetDocument()->GetTemplate()->GetNextDoc(position); // get pointer to document
+			// get pointer to document
+            CDocument * pDoc = GetDocument()->GetTemplate()->GetNextDoc(position); 
             if (pDoc) {
                 POSITION pos = pDoc->GetFirstViewPosition();
                 while (pos != NULL) {
@@ -4419,7 +4417,6 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
         else if (obs.bReadBool(psz_transcription_boundaries, m_bTranscriptionBoundaries));
         else if (obs.bReadBool(psz_drawstyleline, m_bDrawStyleLine));
         else if (obs.bReadBool(psz_updateboundaries, m_bUpdateBoundaries));
-
         else if (obs.bReadBeginMarker(psz_annotallornonelist)) {
             for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
                 obs.bReadBool(psz_annotall,  m_abAnnAll[i]);

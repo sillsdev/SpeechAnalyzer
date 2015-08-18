@@ -742,11 +742,15 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam) {
 }
 
 BOOL CPlotStaff::PreTranslateMessage(MSG * pMsg) {
-    if (pMsg->message == WM_CHAR) { // these have already been translated
+	// these have already been translated
+    if (pMsg->message == WM_CHAR) { 
         return FALSE;
-    } else if (pMsg->message == WM_KEYDOWN) {
-        switch (pMsg->wParam) { // these are keystrokes (with or without control, shift or alt) defined as
-            // accelerators in SA.  But we want them as keystrokes for this control.
+    }
+	
+	if (pMsg->message == WM_KEYDOWN) {
+        switch (pMsg->wParam) { 
+		// these are keystrokes (with or without control, shift or alt) defined as
+        // accelerators in SA.  But we want them as keystrokes for this control.
         case VK_DELETE:
         case VK_LEFT:
         case VK_RIGHT:
@@ -762,8 +766,10 @@ BOOL CPlotStaff::PreTranslateMessage(MSG * pMsg) {
             break;
         }
     }
+
     return CPlotWnd::PreTranslateMessage(pMsg);
 }
+
 int CPlotStaff::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     if (CPlotWnd::OnCreate(lpCreateStruct) == -1) {
         return -1;

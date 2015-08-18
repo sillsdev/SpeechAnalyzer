@@ -89,7 +89,7 @@
 #include "sa_plot.h"
 #include "sa_graph.h"
 #include "Segment.h"
-#include "sa_edit.h"
+#include "DlgAnnotationEdit.h"
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_view.h"

@@ -359,7 +359,7 @@ public:
         if (target.size()==0) {
             return;
         }
-        wchar_t buffer[128];
+        wchar_t buffer[256];
         wmemset(buffer,0,_countof(buffer));
         _itow_s(target.get(),buffer,_countof(buffer),10);
         parent->setAttribute(target.name, buffer);
