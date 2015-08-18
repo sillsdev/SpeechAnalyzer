@@ -116,7 +116,7 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
     } else {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
 			// data index of first sample to display

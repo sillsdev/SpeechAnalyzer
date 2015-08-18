@@ -320,7 +320,6 @@ m_PopupMenuPos(UNDEFINED_OFFSET, UNDEFINED_OFFSET) {
     m_pStopCursor = NULL;
     m_pLastProcess = NULL;
     m_pAreaProcess = NULL;
-    m_bBoundaries = false;
     m_bLineDraw = TRUE;
     m_bDotDraw = FALSE;
     m_bCursors = false;
@@ -349,7 +348,6 @@ void CPlotWnd::CopyTo(CPlotWnd * pTarg) {
     // copies don't have a process???
     pTarg->m_pAreaProcess = NULL;
     pTarg->m_pLastProcess = NULL;
-    pTarg->m_bBoundaries = m_bBoundaries;
     pTarg->m_bLineDraw = m_bLineDraw;
     pTarg->m_bDotDraw = m_bDotDraw;
     pTarg->m_bCursors = m_bCursors;
@@ -408,17 +406,6 @@ BOOL CPlotWnd::PreCreateWindow(CREATESTRUCT & cs) {
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS, AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0, 0);
     //::SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
     return CWnd::PreCreateWindow(cs);
-}
-
-/***************************************************************************/
-// CPlotWnd::ShowSegmentBoundaries Show or hide the boundaries
-/***************************************************************************/
-void CPlotWnd::ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw) {
-    m_bBoundaries = (bShow)?true:false;
-    if (bRedraw) {
-		// repaint whole plot window
-        RedrawPlot();    
-    }
 }
 
 /***************************************************************************/
@@ -853,7 +840,7 @@ void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DW
 // else only the part between (and with) the cursor windows are repainted,
 // but only if boundaries are displayed.
 /***************************************************************************/
-void CPlotWnd::RedrawPlot(BOOL bEntire) {
+void CPlotWnd::RedrawPlot( BOOL bEntire) {
     // kg - in case we don't have a window yet..
     if (IsWindow(m_hWnd) == FALSE) {
         return;
@@ -864,15 +851,18 @@ void CPlotWnd::RedrawPlot(BOOL bEntire) {
         // invalidate entire plot window
         InvalidateRect(NULL);
     } else {
-        if ((HaveBoundaries()) && (HaveCursors())) {
+		if ((m_pParent->HasBoundaries()) && (m_bCursors)) {
             // boundaries displayed?
             // invalidate region between (and with) cursor windows
-            CRect rStart, rStop;
+            CRect rStart;
+			CRect rStop;
             m_pStartCursor->GetWindowRect(rStart);
             m_pStopCursor->GetWindowRect(rStop);
-            rWnd.UnionRect(rStart, rStop); // union of both rectangles
+			// union of both rectangles
+            rWnd.UnionRect(rStart, rStop); 
             ScreenToClient(rWnd);
-            InvalidateRect(rWnd); // invalidate this area
+			// invalidate this area
+            InvalidateRect(rWnd); 
         }
     }
 }
@@ -1455,13 +1445,14 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
 // function after having finished its own painting job. It paints the
 // cursors and the segment boundaries.
 //**************************************************************************/
-void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip) {
-    // get pointer to graph, view and document
+void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
+    
+	// get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
 
-    if (m_bBoundaries) {
+	if (m_pParent->HasBoundaries()) {
         // paint boundaries
         double fDataStart;
         DWORD dwDataFrame;
@@ -2441,10 +2432,6 @@ CGraphWnd * CPlotWnd::GetParent() {
     return m_pParent;
 }
 
-CGraphWnd * CPlotWnd::GetGraph(void) {
-    return m_pParent;
-}
-
 CPoint CPlotWnd::GetMousePointerPosition() {
     return m_MousePointerPos;
 }
@@ -2465,31 +2452,26 @@ void CPlotWnd::PostNcDestroy() {
     delete this;
 }
 
+// return magnify factor
 double CPlotWnd::GetMagnify() {
-    // return magnify factor
     return m_fMagnify;
 }
 
-BOOL CPlotWnd::HaveBoundaries() {
-    // boundaries visible?
-    return m_bBoundaries;
-}
-
+// return drawing style
 BOOL CPlotWnd::HaveDrawingStyleLine() {
-    // return drawing style
     return m_bLineDraw;
 }
 
+// return drawing style
 BOOL CPlotWnd::HaveDrawingStyleDots() {
-    // return drawing style
     return m_bDotDraw;
 }
 
-bool CPlotWnd::HaveCursors() {
+bool CPlotWnd::HasCursors() {
     return m_bCursors;
 }
 
-bool CPlotWnd::HavePrivateCursor() {
+bool CPlotWnd::HasPrivateCursor() {
     // private cursor visible?
     return m_bPrivateCursor;
 }

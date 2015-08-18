@@ -4223,13 +4223,13 @@ void CSaDoc::AutoSnapUpdate(void) {
         if (pGraph) {
             for (int nInnerLoop = 0; nInnerLoop < ANNOT_WND_NUMBER; nInnerLoop++) {
                 if (pGraph->HaveAnnotation(nInnerLoop)) {
-                    pGraph->GetAnnotationWnd(nInnerLoop)->Invalidate();    // redraw annotation window
+					// redraw annotation window
+                    pGraph->GetAnnotationWnd(nInnerLoop)->Invalidate();    
                 }
             }
-            if (pGraph->HaveBoundaries()) {
+            if (pGraph->HasBoundaries()) {
                 pGraph->GetPlot()->Invalidate();
             }
-
         }
     }
 }
@@ -4307,15 +4307,13 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap) {
                     pGraph->GetAnnotationWnd(nInnerLoop)->Invalidate();    
                 }
             }
-            if (pGraph->HaveBoundaries()) {
+            if (pGraph->HasBoundaries()) {
                 pGraph->GetPlot()->Invalidate();
             }
-
         }
     }
     return result;
 }
-
 
 /***************************************************************************/
 // CSaDoc::UpdateSegmentBondaries  Adjust selected segments to current cursor
@@ -5349,7 +5347,7 @@ void CSaDoc::WriteProperties(CObjectOStream & obs) {
     }
     obs.WriteEndMarker(psz_wndlst);
 
-    obs.WriteEndMarker(psz_sadoc);
+	obs.WriteEndMarker(psz_sadoc);
     obs.WriteNewline();
 }
 
@@ -5361,12 +5359,12 @@ BOOL CSaDoc::ReadProperties(CObjectIStream & obs) {
     }
     CSaString sPath;
     sPath.setUtf8(buffer);
-
     if (_taccess(sPath, 04) != 0) {
         obs.SkipToEndMarker(psz_sadoc);
         return TRUE;
     }
-    TRACE(_T("Autoload: %s\n"), sPath);
+
+	TRACE(_T("Autoload: %s\n"), sPath);
     CSaView::SetObjectStream(obs);
 
     while (!obs.bAtEnd()) {
@@ -5385,15 +5383,12 @@ BOOL CSaDoc::ReadProperties(CObjectIStream & obs) {
     return TRUE;
 }
 
-
-
 BOOL CSaDoc::ReadPropertiesOfViews(CObjectIStream & obs, const CSaString & sPath) {
-    CSaDoc * pdoc = NULL;
-
+    
+	CSaDoc * pdoc = NULL;
     if (!obs.bReadBeginMarker(psz_wndlst)) {
         return FALSE;
     }
-
     while (!obs.bAtEnd()) {
         if (obs.bAtBeginMarker(psz_saview)) {
             if (pdoc) {
@@ -5423,7 +5418,8 @@ BOOL CSaDoc::ReadPropertiesOfViews(CObjectIStream & obs, const CSaString & sPath
         } else if (obs.bReadEndMarker(psz_wndlst)) {
             break;
         } else {
-            obs.ReadMarkedString();    // Skip unexpected field
+			// Skip unexpected field
+            obs.ReadMarkedString();    
         }
     }
 

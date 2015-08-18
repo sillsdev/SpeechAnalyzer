@@ -1912,8 +1912,8 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
         ReadDefaultViewFromTempFile();
     }
 
-    obs.WriteBeginMarker(psz_mainframe);
     obs.WriteNewline();
+    obs.WriteBeginMarker(psz_mainframe);
 
     // write out properties
     WINDOWPLACEMENT wpl;
@@ -1975,14 +1975,15 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
     }
     obs.WriteEndMarker(psz_graphfontarray);
 
-    BOOL bMaximized;
+    BOOL bMaximized = FALSE;
 
     //SDM 1.06.6U5 if there is an active child save its maximized state and normal size as the defaults
     if (MDIGetActive(&bMaximized)) {
         m_bDefaultMaximizeView = bMaximized;
         WINDOWPLACEMENT WP;
         WP.length = sizeof(WINDOWPLACEMENT);
-        if (MDIGetActive()->GetWindowPlacement(&WP)) { // SDM 32bit conversion
+		// SDM 32bit conversion
+        if (MDIGetActive()->GetWindowPlacement(&WP)) { 
             m_nDefaultHeightView = WP.rcNormalPosition.bottom - WP.rcNormalPosition.top;
             m_nDefaultWidthView = WP.rcNormalPosition.right - WP.rcNormalPosition.left;
         }
@@ -1994,6 +1995,7 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
     obs.WriteBool(psz_autosave, m_bAutoSave);
 
     obs.WriteEndMarker(psz_mainframe);
+    obs.WriteNewline();
 }
 
 //********************************************************************

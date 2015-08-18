@@ -480,39 +480,29 @@ void CDlgPrintOptions::OnLandscape() {
     ShowLandscapeBitmap(m_IsLandscape);
 }
 
-
-
 static LPCSTR psz_printoptions = "printoptions";
 static LPCSTR psz_fixedaspectr = "fixedaspectr";
 static LPCSTR psz_usesmallfonts= "usesmallfonts";
 static LPCSTR psz_islandscape  = "islandscape";
 static LPCSTR psz_ishires      = "ishires";
 
-
 void CDlgPrintOptions::WriteProperties(CObjectOStream & obs) {
-    obs.WriteBeginMarker(psz_printoptions);
-    obs.WriteNewline();
 
+	obs.WriteNewline();
+    obs.WriteBeginMarker(psz_printoptions);
     obs.WriteBool(psz_fixedaspectr, m_bFixedAspectR);
     obs.WriteBool(psz_usesmallfonts, m_bUseSmallFonts);
     obs.WriteBool(psz_islandscape, m_IsLandscape);
     obs.WriteBool(psz_ishires, m_IsHiRes);
-    //  obs.WriteInteger(psz_layouttype, m_LayoutType);
-    //  obs.WriteInteger(psz_numrows, m_NumRows);
-    //  obs.WriteInteger(psz_numcols, m_NumCols);
-    //  BOOL  m_bIsGraphSelected[MAX_GRAPHS_NUMBER];
-    //  CGraphWnd* m_apGraphs[MAX_GRAPHS_NUMBER];
-    //  int   m_selections[MAX_GRAPHS_NUMBER+1];
-
     obs.WriteEndMarker(psz_printoptions);
 }
 
 
 BOOL CDlgPrintOptions::ReadProperties(CObjectIStream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_printoptions)) {
+
+	if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_printoptions)) {
         return FALSE;
     }
-
 
     while (!obs.bAtEnd()) {
         if (obs.bReadBool(psz_fixedaspectr, m_bFixedAspectR))  ;

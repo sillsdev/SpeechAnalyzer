@@ -2110,10 +2110,7 @@ void CSaApp::WriteProperties(CObjectOStream & obs) {
     // The open databases and windows
     SetZ();  // Set the current z-order of all views
     obs.WriteBeginMarker(psz_SaApp, szVersion.utf8().c_str());
-    obs.WriteNewline();
-
     ASSERT(m_pMainWnd);
-
     ((CMainFrame *)m_pMainWnd)->WriteProperties(obs);
 
     if ((!GetBatchMode()) && ((CMainFrame *)m_pMainWnd)->GetSaveOpenFiles()) {

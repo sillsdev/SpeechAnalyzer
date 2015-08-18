@@ -514,8 +514,8 @@ void CXScaleWnd::OnDraw(CDC * pDC,
         // draw the dimension
         int nDimLeftLimit = 0;
         int nDimRightLimit = 0;
-        if (!m_szScaleDimension.IsEmpty() && !pGraph->IsPlotID(IDD_TWC) &&
-                (!pGraph->HaveLegend() || (pGraph->IsAreaGraph() && !pGraph->IsPlotID(IDD_RECORDING)))) {
+        if ((!m_szScaleDimension.IsEmpty()) && (!pGraph->IsPlotID(IDD_TWC)) &&
+            (!pGraph->HasLegend() || (pGraph->IsAreaGraph() && !pGraph->IsPlotID(IDD_RECORDING)))) {
             // create the bold font
             LOGFONT logFont;
 			// fill up logFont
@@ -843,7 +843,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
     } else {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
 			// data index of first sample to display
@@ -1126,7 +1126,7 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
     } else {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
 			// data index of first sample to display
@@ -1235,16 +1235,20 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
     } else {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
             CSaDoc * pDoc = pView->GetDocument();
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
-            fDataStart = (LONG)pView->GetStartCursorPosition(); // data index of first sample to display
-            dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; // number of data points to display
+			// data index of first sample to display
+            fDataStart = (LONG)pView->GetStartCursorPosition(); 
+			// number of data points to display
+            dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; 
         } else {
             // get necessary data from document and from view
-            fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
+			// data index of first sample to display
+            fDataStart = pView->GetDataPosition(rWnd.Width());
+			// number of data points to display
+            dwDataFrame = pView->AdjustDataFrame(rWnd.Width());
         }
     }
 
@@ -1398,7 +1402,7 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
     } else {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
 			// data index of first sample to display

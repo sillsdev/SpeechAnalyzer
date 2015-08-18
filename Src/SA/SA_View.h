@@ -719,8 +719,6 @@ private:
     ECursorAlignment m_nCursorAlignment;
 	// show transcription boundaries
     BOOL m_bTranscriptionBoundaries;
-	// boundaries show/hide all
-    BOOL m_bSegmentBoundaries;
 	// boundaries updated or not in transcription editor
     BOOL m_bUpdateBoundaries;
 	// TRUE = INS pressed
@@ -729,7 +727,8 @@ private:
     bool m_bEditSegmentSize;
 	// graph drawing style line or solid
     BOOL m_bDrawStyleLine;
-    DWORD m_dwDataPosition;                 // current start position of displayed data
+	// current start position of displayed data
+    DWORD m_dwDataPosition;
     double m_fMagnify;                      // magnify factor
     double m_fZoom;                         // current zoom factor
     double m_fMaxZoom;                      // max. zoom factor
@@ -749,11 +748,16 @@ private:
     CStopwatch * m_pStopwatch;              // pointer to stopwatch for timing events
 
     // internal data for printing
-    POINT m_printArea;                      // the size of the part of the printed page that we will use.
-    CPoint m_printerDPI;                    // the actual dpi of the printer
-    int m_newPrinterDPI;                    // the dpi we set up for printing
-    double m_printScaleX;                   // scaling factor for scaling along x axis
-    double m_printScaleY;                   // scaling factor for scaling along y axis
+	// the size of the part of the printed page that we will use.
+    POINT m_printArea;
+	// the actual dpi of the printer
+    CPoint m_printerDPI;
+	// the dpi we set up for printing
+    int m_newPrinterDPI;
+	// scaling factor for scaling along x axis
+    double m_printScaleX;
+	// scaling factor for scaling along y axis
+    double m_printScaleY;
     // save the colors before optimizing them for print, restore later.
 	Colors m_saveColors;
 	// true if a print preview is in progress.

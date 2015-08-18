@@ -118,7 +118,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
     DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
     DWORD dwFrameEnd = dwFrameStart + dwFrameSize - wSmpSize;
 
-    CGraphWnd * pGraph = GetGraph();
+    CGraphWnd * pGraph = GetParent();
     BOOL bFocus = (pGraph == pView->GetFocusedGraphWnd());
     if ((pWavePlot) && ((bDynamicUpdate) || ((!bDynamicUpdate) && bFocus))) {
         // highlight fragment in raw data

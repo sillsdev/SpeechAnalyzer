@@ -645,7 +645,9 @@ CSaView::~CSaView() {
 CSaView & CSaView::operator=(const CSaView & right) {
 
 	// don't copy ourselves..
-    if (&right == this) return * this;
+    if (&right == this) {
+		return * this;
+	}
 
     Clear();
 	PartialCopy(right);
@@ -661,7 +663,8 @@ CSaView & CSaView::operator=(const CSaView & right) {
 
 	for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
 		if (right.m_apGraphs[nLoop]) {
-			m_apGraphs[nLoop] = new CGraphWnd(*(right.m_apGraphs[nLoop]));
+			CGraphWnd & rightGraph = *(right.m_apGraphs[nLoop]);
+			m_apGraphs[nLoop] = new CGraphWnd(rightGraph);
 			m_anGraphID[nLoop] = m_apGraphs[nLoop]->GetPlotID();
 		} else {
 			m_apGraphs[nLoop] = NULL;
@@ -716,7 +719,6 @@ void CSaView::Init() {
     }
     m_nCursorAlignment = GetMainFrame().GetCursorAlignment();
 	m_bTranscriptionBoundaries = TRUE;
-    m_bSegmentBoundaries = TRUE;
     m_bUpdateBoundaries = TRUE;
     m_bDrawStyleLine = TRUE;
 	// start with first sample data
@@ -795,14 +797,16 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
             }
             break;
 
-        case CREATE_FROMSCRATCH:	// Use program defaults
+		// Use program defaults
+        case CREATE_FROMSCRATCH:	
             if (*pGraph) {
                 (*pGraph)->SetProperties(nID);
                 m_WeJustReadTheProperties = TRUE;
             }
             break;
         default:
-            ;  // Use current user settings
+			// Use current user settings
+            ;  
         }
         CreateOneGraph(&nID, pGraph);
         if (!nID) {
@@ -821,7 +825,6 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
 	case IDD_RAWDATA:
 	    // Set properties for raw data graphs
         (*pGraph)->ShowGrid(TRUE);
-        (*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
         if (!m_WeJustReadTheProperties) {
             (*pGraph)->ShowLegend(!m_bLegendNone);
             (*pGraph)->ShowXScale(!m_bXScaleNone);
@@ -838,7 +841,6 @@ void CSaView::CreateOneGraphStepOne( UINT nID, CGraphWnd ** pGraph, CREATE_HOW h
     default:
 		// everything else....
         (*pGraph)->ShowGrid(TRUE);
-        //(*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
         if (!m_WeJustReadTheProperties) {
             (*pGraph)->ShowLegend(m_bLegendAll);
             (*pGraph)->ShowXScale(m_bXScaleAll);
@@ -2223,12 +2225,13 @@ void CSaView::OnUpdateLegendNone(CCmdUI * pCmdUI) {
 // CSaView::OnXScaleAll Show the x-scale window on all graphs
 /***************************************************************************/
 void CSaView::OnXScaleAll() {
-    m_bXScaleAll = TRUE; // show x-scale windows in all the graphs
+	// show x-scale windows in all the graphs
+    m_bXScaleAll = TRUE; 
     m_bXScaleNone = FALSE;
     // show x-scale windows
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if (m_apGraphs[nLoop]) {
-            m_apGraphs[nLoop]->ShowXScale(m_apGraphs[nLoop]->HaveCursors(), m_apGraphs[nLoop]->HaveCursors());
+            m_apGraphs[nLoop]->ShowXScale(m_apGraphs[nLoop]->HasCursors(), m_apGraphs[nLoop]->HasCursors());
         }
     }
 }
@@ -2244,7 +2247,8 @@ void CSaView::OnUpdateXScaleAll(CCmdUI * pCmdUI) {
 // CSaView::OnXScaleRawdata Show the x-scale wnd on raw data graph only
 /***************************************************************************/
 void CSaView::OnXScaleRawdata() {
-    m_bXScaleAll = FALSE; // show x-scale windows only in raw data graph
+	// show x-scale windows only in raw data graph
+    m_bXScaleAll = FALSE; 
     m_bXScaleNone = FALSE;
     // hide x-scale windows
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
@@ -2265,7 +2269,8 @@ void CSaView::OnUpdateXScaleRawdata(CCmdUI * pCmdUI) {
 // CSaView::OnXScaleNone Hide x-scale windows in all the graphs
 /***************************************************************************/
 void CSaView::OnXScaleNone() {
-    m_bXScaleNone = TRUE; // hide x-scale windows in all the graphs
+	// hide x-scale windows in all the graphs
+    m_bXScaleNone = TRUE; 
     m_bXScaleAll = FALSE;
     // hide x-scale windows
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
@@ -2287,7 +2292,8 @@ void CSaView::OnUpdateXScaleNone(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly) {
     if (!bRawDataOnly) {
-        m_abAnnAll[nAnnot]  = bShow;  //Show annotation in all graphs
+		//Show annotation in all graphs
+        m_abAnnAll[nAnnot]  = bShow;  
         m_abAnnNone[nAnnot] = !bShow;
 
         //**************************************************
@@ -2299,7 +2305,8 @@ void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly) {
             }
         }
     } else {
-        m_abAnnAll[nAnnot]  = FALSE; // show annotation only in raw data graph
+		// show annotation only in raw data graph
+        m_abAnnAll[nAnnot]  = FALSE; 
         m_abAnnNone[nAnnot] = FALSE;
 
         //**************************************************
@@ -2395,13 +2402,12 @@ void CSaView::OnViewTranscriptionBoundaries() {
     // refresh the annotation windows
     for (int nGraph = 0; nGraph < MAX_GRAPHS_NUMBER; nGraph++) {
         CGraphWnd * pGraph = GetGraph(nGraph);
-        if (pGraph!=NULL) {
-            for (int nWnd = 0; nWnd < ANNOT_WND_NUMBER; nWnd++) {
-                pGraph->GetAnnotationWnd(nWnd)->ShowTranscriptionBoundaries(m_bTranscriptionBoundaries);
-                pGraph->GetAnnotationWnd(nWnd)->Invalidate(TRUE);
-            }
+        if (pGraph==NULL) continue;
+        for (int nWnd = 0; nWnd < ANNOT_WND_NUMBER; nWnd++) {
+            pGraph->GetAnnotationWnd(nWnd)->ShowTranscriptionBoundaries(m_bTranscriptionBoundaries);
+            pGraph->GetAnnotationWnd(nWnd)->Invalidate(TRUE);
         }
-    }
+	}
 }
 
 void CSaView::OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI) {
@@ -2412,12 +2418,11 @@ void CSaView::OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI) {
 // CSaView::OnBoundariesAll Show the boundaries on all graphs
 /***************************************************************************/
 void CSaView::OnBoundariesAll() {
-    m_bSegmentBoundaries = TRUE;
     // show boundaries
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-            m_apGraphs[nLoop]->ShowSegmentBoundaries(m_bSegmentBoundaries, TRUE);
-        }
+        if (m_apGraphs[nLoop]==NULL) continue;
+        m_apGraphs[nLoop]->SetBoundaries( true);
+		m_apGraphs[nLoop]->RedrawPlot();
     }
 }
 
@@ -2425,19 +2430,26 @@ void CSaView::OnBoundariesAll() {
 // CSaView::OnUpdateBoundariesAll Menu update
 /***************************************************************************/
 void CSaView::OnUpdateBoundariesAll(CCmdUI * pCmdUI) {
-    pCmdUI->SetCheck(m_bSegmentBoundaries);
+    BOOL bShown = TRUE;
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        if (m_apGraphs[nLoop]==NULL) continue;
+		if (!m_apGraphs[nLoop]->HasBoundaries()) {
+			bShown = FALSE;
+			break;
+		}
+    }
+    pCmdUI->SetCheck(bShown);
 }
 
 /***************************************************************************/
 // CSaView::OnBoundariesRawdata Show the boundaries on raw data graph only
 /***************************************************************************/
 void CSaView::OnBoundariesRawdata() {
-    m_bSegmentBoundaries = FALSE;
     // hide boundaries except for raw data
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-            m_apGraphs[nLoop]->ShowSegmentBoundaries(m_anGraphID[nLoop] == IDD_RAWDATA, TRUE);
-        }
+        if (m_apGraphs[nLoop]==NULL) continue;
+        m_apGraphs[nLoop]->SetBoundaries(m_anGraphID[nLoop] == IDD_RAWDATA);
+		m_apGraphs[nLoop]->RedrawPlot();
     }
 }
 
@@ -2448,15 +2460,14 @@ void CSaView::OnUpdateBoundariesRawdata(CCmdUI * pCmdUI) {
     // check to see if we are only show boundaries on the raw data graph
     BOOL bCondition = TRUE;
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-            if (m_anGraphID[nLoop] == IDD_RAWDATA) {
-                if (!m_apGraphs[nLoop]->HaveBoundaries()) {
-                    bCondition = FALSE;
-                }
-            } else {
-                if (m_apGraphs[nLoop]->HaveBoundaries()) {
-                    bCondition = FALSE;
-                }
+        if (m_apGraphs[nLoop]==NULL) continue;
+        if (m_anGraphID[nLoop] == IDD_RAWDATA) {
+            if (!m_apGraphs[nLoop]->HasBoundaries()) {
+                bCondition = FALSE;
+            }
+        } else {
+            if (m_apGraphs[nLoop]->HasBoundaries()) {
+                bCondition = FALSE;
             }
         }
     }
@@ -2468,7 +2479,8 @@ void CSaView::OnUpdateBoundariesRawdata(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnBoundariesThis() {
     if (m_pFocusedGraph!=NULL) {
-        m_pFocusedGraph->ShowSegmentBoundaries(!m_pFocusedGraph->HaveBoundaries(), TRUE);
+        m_pFocusedGraph->SetBoundaries(!m_pFocusedGraph->HasBoundaries());
+		m_pFocusedGraph->RedrawPlot();
     }
 }
 
@@ -2479,11 +2491,11 @@ void CSaView::OnUpdateBoundariesThis(CCmdUI * pCmdUI) {
 
     pCmdUI->Enable((m_pFocusedGraph!=NULL) &&
                    (GetDocument()->GetDataSize() != 0) &&       // enable if data is available
-                   (m_pFocusedGraph->HaveCursors()));           // enable if cursors visible
-
+                   (m_pFocusedGraph->HasCursors()));			// enable if cursors visible
 
     if (m_pFocusedGraph) {
-        pCmdUI->SetCheck(m_pFocusedGraph->HaveBoundaries());    // check if graph has boundaries
+		// check if graph has boundaries
+        pCmdUI->SetCheck(m_pFocusedGraph->HasBoundaries());    
     } else {
         pCmdUI->SetCheck(FALSE);
     }
@@ -2493,12 +2505,11 @@ void CSaView::OnUpdateBoundariesThis(CCmdUI * pCmdUI) {
 // CSaView::OnBoundariesNone Hide the boundaries on all graphs
 /***************************************************************************/
 void CSaView::OnBoundariesNone() {
-    m_bSegmentBoundaries = FALSE;
     // hide boundaries
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-            m_apGraphs[nLoop]->ShowSegmentBoundaries(m_bSegmentBoundaries, TRUE);
-        }
+        if (m_apGraphs[nLoop]==NULL) continue;
+        m_apGraphs[nLoop]->SetBoundaries(false);
+		m_apGraphs[nLoop]->RedrawPlot();
     }
 }
 
@@ -2506,13 +2517,10 @@ void CSaView::OnBoundariesNone() {
 // CSaView::OnUpdateBoundariesNone Menu update
 /***************************************************************************/
 void CSaView::OnUpdateBoundariesNone(CCmdUI * pCmdUI) {
-
     BOOL bShown = FALSE;
-    bShown |= m_bSegmentBoundaries;
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-            bShown |= m_apGraphs[nLoop]->HaveBoundaries();
-        }
+        if (m_apGraphs[nLoop]==NULL) continue;
+        bShown |= m_apGraphs[nLoop]->HasBoundaries();
     }
     pCmdUI->SetCheck(!bShown);
 }
@@ -3485,7 +3493,7 @@ void CSaView::OnUpdatePopupgraphGridlines(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnPopupgraphLegend() {
     if (m_pFocusedGraph) {
-        m_pFocusedGraph->ShowLegend(!m_pFocusedGraph->HaveLegend(), TRUE);
+        m_pFocusedGraph->ShowLegend(!m_pFocusedGraph->HasLegend(), TRUE);
     }
 
     //*****************************************************
@@ -3497,7 +3505,7 @@ void CSaView::OnPopupgraphLegend() {
     if (m_nFocusedID == IDD_TWC) {
         int i = GetGraphIndexForIDD(IDD_MELOGRAM);
         if ((m_apGraphs[i]!=NULL) && 
-			(!m_apGraphs[i]->HaveLegend())) {
+			(!m_apGraphs[i]->HasLegend())) {
             m_apGraphs[i]->ShowLegend(TRUE, TRUE);
         }
     }
@@ -3509,11 +3517,11 @@ void CSaView::OnPopupgraphLegend() {
 void CSaView::OnUpdatePopupgraphLegend(CCmdUI * pCmdUI) {
     BOOL bEnable = m_pFocusedGraph && GetDocument()->GetDataSize() != 0;
     if (bEnable && m_nFocusedID != IDD_MELOGRAM) {
-        bEnable &= (!m_pFocusedGraph->DisableLegend() || m_pFocusedGraph->HaveLegend());
+        bEnable &= (!m_pFocusedGraph->DisableLegend() || m_pFocusedGraph->HasLegend());
     }
     pCmdUI->Enable(bEnable);
     if (m_pFocusedGraph) {
-        pCmdUI->SetCheck(m_pFocusedGraph->HaveLegend());    // check if graph has legend window
+        pCmdUI->SetCheck(m_pFocusedGraph->HasLegend());    // check if graph has legend window
     } else {
         pCmdUI->SetCheck(FALSE);
     }
@@ -3682,7 +3690,7 @@ void CSaView::OnUpdatePopupgraphMagnify1(CCmdUI * pCmdUI) {
                    && (m_nFocusedID != IDD_SDP_A) // enable if graph is not this type
                    && (m_nFocusedID != IDD_SDP_B) // enable if graph is not this type
                    && (m_nFocusedID != IDD_INVSDP) // enable if graph is not this type
-                   && (m_pFocusedGraph->HaveCursors())); // enable if cursors visible
+                   && (m_pFocusedGraph->HasCursors())); // enable if cursors visible
     if (m_pFocusedGraph)
         pCmdUI->SetCheck((m_pFocusedGraph->GetMagnify() == 1.0) // check if factor matches
                          || (m_nFocusedID == IDD_SPECTROGRAM) // enable if graph is not this type
@@ -3723,7 +3731,7 @@ void CSaView::OnUpdatePopupgraphMagnify2(CCmdUI * pCmdUI) {
                    && (m_nFocusedID != IDD_SDP_A) // enable if graph is not this type
                    && (m_nFocusedID != IDD_SDP_B) // enable if graph is not this type
                    && (m_nFocusedID != IDD_INVSDP) // enable if graph is not this type
-                   && (m_pFocusedGraph->HaveCursors())); // enable if cursors visible
+                   && (m_pFocusedGraph->HasCursors())); // enable if cursors visible
     if (m_pFocusedGraph)
         pCmdUI->SetCheck((m_pFocusedGraph->GetMagnify() == 2.0) // check if factor matches
                          && (m_nFocusedID != IDD_SPECTROGRAM) // check only if graph is not this type
@@ -3764,7 +3772,7 @@ void CSaView::OnUpdatePopupgraphMagnify4(CCmdUI * pCmdUI) {
                    && (m_nFocusedID != IDD_SDP_A) // enable if graph is not this type
                    && (m_nFocusedID != IDD_SDP_B) // enable if graph is not this type
                    && (m_nFocusedID != IDD_INVSDP) // enable if graph is not this type
-                   && (m_pFocusedGraph->HaveCursors())); // enable if cursors visible
+                   && (m_pFocusedGraph->HasCursors())); // enable if cursors visible
     if (m_pFocusedGraph)
         pCmdUI->SetCheck((m_pFocusedGraph->GetMagnify() == 4.0) // check if factor matches
                          && (m_nFocusedID != IDD_SPECTROGRAM) // check only if graph is not this type
@@ -3813,7 +3821,7 @@ void CSaView::OnUpdatePopupgraphMagnifycustom(CCmdUI * pCmdUI) {
                    && (m_nFocusedID != IDD_SDP_A) // enable if graph is not this type
                    && (m_nFocusedID != IDD_SDP_B) // enable if graph is not this type
                    && (m_nFocusedID != IDD_INVSDP) // enable if graph is not this type
-                   && (m_pFocusedGraph->HaveCursors())); // enable if cursors visible
+                   && (m_pFocusedGraph->HasCursors())); // enable if cursors visible
     if (m_pFocusedGraph)
         pCmdUI->SetCheck((m_pFocusedGraph->GetMagnify() != 1.0) // check if factor does not match
                          && (m_pFocusedGraph->GetMagnify() != 2.0)
@@ -4290,7 +4298,6 @@ static LPCSTR psz_legendall          = "legendall";
 static LPCSTR psz_legendnone         = "legendnone";
 static LPCSTR psz_xscaleall          = "xscaleall";
 static LPCSTR psz_xscalenone         = "xscalenone";
-static LPCSTR psz_boundariesall      = "boundariesall";
 static LPCSTR psz_transcription_boundaries = "transcriptionboundaries";
 static LPCSTR psz_drawstyleline      = "drawstyleline";
 static LPCSTR psz_updateboundaries   = "updateboundaries";
@@ -4305,18 +4312,14 @@ static LPCSTR psz_annotnone          = "annotnone";
 /***************************************************************************/
 void CSaView::WriteProperties(CObjectOStream & obs) {
 
-    //**********************************************************
     // Write the marker beginning the properties for this view.
-    //**********************************************************
+	obs.WriteNewline();
     obs.WriteBeginMarker(psz_saview);
 
-    //**********************************************************
     // save the window placement.
-    //**********************************************************
     if (m_bViewCreated && GetSafeHwnd()) {
         WINDOWPLACEMENT wpl;
         GetParent()->GetWindowPlacement(&wpl);
-
         obs.WriteWindowPlacement(psz_placement, wpl);
         obs.WriteInteger(psz_z, m_z);
     }
@@ -4325,9 +4328,7 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
 
     obs.WriteBeginMarker(psz_graphlist);
 
-    //*************************************************
     // Save the properties for each graph that exists.
-    //*************************************************
     for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
         if (m_apGraphs[i]!=NULL) {
             int nID = m_anGraphID[i];
@@ -4347,25 +4348,19 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
 
     obs.WriteEndMarker(psz_graphlist);
 
-    //**********************************************************
     // Write page layout properties if they exist.
-    //**********************************************************
     if (m_pPageLayout) {
         m_pPageLayout->WriteProperties(obs);
     }
 
-    //**********************************************************
     // Write layout, legend and x-scale settings.
-    //**********************************************************
     obs.WriteUInt(psz_layout, m_nLayout);
     obs.WriteBool(psz_legendall, m_bLegendAll);
     obs.WriteBool(psz_legendnone, m_bLegendNone);
     obs.WriteBool(psz_xscaleall, m_bXScaleAll);
     obs.WriteBool(psz_xscalenone, m_bXScaleNone);
 
-    //**********************************************************
     // Write the global properties for the annotation windows.
-    //**********************************************************
     obs.WriteBeginMarker(psz_annotallornonelist);
     for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
         obs.WriteBool(psz_annotall,  m_abAnnAll[i]);
@@ -4373,15 +4368,13 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
     }
     obs.WriteEndMarker(psz_annotallornonelist);
 
-    //**********************************************************
     // Write other misc. global properties.
-    //**********************************************************
-    obs.WriteBool(psz_boundariesall, m_bSegmentBoundaries);
     obs.WriteBool(psz_transcription_boundaries, m_bTranscriptionBoundaries);
     obs.WriteBool(psz_drawstyleline, m_bDrawStyleLine);
     obs.WriteBool(psz_updateboundaries, m_bUpdateBoundaries);
 
     obs.WriteEndMarker(psz_saview);
+	obs.WriteNewline();
 }
 
 /***************************************************************************/
@@ -4401,7 +4394,7 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
     ASSERT(m_pPageLayout);
 
     while (!obs.bAtEnd()) {
-        if ((pwndFrame) && (obs.bReadWindowPlacement(psz_placement, wpl))) {
+        if ((pwndFrame!=NULL) && (obs.bReadWindowPlacement(psz_placement, wpl))) {
             m_eInitialShowCmd = wpl.showCmd;
             wpl.showCmd = SW_HIDE;
             pwndFrame->SetWindowPlacement(&wpl);
@@ -4413,7 +4406,6 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
         else if (obs.bReadBool(psz_legendnone, m_bLegendNone));
         else if (obs.bReadBool(psz_xscaleall, m_bXScaleAll));
         else if (obs.bReadBool(psz_xscalenone, m_bXScaleNone));
-        else if (obs.bReadBool(psz_boundariesall, m_bSegmentBoundaries));
         else if (obs.bReadBool(psz_transcription_boundaries, m_bTranscriptionBoundaries));
         else if (obs.bReadBool(psz_drawstyleline, m_bDrawStyleLine));
         else if (obs.bReadBool(psz_updateboundaries, m_bUpdateBoundaries));
@@ -4426,7 +4418,8 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
         } else if (obs.bReadEndMarker(psz_saview)) {
             break;
         } else {
-            obs.ReadMarkedString();    // Skip unexpected field
+			// Skip unexpected field
+            obs.ReadMarkedString();    
         }
     }
 
@@ -4445,7 +4438,8 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
 // view.
 /***************************************************************************/
 BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
-    if (!obs.bReadBeginMarker(psz_graphlist)) {
+    
+	if (!obs.bReadBeginMarker(psz_graphlist)) {
         return FALSE;
     }
 
@@ -4481,7 +4475,8 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
                 // views opened in the future can use the template's
                 // properties.
                 //*******************************************************
-                ASSERT(m_apGraphs[i] == NULL);  // we shouldn't be destroying a pointer to a graph
+				// we shouldn't be destroying a pointer to a graph
+                ASSERT(m_apGraphs[i] == NULL);  
                 m_apGraphs[i] = new CGraphWnd(id);
                 if (m_apGraphs[i]!=NULL) {
                     m_anGraphID[i] = id;
@@ -4494,12 +4489,14 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
                 // then skip to the end marker for this section.
                 //*******************************************************
                 if (bSkipToEnd) {
-                    obs.SkipToEndMarker(psz_sagraph);    // move past this graph record
+					// move past this graph record
+                    obs.SkipToEndMarker(psz_sagraph);    
                 }
             }
 
             if (m_apGraphs[i]!=NULL) {
-                i++;    // successfully filled in a space, move to next space.
+				// successfully filled in a space, move to next space.
+                i++;    
             }
         } else if (obs.bReadEndMarker(psz_graphlist)) {
             break;
@@ -4524,7 +4521,7 @@ BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView) {
 	int openAsID = pApp->GetOpenAsID();
     if (openAsID == ID_FILE_OPEN) {
         for (int i = 0, nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-            if (pTemplateView.m_apGraphs[nLoop]) {
+            if (pTemplateView.m_apGraphs[nLoop]!=NULL) {
                 CreateGraph(i, pTemplateView.m_anGraphID[nLoop], CREATE_FROMGRAPH, NULL, pTemplateView.m_apGraphs[nLoop]);
 			}
             if (m_apGraphs[i]!=NULL) {
@@ -4946,15 +4943,24 @@ void CSaView::OnGraphsTypes() {
 void CSaView::OnShowBorders() {
     
 	// if one or more aren't on, turn everything on, otherwise, turn them off
-    BOOL bShow = ((!m_bTranscriptionBoundaries)||(!m_bSegmentBoundaries))?TRUE:FALSE;
+    BOOL bSegmentBoundariesShown = TRUE;
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        if (m_apGraphs[nLoop]==NULL) continue;
+		if (!m_apGraphs[nLoop]->HasBoundaries()) {
+			bSegmentBoundariesShown = FALSE;
+			break;
+		}
+    }
+
+    bool bShow = ((!m_bTranscriptionBoundaries)||(!bSegmentBoundariesShown))?true:false;
     m_bTranscriptionBoundaries = bShow;
-    m_bSegmentBoundaries = bShow;
 
     // refresh the annotation windows
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if (m_apGraphs[nLoop]!=NULL) {
             m_apGraphs[nLoop]->ShowTranscriptionBoundaries(bShow);
-            m_apGraphs[nLoop]->ShowSegmentBoundaries(bShow, TRUE);
+            m_apGraphs[nLoop]->SetBoundaries(bShow);
+			m_apGraphs[nLoop]->RedrawPlot();
         }
     }
 }
@@ -5271,7 +5277,7 @@ void CSaView::Clear() {
     }
 }
 
-void  CSaView::PartialCopy( const CSaView & right) {
+void CSaView::PartialCopy( const CSaView & right) {
 
     m_nFocusedID = 0;
 	// default layout
@@ -5281,7 +5287,6 @@ void  CSaView::PartialCopy( const CSaView & right) {
     m_bXScaleAll = right.m_bXScaleAll;
     m_bXScaleNone = right.m_bXScaleNone;
     m_bTranscriptionBoundaries = right.m_bTranscriptionBoundaries;
-    m_bSegmentBoundaries = right.m_bSegmentBoundaries;
     m_bUpdateBoundaries = right.m_bUpdateBoundaries;
     m_bDrawStyleLine = right.m_bDrawStyleLine;
 	// start with first sample data
@@ -5569,9 +5574,10 @@ void CSaView::CreateGraph(int nPosition, int nNewID,
 // 09/21/2000 - DDO
 /***************************************************************************/
 CRecGraphWnd * CSaView::CreateRecGraph(CRecGraphWnd * pFromGraph, CObjectIStream * pObs) {
-    CRect rWnd(0, 0, 0, 0);
 
-    CRecGraphWnd * pRecGraph = new CRecGraphWnd;
+	CRect rWnd(0, 0, 0, 0);
+
+    CRecGraphWnd * pRecGraph = new CRecGraphWnd();
     pRecGraph->SetCaptionStyle(NoneThin);
 
     if (pFromGraph) {
@@ -5583,7 +5589,6 @@ CRecGraphWnd * CSaView::CreateRecGraph(CRecGraphWnd * pFromGraph, CObjectIStream
         pRecGraph->ShowAnnotation(PHONETIC, FALSE, FALSE);
         pRecGraph->ShowLegend(m_bLegendAll);
         pRecGraph->ShowGrid(TRUE);
-        pRecGraph->ShowSegmentBoundaries(m_bSegmentBoundaries);
         pRecGraph->SetMagnify(m_fMagnify);
     }
 
@@ -6032,7 +6037,7 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if ((m_apGraphs[nLoop]!=NULL) &&
                 (!m_apGraphs[nLoop]->IsAreaGraph()) &&
-                (!m_apGraphs[nLoop]->HavePrivateCursor())) {
+                (!m_apGraphs[nLoop]->HasPrivateCursor())) {
 			// repaint whole graph without legend window
             m_apGraphs[nLoop]->RedrawGraph();    
         }
@@ -6101,7 +6106,7 @@ void CSaView::ZoomOut(double fZoomAmount) {
         for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
             if ((m_apGraphs[nLoop]!=NULL) &&
                     (!m_apGraphs[nLoop]->IsAreaGraph()) &&
-                    (!m_apGraphs[nLoop]->HavePrivateCursor())) {
+                    (!m_apGraphs[nLoop]->HasPrivateCursor())) {
 				// repaint whole graph without legend window
                 m_apGraphs[nLoop]->RedrawGraph();    
             }

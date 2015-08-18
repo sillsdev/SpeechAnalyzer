@@ -109,10 +109,12 @@ DWORD CPlotRecording::GetAreaLength(CRect * /*pRwnd*/) {
 // CPlotRecording::SetMagnify Set the magnify factor
 /***************************************************************************/
 void CPlotRecording::SetMagnify(double fMagnify, BOOL bRedraw) {
-    UNUSED_ALWAYS(fMagnify);  //  The recording plot does not zoom
+	// The recording plot does not zoom
+    UNUSED_ALWAYS(fMagnify);  
     m_fMagnify = 1.0;
     if (bRedraw) {
-        RedrawPlot();    // repaint whole plot window
+		// repaint whole plot window
+        RedrawPlot();    
     }
 }
 
@@ -120,7 +122,8 @@ void CPlotRecording::SetMagnify(double fMagnify, BOOL bRedraw) {
 // 08/29/2000 - DDO Added this overriding function.
 /***************************************************************************/
 DWORD CPlotRecording::AdjustDataFrame(int nWidth) {
-    if (!m_dwRecDataFrame) {
+    
+	if (!m_dwRecDataFrame) {
         CSaDoc * pDoc = ((CMainFrame *)AfxGetMainWnd())->GetCurrDoc();
         if (!pDoc) {
             return 0L;
@@ -128,8 +131,10 @@ DWORD CPlotRecording::AdjustDataFrame(int nWidth) {
         DWORD dwDataSize = pDoc->GetDataSize();
         DWORD nSampleSize = pDoc->GetSampleSize();
 
-        if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize)) {  // more pixels than data
-            m_dwRecDataFrame = (DWORD)nWidth * (DWORD)nSampleSize;    // extend data frame to number of pixels
+		// more pixels than data
+        if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize)) {
+			// extend data frame to number of pixels
+            m_dwRecDataFrame = (DWORD)nWidth * (DWORD)nSampleSize;    
         } else {
             m_dwRecDataFrame = dwDataSize;
         }

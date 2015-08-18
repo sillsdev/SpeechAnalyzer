@@ -45,11 +45,13 @@ public:
     CGraphWnd();
     CGraphWnd(UINT nID);
 	// copy constructor
-    CGraphWnd(const CGraphWnd & toBeCopied);
-	// assignment operator
-    CGraphWnd & operator=(const CGraphWnd &);
+    CGraphWnd(const CGraphWnd & right);
     virtual ~CGraphWnd();
-    CPlotWnd * NewPlotFromID(UINT plotID);
+	// assignment operator
+	CGraphWnd & operator=(const CGraphWnd & right);
+
+	void PartialCopy( const CGraphWnd & right);
+	CPlotWnd * NewPlotFromID(UINT plotID);
     BOOL IsIDincluded(UINT id);
 	// Save (Project) Settings
     void WriteProperties(CObjectOStream & obs);
@@ -64,7 +66,6 @@ public:
 	static EAnnotation m_anAnnWndOrder[ANNOT_WND_NUMBER]; // order to display annotation windows
     void RemoveRtPlots();
     void SetGraphFocus(BOOL bFocus);
-    void PartialCopy(const CGraphWnd & toBeCopied);
     void RemoveOverlayItem(const CPlotWnd * pPlot);
     void SetCaptionStyle(int, BOOL bRedraw = FALSE); // set graph caption style
     void ScrollGraph(CSaView * pView, DWORD, DWORD);   // scroll graph
@@ -73,18 +74,21 @@ public:
     static double GetSemitone(double fFreq); // calculates semitones from a frequency
     static double SemitoneToFrequency(double fSemitone);
     static CSaString Semitone2Name(double fSemitone);
-    void UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bForceUpdate = FALSE); // update the status bar
+	// update the status bar
+    void UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bForceUpdate = FALSE); 
     // interface to plot window
     UINT GetPlotID() const;
     UINT IsPlotID(UINT test) const;
-    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);
+    void SetBoundaries(bool bShow);
+	void RedrawPlot();
     void ShowTranscriptionBoundaries(BOOL bShow);
-    void SetMagnify(double bFactor, BOOL bRedraw = FALSE); // set magnify factor
+	// set magnify factor
+    void SetMagnify(double bFactor, BOOL bRedraw = FALSE); 
     double GetMagnify();
-    BOOL HaveBoundaries();
+    bool HasBoundaries();
     BOOL HaveDrawingStyleLine();
-    bool HaveCursors();
-    bool HavePrivateCursor();
+    bool HasCursors();
+    bool HasPrivateCursor();
     BOOL HaveGrid();
     void SetLineDraw(BOOL bLine);
     void ShowGrid(BOOL bShow, BOOL bRedraw = FALSE);
@@ -111,7 +115,7 @@ public:
     void ShowXScale(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide x-scale window
     void ShowAnnotation(EAnnotation nIndex, BOOL bShow, BOOL bRedraw = FALSE); // show or hide indexed annotation window
     void ShowCursors(bool bPrivate, bool bShow);
-    BOOL HaveLegend();
+    BOOL HasLegend();
     BOOL HaveXScale();
     BOOL HaveAnnotation(int nIndex);
     BOOL DisableLegend();
@@ -169,6 +173,8 @@ protected:
     static DWORD m_dwLastStopCursor;
 	// popup menu location
 	CPoint m_PopupMenuPos;
+	// true if segment boundaries are enabled
+	bool m_bBoundaries;
 };
 
 //###########################################################################

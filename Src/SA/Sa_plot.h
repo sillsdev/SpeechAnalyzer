@@ -128,7 +128,6 @@ public:
     CString GetPlotName() const;
     void SetPlotName(const CString & plotName);
     virtual void GraphHasFocus(BOOL bFocus);
-    CGraphWnd * GetGraph(void);
     CPoint GetMousePointerPosition();
     UINT GetMouseButtonState();
     void SetMousePointerPosition(CPoint point);
@@ -138,16 +137,13 @@ public:
     virtual void RemoveRtPlots();
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
-	// show or hide boundaries
-    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);
 	// set magnify factor
     virtual void SetMagnify(double, BOOL bRedraw = FALSE);
     double GetMagnify();
-    BOOL HaveBoundaries();
     BOOL HaveDrawingStyleLine();
     BOOL HaveDrawingStyleDots();
-    bool HaveCursors();
-    bool HavePrivateCursor();
+    bool HasCursors();
+    bool HasPrivateCursor();
     BOOL HaveGrid();
 	// set line or solid drawing style
     void SetLineDraw(BOOL bLine);
@@ -273,8 +269,6 @@ protected:
     CProcess * m_pLastProcess;
 	// pointer to area process (needs deleting)
     CProcessAreaData * m_pAreaProcess;
-	// TRUE = boundaries shown
-    bool m_bBoundaries;
 	// TRUE = drawing style is line
     BOOL m_bLineDraw;
 	// TRUE = drawing style is dots
@@ -321,7 +315,6 @@ private:
 
 
 // Classes designed to support standard drawing
-
 class CDataSource {
 public:
     virtual ~CDataSource();
@@ -363,7 +356,6 @@ public:
     virtual ~CXScale() {
         ;
     }
-
     virtual int GetX(double fSample) const {
         return round2Int(fSample);
     }

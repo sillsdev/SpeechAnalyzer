@@ -10,16 +10,16 @@ static LPCSTR psz_xstyle = "xstyle";
 static LPCSTR psz_ystyle = "ystyle";
 
 void CGrid::WriteProperties(CObjectOStream & obs) {
-    obs.WriteBeginMarker(psz_grid);
-    obs.WriteNewline();
 
+	obs.WriteNewline();
+    obs.WriteBeginMarker(psz_grid);
     // write out properties
     obs.WriteBool(psz_xgrid,  bXGrid);
     obs.WriteBool(psz_ygrid,  bYGrid);
     obs.WriteInteger(psz_xstyle, nXStyle);
     obs.WriteInteger(psz_ystyle, nYStyle);
-
     obs.WriteEndMarker(psz_grid);
+	obs.WriteNewline();
 }
 
 BOOL CGrid::ReadProperties(CObjectIStream & obs) {

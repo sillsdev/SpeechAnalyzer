@@ -261,7 +261,6 @@
     <ClCompile Include="Sa_g_twc.cpp" />
     <ClCompile Include="sa_g_wavelet.cpp" />
     <ClCompile Include="Sa_g_zcr.cpp" />
-    <ClCompile Include="Sa_grap2.cpp" />
     <ClCompile Include="Sa_graph.cpp" />
     <ClCompile Include="Sa_gz3d.cpp" />
     <ClCompile Include="Sa_gzpol.cpp" />
