@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "sa_enu_resource.h"
+#include "sa_lang_resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -40,21 +40,21 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "040904e4"
+        BLOCK "000704e4"
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
             VALUE "FileVersion", "v3.1.0.132"
-            VALUE "InternalName", "SA_ENU"
+            VALUE "InternalName", "SA_DEU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
-            VALUE "OriginalFilename", "SA_ENU.dll"
+            VALUE "OriginalFilename", "SA_DEU.dll"
             VALUE "ProductName", "SA"
             VALUE "ProductVersion", "2.0.0.0"
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x409, 1252
+        VALUE "Translation", 0x7, 1252
     END
 END
 
@@ -84,10 +84,10 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// German (Germany) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 #pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2925,7 +2925,7 @@ END
 
 1 TEXTINCLUDE 
 BEGIN
-    "sa_enu_resource.h\0"
+"sa_lang_resource.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -2937,9 +2937,9 @@ END
 
 3 TEXTINCLUDE 
 BEGIN
-    "#include ""rs_minic.rc""   // mini caption window resources\r\n"
-    "#include ""afxres.rc""  \t    // Standard components\r\n"
-    "#include ""afxprint.rc""    // printing/print preview resources\r\n"
+    "#include ""l.deu\\rs_minic.rc""   // mini caption window resources\r\n"
+    "#include ""l.deu\\afxres.rc""  \t    // Standard components\r\n"
+    "#include ""l.deu\\afxprint.rc""    // printing/print preview resources\r\n"
     "\0"
 END
 
@@ -3087,7 +3087,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Record New...\tCtrl+R",      ID_FILE_RECORD
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&÷ffnen...\tCtrl+O",            ID_FILE_OPEN
         MENUITEM "Ope&n Startup...",            ID_FILE_OPEN_SPECIAL
         MENUITEM SEPARATOR
         MENUITEM "Print Se&tup...",             ID_FILE_PRINT_SETUP
@@ -3129,7 +3129,7 @@ BEGIN
     BEGIN
         MENUITEM "&Record New...\tCtrl+R",      ID_FILE_RECORD
         MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&÷ffnen...\tCtrl+O",            ID_FILE_OPEN
         MENUITEM "Open Startup...",             ID_FILE_OPEN_SPECIAL
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
@@ -3773,7 +3773,7 @@ IDR_WORKBENCH MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&÷ffnen...\tCtrl+O",            ID_FILE_OPEN
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM SEPARATOR
@@ -3950,7 +3950,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Record...\tCtrl+R",          ID_FILE_RECORD
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&÷ffnen...\tCtrl+O",            ID_FILE_OPEN
         MENUITEM "Ope&n Startup...",            ID_FILE_OPEN_SPECIAL
         MENUITEM SEPARATOR
         MENUITEM "Print Se&tup...",             ID_FILE_PRINT_SETUP
@@ -3978,7 +3978,7 @@ IDR_KLATT MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Open\tCtrl+O",               ID_FILE_OPEN
+        MENUITEM "&÷ffnen\tCtrl+O",               ID_FILE_OPEN
         MENUITEM "&Save As\tCtrl+S",            ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Display Synthesized\tF2",    ID_SYNTH_DISPLAY
@@ -4049,7 +4049,7 @@ IDR_SYNTHESIS_VOCAL_TRACT MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Open\tCtrl+O",               ID_FILE_OPEN
+        MENUITEM "&÷ffnen\tCtrl+O",               ID_FILE_OPEN
         MENUITEM "&Save As\tCtrl+S",            ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Display Synthesized\tF2",    ID_SYNTH_DISPLAY
@@ -4866,7 +4866,7 @@ END
 STRINGTABLE
 BEGIN
     ID_FILE_NEW             "Create a new workbench document\nNew"
-    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_OPEN            "Open an existing document\n÷ffnen"
     ID_FILE_CLOSE           "Close the active document\nClose"
     ID_FILE_SAVE            "Save the active document \nSave"
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
@@ -4901,10 +4901,10 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_FILE_MRU_FILE1       "Open this document\nOpen"
-    ID_FILE_MRU_FILE2       "Open this document\nOpen"
-    ID_FILE_MRU_FILE3       "Open this document\nOpen"
-    ID_FILE_MRU_FILE4       "Open this document\nOpen"
+    ID_FILE_MRU_FILE1       "Open this document\n÷ffnen"
+    ID_FILE_MRU_FILE2       "Open this document\n÷ffnen"
+    ID_FILE_MRU_FILE3       "Open this document\n÷ffnen"
+    ID_FILE_MRU_FILE4       "Open this document\n÷ffnen"
 END
 
 STRINGTABLE
@@ -5974,7 +5974,7 @@ BEGIN
     IDS_RESTART_CONFIRM     "Do you wish to delete the existing text segmentation and restart the project?\nAll existing work will be lost!\nThis operation cannot be undone."
 END
 
-#endif    // English (United States) resources
+#endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -5984,9 +5984,9 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-#include "rs_minic.rc"   // mini caption window resources
-#include "afxres.rc"  	    // Standard components
-#include "afxprint.rc"    // printing/print preview resources
+#include "rs_minic.rc"			// mini caption window resources
+#include "l.deu\afxres.rc"  	// Standard components
+#include "l.deu\afxprint.rc"    // printing/print preview resources
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED

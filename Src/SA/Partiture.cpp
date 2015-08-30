@@ -45,8 +45,8 @@ using std::streampos;
 #include <commdlg.h>
 #include "Partiture.hpp"
 #include "Clip.hpp"
-#include <sa_enu_resource.h>
 #include "AppDefs.h"
+#include "sa_lang_resource.h"
 
 #define TICKS_PER_Q (120)
 

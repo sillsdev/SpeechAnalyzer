@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by SA_ENU.rc
+// Used by SA_DEU.rc
 //
 #define IDS_ACTIVEX                     1
 #define IDS_ACTIVEX_PPG                 2

@@ -14,9 +14,6 @@
 #include <xercesc/sax2/DefaultHandler.hpp>
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
-
-#include "sa_enu_resource.h"
-
 #include "DlgImportElanSheet.h"
 #include "Elan.h"
 

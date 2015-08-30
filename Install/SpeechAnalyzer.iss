@@ -25,6 +25,7 @@ OutputDir=C:\Working\SIL\MSEA\Install\Output
 OutputBaseFilename=SpeechAnalyzerMSEA
 Compression=lzma
 SolidCompression=yes
+SetupLogging=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -40,6 +41,7 @@ Source: "C:\Working\SIL\MSEA\Output\Release\ECInterfaces.dll"; DestDir: "{app}";
 Source: "C:\Working\SIL\MSEA\Output\Release\mbrola.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SA_DSP.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SA_ENU.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Output\Release\SA_DEU.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SilEncConverters40.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SAUtils.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\yeti.mmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -106,50 +108,99 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////
-function GetUninstallString(): String;
+function GetMSEAUninstallString(): String;
 var
   sUnInstPath: String;
   sUnInstallString: String;
 begin
-   sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
-   sUnInstallString := '';
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstallString := '';
   if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
     RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
   Result := sUnInstallString;
+  Log('uninstallstring for msea:');
+  Log(sUnInstallString);
 end;
 
-
 /////////////////////////////////////////////////////////////////////
-function IsUpgrade(): Boolean;
+function Has31UninstallString(): Boolean;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
 begin
-  Result := (GetUninstallString() <> '');
+  // old 3.1 product id
+  sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{D99E9365-BB4F-4430-875C-BD5516EE92DA}';
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Log('uninstallstring for 31:');
+  Log(sUnInstallString);
+  if (sUnInstallString <> '') then
+    begin
+      Result := TRUE
+      Log('result=true')
+    end
+  else
+    begin
+      Result := FALSE;
+      Log('result=false')
+    end;
 end;
 
-
 /////////////////////////////////////////////////////////////////////
-function UnInstallOldVersion(): Integer;
+function UnInstallMSEA(): Boolean;
 var
   sUnInstallString: String;
   iResultCode: Integer;
 begin
-// Return Values:
-// 1 - uninstall string is empty
-// 2 - error executing the UnInstallString
-// 3 - successfully executed the UnInstallString
 
   // default return value
-  Result := 0;
+  Result := FALSE;
 
   // get the uninstall string of the old app
-  sUnInstallString := GetUninstallString();
+  sUnInstallString := GetMSEAUninstallString();
   if sUnInstallString <> '' then begin
+    Log('uninstalling msea');
     sUnInstallString := RemoveQuotes(sUnInstallString);
-    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
-      Result := 3
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_SHOW, ewWaitUntilTerminated, iResultCode) then
+      begin
+        Log('uninstall succeeded');
+        Result := TRUE;
+      end
     else
-      Result := 2;
+      begin
+        Log('unistall exec failed');
+        Result := FALSE;
+      end;
   end else
-    Result := 1;
+    Result := FALSE;
+end;
+
+/////////////////////////////////////////////////////////////////////
+function UnInstall_3_1(): Boolean;
+var
+  iResultCode: Integer;
+begin
+
+  // default return value
+  Result := FALSE;
+
+  // get the uninstall string of the old app
+  if Has31UninstallString() then begin
+    Log('uninstalling 3.1');
+    if Exec('MsiExec.exe', '/x {D99E9365-BB4F-4430-875C-BD5516EE92DA} /quiet /passive /norestart','', SW_SHOW, ewWaitUntilTerminated, iResultCode) then
+      begin
+        Log('uninstall succeeded');
+        Result := TRUE;
+      end
+    else
+      begin
+        Log('unistall exec failed');
+        Result := FALSE;
+      end;
+  end else
+    Result := FALSE;
+
 end;
 
 /////////////////////////////////////////////////////////////////////
@@ -157,9 +208,7 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep=ssInstall) then
   begin
-    if (IsUpgrade()) then
-    begin
-      UnInstallOldVersion();
-    end;
+    UnInstallMSEA();
+    UnInstall_3_1();
   end;
 end;

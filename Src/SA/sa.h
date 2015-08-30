@@ -234,6 +234,7 @@ private:
     BOOL WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue);
 
     HINSTANCE m_hEnglishResources;
+    HINSTANCE m_hGermanResources;
     HINSTANCE m_hLocalizedResources;
     CMultiDocTemplate * m_pDocTemplate;		// document template
     CMultiDocTemplate * m_pWbTemplate;		// workbench document template

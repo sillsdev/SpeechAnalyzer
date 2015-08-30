@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{23E56F0E-30A8-4CF2-AB4D-5B1ED39CD268}</ProjectGuid>
-    <RootNamespace>SA_ENU</RootNamespace>
+    <ProjectGuid>{CB7EF7F0-A6EF-4E12-8AE6-D981004B8E21}</ProjectGuid>
+    <RootNamespace>SA_DEU</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -41,10 +41,10 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\Output\Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\DEU</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\Output\Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\DEU</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -70,7 +70,7 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
+      <Culture>0x0407</Culture>
       <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
@@ -111,7 +111,7 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
+      <Culture>0x0407</Culture>
       <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
@@ -130,7 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="custom_menu.h" />
-    <ClInclude Include="sa_enu_resource.h" />
+    <ClInclude Include="sa_lang_resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\uriparser-0.8.0.1\win32\Visual_Studio_2010\uriparser.vcxproj" />
@@ -192,7 +192,7 @@
     <None Include="Res\1.ICO" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SA_ENU.rc" />
+    <ResourceCompile Include="SA_DEU.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

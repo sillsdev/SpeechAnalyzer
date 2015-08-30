@@ -200,7 +200,10 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CSaApp::CSaApp Constructor
 /***************************************************************************/
-CSaApp::CSaApp() {
+CSaApp::CSaApp() :
+m_hEnglishResources(NULL),
+m_hGermanResources(NULL),
+m_hLocalizedResources(NULL) {
 
 	// no batch mode
     m_nBatchMode = 0;       
@@ -309,20 +312,47 @@ BOOL CSaApp::InitInstance() {
     afxMemDF |= checkAlwaysMemDF;  
 #endif
 
-#ifdef _DEBUG
-	// this allows us to use wchar for trace statements
-	// you should set the country code of yours
-	_tsetlocale(LC_ALL, _T("English")); 
-#endif
+	LANGID langid = GetUserDefaultLangID();
 
-    m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
     m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOC.DLL"));
-    if ((!m_hEnglishResources) && (!m_hLocalizedResources)) {
-        AfxMessageBox(L"Speech Analyzer was unable to locate or use SA_ENU.DLL or SA_LOC.DLL.\nIt will now exit.");
+
+	switch (langid) {
+	case 0x0407:
+#ifdef _DEBUG
+		// this allows us to use wchar for trace statements
+		// you should set the country code of yours
+		_tsetlocale(LC_ALL, _T("German")); 
+#endif
+	    m_hGermanResources = LoadCompatibleLibrary(_T("SA_DEU.DLL"));
+		break;
+	case 0x0409:
+	default:
+#ifdef _DEBUG
+		// this allows us to use wchar for trace statements
+		// you should set the country code of yours
+		_tsetlocale(LC_ALL, _T("English")); 
+#endif
+	    m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
+		break;
+	}
+
+    if ((m_hEnglishResources==NULL) && 
+		(m_hGermanResources==NULL) &&
+		(m_hLocalizedResources==NULL)) {
+        AfxMessageBox(L"Speech Analyzer was unable to locate or use SA_ENU.DLL, SA_DEU.DLL or SA_LOC.DLL.\nIt will now exit.");
         return FALSE;
     }
 
-    AfxSetResourceHandle(m_hEnglishResources);
+	switch (langid) {
+	case 0x0407:
+	    AfxSetResourceHandle(m_hGermanResources);
+		break;
+	case 0x0409:
+	default:
+		AfxSetResourceHandle(m_hEnglishResources);
+		break;
+	}
+
 
     if (!CWinApp::InitInstance()) {
         return FALSE;
@@ -531,6 +561,9 @@ int CSaApp::ExitInstance() {
 
     if (m_hEnglishResources) {
         FreeLibrary(m_hEnglishResources);
+    }
+    if (m_hGermanResources) {
+        FreeLibrary(m_hGermanResources);
     }
     if (m_hLocalizedResources) {
         FreeLibrary(m_hLocalizedResources);

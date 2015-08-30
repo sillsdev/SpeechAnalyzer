@@ -99,9 +99,8 @@ inline static int round2Int(double value) {
 #include <SA_DSP.h>
 #include <SA_KLATT.h>
 #include <zGraphLib.h>
-#include <sa_enu_resource.h>
+#include <sa_lang_resource.h>
 #include <custom_menu.h>
-
 #include "AppDefs.h"
 
 #endif

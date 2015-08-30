@@ -1,3 +1,12 @@
+SA - 3.1.0.132 8/18/2015
+- Fix for LIFT exports.  Export dialog allows user to specify location of generated files.  Audio files are now stored in a media subdirectory.
+- Modified text on tools/options/colors tab.
+- Fixed SaveAs GPF.  Code used for reading wave file information used a buffer that was too small for long filenames.
+- Fixed segment boundaries default.  Segment boundaries are now stored on a per-graph basis in the .psa file.
+- Fixed left-paren and ampersand character problem in transcription editor.
+- Modifed install.  Old versions are now uninstalled before the new version is installed.
+- Added German resource dll (SA_DEU.DLL).  Interface is not fully translated.
+
 SA - 3.1.0.131 8/9/2015
 - Fixed bug where autosave was not able to handle .wav files that were marked as 'readonly'
 - Abbreviated wording on tools/options/color tab.
