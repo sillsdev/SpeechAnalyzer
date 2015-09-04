@@ -626,7 +626,7 @@ void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
         if (IsPlotID(IDD_MELOGRAM)) {
             CSaView * pView = (CSaView *)GetParent();
             CGraphWnd * pGraph = pView->GraphIDtoPtr(IDD_TWC);
-            if (pGraph) {
+            if (pGraph!=NULL) {
                 pGraph->RedrawGraph(TRUE, pGraph->HasLegend());
             }
         }
@@ -653,6 +653,7 @@ double CGraphWnd::SemitoneToFrequency(double fSemitone) {
 // CGraphWnd::NoteNum2Name Calculates frequency from a given semitone
 /***************************************************************************/
 CSaString CGraphWnd::Semitone2Name(double fSemitone) {
+
     CSaString szNoteName;
     short nOctave;
     short nInterval;
@@ -664,12 +665,13 @@ CSaString CGraphWnd::Semitone2Name(double fSemitone) {
     wchar_t pASCII[2] = {_T('\0'),_T('\0')};
 
     // limit range of input MIDI numbers
-    if (fSemitone < 21.) {
+    if (fSemitone < 21.0) {
         szNoteName = _T("   ");
         return szNoteName.GetBuffer(5);
     }
     // calculate interval and octave
-    fSemitone -= 12; // MIDI starts one octave lower
+	// MIDI starts one octave lower
+    fSemitone -= 12; 
     nOctave = (short)((fSemitone + 0.5) / 12.);
     nInterval = (short)(2. * (fSemitone - (double)nOctave * 12.) + 0.5);
 
@@ -678,9 +680,8 @@ CSaString CGraphWnd::Semitone2Name(double fSemitone) {
     _itow_s(nOctave, pASCII, _countof(pASCII), 10);
     szNoteName += pASCII;
 
-    return CSaString(szNoteName);
+    return szNoteName;
 }
-
 
 static void UpdatePitchStatusBarNote(double fPitchData, double fUncertainty, BOOL bShowNoteName) {
     // get pointer to status bar
@@ -703,9 +704,10 @@ static void UpdatePitchStatusBarNote(double fPitchData, double fUncertainty, BOO
         double fSemitone = CGraphWnd::GetSemitone(fPitchData);
         szText.Format(_T("      %.*f st"), (int)fSemitoneDecPlaces, fSemitone);
         if (bShowNoteName) {
-            szText += _T(" (") + CSaString(CGraphWnd::Semitone2Name(fSemitone)) + _T(")");
+            szText += _T(" (") + CGraphWnd::Semitone2Name(fSemitone) + _T(")");
         }
-        CSaString test = CSaString(CGraphWnd::Semitone2Name(fSemitone));
+        CSaString test = CGraphWnd::Semitone2Name(fSemitone);
+		TRACE(L"UpdatePitchStatusBarNote=%s\n",(LPCTSTR)test);
         pStat->SetPaneSymbol(ID_STATUSPANE_NOTE);
         pStat->SetPaneText(ID_STATUSPANE_NOTE, szText);
         // update frequency pane
@@ -920,8 +922,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     }
 
                     // write to amplitude pane
-                    swprintf_s(szText, _countof(szText),_T("     %3.2f st (%3s)"), fSemitone, Semitone2Name(fSemitone));
-
+					CSaString semitone = Semitone2Name(fSemitone);
+                    swprintf_s(szText, _countof(szText),_T("     %3.2f st (%3s)"), fSemitone, (LPCTSTR)semitone);
+					TRACE(L"UpdateStatusBar=%s",(LPCTSTR)szText);
                     //                 pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE); // switch symbol on
 
                     pStat->SetPaneSymbol(ID_STATUSPANE_NOTE); // switch symbol on     //pja 6/14/00

@@ -3754,7 +3754,7 @@ void CDlgGraphsParameters::OnApply() {
     // If music graphs are visible then apply their settings.
     //***********************************************************
     if ((pView->GetGraphIndexForIDD(IDD_MELOGRAM) >= 0) ||
-            (pView->GetGraphIndexForIDD(IDD_TWC) >= 0)) {
+        (pView->GetGraphIndexForIDD(IDD_TWC) >= 0)) {
         m_dlgMusicPage.Apply();
     }
 

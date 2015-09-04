@@ -2604,6 +2604,8 @@ void CSaApp::WakeUp(LPCTSTR aCommandLine) {
 
     // Make main window foreground, flashy, flashy time
     pApp->m_pMainWnd->SetForegroundWindow();
+	// display the window if it's minimized
+	pApp->m_pMainWnd->ShowWindow(SW_MAXIMIZE);
 
     // we are expecting only one filename at this point
     // parse the command line

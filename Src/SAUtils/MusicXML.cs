@@ -14,6 +14,7 @@ public class MusicXML {
     #region Public Methods
 
     public MusicXML() : base() {
+
         //Create an XML declaration.
         XmlDeclaration xmldecl;
         xmldecl = m_doc.CreateXmlDeclaration("1.0", "UTF-8", "no");
@@ -76,6 +77,7 @@ public class MusicXML {
     }
 
     public string ToSAMA_String(ref bool bPerfect) {
+
         bool bLastMeasure = false;
         string samaString = "(CLEF1)(VX001)(Q=120)";
         int iLocation = 0;
@@ -150,6 +152,7 @@ public class MusicXML {
     }
 
     public bool Save(string filePath) {
+
         m_filePath = filePath;
         CreateMusicXMLDocType();
 
@@ -315,7 +318,8 @@ public class MusicXML {
 
     #region Helper Functions
 
-    private XmlDocumentType CreateMusicXMLDocType() {
+    private void CreateMusicXMLDocType() {
+
         XmlDocumentType doctype = m_doc.DocumentType;
         XmlNode decl = m_doc.FirstChild;
 
@@ -326,20 +330,16 @@ public class MusicXML {
 
         // Create a new document type node
         string inetDTDPath = "http://www.musicxml.org/dtds/partwise.dtd";
-
         try {
             doctype = m_doc.CreateDocumentType("score-partwise", "-//Recordare//DTD MusicXML 1.1 Partwise//EN", inetDTDPath, null);
         } catch {
             try { // the second attempt usually succeeds for some reason
                 doctype = m_doc.CreateDocumentType("score-partwise", "-//Recordare//DTD MusicXML 1.1 Partwise//EN", inetDTDPath, null);
             } catch {
-                GUI.Utils.MsgBox("Unable to create document type element.", MessageBoxButtons.OK);
+                GUI.Utils.MsgBox("Unable to load document type element.", MessageBoxButtons.OK);
             }
         }
-
         m_doc.InsertAfter(doctype, decl);
-
-        return doctype;
     }
 
     private bool CreateIdNode() {
@@ -772,8 +772,7 @@ public class MusicXML {
 
         if (m_validationErrors != string.Empty) {
             string filePath = GUI.Utils.PrepFilePathForMsgBox(m_filePath);
-            string msg = string.Format(Resources.kstidMusicXMLValidationErrMsg,
-                                       filePath, m_validationErrors);
+            string msg = string.Format(Resources.kstidMusicXMLValidationErrMsg, filePath, m_validationErrors);
 
             GUI.Utils.MsgBox(msg, MessageBoxButtons.OK);
             m_validationErrors = string.Empty;

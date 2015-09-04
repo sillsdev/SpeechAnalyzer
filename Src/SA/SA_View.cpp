@@ -3373,8 +3373,10 @@ void CSaView::OnUpdateChangeGraph(CCmdUI * pCmdUI) {
     BOOL bSelected = GraphIDincluded(pCmdUI->m_nID);
     BOOL bEnable = !bSelected || pCmdUI->m_nID == IDD_RECORDING;
 
-    pCmdUI->Enable(bEnable && GraphTypeEnabled(pCmdUI->m_nID, pInfo->bIncludeCtrlKeyCheck)); // enable if data is available
-    pCmdUI->SetCheck(bSelected); // check if graph selected
+	// enable if data is available
+    pCmdUI->Enable(bEnable && GraphTypeEnabled(pCmdUI->m_nID, pInfo->bIncludeCtrlKeyCheck)); 
+	// check if graph selected
+    pCmdUI->SetCheck(bSelected); 
 }
 
 /***************************************************************************/

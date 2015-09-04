@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,132
+ FILEVERSION 3,1,0,133
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.132"
+            VALUE "FileVersion", "v3.1.0.133"
             VALUE "InternalName", "SA_DEU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_DEU.dll"
@@ -137,8 +137,8 @@ BEGIN
     CONTROL         "&Original File",IDC_SAVEAS_ORIGINAL,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,104,35,52,10
     CONTROL         "&Both Files",IDC_SAVEAS_BOTH,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,104,49,47,10
     GROUPBOX        "Keep Open",IDC_STATIC,98,8,78,56,WS_GROUP | WS_TABSTOP
-    CONTROL         "&Stereo",IDC_SAVEAS_STEREO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,187,21,43,10
-    CONTROL         "&Mono",IDC_SAVEAS_MONO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,187,35,52,10
+    CONTROL         "&Mono",IDC_SAVEAS_MONO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,187,21,52,10
+    CONTROL         "&Stereo",IDC_SAVEAS_STEREO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,187,35,43,10
     CONTROL         "&Right Channel",IDC_SAVEAS_RIGHT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,187,49,65,10
     GROUPBOX        "File Format",IDC_GROUP_FILE_STATIC,181,8,78,56,WS_GROUP | WS_TABSTOP
     CONTROL         "Sample1",IDC_SAVEAS_SAMPLE1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,270,22,66,10
@@ -3264,8 +3264,8 @@ BEGIN
             MENUITEM "F1 v. F2 v. F&3",             IDD_3D
             MENUITEM SEPARATOR
             MENUITEM "Me&logram",                   IDD_MELOGRAM
-            MENUITEM "Tonal Weighting Chart",       IDD_TWC
-            MENUITEM "Magnitude",                   IDD_MAGNITUDE
+            MENUITEM "Tonal &Weighting Chart",       IDD_TWC
+            MENUITEM "&Magnitude",                   IDD_MAGNITUDE
             MENUITEM "&Staff",                      IDD_STAFF
             MENUITEM SEPARATOR
             MENUITEM "Pos&ition View",              IDD_RECORDING
@@ -3523,8 +3523,8 @@ BEGIN
             MENUITEM "F1 v. F2 v. F&3",             IDD_3D
             MENUITEM SEPARATOR
             MENUITEM "Me&logram",                   IDD_MELOGRAM
-            MENUITEM "Tonal Weighting Chart",       IDD_TWC
-            MENUITEM "Magnitude",                   IDD_MAGNITUDE
+            MENUITEM "Tonal &Weighting Chart",       IDD_TWC
+            MENUITEM "&Magnitude",                   IDD_MAGNITUDE
             MENUITEM "&Staff",                      IDD_STAFF
             MENUITEM SEPARATOR
             MENUITEM "Pos&ition View",              IDD_RECORDING

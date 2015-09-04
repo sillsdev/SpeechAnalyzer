@@ -164,8 +164,8 @@ enum EShowFiles {
 
 // used by saveas dialog
 enum EFileFormat {
-    formatStereo = 0,
-    formatMono = 1,
+    formatMono = 0,
+    formatStereo = 1,
     formatRight = 2
 };
 
