@@ -451,7 +451,7 @@ CSaString CGraphList::GetDescription() const {
             continue;
         }
 
-        if (IsLayoutGraph(nID) || nID == IDD_RECORDING) {
+        if ((IsLayoutGraph(nID)) || (nID == IDD_RECORDING)) {
             if (!szDescription.IsEmpty()) {
                 szDescription += _T(", ");
             }
@@ -663,6 +663,19 @@ CGraphList CDlgGraphTypesOrder::GetLayoutOrder(const CGraphList & src) {
     }
 
     return cResult;
+}
+
+const UINT * CGraphList::GetGraphs() const { 
+	// return checked graphs
+    return m_nGraphID;   
+}
+
+bool CGraphList::IsLayoutGraph(UINT nID) {
+    return ((nID != IDD_RECORDING) && (nID != IDD_TWC) && (nID != IDD_MAGNITUDE));
+}
+
+UINT CGraphList::operator[](int nIndex) const {
+    return (nIndex >= 0 && nIndex  < MAX_GRAPHS_NUMBER) ? m_nGraphID[nIndex] : 0;
 }
 
 void CDlgGraphTypesOrder::SwapLayoutGraphs(int nFirst, int nSecond) {

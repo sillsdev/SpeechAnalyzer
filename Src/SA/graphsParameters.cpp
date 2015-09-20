@@ -3522,10 +3522,14 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
 
     int nFocusedID = pView->GetFocusedGraphID();
 
-    if (pView->GetGraphIndexForIDD(IDD_RAWDATA) >= 0 || pView->GetGraphIndexForIDD(IDD_MAGNITUDE) >= 0 || pView->GetGraphIndexForIDD(IDD_RECORDING) >= 0) {
+    if ((pView->GetGraphIndexForIDD(IDD_RAWDATA) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_MAGNITUDE) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_RECORDING) >= 0)) {
         AddPage(&m_dlgRawdataPage);
 
-        if (nFocusedID == IDD_RAWDATA || nFocusedID == IDD_MAGNITUDE || nFocusedID == IDD_RECORDING) {
+        if ((nFocusedID == IDD_RAWDATA) || 
+			(nFocusedID == IDD_MAGNITUDE) || 
+			(nFocusedID == IDD_RECORDING)) {
             nPage = GetPageCount() - 1;
         }
     }

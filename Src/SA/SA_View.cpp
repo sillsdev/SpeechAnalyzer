@@ -5779,7 +5779,8 @@ void CSaView::ChangeLayout(UINT nNewLayout) {
                     if (nidx >= 0) {
                         DeleteGraphs(nidx);
                     }
-                } else if (m_anGraphID[i] == IDD_RECORDING) { // Position View does not count as a graph
+                } else if (m_anGraphID[i] == IDD_RECORDING) { 
+					// Position View does not count as a graph
                     continue;
                 } else {
                     DeleteGraphs(i);

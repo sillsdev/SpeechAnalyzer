@@ -36,19 +36,14 @@ public:
     void SelectGraph(UINT nID, BOOL bSelected=TRUE, BOOL bDefaultOrder = TRUE);
     int IsSelected(UINT nID) const;
     void ClearGraphs(BOOL bFilter = FALSE, BOOL bLayout = FALSE);
-    void GetGraphs(UINT * pGraphIDs) const; // return checked graphs
-    const UINT * GetGraphs() const {
-        return m_nGraphID;   // return checked graphs
-    }
+	// return checked graphs
+    void GetGraphs(UINT * pGraphIDs) const; 
+    const UINT * GetGraphs() const;
     void SetGraphs(const UINT * pGraphIDs, BOOL bClear=TRUE);
-    static bool IsLayoutGraph(UINT nID) {
-        return nID != IDD_RECORDING && nID != IDD_TWC && nID != IDD_MAGNITUDE;
-    }
+    static bool IsLayoutGraph(UINT nID);
     void InsertAt(UINT nID, int nIndex);
     bool operator==(const CGraphList & compare) const;
-    UINT operator[](int nIndex) const {
-        return (nIndex >= 0 && nIndex  < MAX_GRAPHS_NUMBER) ? m_nGraphID[nIndex] : 0;
-    }
+    UINT operator[](int nIndex) const;
     CSaString GetDescription() const;
 private:
     static int GraphDefaultOrder(UINT nID);
@@ -61,28 +56,31 @@ class CDlgGraphsTypesCustom : public CDialog {
 
     // Construction/destruction/creation
 public:
-    CDlgGraphsTypesCustom(CWnd * pParent = NULL); // standard constructor
+	// standard constructor
+    CDlgGraphsTypesCustom(CWnd * pParent = NULL); 
 
     // Attributes
 
     // Dialog Data
-    //{{AFX_DATA(CDlgGraphsTypesCustom)
     enum { IDD = IDD_GRAPHSTYPES_CUSTOM };
     int     m_nLayout;
-    //}}AFX_DATA
 
     // Operations
 public:
-    void GetCheckedGraphs(UINT *, int * nLayout); // return checked graphs
+	// return checked graphs
+    void GetCheckedGraphs(UINT *, int * nLayout); 
     void OnHelpGraphsTypes();
 
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+	// DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX); 
 
 private:
     CGraphList m_cGraphs;
-    CFont m_Font;             // special font for dialog controls
-    CSaDoc * m_pDoc;            // holds a SA document
+	// special font for dialog controls
+    CFont m_Font;
+	// holds a SA document
+    CSaDoc * m_pDoc;
     CLayoutListBox m_Layout;
 
     void CheckDlgButton(int nIDButton, UINT nCheck, BOOL bDefaultOrder = TRUE);

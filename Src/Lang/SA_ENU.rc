@@ -3144,8 +3144,8 @@ BEGIN
         POPUP "&Export"
         BEGIN
             MENUITEM "E&xtensible Markup (.XML)",   ID_EXPORT_XML
-            MENUITEM "&Fieldworks (.SFM)",          ID_EXPORT_FW
-            MENUITEM "&Lift Format (.LIFT)",        ID_EXPORT_LIFT
+            MENUITEM "&Fieldworks Standard Format (.SFM)", ID_EXPORT_FW
+            MENUITEM "Fieldworks &Lift Format (.LIFT)", ID_EXPORT_LIFT
             MENUITEM "SFM &Time Table (.SFT)",      ID_EXPORT_TIME_TABLE
             MENUITEM "&Standard Format (.SFM)",     ID_EXPORT_SFM
             MENUITEM SEPARATOR
@@ -4820,7 +4820,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERROR_REGISTRY      "Unable to update registry!"
+    IDS_ERROR_REGISTRY      "Unable to update registry!\nPlease restart Speech Analyzer with Administrator privileges."
     IDS_ERROR_NO_FW_FILE    "Please select a destination filename for the FieldWorks .SFM output file."
     IDS_ERROR_NO_REFERENCE  "There are no Reference annotations.\nPlease added Reference numbers before exporting data to FieldWorks."
     IDS_ERROR_AUTOSAVE_FAIL "Unable to create the AutoSave directory '%1'\nThe AutoSave feature is disabled."
