@@ -68,8 +68,8 @@ Source: "C:\Working\SIL\MSEA\DistFiles\Samples\Music\*"; DestDir: "{app}\Samples
 Source: "C:\Working\SIL\MSEA\DistFiles\Training\*.pdf"; DestDir: "{app}\Training"; Flags: ignoreversion
 ;fonts
 Source: "C:\Working\SIL\MSEA\DistFiles\Fonts\DoulosSILR.ttf"; DestDir: "{fonts}"; FontInstall: "Doulos SIL"; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "C:\Working\SIL\MSEA\Lib\Fonts\MusiqueU.ttf"; DestDir: "{fonts}"; FontInstall: "Musique"; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "C:\Working\SIL\MSEA\Lib\Fonts\Musique Unicode.ttf"; DestDir: "{fonts}"; FontInstall: "Musique Unicode"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "C:\Working\SIL\MSEA\Lib\Fonts\Musique\MusiqueU.ttf"; DestDir: "{fonts}"; FontInstall: "Musique"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "C:\Working\SIL\MSEA\Lib\Fonts\Musique\Musique Unicode.ttf"; DestDir: "{fonts}"; FontInstall: "Musique Unicode"; Flags: onlyifdoesntexist uninsneveruninstall
 ;dtds for musicxml
 Source: "C:\Working\SIL\MSEA\DistFiles\MusicXML\dtds\*" ; DestDir: "{app}\dtds"; Flags: ignoreversion
 

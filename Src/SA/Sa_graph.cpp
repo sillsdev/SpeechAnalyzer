@@ -924,8 +924,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     // write to amplitude pane
 					CSaString semitone = Semitone2Name(fSemitone);
                     swprintf_s(szText, _countof(szText),_T("     %3.2f st (%3s)"), fSemitone, (LPCTSTR)semitone);
-					TRACE(L"UpdateStatusBar=%s",(LPCTSTR)szText);
-                    //                 pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE); // switch symbol on
+					TRACE(L"UpdateStatusBar=%s\n",(LPCTSTR)szText);
+                    // pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE); // switch symbol on
 
                     pStat->SetPaneSymbol(ID_STATUSPANE_NOTE); // switch symbol on     //pja 6/14/00
                     pStat->SetPaneText(ID_STATUSPANE_NOTE, szText);

@@ -2249,11 +2249,12 @@ void CSaDoc::WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter) {
     pMusicScore[nMusicScoreSize] = 0;
 
     saAudioDocWriter->WriteAsMusicXML((_bstr_t)pMusicScore);
-    if (pMusicStaff) {
+    if (pMusicStaff!=NULL) {
         pMusicStaff->SetModifiedFlag(FALSE);
     }
     delete [] pMusicScore;
-    SetTransModifiedFlag(FALSE); // transcription data has been modified
+	// transcription data has been modified
+    SetTransModifiedFlag(FALSE); 
 }
 
 // SDM 1.06.6U2 added ability to insert wave dat from a file

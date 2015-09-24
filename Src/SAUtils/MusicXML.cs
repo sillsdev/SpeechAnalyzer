@@ -168,8 +168,6 @@ public class MusicXML {
         return true;
     }
 
-    //public string asSAMA();
-
     public bool Load(string filePath) {
         m_filePath = filePath;
 
@@ -181,9 +179,7 @@ public class MusicXML {
         } catch {
             if (!isValid) {
                 string path = GUI.Utils.PrepFilePathForMsgBox(filePath);
-                SIL.SpeechAnalyzer.GUI.Utils.MsgBox(
-                    string.Format(Resources.kstidInvalidMusicXMLFile, path),
-                    MessageBoxButtons.OK);
+                SIL.SpeechAnalyzer.GUI.Utils.MsgBox( string.Format(Resources.kstidInvalidMusicXMLFile, path), MessageBoxButtons.OK);
             }
             return false;
         }
@@ -302,18 +298,6 @@ public class MusicXML {
         }
     }
 
-    //public string InstrumentName
-    //{
-    //    get
-    //    {
-    //        return partList.SelectSingleNode("score-part/instrument-name").InnerText;
-    //    }
-    //    set
-    //    {
-    //        partList.SelectSingleNode("score-part/instrument-name").InnerText = value;
-    //    }
-    //}
-
     #endregion
 
     #region Helper Functions
@@ -322,13 +306,13 @@ public class MusicXML {
 
         XmlDocumentType doctype = m_doc.DocumentType;
         XmlNode decl = m_doc.FirstChild;
-
         // Remove any existing document type node
         if (doctype != null) {
             m_doc.RemoveChild(doctype);
         }
-
+/**
         // Create a new document type node
+        // avoid using the internet connection if it's slow
         string inetDTDPath = "http://www.musicxml.org/dtds/partwise.dtd";
         try {
             doctype = m_doc.CreateDocumentType("score-partwise", "-//Recordare//DTD MusicXML 1.1 Partwise//EN", inetDTDPath, null);
@@ -340,6 +324,7 @@ public class MusicXML {
             }
         }
         m_doc.InsertAfter(doctype, decl);
+**/
     }
 
     private bool CreateIdNode() {
@@ -358,8 +343,8 @@ public class MusicXML {
     }
 
     private bool CreatePartListNode() {
-        XmlNode nodePartList = AddNode(m_doc.DocumentElement, "part-list", "");
 
+        XmlNode nodePartList = AddNode(m_doc.DocumentElement, "part-list", "");
         if (nodePartList == null) {
             return false;
         }
@@ -801,34 +786,60 @@ public class MusicXML {
     }
 
     private void GetDTDSafeXML(string path) {
+
         // Get the document type element as a string
         string xml = File.ReadAllText(path);
+
+        // if the doctype node doesn't exist, then insert it after the header
         int start = xml.IndexOf("<!DOCTYPE");
-        int length;
-        string name = string.Empty;
-        for (length = 1; xml[start + length] != '>'; length++) {
-            if ((name == string.Empty) && (xml[start + length] == ' ') && (length > 9)) {
-                name = xml.Substring(start + 10, length - 10);
+        if (start != -1)
+        {
+            // we found a doctype node
+            int length = 0;
+            string name = string.Empty;
+            for (length = 1; xml[start + length] != '>'; length++)
+            {
+                if ((name == string.Empty) && (xml[start + length] == ' ') && (length > 9))
+                {
+                    name = xml.Substring(start + 10, length - 10);
+                }
             }
+            length++; // need to include the > at the end
+
+            // Check the document type name
+            if (name != "score-partwise")
+            {
+                GUI.Utils.MsgBox("XML document type is not recognized.", MessageBoxButtons.OK);
+                return;
+            }
+            string doctype = xml.Substring(start, length);
+
+            // Insert a "safe" document type element.
+            // (This avoids problems with internet access and proxies)
+            string systemIdNew = Assembly.GetExecutingAssembly().Location;
+            systemIdNew = Directory.GetParent(systemIdNew) + "\\dtds\\partwise.dtd";
+            string doctypeNew = "<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 1.1 Partwise//EN\" \"";
+            doctypeNew += systemIdNew + "\">";
+
+            m_dtdSafeXML = xml.Replace(doctype, doctypeNew);
         }
-        length++; // need to include the > at the end
-
-        // Check the document type name
-        if (name != "score-partwise") {
-            GUI.Utils.MsgBox("XML document type is not recognized.", MessageBoxButtons.OK);
-            return;
+        else
+        {
+            // no doctype node, assume score-partwise exists
+            int index = xml.IndexOf("<score-partwise");
+            if (index == -1)
+            {
+                GUI.Utils.MsgBox("XML document type is not recognized.", MessageBoxButtons.OK);
+                return;
+            }
+            // Insert a "safe" document type element.
+            // (This avoids problems with internet access and proxies)
+            string systemIdNew = Assembly.GetExecutingAssembly().Location;
+            systemIdNew = Directory.GetParent(systemIdNew) + "\\dtds\\partwise.dtd";
+            string doctypeNew = "<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 1.1 Partwise//EN\" \"";
+            doctypeNew += systemIdNew + "\">";
+            m_dtdSafeXML = xml.Insert(index,doctypeNew);
         }
-
-        string doctype = xml.Substring(start, length);
-
-        // Insert a "safe" document type element.
-        // (This avoids problems with internet access and proxies)
-        string systemIdNew = Assembly.GetExecutingAssembly().Location;
-        systemIdNew = Directory.GetParent(systemIdNew) + "\\dtds\\partwise.dtd";
-        string doctypeNew = "<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 1.1 Partwise//EN\" \"";
-        doctypeNew += systemIdNew + "\">";
-
-        m_dtdSafeXML = xml.Replace(doctype, doctypeNew);
     }
 
     private void AddLastBarLine() {
