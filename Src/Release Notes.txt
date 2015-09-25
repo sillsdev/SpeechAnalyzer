@@ -1,3 +1,12 @@
+SA - 3.1.0.133 9/24/2015
+- Fix for MusicXML DTD load delay.
+- Fix for music mode 'hang'.  I believe this was caused by the use of autosave when trying to save the musicxml file.  It was taking a very long time to complete (because of #1) and autosave may not complete before a new one is requested.  To the user, the app appears continually busy.
+- The saveas layout has been modified per request.
+- The missing music xml fonts and DTD files were added to the install.
+- Wording was changed for the Export menu item for Fieldworks operations.
+- SA is now maximized if the user right-clicks on the minimized icon and select 'Speech Analyzer'.  NOTE: This behaviour is somewhat deviated from 'normal' behaviour because SA is a single instance app.  Normally, the right-click sequence should cause a new (second) instance of the app to be launched.  If the user insteads to maximize the app, all they need to do is left-click on the minimized icon.
+- Modified install so that it no longer uses the previous install path.
+
 SA - 3.1.0.132 8/18/2015
 - Fix for LIFT exports.  Export dialog allows user to specify location of generated files.  Audio files are now stored in a media subdirectory.
 - Modified text on tools/options/colors tab.
