@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA"
-#define MyAppVersion "3.1.0.133"
+#define MyAppVersion "3.1.0.134"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -62,8 +62,8 @@ Source: "C:\Working\SIL\MSEA\DistFiles\Using_Help.chm"; DestDir: "{app}"; Flags:
 Source: "C:\Working\SIL\MSEA\DistFiles\uriparser\uriparser_copying"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\iso639.txt"; DestDir: "{app}"; Flags: ignoreversion
 ;samples
-Source: "C:\Working\SIL\MSEA\DistFiles\Samples\*"; DestDir: "{app}\Samples"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Samples\Music\*"; DestDir: "{app}\Samples\Music"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\DistFiles\Samples\*"; DestDir: "{userdocs}\Speech Analyzer\Samples"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\DistFiles\Samples\Music\*"; DestDir: "{userdocs}\Speech Analyzer\Samples\Music"; Flags: ignoreversion
 ;training
 Source: "C:\Working\SIL\MSEA\DistFiles\Training\*.pdf"; DestDir: "{app}\Training"; Flags: ignoreversion
 ;fonts
