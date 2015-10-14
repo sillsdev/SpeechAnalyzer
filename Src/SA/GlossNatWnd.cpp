@@ -128,7 +128,7 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 			// data index of first sample to display
             fDataStart = pView->GetDataPosition(rWnd.Width());
 			// number of data points to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width());
+            dwDataFrame = pView->CalcDataFrame(rWnd.Width());
         }
     }
     if (dwDataFrame == 0) {

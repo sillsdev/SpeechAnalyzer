@@ -35,18 +35,23 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
     if (IsDataReady()) {
-        return MAKELONG(--nLevel, nProgress);    // data is already ready
+		// data is already ready
+        return MAKELONG(--nLevel, nProgress);    
     }
     //TRACE(_T("Process: CProcessRaw\n"));
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAW)) { // memory allocation failed
-        EndProcess(); // end data processing
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAW)) { 
+		// memory allocation failed
+		// end data processing
+        EndProcess(); 
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("RAW"))) { // creating error
-        EndProcess(); // end data processing
+    if (!CreateTempFile(_T("RAW"))) {
+		// creating error
+		// end data processing
+        EndProcess(); 
         EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -56,16 +61,17 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
     pDoc->GetAdjust()->Process(pCaller, pDoc, nProgress, nLevel);
 
     // process raw data
-    DWORD dwDataSize = pDoc->GetDataSize();                                 // size of raw data
+    DWORD dwDataSize = pDoc->GetDataSize();										// size of raw data
     DWORD nSmpSize = pDoc->GetSampleSize();
 
-    short int * pProcessedData = (short int *)m_lpBuffer;                   // pointer to process data
+    short int * pProcessedData = (short int *)m_lpBuffer;						// pointer to process data
     // calculate current processing position
     DWORD dwDataPos = 0;
     DWORD dwProcessCount = 0;
 
     DWORD dwDocWaveBufferSize = GetBufferSize();
-    HPSTR pDocData = (dwDataSize!=0) ? pDoc->GetWaveData(dwDataPos,FALSE) : 0;   // get pointer to data block
+	// get pointer to data block
+    HPSTR pDocData = (dwDataSize!=0) ? pDoc->GetWaveData(dwDataPos,FALSE) : 0;   
     DWORD dwDocWavBufferPosition = pDoc->GetWaveBufferIndex();
 
     int nScale = pDoc->GetBitsPerSample() == 8 ? 256 : 1;
@@ -95,7 +101,7 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
 
         // is the process buffer is full or processing finished?
         if ((++dwProcessCount == GetProcessBufferSize() / 2) ||
-                (dwDataPos >= dwDataSize)) {
+            (dwDataPos >= dwDataSize)) {
             // set progress bar
             SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
             if (IsCanceled()) {

@@ -3534,20 +3534,23 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
         }
     }
 
-    if (pView->GetGraphIndexForIDD(IDD_CEPPITCH) >= 0 || pView->GetGraphIndexForIDD(IDD_GRAPITCH) >= 0
-            || pView->GetGraphIndexForIDD(IDD_SMPITCH) >= 0 || pView->GetGraphIndexForIDD(IDD_PITCH) >= 0
-            || pView->GetGraphIndexForIDD(IDD_CHPITCH) >= 0) {
+    if ((pView->GetGraphIndexForIDD(IDD_CEPPITCH) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_GRAPITCH) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_SMPITCH) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_PITCH) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_CHPITCH) >= 0)) {
         AddPage(&m_dlgPitchPage);
-
-        if (nFocusedID == IDD_CEPPITCH || nFocusedID == IDD_GRAPITCH || nFocusedID == IDD_SMPITCH
-                || nFocusedID == IDD_CHPITCH || nFocusedID == IDD_PITCH) {
+        if ((nFocusedID == IDD_CEPPITCH) || 
+			(nFocusedID == IDD_GRAPITCH) || 
+			(nFocusedID == IDD_SMPITCH) || 
+			(nFocusedID == IDD_CHPITCH) || 
+			(nFocusedID == IDD_PITCH)) {
             nPage = GetPageCount() - 1;
         }
     }
 
     if (pView->GetGraphIndexForIDD(IDD_SPECTROGRAM) >= 0) {
-        m_pDlgSpectrogramPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SPECTROGRAM,
-                IDD_SPECTROGRAM, pMainWnd->GetSpectrogramParmDefaults());
+        m_pDlgSpectrogramPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SPECTROGRAM, IDD_SPECTROGRAM, pMainWnd->GetSpectrogramParmDefaults());
         AddPage(m_pDlgSpectrogramPage);
         if (nFocusedID == IDD_SPECTROGRAM) {
             nPage = GetPageCount() - 1;
@@ -3556,8 +3559,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
 
 
     if (pView->GetGraphIndexForIDD(IDD_SNAPSHOT) >= 0) {
-        m_pDlgSnapshotPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SNAPSHOT,
-                IDD_SNAPSHOT, pMainWnd->GetSnapshotParmDefaults());
+        m_pDlgSnapshotPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SNAPSHOT, IDD_SNAPSHOT, pMainWnd->GetSnapshotParmDefaults());
         AddPage(m_pDlgSnapshotPage);
         if (nFocusedID == IDD_SNAPSHOT) {
             nPage = GetPageCount() - 1;
@@ -3578,7 +3580,10 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
         (pView->GetGraphIndexForIDD(IDD_3D) >= 0)) {
         AddPage(&m_dlgFormantsPage);
         m_dlgFormantsPage.m_bAccess = EXPERIMENTAL_ACCESS;
-        if (nFocusedID == IDD_F1F2 || nFocusedID == IDD_F2F1 || nFocusedID == IDD_F2F1F1 || nFocusedID == IDD_3D) {
+        if ((nFocusedID == IDD_F1F2) || 
+			(nFocusedID == IDD_F2F1) || 
+			(nFocusedID == IDD_F2F1F1) || 
+			(nFocusedID == IDD_3D)) {
             nPage = GetPageCount() - 1;
         }
     }
@@ -3636,17 +3641,21 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
 // CDlgGraphsParameters::~CDlgGraphsParameters Destructor
 /***************************************************************************/
 CDlgGraphsParameters::~CDlgGraphsParameters() {
-    if (m_pDlgSpectrogramPage) {
+    if (m_pDlgSpectrogramPage!=NULL) {
         delete m_pDlgSpectrogramPage;
+		m_pDlgSpectrogramPage = NULL;
     }
-    if (m_pDlgSnapshotPage) {
+    if (m_pDlgSnapshotPage!=NULL) {
         delete m_pDlgSnapshotPage;
+		m_pDlgSnapshotPage = NULL;
     }
-    if (m_pDlgResearchPage) {
+    if (m_pDlgResearchPage!=NULL) {
         delete m_pDlgResearchPage;
+		m_pDlgResearchPage = NULL;
     }
-    if (m_pDlgFTrackerPage) {
+    if (m_pDlgFTrackerPage!=NULL) {
         delete m_pDlgFTrackerPage;
+		m_pDlgFTrackerPage = NULL;
     }
 }
 

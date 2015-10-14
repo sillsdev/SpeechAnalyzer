@@ -109,6 +109,10 @@ Type: files; Name: "{app}\SAUtils.tlb"
 Type: files; Name: "{app}\yeti.mmedia.tlb"
 Type: files; Name: "{app}\yeti.wmfsdk.tlb"
 
+[Registry]
+Root: HKLM64; Subkey: "Software\SIL\Speech Analyzer"; ValueType: string; ValueName: "Location"; ValueData: "{app}\SA.exe"; Check: IsWin64 
+Root: HKLM32; Subkey: "Software\SIL\Speech Analyzer"; ValueType: string; ValueName: "Location"; ValueData: "{app}\SA.exe"
+
 [Code]
 function VCRedistCheck(): Boolean;
 begin

@@ -220,9 +220,9 @@ void CSegment::Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace) 
     pDoc->SetModifiedFlag(TRUE);        // document has been modified
     pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
 
-    pView->ChangeAnnotationSelection(this, index);    // deselect
-    pView->ChangeAnnotationSelection(this, index);    // select again
-    pView->RefreshGraphs(FALSE);        // refresh the graphs between cursors
+    pView->ChangeAnnotationSelection(this, index);		// deselect
+    pView->ChangeAnnotationSelection(this, index);		// select again
+    pView->RefreshGraphs(FALSE);						// refresh the graphs between cursors
 }
 
 /***************************************************************************/

@@ -118,16 +118,21 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
-            fDataStart = pView->GetStartCursorPosition(); // data index of first sample to display
-            dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize; // number of data points to display
+			// data index of first sample to display
+            fDataStart = pView->GetStartCursorPosition();
+			// number of data points to display
+            dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize; 
         } else {
             // get necessary data from document and from view
-            fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
+			// data index of first sample to display
+            fDataStart = pView->GetDataPosition(rWnd.Width());
+			// number of data points to display
+            dwDataFrame = pView->CalcDataFrame(rWnd.Width()); 
         }
     }
     if (dwDataFrame == 0) {
-        return;    // nothing to draw
+		// nothing to draw
+        return;    
     }
 
     // calculate the number of data samples per pixel
@@ -142,8 +147,10 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         if ((fDataStart > 0) && (pReference->GetOffsetSize() > 1)) {
             double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
             for (nLoop = 1; nLoop < pReference->GetOffsetSize(); nLoop++) {
-                if ((double)(pReference->GetStop(nLoop)) > fStart) { // first string must be at lower position
-                    nLoop--; // this is it
+                if ((double)(pReference->GetStop(nLoop)) > fStart) {
+					// first string must be at lower position
+					// this is it
+                    nLoop--; 
                     break;
                 }
             }
@@ -171,24 +178,29 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                     if (bSelect) {
                         nDisplayPos = round2Int((m_dwHintStart - fDataStart)/ fBytesPerPix);
                         nDisplayStop = round2Int((m_dwHintStop - fDataStart)/ fBytesPerPix);
-                    } else if (pReference->GetSelection() == (nLoop+1)) { // Segment prior to selected segment
+                    } else if (pReference->GetSelection() == (nLoop+1)) { 
+						// Segment prior to selected segment
                         nDisplayStop = round2Int((m_dwHintStart - fDataStart)/ fBytesPerPix);
-                    } else if (pReference->GetSelection() == (nLoop-1)) { // Segment after selected segment
+                    } else if (pReference->GetSelection() == (nLoop-1)) { 
+						// Segment after selected segment
                         nDisplayPos = round2Int((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     }
                 }
                 if ((nDisplayStop - nDisplayPos) < 2) {
-                    nDisplayStop++;    // must be at least 2 to display a point
+					// must be at least 2 to display a point
+                    nDisplayStop++;    
                 }
                 if ((nDisplayStop - nDisplayPos) < 2) {
-                    nDisplayPos--;    // must be at least 2 to display a point
+					// must be at least 2 to display a point
+                    nDisplayPos--;    
                 }
                 // set rectangle to display string centered within
                 rWnd.SetRect(nDisplayPos, rWnd.top, nDisplayStop, rWnd.bottom);
                 // highlight background if selected character
                 COLORREF normalTextColor = pDC->GetTextColor();
                 if (bSelect) {
-                    normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText); // set highlighted text
+					// set highlighted text
+                    normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText); 
                     CBrush brushHigh(pColors->cSysColorHilite);
                     CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
                     CBrush * pOldBrush = (CBrush *)pDC->SelectObject(&brushHigh);
@@ -206,8 +218,10 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 }
 
                 if (bNotEnough) {
-                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) { // even not enough space for at least two characters with dots
-                        pDC->DrawText(_T("*"), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP); // print first character
+                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) { 
+						// even not enough space for at least two characters with dots
+						// print first character
+                        pDC->DrawText(_T("*"), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP); 
                     } else {
                         // draw as many characters as possible and 3 dots
                         string = string.Left((nDisplayStop-nDisplayPos) / tm.tmAveCharWidth - 2) + "...";
@@ -217,12 +231,14 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                     pDC->DrawText((LPCTSTR)string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                 }
                 if (bSelect) {
-                    pDC->SetTextColor(normalTextColor);    // set back old text color
+					// set back old text color
+                    pDC->SetTextColor(normalTextColor);
                 }
             } while ((nDisplayPos < rClip.right) && (++nLoop < pReference->GetOffsetSize()));
         }
     }
-    pDC->SelectObject(pOldFont);  // set back old font
+    // set back old font
+	pDC->SelectObject(pOldFont);  
 
     //SDM 1.06.5
     //keep up to date of changes force redraw of deselected virtual selections
@@ -243,6 +259,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         pDC->SelectObject(pOldBrush);
         pDC->SelectObject(pOldPen);
     }
-    pDC->SelectObject(pOldFont);  // set back old font
+	// set back old font
+    pDC->SelectObject(pOldFont);  
 }
 

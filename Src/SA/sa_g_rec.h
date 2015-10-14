@@ -24,6 +24,7 @@ public:
 	virtual void ClearHighLightArea();
     // don't want to allow clients to change selection if this is the recording plot
     virtual void SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL bSecondSelection);
+	void ResetSize();
 
 protected:
     virtual double GetDataPosition(int);

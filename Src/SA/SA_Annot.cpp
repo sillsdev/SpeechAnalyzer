@@ -316,7 +316,7 @@ void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth) {
         } else {
             // get scale range from view
             // SDM 1.06.6U4 Get value of first pixel
-            DWORD dwFrame = pView->AdjustDataFrame(nWidth);
+            DWORD dwFrame = pView->CalcDataFrame(nWidth);
             double fPos = pView->GetDataPosition(nWidth);
             m_fScaleMinValue = fPos*pDoc->GetTimeFromBytes(1);
             m_fScaleMaxValue = m_fScaleMinValue + pDoc->GetTimeFromBytes(dwFrame);
@@ -855,7 +855,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 			// data index of first sample to display
             fDataStart = pView->GetDataPosition(rWnd.Width());
 			// number of data points to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); 
+            dwDataFrame = pView->CalcDataFrame(rWnd.Width()); 
         }
     }
     if (dwDataFrame == 0) {
@@ -1138,7 +1138,7 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 			// data index of first sample to display
             fDataStart = pView->GetDataPosition(rWnd.Width());
 			// number of data points to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width());
+            dwDataFrame = pView->CalcDataFrame(rWnd.Width());
         }
     }
 	
@@ -1248,7 +1248,7 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
 			// data index of first sample to display
             fDataStart = pView->GetDataPosition(rWnd.Width());
 			// number of data points to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width());
+            dwDataFrame = pView->CalcDataFrame(rWnd.Width());
         }
     }
 
@@ -1414,7 +1414,7 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 			// data index of first sample to display
             fDataStart = pView->GetDataPosition(rWnd.Width());
 			// number of data points to display
-            dwDataFrame = pView->AdjustDataFrame(rWnd.Width());
+            dwDataFrame = pView->CalcDataFrame(rWnd.Width());
         }
     }
     if (dwDataFrame == 0) {

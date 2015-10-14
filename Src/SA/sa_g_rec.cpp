@@ -122,15 +122,18 @@ void CPlotRecording::SetMagnify(double fMagnify, BOOL bRedraw) {
 // 08/29/2000 - DDO Added this overriding function.
 /***************************************************************************/
 DWORD CPlotRecording::AdjustDataFrame(int nWidth) {
-    
-	if (!m_dwRecDataFrame) {
-        CSaDoc * pDoc = ((CMainFrame *)AfxGetMainWnd())->GetCurrDoc();
-        if (!pDoc) {
-            return 0L;
-        }
+
+	if (m_dwRecDataFrame==0) {
+		CMainFrame * pMainFrame = (CMainFrame*)AfxGetMainWnd();
+		if (pMainFrame==NULL) {
+			return 0L;
+		}
+		CSaDoc * pDoc = pMainFrame->GetCurrDoc();
+		if (pDoc==NULL) {
+			return 0L;
+		}
         DWORD dwDataSize = pDoc->GetDataSize();
         DWORD nSampleSize = pDoc->GetSampleSize();
-
 		// more pixels than data
         if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize)) {
 			// extend data frame to number of pixels
@@ -138,8 +141,7 @@ DWORD CPlotRecording::AdjustDataFrame(int nWidth) {
         } else {
             m_dwRecDataFrame = dwDataSize;
         }
-    }
-
+	}
     return m_dwRecDataFrame;
 }
 
@@ -166,7 +168,6 @@ void CPlotRecording::OnPaint() {
 	// The highlight area is disabled if cursors are not showing
     // This is the primary place the highlight area is updated
     CPlotRawData::SetHighLightArea((DWORD)pView->GetDataPosition(0), (DWORD)pView->GetDataPosition(0) + pView->GetDataFrame(), TRUE, TRUE);
-
     CPlotRawData::OnPaint();
 }
 
@@ -179,3 +180,8 @@ void CPlotRecording::SetHighLightArea( DWORD /*dwStart*/, DWORD /*dwStop*/, BOOL
 double CPlotRecording::GetDataPosition(int) {
     return 0L;
 }
+
+void CPlotRecording::ResetSize() {
+	m_dwRecDataFrame = 0;
+}
+

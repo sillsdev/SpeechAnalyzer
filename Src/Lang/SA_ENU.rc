@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,133
+ FILEVERSION 3,1,0,134
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.133"
+            VALUE "FileVersion", "v3.1.0.134"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -3224,8 +3224,8 @@ BEGIN
         MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
         MENUITEM SEPARATOR
         MENUITEM "Copy &Measurements\tCtrl+Shift+C", ID_EDIT_COPY_MEASUREMENTS
-        MENUITEM "Select &Waveform Segment\tCtrl+A", ID_EDIT_SELECTWAVEFORM_FAKE
-        MENUITEM "Select Wa&veform\tCtrl+ClickDrag", ID_EDIT_SELECTWAVEFORM_FAKE
+        MENUITEM "Select &Waveform Segment\tCtrl+A", ID_EDIT_SELECTWAVEFORM_SEG
+        MENUITEM "Select Wa&veform\tCtrl+ClickDrag", ID_EDIT_SELECTWAVEFORM
         MENUITEM SEPARATOR
         POPUP "S&elect Segment"
         BEGIN
@@ -4167,7 +4167,7 @@ BEGIN
     "N",            ID_EDIT_PASTENEW,       VIRTKEY, CONTROL, NOINVERT
     "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
     "E",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
-    "A",            ID_EDIT_SELECTWAVEFORM, VIRTKEY, CONTROL, NOINVERT
+    "A",            ID_EDIT_SELECTWAVEFORM_SEG, VIRTKEY, CONTROL, NOINVERT
     "G",            ID_EDIT_SPLIT,          VIRTKEY, CONTROL, NOINVERT
     "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
     "I",            ID_FILE_INFORMATION,    VIRTKEY, CONTROL, NOINVERT
@@ -5500,13 +5500,13 @@ BEGIN
     ID_REMOVE_OVERLAY       "Remove an overlay item from an overlay graph\nRemove Overlay"
     ID_SETDEFAULT           "Set the current view configuration as the default view configuration."
     ID_EDIT_PASTENEW        "Paste clipboard wave data into a new file\nPaste As New File"
-    ID_EDIT_SELECTWAVEFORM  "Select waveform data between cursors\nSelect Waveform"
+    ID_EDIT_SELECTWAVEFORM_SEG  "Select waveform data between cursors\nSelect Waveform"
 END
 
 STRINGTABLE
 BEGIN
-    ID_EDIT_SELECTWAVEFORM_FAKE 
-                            "Select waveform data between cursors\nSelect Waveform"
+    ID_EDIT_SELECTWAVEFORM 
+                            "Select waveform\nSelect Waveform"
     ID_AUTO_ALIGN           "Automatic alignment of transcriptions\nAlign transcriptions"
     ID_EDIT_AUTO_SNAP_UPDATE 
                             "Update all transcription segment boundaries\nUpdate All"

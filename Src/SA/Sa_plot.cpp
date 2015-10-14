@@ -485,7 +485,7 @@ double CPlotWnd::GetDataPosition(int iWidth) {
 //**************************************************************************
 DWORD CPlotWnd::AdjustDataFrame(int iWidth) {
     CSaView * pView = (CSaView *)GetParent()->GetParent();
-    return pView->AdjustDataFrame(iWidth);
+    return pView->CalcDataFrame(iWidth);
 }
 
 /***************************************************************************/
@@ -1259,10 +1259,12 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
         //TRACE("size factor %f\n",fSizeFactor);
 
         // get necessary data from document and from view
-        double fDataPos = GetDataPosition(rWnd.Width()); // data index of first sample to display
-        DWORD dwDataFrame = AdjustDataFrame(rWnd.Width()); // number of data points to display
+        double fDataPos = GetDataPosition(rWnd.Width()); 
+		// number of data points to display
+        DWORD dwDataFrame = AdjustDataFrame(rWnd.Width()); 
         if (dwDataFrame == 0) {
-            return;    // nothing to draw
+			// nothing to draw
+            return;    
         }
 
         // calculate raw data samples per pixel
@@ -1277,7 +1279,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
     CYScale * pYScale = NULL;
     // Create YScale
     double fMultiplier = GetProcessMultiplier();
-    BOOL bLog10 = (BOOL)(pLegend->GetScaleMode() & LOG10); // logarithmic/linear scale
+	// logarithmic/linear scale
+    BOOL bLog10 = (BOOL)(pLegend->GetScaleMode() & LOG10); 
 
     double dCenterPos;
     double fBase = pLegend->GetScaleBase();
@@ -1291,37 +1294,42 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
     } else { // linear scale
         double dScaleMin = pLegend->GetScaleMinValue();
         if (dScaleMin < 0.) {
-            dScaleMin /= GetMagnify();    // this is dumb... legend should report the actual
+			// this is dumb... legend should report the actual
+            dScaleMin /= GetMagnify();    
         }
 
         if (nFlags & PAINT_DB) {
             // calculate vertical scaling factor
             fBase = pLegend->GetScaleBase();
             m_fVScale = pLegend->GetGridDistance() / fBase;
-            dCenterPos = rWnd.bottom +  dScaleMin*m_fVScale; // x-axis vertical position
-
-            double dblDbReference = -20*log10(double(0x7fff)) + 6; // loudness represents rms value so peak is +3dB and we want another 3db headroom
+			// x-axis vertical position
+            dCenterPos = rWnd.bottom +  dScaleMin*m_fVScale; 
+			// loudness represents rms value so peak is +3dB and we want another 3db headroom
+            double dblDbReference = -20*log10(double(0x7fff)) + 6; 
 
             pYScale = new CYScaleDB(-m_fVScale, dCenterPos, dblDbReference, 20.);
         } else if (nFlags & PAINT_SEMITONES) {
             // calculate vertical scaling factor
             fBase = pLegend->GetScaleBase();
             m_fVScale = pLegend->GetGridDistance() / fBase;
-            dCenterPos = rWnd.bottom +  dScaleMin*m_fVScale; // x-axis vertical position
+			// x-axis vertical position
+            dCenterPos = rWnd.bottom +  dScaleMin*m_fVScale; 
 
             pYScale = new CYScaleSemitones(-m_fVScale, dCenterPos, 10);
         } else {
             // calculate vertical scaling factor
             fBase = pLegend->GetScaleBase() * fMultiplier;
             m_fVScale = pLegend->GetGridDistance() / fBase;
-            dCenterPos = rWnd.bottom +  dScaleMin*m_fVScale*fMultiplier; // x-axis vertical position
+			// x-axis vertical position
+            dCenterPos = rWnd.bottom +  dScaleMin*m_fVScale*fMultiplier; 
 
             pYScale = new CYScaleLinear(-m_fVScale, dCenterPos);
 
             // draw bottom line
             CPen penAxes(PS_SOLID, 1, pColor->cPlotAxes);
             CPen * pOldPen = pDC->SelectObject(&penAxes);
-            pDC->MoveTo(rWnd.left, round2Int(dCenterPos)); // draw the line
+			// draw the line
+            pDC->MoveTo(rWnd.left, round2Int(dCenterPos)); 
             pDC->LineTo(rWnd.right, round2Int(dCenterPos));
             pDC->SelectObject(pOldPen);
         }
@@ -1352,8 +1360,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
         // Paint Solid
         pSegment = new CDrawSegmentSolid(*pDC, nFlags & (PAINT_DB|PAINT_SEMITONES) ? rWnd.bottom : round2Int(dCenterPos));
     }
-
-    int nLineThickness = GetPenThickness(); // Sometimes Based on VScale
+	// Sometimes Based on VScale
+    int nLineThickness = GetPenThickness(); 
 
     CPen penData(PS_SOLID, nLineThickness, pColor->cPlotData[0]);
     CPen penHiData(PS_SOLID, nLineThickness, pColor->cPlotHiData);
@@ -1463,15 +1471,18 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
             dwDataFrame = GetAreaLength(&rWnd);
         } else {
             // get necessary data from document and from view
-            fDataStart = GetDataPosition(rWnd.Width());     // data index of first sample to display
-            dwDataFrame = AdjustDataFrame(rWnd.Width());    // number of data points to display
+			// data index of first sample to display
+            fDataStart = GetDataPosition(rWnd.Width());
+			// number of data points to display
+            dwDataFrame = AdjustDataFrame(rWnd.Width());    
         }
         if ((dwDataFrame>0) && (rWnd.Width()>0)) {
             // calculate the number of data samples per pixel
             double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
             // get pointer to phonetic string
             CString pPhonetic = pDoc->GetSegment(PHONETIC)->GetContent();
-            if (!pPhonetic.IsEmpty()) { // string is not empty
+            if (!pPhonetic.IsEmpty()) { 
+				// string is not empty
                 // get pointer to phonetic offset and duration arrays
                 CSegment * pOffsets = pDoc->GetSegment(PHONETIC);
                 // position prepare loop. Find first boundary to display in clipping rect
@@ -1480,7 +1491,8 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
                 if (fStart > 0) {
                     for (nLoop = 1; nLoop < pPhonetic.GetLength(); nLoop++) {
                         if (pOffsets->GetStop(nLoop)> fStart) {
-                            break;    // this is it
+							// this is it
+                            break;    
                         }
                     }
                 }
@@ -1493,7 +1505,8 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
                     nLoop--;
                 }
                 // display loop, create pen and brush
-                CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); // get color from main frame
+				// get color from main frame
+                CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); 
                 CPen penBoundary(PS_SOLID, 1, pMainWnd->GetColors()->cPlotBoundaries);
                 CPen * pOldPen = pDC->SelectObject(&penBoundary);
                 CBrush brushBoundary(pMainWnd->GetColors()->cPlotBoundaries);
@@ -1502,7 +1515,8 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
                 POINT points[3];
                 points[0].y = points[1].y = 0;
                 points[2].y = 4;
-                int nDisplayPos; // position in pixels to display boundary
+				// position in pixels to display boundary
+                int nDisplayPos = 0; 
                 do {
                     // calculate start boundary
                     nDisplayPos = round2Int((pOffsets->GetOffset(nLoop) - fDataStart)/fBytesPerPix);
@@ -1511,25 +1525,31 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
                     // next string start
                     nLoop = pDoc->GetSegment(PHONETIC)->GetNext(nLoop);
                     // draw the lines
-                    pDC->MoveTo(nDisplayPos, 0); // paint start line
+                    pDC->MoveTo(nDisplayPos, 0); 
+					// paint start line
                     pDC->LineTo(nDisplayPos, rWnd.bottom);
-                    points[0].x = nDisplayPos + 4; // draw start arrow
+                    points[0].x = nDisplayPos + 4; 
+					// draw start arrow
                     points[1].x = points[2].x = nDisplayPos;
                     pDC->Polygon(points, 3);
-                    pDC->MoveTo(nDurationPos, 0); // paint stop line
+                    pDC->MoveTo(nDurationPos, 0); 
+					// paint stop line
                     pDC->LineTo(nDurationPos, rWnd.bottom);
-                    points[0].x = nDurationPos - 4; // draw stop arrow
+                    points[0].x = nDurationPos - 4; 
+					// draw stop arrow
                     points[1].x = points[2].x = nDurationPos;
                     pDC->Polygon(points, 3);
                 } while ((nDisplayPos < rClip.right) && (nLoop >= 0));
-                pDC->SelectObject(pOldPen); // select back old pen
+                pDC->SelectObject(pOldPen); 
+				// select back old pen
                 pDC->SelectObject(pOldBrush);
             }
         }
     }
 
     // paint cursors
-    if (rClip.Width() >= rWnd.Width()) { // whole graph drawn
+	// whole graph drawn
+    if (rClip.Width() >= rWnd.Width()) { 
         if (m_bCursors) {
             SetStopCursor(pView);
             SetStartCursor(pView);
@@ -1539,7 +1559,8 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
 
     // if this graph has focus, update the status bar.   AKE 10/21/2000
     if (m_bInitialPlot && pView->GetFocusedGraphWnd()) {
-        pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), TRUE); // update the status bar
+		// update the status bar
+        pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), TRUE); 
         m_bInitialPlot = FALSE;
     }
 }
@@ -1766,13 +1787,18 @@ BOOL CPlotWnd::OnEraseBkgnd(CDC * pDC) {
 // Allows highlighting of selected areas.
 /***************************************************************************/
 BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
+
     CRect rWnd;
     GetClientRect(rWnd);
     if (rWnd.Width()==0) {
-        return TRUE;    // nothing to erase
+		// nothing to erase
+        return TRUE;    
     }
-    double fDataPos = GetDataPosition(rWnd.Width()); // data index of first sample to display
-    DWORD dwDataFrame = AdjustDataFrame(rWnd.Width()); // number of data points to display
+
+	// data index of first sample to display
+    double fDataPos = GetDataPosition(rWnd.Width());
+	// number of data points to display
+    DWORD dwDataFrame = AdjustDataFrame(rWnd.Width()); 
     ASSERT(rWnd.Width());
     double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
@@ -1798,7 +1824,8 @@ BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
     CBrush backBrush(pMainWnd->GetColors()->cPlotBkg);
     CBrush * pOldBrush = pDC->SelectObject(&backBrush);
     CRect rClip;
-    pDC->GetClipBox(rClip); // get the area needed to redraw
+	// get the area needed to redraw
+    pDC->GetClipBox(rClip); 
     pDC->LPtoDP(rClip);
     if (rClip.left < nHighLightPixLeft) {
         // draw left of highlighted area
@@ -1809,8 +1836,9 @@ BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
         pDC->PatBlt(rClip.left, rClip.top, nWidth, rClip.Height(), PATCOPY);
         rClip.left += nWidth;
     }
-    if ((rClip.left < rClip.right) && (rClip.left < nHighLightPixRight)
-            && (nHighLightPixRight - nHighLightPixLeft)) {
+    if ((rClip.left < rClip.right) && 
+		(rClip.left < nHighLightPixRight) && 
+		(nHighLightPixRight - nHighLightPixLeft)) {
         // draw highlighted area
         int nWidth = nHighLightPixRight - rClip.left;
         if (nWidth > rClip.Width()) {
@@ -2156,8 +2184,10 @@ DWORD CPlotWnd::CalcWaveOffsetAtPixel(CPoint pixel) {
         dwDataFrame = GetAreaLength();
     } else {
         // get necessary data from document and from view
-        fDataPos = pView->GetDataPosition(nWidth); // data index of first sample to display
-        dwDataFrame = pView->AdjustDataFrame(nWidth); // number of data points to display
+		// data index of first sample to display
+        fDataPos = pView->GetDataPosition(nWidth); 
+		// number of data points to display
+        dwDataFrame = pView->CalcDataFrame(nWidth); 
     }
     CSaDoc * pDoc = pView->GetDocument();
     DWORD nSmpSize = pDoc->GetSampleSize();
@@ -2172,8 +2202,6 @@ DWORD CPlotWnd::CalcWaveOffsetAtPixel(CPoint pixel) {
 CGrid CPlotWnd::GetGrid() const {
     return *static_cast<CMainFrame *>(AfxGetMainWnd())->GetGrid();
 }
-
-
 
 CDataSourceSimple::CDataSourceSimple(CProcess & cProcess) : m_cProcess(cProcess) {
     m_nSamples = m_cProcess.GetDataSize();

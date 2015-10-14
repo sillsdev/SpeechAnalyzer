@@ -1156,7 +1156,7 @@ void Test024(CSelfTestRunner & runner, CSelfTest::Test &) {
 void Test025(CSelfTestRunner & runner, CSelfTest::Test &) {
     CTestDoc doc(runner,L"chfrench.wav");
     runner.MessageLoop(1);
-    doc.pMain->SendMessage(WM_COMMAND,ID_EDIT_SELECTWAVEFORM,0);
+    doc.pMain->SendMessage(WM_COMMAND,ID_EDIT_SELECTWAVEFORM_SEG,0);
     runner.MessageLoop(1);
     doc.pMain->SendMessage(WM_COMMAND,ID_EDIT_CUT,0);
     runner.MessageLoop(1);

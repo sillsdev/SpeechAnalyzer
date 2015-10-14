@@ -121,7 +121,8 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
         CRect rDraw(rClip);
 
         // get necessary data from document and from view
-        DWORD dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
+		// number of data points to display
+        DWORD dwDataFrame = pView->CalcDataFrame(rWnd.Width()); 
         if (dwDataFrame == 0) {
             return;    // nothing to draw
         }

@@ -126,7 +126,7 @@ public:
 	// return current data frame (width) of displayed data
     DWORD GetDataFrame();
 	// return adjusted data frame width for particular window
-    DWORD AdjustDataFrame(int nWndWidth);
+    DWORD CalcDataFrame(int nWndWidth);
     CURSORPOS GetStartCursorPosition();
     CURSORPOS GetStopCursorPosition();
     DWORD GetPlaybackCursorPosition();
@@ -414,8 +414,9 @@ protected:
     afx_msg void OnUpdatePopupgraphMagnifycustom(CCmdUI * pCmdUI);
     afx_msg void OnRestartProcess();
     afx_msg void OnUpdateRestartProcess(CCmdUI * pCmdUI);
+    afx_msg void OnEditSelectWaveformSeg();
+    afx_msg void OnUpdateEditSelectWaveformSeg(CCmdUI * pCmdUI);
     afx_msg void OnEditSelectWaveform();
-    afx_msg void OnEditSelectWaveformFake();
     afx_msg void OnUpdateEditSelectWaveform(CCmdUI * pCmdUI);
     afx_msg void OnUpdatePlayback(CCmdUI * pCmdUI);
     afx_msg void OnUpdatePlaybackPortion(CCmdUI * pCmdUI);

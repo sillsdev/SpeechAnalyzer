@@ -1525,9 +1525,9 @@
 #define ID_REMOVE_OVERLAY               33051
 #define ID_SETDEFAULT                   33052
 #define ID_EDIT_PASTENEW                33054
-#define ID_EDIT_SELECTWAVEFORM          33055
+#define ID_EDIT_SELECTWAVEFORM_SEG      33055
 #define ID_EDIT_AUTO_ADD                33056
-#define ID_EDIT_SELECTWAVEFORM_FAKE     33057
+#define ID_EDIT_SELECTWAVEFORM          33057
 #define ID_EDIT_AUTO_ADD_STORY_SECTION  33058
 #define ID_AUTO_ALIGN                   33060
 #define ID_EDIT_AUTO_SNAP_UPDATE        33061

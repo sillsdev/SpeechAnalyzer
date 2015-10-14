@@ -109,7 +109,7 @@ DWORD CStopCursorWnd::CalculateCursorPosition(CView * pSaView, int nPosition, in
 		// data index of first sample to display
         fDataPos = pView->GetDataPosition(nWidth);
 		// number of data points to display
-        dwDataFrame = pView->AdjustDataFrame(nWidth);
+        dwDataFrame = pView->CalcDataFrame(nWidth);
     }
     DWORD nSmpSize = pDoc->GetSampleSize();
     // calculate data samples per pixel

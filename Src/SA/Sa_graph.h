@@ -69,7 +69,7 @@ public:
     void RemoveOverlayItem(const CPlotWnd * pPlot);
     void SetCaptionStyle(int, BOOL bRedraw = FALSE); // set graph caption style
     void ScrollGraph(CSaView * pView, DWORD, DWORD);   // scroll graph
-    void RedrawGraph(BOOL bEntire = TRUE, BOOL bLegend = FALSE, BOOL bGraph = TRUE); // redraw entire or parts of the graph
+    virtual void RedrawGraph(BOOL bEntire = TRUE, BOOL bLegend = FALSE, BOOL bGraph = TRUE); // redraw entire or parts of the graph
     void ResizeGraph(BOOL bEntire = TRUE, BOOL bLegend = FALSE, BOOL bGraph = TRUE); // resize entire or parts of the graph
     static double GetSemitone(double fFreq); // calculates semitones from a frequency
     static double SemitoneToFrequency(double fSemitone);
@@ -184,8 +184,8 @@ class CRecGraphWnd : public CGraphWnd {
 
 public:
     CRecGraphWnd();
-    virtual ~CRecGraphWnd() {
-    };
+    virtual ~CRecGraphWnd();
+    virtual void RedrawGraph(BOOL bEntire = TRUE, BOOL bLegend = FALSE, BOOL bGraph = TRUE);
 
 protected:
     virtual BOOL PreCreateWindow(CREATESTRUCT & cs);

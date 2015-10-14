@@ -318,8 +318,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	
 	ON_COMMAND(ID_EDIT_SEGMENT_BOUNDARIES, OnEditBoundaries)
     ON_COMMAND(ID_EDIT_SEGMENT_SIZE, OnEditSegmentSize)
+    ON_COMMAND(ID_EDIT_SELECTWAVEFORM_SEG, OnEditSelectWaveformSeg)
     ON_COMMAND(ID_EDIT_SELECTWAVEFORM, OnEditSelectWaveform)
-    ON_COMMAND(ID_EDIT_SELECTWAVEFORM_FAKE, OnEditSelectWaveformFake)
     ON_COMMAND(ID_EDIT_UNDO, OnEditUndo)
     ON_COMMAND(ID_EDIT_UP, OnEditUp)
     ON_COMMAND(ID_EXPORT_FW,  OnExportFW)
@@ -505,8 +505,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_EDIT_REMOVE, OnUpdateEditRemove)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SEGMENT_BOUNDARIES, OnUpdateEditBoundaries)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SEGMENT_SIZE, OnUpdateEditSegmentSize)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_SELECTWAVEFORM_SEG, OnUpdateEditSelectWaveformSeg)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SELECTWAVEFORM, OnUpdateEditSelectWaveform)
-    ON_UPDATE_COMMAND_UI(ID_EDIT_SELECTWAVEFORM_FAKE, OnUpdateEditSelectWaveform)
     ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, OnUpdateEditUndo)
     ON_UPDATE_COMMAND_UI(ID_EDIT_UP, OnUpdateEditUp)
     ON_UPDATE_COMMAND_UI(ID_EXPORT_MIDI, OnUpdateExportStaff)
@@ -1691,8 +1691,6 @@ void CSaView::OnFilePhonologyAssistant() {
         }
     }
 
-    // KEY_WOW64_64KEY allows us to write to the 64-bit hive
-    // wow64 is true if we are a 32-bit app on a 64-bit system.
     // we now write to the 32-bit hive
     REGSAM sam = KEY_ALL_ACCESS;
     HKEY hKey = 0;
@@ -3874,7 +3872,7 @@ void CSaView::OnRestartProcess() {
 /***************************************************************************/
 void CSaView::OnUpdateRestartProcess(CCmdUI * pCmdUI) {
     BOOL bEnable = GetDocument()->AnyProcessCanceled();
-    if (m_pFocusedGraph && m_pFocusedGraph->IsAreaGraph()  && !m_pFocusedGraph->IsPlotID(IDD_RECORDING)) {
+    if ((m_pFocusedGraph) && (m_pFocusedGraph->IsAreaGraph())  && (!m_pFocusedGraph->IsPlotID(IDD_RECORDING))) {
         // restart area graph process only if graph has focus
         bEnable = TRUE;
     }
@@ -3886,10 +3884,9 @@ void CSaView::OnUpdateRestartProcess(CCmdUI * pCmdUI) {
 }
 
 /***************************************************************************/
-// CSaView::OnEditSelectWaveform Select Waveform data between cursors
+// CSaView::OnEditSelectWaveformSeg Select Waveform data between cursors
 /***************************************************************************/
-void CSaView::OnEditSelectWaveform() {
-
+void CSaView::OnEditSelectWaveformSeg() {
     // select/deselect raw data area
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
     if ((i >= 0) && (m_apGraphs[i]!=NULL)) {
@@ -3905,9 +3902,16 @@ void CSaView::OnEditSelectWaveform() {
 }
 
 /***************************************************************************/
+// CSaView::OnUpdateEditSelectWaveformSeg Select Waveform data between cursors
+/***************************************************************************/
+void CSaView::OnUpdateEditSelectWaveformSeg(CCmdUI * pCmdUI) {
+    pCmdUI->Enable(true);
+}
+
+/***************************************************************************/
 // CSaView::OnEditSelectWaveform Select Waveform data between cursors
 /***************************************************************************/
-void CSaView::OnEditSelectWaveformFake() {
+void CSaView::OnEditSelectWaveform() {
 }
 
 /***************************************************************************/
@@ -3921,14 +3925,16 @@ void CSaView::OnUpdateEditSelectWaveform(CCmdUI * pCmdUI) {
 // CSaView::OnPlayFKey Playback according to function key setting
 /***************************************************************************/
 void CSaView::OnPlayFKey(UINT nID) {
-    SendPlayMessage(WORD(nID - ID_PLAY_F1), WORD(-1)); // send message to start player
+	// send message to start player
+    SendPlayMessage(WORD(nID - ID_PLAY_F1), WORD(-1)); 
 }
 
 /***************************************************************************/
 // CSaView::OnUpdatePlayback Menu update
 /***************************************************************************/
 void CSaView::OnUpdatePlayback(CCmdUI * pCmdUI) {
-    pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
+	// enable if data is available
+    pCmdUI->Enable(GetDocument()->GetDataSize() != 0); 
 }
 
 /***************************************************************************/
@@ -5020,7 +5026,7 @@ void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
     // copied to the temp. array.
     //**************************************************************
     for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
-        if (anNewGraphID[i] && anNewGraphID[i] != IDD_RECORDING) {
+        if ((anNewGraphID[i]!=NULL) && (anNewGraphID[i] != IDD_RECORDING)) {
             anTmpGraphID[index++] = anNewGraphID[i];
         }
     }
@@ -5100,7 +5106,8 @@ void CSaView::OnUpdateShowBorders(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnGraphsParameters() {
     CSaString szCaption;
-    szCaption.LoadString(IDS_DLGTITLE_GRAPHSPARA); // load caption string
+	// load caption string
+    szCaption.LoadString(IDS_DLGTITLE_GRAPHSPARA); 
     // set the pitch parameters to enable manual analysing
     CSaDoc * pDoc = (CSaDoc *)GetDocument();
     // create the property sheet according to the existing graphs
@@ -5629,7 +5636,6 @@ void CSaView::ChangeGraph(int idx, int nID) {
     if (GetGraphIndexForIDD(nID) >= 0 && nID != ID_GRAPHS_OVERLAY) {
         if (nID == IDD_RECORDING) {
             int nRecording = GetGraphIndexForIDD(IDD_RECORDING);
-
             DeleteGraphs(nRecording);
             OnGraphsTypesPostProcess(&m_anGraphID[0], m_nLayout);
         }
@@ -5731,6 +5737,7 @@ BOOL CSaView::AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView) {
 //                  layout section.
 /***************************************************************************/
 void CSaView::ChangeLayout(UINT nNewLayout) {
+
     if (m_nLayout == nNewLayout) {
         return;
     }
@@ -6459,13 +6466,17 @@ double CSaView::GetDataPosition(int nWndWidth) {
 // window with data. The function does not affect the views data frame
 // settings. It checks and limits the result against the available data size.
 /***************************************************************************/
-DWORD CSaView::AdjustDataFrame(int nWndWidth) {
-    DWORD dwDataFrame = GetDataFrame(); // number of data points to display
+DWORD CSaView::CalcDataFrame(int nWndWidth) {
+
+	// number of data points to display
+    DWORD dwDataFrame = GetDataFrame(); 
     if (dwDataFrame == 0) {
-        return 0;    // nothing to draw
+		// nothing to draw
+        return 0;    
     }
 
-    CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
+	// get pointer to document
+    CSaDoc * pDoc = (CSaDoc *) GetDocument(); 
     DWORD dwDataSize = pDoc->GetDataSize();
     if (dwDataSize >= GetDataPosition(nWndWidth) && (GetDataPosition(nWndWidth) + dwDataFrame) > dwDataSize) {
         dwDataFrame = DWORD(dwDataSize - GetDataPosition(nWndWidth));
@@ -7615,9 +7626,7 @@ void CSaView::OnEditCopyMeasurements() {
 
     // get info from the document
     DWORD dwOffset = GetStartCursorPosition();
-    BOOL bSection = (m_nFocusedID != IDD_MELOGRAM)
-                    && (m_nFocusedID != IDD_RECORDING)
-                    && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0);
+    BOOL bSection = (m_nFocusedID != IDD_MELOGRAM) && (m_nFocusedID != IDD_RECORDING) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0);
     DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
     DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
     BOOL pbRes;
@@ -7685,8 +7694,6 @@ void CSaView::OnEditCut() {
         }
     }
 }
-
-
 
 /***************************************************************************/
 // CSaView::OnEditPaste
@@ -7851,6 +7858,7 @@ void CSaView::OnUpdateEditPaste(CCmdUI * pCmdUI) {
 // If waveform available on the clipboard, it enables the item.
 /***************************************************************************/
 void CSaView::OnUpdateEditPasteNew(CCmdUI * pCmdUI) {
+
     BOOL enablePaste = FALSE;
     if (OpenClipboard()) {
         if (IsClipboardFormatAvailable(CF_WAVE)) {
@@ -10657,6 +10665,7 @@ void CSaView::OnMoveStopCursorHere() {
     // calculate plot client coordinates
     CRect rWnd;
     pPlot->GetClientRect(rWnd);
+	int nWidth = rWnd.Width();
 
     // get actual data position, frame and data size and alignment
     double fDataPos = 0;
@@ -10669,16 +10678,16 @@ void CSaView::OnMoveStopCursorHere() {
     } else {
         // get necessary data from document and from view
 		// data index of first sample to display
-        fDataPos = GetDataPosition(rWnd.Width());
+        fDataPos = GetDataPosition(nWidth);
 		// number of data points to display
-        dwDataFrame = AdjustDataFrame(rWnd.Width());
+        dwDataFrame = CalcDataFrame(nWidth);
     }
 
     DWORD dwDataSize = pDoc->GetDataSize();
     DWORD nSmpSize = pDoc->GetSampleSize();
     // calculate data samples per pixel
-    ASSERT(rWnd.Width());
-    double fSamplesPerPix = (double)dwDataFrame / (double)(rWnd.Width()*nSmpSize);
+    ASSERT(nWidth);
+    double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
 
     // calculate the start cursor position
     DWORD dwStopCursor = (DWORD) round2Int(fDataPos/nSmpSize + ((double)point.x) * fSamplesPerPix);
@@ -10931,7 +10940,7 @@ DWORD CSaView::GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd 
 		// data index of first sample to display
         fDataPos = GetDataPosition(nWidth); 
 		// number of data points to display
-        dwDataFrame = AdjustDataFrame(nWidth); 
+        dwDataFrame = CalcDataFrame(nWidth); 
     }
     DWORD nSmpSize = pDoc->GetSampleSize();
     // calculate data samples per pixel
@@ -11842,6 +11851,7 @@ DWORD CSaView::CalculatePositionFromMouse() {
     // calculate plot client coordinates
     CRect rWnd;
     pPlot->GetClientRect(rWnd);
+	int nWidth = rWnd.Width();
 
     // get actual data position, frame and data size and alignment
     double fDataPos = 0;
@@ -11854,16 +11864,16 @@ DWORD CSaView::CalculatePositionFromMouse() {
     } else {
         // get necessary data from document and from view
 		// data index of first sample to display
-        fDataPos = GetDataPosition(rWnd.Width());
+        fDataPos = GetDataPosition(nWidth);
 		// number of data points to display
-        dwDataFrame = AdjustDataFrame(rWnd.Width());
+        dwDataFrame = CalcDataFrame(nWidth);
     }
 
     DWORD dwDataSize = pDoc->GetDataSize();
     DWORD nSmpSize = pDoc->GetSampleSize();
     // calculate data samples per pixel
     ASSERT(rWnd.Width());
-    double fSamplesPerPix = (double)dwDataFrame / (double)(rWnd.Width()*nSmpSize);
+    double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
 
     // calculate the start cursor position
     DWORD position = (DWORD) round2Int(fDataPos/nSmpSize + ((double)point.x) * fSamplesPerPix);

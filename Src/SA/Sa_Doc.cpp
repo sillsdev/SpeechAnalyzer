@@ -7225,7 +7225,7 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.133");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.134");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);

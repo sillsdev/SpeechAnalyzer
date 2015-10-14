@@ -443,8 +443,7 @@ void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos) {
     }
 
 	// number of data points displayed
-    DWORD dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); 
-
+    DWORD dwDataFrame = pView->CalcDataFrame(rWnd.Width()); 
     BOOL bLessThanPage = ((dwNewPos > dwOldPos) && ((dwNewPos - dwOldPos) < dwDataFrame)) ||
                          ((dwOldPos > dwNewPos) && ((dwOldPos - dwNewPos) < dwDataFrame));
     bLessThanPage = FALSE;
@@ -1885,8 +1884,8 @@ void CGraphWnd::OnSize(UINT nType, int cx, int cy) {
 // CGraphWnd::OnDraw - draw the graph window.  Currently
 // only used for printing.
 /***************************************************************************/
-void CGraphWnd::OnDraw(CDC * pDC, const CRect * printRect,
-                       int originX, int originY) {
+void CGraphWnd::OnDraw(CDC * pDC, const CRect * printRect, int originX, int originY) {
+
     if (pDC->IsPrinting()) {
         if (m_pPlot != NULL) {
             PrintHiResGraph(pDC, printRect, originX, originY);
@@ -2458,6 +2457,9 @@ IMPLEMENT_DYNCREATE(CRecGraphWnd, CGraphWnd)
 CRecGraphWnd::CRecGraphWnd() : CGraphWnd(IDD_RECORDING) {
 }
 
+CRecGraphWnd::~CRecGraphWnd() {
+};
+
 /***************************************************************************/
 // CRecGraphWnd::PreCreateWindow Creation
 // Called from the framework before the creation of the window. Registers
@@ -2474,6 +2476,13 @@ BOOL CRecGraphWnd::PreCreateWindow(CREATESTRUCT & cs) {
     BOOL bRet = CWnd::PreCreateWindow(cs);
     cs.style = WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER;
     return bRet;
+}
+
+void CRecGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
+	if (m_pPlot!=NULL) {
+		((CPlotRecording*)m_pPlot)->ResetSize();
+	}
+	CGraphWnd::RedrawGraph( bEntire, bLegend, bGraph);
 }
 
 void CGraphWnd::HideCursors() {
