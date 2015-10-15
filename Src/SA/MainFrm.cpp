@@ -960,19 +960,8 @@ CDlgPlayer * CMainFrame::GetPlayer(bool bCreate) {
 // set.
 /***************************************************************************/
 LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam) {
-    return OnPlayer(wParam, lParam, NULL);
-}
-
-/***************************************************************************/
-// CMainFrame::OnPlayer Launches the player
-// The user wants to see the modeless player dialog. If not already done
-// it creates the player dialog, otherwise it just sets the player active
-// and on top of all other windows. lParam delivers the player mode to be
-// set.
-/***************************************************************************/
-LRESULT CMainFrame::OnPlayer(WPARAM wParam2, LPARAM lParam, SSpecific * pSpecific) {
-    CDlgPlayer::EMode mode = (CDlgPlayer::EMode)wParam2;
-
+    
+	CDlgPlayer::EMode mode = (CDlgPlayer::EMode)wParam;
     TRACE("OnPlayer %s %x %x\n", CDlgPlayer::GetMode(mode), HIWORD(lParam), LOWORD(lParam));
 
 	// retrieve pointer to active window
@@ -991,7 +980,8 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam2, LPARAM lParam, SSpecific * pSpecifi
         if (!(BOOL)HIWORD(lParam)) {
             pWnd->SetActiveWindow();
         }
-        GetPlayer(false)->SetPlayerMode(mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific);  // set player mode
+		// set player mode
+        GetPlayer(false)->SetPlayerMode(mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, NULL);  
     } else {
         if (!GetPlayer(false)->IsTestRun()) {
             // player not running function key test
@@ -1002,7 +992,52 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam2, LPARAM lParam, SSpecific * pSpecifi
                 bFnKey = TRUE;
                 lParam = MAKELONG(LOWORD(lParam), FALSE);
             }
-            GetPlayer(false)->SetPlayerMode(mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific);  // set player mode
+			// set player mode
+            GetPlayer(false)->SetPlayerMode(mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, NULL);  
+            if (GetPlayer(false)->IsFullSize()) { 
+				// player has full size, set it the active window
+				// set focus on player
+                GetPlayer(false)->SetActiveWindow(); 
+                GetPlayer(false)->ShowWindow(SW_SHOW);
+            }
+        }
+    }
+    return 0;
+}
+
+/***************************************************************************/
+// CMainFrame::OnPlayer Launches the player
+// The user wants to see the modeless player dialog. If not already done
+// it creates the player dialog, otherwise it just sets the player active
+// and on top of all other windows. lParam delivers the player mode to be
+// set.
+/***************************************************************************/
+LRESULT CMainFrame::PlaySpecific( SSpecific & specific) {
+    
+    TRACE("PlaySpecific\n");
+
+	CDlgPlayer::EMode mode = CDlgPlayer::PLAYING;
+	UINT nSubMode = ID_PLAYBACK_SPECIFIC;
+	BOOL bFullSize = FALSE;
+
+	// retrieve pointer to active window
+    CWnd * pWnd = GetActiveWindow(); 
+    if (!CDlgPlayer::IsLaunched()) {
+		// player dialog not launched
+		// get or create player object
+        GetPlayer(true); 
+        BOOL bFnKey = FALSE;
+        // if player will not have size, set the old active window
+        pWnd->SetActiveWindow();
+		// set player mode
+        GetPlayer(false)->SetPlayerMode( mode, nSubMode, bFullSize, bFnKey, &specific);  
+    } else {
+        if (!GetPlayer(false)->IsTestRun()) {
+            // player not running function key test
+            BOOL bFnKey = FALSE;
+            // kg 32 bit cast needed
+			// set player mode
+            GetPlayer(false)->SetPlayerMode(mode, nSubMode, bFullSize, bFnKey, &specific);  
             if (GetPlayer(false)->IsFullSize()) { 
 				// player has full size, set it the active window
 				// set focus on player

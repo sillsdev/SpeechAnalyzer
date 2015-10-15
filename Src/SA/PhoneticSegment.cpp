@@ -75,7 +75,7 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) 
     int nSaveSelection = m_nSelection;
     pView->ChangeAnnotationSelection(this, m_nSelection, dwStart, dwStop);      // deselect
     pView->ChangeAnnotationSelection(this, nSaveSelection, dwStart, dwStop);    // select again
-    pView->RefreshGraphs(FALSE);    // refresh the graphs between cursors
+    pView->RedrawGraphs(FALSE);													// refresh the graphs between cursors
 
     // adjust the aligned annotation offsets and durations
     for (int nLoop = 1; nLoop <= GLOSS; nLoop++) {
@@ -89,7 +89,8 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) 
         }
     }
 
-    pView->RefreshGraphs(TRUE); // refresh the graphs between cursors
+	// refresh the graphs between cursors
+    pView->RedrawGraphs(TRUE); 
 }
 
 /***************************************************************************/
@@ -192,10 +193,10 @@ void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
-    pDoc->SetModifiedFlag(TRUE);        // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, sel, 0, 0);   // deselect
-    pView->RefreshGraphs(TRUE,FALSE);
+    pDoc->SetModifiedFlag(TRUE);						// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);					// transcription data has been modified
+    pView->ChangeAnnotationSelection(this, sel, 0, 0);  // deselect
+    pView->RedrawGraphs(TRUE,FALSE);
 }
 
 /***************************************************************************/

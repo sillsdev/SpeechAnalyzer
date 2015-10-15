@@ -552,7 +552,8 @@ void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhoneti
             pGraph->ShowAnnotation(REFERENCE, TRUE, TRUE);
         }
     }
-    pView->RefreshGraphs(); // redraw all graphs without legend window
+	// redraw all graphs without legend window
+    pView->RedrawGraphs(); 
 }
 
 static void CreateWordSegments(const int nWord, int & nSegments) {

@@ -89,7 +89,7 @@ void CGlossNatSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaSt
 
     // insert or append the new dependent segment
     if (!Insert(nPos, szString, 0, dwStart, dwDuration)) {
-        pView->RefreshGraphs(TRUE);                                 // refresh the graphs between cursors
+        pView->RedrawGraphs(TRUE);                                 // refresh the graphs between cursors
         return;                                                     // return on error or not inserted.
     }
 

@@ -107,7 +107,7 @@ void CDlgAdvancedParsePhrases::Undo() {
     POSITION pos = m_pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)m_pDoc->GetNextView(pos);
     pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
-    pView->RefreshGraphs();
+    pView->RedrawGraphs();
 }
 
 /***************************************************************************/

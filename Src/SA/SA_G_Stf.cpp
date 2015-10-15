@@ -698,11 +698,13 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam) {
     case EM_SETMODIFY: {
         CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument();
         pDoc->SetModifiedFlag(TRUE);
-        pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+		// transcription data has been modified
+        pDoc->SetTransModifiedFlag(TRUE); 
         break;
     }
     case WM_SETFOCUS: {
-        m_pView->SetFocusedGraph(m_pParent); // sets the focused graph pointer
+		// sets the focused graph pointer
+        m_pView->SetFocusedGraph(m_pParent); 
         break;
     }
     case IDC_CONVERT: {
@@ -716,8 +718,8 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam) {
                 CPlotWnd * pMelPlot = pMelogram->GetPlot();
                 if (pMelPlot) {
                     SPartSelectionMS * pSel = (SPartSelectionMS *)lParam;
-                    CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument(); // cast pointer
-
+					// cast pointer
+                    CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument(); 
                     pMelPlot->SetHighLightArea(pDoc->GetBytesFromTime(pSel->begin), pDoc->GetBytesFromTime(pSel->end), TRUE, TRUE);
                     pMelPlot->UpdateWindow();
                 }
@@ -725,16 +727,15 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam) {
         }
         break;
     }
-    case WM_APP + 2: { // play recording of selection
+    case WM_APP + 2: { 
+		// play recording of selection
         CMainFrame * pMain = (CMainFrame *) AfxGetMainWnd();
         if (m_pView && pMain->GetCurrSaView() == m_pView) {
             SPartSelectionMS & sel = *(SPartSelectionMS *)lParam;
             SSpecific specific;
-
             specific.begin = sel.begin;
             specific.end = sel.end;
-
-            pMain->OnPlayer(IDC_PLAY, ID_PLAYBACK_SPECIFIC, &specific);
+            pMain->PlaySpecific( specific);
         }
         break;
     }

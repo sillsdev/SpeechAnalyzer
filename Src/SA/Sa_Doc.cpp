@@ -3075,7 +3075,7 @@ void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInitialU
         pView->InitialUpdate(TRUE);     // Load default graph settings ...
     }
     InvalidateAllProcesses();
-    pView->RefreshGraphs(TRUE, TRUE);   // repaint whole graphs
+    pView->RedrawGraphs(TRUE, TRUE);	// repaint whole graphs
     m_uttParm.Init(m_FmtParm.wBitsPerSample); // re-initialize utterance parameters
     SetUttParm(&m_uttParm, TRUE);       // Copy uttParms to original for safe keeping
     SetModifiedFlag();                  // document is modified
@@ -3114,9 +3114,9 @@ void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo inf
 
     // SDM 1.06.6U5 Load default graph settings
     // set scrolling parameters, cursors and refresh graph(s)
-    pView->InitialUpdate(TRUE); // Load default graph settings ...
-    pView->RefreshGraphs(TRUE, TRUE); // repaint whole graphs
-    SetModifiedFlag(); // document is modified
+    pView->InitialUpdate(TRUE);			// Load default graph settings ...
+    pView->RedrawGraphs(TRUE, TRUE);	// repaint whole graphs
+    SetModifiedFlag();					// document is modified
     SetAudioModifiedFlag();
 }
 
@@ -5085,7 +5085,8 @@ BOOL CSaDoc::AdvancedParseAuto() {
     }
 
     // for importing this is as far as we need to go
-    pView->RefreshGraphs(); // redraw graphs without legend window
+	// redraw graphs without legend window
+    pView->RedrawGraphs(); 
     return TRUE;
 }
 
@@ -5127,7 +5128,8 @@ BOOL CSaDoc::AdvancedParseWord() {
         return FALSE;
     }
 
-    pView->RefreshGraphs(); // redraw graphs without legend window
+	// redraw graphs without legend window
+    pView->RedrawGraphs(); 
     return TRUE;
 }
 
@@ -5193,7 +5195,8 @@ BOOL CSaDoc::AdvancedParsePhrase() {
         pGraph->ShowAnnotation(MUSIC_PL2, TRUE, TRUE);
     }
 
-    pView->RefreshGraphs(); // redraw graphs without legend window
+	// redraw graphs without legend window
+    pView->RedrawGraphs(); 
     return TRUE;
 }
 
@@ -5325,7 +5328,8 @@ BOOL CSaDoc::AdvancedSegment() {
     }
 
     // get pointer to view
-    pView->RefreshGraphs(); // redraw all graphs without legend window
+	// redraw all graphs without legend window
+    pView->RedrawGraphs(); 
     return TRUE;
 }
 
@@ -5441,7 +5445,7 @@ void CSaDoc::RevertTranscriptionChanges() {
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
     //pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
-    pView->RefreshGraphs();
+    pView->RedrawGraphs();
     if (m_nTranscriptionApplicationCount>0) {
         m_nTranscriptionApplicationCount--;
     }
@@ -6419,7 +6423,8 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
             pGraph->ShowAnnotation(GLOSS_NAT, TRUE, TRUE);
         }
     }
-    pView->RefreshGraphs(); // redraw all graphs without legend window
+	// redraw all graphs without legend window
+    pView->RedrawGraphs(); 
 }
 
 void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td) {
@@ -6535,7 +6540,8 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td) {
             pGraph->ShowAnnotation(GLOSS_NAT, TRUE, TRUE);
         }
     }
-    pView->RefreshGraphs(); // redraw all graphs without legend window
+	// redraw all graphs without legend window
+    pView->RedrawGraphs(); 
 }
 
 /***************************************************************************/
@@ -6944,7 +6950,7 @@ bool CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
 		CSaView * pView = ((CSaView *)GetNextView(pos));
 
 		pView->SetStartStopCursorPosition(0, GetDataSize());
-		pView->RefreshGraphs();
+		pView->RedrawGraphs();
 
 		while (CanUndo()) {
 			// remove undo list
@@ -8363,7 +8369,7 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 			pGraph->ShowAnnotation(GLOSS,FALSE);
 			pGraph->ShowAnnotation(GLOSS_NAT,TRUE);
 		}
-		view.RefreshGraphs(TRUE,TRUE,TRUE);
+		view.ResizeGraphs(TRUE,TRUE);
 	}
 
 	if (autoSegment) {
@@ -8372,12 +8378,12 @@ void CSaDoc::ImportSAB( LPCTSTR filename, bool autoSegment, bool loadData, int s
 		goal += skipCount;
 		
 		if (!AutoSegment( filename, td, view, goal, algorithm, skipCount, usingGL)) {
-			view.RefreshGraphs(TRUE,TRUE,TRUE);
+			view.ResizeGraphs(TRUE,TRUE);
 			return;
 		}
 	}
 
-	view.RefreshGraphs(TRUE,TRUE,TRUE);
+	view.ResizeGraphs(TRUE,TRUE);
 
 	if (loadData) {
 

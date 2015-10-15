@@ -220,7 +220,7 @@ void CDlgParametersPitchPage::Apply() {
         m_bModified = FALSE;
         SetModified(FALSE);
         // refresh all graphs
-        pView->RefreshGraphs(TRUE, TRUE);
+        pView->RedrawGraphs(TRUE, TRUE);
     }
 }
 
@@ -2204,7 +2204,7 @@ void CDlgParametersFormantsPage::Apply() {
         m_bModified = FALSE;
         SetModified(FALSE);
         // refresh all graphs
-        pView->RefreshGraphs(TRUE, TRUE);
+        pView->RedrawGraphs(TRUE, TRUE);
     }
 }
 
@@ -2282,7 +2282,7 @@ void CDlgParametersFormantsPage::OnFormantVowelsEdit() {
         CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
 
         // refresh all graphs
-        pView->RefreshGraphs(TRUE, TRUE);
+        pView->RedrawGraphs(TRUE, TRUE);
     }
 }
 
@@ -3122,7 +3122,7 @@ void CDlgParametersMusicPage::Apply() {
         m_bModified = FALSE;
         SetModified(FALSE);
         // refresh all graphs
-        pView->RefreshGraphs(TRUE, TRUE);
+        pView->RedrawGraphs(TRUE, TRUE);
     }
 }
 
@@ -3204,7 +3204,7 @@ void CDlgParametersIntensityPage::Apply() {
         m_bModified = FALSE;
         SetModified(FALSE);
         // refresh all graphs
-        pView->RefreshGraphs(TRUE, TRUE);
+        pView->RedrawGraphs(TRUE, TRUE);
     }
 }
 
@@ -3308,7 +3308,7 @@ void CDlgParametersResearchPage::Apply() {
         }
 
         ResearchSettings = m_workingSettings;
-        pView->RefreshGraphs(TRUE, TRUE);
+        pView->RedrawGraphs(TRUE, TRUE);
         SetModified(FALSE);
     }
 }
@@ -3476,7 +3476,7 @@ void CDlgParametersFormantTracker::Apply() {
         }
 
         formantTrackerOptions = m_workingSettings;
-        pView->RefreshGraphs(TRUE, TRUE);
+        pView->RedrawGraphs(TRUE, TRUE);
     }
     SetModified(FALSE);
 }

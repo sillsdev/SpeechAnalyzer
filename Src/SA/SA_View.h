@@ -106,7 +106,8 @@ public:
 	// get index for a given IDD resource
     int GetGraphIndexForIDD(UINT);
 	// refresh (redraw) the graphs (entire or partial)
-    void RefreshGraphs(BOOL bEntire = TRUE, BOOL bLegend = FALSE, BOOL bLayout = FALSE); 
+    void ResizeGraphs(BOOL bEntire = TRUE, BOOL bLegend = FALSE); 
+    void RedrawGraphs(BOOL bEntire = TRUE, BOOL bLegend = FALSE); 
     void BroadcastMessage(UINT Message , WPARAM wParam = 0, LPARAM lParam = 0);
     UINT * GetGraphIDs();
     CSaString GetGraphsDescription() const;

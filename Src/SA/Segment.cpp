@@ -186,7 +186,7 @@ void CSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
     pDoc->SetModifiedFlag(TRUE);                        // document has been modified
     pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
     pView->ChangeAnnotationSelection(this, sel, 0, 0);  // deselect
-    pView->RefreshGraphs(FALSE);                        // refresh the graphs between cursors
+    pView->RedrawGraphs(FALSE);							// refresh the graphs between cursors
 }
 
 /***************************************************************************/
@@ -222,7 +222,7 @@ void CSegment::Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace) 
 
     pView->ChangeAnnotationSelection(this, index);		// deselect
     pView->ChangeAnnotationSelection(this, index);		// select again
-    pView->RefreshGraphs(FALSE);						// refresh the graphs between cursors
+    pView->RedrawGraphs(FALSE);							// refresh the graphs between cursors
 }
 
 /***************************************************************************/
@@ -249,7 +249,7 @@ void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace) {
 	// select again // 1.5Test10.2
     pView->ChangeAnnotationSelection(this, nSaveSelection);
 	// refresh the graphs between cursors
-    pView->RefreshGraphs(FALSE);
+    pView->RedrawGraphs(FALSE);
 }
 
 /***************************************************************************

@@ -65,8 +65,8 @@ void CGlossSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
 
     pDoc->SetModifiedFlag(TRUE);                                // document has been modified
     pDoc->SetTransModifiedFlag(TRUE);                           // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, sel, 0, 0); // deselect
-    pView->RefreshGraphs(TRUE,FALSE);
+    pView->ChangeAnnotationSelection(this, sel, 0, 0);			// deselect
+    pView->RedrawGraphs(TRUE,FALSE);
 }
 
 //SDM 1.5Test8.1

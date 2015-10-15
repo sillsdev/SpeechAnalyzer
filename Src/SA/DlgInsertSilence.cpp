@@ -45,7 +45,7 @@ void CDlgInsertSilence::OnClickedInsert() {
     if (pDocument->InsertSilenceIntoWave(silence, startt, ++repetitions)) {
         // get wave from the clipboard
         pDocument->InvalidateAllProcesses();
-        pView->RefreshGraphs();
+        pView->RedrawGraphs();
     }
 }
 

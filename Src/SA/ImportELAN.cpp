@@ -550,7 +550,8 @@ void CImportELAN::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhonet
             pGraph->ShowAnnotation(REFERENCE, TRUE, TRUE);
         }
     }
-    pView->RefreshGraphs(); // redraw all graphs without legend window
+	// redraw all graphs without legend window
+    pView->RedrawGraphs(); 
 }
 
 static void CreateWordSegments(const int nWord, int & nSegments) {

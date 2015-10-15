@@ -829,7 +829,7 @@ bool CAutoSegmentation::DoDivideAndConquer( CSaDoc & doc, CSaView & view, DWORD 
 	
     doc.RestartAllProcesses();
 
-	view.RefreshGraphs(TRUE);
+	view.RedrawGraphs(TRUE);
 
 	// divide and conquer until we find the answer
 	int maxBreakWidth = 999;

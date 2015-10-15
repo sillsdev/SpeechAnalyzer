@@ -1,3 +1,10 @@
+SA - 3.1.0.134 10/15/2015
+- Fix for Music Mode playback bug - the message event handler was properly handling the 'play specific' event for the playback button on the staff window.
+- Modified install to check for .NET frameworks 2.0 and 3.5.  If they are installed, the user will be notified and the install will stop.
+- Modified install to place sample files in users document directory.  Checked SA for conflicts.
+- Modified install to update registry entries that PA uses to locate SA. Both 32-bit and 64-bit hives are checked.
+- Fixed 'position view' problem.  Any paste operation in the wave form window induces an error in the position view.  The position view was not properly resizing when new data is added to the wave form.  If the full size of the wave form is copy and pasted, it will appear to the user as if nothing happened.
+
 SA - 3.1.0.133 9/24/2015
 - Fix for MusicXML DTD load delay.
 - Fix for music mode 'hang'.  I believe this was caused by the use of autosave when trying to save the musicxml file.  It was taking a very long time to complete (because of #1) and autosave may not complete before a new one is requested.  To the user, the app appears continually busy.

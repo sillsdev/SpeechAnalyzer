@@ -161,7 +161,7 @@ public:
     CFnKeys * GetFnKeys(CFnKeys *);
 	// set the function keys structure
     void SetFnKeys(CFnKeys *); 
-    LRESULT OnPlayer(WPARAM, LPARAM, SSpecific *);
+    LRESULT PlaySpecific(SSpecific &);
     CGrid * GetGrid();
     BOOL IsStatusBar();
 	// return TRUE if player is playing

@@ -1235,7 +1235,7 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView * pSourceView) {
         }
     }
 
-    pView->RefreshGraphs();
+    pView->RedrawGraphs();
     return bFound;
 }
 

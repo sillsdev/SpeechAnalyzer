@@ -231,7 +231,7 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
 
     // SDM 1.06.6U6
     if ((m_bFnKeySetting) &&
-            ((!bFnKey) || (nSubMode != SubModeUndefined) || (!m_bRepeat))) {
+        ((!bFnKey) || (nSubMode != SubModeUndefined) || (!m_bRepeat))) {
         // restore original player setting
         m_bFnKeySetting = false;
         m_nVolume = m_nOldVolume;

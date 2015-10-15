@@ -3000,7 +3000,7 @@ LRESULT CSaView::OnGraphStyleChanged(WPARAM, LPARAM) {
 // CSaView::OnGraphGridChanged Graphs grids have changed
 /***************************************************************************/
 LRESULT CSaView::OnGraphGridChanged(WPARAM, LPARAM) {
-    RefreshGraphs();
+    RedrawGraphs();
     return 0;
 }
 
@@ -3009,7 +3009,7 @@ LRESULT CSaView::OnGraphGridChanged(WPARAM, LPARAM) {
 // CSaView::OnGraphOrderChanged Graphs colors have changed
 /***************************************************************************/
 LRESULT CSaView::OnGraphOrderChanged(WPARAM, LPARAM) {
-    RefreshGraphs(TRUE, TRUE, TRUE);
+    ResizeGraphs(TRUE, TRUE);
     return 0;
 }
 
@@ -3017,7 +3017,7 @@ LRESULT CSaView::OnGraphOrderChanged(WPARAM, LPARAM) {
 // CSaView::OnGraphColorChanged Graphs colors have changed
 /***************************************************************************/
 LRESULT CSaView::OnGraphColorChanged(WPARAM, LPARAM) {
-    RefreshGraphs(TRUE, TRUE);
+    RedrawGraphs(TRUE, TRUE);
     return 0;
 }
 
@@ -3025,7 +3025,7 @@ LRESULT CSaView::OnGraphColorChanged(WPARAM, LPARAM) {
 // CSaView::OnGraphFontChanged Graphs font styles have changed
 /***************************************************************************/
 LRESULT CSaView::OnGraphFontChanged(WPARAM, LPARAM) {
-    RefreshGraphs(TRUE, TRUE, TRUE);
+    ResizeGraphs(TRUE, TRUE);
     return 0;
 }
 
@@ -3228,7 +3228,7 @@ void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDea
         GetMainFrame().SendMessage(WM_USER_CHANGEVIEW, TRUE, (LONG)this);
         // process workbench if necessary
         if (pDoc->WorkbenchProcess()) {
-            RefreshGraphs(TRUE, TRUE);
+            RedrawGraphs(TRUE, TRUE);
         };
         // redraw statusbar if data is present
         if (pDoc->GetDataSize() != 0) {
@@ -4807,7 +4807,7 @@ void CSaView::ToggleSegmentSelection(CSegment * pSegment, int index) {
     DWORD dwStop = pSegment->GetStop(index);
     ChangeAnnotationSelection(pSegment, index, dwStart, dwStop);
 	// refresh the graphs between cursors
-    RefreshGraphs(FALSE); 
+    RedrawGraphs(FALSE); 
 }
 
 /***************************************************************************/
@@ -4836,7 +4836,7 @@ void CSaView::OnImportSAB() {
 	pDoc->ImportSAB( *this, szPath, pMainFrame->GetAudioSyncAlgorithm());
 
 	// refresh the graphs between cursors
-    RefreshGraphs(TRUE); 
+    RedrawGraphs(TRUE); 
 }
 
 void CSaView::OnUpdateFilenew(CCmdUI * pCmdUI) {
@@ -5127,7 +5127,7 @@ void CSaView::OnGraphsParameters() {
 
     // process workbench if necessary
     if ((bProcessChange) && (pDoc->WorkbenchProcess(TRUE, TRUE))) {
-        RefreshGraphs(TRUE, TRUE);
+        RedrawGraphs(TRUE, TRUE);
     }
 }
 
@@ -5816,14 +5816,21 @@ void CSaView::ChangeLayout(UINT nNewLayout) {
 /***************************************************************************/
 // CSaView::RefreshGraphs Refresh (redraw) the entire or partial graph window
 //**************************************************************************/
-void CSaView::RefreshGraphs(BOOL bEntire, BOOL bLegend, BOOL bLayout) {
+void CSaView::ResizeGraphs(BOOL bEntire, BOOL bLegend) {
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-            if (bLayout) {
-                m_apGraphs[nLoop]->ResizeGraph(bEntire, bLegend);
-            } else {
-                m_apGraphs[nLoop]->RedrawGraph(bEntire, bLegend);
-            }
+        if (m_apGraphs[nLoop]!=NULL) {
+            m_apGraphs[nLoop]->ResizeGraph(bEntire, bLegend);
+        }
+    }
+}
+
+/***************************************************************************/
+// CSaView::RefreshGraphs Refresh (redraw) the entire or partial graph window
+//**************************************************************************/
+void CSaView::RedrawGraphs(BOOL bEntire, BOOL bLegend) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        if (m_apGraphs[nLoop]!=NULL) {
+	        m_apGraphs[nLoop]->RedrawGraph(bEntire, bLegend);
         }
     }
 }
@@ -7689,7 +7696,7 @@ void CSaView::OnEditCut() {
         WAVETIME length = pDoc->toTime(dwSectionLength, true);
         if (pDoc->PutWaveToClipboard(start, length, TRUE)) {
             pDoc->InvalidateAllProcesses();
-            RefreshGraphs();
+            RedrawGraphs();
             m_pFocusedGraph->GetPlot()->ClearHighLightArea();
         }
     }
@@ -7712,7 +7719,7 @@ void CSaView::OnEditPaste() {
                     CSaString data(lpClipData);
                     m_advancedSelection.SetSelectedAnnotationString(this, data, FALSE, TRUE);
                     GlobalUnlock(hClipData);
-                    RefreshGraphs();
+                    RedrawGraphs();
                 }
             }
             CloseClipboard();
@@ -7729,7 +7736,7 @@ void CSaView::OnEditPaste() {
                     if (pDoc->PasteClipboardToWave(hGlobal, startTime)) {
                         // get wave from the clipboard
                         pDoc->InvalidateAllProcesses();
-                        RefreshGraphs();
+                        RedrawGraphs();
                         m_pFocusedGraph->GetPlot()->ClearHighLightArea();
                     }
                 }
@@ -7901,7 +7908,7 @@ void CSaView::OnEditUndo() {
         SetStartCursorPosition(pSegment->GetOffset(nIndex));
         SetStopCursorPosition(pSegment->GetStop(nIndex));
     }
-    RefreshGraphs();
+    RedrawGraphs();
 }
 
 /***************************************************************************/
@@ -7916,7 +7923,7 @@ void CSaView::OnUpdateEditUndo(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnEditRedo() {
     ((CSaDoc *)GetDocument())->Redo();
-    RefreshGraphs();
+    RedrawGraphs();
 }
 
 /***************************************************************************/
@@ -8284,7 +8291,7 @@ void CSaView::OnEditAddSyllable() {
             pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
             pSeg->SetSelection(-1);
             m_advancedSelection.SelectFromPosition(this, PHONETIC, dwStart, true);
-            RefreshGraphs(TRUE);
+            RedrawGraphs(TRUE);
         }
     }
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
@@ -8514,7 +8521,7 @@ void CSaView::OnEditAddPhonetic() {
 
         pDoc->SetModifiedFlag(TRUE); // document has been modified
         pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-        RefreshGraphs(TRUE);
+        RedrawGraphs(TRUE);
         pPhonetic->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, PHONETIC, GetStartCursorPosition(), true);
     } else {
@@ -8576,7 +8583,7 @@ void CSaView::OnEditAddPhonetic() {
 
                 pDoc->SetModifiedFlag(TRUE); // document has been modified
                 pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-                RefreshGraphs(TRUE);
+                RedrawGraphs(TRUE);
                 pPhonetic->SetSelection(-1);
                 m_advancedSelection.SelectFromPosition(this, PHONETIC, dwStart, true);
             }
@@ -8709,7 +8716,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
         pDoc->SetModifiedFlag(TRUE);
 		// transcription data has been modified
         pDoc->SetTransModifiedFlag(TRUE);   
-        RefreshGraphs(TRUE);
+        RedrawGraphs(TRUE);
         pSeg->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), true);
     } else {
@@ -8760,7 +8767,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
                 pSeg->Insert(nInsertAt, szString, true, dwStart,dwStop - dwStart);
                 pDoc->SetModifiedFlag(TRUE); // document has been modified
                 pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-                RefreshGraphs(TRUE);
+                RedrawGraphs(TRUE);
                 pSeg->SetSelection(-1);
                 m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), dwStart, true);
             }
@@ -8934,7 +8941,7 @@ void CSaView::OnEditAddAutoPhraseL2() {
         pSeg->Insert(nInsertAt, szString, false, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
         pDoc->SetModifiedFlag(TRUE); // document has been modified
         pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-        RefreshGraphs(TRUE);
+        RedrawGraphs(TRUE);
         pSeg->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), true);
     } else { // Can we insert after selected segment?
@@ -8982,7 +8989,7 @@ void CSaView::OnEditAddAutoPhraseL2() {
                 pSeg->Insert(nInsertAt, szString, true, dwStart,dwStop - dwStart);
                 pDoc->SetModifiedFlag(TRUE); // document has been modified
                 pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-                RefreshGraphs(TRUE);
+                RedrawGraphs(TRUE);
                 pSeg->SetSelection(-1);
                 m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), dwStart, true);
             }
@@ -9051,7 +9058,7 @@ void CSaView::OnEditAddMarkup() {
     CSaDoc * pDoc = GetDocument();  // get pointer to document
     pDoc->SetModifiedFlag(TRUE); // document has been modified
     pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-    RefreshGraphs(TRUE);
+    RedrawGraphs(TRUE);
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetAnnotation(PHONETIC);
     pPhonetic->SetSelection(-1);
     m_advancedSelection.SelectFromPosition(this, PHONETIC, start, true);
@@ -9093,7 +9100,7 @@ void CSaView::EditAddGloss(bool bDelimiter) {
         pGloss->Add(pDoc, this, dwStart, szString, bDelimiter, true);  
         pReference->Add(pDoc, this, dwStart, szEmpty, bDelimiter, true);
         pGlossNat->Add(pDoc, this, dwStart, szEmpty, bDelimiter, true);
-		RefreshGraphs(FALSE);
+		RedrawGraphs(FALSE);
     } else {
         //SDM 1.5Test8.2
         DWORD dwStart = GetStartCursorPosition();
@@ -9121,7 +9128,7 @@ void CSaView::EditAddGloss(bool bDelimiter) {
             pGloss->Add(pDoc, this, dwStart, szString, bDelimiter, false);
             pReference->Add(pDoc, this, dwStart, szEmpty, bDelimiter, true);
             pGlossNat->Add(pDoc, this, dwStart, szEmpty, bDelimiter, true);
-			RefreshGraphs(FALSE);
+			RedrawGraphs(FALSE);
 
             int i = GetGraphIndexForIDD(IDD_RAWDATA);
             if ((i != -1) && (m_apGraphs[i])) {
@@ -9344,7 +9351,7 @@ void CSaView::EditSplit() {
     SetCursorPosition( START_CURSOR,newStart);
     SetCursorPosition( STOP_CURSOR,newStop);
 	bEditBoundaries = false;
-    RefreshGraphs(TRUE,FALSE);
+    RedrawGraphs(TRUE,FALSE);
 }
 
 /**
@@ -9399,7 +9406,7 @@ DWORD CSaView::EditSplitAt( DWORD position) {
     SetCursorPosition( START_CURSOR,newStart);
     SetCursorPosition( STOP_CURSOR,newStop);
 	bEditBoundaries = false;
-    RefreshGraphs(TRUE,FALSE);
+    RedrawGraphs(TRUE,FALSE);
 	return newStart;
 }
 
@@ -9446,7 +9453,7 @@ void CSaView::EditMerge() {
     SetCursorPosition(START_CURSOR,newStart);
     SetCursorPosition(STOP_CURSOR,newStop);
 	bEditBoundaries = false;
-    RefreshGraphs(TRUE,FALSE);
+    RedrawGraphs(TRUE,FALSE);
 }
 
 /**
@@ -9501,7 +9508,7 @@ void CSaView::EditMergeAt(DWORD position) {
     SetCursorPosition(START_CURSOR,newStart);
     SetCursorPosition(STOP_CURSOR,newStop);
 	bEditBoundaries = false;
-    RefreshGraphs(TRUE,FALSE);
+    RedrawGraphs(TRUE,FALSE);
 }
 
 /**
@@ -9554,7 +9561,7 @@ void CSaView::EditMoveLeft() {
     SetCursorPosition(START_CURSOR,start);
     SetCursorPosition(STOP_CURSOR,stop);
 	bEditBoundaries = false;
-    RefreshGraphs(TRUE,FALSE);
+    RedrawGraphs(TRUE,FALSE);
 }
 
 /**
@@ -9614,7 +9621,7 @@ void CSaView::EditMoveLeftAt( CSaDoc * pDoc, DWORD position) {
     SetCursorPosition(START_CURSOR,start);
     SetCursorPosition(STOP_CURSOR,stop);
 	bEditBoundaries = false;
-    RefreshGraphs(TRUE,FALSE);
+    RedrawGraphs(TRUE,FALSE);
 }
 
 /**
@@ -9717,7 +9724,7 @@ void CSaView::EditMoveRight() {
 	SetCursorPosition(START_CURSOR,start);
 	SetCursorPosition(STOP_CURSOR,stop);
 	bEditBoundaries = false;
-	RefreshGraphs(TRUE,FALSE);
+	RedrawGraphs(TRUE,FALSE);
 }
 
 /**
@@ -9754,7 +9761,7 @@ void CSaView::EditMoveRightNext() {
 	SetCursorPosition(START_CURSOR,start);
 	SetCursorPosition(STOP_CURSOR,stop);
 	bEditBoundaries = false;
-	RefreshGraphs(TRUE,FALSE);
+	RedrawGraphs(TRUE,FALSE);
 }
 
 /**
@@ -9807,7 +9814,7 @@ void CSaView::OnMoveRightHere() {
 	SetCursorPosition(START_CURSOR,start);
 	SetCursorPosition(STOP_CURSOR,stop);
 	bEditBoundaries = false;
-	RefreshGraphs(TRUE,FALSE);
+	RedrawGraphs(TRUE,FALSE);
 }
 
 /***************************************************************************/
@@ -10624,7 +10631,7 @@ void CSaView::OnSpectroFormants() {
         pDoc->RestartAllProcesses();
     }
 
-    RefreshGraphs();
+    RedrawGraphs();
 }
 
 void CSaView::OnUpdateSpectroFormants(CCmdUI * pCmdUI) {
@@ -10770,7 +10777,7 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void) {
         }
     }
 
-    RefreshGraphs(TRUE);
+    RedrawGraphs(TRUE);
 
     EndWaitCursor();
 }
@@ -11076,7 +11083,7 @@ void CSaView::OnToolsAdjustSilence() {
         // restore the cursors
         SetStartCursorPosition(oldStart);
         SetStopCursorPosition(oldStop);
-        RefreshGraphs(TRUE);
+        RedrawGraphs(TRUE);
     }
 }
 
@@ -11087,7 +11094,7 @@ void CSaView::OnUpdateToolsAdjustSilence(CCmdUI * pCmdUI) {
 void CSaView::OnToolsAdjustZero() {
 	CSaDoc * pDoc = GetDocument();
 	pDoc->AdjustZero();
-	RefreshGraphs();
+	RedrawGraphs();
 }
 
 void CSaView::OnUpdateToolsAdjustZero(CCmdUI * pCmdUI) {
@@ -11098,7 +11105,7 @@ void CSaView::OnUpdateToolsAdjustZero(CCmdUI * pCmdUI) {
 void CSaView::OnToolsAdjustNormalize() {
 	CSaDoc * pDoc = GetDocument();
 	pDoc->AdjustNormalize();
-    RefreshGraphs();
+    RedrawGraphs();
 }
 
 void CSaView::OnUpdateToolsAdjustNormalize(CCmdUI * pCmdUI) {
@@ -11109,7 +11116,7 @@ void CSaView::OnUpdateToolsAdjustNormalize(CCmdUI * pCmdUI) {
 void CSaView::OnToolsAdjustInvert() {
 	CSaDoc * pDoc = GetDocument();
 	pDoc->AdjustInvert();
-    RefreshGraphs();
+    RedrawGraphs();
 }
 
 void CSaView::OnUpdateToolsAdjustInvert(CCmdUI * pCmdUI) {
@@ -11274,7 +11281,7 @@ void CSaView::OnAddReferenceData() {
         pGraph->ShowAnnotation(REFERENCE, TRUE, TRUE);
     }
 
-    RefreshGraphs(TRUE);
+    RedrawGraphs(TRUE);
 }
 
 void CSaView::OnUpdateAddReferenceData(CCmdUI * pCmdUI) {
@@ -11763,7 +11770,7 @@ void CSaView::OnGenerateCVData() {
         m_apGraphs[i]->ShowAnnotation( TONE, (!m_apGraphs[i]->HaveAnnotation(TONE)), TRUE);
     }
 
-    RefreshGraphs(TRUE);
+    RedrawGraphs(TRUE);
 }
 
 void CSaView::OnExportCVData() {

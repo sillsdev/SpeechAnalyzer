@@ -519,7 +519,7 @@ BOOL CSegmentSelection::SetSelectedAnnotationString( CSaView * pView, CSaString 
         // Add refreshes graphs, set modified flag, & check point
         if (pSegment->GetMasterIndex() != -1) {
             ((CDependentSegment *) pSegment)->Add(pDoc, pView, m_dwStart, szString, false, bCheck);
-			pView->RefreshGraphs(FALSE);
+			pView->RedrawGraphs(FALSE);
         } else {
             int nInsertAt = pSegment->CheckPosition(pDoc, m_dwStart, m_dwStop, CSegment::MODE_ADD);
             if (nInsertAt != -1) {
