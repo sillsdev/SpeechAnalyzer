@@ -830,7 +830,8 @@ int CGraphConfigurationVector::find(const CGraphConfiguration & data) const {
 }
 
 CGraphConfigurationVector & GetGraphConfigurationVector(int nTaskType) {
-    CSaString szPath(AfxGetApp()->GetProfileString(_T(""), _T("DataLocation")));
+    
+	CSaString szPath(AfxGetApp()->GetProfileString(_T(""), _T("DataLocation")));
 
     switch (nTaskType) {
     case 0: { // speech

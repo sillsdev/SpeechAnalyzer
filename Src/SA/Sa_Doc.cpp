@@ -816,9 +816,12 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
     // at this point we have a wave filename.
 
     // first check the file size
-    HANDLE hFile = CreateFile(wave_file_name.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    DWORD dwSize = GetFileSize(hFile, NULL);
-    CloseHandle(hFile);
+	DWORD dwSize = 0;
+    HANDLE hFile = CreateFile( wave_file_name.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile!=NULL) {
+		dwSize = GetFileSize(hFile, NULL);
+		CloseHandle(hFile);
+	}
 
     if ((dwSize==0) || (dwSize == INVALID_FILE_SIZE)) {
         ErrorMessage(IDS_ERROR_FILEOPEN, wave_file_name.c_str());
@@ -7231,7 +7234,7 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.134");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.135");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);

@@ -1810,9 +1810,9 @@ void CMainFrame::CreateFindOrReplaceDlg() {
         sToFind = pView->GetSelectedAnnotationString();
         annotWndIndex = pView->FindSelectedAnnotationIndex();
     }
-    CSaString sFields;
-    sFields.LoadString(IDS_FINDFIELDS);
-    m_pDlgFind = new CDlgFind((CWnd *)this,sFields, sToFind, m_bFindOnly,CSaString(_T("")),annotWndIndex,this);
+    CSaString fields;
+    fields.LoadString(IDS_FINDFIELDS);
+    m_pDlgFind = new CDlgFind((CWnd *)this,fields, sToFind, m_bFindOnly,CSaString(_T("")),annotWndIndex,this);
     if (!m_pDlgFind->Created()) {
         delete m_pDlgFind;
         m_pDlgFind = NULL;
@@ -1827,6 +1827,7 @@ void CMainFrame::CreateFindOrReplaceDlg() {
 // Brings up the find or replace dialog, creating it if neccessary.
 /***************************************************************************/
 void CMainFrame::MaybeCreateFindOrReplaceDlg(bool bWantFindOnly) {
+
     if (m_pDlgFind!=NULL) {
         delete m_pDlgFind;
         m_pDlgFind = NULL;

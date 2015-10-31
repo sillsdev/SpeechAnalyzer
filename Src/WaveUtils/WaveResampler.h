@@ -58,12 +58,12 @@ private:
                                double *& coeffs,
                                size_t & coeffsLen);
     void Func(size_t bufferLen,
-              double * buffer,
+			  double * out,
               size_t coeffsLen,
               double * coeffs,
               size_t upSmpFactor,
               size_t dwnSmpFactor,
-              vector<double> & datal,
+			  double * in,
               IProgressUpdate & progressUpdater);
 };
 

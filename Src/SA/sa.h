@@ -100,7 +100,8 @@ public:
     CSaDoc * OpenWavFileAsNew(LPCTSTR szTempPath);
 	// open a blank view to do something on.
     CDocument * OpenBlankView(bool bWithGraphs);
-    CSaString GetDefaultDir(CSaString * pFilename = NULL) const;
+    CSaString GetDefaultDir() const;
+    CSaString GetSamplesDir() const;
 
     static BOOL CSaApp::m_bUseUnicodeEncoding;
 
@@ -139,9 +140,11 @@ public:
     UINT GetOpenAsID();
 	// set m_OpenAsID
     void SetOpenAsID(UINT OpenAsID);
+	bool GetOpenMore();
+	void SetOpenMore(bool val);
     void SetLastClipboardPath(LPCTSTR szPath);
     LPCTSTR GetLastClipboardPath();
-    void FileOpen();
+    void FileOpen( UINT openAsID);
     CString GetMRUFilePath(int i) const;
 
     // methods for saving the settings and window state.
@@ -251,6 +254,7 @@ private:
     BOOL m_bWbOpenOnExit;					// TRUE, if workbench was open on exit
     CSaString m_szCallingApp;				// title bar prefix of calling app
     UINT m_OpenAsID;						// ID (ID_FILE_OPEN, ID_FILE_OPENAS_PHONETICANALYSIS, etc.) selected from File-Open or File-OpenAs menus.
+	bool m_bOpenMore;						// true if user selected 'more files' from start menu.  false indicates they selected 'sample files'
     CSaString m_szLastClipboardPath;		// Path to last file sent to the clipboard
     CSaString m_szLastVersion;				// Last version SA was opened in
     BOOL m_bNewUser;						// Last version SA was opened in

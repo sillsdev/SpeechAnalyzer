@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,134
+ FILEVERSION 3,1,0,135
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.134"
+            VALUE "FileVersion", "v3.1.0.135"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -4992,7 +4992,7 @@ END
 STRINGTABLE
 BEGIN
     ID_EDIT_EQUALIZELENGTH  "Equalize the scaling of the different document views\nEqualize Length"
-    IDS_FINDFIELDS          "Phonetic\nTone\nPhonemic\nOrthographic\nGloss\nReference\nPhrase L1\nPhrase L2\nPhrase L3\nPhrase L4"
+    IDS_FINDFIELDS          "Phonetic\nTone\nPhonemic\nOrthographic\nGloss English\nGloss National\nReference\nPhrase L1\nPhrase L2\nPhrase L3\nPhrase L4"
 END
 
 STRINGTABLE

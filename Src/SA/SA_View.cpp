@@ -4921,6 +4921,7 @@ void CSaView::CreateOpenAsGraphs(UINT openAsID) {
 
 	// Restore default file open mode.
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	pApp->SetOpenMore(true);
     pApp->SetOpenAsID(ID_FILE_OPEN); 
     // retile the graphs
 	// retile graphs

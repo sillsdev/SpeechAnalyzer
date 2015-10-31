@@ -71,6 +71,7 @@ void CDlgStartMode::DoDataExchange(CDataExchange * pDX) {
 //****************************************************************
 //****************************************************************
 BOOL CDlgStartMode::OnInitDialog() {
+
     CDialog::OnInitDialog();
     // center dialog on framewindow
     CenterWindow();
@@ -80,6 +81,7 @@ BOOL CDlgStartMode::OnInitDialog() {
     // the list box so the first item is current.
     //**************************************************
     m_lbRecentFiles.AddString(_T("More Files..."));
+    m_lbRecentFiles.AddString(_T("Samples..."));
     m_lbRecentFiles.SetCurSel(0);
 
     //**************************************************
@@ -88,11 +90,12 @@ BOOL CDlgStartMode::OnInitDialog() {
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     CSaString workDir;
-    int     dx=0;
-    CDC  *  pDC = m_lbRecentFiles.GetDC();
+    int dx=0;
+    CDC * pDC = m_lbRecentFiles.GetDC();
     int nOldMapMode = pDC->SetMapMode(MM_TEXT);
     CFont * pOldFont = pDC->SelectObject(m_lbRecentFiles.GetFont());
-    TEXTMETRIC tm;
+    
+	TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
     // get coordinates of static text control
     CRect rWnd;
@@ -155,7 +158,7 @@ BOOL CDlgStartMode::OnInitDialog() {
     // User Specified, then change the data mode to
     // Phonetic.
     //**************************************************
-    if (m_nDataMode == 0 && !bEnableUserSpec) {
+    if ((m_nDataMode == 0) && (!bEnableUserSpec)) {
         m_nDataMode = 1;
         UpdateData(FALSE);
     }
@@ -216,6 +219,7 @@ bool CDlgStartMode::Cleanup() {
 // DDO - 08/08/00
 //****************************************************************
 void CDlgStartMode::OnDblclkRecentlist() {
+
     UINT nOpenID = ID_FILE_OPEN;
     int nIndex = m_lbRecentFiles.GetCurSel();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
@@ -236,23 +240,17 @@ void CDlgStartMode::OnDblclkRecentlist() {
         break;
     }
 
+        CSaApp * pApp = ((CSaApp *)AfxGetApp());
     if (nIndex == 0) {
+		pApp->SetOpenMore(true);
+        pMainWnd->PostMessage(WM_COMMAND, nOpenID, 0L);
+	} else if (nIndex == 1) {
+		pApp->SetOpenMore(false);
         pMainWnd->PostMessage(WM_COMMAND, nOpenID, 0L);
     } else {
-        CSaApp * pApp = ((CSaApp *)AfxGetApp());
-
+		pApp->SetOpenMore(false);
         pApp->SetOpenAsID(nOpenID);
-
-        CSaString szFile;
-        CFileStatus status;
-        for (int i = 0; i < nIndex; i++) {
-            szFile = pApp->GetMRUFilePath(i);
-            if (!CFile::GetStatus(szFile, status)) {
-                nIndex++;
-            }
-        }
-
-        pMainWnd->PostMessage(WM_COMMAND, ID_FILE_MRU_FIRST + nIndex - 1, 0L);
+        pMainWnd->PostMessage(WM_COMMAND, ID_FILE_MRU_FIRST + nIndex - 2, 0L);
     }
 
     CDialog::OnOK();
@@ -271,10 +269,10 @@ void CDlgStartMode::OnOk() {
 void CDlgStartMode::OnPlay() {
 
 	int nIndex = m_lbRecentFiles.GetCurSel();
-    if (nIndex > 0) {
+    if (nIndex > 1) {
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         CSaString file;
-        file = pApp->GetMRUFilePath(nIndex - 1);
+        file = pApp->GetMRUFilePath(nIndex - 2);
         PlaySound(LPCTSTR(file), 0, SND_ASYNC | SND_NODEFAULT | SND_FILENAME);
     }
 }
@@ -290,6 +288,7 @@ void CDlgStartMode::OnStop() {
 // OnSelchangeRecentlist  Update play selected file button
 //****************************************************************
 void CDlgStartMode::OnSelchangeRecentlist() {
+
     int nIndex = m_lbRecentFiles.GetCurSel();
 
     OnStop();
@@ -301,13 +300,13 @@ void CDlgStartMode::OnSelchangeRecentlist() {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaString file;
-    if (nIndex > 0) {
-        file = pApp->GetMRUFilePath(nIndex - 1);
+    if (nIndex > 1) {
+        file = pApp->GetMRUFilePath(nIndex - 2);
     }
 
     CFileStatus status;
 
-    if ((nIndex > 0) && CFile::GetStatus(LPCTSTR(file), status)) {
+    if ((nIndex > 1) && CFile::GetStatus(LPCTSTR(file), status)) {
         pWnd->EnableWindow();
     } else {
         pWnd->EnableWindow(FALSE);

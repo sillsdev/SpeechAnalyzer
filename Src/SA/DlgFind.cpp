@@ -316,28 +316,28 @@ BOOL CDlgFind::OnInitDialog() {
     CenterWindow();
 
     // setup the annotation combo box (m_annotSetId)
-    CString sRemaining(m_sFieldsToSearch);
-    while (!sRemaining.IsEmpty()) {
-        int idxNL = sRemaining.Find('\n');
-        CString sTmp = sRemaining.Left((idxNL<0) ? sRemaining.GetLength() : idxNL);
+    CString tmp(m_sFieldsToSearch);
+    while (!tmp.IsEmpty()) {
+        int idxNL = tmp.Find('\n');
+        CString sTmp = tmp.Left((idxNL<0) ? tmp.GetLength() : idxNL);
         m_annotSetId.AddString(sTmp);
         if (idxNL < 0) {
             break;
         }
-        sRemaining = sRemaining.Mid(idxNL+1);
+        tmp = tmp.Mid(idxNL+1);
     }
     m_annotSetId.SetCurSel(m_annotWndIndex);
 
     // setup the annotation combo box (m_annotSetId2)
-    sRemaining = m_sFieldsToSearch;
-    while (!sRemaining.IsEmpty()) {
-        int idxNL = sRemaining.Find('\n');
-        CString sTmp = sRemaining.Left((idxNL<0) ? sRemaining.GetLength() : idxNL);
+    tmp = m_sFieldsToSearch;
+    while (!tmp.IsEmpty()) {
+        int idxNL = tmp.Find('\n');
+        CString sTmp = tmp.Left((idxNL<0) ? tmp.GetLength() : idxNL);
         m_annotSetID2.AddString(sTmp);
         if (idxNL < 0) {
             break;
         }
-        sRemaining = sRemaining.Mid(idxNL+1);
+        tmp = tmp.Mid(idxNL+1);
     }
     m_annotSetID2.SetCurSel(m_annotWndIndex);
 

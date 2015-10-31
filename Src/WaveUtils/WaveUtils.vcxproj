@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="array_ptr.h" />
     <ClInclude Include="FmtParm.h" />
+    <ClInclude Include="SimpleFile.h" />
     <ClInclude Include="WaveError.h" />
     <ClInclude Include="WaveResampler.h" />
     <ClInclude Include="WaveUtils.h" />
@@ -20,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FmtParm.cpp" />
+    <ClCompile Include="SimpleFile.cpp" />
     <ClCompile Include="WaveError.cpp" />
     <ClCompile Include="WaveReader.cpp" />
     <ClCompile Include="WaveResampler.cpp" />

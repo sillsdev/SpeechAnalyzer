@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA"
-#define MyAppVersion "3.1.0.134"
+#define MyAppVersion "3.1.0.135"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -297,19 +297,57 @@ end;
 
 
 function InitializeSetup(): Boolean;
+Var
+  msg : String;
+  version : String;
+  intro : String;
+  body : String;
+  bad : Boolean;
+
 begin
+  bad := false;
+  result := true;
+  if not IsDotNetDetected('v2.0', 0) then begin
+    version := '.NET Framework 2.0';
+    bad := true;
+  end else begin
     if not IsDotNetDetected('v2.0', 0) then begin
-        MsgBox('SpeechAnalyzer requires Microsoft .NET Framework 2.0.'#13#13
-            'Please use Windows Update to install this version,'#13
-            'and then re-run the SpeechAnalyzer setup program.', mbInformation, MB_OK);
-        result := false;
-    end else begin
-      if not IsDotNetDetected('v3.5', 0) then begin
-          MsgBox('SpeechAnalyzer requires Microsoft .NET Framework 3.5.'#13#13
-              'Please use Windows Update to install this version,'#13
-              'and then re-run the SpeechAnalyzer setup program.', mbInformation, MB_OK);
-          result := false;
-      end else
-          result := true;
+      version := '.NET Framework 3.5';
+      bad := true;
     end;
+  end;
+
+  if (bad) then begin
+    intro := 'SpeechAnalyzer requires Microsoft '+version+'.'#13#13
+             'Please use '#34'Windows Features'#34' to install this version, and'#13
+             'then re-run the SpeechAnalyzer setup program.'#13#13
+             'How to install '+version+':'#13;
+
+    if (GetWindowsVersion >= $06020000) then begin
+      // starting with win8, the procedure is different
+      body := '1) Search for '#39'Windows Features'#39' using the Start menu.'#13
+              '2) Click on the text: '#39'Turn Windows Features On or Off'#39'.'#13
+              '3) In the '#39'Windows Features'#39' dialog box, select:'#13
+              '       '#39'.NET Framework 3.5 (includes .NET 2.0 and 3.0)'#39'.'#13
+              '4) When you click OK, then it will take a few seconds to enable'#13
+              '   the feature.'#13
+              '   ** You may get a message that Windows wants to '#39'download an'#13
+              '   update for this feature'#39'.  If you don'#39't have Internet access,'#13
+              '   then click on '#34'Don'#39't connect to Windows Update'#34'.'#13;
+    end else begin;
+      // win 7 and early procedure
+      body := '1) Search for '#39'Windows Features'#39' using the Start menu.'#13
+              '2) In the '#39'Windows Features'#39' dialog box, select:'#13
+              '       '#39'.NET Framework 3.5 (includes .NET 2.0 and 3.0)'#39'.'#13
+              '3) When you click OK, then it will take a few seconds to enable'#13
+              '   the feature.'#13
+              '   ** You may get a message that Windows wants to '#39'download an'#13
+              '   update for this feature'#39'.  If you don'#39't have Internet access,'#13
+              '   then click on '#34'Don'#39't connect to Windows Update'#34'.'#13;
+    end;
+    msg := intro + body;
+    MsgBox(msg,mbInformation, MB_OK);
+    result := false;
+  end;
+
 end;

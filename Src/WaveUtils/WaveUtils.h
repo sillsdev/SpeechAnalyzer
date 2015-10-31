@@ -5,6 +5,7 @@
 #include "WaveError.h"
 #include "WaveResampler.h"
 #include "FmtParm.h"
+#include "array_ptr.h"
 
 #include <stdexcept>
 

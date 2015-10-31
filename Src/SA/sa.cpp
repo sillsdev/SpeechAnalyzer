@@ -217,6 +217,7 @@ m_hLocalizedResources(NULL) {
     m_bWbOpenOnExit = FALSE;
     m_bNewUser = FALSE;
     m_OpenAsID = ID_FILE_OPEN;
+	m_bOpenMore = true;
 
     InitSingleton();
 }
@@ -1294,6 +1295,7 @@ CDocument * CSaApp::OpenBlankView(bool bWithGraphs) {
 
     CDocument * pDoc = NULL;
     if (bWithGraphs) {
+		SetOpenMore(false);
         SetOpenAsID(ID_FILE_OPENAS_NEW);
         posTemplate = GetFirstDocTemplatePosition();
         CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
@@ -1408,9 +1410,12 @@ void CSaApp::OnFileRecord() {
 //   RLJ 05/31/2000
 //   MOST OF THIS CODE WAS COPIED FROM OnFileRecord
 /***************************************************************************/
-void CSaApp::FileOpen() {
+void CSaApp::FileOpen( UINT openAsID) {
 
-	int id = GetOpenAsID();
+	// cache values, initial update will overwrite them...
+	m_OpenAsID = openAsID;
+	bool openMore = m_bOpenMore;
+
 	// uses auto naming
 	CDocument * pDoc = OpenBlankView(true);
 	// this allows screen to be drawn
@@ -1419,13 +1424,20 @@ void CSaApp::FileOpen() {
 	// give editor a chance to close
 	pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
 
-	SetOpenAsID(id);
+	// restore
+	SetOpenMore(openMore);
+	SetOpenAsID(openAsID);
 
 	CString extension = _T("wav");
 	CString filename = _T("*.wav");
 	CString filter = _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Files (*.saxml) |*.saxml|Speech Analyzer Workbench Files (*.wb) |*.wb|ELAN Files (*.eaf)|*.eaf||");
 	CDlgFileOpen dlg( extension, filename, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, filter);
-	CString defaultDir = GetDefaultDir();
+	CString defaultDir;
+	if (m_bOpenMore) {
+		defaultDir = GetDefaultDir();
+	} else {
+		defaultDir = GetSamplesDir();
+	}
 	dlg.m_ofn.lpstrInitialDir = defaultDir;
 	if (dlg.DoModal() == IDOK) {
 		OpenDocumentFile(dlg.GetPathName());
@@ -1436,20 +1448,8 @@ void CSaApp::FileOpen() {
 	}
 }
 
-CSaString CSaApp::GetDefaultDir(CSaString * pFilename) const {
+CSaString CSaApp::GetDefaultDir() const {
     
-	if (pFilename) {
-        CSaString szPath = *pFilename;
-        int nFind = szPath.ReverseFind('\\');
-        if (nFind != -1) {
-            szPath = szPath.Left(nFind);
-            CFileStatus status;
-            if ((CFile::GetStatus(szPath, status)) && (status.m_attribute & CFile::directory)) {
-                return szPath + "\\";
-            }
-        }
-    }
-
     // prompt the user (with all document templates)
     CSaString workingDir;
     for (int i=0; i < _AFX_MRU_MAX_COUNT; i++) {
@@ -1485,12 +1485,29 @@ CSaString CSaApp::GetDefaultDir(CSaString * pFilename) const {
     return workingDir;
 }
 
+// return the samples directory location, or if it doesn't exist, fall back to the 
+// default location
+CSaString CSaApp::GetSamplesDir() const {
+
+	// get the default sample directory
+	// get the data location and create it if it doesn't exist
+	// Set the DataLocation path and write it to the registry
+	CString szPath = GetShellFolderPath(CSIDL_PERSONAL);
+	if (szPath.Right(1) != "\\") {
+		szPath += _T("\\");
+	}
+	szPath += _T("Speech Analyzer\\Samples");
+	if (!FileUtils::FolderExists(szPath)) {
+		szPath = GetDefaultDir();
+	}
+	return szPath;
+}
+
 /***************************************************************************/
 // CSaApp::OnFileOpen Opens an existing wave file
 /***************************************************************************/
 void CSaApp::OnFileOpen() {
-    SetOpenAsID(ID_FILE_OPEN);
-    FileOpen();
+    FileOpen(ID_FILE_OPEN);
 }
 
 /***************************************************************************/
@@ -1503,16 +1520,14 @@ void CSaApp::OnFileOpenSpecial() {
 // CSaApp::OnFileOpenPA Opens an existing wave file for Phonetic Analysis
 /***************************************************************************/
 void CSaApp::OnFileOpenPA() {
-    SetOpenAsID(ID_FILE_OPENAS_PHONETICANALYSIS);
-    FileOpen();
+    FileOpen(ID_FILE_OPENAS_PHONETICANALYSIS);
 }
 
 /***************************************************************************/
 // CSaApp::OnFileOpenMA Opens an existing wave file for Music Analysis
 /***************************************************************************/
 void CSaApp::OnFileOpenMA() {
-    SetOpenAsID(ID_FILE_OPENAS_MUSICANALYSIS);
-    FileOpen();
+    FileOpen(ID_FILE_OPENAS_MUSICANALYSIS);
 }
 
 /***************************************************************************/
@@ -2733,6 +2748,12 @@ UINT CSaApp::GetOpenAsID() {
 void CSaApp::SetOpenAsID(UINT value) {
     // set m_OpenAsID
     m_OpenAsID = value;
+}
+bool CSaApp::GetOpenMore() {
+	return m_bOpenMore;
+}
+void CSaApp::SetOpenMore(bool val) {
+	m_bOpenMore = val;
 }
 void CSaApp::SetLastClipboardPath(LPCTSTR value) {
     m_szLastClipboardPath = value;
