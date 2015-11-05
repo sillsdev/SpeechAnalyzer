@@ -30,7 +30,8 @@ CProcessIIRFilter::~CProcessIIRFilter() {
 
 static void StoreWaveData(int nData, int wSmpSize, void * pTargetData) {
     // save data
-    if (wSmpSize == 1) { // 8 bit data
+    if (wSmpSize == 1) { 
+		// 8 bit data
         if (nData > 127) {
             nData = 127;
         }
@@ -39,7 +40,8 @@ static void StoreWaveData(int nData, int wSmpSize, void * pTargetData) {
         }
         BYTE bData = (BYTE)(nData + 128);
         *((BYTE *)pTargetData) = bData;
-    } else {              // 16 bit data
+    } else {
+		// 16 bit data
         if (nData > 32767) {
             nData = 32767;
         }
@@ -51,14 +53,17 @@ static void StoreWaveData(int nData, int wSmpSize, void * pTargetData) {
 }
 
 long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
-    TRACE("IIRFilter::Process %d %d\n",nProgress,nLevel);
+    
+	TRACE("IIRFilter::Process %d %d\n",nProgress,nLevel);
 
     if (IsCanceled()) {
-        return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
+		// process canceled
+        return MAKELONG(PROCESS_CANCELED, nProgress);    
     }
 
     // check if nested workbench processes
-    int nOldLevel = nLevel; // save original level
+	// save original level
+    int nOldLevel = nLevel; 
     IProcess * pLowerProcess = m_pSourceProcess;
     if (pLowerProcess!=NULL) {
         TRACE("process lower\n");
@@ -69,23 +74,29 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     }
 
     if ((nLevel == nOldLevel) && (IsDataReady())) {
-        return MAKELONG(--nLevel, nProgress);    // data is already ready
+		// data is already ready
+        return MAKELONG(--nLevel, nProgress);    //kg
     } else {
         SetDataInvalid();
     }
 
-    if (nLevel < 0) { // memory allocation failed or previous processing error
+    if (nLevel < 0) { 
+		// memory allocation failed or previous processing error
         if ((nLevel == PROCESS_CANCELED)) {
-            CancelProcess();    // set your own cancel flag
+			// set your own cancel flag
+            CancelProcess();    
         }
         return MAKELONG(nLevel, nProgress);
     }
 
     TRACE("start process\n");
     // start process
-    BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) {  // start data processing
-        EndProcess(); // end data processing
+	// wait cursor
+    BeginWaitCursor(); 
+	// start data processing
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) {  
+		// end data processing
+        EndProcess(); 
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -111,8 +122,10 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
     // close the temporary file and read the status
-    CloseTempFile(); // close the file
-    EndProcess((nProgress >= 95)); // end data processing
+	// close the file
+    CloseTempFile();
+	// end data processing
+    EndProcess((nProgress >= 95)); 
     EndWaitCursor();
     SetDataReady();
 
@@ -140,7 +153,8 @@ long CProcessIIRFilter::ProcessForward(ISaDoc * pDoc, IProcess * pLowerProcess, 
     if (pLowerProcess!=NULL) {
         dwDataSize = pLowerProcess->GetProcessedWaveDataSize(pDoc);
     } else {
-        dwDataSize = pDoc->GetDataSize(); // size of raw data
+		// size of raw data
+        dwDataSize = pDoc->GetDataSize(); 
     }
     TRACE("dwDataSize=%d\n",dwDataSize);
 
@@ -151,14 +165,16 @@ long CProcessIIRFilter::ProcessForward(ISaDoc * pDoc, IProcess * pLowerProcess, 
     }
 
     int count = 0;
-    HPSTR pTargetData = NULL;       // pointers to target data
+	// pointers to target data
+    HPSTR pTargetData = NULL;
     m_nMinValue = INT_MAX;
     m_nMaxValue = INT_MIN;
 
     while (dwDataPos < dwDataSize) {
         // set progress bar
         if (IsCanceled()) {
-            return Exit(PROCESS_CANCELED);    // process canceled
+			// process canceled
+            return Exit(PROCESS_CANCELED);    
         }
 
         pTargetData = m_lpBuffer;

@@ -109,8 +109,10 @@ CDlgPrintOptions & CDlgPrintOptions::operator=(const CDlgPrintOptions & from) {
 BOOL CDlgPrintOptions::OnInitDialog() {
     CDialog::OnInitDialog();
 
-    m_bmpPort.AutoLoad(IDC_PORTBMP, this);
-    m_bmpLand.AutoLoad(IDC_LANDBMP, this);
+	m_bmpPort.SubclassDlgItem(IDC_PORTBMP, this);
+    m_bmpLand.SubclassDlgItem(IDC_LANDBMP, this);
+    m_bmpPort.LoadBitmaps(IDB_PORTU);
+    m_bmpLand.LoadBitmaps(IDB_LANDU);
 
     // build and place the row spin control
     //m_SpinRow.Init(IDC_SPIN_ROW, this);

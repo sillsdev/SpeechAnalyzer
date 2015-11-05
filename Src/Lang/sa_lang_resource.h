@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by SA_DEU.rc
+// Used by SA_ENU.rc
 //
 #define IDS_ACTIVEX                     1
 #define IDS_ACTIVEX_PPG                 2
@@ -159,7 +159,6 @@
 #define IDD_HELP_SFM_MARKERS            370
 #define IDB_REVU                        375
 #define IDB_RESULTU                     376
-#define IDB_RAWU                        377
 #define IDB_PORTU                       378
 #define IDB_LANDU                       379
 #define IDB_EQU                         380
@@ -167,6 +166,10 @@
 #define IDB_ECHOU                       382
 #define IDB_HPU                         383
 #define IDB_LPU                         384
+#define IDB_RAWU                        389
+#define IDB_PLAINU                      391
+#define IDB_GENERATOR                   392
+#define IDB_PLAIN                       393
 #define IDC_HIGHPASS                    502
 #define ID_STATUSPANE_EMPTY             700
 #define ID_STATUSPANE_1                 701
@@ -1895,7 +1898,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        388
+#define _APS_NEXT_RESOURCE_VALUE        394
 #define _APS_NEXT_COMMAND_VALUE         33290
 #define _APS_NEXT_CONTROL_VALUE         2125
 #define _APS_NEXT_SYMED_VALUE           105

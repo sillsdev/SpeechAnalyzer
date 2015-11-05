@@ -155,6 +155,7 @@
     <None Include="Res\FACE.BMP" />
     <None Include="Res\FINGERN.CUR" />
     <None Include="Res\FINGERNW.CUR" />
+    <None Include="Res\GENERAL.BMP" />
     <None Include="Res\HANDN.CUR" />
     <None Include="Res\HPU.BMP" />
     <None Include="res\icon1.ico" />
@@ -174,6 +175,7 @@
     <None Include="Res\MedFingerNW.cur" />
     <None Include="Res\MedHandN.cur" />
     <None Include="Res\next.ico" />
+    <None Include="Res\PLAIN.BMP" />
     <None Include="Res\PORTU.BMP" />
     <None Include="Res\prev.ico" />
     <None Include="Res\RAWU.BMP" />

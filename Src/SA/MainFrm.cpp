@@ -353,7 +353,8 @@ CMainFrame::~CMainFrame() {
     
 	// delete modeless dialog and other objects
     if (m_pWorkbenchView) {
-        delete m_pWorkbenchView; // workbench
+		// workbench
+        delete m_pWorkbenchView; 
         m_pWorkbenchView = NULL;
     }
     if (m_pDlgFind) {
@@ -365,7 +366,8 @@ CMainFrame::~CMainFrame() {
         m_pDlgPlayer = NULL;
     }
     if (m_pDlgEditor!=NULL) {
-        delete m_pDlgEditor; // SDM 1.06.5 editor
+		// SDM 1.06.5 editor
+        delete m_pDlgEditor; 
         m_pDlgEditor = NULL;
     }
     if (m_pDefaultViewConfig!=NULL) {

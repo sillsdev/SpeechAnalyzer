@@ -1980,12 +1980,13 @@ BOOL CSaDoc::WriteDataFiles( LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipb
 // CSaDoc::WriteRiff - The fmt and data chunks have to be there already!
 // The temporary wave file data will be copied into the wave chunk.
 /***************************************************************************/
-DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
+DWORD CSaDoc::WriteRiff( LPCTSTR pszPathName) {
 
     CScopedCursor waitCursor(this);
 
     // open file
-    HMMIO hmmioFile; // file handle
+	// file handle
+    HMMIO hmmioFile; 
     hmmioFile = mmioOpen(const_cast<TCHAR *>(pszPathName), NULL, MMIO_READWRITE | MMIO_EXCLUSIVE);
     if (!hmmioFile) {
         // error opening file
@@ -2017,7 +2018,8 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
         mmckinfoParent.dwFlags = MMIO_DIRTY;
 
         // open the temporary wave file
-        CopyProcessTempFile(); // copy the Adjust or Workbench temp file if necessary
+		// copy the Adjust or Workbench temp file if necessary
+        CopyProcessTempFile(); 
 
         CFile file;
         if (!file.Open(m_szRawDataWrk.c_str(), CFile::modeRead)) {
@@ -2074,7 +2076,8 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
         return 0;
     }
 
-    if (!mmioClose(hmmioFile, 0)) { // close file
+	// close file
+    if (!mmioClose(hmmioFile, 0)) { 
         // Set File Length ...
         // mmioAscend() does not set mmioinfo.lDiskOffset correctly under
         // certain conditions, so use the RIFF chunk size + 8 instead
@@ -3710,18 +3713,19 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart) {
     m_pProcessAdjust->Process(this,this);
 
     if (m_nWbProcess>0) {
-        if (pMain->GetWbProcess(m_nWbProcess - 1, 0)) {
-            // get pointer to view
-            POSITION pos = GetFirstViewPosition();
-            CSaView * pView = (CSaView *)GetNextView(pos);
+        // get pointer to view
+        POSITION pos = GetFirstViewPosition();
+        CSaView * pView = (CSaView *)GetNextView(pos);
+		CProcess * pProcess = pMain->GetWbProcess(m_nWbProcess - 1, 0);
+        if (pProcess!=NULL) {
             // in case of cancelled process, restart it
-            pMain->GetWbProcess(m_nWbProcess - 1, 0)->RestartProcess();
+            pProcess->RestartProcess();
             // force process data invalidation
             if (bRestart) {
-                pMain->GetWbProcess(m_nWbProcess - 1, 0)->SetDataInvalid();
+                pProcess->SetDataInvalid();
             }
             // now process
-            short int nResult = LOWORD(pMain->GetWbProcess(m_nWbProcess - 1, 0)->Process(pView, this));
+            short int nResult = LOWORD(pProcess->Process(pView, this));
             bProcess = TRUE;
             // check process result
             if (nResult == PROCESS_CANCELED) {
@@ -3737,12 +3741,14 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart) {
                     bInvalidate = TRUE;
                 } else {
                     if (nResult) {
-                        bInvalidate = TRUE;    // new data processed, reprocess graph data
+						// new data processed, reprocess graph data
+                        bInvalidate = TRUE;    
                     }
                 }
             }
         }
     }
+	
     if (bInvalidate) {
         // invalidate all the graph process data
         InvalidateAllProcesses();
@@ -4430,6 +4436,8 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 // Returns data size in bytes for a single channel
 /***************************************************************************/
 DWORD CSaDoc::GetDataSize() const {
+	//TRACE("numsamples=%lu\n",GetNumSamples());
+	//TRACE("samplesize=%lu\n",m_FmtParm.GetSampleSize());
     return GetNumSamples() * m_FmtParm.GetSampleSize();
 }
 
@@ -5004,6 +5012,12 @@ void CSaDoc::SaveSection( bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESave
 // over the raw waveform temp file to prepare for saving.
 /***************************************************************************/
 void CSaDoc::CopyProcessTempFile() {
+
+	// kg this is a hack.  We currently to do not process the other channels
+	// in multichannel files.  The processed data will contain data for a single channel
+	// only.  if we copy it here over a multi-channel data file, the wave data will be corrupted.
+	if (m_FmtParm.wChannels!=1) return;
+
     // check for Waveform Adjust process
     LPCTSTR pszAdjustTempPath = m_pProcessAdjust->GetProcessFileName();
     BOOL bAdjust = (pszAdjustTempPath[0] != 0) && (pszAdjustTempPath != NULL);
@@ -5021,8 +5035,9 @@ void CSaDoc::CopyProcessTempFile() {
         }
     }
 
-    if (bAdjust || m_nWbProcess) {
-        LPCTSTR pszProcTempPath = (m_nWbProcess ? pszWBTempPath : pszAdjustTempPath); // Workbench temp file takes precedence
+    if ((bAdjust) || (m_nWbProcess)) {
+		// Workbench temp file takes precedence
+        LPCTSTR pszProcTempPath = (m_nWbProcess ? pszWBTempPath : pszAdjustTempPath); 
         try {
             // copy the process temp file as the temporary wave file
             if (!m_szRawDataWrk.empty()) {
@@ -6920,7 +6935,6 @@ bool CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
     }
 
 	// Copy wanted portion of the wave data file
-
 	bool bSameFileName = (originalWave.CompareNoCase(szNewWave)==0);
 	if (bSameFileName) {
 
@@ -6980,10 +6994,13 @@ bool CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
     // Save segment data we will use this documents segments for calculations
 	// save file state for Undo below
     CheckPoint();  
-
+	
+	TRACE("GetDataSize()=%lu\n",GetDataSize());
+	TRACE("sectionLength=%f\n",sectionLength);
     // Set segments to selected wave
     // adjust segments to new file size
     WAVETIME length = toTime(GetDataSize(), true);
+    TRACE("length = %f\n",length);
     segmentOps.ShrinkSegments(sectionStart+sectionLength, length-(sectionStart+sectionLength));
     segmentOps.ShrinkSegments(0, sectionStart);
 
@@ -6994,6 +7011,7 @@ bool CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
 
     // Set document to use new wave data
     m_dwDataSize = ToBytes(sectionLength, true);
+    TRACE("m_dwDataSize = %lu\n",m_dwDataSize);
 
     // Create Wave file
     try {

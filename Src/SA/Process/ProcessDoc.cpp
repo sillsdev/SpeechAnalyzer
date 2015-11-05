@@ -148,14 +148,15 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     }
 
     if ((dwByteOffset >= m_dwBufferOffset) &&
-            ((dwByteOffset+sObjectSize) <= (m_dwBufferOffset + _countof(m_Buffer)))) {
+        ((dwByteOffset+sObjectSize) <= (m_dwBufferOffset + _countof(m_Buffer)))) {
         // this data is actually in buffer
         // return pointer to data
         return &m_Buffer[dwByteOffset - m_dwBufferOffset];
     }
 
     // new data block has to be read
-    m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
+	// given offset is the first sample in data block
+    m_dwBufferOffset = dwByteOffset; 
     if (bReverse) {
         // since we are traversing the file in reverse
         // load buffer so that object is biased to end of buffer

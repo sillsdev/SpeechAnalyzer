@@ -1926,7 +1926,8 @@ void CSaApp::OnWorkbenchOpen() {
             m_pWbDoc = pTemplate->OpenDocumentFile(m_szWbPath);
         }
         if (!m_pWbDoc) {
-            m_szWbPath.Empty(); // was not able to open file
+			// was not able to open file
+            m_szWbPath.Empty(); 
         }
     } else {
         if (!m_szWbPath.IsEmpty()) {
@@ -1934,11 +1935,13 @@ void CSaApp::OnWorkbenchOpen() {
             POSITION pos = m_pWbDoc->GetFirstViewPosition();
             CView * pView = m_pWbDoc->GetNextView(pos);
             CSaString szSavePath = m_szWbPath;
-            pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); // close view
+			// close view
+            pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); 
             m_szWbPath = szSavePath;
             m_pWbDoc = pTemplate->OpenDocumentFile(m_szWbPath);
             if (!m_pWbDoc) {
-                m_szWbPath.Empty(); // was not able to open file
+				// was not able to open file
+                m_szWbPath.Empty(); 
             }
         }
     }

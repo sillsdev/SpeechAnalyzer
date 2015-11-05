@@ -2649,6 +2649,10 @@ BEGIN
     BEGIN
     END
 
+    IDD_WORKBENCH, DIALOG
+    BEGIN
+    END
+
     IDD_WB_PROCESSES, DIALOG
     BEGIN
     END
@@ -2925,7 +2929,7 @@ END
 
 1 TEXTINCLUDE 
 BEGIN
-"sa_lang_resource.h\0"
+    "sa_lang_resource.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -2955,7 +2959,6 @@ IDR_BAR_BASIC           BITMAP                  "RES\\IDR_BAR_BASIC.BMP"
 IDB_KNOBHORIZ           BITMAP                  "RES\\KNOBH.BMP"
 IDB_LED                 BITMAP                  "RES\\LED.BMP"
 IDB_KNOBVERT            BITMAP                  "RES\\KNOBV.BMP"
-IDB_RAWU                BITMAP                  "RES\\RAWU.BMP"
 IDB_RESULTU             BITMAP                  "RES\\RESULTU.BMP"
 IDB_HPU                 BITMAP                  "RES\\HPU.BMP"
 IDB_LPU                 BITMAP                  "RES\\LPU.BMP"
@@ -2970,6 +2973,9 @@ IDB_JAW                 BITMAP                  "RES\\JAW.BMP"
 IDB_TONGUE              BITMAP                  "RES\\TONGUE.BMP"
 IDR_BAR_ADVANCED        BITMAP                  "res\\IDR_BAR_ADVANCED.bmp"
 IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
+IDB_RAWU                BITMAP                  "Res\\RAWU.BMP"
+IDB_GENERATOR           BITMAP                  "Res\\GENERAL.BMP"
+IDB_PLAIN               BITMAP                  "Res\\PLAIN.BMP"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3087,7 +3093,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Record New...\tCtrl+R",      ID_FILE_RECORD
-        MENUITEM "&Öffnen...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Öffnen...\tCtrl+O",          ID_FILE_OPEN
         MENUITEM "Ope&n Startup...",            ID_FILE_OPEN_SPECIAL
         MENUITEM SEPARATOR
         MENUITEM "Print Se&tup...",             ID_FILE_PRINT_SETUP
@@ -3129,7 +3135,7 @@ BEGIN
     BEGIN
         MENUITEM "&Record New...\tCtrl+R",      ID_FILE_RECORD
         MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
-        MENUITEM "&Öffnen...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Öffnen...\tCtrl+O",          ID_FILE_OPEN
         MENUITEM "Open Startup...",             ID_FILE_OPEN_SPECIAL
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
@@ -3264,8 +3270,8 @@ BEGIN
             MENUITEM "F1 v. F2 v. F&3",             IDD_3D
             MENUITEM SEPARATOR
             MENUITEM "Me&logram",                   IDD_MELOGRAM
-            MENUITEM "Tonal &Weighting Chart",       IDD_TWC
-            MENUITEM "&Magnitude",                   IDD_MAGNITUDE
+            MENUITEM "Tonal &Weighting Chart",      IDD_TWC
+            MENUITEM "&Magnitude",                  IDD_MAGNITUDE
             MENUITEM "&Staff",                      IDD_STAFF
             MENUITEM SEPARATOR
             MENUITEM "Pos&ition View",              IDD_RECORDING
@@ -3523,8 +3529,8 @@ BEGIN
             MENUITEM "F1 v. F2 v. F&3",             IDD_3D
             MENUITEM SEPARATOR
             MENUITEM "Me&logram",                   IDD_MELOGRAM
-            MENUITEM "Tonal &Weighting Chart",       IDD_TWC
-            MENUITEM "&Magnitude",                   IDD_MAGNITUDE
+            MENUITEM "Tonal &Weighting Chart",      IDD_TWC
+            MENUITEM "&Magnitude",                  IDD_MAGNITUDE
             MENUITEM "&Staff",                      IDD_STAFF
             MENUITEM SEPARATOR
             MENUITEM "Pos&ition View",              IDD_RECORDING
@@ -3773,7 +3779,7 @@ IDR_WORKBENCH MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Öffnen...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Öffnen...\tCtrl+O",          ID_FILE_OPEN
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM SEPARATOR
@@ -3950,7 +3956,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Record...\tCtrl+R",          ID_FILE_RECORD
-        MENUITEM "&Öffnen...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Öffnen...\tCtrl+O",          ID_FILE_OPEN
         MENUITEM "Ope&n Startup...",            ID_FILE_OPEN_SPECIAL
         MENUITEM SEPARATOR
         MENUITEM "Print Se&tup...",             ID_FILE_PRINT_SETUP
@@ -3978,7 +3984,7 @@ IDR_KLATT MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Öffnen\tCtrl+O",               ID_FILE_OPEN
+        MENUITEM "&Öffnen\tCtrl+O",             ID_FILE_OPEN
         MENUITEM "&Save As\tCtrl+S",            ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Display Synthesized\tF2",    ID_SYNTH_DISPLAY
@@ -4049,7 +4055,7 @@ IDR_SYNTHESIS_VOCAL_TRACT MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Öffnen\tCtrl+O",               ID_FILE_OPEN
+        MENUITEM "&Öffnen\tCtrl+O",             ID_FILE_OPEN
         MENUITEM "&Save As\tCtrl+S",            ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Display Synthesized\tF2",    ID_SYNTH_DISPLAY
@@ -5500,13 +5506,13 @@ BEGIN
     ID_REMOVE_OVERLAY       "Remove an overlay item from an overlay graph\nRemove Overlay"
     ID_SETDEFAULT           "Set the current view configuration as the default view configuration."
     ID_EDIT_PASTENEW        "Paste clipboard wave data into a new file\nPaste As New File"
-    ID_EDIT_SELECTWAVEFORM_SEG  "Select waveform data between cursors\nSelect Waveform"
+    ID_EDIT_SELECTWAVEFORM_SEG 
+                            "Select waveform data between cursors\nSelect Waveform"
 END
 
 STRINGTABLE
 BEGIN
-    ID_EDIT_SELECTWAVEFORM 
-                            "Select waveform data\nSelect Waveform"
+    ID_EDIT_SELECTWAVEFORM  "Select waveform data\nSelect Waveform"
     ID_AUTO_ALIGN           "Automatic alignment of transcriptions\nAlign transcriptions"
     ID_EDIT_AUTO_SNAP_UPDATE 
                             "Update all transcription segment boundaries\nUpdate All"

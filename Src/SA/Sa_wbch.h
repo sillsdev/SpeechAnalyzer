@@ -21,41 +21,40 @@ class CSaWorkbenchView : public CFormView {
 
 // Construction/destruction/creation
 public:
-    CSaWorkbenchView();  // standard constructor
+	// standard constructor
+    CSaWorkbenchView();  
 
     // Attributes
 private:
-    CBrush       m_brBkg;
+    CBrush m_brBkg;
     CBitmapButton m_aRawButton[MAX_PROCESS_NUMBER];
     CBitmapButton m_aGraphButton[MAX_PROCESS_NUMBER];
     CBitmapButton m_aFilterButton[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER];
-    CStaticText   m_aProcText[MAX_PROCESS_NUMBER];
-    CFancyArrow   m_aArrow[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER + 1];
+    CStaticText m_aProcText[MAX_PROCESS_NUMBER];
+    CFancyArrow m_aArrow[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER + 1];
 
 public:
-    //{{AFX_DATA(CSaWorkbenchView)
     enum { IDD = IDD_WORKBENCH };
-    //}}AFX_DATA
 
-    // Operations
-private:
-    HBRUSH GetBkgBrush() {
-        return (HBRUSH)m_brBkg.GetSafeHandle();   // return background brush
-    }
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-    virtual void OnInitialUpdate();
 public:
-    CProcess * CreateWbProcess(int nFilterNumber); // creates a workbench process
-    LPCTSTR GetFilterResource(int nFilterNumber); // returns a pointer to a filter resource
-    void SetupFilterProcesses(CObject * pDialog); // sets up workbench filter processes
-    void CallPropertiesDialog(int nProcess, int nFilter); // calls the properties dialog of a workbench process
-    void LoadAndSortFilter(int nProcess, int * pnFilter1, int * pnFilter2, int * pnFilter3, BOOL bLoad = TRUE); // loads and sorts (left align) filters
+	// creates a workbench process
+    CProcess * CreateWbProcess(int nFilterNumber);	
+	// returns a pointer to a filter resource
+    UINT GetFilterResource(int nFilterNumber);
+	// sets up workbench filter processes
+    void SetupFilterProcesses(CObject * pDialog);
+	// calls the properties dialog of a workbench process
+    void CallPropertiesDialog(int nProcess, int nFilter);
+	// loads and sorts (left align) filters
+    void LoadAndSortFilter(int nProcess, int * pnFilter1, int * pnFilter2, int * pnFilter3, BOOL bLoad = TRUE);
     virtual void WriteProperties(CObjectOStream & obs);
     virtual BOOL ReadProperties(CObjectIStream & obs);
 
-    // Generated message map functions
 protected:
+    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+    virtual void OnInitialUpdate();
+
+    // Generated message map functions
     afx_msg HBRUSH OnCtlColor(CDC * pDC, CWnd * pWnd, UINT nCtlColor);
     afx_msg void OnActivateView(BOOL, CView *, CView *);
     afx_msg void OnDestroy();
@@ -76,6 +75,11 @@ protected:
     afx_msg void OnFilter32();
     afx_msg void OnFilter33();
     DECLARE_MESSAGE_MAP()
+
+    // Operations
+private:
+    HBRUSH GetBkgBrush();
+
 };
 
 #endif //_SA_WBCH_H

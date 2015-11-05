@@ -148,6 +148,7 @@
     <None Include="Res\6B.ICO" />
     <None Include="RES\AS.ICO" />
     <None Include="res\bar_adva.bmp" />
+    <None Include="res\bitmap1.bmp" />
     <None Include="Res\BPU.BMP" />
     <None Include="Res\down.ico" />
     <None Include="Res\ECHOU.BMP" />

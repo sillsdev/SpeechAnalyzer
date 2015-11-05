@@ -200,18 +200,12 @@ void CDlgStartMode::OnCloseButton() {
 //****************************************************************
 //****************************************************************
 bool CDlgStartMode::Cleanup() {
-    //**************************************************
-    // Enable this radio button first or UpdateData
-    // will bomb.
-    //**************************************************
-    //kg why is this needed?
-    //  GetDlgItem(IDC_STARTMODE_TEMPLATE)->EnableWindow(TRUE);
-
     if (!UpdateData(TRUE)) {
         return false;
     }
-    ((CMainFrame *)AfxGetMainWnd())->SetShowStartupDlg(!m_nDontShowAgain);
-    ((CMainFrame *)AfxGetMainWnd())->SetStartDataMode(m_nDataMode);
+	CMainFrame * pMain = (CMainFrame*)AfxGetMainWnd();
+    pMain->SetShowStartupDlg(!m_nDontShowAgain);
+    pMain->SetStartDataMode(m_nDataMode);
     return true;
 }
 

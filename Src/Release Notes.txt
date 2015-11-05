@@ -1,6 +1,10 @@
-SA - 3.1.0.135 10/15/2015
+SA - 3.1.0.135 11/4/2015
 - Added 'Sample Files' entry to start mode dialog box.  If user has deleted the samples directory, the entry will default to the last used location (eg. same as 'More Files')
 - Added 'Gloss National' to Find/Replace dialog.
+- Added 'sa batch.psa' file to installation program.
+- Modified resampling function to use less memory during operation.
+- Modified 'save/save as' operation so that wave form workbench operations and modification (eg. invert or normalize) are not applied to wave file.
+- Fixed 'Page Setup' dialog and Workbench dialog.  Neither dialog was properly loading the bitmaps for the button controls.
 
 SA - 3.1.0.134 10/15/2015
 - Fix for Music Mode playback bug - the message event handler was not properly handling the 'play specific' event for the playback button on the staff window.

@@ -66,7 +66,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CSaWorkbenchView::CSaWorkbenchView() : CFormView(CSaWorkbenchView::IDD) {
     m_hWndFocus = NULL;
-    m_brBkg.CreateSolidBrush(GetSysColor(COLOR_BTNFACE)); // create the background brush
+	// create the background brush
+    m_brBkg.CreateSolidBrush(GetSysColor(COLOR_BTNFACE)); 
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -108,24 +109,24 @@ CProcess * CSaWorkbenchView::CreateWbProcess(int nFilterNumber) {
 // CSaWorkbenchView::GetFilterResource Returns the filter resource (bitmap)
 // The function returns the empty "IDB_FILTERU" resource on default.
 //***************************************************************************/
-LPCTSTR CSaWorkbenchView::GetFilterResource(int nFilterNumber) {
+UINT CSaWorkbenchView::GetFilterResource( int nFilterNumber) {
     switch (nFilterNumber) {
     case 1: // highpass
-        return _T("IDB_HPU");
+        return IDB_HPU;
     case 2: // lowpass
-        return _T("IDB_LPU");
+        return IDB_LPU;
     case 3: // bandpass
-        return _T("IDB_BPU");
+        return IDB_BPU;
     case 4: // reverb
-        return _T("IDB_REVU");
+        return IDB_REVU;
     case 5: // echo
-        return _T("IDB_ECHOU");
+        return IDB_ECHOU;
     case 6: // equation
-        return _T("IDB_EQU");
+        return IDB_EQU;
     case 7: // Generator
-        return _T("IDB_GENERATOR");
+        return IDB_GENERATOR;
     default:
-        return _T("IDB_PLAIN");
+        return IDB_PLAIN;
     }
 }
 
@@ -135,7 +136,9 @@ LPCTSTR CSaWorkbenchView::GetFilterResource(int nFilterNumber) {
 // and sets up the choosen filters for the given process.
 /***************************************************************************/
 void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog) {
-    CWbDlgProcesses * pDlg = (CWbDlgProcesses *)pDialog; // cast pointer
+
+	// cast pointer
+    CWbDlgProcesses * pDlg = (CWbDlgProcesses *)pDialog; 
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // make local copy of existing processes and filters and clear originals
     CProcess * apWbLocalProcess[MAX_FILTER_NUMBER];
@@ -261,6 +264,7 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog) {
 // CSaWorkbenchView::CallPropertiesDialog Calls the properties dialog of a process
 /***************************************************************************/
 void CSaWorkbenchView::CallPropertiesDialog(int nProcess, int nFilter) {
+
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // get the process
     if (!nFilter) {
@@ -283,7 +287,8 @@ void CSaWorkbenchView::CallPropertiesDialog(int nProcess, int nFilter) {
     // if process ready call process properties dialog
     if (pProcess) {
         if (pProcess->PropertiesDialog() == IDOK) {
-            GetDocument()->SetModifiedFlag();    // documents data has been modified
+			// documents data has been modified
+            GetDocument()->SetModifiedFlag();    
         }
     }
 }
@@ -293,8 +298,7 @@ void CSaWorkbenchView::CallPropertiesDialog(int nProcess, int nFilter) {
 // The function loads the filters from the mainframe if the flag bLoad is
 // TRUE.
 /***************************************************************************/
-void CSaWorkbenchView::LoadAndSortFilter(int nProcess, int * pnFilter1, int * pnFilter2,
-        int * pnFilter3, BOOL bLoad) {
+void CSaWorkbenchView::LoadAndSortFilter(int nProcess, int * pnFilter1, int * pnFilter2, int * pnFilter3, BOOL bLoad) {
     if (bLoad) {
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
         *pnFilter1 = pMain->GetWbFilterID(nProcess, 2);
@@ -320,12 +324,14 @@ void CSaWorkbenchView::LoadAndSortFilter(int nProcess, int * pnFilter1, int * pn
 /***************************************************************************/
 void CSaWorkbenchView::OnInitialUpdate() {
     CFormView::OnInitialUpdate();
-    // build and place the static text windows
+    
+	// build and place the static text windows
     m_aProcText[0].Init(IDC_PROCTEXT0, this);
     m_aProcText[1].Init(IDC_PROCTEXT1, this);
     m_aProcText[2].Init(IDC_PROCTEXT2, this);
     m_aProcText[3].Init(IDC_PROCTEXT3, this);
-    // build and place the fancy arrow windows
+    
+	// build and place the fancy arrow windows
     m_aArrow[0][0].Init(IDC_ARROW0, this);
     m_aArrow[1][0].Init(IDC_ARROW1, this);
     m_aArrow[2][0].Init(IDC_ARROW2, this);
@@ -342,30 +348,53 @@ void CSaWorkbenchView::OnInitialUpdate() {
     m_aArrow[1][3].Init(IDC_ARROW31, this);
     m_aArrow[2][3].Init(IDC_ARROW32, this);
     m_aArrow[3][3].Init(IDC_ARROW33, this);
-    // create the raw bitmapbuttons
-    m_aRawButton[0].AutoLoad(IDC_RAW0, this);
-    m_aRawButton[1].AutoLoad(IDC_RAW1, this);
-    m_aRawButton[2].AutoLoad(IDC_RAW2, this);
-    m_aRawButton[3].AutoLoad(IDC_RAW3, this);
+
+	m_aRawButton[0].SubclassDlgItem(IDC_RAW0, this);
+	m_aRawButton[1].SubclassDlgItem(IDC_RAW1, this);
+	m_aRawButton[2].SubclassDlgItem(IDC_RAW2, this);
+	m_aRawButton[3].SubclassDlgItem(IDC_RAW3, this);
+	m_aRawButton[0].LoadBitmaps(IDB_RAWU);
+	m_aRawButton[1].LoadBitmaps(IDB_RAWU);
+	m_aRawButton[2].LoadBitmaps(IDB_RAWU);
+	m_aRawButton[3].LoadBitmaps(IDB_RAWU);
+
     // create the filter bitmap buttons
-    m_aFilterButton[0][0].AutoLoad(IDC_FILTER10, this);
-    m_aFilterButton[0][1].AutoLoad(IDC_FILTER20, this);
-    m_aFilterButton[0][2].AutoLoad(IDC_FILTER30, this);
-    m_aFilterButton[1][0].AutoLoad(IDC_FILTER11, this);
-    m_aFilterButton[1][1].AutoLoad(IDC_FILTER21, this);
-    m_aFilterButton[1][2].AutoLoad(IDC_FILTER31, this);
-    m_aFilterButton[2][0].AutoLoad(IDC_FILTER12, this);
-    m_aFilterButton[2][1].AutoLoad(IDC_FILTER22, this);
-    m_aFilterButton[2][2].AutoLoad(IDC_FILTER32, this);
-    m_aFilterButton[3][0].AutoLoad(IDC_FILTER13, this);
-    m_aFilterButton[3][1].AutoLoad(IDC_FILTER23, this);
-    m_aFilterButton[3][2].AutoLoad(IDC_FILTER33, this);
-    // create the result bitmapbuttons
-    m_aGraphButton[0].AutoLoad(IDC_RESULT0, this);
-    m_aGraphButton[1].AutoLoad(IDC_RESULT1, this);
-    m_aGraphButton[2].AutoLoad(IDC_RESULT2, this);
-    m_aGraphButton[3].AutoLoad(IDC_RESULT3, this);
-    // now initialize the filters for process 0
+	m_aFilterButton[0][0].SubclassDlgItem(IDC_FILTER10, this);
+    m_aFilterButton[0][1].SubclassDlgItem(IDC_FILTER20, this);
+    m_aFilterButton[0][2].SubclassDlgItem(IDC_FILTER30, this);
+    m_aFilterButton[1][0].SubclassDlgItem(IDC_FILTER11, this);
+    m_aFilterButton[1][1].SubclassDlgItem(IDC_FILTER21, this);
+    m_aFilterButton[1][2].SubclassDlgItem(IDC_FILTER31, this);
+    m_aFilterButton[2][0].SubclassDlgItem(IDC_FILTER12, this);
+    m_aFilterButton[2][1].SubclassDlgItem(IDC_FILTER22, this);
+    m_aFilterButton[2][2].SubclassDlgItem(IDC_FILTER32, this);
+    m_aFilterButton[3][0].SubclassDlgItem(IDC_FILTER13, this);
+    m_aFilterButton[3][1].SubclassDlgItem(IDC_FILTER23, this);
+    m_aFilterButton[3][2].SubclassDlgItem(IDC_FILTER33, this);
+	m_aFilterButton[0][0].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[0][1].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[0][2].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[1][0].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[1][1].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[1][2].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[2][0].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[2][1].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[2][2].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[3][0].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[3][1].LoadBitmaps(IDB_RAWU);
+    m_aFilterButton[3][2].LoadBitmaps(IDB_RAWU);
+
+	// create the result bitmapbuttons
+    m_aGraphButton[0].SubclassDlgItem(IDC_RESULT0, this);
+    m_aGraphButton[1].SubclassDlgItem(IDC_RESULT1, this);
+    m_aGraphButton[2].SubclassDlgItem(IDC_RESULT2, this);
+    m_aGraphButton[3].SubclassDlgItem(IDC_RESULT3, this);
+    m_aGraphButton[0].LoadBitmaps(IDB_RESULTU);
+    m_aGraphButton[1].LoadBitmaps(IDB_RESULTU);
+    m_aGraphButton[2].LoadBitmaps(IDB_RESULTU);
+    m_aGraphButton[3].LoadBitmaps(IDB_RESULTU);
+	
+	// now initialize the filters for process 0
     int nFilter1, nFilter2, nFilter3;
     LoadAndSortFilter(0, &nFilter1, &nFilter2, &nFilter3);
     m_aFilterButton[0][0].LoadBitmaps(GetFilterResource(nFilter1));
@@ -845,4 +874,9 @@ BOOL CSaWorkbenchView::ReadProperties(CObjectIStream & obs) {
         GetParent()->ShowWindow(SW_SHOW);
     }
     return bRet;
+}
+
+HBRUSH CSaWorkbenchView::GetBkgBrush() {
+	// return background brush
+    return (HBRUSH)m_brBkg.GetSafeHandle();   
 }

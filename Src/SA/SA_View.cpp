@@ -11629,7 +11629,6 @@ void CSaView::OnFileSaveAs() {
 	// but convert the temp file
 
 	// a normal recording has a full path.
-
 	CString path;
 	CString docname;
 	bool recording = false;

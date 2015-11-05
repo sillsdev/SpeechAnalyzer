@@ -376,6 +376,7 @@
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />
     <None Include="Process.cd" />
+    <None Include="Res\RAWU.BMP" />
     <None Include="Res\SA.ICO" />
     <None Include="segment selection.cd" />
     <None Include="Segments.cd" />
