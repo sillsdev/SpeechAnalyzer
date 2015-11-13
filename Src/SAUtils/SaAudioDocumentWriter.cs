@@ -37,7 +37,8 @@ public class SaAudioDocumentWriter : ISaAudioDocumentWriter {
         if (isForTempOperation) {
             // Create a path for a temporary transcription file and add that path
             // to the temp. file that holds paths to temporary transcription files.
-            string tmpFilePathHolder = Path.Combine(Path.GetTempPath(), kTmpFilePathHolderName);
+            string tmpFilePathHolder = Path.Combine(Path.GetTempPath(), "SpeechAnalyzer\\");
+            tmpFilePathHolder = Path.Combine(tmpFilePathHolder, kTmpFilePathHolderName);
             File.AppendAllText(tmpFilePathHolder, m_doc.TranscriptionFile + "\r\n");
         }
 
@@ -72,8 +73,10 @@ public class SaAudioDocumentWriter : ISaAudioDocumentWriter {
     public void DeleteTempDB() {
         // Create the path to the temporary file that holds temporary transcription file
         // paths and make sure the file exists.
-        string tmpFilePathHolder = Path.Combine(Path.GetTempPath(), kTmpFilePathHolderName);
-        if (!File.Exists(tmpFilePathHolder)) {
+        string tmpFilePathHolder = Path.Combine(Path.GetTempPath(), "SpeechAnalyzer\\");
+        tmpFilePathHolder = Path.Combine(tmpFilePathHolder, kTmpFilePathHolderName);
+        if (!File.Exists(tmpFilePathHolder))
+        {
             return;
         }
 

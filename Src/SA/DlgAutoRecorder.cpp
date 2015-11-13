@@ -629,7 +629,7 @@ BOOL CDlgAutoRecorder::CreateTempFile() {
 
     // create the temporary file
     TCHAR lpszTempPath[_MAX_PATH];
-    GetTempPath(_MAX_PATH, lpszTempPath);
+    FileUtils::GetTempDir(_MAX_PATH,lpszTempPath);
     GetTempFileName(lpszTempPath, _T("WAV"), 0, m_szFileName);
 
     // create and open the file

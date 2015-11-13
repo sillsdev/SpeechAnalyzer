@@ -11,9 +11,9 @@ bool CClipboardHelper::LoadFileFromData(HGLOBAL hData, LPTSTR szFilename, size_t
     // because we now use true CF_WAVE we can save as temp then open
     // temporary target file has to be created
     TCHAR szTempPath[_MAX_PATH];
-    wmemset(szTempPath,0,_MAX_PATH);
-    wmemset(szFilename,0,len);
-    GetTempPath(_MAX_PATH, szTempPath);
+    FileUtils::GetTempDir(_MAX_PATH,szTempPath);
+
+	wmemset(szFilename,0,len);
     GetTempFileName(szTempPath, _T("WAV"), 0, szFilename);
 
     if ((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED) {

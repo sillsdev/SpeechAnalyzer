@@ -651,4 +651,7 @@
       <UserProperties RESOURCE_FILE="SA.rc" />
     </VisualStudio>
   </ProjectExtensions>
+  <Target Name="HelloWorld">
+    <Message Text="Hello"></Message>  <Message Text="World"></Message>
+  </Target>
 </Project>

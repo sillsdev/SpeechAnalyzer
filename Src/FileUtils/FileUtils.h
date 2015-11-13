@@ -12,6 +12,7 @@ using std::wstring;
 namespace FileUtils {
 
 wstring Trim(wstring & in);
+void GetTempDir( size_t len, LPTSTR buffer);
 wstring GetTempFileName(LPCTSTR szPrefix);
 void GetTempFileName(LPCTSTR szPrefix, LPTSTR szTempFileName, size_t len);
 extern void Remove(LPCTSTR path);

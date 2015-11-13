@@ -62,7 +62,7 @@ CSelfTestRunner::CSelfTestRunner() {
     TCHAR szExeFilename[ MAX_PATH];
     GetModuleFileName(AfxGetInstanceHandle(),szExeFilename,_MAX_PATH);
 
-    ::GetTempPath(MAX_PATH,szString);
+    ::GetTempPath(_MAX_PATH,szString);
     m_szTempPath = szString;
 
     m_szExePath = szExeFilename;

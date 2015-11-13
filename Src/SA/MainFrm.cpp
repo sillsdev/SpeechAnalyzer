@@ -2222,7 +2222,7 @@ void CMainFrame::WriteDefaultView(CObjectOStream & obs) {
 void CMainFrame::WriteDefaultViewToTempFile() {
     
 	CSaString szPath;
-    GetTempPath(_MAX_PATH, szPath.GetBuffer(_MAX_PATH));
+    FileUtils::GetTempDir(_MAX_PATH,szPath.GetBuffer(_MAX_PATH));
     szPath.ReleaseBuffer();
 
 	// Use thread id to keep different threads from interfering with this file
@@ -2252,7 +2252,7 @@ void CMainFrame::WriteDefaultViewToTempFile() {
 void CMainFrame::ReadDefaultViewFromTempFile() {
 
 	CSaString szPath;
-    GetTempPath(_MAX_PATH, szPath.GetBuffer(_MAX_PATH));
+    FileUtils::GetTempDir(_MAX_PATH, szPath.GetBuffer(_MAX_PATH));
     szPath.ReleaseBuffer();
 
 	// Use thread id to keep different threads from interfering with this file

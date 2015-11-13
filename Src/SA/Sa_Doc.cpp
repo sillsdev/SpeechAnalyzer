@@ -1818,7 +1818,6 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 	}
 
 	// we are dealing with a normal file that exists
-	bool bSameFileName = false;
 	CSaString oldFile = GetPathName();
 	if (oldFile.IsEmpty()) {
 		// get the current view caption string
@@ -6939,7 +6938,6 @@ bool CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
 	if (bSameFileName) {
 
 		wstring tempNewTemp = FileUtils::GetTempFileName(_T("TMP"));
-
 		if (!CopyWave(m_szRawDataWrk.c_str(), tempNewTemp.c_str(), sectionStart, sectionLength, TRUE)) {
 			FileUtils::Remove(tempNewTemp.c_str());
 			FileUtils::Remove(szNewWave);
@@ -7236,7 +7234,7 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
     if (!FileUtils::FolderExists(szPath)) {
         FileUtils::CreateFolder(szPath);
     }
-    wcscat_s(szPath,MAX_PATH,L"media\\");
+    wcscat_s(szPath,MAX_PATH,L"audio\\");
     if (!FileUtils::FolderExists(szPath)) {
         FileUtils::CreateFolder(szPath);
     }
@@ -7252,7 +7250,7 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.135");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.136");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -7353,19 +7351,6 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
                         wstring uri = filename.substr(index+1);
                         entry.pronunciation[0].media.append(Lift13::urlref(L"media"));
                         entry.pronunciation[0].media[0].href = uri;
-                        /*
-                        size_t len = 8 + 3 * filename.size() + 1;
-                        wchar_t * buffer = new wchar_t[len];
-                        wmemset(buffer,0,len);
-                        if (uriWindowsFilenameToUriStringW( filename.c_str(), buffer) != URI_SUCCESS) {
-                            delete [] buffer;
-                        } else {
-                            wstring uri = buffer;
-                            delete [] buffer;
-                            entry.pronunciation[0].media.append( Lift13::urlref( L"media"));
-                            entry.pronunciation[0].media[0].href = uri;
-                        }
-                        */
                     }
                 }
             }
@@ -7373,6 +7358,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
             // build the lexical unit
             entry.lexical_unit = Lift13::multitext(L"lexical-unit");
             entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.ortho.c_str(),Lift13::text(L"text",results[ORTHO])));
+            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.phonetic.c_str(),Lift13::text(L"text",results[PHONETIC])));
 
             wstring phonemic;
             phonemic.append(settings.phonemic);

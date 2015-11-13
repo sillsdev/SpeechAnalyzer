@@ -440,20 +440,23 @@ int CProcess::PropertiesDialog() {
 // to be created first.
 /***************************************************************************/
 BOOL CProcess::CreateTempFile(TCHAR * szName) {
-    DeleteTempFile();
-
+    
+	DeleteTempFile();
     if (!CreateTempFile(szName, &m_fileStatus)) {
         // error
-        SetDataInvalid();// close the temporary file
+		// close the temporary file
+        SetDataInvalid();
         return FALSE;
     }
-    m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
+	// buffer undefined, force buffer reload
+    m_dwBufferOffset = UNDEFINED_OFFSET; 
     return TRUE;
 }
 
-BOOL CProcess::CreateTempFile(TCHAR * szName, CFileStatus * pFileStatus) {
-    TCHAR szTempPath[_MAX_PATH];
-    FileUtils::GetTempFileName(szName, szTempPath, _countof(szTempPath));
+BOOL CProcess::CreateTempFile( TCHAR * szName, CFileStatus * pFileStatus) {
+    
+	TCHAR szTempPath[_MAX_PATH];
+    FileUtils::GetTempFileName( szName, szTempPath, _countof(szTempPath));
     // create and open the file
     if (!Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
         // error opening file

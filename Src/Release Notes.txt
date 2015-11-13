@@ -1,3 +1,8 @@
+SA - 3.1.0.136 11/12/2015
+- Fixed bug in FW Lift export code that was preventing audio files from being imported into FW.
+- Modified tempfile naming function so that all temp files are now stored in %temp%/SpeechAnalyzer
+- Modified install program name (displayed in 'Programs and Features') so that the word 'version' is now ommitted.
+
 SA - 3.1.0.135 11/4/2015
 - Added 'Sample Files' entry to start mode dialog box.  If user has deleted the samples directory, the entry will default to the last used location (eg. same as 'More Files')
 - Added 'Gloss National' to Find/Replace dialog.

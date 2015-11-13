@@ -13,8 +13,7 @@ public:
 	hFile(NULL) {
 
 		TCHAR tempPath[MAX_PATH];
-		memset(tempPath,0,MAX_PATH*sizeof(TCHAR));
-		DWORD result = GetTempPath(MAX_PATH,tempPath);
+		DWORD result = FileUtils::GetTempDir(MAX_PATH,tempPath);
 		if (result==0) {
 			throw exception("Unable to retrieve temporary path");
 		}

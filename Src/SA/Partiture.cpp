@@ -47,6 +47,8 @@ using std::streampos;
 #include "Clip.hpp"
 #include "AppDefs.h"
 #include "sa_lang_resource.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #define TICKS_PER_Q (120)
 
@@ -2684,6 +2686,136 @@ static DWORD PauseMidiFile(HWND hWndNotify);
 static DWORD StopMidiFile(HWND hWndNotify);
 static DWORD LoopMidiFile(char * lpszMIDIFileName, HWND hWndNotify);
 
+/**
+* return true if the path exists as a file
+*/
+bool FileExists(LPCSTR path) {
+    // bad path
+    if (path==NULL) {
+        return false;
+    }
+    // empty path
+    if (strlen(path)==0) {
+        return false;
+    }
+    struct _stat64i32 stat;
+    memset(&stat,0,sizeof(stat));
+    int result = _stat(path,&stat);
+    // file is not accessible
+    if (result!=0) {
+        return false;
+    }
+    // is it a file?
+    return ((stat.st_mode&_S_IFDIR)==0);
+}
+
+bool FolderExists( LPCSTR path) {
+    // bad path
+    if (path==NULL) {
+        return false;
+    }
+    // empty path
+    if (strlen(path)==0) {
+        return false;
+    }
+    string temp = path;
+    if (temp[temp.size()-1]=='\\') {
+        temp[temp.size()-1] = 0;
+    }
+    struct _stat64i32 stat;
+    memset(&stat,0,sizeof(stat));
+    int result = _stat(temp.c_str(),&stat);
+    // file is not accessible
+    if (result!=0) {
+        return false;
+    }
+    // is it a file?
+    return ((stat.st_mode&_S_IFDIR)==_S_IFDIR);
+}
+
+string GetParentFolder( LPCSTR path) {
+
+	string temp = path;
+	if (temp[temp.size()-1]=='\\') {
+		temp = temp.substr(0,temp.size()-1);
+	}
+
+	char buffer[MAX_PATH];
+	sprintf_s(buffer,_countof(buffer),temp.c_str());
+
+	char drive[_MAX_DRIVE];
+    char dir[_MAX_DIR];
+    char fname[_MAX_FNAME];
+    char ext[_MAX_EXT];
+    _splitpath_s(buffer, drive, dir, fname, ext);
+
+	string result;
+	result.append(drive);
+	result.append(dir);
+    size_t pos = result.rfind('\\');
+    if (pos==string::npos) {
+		result.append("\\");
+	}
+	return result;
+}
+
+/**
+* create a non-existent folder
+*/
+bool CreateFolder(LPCSTR path) {
+    
+	if (FolderExists(path)) {
+        return true;
+    }
+    if (FileExists(path)) {
+        // it exists, but it's not a folder
+        return false;
+    }
+
+	// split it and see if the parent exists
+	string parent = GetParentFolder(path);
+	if (FolderExists(parent.c_str())) {
+		// the parent is OK, just create this one
+		// it doesn't exist - create it!
+		// call the Win32 function
+		CreateDirectory(path,NULL);
+		return true;
+	}
+
+	// the parent folder doesn't exist - create that first
+	if (!CreateFolder(parent.c_str())) {
+		return false;
+	}
+	if (!CreateFolder(path)) {
+		return false;
+	}
+	return true;
+}
+
+void GetTempDir( size_t len, LPSTR buffer) {
+
+    memset( buffer, 0, len);
+	// GetTempPath always ends with a directory seperator
+    GetTempPath(_MAX_PATH, buffer);
+    size_t len2 = strlen(buffer);
+    if (len2 != 0) {
+		if (buffer[len2-1] != '\\') {
+		    strcat_s(buffer, _MAX_PATH, "\\");
+		}
+	}
+    len2 = strlen(buffer);
+    if (len2 != 0) {
+		if (buffer[len2-1] == '\\') {
+		    strcat_s(buffer, _MAX_PATH,"SpeechAnalyzer\\");
+		}
+	}
+    if (!FolderExists(buffer)) {
+        //create directory ?
+		if (CreateFolder(buffer)==0) {
+		}
+	}
+}
+
 // ========================================
 //      M A I N   P R O C E D U R E
 // ========================================
@@ -3639,7 +3771,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
 
             // 32bit conversion
             char lpszTempPath[_MAX_PATH];
-            GetTempPath(sizeof(lpszTempPath), lpszTempPath);
+            GetTempDir(_MAX_PATH, lpszTempPath);
             GetTempFileName(lpszTempPath,"SIL",0,lpszTempFileName);
 			// Delete automatically created file
             OpenFile(lpszTempFileName,&ofTmp,OF_DELETE);
@@ -3832,7 +3964,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
 
             // 32bit conversion
             char lpszTempPath[_MAX_PATH];
-            GetTempPath(sizeof(lpszTempPath), lpszTempPath);
+            GetTempDir(_MAX_PATH, lpszTempPath);
             GetTempFileName(lpszTempPath,"SIL",0,lpszTempFileName);
 			// Delete automatically created file
             OpenFile(lpszTempFileName,&ofTmp,OF_DELETE); 

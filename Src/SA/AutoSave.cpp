@@ -226,11 +226,8 @@ void CAutoSave::Check(CSaApp * pApp) {
 wstring CAutoSave::GetDirectory() {
     // find or create the autosave directory
     TCHAR buffer[_MAX_PATH];
-    ::GetEnvironmentVariable(L"TEMP",buffer,_countof(buffer));
-    wstring autosavedir(buffer);
-    FileUtils::AppendDirSep(autosavedir);
-    autosavedir.append(L"SpeechAnalyzer");
-    FileUtils::AppendDirSep(autosavedir);
+	FileUtils::GetTempDir(_MAX_PATH,buffer);
+	wstring autosavedir(buffer);
     return autosavedir;
 }
 
@@ -287,8 +284,9 @@ void CAutoSave::Save(CSaDoc & document) {
 
     // find or create the autosave directory
     TCHAR buffer[_MAX_PATH];
-    ::GetEnvironmentVariable(L"TEMP",buffer,_countof(buffer));
-    wstring temp(buffer);
+    FileUtils::GetTempDir(_MAX_PATH,buffer);
+    
+	wstring temp(buffer);
     FileUtils::AppendDirSep(temp);
 
     wstring autosavedir = GetDirectory();

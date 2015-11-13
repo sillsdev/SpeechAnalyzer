@@ -9,17 +9,39 @@
 
 void FileUtils::GetTempFileName(LPCTSTR szPrefix, LPTSTR szFilename, size_t len) {
     TCHAR lpszTempPath[_MAX_PATH];
-    wmemset(lpszTempPath,0,_MAX_PATH);
-    GetTempPath(_MAX_PATH, lpszTempPath);
+    GetTempDir(_MAX_PATH, lpszTempPath);
     wmemset(szFilename,0,len);
     ::GetTempFileName(lpszTempPath, szPrefix, 0, szFilename);
+}
+
+void FileUtils::GetTempDir( size_t len, LPTSTR buffer) {
+
+    wmemset( buffer, 0, len);
+	// GetTempPath always ends with a directory seperator
+    GetTempPath(_MAX_PATH, buffer);
+    size_t strlen = wcslen(buffer);
+    if (strlen != 0) {
+		if (buffer[strlen-1] != '\\') {
+		    wcscat_s(buffer,_MAX_PATH,L"\\");
+		}
+	}
+    strlen = wcslen(buffer);
+    if (strlen != 0) {
+		if (buffer[strlen-1] == '\\') {
+		    wcscat_s(buffer,_MAX_PATH,L"SpeechAnalyzer\\");
+		}
+	}
+    if (!FolderExists(buffer)) {
+        //create directory ?
+		if (CreateFolder(buffer)==0) {
+		}
+	}
 }
 
 wstring FileUtils::GetTempFileName(LPCTSTR szPrefix) {
     wstring result;
     TCHAR szPath[_MAX_PATH];
-    wmemset(szPath,0,_countof(szPath));
-    GetTempPath(_MAX_PATH, szPath);
+	GetTempDir(_MAX_PATH,szPath);
     TCHAR szFilename[_MAX_PATH];
     wmemset(szFilename,0,_countof(szFilename));
     ::GetTempFileName(szPath, szPrefix, 0, szFilename);
