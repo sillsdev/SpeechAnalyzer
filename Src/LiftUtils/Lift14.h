@@ -23,6 +23,8 @@ typedef wstring url;
 typedef wstring datetime;
 typedef wstring key;
 typedef wstring lang;
+typedef wstring href;
+typedef wstring clazz;
 typedef wstring refid;
 
 class multitext;
@@ -56,9 +58,18 @@ public:
         return out;
     };
 
+   bool operator==(const span & right) const {
+		if (lang!=right.lang) return false;
+		if (href!=right.href) return false;
+		if (clazz!=right.clazz) return false;
+		if (_span!=right._span) return false;
+		if (pcdata.compare(right.pcdata)!=0) return false;
+		return true;
+    }
+
     optional<lang> lang;
-    optional<url> href;
-    optional<wstring> clazz;
+    optional<href> href;
+    optional<clazz> clazz;
     wstring pcdata;
     zero_more<span> _span;
 };
@@ -68,7 +79,8 @@ class annotation;
 class text : public lift_base {
 public:
     text(LPCTSTR _name) :
-        lift_base(_name) {
+        lift_base(_name),
+		span(SPAN) {
     };
 
     void load(Element * in) {
@@ -77,7 +89,7 @@ public:
     }
 
     void load_derived(Element * in) {
-        load_value(pcdata,in);
+        load_element(span,in);
     }
 
     Element * store() {
@@ -87,10 +99,17 @@ public:
     }
 
     void store_derived(Element * out) {
-        store_value(pcdata,out);
+        store_element(span,out);
     }
 
-    wstring pcdata;
+    bool operator==(const text & right) const {
+		if (span!=right.span) {
+			return false;
+		}
+		return true;
+    }
+
+	zero_more<span> span;
 };
 
 class trait;
@@ -281,7 +300,7 @@ public:
     optional<datetime> datemodified;
     // elements
     //zero_more<trait> trait;
-    zero_more<span> form;
+    zero_more<Lift14::form> form;
     zero_more<annotation> annotation;
 };
 

@@ -44,9 +44,14 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
     void SetEnable(int nItem, BOOL bEnable);
     void SetCheck(int nItem, BOOL bCheck);
+    void UpdateButtonState();
+    CSaString GetFieldWorksProjectDirectory();
+    bool SearchForValue(HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
 
     afx_msg void OnHelpExportBasic();
     afx_msg void OnClickedBrowse();
+    afx_msg void OnSelchangeComboFieldworksProject();
+    afx_msg void OnKillfocusComboFieldworksProject();
 
     enum { IDD = IDD_EXPORT_LIFT };
 
@@ -67,7 +72,10 @@ protected:
     CComboBox ctlPhoneticList;
     CComboBox ctlGlossList;
     CComboBox ctlGlossNatList;
+    CComboBox ctlPhraseList1List;
+    CComboBox ctlPhraseList2List;
     CComboBox ctlOrthoList;
+    CComboBox ctlComboFieldWorksProject;
 
     wstring refLang;
     wstring phonemicLang;

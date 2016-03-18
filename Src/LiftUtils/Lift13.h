@@ -26,6 +26,8 @@ typedef wstring url;
 typedef wstring datetime;
 typedef wstring key;
 typedef wstring lang;
+typedef wstring clazz;
+typedef wstring href;
 typedef wstring refid;
 
 class multitext;
@@ -41,6 +43,15 @@ public:
         href(L"href"),
         clazz(L"clazz"),
         _span(SPAN) {
+    };
+
+    span(LPCTSTR _name, LPCTSTR _data) :
+        lift_base(_name),
+        lang(L"lang"),
+        href(L"href"),
+        clazz(L"clazz"),
+        _span(SPAN) {
+        pcdata = _data;
     };
 
     span(LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) :
@@ -72,9 +83,18 @@ public:
         return out;
     };
 
+   bool operator==(const span & right) const {
+		if (lang!=right.lang) return false;
+		if (href!=right.href) return false;
+		if (clazz!=right.clazz) return false;
+		if (_span!=right._span) return false;
+		if (pcdata.compare(right.pcdata)!=0) return false;
+		return true;
+    }
+
     // attributes
     optional<lang> lang;
-    optional<url> href;
+    optional<href> href;
     optional<wstring> clazz;
     // elements
     zero_more<span> _span;
@@ -87,12 +107,14 @@ class annotation;
 class text : public lift_base {
 public:
     text(LPCTSTR _name) :
-        lift_base(_name) {
+        lift_base(_name),
+		span(SPAN) {
     };
 
-    text(LPCTSTR _name, LPCTSTR _content) :
-        lift_base(_name) {
-        pcdata = _content;
+    text(LPCTSTR _name, span _span) :
+        lift_base(_name),
+		span(SPAN) {
+        span = _span;
     };
 
     void load(Element * in) {
@@ -101,7 +123,7 @@ public:
     }
 
     void load_derived(Element * in) {
-        load_value(pcdata,in);
+        load_element(span,in);
     }
 
     Element * store() {
@@ -111,24 +133,24 @@ public:
     }
 
     void store_derived(Element * out) {
-        store_value(pcdata,out);
+        store_element(span,out);
     }
 
     bool operator!=(const text & right) const {
-        if (pcdata.compare(right.pcdata)!=0) {
+        if (span!=right.span) {
             return true;
         }
         return false;
     }
 
     bool operator==(const text & right) const {
-        if (pcdata.compare(right.pcdata)==0) {
-            return true;
-        }
-        return false;
+		if (span!=right.span) {
+			return false;
+		}
+		return true;
     }
 
-    wstring pcdata;
+	zero_more<span> span;
 };
 
 class trait;

@@ -23,6 +23,8 @@ typedef wstring datetime;
 typedef wstring key;
 typedef wstring lang;
 typedef wstring refid;
+typedef wstring href;
+typedef wstring clazz;
 
 class multitext;
 
@@ -55,9 +57,18 @@ public:
         return out;
     };
 
+   bool operator==(const span & right) const {
+		if (lang!=right.lang) return false;
+		if (href!=right.href) return false;
+		if (clazz!=right.clazz) return false;
+		if (_span!=right._span) return false;
+		if (pcdata.compare(right.pcdata)!=0) return false;
+		return true;
+    }
+
     optional<lang> lang;
-    optional<url> href;
-    optional<wstring> clazz;
+    optional<href> href;
+    optional<clazz> clazz;
     wstring pcdata;
     zero_more<span> _span;
 };

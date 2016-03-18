@@ -7250,7 +7250,7 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.136");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.137");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -7282,7 +7282,6 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
     }
 
     CSegment * pSeg = GetSegment(REFERENCE);
-
     if (pSeg->GetOffsetSize() == 0) {
         return false;
     }
@@ -7299,7 +7298,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
             continue;
         }
         last = dwStart;
-        for (int j = REFERENCE; j >= 0; j--) {
+        for (int j = MUSIC_PL2; j >= 0; j--) {
             EAnnotation target = ConvertToAnnotation(j);
             if (!GetFlag(target,settings)) {
                 continue;
@@ -7325,55 +7324,113 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 
         if (results[REFERENCE].GetLength() > 0) {
 
+			POSITION pos = GetFirstViewPosition();
+			CSaView * pView = (CSaView *) GetNextView(pos);
+			CGlossSegment * gloss = (CGlossSegment *)pView->GetAnnotation(GLOSS);
+			CMusicPhraseSegment * pl1 = (CMusicPhraseSegment *)pView->GetAnnotation(MUSIC_PL1);
+			CMusicPhraseSegment * pl2 = (CMusicPhraseSegment *)pView->GetAnnotation(MUSIC_PL2);
+
             entry.id = Lift::createUUID();
             entry.guid = entry.id;
 
-            // build the pronunciation
+            // build the pronunciation for phonetic
             entry.pronunciation = Lift13::phonetic(L"pronunciation");
 
             // add the phonetic
             wstring buffer;
             buffer.append(settings.phonetic);
             buffer.append(L"-fonipa-x-etic");
-            entry.pronunciation[0].form.append(Lift13::form(L"form", buffer.c_str(), Lift13::text(L"text",results[PHONETIC])));
+            entry.pronunciation[0].form.append(Lift13::form(L"form", buffer.c_str(), Lift13::text(L"text",Lift13::span(L"span",results[PHONETIC]))));
 
-            wstring filename;
-            POSITION pos = GetFirstViewPosition();
-            CSaView * pView = (CSaView *) GetNextView(pos);
-            CGlossSegment * gloss = (CGlossSegment *)pView->GetAnnotation(GLOSS);
-            int index = FindNearestGlossIndex(gloss,dwStart,dwStop);
-            if (index>=0) {
-                int result = ComposeWordSegmentFilename(gloss, index, wordConvention, szPath, filename, L"", L"");
-                if (result==0) {
-                    int result = ExportWordSegment(gloss, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
-                    if (result==0) {
-                        size_t index = filename.find_last_of('\\');
-                        wstring uri = filename.substr(index+1);
-                        entry.pronunciation[0].media.append(Lift13::urlref(L"media"));
-                        entry.pronunciation[0].media[0].href = uri;
-                    }
-                }
-            }
+			// add phonetic media file
+			{
+				wstring filename;
+				int index = FindNearestGlossIndex(gloss,dwStart,dwStop);
+				if (index>=0) {
+					int result = ComposeWordSegmentFilename(gloss, index, wordConvention, szPath, filename, L"", L"");
+					if (result==0) {
+						int result = ExportWordSegment(gloss, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
+						if (result==0) {
+							size_t index = filename.find_last_of('\\');
+							wstring uri = filename.substr(index+1);
+							entry.pronunciation[0].media.append(Lift13::urlref(L"media"));
+							entry.pronunciation[0].media[0].href = uri;
+							entry.pronunciation[0].media[0].label = Lift13::multitext(L"label");
+							Lift13::span s(SPAN,filename.c_str());
+							s.href.get() = filename.c_str();
+							s.clazz.get() = L"Hyperlink";
+							Lift13::text t(L"text",s);
+							Lift13::form f(L"form",settings.gloss.c_str(),t);
+							entry.pronunciation[0].media[0].label.get().form.append(f);
+						}
+					}
+				}
+			}
+
+			// add PL1 media file
+			if (results[MUSIC_PL1].GetLength()>0) {
+				wstring filename;
+                int index = FindNearestPhraseIndex(pl1,dwStart,dwStop);
+				if (index>=0) {
+					int result = ComposePhraseSegmentFilename(MUSIC_PL1, pl1, index, phraseConvention, szPath, filename, L"", L"");
+					if (result==0) {
+						int result = ExportPhraseSegment(pl1, index, filename, dataCount, wavCount);
+						if (result==0) {
+							size_t index = filename.find_last_of('\\');
+							wstring uri = filename.substr(index+1);
+							entry.pronunciation[0].media.append(Lift13::urlref(L"media"));
+							entry.pronunciation[0].media[1].href = uri;
+							entry.pronunciation[0].media[0].label = Lift13::multitext(L"label");
+							Lift13::span s(SPAN,filename.c_str());
+							Lift13::text t(L"text",s);
+							Lift13::form f(L"form",settings.phrase1.c_str(),t);
+							entry.pronunciation[0].media[0].label.get().form.append(f);
+						}
+					}
+				}
+			}
+
+			// add PL1 media file
+			if (results[MUSIC_PL2].GetLength()>0) {
+				wstring filename;
+                int index = FindNearestPhraseIndex(pl2,dwStart,dwStop);
+				if (index>=0) {
+					int result = ComposePhraseSegmentFilename(MUSIC_PL2, pl2, index, phraseConvention, szPath, filename, L"", L"");
+					if (result==0) {
+						int result = ExportPhraseSegment(pl2, index, filename, dataCount, wavCount);
+						if (result==0) {
+							size_t index = filename.find_last_of('\\');
+							wstring uri = filename.substr(index+1);
+							entry.pronunciation[0].media.append(Lift13::urlref(L"media"));
+							entry.pronunciation[0].media[2].href = uri;
+							entry.pronunciation[0].media[0].label = Lift13::multitext(L"label");
+							Lift13::span s(SPAN,filename.c_str());
+							Lift13::text t(L"text",s);
+							Lift13::form f(L"form",settings.phrase2.c_str(),t);
+							entry.pronunciation[0].media[0].label.get().form.append(f);
+						}
+					}
+				}
+			}
 
             // build the lexical unit
             entry.lexical_unit = Lift13::multitext(L"lexical-unit");
-            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.ortho.c_str(),Lift13::text(L"text",results[ORTHO])));
-            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.phonetic.c_str(),Lift13::text(L"text",results[PHONETIC])));
+            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.ortho.c_str(), Lift13::text(L"text", Lift13::span(L"span",results[ORTHO]))));
+            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.phonetic.c_str(), Lift13::text(L"text", Lift13::span(L"span",results[PHONETIC]))));
 
             wstring phonemic;
             phonemic.append(settings.phonemic);
             phonemic.append(L"-fonipa-x-emic");
-            entry.lexical_unit.get().form.append(Lift13::form(L"form",phonemic.c_str(),Lift13::text(L"text",results[PHONEMIC])));
+            entry.lexical_unit.get().form.append(Lift13::form(L"form",phonemic.c_str(),Lift13::text(L"text", Lift13::span(L"span",results[PHONEMIC]))));
 
             // build the field
             entry.field = Lift13::field(L"field",L"Reference");
-            entry.field[0].form = Lift13::form(L"form",settings.reference.c_str(),Lift13::text(L"text",results[REFERENCE]));
+            entry.field[0].form = Lift13::form(L"form",settings.reference.c_str(),Lift13::text(L"text",Lift13::span(L"span",results[REFERENCE])));
 
             // build the sense field
             entry.sense = Lift13::sense(L"sense",createUUID().c_str(),i);
             entry.sense[0].gloss = Lift13::gloss(L"gloss",settings.gloss.c_str(),results[GLOSS]);
         }
-
         document.entry.append(entry);
     }
     return true;
@@ -7586,13 +7643,13 @@ BOOL CSaDoc::GetFlag(EAnnotation val, CExportLiftSettings & settings) {
     case REFERENCE:
         return settings.bReference;
     case MUSIC_PL1:
-        return settings.bPhrase;
+        return settings.bPhrase1;
     case MUSIC_PL2:
-        return settings.bPhrase;
+        return settings.bPhrase2;
     case MUSIC_PL3:
-        return settings.bPhrase;
+        return settings.bPhrase3;
     case MUSIC_PL4:
-        return settings.bPhrase;
+        return settings.bPhrase4;
     }
     return false;
 }

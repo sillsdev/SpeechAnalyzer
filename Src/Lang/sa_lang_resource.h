@@ -740,8 +740,10 @@
 #define IDC_CHART_T105                  1550
 #define IDC_EXTAB_REFERENCE             1550
 #define IDC_CHART_T106                  1551
+#define IDC_EXTAB_MUSIC_PL1             1551
 #define IDC_CHART_T107                  1552
 #define IDC_EXTAB_MAGNITUDE             1552
+#define IDC_EXTAB_MUSIC_PL2             1552
 #define IDC_CHART_T108                  1553
 #define IDC_EXTAB_PITCH                 1553
 #define IDC_CHART_T202                  1554
@@ -1254,6 +1256,7 @@
 #define IDC_COMBO_FIELDWORKS_PROJECT    2074
 #define IDC_STATIC_FIELDWORKS_PROJECT   2075
 #define IDC_STATIC_TAGS                 2076
+#define IDC_STATIC_FIELDWORKS_PROJECT2  2076
 #define IDC_STATIC_WAV_COUNT            2077
 #define IDC_STATIC_DATA_COUNT           2078
 #define IDC_STATIC_SFM_COUNT            2079
@@ -1287,7 +1290,9 @@
 #define IDC_LIST_ORTHO                  2107
 #define IDC_LIST_GLOSS                  2108
 #define IDC_LIST_GLOSS_NAT              2109
-#define IDC_GLOSS_NAT                   2111
+#define IDC_LIST_MUSIC_PL1              2110
+#define IDC_LIST_MUSIC_PL2              2111
+#define IDC_GLOSS_NAT                   2112
 #define IDC_GLOSS_NAT_ENABLED           2113
 #define IDC_CHECK_LOAD                  2116
 #define IDS_WINDOW_GLOSS_AS             2119

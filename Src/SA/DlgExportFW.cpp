@@ -169,7 +169,6 @@ void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
                 ctlComboFieldWorksProject.AddString((LPCTSTR) finder.GetFileName());
             } while (more);
         }
-        ctlComboFieldWorksProject.GetCount();
     } else {
         TCHAR szBuffer[MAX_PATH];
         GetCurrentPath(szBuffer,MAX_PATH);

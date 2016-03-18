@@ -11,7 +11,10 @@ public:
     BOOL bPhonemic;
     BOOL bPhonetic;
     BOOL bReference;
-    BOOL bPhrase;
+    BOOL bPhrase1;
+    BOOL bPhrase2;
+    BOOL bPhrase3;
+    BOOL bPhrase4;
 
     wstring gloss;
     wstring glossNat;
@@ -19,7 +22,8 @@ public:
     wstring phonemic;
     wstring phonetic;
     wstring reference;
-    wstring phrase;
+    wstring phrase1;
+    wstring phrase2;
 
     CString szDocTitle;
     CString szPath;
