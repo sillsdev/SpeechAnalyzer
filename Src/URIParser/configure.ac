@@ -1,8 +1,9 @@
 AC_PREREQ(2.61)
-AC_INIT([uriparser], [0.8.0.1])
+AC_INIT([uriparser], [0.8.4])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.10.1 foreign dist-zip dist-bzip2 no-dist-gzip subdir-objects])
 
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -157,6 +158,7 @@ AC_CONFIG_FILES([
 	doc/Doxyfile
 ])
 AC_CONFIG_FILES([doc/release.sh], [chmod a+x doc/release.sh])
+AC_CONFIG_HEADERS([test/config.h])
 AC_OUTPUT
 
 cat <<CONFIG

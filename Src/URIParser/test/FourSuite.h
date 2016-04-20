@@ -33,35 +33,35 @@ using namespace Test;
 class FourSuite : public Suite {
 
 public:
-    FourSuite() {
-        TEST_ADD(FourSuite::absolutize_test_cases)
-        TEST_ADD(FourSuite::relativize_test_cases)
-        TEST_ADD(FourSuite::good_URI_references)
-        TEST_ADD(FourSuite::bad_URI_references)
-        TEST_ADD(FourSuite::caseNormalizationTests)
-        TEST_ADD(FourSuite::pctEncNormalizationTests)
-        TEST_ADD(FourSuite::pathSegmentNormalizationTests)
-    }
+	FourSuite() {
+		TEST_ADD(FourSuite::absolutize_test_cases)
+		TEST_ADD(FourSuite::relativize_test_cases)
+		TEST_ADD(FourSuite::good_URI_references)
+		TEST_ADD(FourSuite::bad_URI_references)
+		TEST_ADD(FourSuite::caseNormalizationTests)
+		TEST_ADD(FourSuite::pctEncNormalizationTests)
+		TEST_ADD(FourSuite::pathSegmentNormalizationTests)
+	}
 
 private:
-    bool testAddOrRemoveBaseHelper(const char * ref,
-                                   const char * base, const char * expected, bool add = true,
-                                   bool domainRootMode = false);
+	bool testAddOrRemoveBaseHelper(const char * ref,
+			const char * base, const char * expected, bool add = true,
+			bool domainRootMode = false);
 
-    void absolutize_test_cases();
-    void relativize_test_cases();
+	void absolutize_test_cases();
+	void relativize_test_cases();
 
-    int testParseUri(const char * uriText, const char ** expectedErrorPos = NULL);
-    bool testGoodUri(const char * uriText);
-    bool testBadUri(const char * uriText, int expectedErrorOffset = -1);
-    void good_URI_references();
-    void bad_URI_references();
+	int testParseUri(const char * uriText, const char ** expectedErrorPos = NULL);
+	bool testGoodUri(const char * uriText);
+	bool testBadUri(const char * uriText, int expectedErrorOffset = -1);
+	void good_URI_references();
+	void bad_URI_references();
 
-    bool normalizeAndCompare(const char * uriText,
-                             const char * expectedNormalized);
-    void caseNormalizationTests();
-    void pctEncNormalizationTests();
-    void pathSegmentNormalizationTests();
+	bool normalizeAndCompare(const char * uriText,
+		const char * expectedNormalized);
+	void caseNormalizationTests();
+	void pctEncNormalizationTests();
+	void pathSegmentNormalizationTests();
 
 };
 

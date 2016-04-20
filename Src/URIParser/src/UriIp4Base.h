@@ -43,10 +43,10 @@
 
 
 typedef struct UriIp4ParserStruct {
-    unsigned char stackCount;
-    unsigned char stackOne;
-    unsigned char stackTwo;
-    unsigned char stackThree;
+	unsigned char stackCount;
+	unsigned char stackOne;
+	unsigned char stackTwo;
+	unsigned char stackThree;
 } UriIp4Parser;
 
 

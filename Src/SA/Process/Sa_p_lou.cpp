@@ -645,10 +645,12 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
                 // write the processed data block
                 try {
                     Write(m_lpBuffer, dwLoudCount * 2);
-                } catch (CFileException e) {
+                } catch (CFileException * e) {
                     // error writing file
                     ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                    return Exit(PROCESS_ERROR, hSmoothBlock); // error, writing failed
+					e->Delete();
+					// error, writing failed
+					return Exit(PROCESS_ERROR, hSmoothBlock);
                 }
                 dwLoudCount = 0; // reset counter
                 pLoudData = (short int *)m_lpBuffer; // reset pointer to begin of loudness data buffer

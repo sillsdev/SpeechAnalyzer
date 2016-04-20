@@ -290,8 +290,9 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR * KeyCode, short /*Shift*/, BOOL
             }
             break;
         }
-    } catch (COleException) {
-        return TRUE;
+    } catch (COleException * e) {
+        e->Delete();
+		return TRUE;
     }
     return FALSE; // event not consumed here
 }

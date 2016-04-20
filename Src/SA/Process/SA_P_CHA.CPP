@@ -483,15 +483,17 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             // write the processed quality data block
             try {
                 m_pQualityFile->Write((HPSTR)m_lpQualityData, dwPitchCount * 2);
-            } catch (CFileException e)
-
-            {
+            } catch (CFileException * e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_qualityFileStatus.m_szFullName);
-                return Exit(PROCESS_ERROR); // error, writing failed
+				// error, writing failed
+				e->Delete();
+				return Exit(PROCESS_ERROR);
             }
-            pQualityData = (short int *)m_lpQualityData; // reset pointer to begin of quality data buffer
-            dwPitchCount = 0; // reset processed data counter
+			// reset pointer to begin of quality data buffer
+			pQualityData = (short int *)m_lpQualityData;
+			// reset processed data counter
+			dwPitchCount = 0;
         }
     }
     // calculate the actual progress
@@ -502,16 +504,21 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
 
     CString szFullName = m_qualityFileStatus.m_szFullName;
-    CFile::GetStatus(szFullName, m_qualityFileStatus); // read the status
+	// read the status
+	CFile::GetStatus(szFullName, m_qualityFileStatus);
     if (m_qualityFileStatus.m_size < 2 * sizeof(int)) {
-        return Exit(PROCESS_ERROR);    // error, not enough data
-    }
+		// error, not enough data
+		return Exit(PROCESS_ERROR);
+	}
 
-    if (nLevel < 0) { // memory allocation failed or previous processing error
-        EndProcess(); // end data processing
+	// memory allocation failed or previous processing error
+	if (nLevel < 0) {
+		// end data processing
+		EndProcess();
         EndWaitCursor();
         if ((nLevel == PROCESS_CANCELED)) {
-            CancelProcess();    // set your own cancel flag
+			// set your own cancel flag
+			CancelProcess();
         }
         return MAKELONG(nLevel, nProgress);
     }
@@ -572,34 +579,46 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         if (IsCanceled()) {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if ((++dwChangeCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize)) { // change buffer is full or processing finished
+        if ((++dwChangeCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize)) { 
+			// change buffer is full or processing finished
             // write the processed change data block
             try {
                 Write(m_lpBuffer, dwChangeCount * 2);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                return Exit(PROCESS_ERROR); // error, writing failed
+				// error, writing failed
+				e->Delete();
+				return Exit(PROCESS_ERROR);
             }
-            pChange = (short int *)m_lpBuffer; // reset pointer to begin of pitch data buffer
+			// reset pointer to begin of pitch data buffer
+			pChange = (short int *)m_lpBuffer;
             dwChangeBlock += dwChangeCount;
-            dwChangeCount = 0; // reset processed data counter
+			// reset processed data counter
+			dwChangeCount = 0;
             if (dwChangeCount < dwDataSize) {
                 // read next source data blocks
-                pQuality = (short int *)GetQualityData(dwChangeBlock, TRUE); // read quality data block
-                pLoudData = (short int *)pLoudness->GetProcessedData(dwChangeBlock, TRUE); // read smoothed loudness data block
+				// read quality data block
+				pQuality = (short int *)GetQualityData(dwChangeBlock, TRUE);
+				// read smoothed loudness data block
+				pLoudData = (short int *)pLoudness->GetProcessedData(dwChangeBlock, TRUE);
                 if ((!pQuality) || (!pLoudData)) {
-                    return Exit(PROCESS_ERROR);    // error, reading failed
+					// error, reading failed
+					return Exit(PROCESS_ERROR);
                 }
             }
         }
     }
-    nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
+	// calculate the actual progress
+	nProgress = nProgress + (int)(100 / nLevel);
     // close the temporary change file and read the status
-    CloseTempFile(); // close the file
-    bRes = SmoothData(2); // smooth data two times
+	// close the file
+	CloseTempFile();
+	// smooth data two times
+	bRes = SmoothData(2);
     if (bRes) {
-        EndProcess((nProgress >= 95));    // end data processing
+		// end data processing
+		EndProcess((nProgress >= 95));
     } else {
         EndProcess();
     }
@@ -656,10 +675,11 @@ void * CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin) {
         // read the processed quality data block
         try {
             m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error reading file
             ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
+			e->Delete();
             return NULL;
         }
         // close the quality data temp file

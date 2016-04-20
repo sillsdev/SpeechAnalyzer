@@ -221,17 +221,22 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
         if (IsCanceled()) {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if ((++dwZCrossCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataEnd)) { // zero crossing buffer is full or processing finished
+        if ((++dwZCrossCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataEnd)) { 
+			// zero crossing buffer is full or processing finished
             // write the processed data block
             try {
                 Write(m_lpBuffer, dwZCrossCount * 2);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                return Exit(PROCESS_ERROR); // error, writing failed
+				// error, writing failed
+				e->Delete();
+				return Exit(PROCESS_ERROR);
             }
-            pZCrossData = (short int *)m_lpBuffer; // reset pointer to begin of zero crossing data buffer
-            dwZCrossCount = 0; // reset processed data counter
+			// reset pointer to begin of zero crossing data buffer
+			pZCrossData = (short int *)m_lpBuffer;
+			// reset processed data counter
+			dwZCrossCount = 0;
         }
     }
     // calculate the actual progress

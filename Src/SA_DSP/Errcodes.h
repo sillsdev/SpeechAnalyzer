@@ -1,10 +1,9 @@
 #ifndef ERR_CODES_H
 #define ERR_CODES_H
 
-
 #define MAX_WARN_CODE               7
 #define UNDEFINED_WARN_CODE         7
-#define INFINITY                    6
+//#define INFINITY                    6
 #define NO_ROOT_FOUND               5
 #define HIST_BUFFER_CALLBACK        4
 #define FRAG_BUFFER_FULL            3

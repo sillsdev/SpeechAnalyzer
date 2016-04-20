@@ -150,7 +150,8 @@ static int URI_FUNC(ResolveAbsolutePathFlag)(URI_TYPE(Uri) * absWork) {
 
 static int URI_FUNC(AddBaseUriImpl)(URI_TYPE(Uri) * absDest,
 		const URI_TYPE(Uri) * relSource,
-		const URI_TYPE(Uri) * absBase) {
+		const URI_TYPE(Uri) * absBase,
+		UriResolutionOptions options) {
 	if (absDest == NULL) {
 		return URI_ERROR_NULL;
 	}
@@ -165,8 +166,21 @@ static int URI_FUNC(AddBaseUriImpl)(URI_TYPE(Uri) * absDest,
 		return URI_ERROR_ADDBASE_REL_BASE;
 	}
 
+	/* [00/32] 	-- A non-strict parser may ignore a scheme in the reference */
+	/* [00/32] 	-- if it is identical to the base URI's scheme. */
+	/* [00/32] 	if ((not strict) and (R.scheme == Base.scheme)) then */
+	UriBool relSourceHasScheme = (relSource->scheme.first != NULL) ? URI_TRUE : URI_FALSE;
+	if ((options & URI_RESOLVE_IDENTICAL_SCHEME_COMPAT)
+			&& (absBase->scheme.first != NULL)
+			&& (relSource->scheme.first != NULL)
+			&& (0 == URI_FUNC(CompareRange)(&(absBase->scheme), &(relSource->scheme)))) {
+	/* [00/32] 		undefine(R.scheme); */
+		relSourceHasScheme = URI_FALSE;
+	/* [00/32] 	endif; */
+	}
+
 	/* [01/32]	if defined(R.scheme) then */
-				if (relSource->scheme.first != NULL) {
+				if (relSourceHasScheme) {
 	/* [02/32]		T.scheme = R.scheme; */
 					absDest->scheme = relSource->scheme;
 	/* [03/32]		T.authority = R.authority; */
@@ -278,7 +292,19 @@ static int URI_FUNC(AddBaseUriImpl)(URI_TYPE(Uri) * absDest,
 
 int URI_FUNC(AddBaseUri)(URI_TYPE(Uri) * absDest,
 		const URI_TYPE(Uri) * relSource, const URI_TYPE(Uri) * absBase) {
-	const int res = URI_FUNC(AddBaseUriImpl)(absDest, relSource, absBase);
+	const int res = URI_FUNC(AddBaseUriImpl)(absDest, relSource, absBase, URI_RESOLVE_STRICTLY);
+	if ((res != URI_SUCCESS) && (absDest != NULL)) {
+		URI_FUNC(FreeUriMembers)(absDest);
+	}
+	return res;
+}
+
+
+
+int URI_FUNC(AddBaseUriEx)(URI_TYPE(Uri) * absDest,
+		const URI_TYPE(Uri) * relSource, const URI_TYPE(Uri) * absBase,
+		UriResolutionOptions options) {
+	const int res = URI_FUNC(AddBaseUriImpl)(absDest, relSource, absBase, options);
 	if ((res != URI_SUCCESS) && (absDest != NULL)) {
 		URI_FUNC(FreeUriMembers)(absDest);
 	}

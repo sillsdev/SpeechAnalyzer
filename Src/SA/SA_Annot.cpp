@@ -302,7 +302,8 @@ BOOL CXScaleWnd::SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR *
 // function will get the pointer by itself to get the text metrics from the
 // actual window font.
 /***************************************************************************/
-void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth) {
+void CXScaleWnd::CalculateScale( CDC * pDC, int nWidth) {
+
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();

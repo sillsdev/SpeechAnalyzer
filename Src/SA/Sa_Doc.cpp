@@ -415,9 +415,10 @@ CSaDoc::~CSaDoc() {
         if (!m_szRawDataWrk.empty()) {
             FileUtils::Remove(m_szRawDataWrk.c_str());
         }
-    } catch (CFileException e) {
+    } catch (CFileException * e) {
         // error removing file
         ErrorMessage(IDS_ERROR_DELTEMPFILE, m_szRawDataWrk.c_str(),NULL);
+		e->Delete();
     }
 
 	// delete converted wave temp file
@@ -647,8 +648,9 @@ void CSaDoc::DeleteContents() {
         try {
             FileUtils::Remove(m_szTempWave);
             m_szTempWave.Empty();
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             m_szTempWave.Empty();
+			e->Delete();
         }
     }
     CreateFonts();
@@ -676,9 +678,10 @@ void CSaDoc::CreateFonts() {
             m_pCreatedFonts->SetAtGrow(i, GetSegment(i)->NewFontTable());
             CAnnotationWnd::CreateAnnotationFont(GetFont(i), pMain->GetFontSize(i), pMain->GetFontFace(i));
         }
-    } catch (CMemoryException e) {
+    } catch (CMemoryException * e) {
         // handle memory fail exception
         ErrorMessage(IDS_ERROR_MEMALLOC);
+		e->Delete();
         return;
     }
 }
@@ -1786,9 +1789,10 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
         } else { // rename the file
             try {
                 CFile::Rename(m_szTempWave, pszPathName);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error renaming file
                 ErrorMessage(IDS_ERROR_FILEWRITE, pszPathName);
+				e->Delete();
                 return FALSE;
             }
         }
@@ -2037,10 +2041,11 @@ DWORD CSaDoc::WriteRiff( LPCTSTR pszPathName) {
             DWORD dwSizeRead = 0;
             try {
                 dwSizeRead = file.Read(buffer, _countof(buffer));
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error reading file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, m_szRawDataWrk.c_str());
                 mmioClose(hmmioFile, 0);
+				e->Delete();
                 return 0;
             }
 
@@ -2357,12 +2362,16 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
                 }
             }
             TRACE(_T("front pad bytes written=%lu\n"), lSizeWritten);
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error writing file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
-            m_dwDataSize = 0;       // no data available
-            SetModifiedFlag(FALSE); // will be unable to save
-            pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
+			// no data available
+			m_dwDataSize = 0;
+			// will be unable to save
+			SetModifiedFlag(FALSE);
+			// close file
+			pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L);
+			e->Delete();
             return FALSE;
         }
 
@@ -2440,13 +2449,16 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
                         }
                         file.Write(&buffer[dwDataPos], (DWORD)lWriteSize);
                         lSizeWritten += lWriteSize;
-                    } catch (CFileException e) {
+                    } catch (CFileException * e) {
                         // error writing file
                         ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
-                        m_dwDataSize = 0;       // no data available
-                        SetModifiedFlag(FALSE); // will be unable to save
+						// no data available
+						m_dwDataSize = 0;
+						// will be unable to save
+						SetModifiedFlag(FALSE);
                         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
-                        return FALSE;
+                        e->Delete();
+						return FALSE;
                     }
                     bDone = true;
                     break;
@@ -2488,13 +2500,17 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
                 ASSERT(lWriteSize>=0);
                 file.Write(buffer, (DWORD)lWriteSize);
                 lSizeWritten += lWriteSize;
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
-                m_dwDataSize = 0;       // no data available
-                SetModifiedFlag(FALSE); // will be unable to save
-                pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
-                return FALSE;
+				// no data available
+				m_dwDataSize = 0;
+				// will be unable to save
+				SetModifiedFlag(FALSE);
+				// close file
+				pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L);
+                e->Delete();
+				return FALSE;
             }
         }
 
@@ -2519,13 +2535,17 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
                     }
                 }
             }
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error writing file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, szTempPath.c_str());
-            m_dwDataSize = 0;       // no data available
-            SetModifiedFlag(FALSE); // will be unable to save
-            pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
-            return FALSE;
+			// no data available
+			m_dwDataSize = 0;
+			// will be unable to save
+			SetModifiedFlag(FALSE);
+			// close file
+			pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L);
+            e->Delete();
+			return FALSE;
         }
 
         TRACE(_T("total bytes written=%lu\n"), lSizeWritten);
@@ -2646,13 +2666,17 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
         // write the data block from the buffer
         try {
             file.Write(buffer, (DWORD)lSizeRead);
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error writing file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-            m_dwDataSize = 0;       // no data available
-            SetModifiedFlag(FALSE); // will be unable to save
-            pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
-            return FALSE;
+			// no data available
+			m_dwDataSize = 0;
+			// will be unable to save
+			SetModifiedFlag(FALSE);
+			// close file
+			pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L);
+            e->Delete();
+			return FALSE;
         }
     }
 
@@ -2769,13 +2793,17 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
         // write the data block from the buffer
         try {
             file.Write(buffer, (DWORD)lSizeRead);
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error writing file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-            m_dwDataSize = 0;       // no data available
-            SetModifiedFlag(FALSE); // will be unable to save
-            pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
-            return FALSE;
+			// no data available
+			m_dwDataSize = 0;
+			// will be unable to save
+			SetModifiedFlag(FALSE);
+			// close file
+			pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L);
+            e->Delete();
+			return FALSE;
         }
     }
 
@@ -2933,9 +2961,11 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName) {
     try {
         targetFile.SeekToEnd();
         sourceFile.Seek(0, CFile::begin);
-    } catch (CFileException e) {
-        sourceFile.Abort(); // close the source file
-        targetFile.Abort(); // close the target file
+    } catch (CFileException * e) {
+		// close the source and target files
+		sourceFile.Abort();
+        targetFile.Abort();
+		e->Delete();
         return FALSE;
     }
 
@@ -2947,9 +2977,11 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName) {
             DWORD dwCopy = (dwSize > _countof(buffer)) ? _countof(buffer) : dwSize;
             dwCopied = sourceFile.Read(buffer, dwCopy);
             targetFile.Write(buffer, dwCopied);
-        } catch (CFileException e) {
-            sourceFile.Abort(); // close the source file
-            targetFile.Abort(); // close the target file
+        } catch (CFileException * e) {
+			// close the source and target files
+			sourceFile.Abort();
+            targetFile.Abort();
+			e->Delete();
             return FALSE;
         }
         dwSize -= dwCopied;
@@ -3011,9 +3043,11 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, WAVETIME sta
     try {
         targetFile.SeekToEnd();
         sourceFile.Seek(startBytes, CFile::begin);
-    } catch (CFileException e) {
-        sourceFile.Abort(); // close the source file
-        targetFile.Abort(); // close the target file
+    } catch (CFileException * e) {
+		// close the source and target files
+		sourceFile.Abort();
+        targetFile.Abort();
+		e->Delete();
         return FALSE;
     }
     dwSize -= startBytes; // size to copy
@@ -3860,18 +3894,20 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
                 file.Seek((long)(dwSectionPos + dwSectionLength), CFile::begin);
                 dwReadSize = file.Read(buffer, _countof(buffer));
                 dwDataTail -= dwReadSize;
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error reading file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, m_szRawDataWrk.c_str());
-                return FALSE;
+                e->Delete();
+				return FALSE;
             }
             // find the target position and write the data block from the buffer
             try {
                 file.Seek((long)(dwSectionPos), CFile::begin);
                 file.Write(buffer, dwReadSize);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
+				e->Delete();
                 return FALSE;
             }
             dwSectionPos += _countof(buffer);
@@ -4060,11 +4096,12 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
             try {
                 DWORD dwTemp = ToBytes(insertAt, false);
                 file.Seek(dwTemp, CFile::begin);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error opening file
                 ErrorMessage(IDS_ERROR_OPENTEMPFILE, lpszRawTempPath);
                 Undo(FALSE);
-                return FALSE;
+                e->Delete();
+				return FALSE;
             }
 
             // calculate the data size

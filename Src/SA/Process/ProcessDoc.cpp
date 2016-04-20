@@ -102,12 +102,13 @@ HPSTR CProcessDoc::GetProcessedWaveData(LPCTSTR szName, int selectedChannel, int
     try {
         UINT bytesRead = file.Read(buffer, size);
         LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
-    } catch (CFileException e) {
+    } catch (CFileException * e) {
         delete [] buffer;
         // error reading file
         pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
         m_dwBufferOffset = UNDEFINED_OFFSET;
-        return NULL;
+        e->Delete();
+		return NULL;
     }
 
     delete [] buffer;

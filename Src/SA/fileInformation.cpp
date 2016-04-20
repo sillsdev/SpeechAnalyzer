@@ -67,6 +67,7 @@ void CDlgInformationFilePage::DoDataExchange(CDataExchange * pDX) {
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
 BOOL CDlgInformationFilePage::OnInitDialog() {
+
     CPropertyPage::OnInitDialog();
     // get pointer to document
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -74,42 +75,54 @@ BOOL CDlgInformationFilePage::OnInitDialog() {
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     // get file status document member data
     CFileStatus * pFileStatus = pDoc->GetFileStatus();
-    if (pFileStatus->m_szFullName[0] != 0) { // file name is defined
+	// file name is defined
+    if (pFileStatus->m_szFullName[0] != 0) { 
         // copy full path name
         CString szFilePath = pFileStatus->m_szFullName;
         // get dc and textmetrics of static text control
         CWnd * pWnd = GetDlgItem(IDC_FILENAME);
-        CDC * pDC = pWnd->GetDC(); // device context
-        CFont * oldFont = pDC->SelectObject(pWnd->GetFont()); // select actual font
+		// device context
+        CDC * pDC = pWnd->GetDC();
+		// select actual font
+        CFont * oldFont = pDC->SelectObject(pWnd->GetFont()); 
         TEXTMETRIC tm;
         pDC->GetTextMetrics(&tm);
-        pDC->SelectObject(oldFont);  // set back old font
+		// set back old font
+        pDC->SelectObject(oldFont);  
         pWnd->ReleaseDC(pDC);
         // get coordinates of static text control
         CRect rWnd;
         pWnd->GetClientRect(rWnd);
         // calculate number of characters possible to display and limit the string
-        int nChars = (rWnd.right / tm.tmAveCharWidth * 8 / 10); // experience values
-        if (szFilePath.GetLength() > nChars) { // file path is too long
+		// experience values
+        int nChars = (rWnd.right / tm.tmAveCharWidth * 8 / 10); 
+		// file path is too long
+        if (szFilePath.GetLength() > nChars) { 
             CSaString szRightPath = szFilePath.Right(nChars - 6);
             szRightPath = szRightPath.Right(szRightPath.GetLength() - szRightPath.Find(_T("\\")));
-            szFilePath = szFilePath.Left(3) + "..." + szRightPath; // drive...rest
+			// drive...rest
+            szFilePath = szFilePath.Left(3) + "..." + szRightPath; 
         }
         // draw the file path
-        SetDlgItemText(IDC_FILENAME, szFilePath); // write file name
-        if (pFileStatus->m_ctime != 0) { // if time defined write creation time
+		// write file name
+        SetDlgItemText(IDC_FILENAME, szFilePath); 
+		// if time defined write creation time
+        if (pFileStatus->m_ctime != 0) { 
             SetDlgItemText(IDC_FILEDATE, pFileStatus->m_ctime.Format("%A, %B %d, %Y, %X"));
         }
-        if (pFileStatus->m_mtime != 0) { // if time defined write last edit time
+		// if time defined write last edit time
+        if (pFileStatus->m_mtime != 0) { 
             SetDlgItemText(IDC_EDITDATE, pFileStatus->m_mtime.Format("%A, %B %d, %Y, %X"));
         }
-        TCHAR szBuffer[32]; // create and write size text
+		// create and write size text
+        TCHAR szBuffer[32]; 
         swprintf_s(szBuffer, _T("%ld Bytes"), pFileStatus->m_size);
         SetDlgItemText(IDC_FILESIZE, szBuffer);
 
         // get sa parameters document member data
         if (pDoc->IsValidRecordFileFormat()) {
-            CString szTemp; // load and write file type string
+			// load and write file type string
+			CString szTemp; 
             szTemp.LoadString((UINT)pDoc->GetRecordFileFormat() + IDS_FILETYPE_UTT);
             SetDlgItemText(IDC_FILEFORMAT, szTemp);
         }
@@ -155,6 +168,7 @@ void CDlgInformationWavePage::DoDataExchange(CDataExchange * pDX) {
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
 BOOL CDlgInformationWavePage::OnInitDialog() {
+
     CPropertyPage::OnInitDialog();
     // get pointer to document
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -163,7 +177,8 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
 
     // get sa parameters document member data
     TCHAR szBuffer[32];
-    if (pDoc->GetNumberOfSamples() > 0L) { // there is an sa chunk
+    if (pDoc->GetNumberOfSamples() > 0L) { 
+		// there is an sa chunk
         if (pDoc->GetSignalBandWidth() > 0) {
             // create and write bandwith text
             swprintf_s(szBuffer, _T("%ld Hz"), pDoc->GetSignalBandWidth());
@@ -180,11 +195,14 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
     }
 
     // create and write length text
-    double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());  // get sampled data size in seconds
+	// get sampled data size in seconds
+    double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());  
     int nMinutes = (int)fDataSec / 60;
-    if (nMinutes == 0) { // length is less than one minute
+	// length is less than one minute
+    if (nMinutes == 0) { 
         swprintf_s(szBuffer, _T("%5.3f Seconds"), fDataSec);
-    } else { // length is equal ore more than one minute
+    } else { 
+		// length is equal ore more than one minute
         fDataSec = fDataSec - (float)(nMinutes * 60);
         swprintf_s(szBuffer, _T("%i:%5.3f (Min:Sec)"), nMinutes, fDataSec);
     }
@@ -440,14 +458,17 @@ void CDlgFileInformation::DoDataExchange(CDataExchange * pDX) {
 // The Apply button is deleted and a Help button inserted in its place.
 /***************************************************************************/
 void CDlgFileInformation::ChangeButtons() {
-    CWnd * pWndApply = GetDlgItem(ID_APPLY_NOW); // get pointers to the button objects
+	// get pointers to the button objects
+    CWnd * pWndApply = GetDlgItem(ID_APPLY_NOW); 
     CWnd * pWndOK = GetDlgItem(IDOK);
     CRect rButton;
-    pWndApply->GetWindowRect(rButton); // get coordinates of apply button
+	// get coordinates of apply button
+    pWndApply->GetWindowRect(rButton); 
     ScreenToClient(rButton);
     m_cHelp.Create(_T("&Help"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, rButton, this, IDHELP);
     m_cHelp.SetFont(pWndOK->GetFont());
-    pWndApply->DestroyWindow(); // delete apply button (not needed)
+	// delete apply button (not needed)
+    pWndApply->DestroyWindow(); 
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -457,10 +478,10 @@ void CDlgFileInformation::ChangeButtons() {
 // CDlgFileInformation::OnCreate Dialog creation
 /***************************************************************************/
 int CDlgFileInformation::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CPropertySheet::OnCreate(lpCreateStruct) == -1) {
+
+	if (CPropertySheet::OnCreate(lpCreateStruct) == -1) {
         return -1;
     }
-
     return 0;
 }
 
@@ -468,10 +489,10 @@ int CDlgFileInformation::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 // CDlgFileInformation::OnInitDialog Dialog initialization
 /***************************************************************************/
 BOOL CDlgFileInformation::OnInitDialog() {
-    CPropertySheet::OnInitDialog();
+
+	CPropertySheet::OnInitDialog();
     // delete apply button and move cancel and ok buttons
     ChangeButtons();
-
     return TRUE;
 }
 
@@ -479,7 +500,8 @@ BOOL CDlgFileInformation::OnInitDialog() {
 // CDlgFileInformation::OnHelpInformation Call Information help
 /***************************************************************************/
 void CDlgFileInformation::OnHelpInformation() {
-    // create the pathname
+
+	// create the pathname
     long nActiveIndex = GetActiveIndex();
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath = szPath + "::/User_Interface/Menus/File/Information/";
@@ -499,6 +521,5 @@ void CDlgFileInformation::OnHelpInformation() {
     default:
         szPath += "Information_overview.htm";
     }
-
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }

@@ -304,11 +304,12 @@ CMainFrame::CMainFrame() {
             m_GraphFontSizes.SetAt(MUSIC_PL3, MUSIC_PHRASE_DEFAULT_FONTSIZE);
             m_GraphFontSizes.SetAt(MUSIC_PL4, MUSIC_PHRASE_DEFAULT_FONTSIZE);
         }
-    } catch (CMemoryException e) {
+    } catch (CMemoryException * e) {
         // handle memory fail exception
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-        return;
+        e->Delete();
+		return;
     }
 
     m_bPrintPreviewInProgress = FALSE;
@@ -731,10 +732,11 @@ void CMainFrame::OnToolsOptions() {
                 dlg.m_dlgFontPage.m_GraphFonts.Add(GetFontFace(nLoop));
                 dlg.m_dlgFontPage.m_GraphFontSizes.Add(GetFontSize(nLoop));
             }
-        } catch (CMemoryException e) {
+        } catch (CMemoryException * e) {
             // memory allocation error
             pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-            return;
+            e->Delete();
+			return;
         }
 
         // create the modal dialog box

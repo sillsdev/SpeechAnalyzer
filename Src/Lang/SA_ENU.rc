@@ -228,12 +228,12 @@ CAPTION "File"
 FONT 8, "MS Sans Serif"
 BEGIN
     LTEXT           "Path",IDC_STATIC,12,12,16,8
-    LTEXT           "Creation Time",IDC_STATIC,12,24,46,8
-    LTEXT           "Size",IDC_STATIC,12,48,39,8
-    LTEXT           "Original Format",IDC_STATIC,10,94,50,8,NOT WS_VISIBLE
     LTEXT           "undefined",IDC_FILENAME,72,12,192,8
+    LTEXT           "Creation Time",IDC_STATIC,12,24,46,8
     LTEXT           "undefined",IDC_FILEDATE,72,24,192,8
+    LTEXT           "Size",IDC_STATIC,12,48,39,8
     LTEXT           "undefined",IDC_FILESIZE,72,48,192,8
+    LTEXT           "Original Format",IDC_STATIC,10,94,50,8,NOT WS_VISIBLE
     LTEXT           "unknown",IDC_FILEFORMAT,70,94,192,8,NOT WS_VISIBLE
     GROUPBOX        "",IDC_STATIC,7,3,60,59
     GROUPBOX        "",IDC_STATIC,66,3,204,59

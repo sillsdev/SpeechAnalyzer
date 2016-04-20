@@ -189,11 +189,13 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin) {
         if (m_dwBufferOffset != 0L) {
             try {
                 m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error seeking file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-                SetDataInvalid();// close the temporary file
-                return NULL;
+				// close the temporary file
+				SetDataInvalid();
+                e->Delete();
+				return NULL;
             }
         }
         // read the processed data block
@@ -247,13 +249,15 @@ int CProcess::GetProcessedData(DWORD dwOffset, BOOL * pbRes) {
         if (m_dwBufferOffset != 0L) {
             try {
                 m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error seeking file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-                *pbRes = FALSE; // set operation result
+				// set operation result
+				*pbRes = FALSE;
                 m_dwBufferOffset = UNDEFINED_OFFSET;
                 CloseTempFile(FALSE);
-                return 0;
+                e->Delete();
+				return 0;
             }
         }
         // read the processed data block
@@ -328,11 +332,13 @@ HPSTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
         // read the processed data block
         try {
             m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error reading file
             ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-            SetDataInvalid();// close the temporary file
-            return NULL;
+			// close the temporary file
+			SetDataInvalid();
+            e->Delete();
+			return NULL;
         }
         CloseTempFile(FALSE); // close the temporary file
         // return the new data pointer
@@ -532,11 +538,13 @@ BOOL CProcess::OpenFileToAppend() {
 
     try {
         m_pFile->SeekToEnd();
-    } catch (CFileException e) {
+    } catch (CFileException * e) {
         // error writing file
         ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-        SetDataInvalid();// close the temporary file
-        return FALSE;
+		// close the temporary file
+		SetDataInvalid();
+        e->Delete();
+		return FALSE;
     }
 
     return TRUE;
@@ -606,11 +614,13 @@ BOOL CProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength
     // write the data block from the buffer
     try {
         Write((HPSTR)lpData, dwDataLength * nElementSize);
-    } catch (CFileException e) {
+    } catch (CFileException * e) {
         // error writing file
         ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-        SetDataInvalid();// close the temporary file
-        return FALSE;
+		// close the temporary file
+		SetDataInvalid();
+        e->Delete();
+		return FALSE;
     }
     if (bClose) {
         CloseTempFile();    // close the temporary file

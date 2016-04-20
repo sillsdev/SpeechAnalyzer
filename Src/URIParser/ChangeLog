@@ -1,3 +1,43 @@
+2015-10-12 -- 0.8.4
+
+  * Fixed: Stack overflow on parsing malformed IPv6 addresses with
+      more than eigtht quads.  Thanks to Alexander Klink for the report!
+  * Soname: 1:20:0
+
+2015-10-04 -- 0.8.3
+
+  * Fixed: uriCompareRange reported NULL pointer and range of
+      length zero as equal, by mistake.
+      Thanks to Robert Kausch and his Coverity report.
+  * Fixed: Use-after-free in out-of-memory code of uriMakeOwner.
+      Thanks to Chris Hills and his Klocwork-based report (bug #28)
+  * Soname: 1:19:0
+
+2015-04-27 -- 0.8.2
+
+  * Fixed: Broken conversion from/to Windows network shares (bug #21)
+      Thanks to Adam Gross and Dmitry Repkin!
+  * Fixed: Limit uriCompareRange return values to -1/0/1 (bug #24)
+      As a side effect, this fixes the test suite for AArch64.
+      Thanks to Marcin Juszkiewicz for the patch!
+  * Fixed: MinGW Makefile:
+      LIB_DIR fixed from ../../lib leftover to ../../src (bug #27)
+      Thanks to Dmytro Zagashev for the report!
+  * Fixed: Add missing NULL checks to UriStringToFilename (bug #25)
+      Thanks to Jerome Custodio for the report!
+  * Changed: Leave inlining decisions to GCC
+  * Soname: 1:18:0
+
+2014-10-20 -- 0.8.1
+
+  * Fixed: Sync URI_VER_* preprocessor defines (were at 0.7.6, bug #23)
+  * Fixed: Bug in internal function that may flip uriEqualsUri results around
+  * Added: Function uriAddBaseUriEx allowing to resolve URIs with
+      a scheme identical to that of the base URI to resolve against
+      as if the URI to resolve had no scheme specified, when flag
+      URI_RESOLVE_IDENTICAL_SCHEME_COMPAT is specified (feature request #4)
+  * Soname: 1:17:0
+
 2014-07-12 -- 0.8.0.1
 
   * Fixed: ISO C90 warnings (bug #20)

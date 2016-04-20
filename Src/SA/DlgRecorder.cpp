@@ -536,10 +536,11 @@ void CDlgRecorder::DeleteTempFile() {
         try {
             FileUtils::Remove(m_szFileName);
             m_szFileName[0] = 0;
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error deleting file
             CSaApp * pApp = (CSaApp *)AfxGetApp();
             pApp->ErrorMessage(IDS_ERROR_DELTEMPFILE, m_szFileName);
+			e->Delete();
         }
     }
 }
@@ -1026,7 +1027,6 @@ void CDlgRecorder::OnSettings() {
         pDoc->SetFmtParm(&fmtParm);
 
         if (!GetStaticSourceInfo().bEnable) {
-            CSaDoc * pDoc = (CSaDoc *)m_pDoc;
             SourceParm * pSourceParm = pDoc->GetSourceParm();
 
             pSourceParm->szCountry.Empty();

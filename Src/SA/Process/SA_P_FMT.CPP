@@ -451,10 +451,12 @@ BOOL CProcessFormants::WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend) {
     // Write the data to the file.
     try {
         Write(pData, nDataSize);
-    } catch (CFileException e) {
+    } catch (CFileException * e) {
         // error writing file
         ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-        return FALSE; // error, writing failed
+		// error, writing failed
+		e->Delete();
+		return FALSE;
     }
 
     // Close the temporary file and read the status.
