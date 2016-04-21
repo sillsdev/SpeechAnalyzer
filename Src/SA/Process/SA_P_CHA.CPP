@@ -665,10 +665,11 @@ void * CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin) {
         if (m_dwQualityBufferOffset != 0L) {
             try {
                 m_pQualityFile->Seek(m_dwQualityBufferOffset * 2, CFile::begin);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error seeking file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
                 m_pQualityFile->Abort();
+				e->Delete();
                 return NULL;
             }
         }
@@ -722,23 +723,27 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
         if (m_dwQualityBufferOffset != 0L) {
             try {
                 m_pQualityFile->Seek(m_dwQualityBufferOffset * 2, CFile::begin);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error seeking file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
                 m_pQualityFile->Abort();
-                *bRes = FALSE; // set operation result
-                return 0;
+				// set operation result
+				*bRes = FALSE;
+                e->Delete();
+				return 0;
             }
         }
         // read the processed quality data block
         try {
             m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error reading file
             ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
-            *bRes = FALSE; // set operation result
-            return 0;
+			// set operation result
+			*bRes = FALSE;
+            e->Delete();
+			return 0;
         }
         // close the quality data temp file
         if (m_pQualityFile) {

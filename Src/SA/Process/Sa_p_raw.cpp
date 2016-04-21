@@ -111,10 +111,12 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
             // write the processed data block
             try {
                 Write(m_lpBuffer, dwProcessCount * sizeof(short));
-            } catch (CFileException) {
+            } catch (CFileException * e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                return Exit(PROCESS_ERROR);             // error, writing failed
+				// error, writing failed
+				e->Delete();
+				return Exit(PROCESS_ERROR);
             }
 
             dwProcessCount = 0;                         // reset counter

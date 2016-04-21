@@ -218,10 +218,12 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
                 // write one result of the processed grappl pitch data
                 try {
                     Write((HPSTR)&pResults->fsmooth16, sizeof(int16));
-                } catch (CFileException e) {
+                } catch (CFileException * e) {
                     // error writing file
                     ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                    return Exit(PROCESS_ERROR); // error, writing failed
+					// error, writing failed
+					e->Delete();
+					return Exit(PROCESS_ERROR);
                 }
                 pResults++;
             }

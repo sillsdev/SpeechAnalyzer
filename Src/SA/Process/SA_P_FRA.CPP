@@ -207,10 +207,12 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             // write the processed data block
             try {
                 Write(m_lpBuffer, m_pFragmenter->GetFragmentBlockLength() * sizeof(SFragParms));
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                return Exit(PROCESS_ERROR); // error, writing failed
+				// error, writing failed
+				e->Delete();
+				return Exit(PROCESS_ERROR);
             }
             break;
         }

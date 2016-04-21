@@ -272,11 +272,14 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
                 // save powers in the file
                 Write(pPower, (DWORD)nSpectSize);
             }
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error writing file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-            delete pSpectrogram; // delete the spectrogram object
-            return Exit(PROCESS_ERROR); // error, writing failed
+			// delete the spectrogram object
+			delete pSpectrogram;
+			// error, writing failed
+			e->Delete();
+			return Exit(PROCESS_ERROR);
         }
         bAliased = pSpectrogram->IsAliased();
         delete pSpectrogram; // delete the spectrogram object

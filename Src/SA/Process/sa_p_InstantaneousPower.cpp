@@ -154,12 +154,15 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
             // write the processed data block
             try {
                 Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
-            } catch (CFileException e) {
-                AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0); // display message
-                EndProcess(); // end data processing
+            } catch (CFileException * e) {
+				// display message
+				AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+				// end data processing
+				EndProcess();
                 EndWaitCursor();
                 SetDataInvalid();
-                return MAKELONG(-1, nProgress);
+                e->Delete();
+				return MAKELONG(-1, nProgress);
             }
             dwProcDataCount = 0; // reset counter
             pProcData = (short *)m_lpBuffer; // reset pointer to begin of processed data buffer
@@ -181,12 +184,15 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
     if (dwProcDataCount) {
         try {
             Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
-        } catch (CFileException e) {
-            AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0); // display message
-            EndProcess(); // end data processing
+        } catch (CFileException * e) {
+			// display message
+			AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+			// end data processing
+			EndProcess();
             EndWaitCursor();
             SetDataInvalid();
-            return MAKELONG(-1, nProgress);
+            e->Delete();
+			return MAKELONG(-1, nProgress);
         }
     }
 

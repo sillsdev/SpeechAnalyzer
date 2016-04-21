@@ -249,10 +249,12 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
                 // write one result of the processed melogram data
                 try {
                     Write((HPSTR)&nSemitone100, sizeof(int16));
-                } catch (CFileException e) {
+                } catch (CFileException * e) {
                     // error writing file
                     ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                    return Exit(PROCESS_ERROR); // error, writing failed
+					// error, writing failed
+					e->Delete();
+					return Exit(PROCESS_ERROR);
                 }
                 pResults++;
             }

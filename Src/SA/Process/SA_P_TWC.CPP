@@ -172,11 +172,13 @@ long CProcessTonalWeightChart::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFr
     // write the processed data block
     try {
         Write(m_lpBuffer, ppoHist->GetHistogramParms().nBins * 2);
-    } catch (CFileException e) {
+    } catch (CFileException * e) {
         // error writing file
         ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
         ProcessFreeMem;
-        return Exit(PROCESS_ERROR); // error, writing failed
+		// error, writing failed
+		e->Delete();
+		return Exit(PROCESS_ERROR);
     }
     ProcessFreeMem;
     // calculate the actual progress

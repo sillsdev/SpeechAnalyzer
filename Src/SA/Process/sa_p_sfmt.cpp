@@ -301,11 +301,13 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                                 try {
                                     // write the formant frequenciess
                                     Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
-                                } catch (CFileException e) {
+                                } catch (CFileException * e) {
                                     // error writing file
                                     pFormants->ResetTracking();
                                     ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                                    return Exit(PROCESS_ERROR); // error, writing failed
+									// error, writing failed
+									e->Delete();
+									return Exit(PROCESS_ERROR);
                                 }
                             }
                             pFormants->ResetTracking();
@@ -322,11 +324,13 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                         try {
                             // write unvoiced formant frame
                             Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
-                        } catch (CFileException e) {
+                        } catch (CFileException * e) {
                             // error writing file
                             pFormants->ResetTracking();
                             ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                            return Exit(PROCESS_ERROR); // error, writing failed
+							// error, writing failed
+							e->Delete();
+							return Exit(PROCESS_ERROR);
                         }
                     }
                 }
@@ -393,11 +397,13 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                             try {
                                 // write the formants
                                 Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
-                            } catch (CFileException e) {
+                            } catch (CFileException * e) {
                                 // error writing file
                                 pFormants->ResetTracking();
                                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                                return Exit(PROCESS_ERROR); // error, writing failed
+								e->Delete();
+								// error, writing failed
+								return Exit(PROCESS_ERROR);
                             }
                         }
                         pFormants->ResetTracking();

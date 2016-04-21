@@ -85,11 +85,12 @@ HPSTR CProcessDoc::GetProcessedWaveData(LPCTSTR szName, int selectedChannel, int
             DWORD index = m_dwBufferOffset*numChannels;
             //TRACE("seek %d\n",index);
             file.Seek(index, CFile::begin);
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error seeking file
             pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
-            return NULL;
+            e->Delete();
+			return NULL;
         }
     }
 

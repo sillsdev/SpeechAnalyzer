@@ -184,10 +184,12 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
                         if (dwDataPos >= dwDataSize) {
                             Write(m_lpBuffer, 2);
                         }
-                    } catch (CFileException e) {
+                    } catch (CFileException * e) {
                         // error writing file
                         ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                        return Exit(PROCESS_ERROR); // error, writing failed
+						// error, writing failed
+						e->Delete();
+						return Exit(PROCESS_ERROR);
                     }
                     dwLoudCount = 0; // reset counter
                     pLoudData = (short int *)m_lpBuffer; // reset pointer to begin of loudness data buffer
@@ -467,10 +469,12 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc * pDoc, HPSTR pTarget, UINT n
     }
     try {
         m_pSRDfile->Write((HPSTR)(pTarget + GetProcessBufferSize()), dwAmount);
-    } catch (CFileException e) {
+    } catch (CFileException * e) {
         // error writing file
         ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_SRDfileStatus.m_szFullName);
-        return NULL; // writing failed
+		// writing failed
+		e->Delete();
+		return NULL;
     }
     return pTarget + GetProcessBufferSize();
 }
@@ -738,20 +742,22 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
         if (m_dwSRDBufferOffset != 0L) {
             try {
                 m_pSRDfile->Seek(m_dwSRDBufferOffset, CFile::begin);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error seeking file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, m_SRDfileStatus.m_szFullName);
                 m_pSRDfile->Abort();
+				e->Delete();
                 return NULL;
             }
         }
         // read the processed data block
         try {
             m_pSRDfile->Read((HPSTR)m_lpSRDdata, GetProcessBufferSize());
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error reading file
             ErrorMessage(IDS_ERROR_READTEMPFILE, m_SRDfileStatus.m_szFullName);
             m_pSRDfile->Abort();
+			e->Delete();
             return NULL;
         }
 

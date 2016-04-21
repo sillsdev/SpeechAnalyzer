@@ -136,10 +136,12 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             // write the processed change data block
             try {
                 Write(m_lpBuffer, dwChangeCount * 2);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                return Exit(PROCESS_ERROR); // error, writing failed
+				// error, writing failed
+				e->Delete();
+				return Exit(PROCESS_ERROR);
             }
             pChangeData = (short int *)m_lpBuffer; // reset pointer to begin of change data buffer
             dwChangeBlock += dwChangeCount;

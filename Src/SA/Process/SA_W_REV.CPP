@@ -222,12 +222,14 @@ long CProcessWbEcho::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             // write the processed data block
             try {
                 Write(m_lpBuffer, dwBufferSize);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error writing file
                 ::GlobalUnlock(hFifo);
                 ::GlobalFree(hFifo);
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-                return Exit(PROCESS_ERROR); // error, writing failed
+				// error, writing failed
+				e->Delete();
+				return Exit(PROCESS_ERROR);
             }
         }
     }
@@ -523,12 +525,13 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
             // write the processed data block
             try {
                 Write(m_lpBuffer, dwBufferSize);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error writing file
                 ::GlobalUnlock(hFifo);
                 ::GlobalFree(hFifo);
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
+				e->Delete();
                 return Exit(PROCESS_ERROR); 
             }
         }

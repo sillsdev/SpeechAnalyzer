@@ -2034,7 +2034,8 @@ BOOL SPartWindowData::MusicXMLOut(LPCSTR filename) {
 }
 
 BOOL SPartWindowData::MIDIIn(LPCSTR filename) {
-    if (!filename || !*filename) {
+    
+	if (!filename || !*filename) {
         return FALSE;
     }
 
@@ -2061,7 +2062,7 @@ BOOL SPartWindowData::MIDIIn(LPCSTR filename) {
     }
     lpstrChunkName[4] = 0;
     if (!infile.good() || strcmp(lpstrChunkName, "MThd")) {
-        delete infile;
+		infile.close();
         return FALSE;
     }
 
@@ -2220,6 +2221,7 @@ BOOL SPartWindowData::MIDIIn(LPCSTR filename) {
                             SetClef(WhichClef());
                         }
                         InvalidateRgn(hMyself,NULL,0);
+						infile.close();
                         return 0;
                     } else { // empty track. try next one
                         infile.ignore(1);
@@ -2289,6 +2291,7 @@ BOOL SPartWindowData::MIDIIn(LPCSTR filename) {
         SetClef(WhichClef());
     }
     InvalidateRgn(hMyself,NULL,0);
+	infile.close();
     return(0);
 
 }

@@ -869,9 +869,10 @@ void CSaApp::OnProcessBatchCommands() {
             try { // SDM 1.5Test10.0
                 // delete the list file
                 FileUtils::Remove(szPath);
-            } catch (CFileException e) {
+            } catch (CFileException * e) {
                 // error removing file
                 ErrorMessage(IDS_ERROR_DELLISTFILE, szPath);
+				e->Delete();
             }
         } else {
             CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
@@ -1020,9 +1021,10 @@ void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
         }
 		// add the string to the array
         m_pszErrors.Add(szText); 
-    } catch (CMemoryException e) {
+    } catch (CMemoryException * e) {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
+		e->Delete();
     }
 }
 
@@ -1044,9 +1046,10 @@ void CSaApp::Message( UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
             szText.LoadString(nTextID);
         }
         m_pszMessages.Add(szText); // add the string to the array
-    } catch (CMemoryException e) {
+    } catch (CMemoryException * e) {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
+		e->Delete();
     }
 }
 

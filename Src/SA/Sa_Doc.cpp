@@ -2722,9 +2722,10 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
     // seek insert position
     try {
         file.Seek(insertPos,CFile::begin);
-    } catch (CFileException e) {
+    } catch (CFileException * e) {
         // error opening file
         ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
+		e->Delete();
         return FALSE;
     }
 
@@ -3066,10 +3067,11 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, WAVETIME sta
             DWORD dwCopy = (dwSize > _countof(buffer)) ? _countof(buffer) : dwSize;
             dwCopied = sourceFile.Read(buffer, dwCopy);
             targetFile.Write(buffer, dwCopied);
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             sourceFile.Abort(); // close the source file
             targetFile.Abort(); // close the target file
-            return FALSE;
+            e->Delete();
+			return FALSE;
         }
         dwSize -= dwCopied;
     }
@@ -3914,10 +3916,11 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
         }
         try {
             file.SetLength(tempSize - dwSectionLength);
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error writing file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
-            return FALSE;
+            e->Delete();
+			return FALSE;
         }
 
         // SDM 1.06.6U4 - Change Document after checkpoint (except wave)
@@ -4001,11 +4004,12 @@ BOOL CSaDoc::PasteClipboardToWave(HGLOBAL hData, WAVETIME insertTime) {
                 Undo(FALSE);
                 return FALSE;  // Reason displayed in failed function
             }
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error writing file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
             FileUtils::Remove(szTempPath);
-            return FALSE;
+            e->Delete();
+			return FALSE;
         }
 
         DWORD newSize = FileUtils::GetFileSize(lpszRawTempPath);
@@ -4123,14 +4127,18 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
                 // write the data block from the buffer
                 try {
                     file.Write(buffer, (DWORD)lSizeRead);
-                } catch (CFileException e) {
+                } catch (CFileException * e) {
                     // error writing file
                     ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
-                    m_dwDataSize = 0;       // no data available
-                    SetModifiedFlag(FALSE); // will be unable to save
-                    pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
+					// no data available
+					m_dwDataSize = 0;
+					// will be unable to save
+					SetModifiedFlag(FALSE);
+					// close file
+					pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L);
                     Undo(FALSE);
-                    return FALSE;
+                    e->Delete();
+					return FALSE;
                 }
             }
 
@@ -4143,10 +4151,11 @@ BOOL CSaDoc::InsertSilenceIntoWave(WAVETIME silence, WAVETIME insertAt, int repe
 
             // fragment the waveform
             m_pProcessFragments->SetDataInvalid();  // remove old fragmented data
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error writing file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
-            return FALSE;
+            e->Delete();
+			return FALSE;
         }
 
         // copy the 'post' section part of the wave
@@ -5079,9 +5088,10 @@ void CSaDoc::CopyProcessTempFile() {
             if (!m_szRawDataWrk.empty()) {
                 CopyWave(pszProcTempPath, m_szRawDataWrk.c_str());
             }
-        } catch (CFileException e) {
+        } catch (CFileException * e) {
             // error copying wave file
             ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_szRawDataWrk.c_str());
+			e->Delete();
         }
 
         // get file information
