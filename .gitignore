@@ -1,0 +1,6 @@
+obj/
+bin/
+*.vs
+Src/build
+*.VC.db
+Output/
