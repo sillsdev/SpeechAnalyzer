@@ -1,0 +1,4 @@
+[submodule "Src/xerces-c"]
+	path = Src/xerces-c
+	url = https://github.com/apache/xerces-c.git
+	branch = xerces-3.1
