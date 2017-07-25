@@ -150,11 +150,10 @@ BOOL CSegmentSelection::SelectFromPosition( CSaView * pView, int type, DWORD dwP
 
 		// Start at current stop
 		DWORD dwStart = dwPosition; 
-        DWORD dwStop;
 
         // Snap Start Position
         dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, dwStart, SNAP_LEFT);
-        dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+        DWORD dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
         if (pDoc->Is16Bit()) {
 			// Round up
@@ -516,7 +515,7 @@ BOOL CSegmentSelection::SetSelectedAnnotationString( CSaView * pView, CSaString 
             return FALSE;
         }
 
-        // Add refreshes graphs, set modified flag, & check point
+        // 'Add' refreshes graphs, set modified flag, & check point
         if (pSegment->GetMasterIndex() != -1) {
             ((CDependentSegment *) pSegment)->Add(pDoc, pView, m_dwStart, szString, false, bCheck);
 			pView->RedrawGraphs(FALSE);
@@ -548,6 +547,7 @@ BOOL CSegmentSelection::SetSelectedAnnotationString( CSaView * pView, CSaString 
             pView->GetDocument()->CheckPoint();
         }
         // ReplaceSelectedSegment refreshes graphs, sets modified flag
+		TRACE("replace segment\n");
         pSegment->ReplaceSelectedSegment(pView->GetDocument(),szString);
     }
 

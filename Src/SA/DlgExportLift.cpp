@@ -67,7 +67,7 @@ CDlgExportLift::CDlgExportLift(LPCTSTR docTitle,
                                BOOL phonemic,
                                BOOL phonetic,
                                BOOL reference,
-                               list<wstring> codes,
+                               map<wstring,wstring> codes,
                                CWnd * pParent) :
     CDialog(CDlgExportLift::IDD, pParent) {
 
@@ -83,7 +83,7 @@ CDlgExportLift::CDlgExportLift(LPCTSTR docTitle,
     settings.bPhrase4 = false;
     settings.szDocTitle = docTitle;
 	settings.szPath = szPath;
-    iso = codes;
+	countryCodes = codes;
 }
 
 BOOL CDlgExportLift::OnInitDialog() {
@@ -125,17 +125,19 @@ BOOL CDlgExportLift::OnInitDialog() {
 
     CenterWindow();
 
-    list<wstring>::iterator it = iso.begin();
-    while (it!=iso.end()) {
-        wstring code = *it;
-        ctlReferenceList.AddString(code.c_str());
-        ctlOrthoList.AddString(code.c_str());
-        ctlGlossList.AddString(code.c_str());
-        ctlGlossNatList.AddString(code.c_str());
-        ctlPhonemicList.AddString(code.c_str());
-        ctlPhoneticList.AddString(code.c_str());
-		ctlPhraseList1List.AddString(code.c_str());
-		ctlPhraseList2List.AddString(code.c_str());
+    map<wstring,wstring>::iterator it = countryCodes.begin();
+    while (it!=countryCodes.end()) {
+		// the key is the language name
+		// the value is the language code
+		wstring name = it->first;
+        ctlReferenceList.AddString(name.c_str());
+        ctlOrthoList.AddString(name.c_str());
+        ctlGlossList.AddString(name.c_str());
+        ctlGlossNatList.AddString(name.c_str());
+        ctlPhonemicList.AddString(name.c_str());
+        ctlPhoneticList.AddString(name.c_str());
+		ctlPhraseList1List.AddString(name.c_str());
+		ctlPhraseList2List.AddString(name.c_str());
         it++;
     }
 
@@ -184,32 +186,38 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         settings.szPath = buffer;
 
         ctlGlossList.GetWindowTextW(buffer);
-        settings.gloss = buffer;
+        settings.gloss = lookupCountryCode(buffer);
 
         ctlGlossNatList.GetWindowTextW(buffer);
-        settings.glossNat = buffer;
+        settings.glossNat = lookupCountryCode(buffer);
 
         ctlReferenceList.GetWindowTextW(buffer);
-        settings.reference = buffer;
+        settings.reference = lookupCountryCode(buffer);
 
         ctlOrthoList.GetWindowTextW(buffer);
-        settings.ortho = buffer;
+        settings.ortho = lookupCountryCode(buffer);
 
         ctlPhonemicList.GetWindowTextW(buffer);
-        settings.phonemic = buffer;
+        settings.phonemic = lookupCountryCode(buffer);
 
         ctlPhoneticList.GetWindowTextW(buffer);
-        settings.phonetic = buffer;
+        settings.phonetic = lookupCountryCode(buffer);
 
         ctlPhraseList1List.GetWindowTextW(buffer);
-        settings.phrase1 = buffer;
+        settings.phrase1 = lookupCountryCode(buffer);
 
         ctlPhraseList2List.GetWindowTextW(buffer);
-        settings.phrase2 = buffer;
+        settings.phrase2 = lookupCountryCode(buffer);
 
         ctlComboFieldWorksProject.ResetContent();
 
     }
+}
+
+CString CDlgExportLift::lookupCountryCode(LPCTSTR value) {
+	map<wstring,wstring>::iterator it = countryCodes.find(value);
+	if (it!=countryCodes.end()) return it->second.c_str();
+	return L"";
 }
 
 void CDlgExportLift::SetEnable(int nItem, BOOL bEnable) {

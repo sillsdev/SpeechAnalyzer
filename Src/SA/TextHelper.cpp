@@ -2,6 +2,8 @@
 #include "TextHelper.h"
 #include "objectostream.h"
 #include <iostream>
+#include <string>
+#include <vector>
 
 using std::vector;
 using std::ifstream;
@@ -9,6 +11,7 @@ using std::streampos;
 using std::stringstream;
 using std::wstringstream;
 using std::wistringstream;
+using std::wstring;
 
 /*
 * uses the current position in the stream
@@ -23,7 +26,7 @@ vector<wstring> TokenizeBufferToLines(wistringstream & stream) {
         if ((c==0x0d)||(c==0x0a)) {
             if (line.size()>0) {
                 lines.push_back(line);
-            }
+            }                     
             line.clear();
         } else {
             line.push_back(c);
@@ -126,13 +129,13 @@ TranscriptionDataMap AttemptTabDelimitedRefOnly(const vector<wstring> & lines, c
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens = *it;
-        vector<wstring>::iterator it2 = tokens.begin();
+        vector<wstring> tokens2 = *it;
+        vector<wstring>::iterator it2 = tokens2.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token = *it2;
-            map[marker].push_back(CSaString(token.c_str()));
+            wstring token2 = *it2;
+            map[marker].push_back(CSaString(token2.c_str()));
             it2++;
             it3++;
         }
@@ -182,13 +185,13 @@ TranscriptionDataMap AttemptTabDelimited(vector<wstring> lines, MarkerList marke
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens = *it;
-        vector<wstring>::iterator it2 = tokens.begin();
+        vector<wstring> tokens2 = *it;
+        vector<wstring>::iterator it2 = tokens2.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token = *it2;
-            map[marker].push_back(CSaString(token.c_str()));
+            wstring token2 = *it2;
+            map[marker].push_back(CSaString(token2.c_str()));
             it2++;
             it3++;
         }
@@ -238,13 +241,13 @@ TranscriptionDataMap AttemptWhitespaceDelimited(vector<wstring> lines, MarkerLis
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens = *it;
-        vector<wstring>::iterator it2 = tokens.begin();
+        vector<wstring> tokens2 = *it;
+        vector<wstring>::iterator it2 = tokens2.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token = *it2;
-            map[marker].push_back(CSaString(token.c_str()));
+            wstring token2 = *it2;
+            map[marker].push_back(CSaString(token2.c_str()));
             it2++;
             it3++;
         }
@@ -300,13 +303,13 @@ TranscriptionDataMap AttemptTwoMarkerWhitespaceDelimited(vector<wstring> lines, 
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens = *it;
-        vector<wstring>::iterator it2 = tokens.begin();
+        vector<wstring> tokens2 = *it;
+        vector<wstring>::iterator it2 = tokens2.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token = *it2;
-            map[marker].push_back(CSaString(token.c_str()));
+            wstring token2 = *it2;
+            map[marker].push_back(CSaString(token2.c_str()));
             it2++;
             it3++;
         }
@@ -364,24 +367,24 @@ bool CTextHelper::ImportText(wistringstream & stream,
     return false;
 }
 
-vector<string> Tokenize(const string & str, const string & delimiters) {
+vector<string> CTextHelper::Tokenize(const string & in, const string & delimiters) {
 
     vector<string> tokens;
     string::size_type delimPos = 0;
     string::size_type tokenPos = 0;
     string::size_type pos = 0;
 
-    if (str.length()<1) {
+    if (in.length()<1) {
         return tokens;
     }
     while (1) {
-        delimPos = str.find_first_of(delimiters, pos);
-        tokenPos = str.find_first_not_of(delimiters, pos);
+        delimPos = in.find_first_of(delimiters, pos);
+        tokenPos = in.find_first_not_of(delimiters, pos);
 
         if (string::npos != delimPos) {
             if (string::npos != tokenPos) {
                 if (tokenPos<delimPos) {
-                    tokens.push_back(str.substr(pos,delimPos-pos));
+                    tokens.push_back(in.substr(pos,delimPos-pos));
                 } else {
                     tokens.push_back("");
                 }
@@ -391,7 +394,7 @@ vector<string> Tokenize(const string & str, const string & delimiters) {
             pos = delimPos+1;
         } else {
             if (string::npos != tokenPos) {
-                tokens.push_back(str.substr(pos));
+                tokens.push_back(in.substr(pos));
             } else {
                 tokens.push_back("");
             }
@@ -399,5 +402,116 @@ vector<string> Tokenize(const string & str, const string & delimiters) {
         }
     }
     return tokens;
+}
+
+vector<string> CTextHelper::Tokenize(const string & in, char delimiter) {
+
+	vector<string> tokens;
+	string::size_type delimPos = 0;
+	string::size_type tokenPos = 0;
+	string::size_type pos = 0;
+
+	if (in.length()<1) {
+		return tokens;
+	}
+	while (1) {
+		delimPos = in.find_first_of(delimiter, pos);
+		tokenPos = in.find_first_not_of(delimiter, pos);
+
+		if (string::npos != delimPos) {
+			if (string::npos != tokenPos) {
+				if (tokenPos<delimPos) {
+					tokens.push_back(in.substr(pos, delimPos - pos));
+				} else {
+					tokens.push_back("");
+				}
+			} else {
+				tokens.push_back("");
+			}
+			pos = delimPos + 1;
+		} else {
+			if (string::npos != tokenPos) {
+				tokens.push_back(in.substr(pos));
+			} else {
+				tokens.push_back("");
+			}
+			break;
+		}
+	}
+	return tokens;
+}
+
+vector<wstring> CTextHelper::Tokenize(const wstring & in, const wstring & delimiters) {
+
+	vector<wstring> tokens;
+	string::size_type delimPos = 0;
+	string::size_type tokenPos = 0;
+	string::size_type pos = 0;
+
+	if (in.length()<1) {
+		return tokens;
+	}
+	while (1) {
+		delimPos = in.find_first_of(delimiters, pos);
+		tokenPos = in.find_first_not_of(delimiters, pos);
+
+		if (string::npos != delimPos) {
+			if (string::npos != tokenPos) {
+				if (tokenPos<delimPos) {
+					tokens.push_back(in.substr(pos, delimPos - pos));
+				} else {
+					tokens.push_back(L"");
+				}
+			} else {
+				tokens.push_back(L"");
+			}
+			pos = delimPos + 1;
+		} else {
+			if (string::npos != tokenPos) {
+				tokens.push_back(in.substr(pos));
+			} else {
+				tokens.push_back(L"");
+			}
+			break;
+		}
+	}
+	return tokens;
+}
+
+vector<wstring> CTextHelper::Tokenize(const wstring & in, wchar_t delimiter) {
+
+	vector<wstring> tokens;
+	string::size_type delimPos = 0;
+	string::size_type tokenPos = 0;
+	string::size_type pos = 0;
+
+	if (in.length()<1) {
+		return tokens;
+	}
+	while (1) {
+		delimPos = in.find_first_of(delimiter, pos);
+		tokenPos = in.find_first_not_of(delimiter, pos);
+
+		if (string::npos != delimPos) {
+			if (string::npos != tokenPos) {
+				if (tokenPos<delimPos) {
+					tokens.push_back(in.substr(pos, delimPos - pos));
+				} else {
+					tokens.push_back(L"");
+				}
+			} else {
+				tokens.push_back(L"");
+			}
+			pos = delimPos + 1;
+		} else {
+			if (string::npos != tokenPos) {
+				tokens.push_back(in.substr(pos));
+			} else {
+				tokens.push_back(L"");
+			}
+			break;
+		}
+	}
+	return tokens;
 }
 

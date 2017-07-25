@@ -200,7 +200,7 @@ void CSelfTestRunner::GetSystemInfo() {
         if (vi.dwMinorVersion==0) {
             sprintf_s(msg,512,"Windows 95 (%lu.%lu, build %u)",vi.dwMajorVersion,vi.dwMinorVersion,(UINT)LOWORD(vi.dwBuildNumber));
         } else {
-            sprintf_s(msg,512,"Windows %s (%lu.%lu, build %lu)", vi.dwMinorVersion>50?_T("ME"):_T("98"),vi.dwMajorVersion,vi.dwMinorVersion,vi.dwBuildNumber);
+            sprintf_s(msg,512,"Windows %ws (%lu.%lu, build %lu)", vi.dwMinorVersion>50?_T("ME"):_T("98"),vi.dwMajorVersion,vi.dwMinorVersion,vi.dwBuildNumber);
         }
         break;
     case VER_PLATFORM_WIN32_NT: {
@@ -516,7 +516,7 @@ int CSelfTestRunner::FileCompare(CSelfTest::Test & testresult, LPCTSTR szFileOne
 
     if (!FileUtils::FileExists(szFileOne)) {
         char msg[512];
-        sprintf_s(msg,512,"Unable to open file %s", szFileOne);
+        sprintf_s(msg,512,"Unable to open file %ws", szFileOne);
         testresult.details.push_back(msg);
     }
 
@@ -565,9 +565,9 @@ int CSelfTestRunner::FileCompare(CSelfTest::Test & testresult, LPCTSTR szFileOne
     ULONGLONG dwFile2Len=File2.GetLength();
     if (dwFile1Len!=dwFile2Len) { // Files are different length
         char msg[512];
-        sprintf_s(msg,512,"%s has a length of %lu",Utf8(szFileOne).c_str(),dwFile1Len);
+        sprintf_s(msg,512,"%s has a length of %llu",Utf8(szFileOne).c_str(),dwFile1Len);
         testresult.details.push_back(msg);
-        sprintf_s(msg,512,"%s has a length of %lu",Utf8(szFileTwo).c_str(),dwFile2Len);
+        sprintf_s(msg,512,"%s has a length of %llu",Utf8(szFileTwo).c_str(),dwFile2Len);
         testresult.details.push_back(msg);
 
         File1.Close();
@@ -595,7 +595,7 @@ int CSelfTestRunner::FileCompare(CSelfTest::Test & testresult, LPCTSTR szFileOne
     }
     if ((nFirstDifference != -1) && (nFileDifferences > nTolerableDifferences)) {
         char buffer[512];
-        sprintf_s(buffer, 512, "Files differ in %ld of %lu bytes",nFileDifferences,File1.GetLength());
+        sprintf_s(buffer, 512, "Files differ in %ld of %llu bytes",nFileDifferences,File1.GetLength());
         testresult.details.push_back(buffer);
         HexDataCompare(testresult, File1, File2, nFirstDifference);
 

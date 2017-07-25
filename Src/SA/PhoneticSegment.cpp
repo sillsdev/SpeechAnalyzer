@@ -54,7 +54,8 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) 
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
     // get the new cursor positions
-    AdjustCursorsToSnap(pDoc); // snap cursors to appropriate position
+    AdjustCursorsToSnap(pDoc); 
+	// snap cursors to appropriate position
     DWORD dwStart = pView->GetStartCursorPosition();
     DWORD dwStop = pView->GetStopCursorPosition();
 
@@ -63,6 +64,8 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) 
     if (dwOldOffset == -1) {
         return;
     }
+
+	TRACE("ReplaceSelectedSegment %d %d %d\n",dwStart,dwStop,dwOldOffset);
 
     pDoc->SetModifiedFlag(TRUE);        // document has been modified
     pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
@@ -81,9 +84,10 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) 
     for (int nLoop = 1; nLoop <= GLOSS; nLoop++) {
         //SDM 1.5Test8.1 Segments after gloss dependent on gloss
         CSegment * pSegment = pDoc->GetSegment(nLoop);
-        if (pSegment) {
+        if (pSegment!=NULL) {
             int nIndex = pSegment->FindOffset(dwOldOffset);
             if (nIndex != -1) {
+				TRACE("adjust %s %d %d %d %d\n",pSegment->GetRuntimeClass()->m_lpszClassName,nLoop,nIndex,dwStart,(dwStop-dwStart));
                 pSegment->Adjust( pDoc, nIndex, dwStart, dwStop - dwStart, false);
             }
         }

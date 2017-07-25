@@ -206,6 +206,7 @@
 #include "DlgImportsfmref.h"
 #include "DlgExportFWResult.h"
 #include "DlgExportFW.h"
+#include "TextHelper.h"
 
 #include "ScopedCursor.h"
 #include "SplitFileUtils.h"
@@ -1348,63 +1349,8 @@ void CSaView::OnExportLift() {
     int pos2 = fullPath.ReverseFind('\\');
     fullPath = fullPath.Left(pos2);
 
-    wstring filepath = (LPCTSTR)fullPath;
-    filepath.append(L"\\");
-    filepath.append(L"iso639.txt");
-
-    FILE * ifile = NULL;
-    errno_t err = fopen_s(&ifile,utf8(filepath.c_str()).c_str(),"rb");
-    if (err!=0) {
-        GetApp().ErrorMessage(IDS_NO_ISO,filepath.c_str());
-        return;
-    }
-
-    DWORD len = FileUtils::GetFileSize(utf8(filepath.c_str()).c_str());
-    // read in the file
-    char * data = new char[len];
-    size_t read = fread(data, 1, len, ifile);
-    fclose(ifile);
-    if (read!=len) {
-        delete [] data;
-        ErrorMessage(IDS_NO_ISO);
-        return;
-    }
-
-    // break the data into lines
-    list<wstring> lines;
-    string buffer;
-    for (size_t i=0; i<read; i++) {
-        if ((data[i]==0x0d)||(data[i]==0x0a)) {
-            if (buffer.size()>0) {
-                lines.push_back(utf16(buffer));
-                buffer.clear();
-            }
-        } else {
-            buffer.push_back(data[i]);
-        }
-    }
-
-    // pull on the 2-character country codes
-    list<wstring> codes;
-    list<wstring>::iterator it = lines.begin();
-    while (it!=lines.end()) {
-        wstring line = *it;
-        size_t delimit = 0;
-        for (size_t j=0; j<line.size(); j++) {
-            if (line[j]=='|') {
-                delimit++;
-                continue;
-            }
-            if (delimit==2) {
-                wstring code;
-                code.push_back(line[j]);
-                code.push_back(line[j+1]);
-                codes.push_back(code);
-                break;
-            }
-        }
-        it++;
-    }
+	map<wstring,wstring> codes;
+	ExtractCountryCodes(fullPath,codes);
 
 	// determine the export directory
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
@@ -1426,6 +1372,59 @@ void CSaView::OnExportLift() {
 		pApp->WriteProfileStringW(L"Lift",L"LastExport",dlg.settings.szPath);
         pDoc->DoExportLift(dlg.settings);
     }
+}
+
+void CSaView::ExtractCountryCodes(LPCTSTR fullPath, map<wstring,wstring> & codes) {
+
+	wstring filepath = (LPCTSTR)fullPath;
+	filepath.append(L"\\");
+	filepath.append(L"iso639.txt");
+
+	FILE * ifile = NULL;
+	errno_t err = fopen_s(&ifile, utf8(filepath.c_str()).c_str(), "rb");
+	if (err != 0) {
+		GetApp().ErrorMessage(IDS_NO_ISO, filepath.c_str());
+		return;
+	}
+
+	DWORD len = FileUtils::GetFileSize(utf8(filepath.c_str()).c_str());
+	// read in the file
+	char * data = new char[len];
+	size_t read = fread(data, 1, len, ifile);
+	fclose(ifile);
+	if (read != len) {
+		delete[] data;
+		ErrorMessage(IDS_NO_ISO);
+		return;
+	}
+
+	// break the data into lines
+	list<wstring> lines;
+	string buffer;
+	for (size_t i = 0; i<read; i++) {
+		if ((data[i] == 0x0d) || (data[i] == 0x0a)) {
+			if (buffer.size()>0) {
+				lines.push_back(utf16(buffer));
+				buffer.clear();
+			}
+		} else {
+			buffer.push_back(data[i]);
+		}
+	}
+
+	// pull in the 2-character country codes and the description
+	list<wstring>::iterator it = lines.begin();
+	while (it != lines.end()) {
+		// we only extract if both the 2-character code and the name are present
+		wstring line = *it;
+		vector<wstring> tokens = CTextHelper::Tokenize(line,L"|");
+		if (tokens.size() > 3) {
+			if ((tokens[2].length()>0) && (tokens[3].length()>0)) {
+				codes[tokens[3]] = tokens[2];
+			}
+		}
+		it++;
+	}
 }
 
 /***************************************************************************/
@@ -6264,7 +6263,6 @@ void CSaView::InitialUpdate(BOOL bTemp) {
             pDoc->SetTitle(docTitle);
         }
 		// SDM don't open 10-20 blank graphs...
-		CSaApp * pApp = (CSaApp*)AfxGetApp();
         CreateOpenAsGraphs(pApp->GetOpenAsID()); 
     } else {
         if (bTemp) {
@@ -8511,8 +8509,8 @@ void CSaView::OnEditAddPhonetic() {
 
         // Adjust Gloss
         if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt))) {
-            int nPrevious = pPhonetic->GetPrevious(nInsertAt);
-            int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
+            int nPrevious2 = pPhonetic->GetPrevious(nInsertAt);
+            int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious2));
             if (nIndex != -1) {
                 pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex),false);
                 pGlossNat->Adjust(pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc,nIndex),false);
@@ -8707,8 +8705,8 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
                 DWORD nextOffset = pSeg->GetOffset(nNext);
                 if (nextOffset<(stopPos+byteCount)) { // SDM 1.5Test10.2
                     DWORD stop = pSeg->GetStop(nNext);
-                    CURSORPOS stopPos = GetStopCursorPosition();
-                    pSeg->Adjust(pDoc,nNext,stopPos,stop-stopPos,false);
+                    CURSORPOS stopPos2 = GetStopCursorPosition();
+                    pSeg->Adjust(pDoc,nNext,stopPos2,stop-stopPos2,false);
                 }
             }
         }
@@ -9137,14 +9135,14 @@ void CSaView::EditAddGloss(bool bDelimiter) {
                 m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
             }
         } else if (pGloss->GetSelection()!=-1) { // Set Delimiter
-            CSaString szString = GetSelectedAnnotationString();
+            CSaString temp = GetSelectedAnnotationString();
             if (bDelimiter) {
-                szString = TEXT_DELIMITER + szString.Mid(1);
+				temp = TEXT_DELIMITER + temp.Mid(1);
             } else {
-                szString = WORD_DELIMITER + szString.Mid(1);
+				temp = WORD_DELIMITER + temp.Mid(1);
             }
             m_advancedSelection.Update(this);
-            m_advancedSelection.SetSelectedAnnotationString(this, szString, TRUE, TRUE);
+            m_advancedSelection.SetSelectedAnnotationString(this, temp, TRUE, TRUE);
         }
     }
 
@@ -10611,21 +10609,21 @@ void CSaView::OnSpectroFormants() {
 
     for (int AB = FALSE; AB <= TRUE; AB++) {
         bool ab = (AB == TRUE);
-        CSpectroParm parameters = pDoc->GetSpectrogram(ab)->GetSpectroParm();
-        parameters.bShowFormants = bFormantSelected;
-        pDoc->GetSpectrogram(ab)->SetSpectroParm(parameters);
+        CSpectroParm parameter = pDoc->GetSpectrogram(ab)->GetSpectroParm();
+        parameter.bShowFormants = bFormantSelected;
+        pDoc->GetSpectrogram(ab)->SetSpectroParm(parameter);
     }
 
     {
-        CSpectroParm parameters = *(GetMainFrame().GetSpectrogramParmDefaults());
-        parameters.bShowFormants = bFormantSelected;
-        GetMainFrame().SetSpectrogramParmDefaults(parameters);
+        CSpectroParm parameter = *(GetMainFrame().GetSpectrogramParmDefaults());
+        parameter.bShowFormants = bFormantSelected;
+        GetMainFrame().SetSpectrogramParmDefaults(parameter);
     }
 
     {
-        CSpectroParm parameters = *(GetMainFrame().GetSnapshotParmDefaults());
-        parameters.bShowFormants = bFormantSelected;
-        GetMainFrame().SetSnapshotParmDefaults(parameters);
+        CSpectroParm parameter = *(GetMainFrame().GetSnapshotParmDefaults());
+        parameter.bShowFormants = bFormantSelected;
+        GetMainFrame().SetSnapshotParmDefaults(parameter);
     }
 
     if ((bFormantSelected) && (pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())) {
@@ -11582,7 +11580,6 @@ void CSaView::OnFileSplitFile() {
         CString szText;
         wchar_t szNumber[128];
         swprintf_s(szNumber,_countof(szNumber),L"%d",count);
-		CSaApp * pApp = (CSaApp*)AfxGetApp();
         pApp->Message(IDS_SPLIT_COMPLETE,szNumber);
     }
 }

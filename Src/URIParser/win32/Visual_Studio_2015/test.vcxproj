@@ -14,7 +14,8 @@
     <ProjectGuid>{9682BD28-DA8C-4E37-810B-FC66EF53AE17}</ProjectGuid>
     <RootNamespace>test</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>uriparser_test</ProjectName>
+    <ProjectName>URIParser_Test</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -24,7 +25,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -54,7 +55,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -68,6 +69,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,40 +98,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\uriparser\Uri.h" />
-    <ClInclude Include="..\..\include\uriparser\UriBase.h" />
-    <ClInclude Include="..\..\include\uriparser\UriDefsAnsi.h" />
-    <ClInclude Include="..\..\include\uriparser\UriDefsConfig.h" />
-    <ClInclude Include="..\..\include\uriparser\UriDefsUnicode.h" />
-    <ClInclude Include="..\..\include\uriparser\UriIp4.h" />
-    <ClInclude Include="..\..\test\FourSuite.h" />
-    <ClInclude Include="..\CppTest\config.h" />
-    <ClInclude Include="..\CppTest\cpptest-assert.h" />
-    <ClInclude Include="..\CppTest\cpptest-collectoroutput.h" />
-    <ClInclude Include="..\CppTest\cpptest-compileroutput.h" />
-    <ClInclude Include="..\CppTest\cpptest-htmloutput.h" />
-    <ClInclude Include="..\CppTest\cpptest-output.h" />
-    <ClInclude Include="..\CppTest\cpptest-source.h" />
-    <ClInclude Include="..\CppTest\cpptest-suite.h" />
-    <ClInclude Include="..\CppTest\cpptest-textoutput.h" />
-    <ClInclude Include="..\CppTest\cpptest-time.h" />
-    <ClInclude Include="..\CppTest\cpptest.h" />
-    <ClInclude Include="..\CppTest\missing.h" />
-    <ClInclude Include="..\CppTest\utils.h" />
-    <ClInclude Include="..\CppTest\winconfig.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\test\FourSuite.cpp" />
-    <ClCompile Include="..\..\test\test.cpp" />
-    <ClCompile Include="..\CppTest\collectoroutput.cpp" />
-    <ClCompile Include="..\CppTest\compileroutput.cpp" />
-    <ClCompile Include="..\CppTest\htmloutput.cpp" />
-    <ClCompile Include="..\CppTest\missing.cpp" />
-    <ClCompile Include="..\CppTest\source.cpp" />
-    <ClCompile Include="..\CppTest\suite.cpp" />
-    <ClCompile Include="..\CppTest\textoutput.cpp" />
-    <ClCompile Include="..\CppTest\time.cpp" />
-    <ClCompile Include="..\CppTest\utils.cpp" />
+    <ClCompile Include="UniParserTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

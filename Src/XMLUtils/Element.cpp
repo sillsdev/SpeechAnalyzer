@@ -88,7 +88,7 @@ void Element::setAttribute(LPCTSTR name, LPCTSTR value) {
 }
 
 void Element::appendChild(Element * element) {
-    elements.push_back(element);
+	elements.push_back(element);
 }
 
 vector<nodeid> Element::findElements(LPCTSTR name) {

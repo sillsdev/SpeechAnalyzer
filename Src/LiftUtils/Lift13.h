@@ -51,6 +51,7 @@ public:
         href(L"href"),
         clazz(L"clazz"),
         _span(SPAN) {
+		assert(wcslen(_data)>0);
         pcdata = _data;
     };
 
@@ -61,7 +62,8 @@ public:
         clazz(L"clazz"),
         _span(SPAN) {
         lang = wstring(_lang);
-        pcdata = _data;
+		assert(wcslen(_data)>0);
+		pcdata = _data;
     };
 
     void load(Element * in) {
@@ -114,7 +116,7 @@ public:
     text(LPCTSTR _name, span _span) :
         lift_base(_name),
 		span(SPAN) {
-        span = _span;
+		span.append(_span);
     };
 
     void load(Element * in) {

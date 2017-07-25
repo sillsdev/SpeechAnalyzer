@@ -167,7 +167,7 @@ public:
         }
     }
     /**
-    * Assignment.  if we are shoving in a value, very
+    * Assignment.  if we are shoving in a value, verify
     * that there are no pre-existing entries.
     * We are assuming the user is doing this as the one-and-only.
     */
@@ -223,10 +223,10 @@ public:
     virtual Element * store() = 0;
     virtual void load(Element * in) = 0;
 
-    void expect(Element * in, LPCTSTR name) {
-        if (in->localname.compare(name)!=0) {
+    void expect(Element * in, LPCTSTR ename) {
+        if (in->localname.compare(ename)!=0) {
             stringstream msg;
-            msg << "expected "<<utf8(name).c_str()<<", saw "<< in->localname.c_str();
+            msg << "expected "<<utf8(ename).c_str()<<", saw "<< in->localname.c_str();
             throw logic_error(msg.str().c_str());
         }
     };

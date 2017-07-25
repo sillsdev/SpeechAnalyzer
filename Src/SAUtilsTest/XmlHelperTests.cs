@@ -1,13 +1,16 @@
+using System;
 using System.IO;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 namespace SIL.SpeechAnalyzer.Utils {
+
 /// ----------------------------------------------------------------------------------------
 /// <summary>
 ///
 /// </summary>
 /// ----------------------------------------------------------------------------------------
-[TestFixture]
+[TestClass]
 public class XmlnHelperTests {
     #region IsEmptyOrInvalid tests
     ///--------------------------------------------------------------------------------------
@@ -15,7 +18,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_Null_True() {
         Assert.IsTrue(XmlHelper.IsEmptyOrInvalid(null));
     }
@@ -25,7 +28,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_EmptyFileName_True() {
         Assert.IsTrue(XmlHelper.IsEmptyOrInvalid(string.Empty));
     }
@@ -35,7 +38,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_NonExistentFile_True() {
         var tmpFile = Path.GetTempFileName();
         File.Delete(tmpFile);
@@ -47,7 +50,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_EmptyFile_True() {
         var tmpFile = Path.GetTempFileName();
         Assert.IsTrue(XmlHelper.IsEmptyOrInvalid(tmpFile));
@@ -59,7 +62,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_XmlDeclarationOnly_True() {
         var tmpFile = Path.GetTempFileName();
         using(var stream = File.CreateText(tmpFile)) {
@@ -75,7 +78,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_MissingRootClose_True() {
         var tmpFile = Path.GetTempFileName();
         using(var stream = File.CreateText(tmpFile)) {
@@ -92,7 +95,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_MissingRootOpen_True() {
         var tmpFile = Path.GetTempFileName();
         using(var stream = File.CreateText(tmpFile)) {
@@ -109,7 +112,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_MinimalValid_False() {
         var tmpFile = Path.GetTempFileName();
         using(var stream = File.CreateText(tmpFile)) {
@@ -126,7 +129,7 @@ public class XmlnHelperTests {
     ///
     /// </summary>
     ///--------------------------------------------------------------------------------------
-    [Test]
+    [TestMethod]
     public void IsEmptyOrInvalid_Valid_False() {
         var tmpFile = Path.GetTempFileName();
         using(var stream = File.CreateText(tmpFile)) {

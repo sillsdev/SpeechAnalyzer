@@ -38,9 +38,11 @@ void toDOM(xercesc_3_1::DOMDocument * pDoc, DOMElement * pElement, Element * ele
     ElementList::iterator it2 = element->elements.begin();
     while (it2!=element->elements.end()) {
         Element * child = *it2;
-        DOMElement * pChild = pDoc->createElement(child->localname.c_str());
-        toDOM(pDoc, pChild, child);
-        pElement->appendChild(pChild);
+		if (child->localname.length()>0) {
+			DOMElement * pChild = pDoc->createElement(child->localname.c_str());
+			toDOM(pDoc, pChild, child);
+			pElement->appendChild(pChild);
+		}
         it2++;
     }
 }
@@ -84,35 +86,28 @@ void Lift13::write_document(Document & doc, LPCTSTR filename) {
 
 /**
 * store the lift structure to filename
+* throws DOMException or exception on failure
 */
 void Lift13::store(lift & root, LPCTSTR filename) {
 
-    try {
-        ScopedXMLUtils utils;
-        {
-            wstring fn = filename;
-            fn.append(L"-ranges");
-            lift_ranges ranges = root.export_lift_ranges(fn.c_str());
-            printf("generating tree\n");
-            Document doc;
-            doc.element = ranges.store();
-            write_document(doc,fn.c_str());
-        }
-
-        {
-            printf("generating tree\n");
-            Document doc;
-            doc.element = root.store();
-            write_document(doc,filename);
-        }
-    } catch (exception & e) {
-        printf("exception:%s\n",e.what());
-        throw e;
-    } catch (...) {
-        printf("unexpected exception\n");
-        throw;
+	// this code may throw DOMException or exception
+    ScopedXMLUtils utils;
+    {
+        wstring fn = filename;
+        fn.append(L"-ranges");
+        lift_ranges ranges = root.export_lift_ranges(fn.c_str());
+        printf("generating tree\n");
+        Document doc;
+        doc.element = ranges.store();
+        write_document(doc,fn.c_str());
     }
 
+    {
+        printf("generating tree\n");
+        Document doc;
+        doc.element = root.store();
+        write_document(doc,filename);
+    }
 }
 
 wstring parse_uri(LPCTSTR in) {

@@ -4377,15 +4377,15 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap) {
 // the cursors are aligned to the nearest phonetic segment
 /***************************************************************************/
 BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelection, DWORD dwNewOffset, DWORD dwNewStop) {
-    CSaDoc * pDoc = this;
-    CSegment * pSegment;
+    
+	CSaDoc * pDoc = this;
 
     int nLoop = nAnnotation;
     if (nLoop == -1) {
         return FALSE;
     }
 
-    pSegment = m_apSegments[nLoop];
+    CSegment * pSegment = m_apSegments[nLoop];
 
     if (GetSegment(nLoop)->GetMasterIndex()==-1) {
         // Prepare for Update Boundaries
@@ -7288,8 +7288,8 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
 
     Lift13::field_defn field(L"field");
     field.tag = wstring(L"Reference");
-    field.form.append(Lift13::form(L"form",L"en",Lift13::text(L"text",L"")));
-    field.form.append(Lift13::form(L"form",L"qaa-x-spec",Lift13::text(L"text",L"Class=LexEntry; Type=String; WsSelector=kwsAnal")));
+    field.form.append(Lift13::form(L"form",L"en",Lift13::text(L"text",Lift13::span(L"span",L""))));
+    field.form.append(Lift13::form(L"form",L"qaa-x-spec",Lift13::text(L"text",Lift13::span(L"span",L"Class=LexEntry; Type=String; WsSelector=kwsAnal"))));
 
     Lift13::field_defns fields(L"fields");
     fields.field.append(field);
@@ -7302,7 +7302,22 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
 
-    Lift13::store(document, filename.c_str());
+	bool pass = false;
+	try {
+		Lift13::store(document, filename.c_str());
+		pass = true;
+	} catch (DOMException & e) {
+		TRACE(L"store failed : %s", e.getMessage());
+	} catch (exception & e) {
+		TRACE("store failed : %s", e.what());
+	} catch (...) {
+		TRACE(L"store failed : unexpected exception");
+	}
+
+	if (!pass) {
+		ErrorMessage(IDS_ERROR_FAILED_TO_STORE_LIFT);
+		return;
+	}
 
     liftCount++;
 
@@ -8157,7 +8172,8 @@ void CSaDoc::MergeSegments( CPhoneticSegment * pPhonetic, int sel) {
 }
 
 /**
-* determine if the transcriptions are segmental - multiple phonetic segments per gloss
+* determine if the transcriptions are segmental - 
+* segmental means multiple phonetic segments per gloss
 * AudioSync works on non-segmental data
 */
 bool CSaDoc::IsSegmental(CPhoneticSegment * pPhonetic, int sel) {
@@ -8939,9 +8955,9 @@ void CSaDoc::ExportTimeTable( LPCTSTR filename,
 				}
 
 				if (bReference) {
-					int nIndex = GetSegment(REFERENCE)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						szString = GetSegment(REFERENCE)->GetSegmentString(nIndex) + "\t";
+					int offset = GetSegment(REFERENCE)->FindOffset(dwPhonetic);
+					if (offset != -1) {
+						szString = GetSegment(REFERENCE)->GetSegmentString(offset) + "\t";
 					} else {
 						szString = "\t";
 					}
@@ -8952,37 +8968,37 @@ void CSaDoc::ExportTimeTable( LPCTSTR filename,
 					WriteFileUtf8(&file, szString);
 				}
 				if (bTone) {
-					int nIndex = GetSegment(TONE)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						szString = GetSegment(TONE)->GetSegmentString(nIndex) + "\t";
+					int offset = GetSegment(TONE)->FindOffset(dwPhonetic);
+					if (offset != -1) {
+						szString = GetSegment(TONE)->GetSegmentString(offset) + "\t";
 					} else {
 						szString = "\t";
 					}
 					WriteFileUtf8(&file, szString);
 				}
 				if (bPhonemic) {
-					int nIndex = GetSegment(PHONEMIC)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						szString = GetSegment(PHONEMIC)->GetSegmentString(nIndex) + "\t";
+					int offset = GetSegment(PHONEMIC)->FindOffset(dwPhonetic);
+					if (offset != -1) {
+						szString = GetSegment(PHONEMIC)->GetSegmentString(offset) + "\t";
 					} else {
 						szString = "\t";
 					}
 					WriteFileUtf8(&file, szString);
 				}
 				if (bOrtho) {
-					int nIndex = GetSegment(ORTHO)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						szString = GetSegment(ORTHO)->GetSegmentString(nIndex) + "\t";
+					int offset = GetSegment(ORTHO)->FindOffset(dwPhonetic);
+					if (offset != -1) {
+						szString = GetSegment(ORTHO)->GetSegmentString(offset) + "\t";
 					} else {
 						szString = "\t";
 					}
 					WriteFileUtf8(&file, szString);
 				}
 				if (bGloss) {
-					int nIndex = GetSegment(GLOSS)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
+					int offset = GetSegment(GLOSS)->FindOffset(dwPhonetic);
+					if (offset != -1) {
 						// SDM 1.5Test10.1
-						szString = GetSegment(GLOSS)->GetSegmentString(nIndex);
+						szString = GetSegment(GLOSS)->GetSegmentString(offset);
 						if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER)) {
 							// Remove Word Delimiter
 							szString = szString.Mid(1);
@@ -8994,10 +9010,10 @@ void CSaDoc::ExportTimeTable( LPCTSTR filename,
 					WriteFileUtf8(&file, szString);
 				}
 				if (bGlossNat) {
-					int nIndex = GetSegment(GLOSS_NAT)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
+					int offset = GetSegment(GLOSS_NAT)->FindOffset(dwPhonetic);
+					if (offset != -1) {
 						// SDM 1.5Test10.1
-						szString = GetSegment(GLOSS_NAT)->GetSegmentString(nIndex);
+						szString = GetSegment(GLOSS_NAT)->GetSegmentString(offset);
 						if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER)) {
 							// Remove Word Delimiter
 							szString = szString.Mid(1);    

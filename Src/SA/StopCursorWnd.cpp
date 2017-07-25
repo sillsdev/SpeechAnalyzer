@@ -294,8 +294,8 @@ void CStopCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
             // detect update request and update annotationWnd to hint
             if (pGraph->HaveAnnotation(nLoop)) {
                 // Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, dwStartCursor, dwCursor,m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
+                CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
+                pWnd2->SetHintUpdateBoundaries(m_nEditBoundaries!=0, dwStartCursor, dwCursor,m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
             }
         }
 
@@ -411,8 +411,8 @@ void CStopCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         // detect update request and update annotationWnd to hint
         if (pGraph->HaveAnnotation(nLoop)) {
 			// Selected annotation is visible
-            CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-            pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, dwStartCursor, dwCursor,m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
+            CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
+            pWnd2->SetHintUpdateBoundaries(m_nEditBoundaries!=0, dwStartCursor, dwCursor,m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
         }
     }
 
@@ -486,9 +486,9 @@ void CStopCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
         // detect update request and update annotationWnd to hint
         if (pGraph->HaveAnnotation(nLoop)) {
 			// Selected annotation is visible
-            CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
+            CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
 			//SDM 1.5Test8.1
-            pWnd->SetHintUpdateBoundaries(false, m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE);
+            pWnd2->SetHintUpdateBoundaries(false, m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE);
         }
     }
 
@@ -552,9 +552,9 @@ void CStopCursorWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
         if (nLoop != -1) {
             if (pGraph->HaveAnnotation(nLoop)) {
 				// Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
+                CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
 				//SDM 1.5Test8.1
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
+                pWnd2->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
             }
         }
     }
@@ -575,8 +575,8 @@ void CStopCursorWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
         int nLoop = pView->FindSelectedAnnotationIndex();
         if (nLoop != -1) {
             if (pGraph->HaveAnnotation(nLoop)) { // Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
+                CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
+                pWnd2->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
             }
         }
     }

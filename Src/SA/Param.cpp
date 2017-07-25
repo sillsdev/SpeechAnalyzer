@@ -334,23 +334,23 @@ void CMusicParm::Init() {
 }
 
 void CMusicParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound) {
-    CMusicParm temp;
+
+	CMusicParm temp;
     temp.Init();
 
     CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
-
     if (pMelogram->IsDataReady() && !pMelogram->IsStatusFlag(PROCESS_NO_PITCH)) {
-        int nLowerBound = (int)floor((double)pMelogram->GetMinValue() / 100.0);
-        int nUpperBound = (int)ceil((double)pMelogram->GetMaxValue() / 100.0);
+        int lower = (int)floor((double)pMelogram->GetMinValue() / 100.0);
+        int upper = (int)ceil((double)pMelogram->GetMaxValue() / 100.0);
 
         // make sure the legend scale spans at least an octave
-        int nRange = (nUpperBound - nLowerBound);
+        int nRange = (upper - lower);
         if (nRange < 12) {
-            nLowerBound = (int)(((double)(nLowerBound + nUpperBound) / 2.0) - 6.);
-            nUpperBound = (int)(nLowerBound + 12);
+			lower = (int)(((double)(lower + upper) / 2.0) - 6.);
+			upper = (int)(lower + 12);
         }
-        temp.nUpperBound = nUpperBound;
-        temp.nLowerBound = nLowerBound;
+        temp.nUpperBound = upper;
+        temp.nLowerBound = lower;
     }
 
     nUpperBound = temp.nUpperBound;

@@ -603,13 +603,13 @@ void CSegment::Adjust( int nIndex, DWORD newOffset, DWORD newDuration) {
 /***************************************************************************/
 // CSegment::Adjust Adjusts positions of an annotation segment
 /***************************************************************************/
-void CSegment::Adjust( ISaDoc * pDoc, int nIndex, DWORD newOffset, DWORD newDuration, bool segmental) {
+void CSegment::Adjust( ISaDoc * pDoc, int index, DWORD newOffset, DWORD newDuration, bool segmental) {
 
 	// for use later
-    DWORD dwOldOffset = GetOffset(nIndex);
-    DWORD dwOldStop = GetStop(nIndex);
+    DWORD dwOldOffset = GetOffset(index);
+    DWORD dwOldStop = GetStop(index);
 
-	Adjust( nIndex, newOffset, newDuration);
+	Adjust(index, newOffset, newDuration);
 
     // adjust all dependent segments
     for (int nWnd = 0; nWnd < ANNOT_WND_NUMBER; nWnd++) {

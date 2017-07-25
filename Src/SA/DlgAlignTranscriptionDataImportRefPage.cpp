@@ -124,7 +124,6 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport() {
                                       false,
                                       true)) {
         m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
-        CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->WriteProfileString(L"AutoRef",L"LastImport",(LPCTSTR)path);
 
     } else {

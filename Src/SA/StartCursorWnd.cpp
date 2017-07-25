@@ -290,8 +290,8 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
             // detect update request and update annotationWnd to hint
             if (pGraph->HaveAnnotation(nLoop)) {
                 // Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, dwCursor, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
+                CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
+                pWnd2->SetHintUpdateBoundaries(m_nEditBoundaries!=0, dwCursor, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
             }
         }
 
@@ -432,8 +432,8 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         // detect update request and update annotationWnd to hint
         if (pGraph->HaveAnnotation(nLoop)) {
             // Selected annotation is visible
-            CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-            pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_dwStartDragPos, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
+            CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
+            pWnd2->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_dwStartDragPos, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
         }
     } else {
         if (pView->IsSelectionVirtual()) {
@@ -518,8 +518,8 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
         // clear hint request
         if (pGraph->HaveAnnotation(nLoop)) {
             // Selected annotation is visible
-            CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-            pWnd->SetHintUpdateBoundaries(false, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
+            CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
+            pWnd2->SetHintUpdateBoundaries(false, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
         }
     }
 
@@ -531,10 +531,10 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
     // set the highlight area for raw data
     if (m_bSelectDrag) {
         // calculate the location where the mouse was lifted
-        CRect rWnd;
-        pWnd->GetClientRect(rWnd);
+        CRect rWnd2;
+        pWnd->GetClientRect(rWnd2);
         DWORD dwTempStopCursor = 0;
-        DWORD dwCursor = CalculateCursorPosition(pView, point.x, rWnd.Width(), &dwTempStopCursor);
+        DWORD dwCursor = CalculateCursorPosition(pView, point.x, rWnd2.Width(), &dwTempStopCursor);
         if (dwCursor > m_dwStartDragPos) {
             dwStartCursor = m_dwStartDragPos;
             dwStopCursor = dwCursor;
@@ -605,8 +605,8 @@ void CStartCursorWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
         if (nLoop != -1) {
             if (pGraph->HaveAnnotation(nLoop)) { 
 				// Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
+                CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
+                pWnd2->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
             }
         }
     }
@@ -627,8 +627,8 @@ void CStartCursorWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
         int nLoop = pView->FindSelectedAnnotationIndex();
         if (nLoop != -1) {
             if (pGraph->HaveAnnotation(nLoop)) { // Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
+                CAnnotationWnd * pWnd2 = pGraph->GetAnnotationWnd(nLoop);
+                pWnd2->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
             }
         }
     }

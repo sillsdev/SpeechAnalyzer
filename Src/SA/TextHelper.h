@@ -13,8 +13,10 @@ using std::wistringstream;
 class CTextHelper {
 public:
     static bool ImportText(wistringstream & stream, const CSaString & sync, const MarkerList & markers, TranscriptionDataMap & map, bool addTag);
-private:
     static vector<string> Tokenize(const string & str, const string & delimiters);
+	static vector<string> Tokenize(const string & str, char delimiter);
+	static vector<wstring> Tokenize(const wstring & str, const wstring & delimiters);
+	static vector<wstring> Tokenize(const wstring & str, wchar_t delimiter);
 };
 
 extern vector<wstring> TokenizeBufferToLines(wistringstream & stream);

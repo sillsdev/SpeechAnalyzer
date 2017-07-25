@@ -67,7 +67,9 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME_SA        ICON                    "RES\\SA.ICO"
+
 IDR_MAINFRAME_SAS       ICON                    "RES\\SA.ICO"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -98,27 +100,49 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_LAYOUT3B            ICON                    "RES\\3B.ICO"
+
 IDI_LAYOUT3A            ICON                    "RES\\3A.ICO"
+
 IDI_LAYOUT1             ICON                    "RES\\1.ICO"
+
 IDI_LAYOUT2A            ICON                    "RES\\2A.ICO"
+
 IDI_LAYOUT2B            ICON                    "RES\\2B.ICO"
+
 IDI_LAYOUT5             ICON                    "RES\\5.ICO"
+
 IDI_LAYOUT4B            ICON                    "RES\\4B.ICO"
+
 IDI_LAYOUT4A            ICON                    "RES\\4A.ICO"
+
 IDI_LAYOUT6A            ICON                    "RES\\6A.ICO"
+
 IDI_LAYOUT6B            ICON                    "RES\\6B.ICO"
+
 IDR_KLATT               ICON                    "res\\SA.ico"
+
 IDI_LAYOUT2C            ICON                    "res\\2c.ico"
+
 IDI_LAYOUT3C            ICON                    "res\\3c.ico"
+
 IDI_LAYOUT4C            ICON                    "res\\4c.ico"
+
 IDI_NEXT                ICON                    "res\\next.ico"
+
 IDI_PREV                ICON                    "res\\prev.ico"
+
 IDI_UP                  ICON                    "res\\up.ico"
+
 IDI_DOWN                ICON                    "res\\down.ico"
+
 IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\SA.ico"
+
 IDR_WORKBENCH           ICON                    "RES\\SA_WB.ICO"
+
 IDR_SPEECHANALYZER      ICON                    "RES\\SA.ICO"
+
 IDR_AUDIOSYNC           ICON                    "RES\\AS.ICO"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2443,14 +2467,14 @@ BEGIN
     CONTROL         "Phrase List 2",IDC_EXTAB_MUSIC_PL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,157,65,12
     LTEXT           "For each transcription to be exported, please specify the language code that identifies the language used for the transcription.",IDC_STATIC,14,17,261,20
     LTEXT           "Language Code",IDC_STATIC,96,39,52,8
-    COMBOBOX        IDC_LIST_REFERENCE,95,52,50,58,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_LIST_PHONETIC,95,67,50,86,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_LIST_PHONEMIC,95,82,50,80,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_LIST_ORTHO,95,97,50,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_LIST_GLOSS,95,112,50,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_LIST_GLOSS_NAT,95,126,50,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_LIST_MUSIC_PL1,95,141,50,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_LIST_MUSIC_PL2,95,156,50,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_REFERENCE,95,52,170,58,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_PHONETIC,95,67,170,86,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_PHONEMIC,95,82,170,80,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_ORTHO,95,97,170,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_GLOSS,95,112,170,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_GLOSS_NAT,95,126,170,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_MUSIC_PL1,95,141,170,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_MUSIC_PL2,95,156,170,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "Cancel",IDCANCEL,177,243,50,14
     DEFPUSHBUTTON   "Export",IDOK,123,243,50,14,WS_DISABLED
     GROUPBOX        "Include",IDC_STATIC,9,6,271,170
@@ -2958,26 +2982,47 @@ END
 //
 
 IDR_BAR_BASIC           BITMAP                  "RES\\IDR_BAR_BASIC.BMP"
+
 IDB_KNOBHORIZ           BITMAP                  "RES\\KNOBH.BMP"
+
 IDB_LED                 BITMAP                  "RES\\LED.BMP"
+
 IDB_KNOBVERT            BITMAP                  "RES\\KNOBV.BMP"
+
 IDB_RESULTU             BITMAP                  "RES\\RESULTU.BMP"
+
 IDB_HPU                 BITMAP                  "RES\\HPU.BMP"
+
 IDB_LPU                 BITMAP                  "RES\\LPU.BMP"
+
 IDB_BPU                 BITMAP                  "RES\\BPU.BMP"
+
 IDB_ECHOU               BITMAP                  "RES\\ECHOU.BMP"
+
 IDB_REVU                BITMAP                  "RES\\REVU.BMP"
+
 IDB_EQU                 BITMAP                  "RES\\EQU.BMP"
+
 IDB_PORTU               BITMAP                  "RES\\PORTU.BMP"
+
 IDB_LANDU               BITMAP                  "RES\\LANDU.BMP"
+
 IDB_FACE                BITMAP                  "RES\\FACE.BMP"
+
 IDB_JAW                 BITMAP                  "RES\\JAW.BMP"
+
 IDB_TONGUE              BITMAP                  "RES\\TONGUE.BMP"
+
 IDR_BAR_ADVANCED        BITMAP                  "res\\IDR_BAR_ADVANCED.bmp"
+
 IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
+
 IDB_RAWU                BITMAP                  "Res\\RAWU.BMP"
+
 IDB_GENERATOR           BITMAP                  "Res\\GENERAL.BMP"
+
 IDB_PLAIN               BITMAP                  "Res\\PLAIN.BMP"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4767,11 +4812,28 @@ END
 //
 
 IDC_SFINGERNW           CURSOR                  "RES\\FINGERNW.CUR"
+
 IDC_SFINGERN            CURSOR                  "RES\\FINGERN.CUR"
+
 IDC_SHANDN              CURSOR                  "RES\\HANDN.CUR"
+
 IDC_MFINGERN            CURSOR                  "RES\\MedFingerN.cur"
+
 IDC_MFINGERNW           CURSOR                  "res\\MedFingerNW.cur"
+
 IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_EXPORT_LIFT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5980,6 +6042,7 @@ BEGIN
     IDS_RESTART_PROJECT     "Restart Project..."
     IDS_BROWSE              "Browse..."
     IDS_RESTART_CONFIRM     "Do you wish to delete the existing text segmentation and restart the project?\nAll existing work will be lost!\nThis operation cannot be undone."
+    IDS_ERROR_FAILED_TO_STORE_LIFT "Failed to store LIFT document."
 END
 
 #endif    // English (United States) resources

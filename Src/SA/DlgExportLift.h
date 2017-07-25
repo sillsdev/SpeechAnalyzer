@@ -19,6 +19,7 @@
 #include <list>
 
 using std::list;
+using std::map;
 
 class CSaDoc;
 
@@ -34,7 +35,7 @@ public:
                    BOOL phonemic,
                    BOOL phonetic,
                    BOOL reference,
-                   list<wstring> iso,
+                   map<wstring,wstring> contryCodes,
                    CWnd * pParent = NULL);
 
     CExportLiftSettings settings;
@@ -47,6 +48,7 @@ protected:
     void UpdateButtonState();
     CSaString GetFieldWorksProjectDirectory();
     bool SearchForValue(HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
+	CString lookupCountryCode(LPCTSTR value);
 
     afx_msg void OnHelpExportBasic();
     afx_msg void OnClickedBrowse();
@@ -84,7 +86,7 @@ protected:
     wstring orthoLang;
     wstring posLang;
 
-    list<wstring> iso;
+    map<wstring,wstring> countryCodes;
 
     DECLARE_MESSAGE_MAP()
 };

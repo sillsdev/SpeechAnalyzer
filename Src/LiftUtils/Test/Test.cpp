@@ -1,6 +1,5 @@
 #include <Windows.h>
 #include <SDKDDKVer.h>
-#include <gtest/gtest.h>
 #include <conio.h>
 #include <string>
 #include <FileUtils.h>
@@ -8,8 +7,6 @@
 
 #pragma comment( lib, "winmm")
 #pragma comment( lib, "waveutils")
-#pragma comment( lib, "gtest")
-#pragma comment( lib, "gtest_main")
 #pragma comment( lib, "uriparser")
 
 int round2Int(double value) {
@@ -31,14 +28,3 @@ wstring buildSourcePath(LPCTSTR filename) {
     return result;
 }
 
-int main(int argc, char ** argv) {
-    int result = 0;
-    try {
-        ::testing::InitGoogleTest(&argc, argv);
-        result = RUN_ALL_TESTS();
-    } catch (...) {
-        printf("exception occurred\n");
-    }
-    _getch();
-    return result;
-}

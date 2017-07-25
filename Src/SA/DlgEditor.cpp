@@ -259,13 +259,14 @@ void CDlgEditor::OnStopPhraseL1() {
 /***************************************************************************/
 void CDlgEditor::OnUpdateInputstring() {
 
-    if (!GetView()) {
+	CSaView * pView = GetView();
+    if (pView==NULL) {
         UpdateDialog();
         return;
     }
 
-    GetView()->UpdateSelection();
-    if (GetView()->GetSelectionIndex()== -1) {
+	pView->UpdateSelection();
+    if (pView->GetSelectionIndex()== -1) {
         UpdateDialog();
         return;
     }
@@ -275,15 +276,17 @@ void CDlgEditor::OnUpdateInputstring() {
     pEdit->GetWindowText(szString);
 
     // Filter input string if input filter specified
-    CSegment * pSegment = GetView()->GetAnnotation(GetView()->GetSelectionIndex());
+    CSegment * pSegment = pView->GetAnnotation(pView->GetSelectionIndex());
     if (pSegment->Filter(szString)) {
         DWORD dwSelection = pEdit->GetSel();
         pEdit->SetWindowText(szString);
         pEdit->SetSel(dwSelection);
     }
 
-    if (!IsDifferent(FALSE)) { // Insure selection has not changed
-        GetView()->SetSelectedAnnotationString(szString, FALSE, m_bCheck);
+	// Insure selection has not changed
+    if (!IsDifferent(FALSE)) { 
+		TRACE("updating selected annotation\n");
+		pView->SetSelectedAnnotationString(szString, FALSE, m_bCheck);
         // We only want one checkpoint per changed segment
         m_bCheck = FALSE;
         // Update IsDifferent check to changed string
@@ -369,9 +372,9 @@ void CDlgEditor::UpdateDialog() {
 // CDlgEditor::IsDifferent Checks if selection has changed since last update
 /***************************************************************************/
 BOOL CDlgEditor::IsDifferent(BOOL bUpdate) {
-    BOOL ret = FALSE;
+    
+	BOOL ret = FALSE;
     CSaView * pView = GetView();
-
     if (m_pPreviousSaView != pView) {
         ret = TRUE;
         if (bUpdate) {
@@ -383,7 +386,7 @@ BOOL CDlgEditor::IsDifferent(BOOL bUpdate) {
         return ret;
     }
 
-    GetView()->UpdateSelection();
+	pView->UpdateSelection();
 
     if (m_nPreviousAnnotationIndex != pView->GetSelectionIndex()) {
         ret = TRUE;
@@ -396,7 +399,7 @@ BOOL CDlgEditor::IsDifferent(BOOL bUpdate) {
     }
 
     if ((m_dwPreviousStart != pView->GetSelectionStart()) ||
-            (m_dwPreviousStop != pView->GetSelectionStop())) {
+        (m_dwPreviousStop != pView->GetSelectionStop())) {
         ret = TRUE;
         if (bUpdate) {
             m_dwPreviousStart = pView->GetSelectionStart();

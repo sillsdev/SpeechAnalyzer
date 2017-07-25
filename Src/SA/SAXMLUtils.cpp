@@ -283,11 +283,8 @@ bool CSAXMLUtils::ProcessTier(EAnnotation type, list<EAnnotation> stack, xercesc
                 annotationID = annotation.refAnnotation.annotationID;
             }
             if (annotationID.size()>0) {
-				list<EAnnotation>::iterator it = stack.begin();
-				while (it!=stack.end()) {
-                    EAnnotation ctype = *it;
+				for (EAnnotation ctype : stack) {
                     ProcessTier(ctype, stack, doc, *pElement, assignments, document, annotationID);
-					it++;
                 }
             }
             parent.appendChild(pElement);
@@ -327,11 +324,8 @@ bool CSAXMLUtils::ProcessTier(EAnnotation type, list<EAnnotation> stack, xercesc
                     annotationID = annotation.refAnnotation.annotationID;
                 }
                 if (annotationID.size()>0) {
-					list<EAnnotation>::iterator it = stack.begin();
-					while (it!=stack.end()) {
-						EAnnotation ctype = *it;
+					for (EAnnotation ctype : stack) {
 						ProcessTier(ctype, stack, doc, *pElement, assignments, document, annotationID);
-						it++;
 					}
                 }
                 parent.appendChild(pElement);
@@ -392,11 +386,8 @@ bool CSAXMLUtils::ProcessTier(EAnnotation type, list<EAnnotation> stack, xercesc
                 }
                 pElement->appendChild(CreateElement(doc,PHONETIC,L"\xFFFD"));
                 if (annotationID.size()>0) {
-					list<EAnnotation>::iterator it = stack.begin();
-					while (it!=stack.end()) {
-						EAnnotation ctype = *it;
+					for (EAnnotation ctype : stack) {
 						ProcessTier(ctype, stack, doc, *pElement, assignments, document, annotationID);
-						it++;
 					}
                 }
                 parent.appendChild(pElement);

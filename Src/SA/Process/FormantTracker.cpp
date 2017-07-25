@@ -347,9 +347,9 @@ void CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate
             //TRACE("temp=%f\n",temp);
             state.zeroFilterDBL[0] = temp;
             for (unsigned int z=1; z<=zeroFilterOrder; z++) {
-                double temp = azf.Tick(0).real();
+                double temp2 = azf.Tick(0).real();
                 //TRACE("temp=%f\n",temp);
-                state.zeroFilterDBL[z] = temp;
+                state.zeroFilterDBL[z] = temp2;
             }
 
             // dump the filtered data

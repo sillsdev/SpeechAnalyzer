@@ -116,7 +116,7 @@ BOOL CDlgInformationFilePage::OnInitDialog() {
         }
 		// create and write size text
         TCHAR szBuffer[32]; 
-        swprintf_s(szBuffer, _T("%ld Bytes"), pFileStatus->m_size);
+        swprintf_s(szBuffer, _T("%lld Bytes"), pFileStatus->m_size);
         SetDlgItemText(IDC_FILESIZE, szBuffer);
 
         // get sa parameters document member data

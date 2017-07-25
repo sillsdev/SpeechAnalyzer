@@ -1897,6 +1897,7 @@
 #define IDS_RESTART_PROJECT             61376
 #define IDS_BROWSE                      61377
 #define IDS_RESTART_CONFIRM             61378
+#define IDS_ERROR_FAILED_TO_STORE_LIFT  61379
 
 // Next default values for new objects
 // 

@@ -276,6 +276,7 @@ public:
 	void DeselectAnnotations();
 	
 protected:
+	void ExtractCountryCodes(LPCTSTR fullPath, map<wstring,wstring> & codes);
     BOOL PreCreateWindow(CREATESTRUCT & cs);
     void PartialCopy(const CSaView & fromThis);
     void Clear(void);
