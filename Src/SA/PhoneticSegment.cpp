@@ -46,10 +46,14 @@ long CPhoneticSegment::Exit(int nError) {
 // CPhoneticSegment::ReplaceSelectedSegment
 // Replaces the selected segment with the string passes in.
 /***************************************************************************/
-void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) {
+void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace, bool noSnap) {
+
+	if (noSnap) {
+		CSegment::ReplaceSelectedSegment( pDoc, replace, noSnap);
+		return;
+	}
 
     // get pointer to view
-    CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
@@ -65,13 +69,11 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) 
         return;
     }
 
-	TRACE("ReplaceSelectedSegment %d %d %d\n",dwStart,dwStop,dwOldOffset);
-
     pDoc->SetModifiedFlag(TRUE);        // document has been modified
     pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
 
     // insert or append the new segment
-    if (!Insert(m_nSelection, replace, 0, dwStart, dwStop - dwStart)) {
+    if (!Insert( m_nSelection, replace, 0, dwStart, dwStop - dwStart)) {
         return; // return on error
     }
 
@@ -93,7 +95,7 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace) 
         }
     }
 
-	// refresh the graphs between cursors
+	// refresh the entire graph
     pView->RedrawGraphs(TRUE); 
 }
 

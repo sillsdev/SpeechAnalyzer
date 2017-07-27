@@ -228,7 +228,7 @@ void CSegment::Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace) 
 /***************************************************************************/
 // CSegment::ReplaceSelectedSegment
 /***************************************************************************/
-void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace) {
+void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace, bool noSnap) {
     
 	if (m_nSelection==-1) {
         return;
@@ -248,6 +248,7 @@ void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace) {
     pView->ChangeAnnotationSelection(this, m_nSelection);
 	// select again // 1.5Test10.2
     pView->ChangeAnnotationSelection(this, nSaveSelection);
+
 	// refresh the graphs between cursors
     pView->RedrawGraphs(FALSE);
 }
@@ -595,7 +596,6 @@ CSaString CSegment::GetSegmentString(int nIndex)   const {
 * Adjust the segment, but not it's dependents
 */
 void CSegment::Adjust( int nIndex, DWORD newOffset, DWORD newDuration) {
-	TRACE("Adjust type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,nIndex, newOffset, newDuration);
 	m_Offset[nIndex] = newOffset;
 	m_Duration[nIndex] = newDuration;
 }
@@ -616,9 +616,9 @@ void CSegment::Adjust( ISaDoc * pDoc, int index, DWORD newOffset, DWORD newDurat
         CSegment * pSegment = pDoc->GetSegment(nWnd);
 		if ((pSegment!=NULL) && (pSegment->IsDependent(*this))) {
             // for segmental, only adjust segments that match the existing segment
-            if (segmental) {
-                int nIndex = pSegment->FindOffset(dwOldOffset);
-                if (nIndex != -1) {
+			if (segmental) {
+				int nIndex = pSegment->FindOffset(dwOldOffset);
+				if (nIndex != -1) {
                     DWORD curOffset = pSegment->GetOffset(nIndex);
                     if (curOffset==dwOldOffset) {
                         pSegment->Adjust(pDoc, nIndex, newOffset, pSegment->GetStop(nIndex) - newOffset, false);
@@ -633,14 +633,15 @@ void CSegment::Adjust( ISaDoc * pDoc, int index, DWORD newOffset, DWORD newDurat
                 }
             } else {
 				// nonsegmental - offset and duration should match
-                int nIndex = pSegment->FindOffset(dwOldOffset);
-                if (nIndex != -1) {
+				int nIndex = pSegment->FindOffset(dwOldOffset);
+				if (nIndex != -1) {
                     pSegment->Adjust(pDoc, nIndex, newOffset, pSegment->GetStop(nIndex) - newOffset, false);
                 }
 
                 nIndex = pSegment->FindStop(dwOldStop);
                 if (nIndex != -1) {
-                    pSegment->Adjust(pDoc, nIndex, pSegment->GetOffset(nIndex), newOffset + newDuration - pSegment->GetOffset(nIndex), false);
+					DWORD curOffset = pSegment->GetOffset(nIndex);
+                    pSegment->Adjust(pDoc, nIndex, curOffset, newOffset + newDuration - curOffset, false);
                 }
             }
         }

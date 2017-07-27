@@ -382,7 +382,6 @@
     <None Include="Res\SA.ICO" />
     <None Include="segment selection.cd" />
     <None Include="Segments.cd" />
-    <None Include="Windows.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignInfo.h" />

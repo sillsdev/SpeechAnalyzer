@@ -6321,7 +6321,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
         }
 
         // Process orthographic
-        // SDM 1.06.8 only change  if new segmentation or text changed
+        // SDM 1.06.8 only change if new segmentation or text changed
         if ((settings.m_bOrthographic) && ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bOrthographicModified))) {
 
             nStringIndex = 0;
@@ -6462,7 +6462,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
                 szNext.Remove(0x0d);
                 szNext.Remove(0x0a);
 				pView->ToggleSegmentSelection(pGloss,nIndex);
-                pGloss->ReplaceSelectedSegment(this,szNext);
+                pGloss->ReplaceSelectedSegment(this,szNext, false);
             };
         }
     }

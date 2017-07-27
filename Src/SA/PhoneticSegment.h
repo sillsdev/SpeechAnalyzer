@@ -11,7 +11,7 @@ public:
     virtual long Process(void * pCaller, CSaDoc * pDoc, int nProgress = 0, int nLevel = 1);
 	// remove a segment
     virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);          
-    virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace);
+    virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace, bool noSnap);
     virtual bool Filter();
     virtual bool Filter(CString & text);
 	virtual bool ContainsText( DWORD offset, DWORD stop);

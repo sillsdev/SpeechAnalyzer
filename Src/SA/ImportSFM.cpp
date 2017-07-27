@@ -456,7 +456,7 @@ void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhoneti
                 szNext.Remove(0x0d);
                 szNext.Remove(0x0a);
                 pSaDoc->SelectSegment(pSegment,nIndex);
-                ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(pSaDoc,szNext);
+                pSegment->ReplaceSelectedSegment(pSaDoc,szNext, false);
             };
 
             // take care of remainder
@@ -473,7 +473,7 @@ void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhoneti
             szNext.Remove(0x0d);
             szNext.Remove(0x0a);
             pSaDoc->SelectSegment(pSegment,nIndex);
-            ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(pSaDoc,szNext);
+            pSegment->ReplaceSelectedSegment(pSaDoc,szNext, false);
         }
 
         // Process gloss national
@@ -824,7 +824,7 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
             if (pGloss->GetSelection() != nIndex) {
                 pGloss->SetSelection(nIndex);
             }
-            pGloss->ReplaceSelectedSegment(pDoc, szString);
+            pGloss->ReplaceSelectedSegment(pDoc, szString, false);
         }
     }
     szString = SEGMENT_DEFAULT_CHAR;
@@ -882,7 +882,7 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
             if ((szString[0] != WORD_DELIMITER) || (szString[0] != TEXT_DELIMITER)) {
                 szString = CSaString(SPACE_DELIMITER) + CSaString(WORD_DELIMITER) + szString;
             }
-            pGloss->ReplaceSelectedSegment(pDoc, szString);
+            pGloss->ReplaceSelectedSegment(pDoc, szString, false);
 
             // Reference
             szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[REFERENCE]);

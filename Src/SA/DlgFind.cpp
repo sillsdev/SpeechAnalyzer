@@ -677,7 +677,7 @@ void CDlgFind::OnReplaceAll() {
         if (newPos != pAnnot->GetSelection()) {
             pDoc->SelectSegment(pAnnot,newPos);
         }
-        pAnnot->ReplaceSelectedSegment(pDoc,replaceme);
+        pAnnot->ReplaceSelectedSegment(pDoc,replaceme,false);
         newPos = pAnnot->FindNext(newPos,findme);
     }
 }

@@ -544,11 +544,11 @@ BOOL CSegmentSelection::SetSelectedAnnotationString( CSaView * pView, CSaString 
         SelectFromPosition( pView, nType, dwPosition, true);
     } else {
         if (bCheck) {
-            pView->GetDocument()->CheckPoint();
+            pDoc->CheckPoint();
         }
         // ReplaceSelectedSegment refreshes graphs, sets modified flag
 		TRACE("replace segment\n");
-        pSegment->ReplaceSelectedSegment(pView->GetDocument(),szString);
+        pSegment->ReplaceSelectedSegment( pDoc, szString, true);
     }
 
     pView->SetStartCursorPosition(dwStart, SNAP_RIGHT);

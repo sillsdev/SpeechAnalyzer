@@ -7804,7 +7804,7 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str) {
         CSegment * pAnnotationSet = FindSelectedAnnotation();
         ASSERT(pAnnotationSet);
         if (pAnnotationSet!=NULL) {
-            pAnnotationSet->ReplaceSelectedSegment(pDoc,str);
+            pAnnotationSet->ReplaceSelectedSegment(pDoc,str, false);
         }
     }
 }

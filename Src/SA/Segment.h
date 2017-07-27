@@ -164,7 +164,7 @@ public:
     void AdjustCursorsToSnap(CDocument * pDoc);
 	// set selection
     void SetSelection(int nIndex);
-    virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace);
+    virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace, bool noSnap);
     // adjust position of segment
 	virtual void Adjust( ISaDoc * saDoc, int nIndex, DWORD dwNewOffset, DWORD dwNewDuration, bool segmental);
 	// adjust position of segment - local only

@@ -1,23 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="CReferenceSegment" Collapsed="true">
-    <Position X="3.75" Y="5.75" Width="1.75" />
+    <Position X="3" Y="5.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <HashCode>AAIAAEAAAAAAAIAAAAAACAAAAAAAAQAAAAAAAAJAAAA=</HashCode>
       <FileName>ReferenceSegment.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="CDependentTextSegment" Collapsed="true">
-    <Position X="4.75" Y="4.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>IAIAAEAAAAhAAAAAAIAACAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
-      <FileName>DependentTextSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CTextSegment" Collapsed="true">
     <Position X="6" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAIBAmAQCAAAEwQJAAAABAAAQaAAAQAUEwAAAEIAACA=</HashCode>
+      <HashCode>AAIAAEAAAAAAAAAAAAAAAAAAQAAAAQAEEQAAAAIAAAA=</HashCode>
       <FileName>TextSegment.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -31,28 +24,28 @@
   <Class Name="CPhonemicSegment" Collapsed="true">
     <Position X="0.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAABAAAAAAAAAAAAAABAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABABAAAAAAAAAAAABAAAA=</HashCode>
       <FileName>PhonemicSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CPhoneticSegment" Collapsed="true">
     <Position X="10" Y="3.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAQEAgACBAAAAAAAAQAQIAAAAEBAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAIgACBAAAABCAAAAAIAAAAEBAAAA=</HashCode>
       <FileName>PhoneticSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CIndependentSegment" Collapsed="true">
-    <Position X="8.25" Y="2" Width="2" />
+    <Position X="8.75" Y="2" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAACAAEQAAAAIAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAACAAEQAAAAJAAAA=</HashCode>
       <FileName>IndependentSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CSegment" Collapsed="true">
     <Position X="5.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAJIDmg4SAjgFgwNAkSEBACAAKBAOxIQmgBIAkpAAiw=</HashCode>
+      <HashCode>IAJJDmg6GBBgFggJIqSGBgIAALDQORISmiBIAkpAgiQ=</HashCode>
       <FileName>Segment.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -64,23 +57,16 @@
     </TypeIdentifier>
   </Class>
   <Class Name="CGlossSegment" Collapsed="true">
-    <Position X="6.75" Y="4.5" Width="1.5" />
+    <Position X="7.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAAAAQAAAAAAAAAAAgAABAAAADAAAAAAIAAAAABAgAA=</HashCode>
+      <HashCode>AAAAAQAAAAAAAAAAAgAABAAAADCAAAAAIAAAAABAgAA=</HashCode>
       <FileName>GlossSegment.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="COrthoSegment" Collapsed="true">
-    <Position X="2.25" Y="3.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
-      <FileName>OrthoSegment.h</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="CGlossNatSegment" Collapsed="true">
-    <Position X="5.75" Y="5.75" Width="1.75" />
+    <Position X="5.25" Y="5.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAABAAAA=</HashCode>
+      <HashCode>AAIAAEAAAAAAAAAAAAAACAAAAAAIAQAAAAAAAAJAAAA=</HashCode>
       <FileName>GlossNatSegment.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -89,6 +75,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAA=</HashCode>
       <FileName>ToneSegment.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="COrthographicSegment" Collapsed="true">
+    <Position X="2.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAgAA=</HashCode>
+      <FileName>OrthoSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

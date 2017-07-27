@@ -454,7 +454,7 @@ void CImportELAN::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhonet
                 szNext.Remove(0x0d);
                 szNext.Remove(0x0a);
                 pSaDoc->SelectSegment(pSegment,nIndex);
-                ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(pSaDoc,szNext);
+                pSegment->ReplaceSelectedSegment(pSaDoc,szNext, false);
             };
 
             // take care of remainder
@@ -471,7 +471,7 @@ void CImportELAN::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhonet
             szNext.Remove(0x0d);
             szNext.Remove(0x0a);
             pSaDoc->SelectSegment(pSegment,nIndex);
-            ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(pSaDoc,szNext);
+            pSegment->ReplaceSelectedSegment(pSaDoc,szNext, false);
         }
 
         // Process reference
@@ -821,7 +821,7 @@ BOOL CImportELAN::ReadTable(CStringStream & stream, int nMode) {
             if (pGloss->GetSelection() != nIndex) {
                 pGloss->SetSelection(nIndex);
             }
-            pGloss->ReplaceSelectedSegment(pDoc, szString);
+            pGloss->ReplaceSelectedSegment(pDoc, szString, false);
         }
     }
     szString = SEGMENT_DEFAULT_CHAR;
@@ -879,7 +879,7 @@ BOOL CImportELAN::ReadTable(CStringStream & stream, int nMode) {
             if ((szString[0] != WORD_DELIMITER) || (szString[0] != TEXT_DELIMITER)) {
                 szString = CSaString(SPACE_DELIMITER) + CSaString(WORD_DELIMITER) + szString;
             }
-            pGloss->ReplaceSelectedSegment(pDoc, szString);
+            pGloss->ReplaceSelectedSegment(pDoc, szString, false);
 
             // Reference
             szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[REFERENCE]);
