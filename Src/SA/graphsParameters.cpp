@@ -3102,10 +3102,10 @@ void CDlgParametersMusicPage::Apply() {
         if (m_nRange) {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-            CMusicParm cParms = *pMainFrame->GetMusicParmDefaults();
-            cParms.nManualLower = m_nLowerBound;
-            cParms.nManualUpper = m_nUpperBound;
-            pMainFrame->SetMusicParmDefaults(cParms);
+            CMusicParm cParm = *pMainFrame->GetMusicParmDefaults();
+            cParm.nManualLower = m_nLowerBound;
+            cParm.nManualUpper = m_nUpperBound;
+            pMainFrame->SetMusicParmDefaults(cParm);
         }
         pParm->nCalcUpperBound = m_nCalcUpperBound;
         pParm->nCalcLowerBound = m_nCalcLowerBound;
@@ -3114,10 +3114,10 @@ void CDlgParametersMusicPage::Apply() {
         if (m_nCalcRange) {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-            CMusicParm cParm2 = *pMainFrame->GetMusicParmDefaults();
-            cParm2.nManualCalcLower = m_nCalcLowerBound;
-            cParm2.nManualCalcUpper = m_nCalcUpperBound;
-            pMainFrame->SetMusicParmDefaults(cParm2);
+            CMusicParm cParm = *pMainFrame->GetMusicParmDefaults();
+            cParm.nManualCalcLower = m_nCalcLowerBound;
+            cParm.nManualCalcUpper = m_nCalcUpperBound;
+            pMainFrame->SetMusicParmDefaults(cParm);
         }
         m_bModified = FALSE;
         SetModified(FALSE);

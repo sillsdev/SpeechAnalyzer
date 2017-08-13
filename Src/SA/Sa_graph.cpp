@@ -1490,10 +1490,10 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 swprintf_s(szText, _countof(szText), _T("       %0d:%02d H:M"), nHours, nMinutes);
             } else {
                 // show minutes and seconds
-                int minutes = (int)fDataSec / 60;
-                fDataSec -= (double)(minutes*60);
+                int nMinutes = (int)fDataSec / 60;
+                fDataSec -= (double)(nMinutes*60);
                 int nSeconds = (fDataSec>=1.0)?(int)fDataSec:1;
-                swprintf_s(szText, _countof(szText), _T("       %0d:%02d M:S"), minutes, nSeconds);
+                swprintf_s(szText, _countof(szText), _T("       %0d:%02d M:S"), nMinutes, nSeconds);
             }
             pStat->SetPaneSymbol(ID_STATUSPANE_TLENGTH);
             pStat->SetPaneText(ID_STATUSPANE_TLENGTH, szText);

@@ -8509,8 +8509,8 @@ void CSaView::OnEditAddPhonetic() {
 
         // Adjust Gloss
         if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt))) {
-            int nPrevious2 = pPhonetic->GetPrevious(nInsertAt);
-            int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious2));
+            int nPrevious = pPhonetic->GetPrevious(nInsertAt);
+            int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
             if (nIndex != -1) {
                 pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex),false);
                 pGlossNat->Adjust(pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc,nIndex),false);
@@ -8705,8 +8705,8 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
                 DWORD nextOffset = pSeg->GetOffset(nNext);
                 if (nextOffset<(stopPos+byteCount)) { // SDM 1.5Test10.2
                     DWORD stop = pSeg->GetStop(nNext);
-                    CURSORPOS stopPos2 = GetStopCursorPosition();
-                    pSeg->Adjust(pDoc,nNext,stopPos2,stop-stopPos2,false);
+                    CURSORPOS stopPos = GetStopCursorPosition();
+                    pSeg->Adjust(pDoc,nNext,stopPos,stop-stopPos,false);
                 }
             }
         }
@@ -10609,21 +10609,21 @@ void CSaView::OnSpectroFormants() {
 
     for (int AB = FALSE; AB <= TRUE; AB++) {
         bool ab = (AB == TRUE);
-        CSpectroParm parameter = pDoc->GetSpectrogram(ab)->GetSpectroParm();
-        parameter.bShowFormants = bFormantSelected;
-        pDoc->GetSpectrogram(ab)->SetSpectroParm(parameter);
+        CSpectroParm parameters = pDoc->GetSpectrogram(ab)->GetSpectroParm();
+        parameters.bShowFormants = bFormantSelected;
+        pDoc->GetSpectrogram(ab)->SetSpectroParm(parameters);
     }
 
     {
-        CSpectroParm parameter = *(GetMainFrame().GetSpectrogramParmDefaults());
-        parameter.bShowFormants = bFormantSelected;
-        GetMainFrame().SetSpectrogramParmDefaults(parameter);
+        CSpectroParm parameters = *(GetMainFrame().GetSpectrogramParmDefaults());
+        parameters.bShowFormants = bFormantSelected;
+        GetMainFrame().SetSpectrogramParmDefaults(parameters);
     }
 
     {
-        CSpectroParm parameter = *(GetMainFrame().GetSnapshotParmDefaults());
-        parameter.bShowFormants = bFormantSelected;
-        GetMainFrame().SetSnapshotParmDefaults(parameter);
+        CSpectroParm parameters = *(GetMainFrame().GetSnapshotParmDefaults());
+        parameters.bShowFormants = bFormantSelected;
+        GetMainFrame().SetSnapshotParmDefaults(parameters);
     }
 
     if ((bFormantSelected) && (pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())) {

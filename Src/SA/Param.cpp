@@ -340,17 +340,17 @@ void CMusicParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBoun
 
     CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
     if (pMelogram->IsDataReady() && !pMelogram->IsStatusFlag(PROCESS_NO_PITCH)) {
-        int lower = (int)floor((double)pMelogram->GetMinValue() / 100.0);
-        int upper = (int)ceil((double)pMelogram->GetMaxValue() / 100.0);
+        int nLowerBound = (int)floor((double)pMelogram->GetMinValue() / 100.0);
+        int nUpperBound = (int)ceil((double)pMelogram->GetMaxValue() / 100.0);
 
         // make sure the legend scale spans at least an octave
-        int nRange = (upper - lower);
+        int nRange = (nUpperBound - nLowerBound);
         if (nRange < 12) {
-			lower = (int)(((double)(lower + upper) / 2.0) - 6.);
-			upper = (int)(lower + 12);
+            nLowerBound = (int)(((double)(nLowerBound + nUpperBound) / 2.0) - 6.);
+            nUpperBound = (int)(nLowerBound + 12);
         }
-        temp.nUpperBound = upper;
-        temp.nLowerBound = lower;
+        temp.nUpperBound = nUpperBound;
+        temp.nLowerBound = nLowerBound;
     }
 
     nUpperBound = temp.nUpperBound;

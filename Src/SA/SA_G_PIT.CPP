@@ -84,8 +84,8 @@ void CPlotPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     if (pPitch->IsStatusFlag(PROCESS_NO_PITCH)) {
         //temporarily disable till we think of something better.
         TRACE(_T("No data on %lp\n"),this);
-        CGraphWnd * pGraph2 = GetParent();
-        if (!pGraph2->GetPlot()->IsKindOf(RUNTIME_CLASS(CMultiPlotWnd))) {
+        CGraphWnd * pGraph = GetParent();
+        if (!pGraph->GetPlot()->IsKindOf(RUNTIME_CLASS(CMultiPlotWnd))) {
             m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOVOICING, &rWnd);
         }
     } else if (pPitch->IsDataReady()) {

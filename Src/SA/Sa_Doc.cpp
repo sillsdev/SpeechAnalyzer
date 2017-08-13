@@ -8955,9 +8955,9 @@ void CSaDoc::ExportTimeTable( LPCTSTR filename,
 				}
 
 				if (bReference) {
-					int offset = GetSegment(REFERENCE)->FindOffset(dwPhonetic);
-					if (offset != -1) {
-						szString = GetSegment(REFERENCE)->GetSegmentString(offset) + "\t";
+					int nIndex = GetSegment(REFERENCE)->FindOffset(dwPhonetic);
+					if (nIndex != -1) {
+						szString = GetSegment(REFERENCE)->GetSegmentString(nIndex) + "\t";
 					} else {
 						szString = "\t";
 					}
@@ -8968,37 +8968,37 @@ void CSaDoc::ExportTimeTable( LPCTSTR filename,
 					WriteFileUtf8(&file, szString);
 				}
 				if (bTone) {
-					int offset = GetSegment(TONE)->FindOffset(dwPhonetic);
-					if (offset != -1) {
-						szString = GetSegment(TONE)->GetSegmentString(offset) + "\t";
+					int nIndex = GetSegment(TONE)->FindOffset(dwPhonetic);
+					if (nIndex != -1) {
+						szString = GetSegment(TONE)->GetSegmentString(nIndex) + "\t";
 					} else {
 						szString = "\t";
 					}
 					WriteFileUtf8(&file, szString);
 				}
 				if (bPhonemic) {
-					int offset = GetSegment(PHONEMIC)->FindOffset(dwPhonetic);
-					if (offset != -1) {
-						szString = GetSegment(PHONEMIC)->GetSegmentString(offset) + "\t";
+					int nIndex = GetSegment(PHONEMIC)->FindOffset(dwPhonetic);
+					if (nIndex != -1) {
+						szString = GetSegment(PHONEMIC)->GetSegmentString(nIndex) + "\t";
 					} else {
 						szString = "\t";
 					}
 					WriteFileUtf8(&file, szString);
 				}
 				if (bOrtho) {
-					int offset = GetSegment(ORTHO)->FindOffset(dwPhonetic);
-					if (offset != -1) {
-						szString = GetSegment(ORTHO)->GetSegmentString(offset) + "\t";
+					int nIndex = GetSegment(ORTHO)->FindOffset(dwPhonetic);
+					if (nIndex != -1) {
+						szString = GetSegment(ORTHO)->GetSegmentString(nIndex) + "\t";
 					} else {
 						szString = "\t";
 					}
 					WriteFileUtf8(&file, szString);
 				}
 				if (bGloss) {
-					int offset = GetSegment(GLOSS)->FindOffset(dwPhonetic);
-					if (offset != -1) {
+					int nIndex = GetSegment(GLOSS)->FindOffset(dwPhonetic);
+					if (nIndex != -1) {
 						// SDM 1.5Test10.1
-						szString = GetSegment(GLOSS)->GetSegmentString(offset);
+						szString = GetSegment(GLOSS)->GetSegmentString(nIndex);
 						if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER)) {
 							// Remove Word Delimiter
 							szString = szString.Mid(1);
@@ -9010,10 +9010,10 @@ void CSaDoc::ExportTimeTable( LPCTSTR filename,
 					WriteFileUtf8(&file, szString);
 				}
 				if (bGlossNat) {
-					int offset = GetSegment(GLOSS_NAT)->FindOffset(dwPhonetic);
-					if (offset != -1) {
+					int nIndex = GetSegment(GLOSS_NAT)->FindOffset(dwPhonetic);
+					if (nIndex != -1) {
 						// SDM 1.5Test10.1
-						szString = GetSegment(GLOSS_NAT)->GetSegmentString(offset);
+						szString = GetSegment(GLOSS_NAT)->GetSegmentString(nIndex);
 						if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER)) {
 							// Remove Word Delimiter
 							szString = szString.Mid(1);    

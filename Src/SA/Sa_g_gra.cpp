@@ -75,7 +75,8 @@ CPlotGrappl::~CPlotGrappl() {
 // cursors.
 /***************************************************************************/
 void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
-    // get pointer to main frame, graph, and document
+    
+	// get pointer to main frame, graph, and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc  *  pDoc   = pView->GetDocument();
 

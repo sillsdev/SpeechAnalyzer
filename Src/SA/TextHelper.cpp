@@ -129,13 +129,13 @@ TranscriptionDataMap AttemptTabDelimitedRefOnly(const vector<wstring> & lines, c
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens2 = *it;
-        vector<wstring>::iterator it2 = tokens2.begin();
+        vector<wstring> tokens = *it;
+        vector<wstring>::iterator it2 = tokens.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token2 = *it2;
-            map[marker].push_back(CSaString(token2.c_str()));
+            wstring token = *it2;
+            map[marker].push_back(CSaString(token.c_str()));
             it2++;
             it3++;
         }
@@ -185,13 +185,13 @@ TranscriptionDataMap AttemptTabDelimited(vector<wstring> lines, MarkerList marke
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens2 = *it;
-        vector<wstring>::iterator it2 = tokens2.begin();
+        vector<wstring> tokens = *it;
+        vector<wstring>::iterator it2 = tokens.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token2 = *it2;
-            map[marker].push_back(CSaString(token2.c_str()));
+            wstring token = *it2;
+            map[marker].push_back(CSaString(token.c_str()));
             it2++;
             it3++;
         }
@@ -241,13 +241,13 @@ TranscriptionDataMap AttemptWhitespaceDelimited(vector<wstring> lines, MarkerLis
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens2 = *it;
-        vector<wstring>::iterator it2 = tokens2.begin();
+        vector<wstring> tokens = *it;
+        vector<wstring>::iterator it2 = tokens.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token2 = *it2;
-            map[marker].push_back(CSaString(token2.c_str()));
+            wstring token = *it2;
+            map[marker].push_back(CSaString(token.c_str()));
             it2++;
             it3++;
         }
@@ -303,13 +303,13 @@ TranscriptionDataMap AttemptTwoMarkerWhitespaceDelimited(vector<wstring> lines, 
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens2 = *it;
-        vector<wstring>::iterator it2 = tokens2.begin();
+        vector<wstring> tokens = *it;
+        vector<wstring>::iterator it2 = tokens.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token2 = *it2;
-            map[marker].push_back(CSaString(token2.c_str()));
+            wstring token = *it2;
+            map[marker].push_back(CSaString(token.c_str()));
             it2++;
             it3++;
         }

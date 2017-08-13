@@ -51,7 +51,6 @@ public:
         href(L"href"),
         clazz(L"clazz"),
         _span(SPAN) {
-		assert(wcslen(_data)>0);
         pcdata = _data;
     };
 
@@ -62,7 +61,6 @@ public:
         clazz(L"clazz"),
         _span(SPAN) {
         lang = wstring(_lang);
-		assert(wcslen(_data)>0);
 		pcdata = _data;
     };
 
