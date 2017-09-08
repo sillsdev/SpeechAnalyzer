@@ -12,14 +12,17 @@ test_samples/out/
 /Src/Debug
 /Src/Release
 /Src/ElanUtils/Test/Debug
+/Src/ElanUtils/Test/Release
 /Src/ElanUtils/Debug
 /Src/ElanUtils/Release
 /Src/FileUtils/Test/Debug
+/Src/FileUtils/Test/Release
 /Src/FileUtils/Debug
 /Src/FileUtils/Release
 /Src/LiftUtils/Test/Debug
 /Src/LiftUtils/Debug
 /Src/LiftUtils/Release
+/Src/LiftUtils/Test/Release
 /Src/Lang/Release
 /Src/Lang/Debug
 /Src/SA/Debug
@@ -29,6 +32,7 @@ test_samples/out/
 /Src/SA_KLATT/Debug
 /Src/SA_KLATT/Release
 /Src/WaveUtils/Test/Debug
+/Src/WaveUtils/Test/Release
 /Src/WaveUtils/Debug
 /Src/WaveUtils/Release
 /Src/XMLUtils/Debug

@@ -1,3 +1,10 @@
+SA - 3.1.0.138 9/8/2017
+- Updated Microsoft Visual C++ Redistributable to version 14.0.23026
+- Fixed phonetic replacement problem.
+
+SA - 3.1.0.137 7/24/2017
+- Updated SA project and dependencies so that it is now built with Microsoft Visual Studio 2015.
+
 SA - 3.1.0.136 11/12/2015
 - Fixed bug in FW Lift export code that was preventing audio files from being imported into FW.
 - Modified tempfile naming function so that all temp files are now stored in %temp%/SpeechAnalyzer
