@@ -634,7 +634,7 @@ double parse(LPCSTR s, INT * att, double X, double Y) {
     strupr(strcpy(copy,s));
 #endif
 
-    size_t copied;
+    size_t copied = 0;
     errno_t err = mbstowcs_s(&copied, input, 180, copy, 180);
 
     stacktop = -1;

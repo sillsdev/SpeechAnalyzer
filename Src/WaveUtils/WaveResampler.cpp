@@ -844,11 +844,13 @@ CWaveResampler::ECONVERT CWaveResampler::Normalize(LPCTSTR src, const TCHAR  * d
         WAVEFORMATEX fxDst;
         memcpy(&fxDst,&fxSrc,sizeof(WAVEFORMATEX));
 
+
         LPWAVEFILTER pwfltr = NULL;
         DWORD_PTR dwCallback = 0;
         DWORD_PTR dwInstance = 0;
         DWORD fdwOpen = ACM_STREAMOPENF_NONREALTIME;
-        if (acmStreamOpen(&hacm,had,&fxSrc,&fxDst,pwfltr,dwCallback,dwInstance,fdwOpen)) {
+        MMRESULT result = acmStreamOpen(&hacm, had, &fxSrc, &fxDst, pwfltr, dwCallback, dwInstance, fdwOpen);
+        if (result!=0) {
             return EC_CONVERTFORMATFAIL;
         }
 
