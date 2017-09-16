@@ -1835,13 +1835,6 @@ static double InterpolateWeight(double dLocation, double dBreakPoint, double dEn
     } else {
         return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint) * (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
     }
-
-    // simple linear for now
-    if (dLocation < dBreakPoint) {
-        return 1.0 - 0.5*(dLocation / dBreakPoint);
-    } else {
-        return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
-    }
 }
 
 static void WeighChars(SIpaChar & cPrev, SIpaChar & cNext, double dWeight, SIpaChar & cThis) {

@@ -7297,7 +7297,7 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.138");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.139");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -7419,8 +7419,8 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 							entry.pronunciation[0].media[0].href = uri;
 							entry.pronunciation[0].media[0].label = Lift13::multitext(L"label");
 							Lift13::span s(SPAN,filename.c_str());
-							s.href.get() = filename.c_str();
-							s.clazz.get() = L"Hyperlink";
+							s.href.set(filename.c_str());
+							s.clazz.set(L"Hyperlink");
 							Lift13::text t(L"text",s);
 							Lift13::form f(L"form",settings.gloss.c_str(),t);
 							entry.pronunciation[0].media[0].label.get().form.append(f);

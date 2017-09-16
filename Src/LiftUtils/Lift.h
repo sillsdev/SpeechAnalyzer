@@ -113,6 +113,13 @@ public:
     void remove() {
         inner.clear();
     }
+    void set(const T & right) {
+        if (inner.size() == 0) {
+            inner.push_back(right);
+        } else {
+            inner[0] = right;
+        }
+    }
     T & get() {
         assert(inner.size()>0);
         return inner[0];
@@ -223,10 +230,17 @@ public:
     virtual Element * store() = 0;
     virtual void load(Element * in) = 0;
 
-    void expect(Element * in, LPCTSTR ename) {
-        if (in->localname.compare(ename)!=0) {
+    void expect(Element * in, LPCTSTR lname) {
+        if (in->localname.compare(lname)!=0) {
             stringstream msg;
-            msg << "expected "<<utf8(ename).c_str()<<", saw "<< in->localname.c_str();
+            msg << "expected "<<utf8(lname).c_str()<<", saw "<< in->localname.c_str();
+            throw logic_error(msg.str().c_str());
+        }
+    };
+    void expect(Element * in, wstring ename) {
+        if (in->localname.compare(ename) != 0) {
+            stringstream msg;
+            msg << "expected " << utf8(ename).c_str() << ", saw " << in->localname.c_str();
             throw logic_error(msg.str().c_str());
         }
     };
@@ -383,34 +397,22 @@ public:
 
     // zero_more
     template<class T> void store_attribute(zero_more<T> & target, Element * parent) {
-        if (target.inner.size()==0) {
-            return;
-        }
         for (int i=0; i<target.inner.size(); i++) {
             parent->getAttributes().push_back(target.inner[i].store());
         }
     }
     template<> void store_attribute<wstring>(zero_more<wstring> & target, Element * parent) {
-        if (target.size()==0) {
-            return;
-        }
         for (size_t i=0; i<target.size(); i++) {
             parent->setAttribute(target.name,target[i].c_str());
         }
     }
     template<class T> void store_element(zero_more<T> & target, Element * parent) {
-        if (target.size()==0) {
-            return;
-        }
         for (size_t i=0; i<target.size(); i++) {
             Element * element = target[i].store();
             parent->appendChild(element);
         }
     }
     template<> void store_element<wstring>(zero_more<wstring> & target, Element * parent) {
-        if (target.size()==0) {
-            return;
-        }
         for (size_t i=0; i<target.size(); i++) {
             Element * element = new Element(target.name);
             element->value = target[i].c_str();
@@ -461,7 +463,7 @@ public:
         parent->value = target.c_str();
     };
 
-    LPCTSTR name;
+    wstring name;
 };
 
 }

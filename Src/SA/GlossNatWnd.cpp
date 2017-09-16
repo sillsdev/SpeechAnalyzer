@@ -79,14 +79,16 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     CPen penDkgray(PS_SOLID, 1, pColors->cSysBtnShadow);
     CPen penLtgray(PS_SOLID, 1, pColors->cSysBtnHilite);
 
-    CPen * pOldPen = pDC->SelectObject(&penDkgray);
-    // SDM 1.06.6 make annotation windows symettrical
-    pDC->MoveTo(rClip.left, rWnd.bottom - 1);
-    pDC->LineTo(rClip.right, rWnd.bottom - 1);
-    pDC->SelectObject(&penLtgray);
-    pDC->MoveTo(rClip.left, rWnd.top);
-    pDC->LineTo(rClip.right, rWnd.top);
-    pDC->SelectObject(pOldPen);
+    {
+        CPen * pOldPen = pDC->SelectObject(&penDkgray);
+        // SDM 1.06.6 make annotation windows symettrical
+        pDC->MoveTo(rClip.left, rWnd.bottom - 1);
+        pDC->LineTo(rClip.right, rWnd.bottom - 1);
+        pDC->SelectObject(&penLtgray);
+        pDC->MoveTo(rClip.left, rWnd.top);
+        pDC->LineTo(rClip.right, rWnd.top);
+        pDC->SelectObject(pOldPen);
+    }
 
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();

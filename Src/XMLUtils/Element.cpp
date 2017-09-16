@@ -10,6 +10,9 @@ using std::logic_error;
 unsigned int seed = 0;
 
 nodeid generateSeed() {
+    if (seed == 66) {
+        int j=0;
+    }
     return seed++;
 }
 
@@ -18,7 +21,6 @@ namespace XML {
 Element::Element() :
     owner(),
     id(generateSeed()) {
-    //wprintf(L"creating element NULL %d\n",id);
 };
 
 Element::Element(LPCTSTR _localname, LPCTSTR _qname, LPCTSTR _uri) :
@@ -27,7 +29,6 @@ Element::Element(LPCTSTR _localname, LPCTSTR _qname, LPCTSTR _uri) :
     uri(_uri),
     owner(),
     id(generateSeed())  {
-    //wprintf(L"creating element %s %d\n",_localname,id);
 }
 
 Element::Element(LPCTSTR _name) :
@@ -36,7 +37,14 @@ Element::Element(LPCTSTR _name) :
     uri(),
     owner(),
     id(generateSeed())  {
-    //wprintf(L"creating element %s %d\n",_name,id);
+}
+
+Element::Element(wstring & _name) :
+    localname(_name.c_str()),
+    qname(_name.c_str()),
+    uri(),
+    owner(),
+    id(generateSeed()) {
 }
 
 Element::Element(LPCTSTR _name, LPCTSTR _value) :
@@ -46,7 +54,6 @@ Element::Element(LPCTSTR _name, LPCTSTR _value) :
     value(_value),
     owner(),
     id(generateSeed())  {
-    //wprintf(L"creating element %s %d\n",_name,id);
 }
 
 Element::~Element() {

@@ -19,6 +19,7 @@ class Element {
 public:
     Element();
     Element(LPCTSTR name);
+    Element(wstring & name);
     Element(LPCTSTR localname, LPCTSTR qname, LPCTSTR uri);
     Element(LPCTSTR name, LPCTSTR value);
     ~Element();
