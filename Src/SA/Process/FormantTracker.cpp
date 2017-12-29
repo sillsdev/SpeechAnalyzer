@@ -442,7 +442,7 @@ void CProcessFormantTracker::Dump(LPCSTR ofilename) {
     {
         string ifilename = Utf8(GetProcessFileName());
         FILE * ifile = NULL;
-        errno_t err = fopen_s(&ifile, ifilename.c_str(), "rb");
+        err = fopen_s(&ifile, ifilename.c_str(), "rb");
         SFormantFreq buffer;
         while (true) {
             int read = fread(&buffer, 1, sizeof(SFormantFreq), ifile);

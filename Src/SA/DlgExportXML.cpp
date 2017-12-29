@@ -264,7 +264,7 @@ void CDlgExportXML::OnOK() {
             OutputXMLField(pFile,_T("LastEdit"),pFileStatus->m_mtime.Format("%A, %B %d, %Y, %X"));
         }
         if (m_bFileSize) {
-            swprintf_s(szString.GetBuffer(25),25,_T("%ld Bytes"),pFileStatus->m_size);
+            swprintf_s(szString.GetBuffer(25),25,_T("%lld Bytes"),pFileStatus->m_size);
             szString.ReleaseBuffer();
             OutputXMLField(pFile,_T("FileSize"),szString);
         }

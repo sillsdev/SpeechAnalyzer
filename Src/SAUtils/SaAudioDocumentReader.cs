@@ -98,9 +98,9 @@ public class SaAudioDocumentReader : ISaAudioDocumentReader {
                     return false;
                 }
 
-                // Tty reading data from older SA audio files, converting
+                // Try reading data from older SA audio files, converting
                 // it to Unicode along the way.
-                if (!audioReader.Read(true)) {
+                if (!audioReader.Read()) {
                     return false;
                 }
 

@@ -208,7 +208,7 @@ void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
 /***************************************************************************/
 // CPhoneticSegment::Process Segmenting wave data
 // The process stores the resulting segmentation in the phonetic data arrays.
-// While processing a process bar, placed on the status bar, has to be up-
+// While processing, a process bar, placed on the status bar, has to be up-
 // dated. The level tells which processing level this process has been
 // called, start process start on which processing percentage this process
 // starts (for the progress bar). The status bar process bar will be updated
@@ -304,10 +304,11 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pDoc, int nProgress, in
     // SDM 1.06.4 move question to Command Level
     // remove all annotations and deselect everything
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-        if (pDoc->GetSegment(nLoop)) {
-            pDoc->GetSegment(nLoop)->DeleteContents();
-            if (pDoc->GetSegment(nLoop)->GetSelection() != -1) {
-                pDoc->GetSegment(nLoop)->SetSelection(-1);
+        CSegment * pSegment = pDoc->GetSegment(nLoop);
+        if (pSegment!=NULL) {
+            pSegment->DeleteContents();
+            if (pSegment->GetSelection() != -1) {
+                pSegment->SetSelection(-1);
             }
         }
     }
@@ -425,8 +426,8 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pDoc, int nProgress, in
                 // save this segment in case the next ZC segment is adjacent
                 dwShortZCStart = dwZCStart;
                 dwShortZCStop = dwZCStop;
-                // adjacent to old segment?
-                if (dwZCStart - dwOldZCStop < 4 * dwFlankWidth) {
+                // adjacent to old segment? and was there an old segment?
+                if ((dwOldZCStart) && (dwZCStart - dwOldZCStop < 4 * dwFlankWidth)) {
                     // join the two peaks (adjust most recently stored segment)
 					// rewind start of current segment to start of old
                     dwZCStart = dwOldZCStart; 

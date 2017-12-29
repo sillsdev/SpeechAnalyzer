@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA"
-#define MyAppVersion "3.1.0.139"
+#define MyAppVersion "3.1.0.140"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -39,12 +39,10 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 Source: "C:\Working\SIL\MSEA\Output\Release\SA.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SA.exe"; DestDir: "{app}"; DestName: "SAServer.exe"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\ECInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\mbrola.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SA_DSP.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SA_ENU.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SA_DEU.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\SilEncConverters40.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\SAUtils.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\yeti.mmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Output\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -78,20 +76,16 @@ Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
-;.NET 3.5 = .NET 2.0 + .NET 3.5
-;Due to the way .NET 3.5 is "just" an add-on to .NET 3.0 which is "just" an add-on to .NET 2.0, 
-; the tools in the .NET 2.0 directory are still the ones to use.  
-; The CLR version number is the same for all three of these frameworks (2.0.50727).
 [Run]
 Filename: "{app}\components\vc_redist.x86.exe"; Parameters: "/q"; WorkingDir: "{app}\components"; Flags: waituntilterminated skipifdoesntexist; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; StatusMsg: "Installing Microsoft Visual C++ 2015 Redistributable"; Check: VCRedistNeedsInstall()
-Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "SAUtils.dll /tlb:SAUtils.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering SpeechToolsUtils"
-Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "yeti.mmedia.dll /tlb:yeti.mmedia.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.mmedia"
-Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "yeti.wmfsdk.dll /tlb:yeti.wmfsdk.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.wmfsdk"
+Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "SAUtils.dll /tlb:SAUtils.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering SpeechToolsUtils"
+Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.mmedia.dll /tlb:yeti.mmedia.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.mmedia"
+Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.wmfsdk.dll /tlb:yeti.wmfsdk.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.wmfsdk"
 
 [UninstallRun]
-Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "SAUtils.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
-Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "yeti.mmedia.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
-Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "yeti.wmfsdk.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
+Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "SAUtils.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
+Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.mmedia.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
+Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.wmfsdk.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
 
 [Dirs]
 Name: "{app}\components"
@@ -422,14 +416,9 @@ Var
 begin
   bad := false;
   result := true;
-  if not IsDotNetDetected('v2.0', 0) then begin
-    version := '.NET Framework 2.0';
+  if not IsDotNetDetected('v4\Full', 0) then begin
+    version := '.NET Framework 4.0';
     bad := true;
-  end else begin
-    if not IsDotNetDetected('v2.0', 0) then begin
-      version := '.NET Framework 3.5';
-      bad := true;
-    end;
   end;
 
   if (bad) then begin
@@ -443,7 +432,7 @@ begin
       body := '1) Search for '#39'Windows Features'#39' using the Start menu.'#13
               '2) Click on the text: '#39'Turn Windows Features On or Off'#39'.'#13
               '3) In the '#39'Windows Features'#39' dialog box, select:'#13
-              '       '#39'.NET Framework 3.5 (includes .NET 2.0 and 3.0)'#39'.'#13
+              '       '#39'.NET Framework 4.0'#39'.'#13
               '4) When you click OK, then it will take a few seconds to enable'#13
               '   the feature.'#13
               '   ** You may get a message that Windows wants to '#39'download an'#13
@@ -453,7 +442,7 @@ begin
       // win 7 and early procedure
       body := '1) Search for '#39'Windows Features'#39' using the Start menu.'#13
               '2) In the '#39'Windows Features'#39' dialog box, select:'#13
-              '       '#39'.NET Framework 3.5 (includes .NET 2.0 and 3.0)'#39'.'#13
+              '       '#39'.NET Framework 4.0'#39'.'#13
               '3) When you click OK, then it will take a few seconds to enable'#13
               '   the feature.'#13
               '   ** You may get a message that Windows wants to '#39'download an'#13

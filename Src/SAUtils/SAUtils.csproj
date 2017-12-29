@@ -31,7 +31,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -75,14 +75,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ECInterfaces, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f1447bae1e63f485, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\DistFiles\ECInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="SilEncConverters40, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f1447bae1e63f485, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\DistFiles\SilEncConverters40.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -97,6 +89,7 @@
   <ItemGroup>
     <Compile Include="Audio\Audio.cs" />
     <Compile Include="Audio\IAudio.cs" />
+    <Compile Include="ProcessTypeFlags.cs" />
     <Compile Include="GUI\ASAboutDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,13 +137,6 @@
     <Compile Include="GUI\SplashScreenForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TransConverter.cs" />
-    <Compile Include="TransConvertersDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TransConvertersDlg.designer.cs">
-      <DependentUpon>TransConvertersDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\Utils.cs" />
     <Compile Include="XmlHelper.cs" />
     <Compile Include="XmlSerializationHelper.cs" />
@@ -177,10 +163,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\SplashScreenForm.resx">
       <DependentUpon>SplashScreenForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TransConvertersDlg.resx">
-      <DependentUpon>TransConvertersDlg.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

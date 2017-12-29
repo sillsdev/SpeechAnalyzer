@@ -5,10 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 
-using SIL.SpeechAnalyzer;
-
-using SilEncConverters40;
-
 namespace SIL.SpeechAnalyzer.Utils {
 public class AudioReader : IDisposable {
     /// ------------------------------------------------------------------------------------
@@ -62,7 +58,6 @@ public class AudioReader : IDisposable {
     private SaAudioDocumentWriter m_writer;
     private string m_audioFile;
     private bool m_isWave = false;
-    private TransConverterInfo m_transConverters;
     private bool m_backupAudioFile = true;
 
     #region IDisposable Members
@@ -303,7 +298,7 @@ public class AudioReader : IDisposable {
     /// Method for reading the audio file.
     /// </summary>
     /// ------------------------------------------------------------------------------------
-    public bool Read(bool showConverterDlg) {
+    public bool Read() {
 
         m_writer = new SaAudioDocumentWriter();
         m_writer.Initialize(m_audioFile, false);
@@ -329,10 +324,6 @@ public class AudioReader : IDisposable {
             m_writer.Commit();
             m_writer.Close();
             return true;
-        }
-
-        if (!PrepareConverters(showConverterDlg)) {
-            return false;
         }
 
         if (!ReadSaChunk()) {
@@ -370,48 +361,8 @@ public class AudioReader : IDisposable {
         // Process Music Phrase Level chunks into database
         ProcessMusicTranscriptionChunks();
 
-        // TODO: When code exists to read wave files in batch mode, then move this so
-        // it's done after all wave files are read and converted.
-        TransConverter.EncodingConverters = null;
-
         m_writer.Commit(m_backupAudioFile);
         m_writer.Close();
-
-        return true;
-    }
-
-    /// ------------------------------------------------------------------------------------
-    /// <summary>
-    /// Prepares the encoding converters to apply to each SA transcription.
-    /// </summary>
-    /// ------------------------------------------------------------------------------------
-    private bool PrepareConverters(bool showConverterDlg) {
-        if (m_transConverters == null) {
-            m_transConverters = TransConverterInfo.Load();
-        }
-
-        // TODO: What do we do when there are no converters?
-        if (m_transConverters.Count == 0) {
-        }
-
-        if (showConverterDlg) {
-            string[] legacyFontNames = ReadFontChunks();
-
-            using(TransConvertersDlg dlg = new TransConvertersDlg(m_transConverters, legacyFontNames)) {
-                // If there's a splash screen open, then close it before showing the
-                // dialog. Otherwise, the dialog will popup behind the splash screen.
-                GUI.Utils.ForceCloseOfSplashScreen();
-
-                DialogResult res = dlg.ShowDialog();
-                if (res == DialogResult.Cancel) {
-                    return false;
-                }
-                m_backupAudioFile = dlg.BackupAudioFile;
-                m_transConverters.Save();
-            }
-
-            Application.DoEvents();
-        }
 
         return true;
     }
@@ -567,7 +518,6 @@ public class AudioReader : IDisposable {
             // Read the transcription data.
             List<SegmentInfo> segInfo = ReadTranscriptionChunk(kid);
             if (segInfo != null) {
-                ConvertSegments(kid, segInfo);
                 LoadWriterWithSegments(annType, segInfo);
             }
         }
@@ -592,7 +542,6 @@ public class AudioReader : IDisposable {
             // Read the transcription data.
             List<SegmentInfo> segInfo = ReadTranscriptionChunk(kid);
             if (segInfo != null) {
-                ConvertSegments(kid, segInfo);
                 LoadWriterWithSegments(annType, segInfo);
             }
         }
@@ -708,39 +657,6 @@ public class AudioReader : IDisposable {
 
     /// ------------------------------------------------------------------------------------
     /// <summary>
-    /// Perform's an encoding conversion on the segments in the specified chunk.
-    /// </summary>
-    /// ------------------------------------------------------------------------------------
-    private void ConvertSegments(string chunkId, List<SegmentInfo> segInfo) {
-        // Get the encoding converter used for the specified chunk.
-        EncConverter ec = GetConverterForChunk(chunkId);
-        if (segInfo == null || ec == null) {
-            return;
-        }
-
-        // Convert each segment to Unicode
-        for (int i = 0; i < segInfo.Count; i++) {
-            segInfo[i].segment = ec.ConvertToUnicode(segInfo[i].segbytes);
-        }
-    }
-
-    /// ------------------------------------------------------------------------------------
-    /// <summary>
-    /// Gets the encoding converter for the SA transcription specified by chunkId
-    /// </summary>
-    /// ------------------------------------------------------------------------------------
-    private EncConverter GetConverterForChunk(string chunkId) {
-        if (m_transConverters == null || m_transConverters.Count == 0 ||
-                m_transConverters[chunkId] == null) {
-            return null;
-        }
-
-        // Get the encoding converter used for the specified chunk.
-        return TransConverter.GetConverter(m_transConverters[chunkId].Converter);
-    }
-
-    /// ------------------------------------------------------------------------------------
-    /// <summary>
     /// Loads the audio document writer with the data for the specified annotation type.
     /// </summary>
     /// ------------------------------------------------------------------------------------
@@ -831,18 +747,6 @@ public class AudioReader : IDisposable {
         if (labelPieces.Length == 2 && labelPieces[1] != "ref:") {
             reference = (labelPieces[1].StartsWith("ref:") ?
                          labelPieces[1].Substring(4) : labelPieces[1]);
-        }
-
-        // Convert the gloss segment to Unicode
-        EncConverter ec = GetConverterForChunk("mark");
-        if (!string.IsNullOrEmpty(gloss) && ec != null) {
-            gloss = ec.Convert(gloss);
-        }
-
-        // Convert the reference segment to Unicode
-        ec = GetConverterForChunk("ref");
-        if (!string.IsNullOrEmpty(reference) && ec != null) {
-            reference = ec.Convert(reference);
         }
 
         return true;

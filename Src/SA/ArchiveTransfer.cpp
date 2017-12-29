@@ -18,7 +18,7 @@ short int CArchiveTransfer::tShortInt(CArchive & ar, short int x) {
         ar << shortInt;
     } else {
         ar >> shortInt;
-        swscanf_s(shortInt.GetBuffer(100),_T("%d"),&ret);
+        swscanf_s(shortInt.GetBuffer(100),_T("%hd"),&ret);
         shortInt.ReleaseBuffer();
     }
 

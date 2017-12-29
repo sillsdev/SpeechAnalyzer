@@ -1,3 +1,7 @@
+SA - 3.1.0.140 12/29/2017
+- Fixed crash that occurs when using 'locate phonetic segments' feature.
+- Removed dependencies on .NET 2.0 and 3.5.  Speech Analyser now uses .NET 4.0.
+
 SA - 3.1.0.139 9/20/2017
 - Fixed exception that occurred when export Lift files.
 - Modified Lift export operation so that the user may now select the language by it's full name, rather than the 2 character country code, when selecting and assigning segment types to export. 

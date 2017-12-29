@@ -1009,7 +1009,7 @@ void CDlgExportSFM::ExportAllFileInformation(CSaDoc * pDoc, CFile & file) {
             WriteFileUtf8(&file, szString);
         }
         if (m_bFileSize) { // \size File size in bytes
-            swprintf_s(szString.GetBuffer(25),25,_T("%ld Bytes"),pFileStatus->m_size);
+            swprintf_s(szString.GetBuffer(25),25,_T("%lld Bytes"),pFileStatus->m_size);
             szString.ReleaseBuffer();
             szString = "\\size " +  szString + szCrLf;
             WriteFileUtf8(&file, szString);
