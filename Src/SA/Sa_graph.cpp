@@ -379,21 +379,9 @@ void CGraphWnd::ShowAnnotation(EAnnotation nIndex, BOOL bShow, BOOL bRedraw) {
 // directly). This will cause a draw message.
 /***************************************************************************/
 void CGraphWnd::SetCaptionStyle(int nStyle, BOOL bRedraw) {
-    m_nCaption = nStyle;
-    // set caption height
-    switch (m_nCaption) {
-    case Normal:
-        m_iNCHeight = GetSystemMetrics(SM_CYCAPTION) - GetSystemMetrics(SM_CYBORDER);
-        break;
-    case Mini:
-    case MiniWithCaption:
-        m_iNCHeight = MINICAPTION_HEIGHT;
-        break;
-    default:
-		// because of 3D border
-        m_iNCHeight = 1; 
-        break;
-    }
+    
+	m_nCaption = nStyle;
+
     if (bRedraw) {
         // force a repaint of the whole window with NC area
 		// get pointer to parent view
@@ -1914,6 +1902,8 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     CRect scaledLegendRect(0,0,0,0);
     CRect annotRect[ANNOT_WND_NUMBER];
     CRect scaledAnnotRect[ANNOT_WND_NUMBER];
+
+	// height for full caption?
     int height = m_iNCHeight * 2;
 
     for (; nLoop < ANNOT_WND_NUMBER; nLoop++) {

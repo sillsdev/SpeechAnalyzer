@@ -1,3 +1,7 @@
+SA - 3.1.0.141 1/29/2017
+- Fixed crash that occurs when using SA with Phonology Assistant.
+- Fixed some rendering issues for MiniCaptionBar feature.
+
 SA - 3.1.0.140 12/29/2017
 - Fixed crash that occurs when using 'locate phonetic segments' feature.
 - Removed dependencies on .NET 2.0 and 3.5.  Speech Analyser now uses .NET 4.0.

@@ -13,8 +13,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // CMiniCaptionWnd defines
 
-#define MINICAPTION_HEIGHT  10           // height of the window small caption
-
 class CMiniCaptionWnd : public CWnd {
     DECLARE_DYNCREATE(CMiniCaptionWnd)
 
@@ -27,7 +25,7 @@ public:
 
     // Attributes
 protected:
-    int m_iNCHeight;        // height of the caption
+    int m_iNCHeight;        // height of the mini-caption. not used for anything else.
     int m_ixSizFrame;       // width of sizeable window frame
     int m_iySizFrame;       // height of sizeable window frame
     BOOL m_bFocus;          // TRUE if this window has focus
