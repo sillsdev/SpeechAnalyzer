@@ -1,0 +1,7 @@
+[Settings]
+ShowWindow=Size(632,261,500,276)
+[Commands]
+Command0=DisplayPlot(Pitch)
+Command1=Return(1)
+[AudioFiles]
+File0=C:\Working\SIL\MSEA\Docs\SAServer\Test.wav

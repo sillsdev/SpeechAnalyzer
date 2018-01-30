@@ -1,0 +1,54 @@
+Use Of Speech Analyzer Server by other applications:
+
+Prolog:
+Speech Analyzer comes in following  flavors:
+* SA.exe which is the 16-bit version of the program.
+* SA2.exe which is the 32-bit version of the program.
+* Speech Analyzer.ocx which is a COM object for use in FieldWorks.
+* SAServer.exe which can only open files using scripting commands. 
+  The 16-bit and 32-bit version of the program have the same name.
+
+
+First:
+Try a 'simple' test.
+
+Included are the following files:
+* a Wave file for testing use (TEST.WAV).
+* a List file that contains scripting steps for SAServer to follow (DEMO.LST).
+* a copy of the List file for backup use, I'll explain why below (A-DEMO.LST).
+* a Command Line for use in the Run command DOS box (CMD-LINE.TXT).
+
+Install the Speech Tools or use the included SAServer program as a test.
+
+Now copy the 4 files noted above to C:\Temp
+Also copy SAServer.exe to C:\Temp
+
+Next open the 'Cmd-Line.txt' file and copy and paste the text into 'Open:' in the
+Windows 'START/Run' command. Then click OK and this should launch SAServer, then open 'Test.wav' and position SAServer at the right-hand edge of the screen showing a Pitch contour.
+
+
+If this works, then close SAServer by clicking on the X in the upper-hand corner. You will get a message that the CallingApp can't be found (that's ok, later-on it will be your application) Note that 'Demo.lst' has been deleted by SAServer. Make a copy of the 'A-Demo.lst' file and rename it to 'Demo.lst' in order to rerun the test if desired.
+
+
+Second:
+If this works, then we need to talk about the real use of SAServer.
+
+The actual call to run SAServer is based on the version and location of the Speech Tools. The possibilities are:
+
+C:\Program Files\Speech Tools\SA\SAServer\SAServer.exe
+     (if the Speech Tools on Word&Deed is used)
+or
+
+C:\Program Files\Speech Tools\IPA-Help\SAS\SAServer.exe
+     (if the free 16-bit Speech Tools version is used)
+
+
+
+Also, included is file called COMM-SA-final-Corrected.Doc file which gives
+detailed information on how to script SA to do things. Note that the command-line
+positioning option is no longer used and you must use the 'command#=DisplayPlot' option in the script (as is shown in the Demo.lst file above).
+
+
+Terry Gibbs
+MSEAG Thailand
+terry_gibbs@sil.org

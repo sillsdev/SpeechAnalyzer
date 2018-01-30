@@ -675,7 +675,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
             CSaString szString = GetBatchString(_T("Settings"), _T("ShowWindow"), _T("")); // get the entry // SDM 1.5Test8.5
             CSaString szReturn = szString;// SDM 1.5Test10.0
             CSaString szParam;
-            swscanf_s(szString,_T("%16[^(]%(%20[^)]"),szReturn.GetBuffer(szReturn.GetLength()),szReturn.GetLength(),szParam.GetBuffer(szParam.GetLength()),szParam.GetLength());// SDM 1.5Test10.0
+            swscanf_s(szString,_T("%16[^(](%20[^)]"),szReturn.GetBuffer(szReturn.GetLength()),szReturn.GetLength(),szParam.GetBuffer(szParam.GetLength()),szParam.GetLength());// SDM 1.5Test10.0
             szReturn.ReleaseBuffer();
             szParam.ReleaseBuffer();
             szReturn.MakeUpper(); // convert the whole string to upper case letters
@@ -703,7 +703,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
             } else if (szReturn == "SIZE    ") { // SDM 1.5Test8.3
                 // set mainframe position and show it
                 int left,top,width,height;
-                if (swscanf_s(szParam,_T("%d%,%d%,%d%,%d"),&left,&top, &width, &height) == 4) {
+                if (swscanf_s(szParam,_T("%d,%d,%d,%d"),&left,&top, &width, &height) == 4) {
                     m_pMainWnd->ShowWindow(SW_RESTORE);// SDM 1.5Test10.0
                     m_pMainWnd->SetWindowPos(NULL,left, top, width, height,SWP_SHOWWINDOW|SWP_NOZORDER);// SDM 1.5Test10.0
                 } else {
@@ -799,6 +799,7 @@ static const CSaString extractCommaField(const CSaString & szLine, const int nFi
 // Process batch commands from listFile
 /***************************************************************************/
 void CSaApp::OnProcessBatchCommands() {
+
     if (m_nCommand == -1) {
         return;
     }
@@ -813,7 +814,7 @@ void CSaApp::OnProcessBatchCommands() {
     szReturn = GetBatchString(_T("Commands"), szEntry, _T("")); // get the entry
     szReturn.MakeUpper(); // convert the whole string to upper case letters
     szEntry = szReturn;
-    swscanf_s(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList.GetBuffer(szReturn.GetLength()),szReturn.GetLength());
+    swscanf_s(szEntry,_T("%[^(](%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList.GetBuffer(szReturn.GetLength()),szReturn.GetLength());
     szReturn.ReleaseBuffer();
     szParameterList.ReleaseBuffer();
 
