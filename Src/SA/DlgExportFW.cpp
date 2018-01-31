@@ -2,7 +2,7 @@
 // DlgExportFW.cpp:
 // Implementation of the CDlgExportFW class.
 // Author: Kent Gorham
-// copyright 2014 JAARS Inc. SIL
+// copyright 2014-2018 JAARS Inc. SIL
 //
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"

@@ -3,7 +3,7 @@
 // Implementation of the CDlgMultiChannel
 //
 // Author: Kent Gorham
-// copyright 2014 JAARS Inc. SIL
+// copyright 2014-2018 JAARS Inc. SIL
 //
 // Revision History
 //

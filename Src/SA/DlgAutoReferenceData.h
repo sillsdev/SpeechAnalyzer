@@ -3,7 +3,7 @@
 // Interface of the CDlgAutoReferenceData
 //
 // Author: Kent Gorham
-// Copyright 2014 JAARS Inc. SIL
+// Copyright 2014-2018 JAARS Inc. SIL
 //
 /////////////////////////////////////////////////////////////////////////////
 #ifndef DLGAUTOREFERENCEDATA_H

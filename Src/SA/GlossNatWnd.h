@@ -3,7 +3,7 @@
 // Interface of the CGlossNatWnd classes.
 //
 // Author: Urs Ruchti
-// copyright 2014 JAARS Inc. SIL
+// copyright 2014-2018 JAARS Inc. SIL
 //
 /////////////////////////////////////////////////////////////////////////////
 #ifndef GLOSS_NAT_WND_H

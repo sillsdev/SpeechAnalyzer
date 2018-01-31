@@ -2,7 +2,7 @@
 // DlgAnnotation.cpp:
 // Implementation of the CDlgImportSFM class.
 // Author: Steve MacLean
-// copyright 2014 JAARS Inc. SIL
+// copyright 2014-2018 JAARS Inc. SIL
 //
 // Revision History
 // 1.5Test8.3
