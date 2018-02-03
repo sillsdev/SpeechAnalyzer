@@ -22,14 +22,6 @@ using namespace Lift;
 
 namespace Lift13 {
 
-typedef wstring url;
-typedef wstring datetime;
-typedef wstring key;
-typedef wstring lang;
-typedef wstring clazz;
-typedef wstring href;
-typedef wstring refid;
-
 class multitext;
 class lift_ranges;
 
@@ -41,16 +33,16 @@ public:
         lift_base(_name),
         lang(L"lang"),
         href(L"href"),
-        clazz(L"clazz"),
-        _span(SPAN) {
+        clazz(CLAZZ),
+		zmspan(SPAN) {
     };
 
     span(LPCTSTR _name, LPCTSTR _data) :
         lift_base(_name),
         lang(L"lang"),
         href(L"href"),
-        clazz(L"clazz"),
-        _span(SPAN) {
+        clazz(CLAZZ),
+		zmspan(SPAN) {
         pcdata = _data;
     };
 
@@ -58,8 +50,8 @@ public:
         lift_base(_name),
         lang(L"lang"),
         href(L"href"),
-        clazz(L"clazz"),
-        _span(SPAN) {
+        clazz(CLAZZ),
+		zmspan(SPAN) {
         lang = wstring(_lang);
 		pcdata = _data;
     };
@@ -70,7 +62,7 @@ public:
         load_attribute(href,in);
         load_attribute(clazz,in);
         load_value(pcdata,in);
-        load_element(_span,in);
+        load_element(zmspan,in);
     };
 
     Element * store() {
@@ -79,7 +71,7 @@ public:
         store_attribute(href,out);
         store_attribute(clazz,out);
         store_value(pcdata,out);
-        store_element(_span,out);
+        store_element(zmspan,out);
         return out;
     };
 
@@ -87,7 +79,7 @@ public:
 		if (lang!=right.lang) return false;
 		if (href!=right.href) return false;
 		if (clazz!=right.clazz) return false;
-		if (_span!=right._span) return false;
+		if (zmspan !=right.zmspan) return false;
 		if (pcdata.compare(right.pcdata)!=0) return false;
 		return true;
     }
@@ -97,7 +89,7 @@ public:
     optional<href> href;
     optional<wstring> clazz;
     // elements
-    zero_more<span> _span;
+    zero_more<span> zmspan;
     // data
     wstring pcdata;
 };
@@ -108,13 +100,13 @@ class text : public lift_base {
 public:
     text(LPCTSTR _name) :
         lift_base(_name),
-		span(SPAN) {
+		zmspan(SPAN) {
     };
 
     text(LPCTSTR _name, span _span) :
         lift_base(_name),
-		span(SPAN) {
-		span.append(_span);
+		zmspan(SPAN) {
+		zmspan.append(_span);
     };
 
     void load(Element * in) {
@@ -123,7 +115,7 @@ public:
     }
 
     void load_derived(Element * in) {
-        load_element(span,in);
+        load_element(zmspan,in);
     }
 
     Element * store() {
@@ -133,24 +125,24 @@ public:
     }
 
     void store_derived(Element * out) {
-        store_element(span,out);
+        store_element(zmspan,out);
     }
 
     bool operator!=(const text & right) const {
-        if (span!=right.span) {
+        if (zmspan !=right.zmspan) {
             return true;
         }
         return false;
     }
 
     bool operator==(const text & right) const {
-		if (span!=right.span) {
+		if (zmspan !=right.zmspan) {
 			return false;
 		}
 		return true;
     }
 
-	zero_more<span> span;
+	zero_more<span> zmspan;
 };
 
 class trait;
@@ -257,14 +249,14 @@ public:
     form(LPCTSTR _name) :
         lift_base(_name),
         lang(L"lang"),
-        text(L"text"),
+        text(LTEXT),
         annotation(ANNOTATION) {
     };
 
     form(LPCTSTR _name, LPCTSTR _lang, text _text) :
         lift_base(_name),
         lang(L"lang"),
-        text(L"text"),
+        text(LTEXT),
         annotation(ANNOTATION) {
         lang = wstring(_lang);
         text = _text;
@@ -477,7 +469,7 @@ public:
         datecreated(DATE_CREATED),
         datemodified(DATE_MODIFIED),
         form(L"form"),
-        text(L"text"),
+        text(LTEXT),
         field(L"field"),
         trait(L"trait"),
         annotation(ANNOTATION) {
@@ -716,8 +708,8 @@ public:
         trait(L"trait") {
     };
 
-    gloss(LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) :
-        form(_name, _lang, Lift13::text(L"text",_data)),
+    gloss(LPCTSTR _name, LPCTSTR _lang, span _span) :
+        form(_name, _lang, Lift13::text(LTEXT,_span)),
         trait(L"trait") {
     };
 

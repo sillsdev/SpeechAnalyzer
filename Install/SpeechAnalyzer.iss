@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA"
-#define MyAppVersion "3.1.0.141"
+#define MyAppVersion "3.1.0.142"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -49,7 +49,7 @@ Source: "C:\Working\SIL\MSEA\Output\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; 
 Source: "C:\Working\SIL\MSEA\Output\Release\zGraph.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Src\Release Notes.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\usp10.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Microsoft\vc_redist.x86.exe"; DestDir: "{app}\components"; Flags: ignoreversion;
+Source: "C:\Working\SIL\MSEA\DistFiles\Microsoft\vc2015\vc_redist.x86.exe"; DestDir: "{app}\components\vc2015"; Flags: ignoreversion;
 Source: "C:\Working\SIL\MSEA\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\notice"; DestDir: "{app}"; Flags: ignoreversion
@@ -77,7 +77,7 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\components\vc_redist.x86.exe"; Parameters: "/q"; WorkingDir: "{app}\components"; Flags: waituntilterminated skipifdoesntexist; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; StatusMsg: "Installing Microsoft Visual C++ 2015 Redistributable"; Check: VCRedistNeedsInstall()
+Filename: "{app}\components\vc2015\vc_redist.x86.exe"; Parameters: "/q"; WorkingDir: "{app}\components\vc2015"; Flags: waituntilterminated skipifdoesntexist; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; StatusMsg: "Installing Microsoft Visual C++ 2015 Redistributable"; Check: VCRedistNeedsInstall()
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "SAUtils.dll /tlb:SAUtils.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering SpeechToolsUtils"
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.mmedia.dll /tlb:yeti.mmedia.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.mmedia"
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.wmfsdk.dll /tlb:yeti.wmfsdk.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.wmfsdk"
@@ -89,6 +89,7 @@ Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "ye
 
 [Dirs]
 Name: "{app}\components"
+Name: "{app}\components\vc2015"
 Name: "{app}\Samples"
 Name: "{app}\Samples\Music"
 Name: "{app}\Training"

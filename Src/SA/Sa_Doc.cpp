@@ -7288,8 +7288,8 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
 
     Lift13::field_defn field(L"field");
     field.tag = wstring(L"Reference");
-    field.form.append(Lift13::form(L"form",L"en",Lift13::text(L"text",Lift13::span(L"span",L""))));
-    field.form.append(Lift13::form(L"form",L"qaa-x-spec",Lift13::text(L"text",Lift13::span(L"span",L"Class=LexEntry; Type=String; WsSelector=kwsAnal"))));
+    field.form.append(Lift13::form(L"form",L"en",Lift13::text(LTEXT,Lift13::span(SPAN,L""))));
+    field.form.append(Lift13::form(L"form",L"qaa-x-spec",Lift13::text(LTEXT,Lift13::span(SPAN,L"Class=LexEntry; Type=String; WsSelector=kwsAnal"))));
 
     Lift13::field_defns fields(L"fields");
     fields.field.append(field);
@@ -7297,7 +7297,7 @@ void CSaDoc::DoExportLift( CExportLiftSettings & settings) {
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.141");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.142");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -7402,7 +7402,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
             wstring buffer;
             buffer.append(settings.phonetic);
             buffer.append(L"-fonipa-x-etic");
-            entry.pronunciation[0].form.append(Lift13::form(L"form", buffer.c_str(), Lift13::text(L"text",Lift13::span(L"span",results[PHONETIC]))));
+            entry.pronunciation[0].form.append(Lift13::form(L"form", buffer.c_str(), Lift13::text(LTEXT,Lift13::span(SPAN,results[PHONETIC]))));
 
 			// add phonetic media file
 			{
@@ -7477,21 +7477,21 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 
             // build the lexical unit
             entry.lexical_unit = Lift13::multitext(L"lexical-unit");
-            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.ortho.c_str(), Lift13::text(L"text", Lift13::span(L"span",results[ORTHO]))));
-            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.phonetic.c_str(), Lift13::text(L"text", Lift13::span(L"span",results[PHONETIC]))));
+            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.ortho.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN,results[ORTHO]))));
+            entry.lexical_unit.get().form.append(Lift13::form(L"form",settings.phonetic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN,results[PHONETIC]))));
 
             wstring phonemic;
             phonemic.append(settings.phonemic);
             phonemic.append(L"-fonipa-x-emic");
-            entry.lexical_unit.get().form.append(Lift13::form(L"form",phonemic.c_str(),Lift13::text(L"text", Lift13::span(L"span",results[PHONEMIC]))));
+            entry.lexical_unit.get().form.append(Lift13::form(L"form",phonemic.c_str(),Lift13::text(LTEXT, Lift13::span(SPAN,results[PHONEMIC]))));
 
             // build the field
             entry.field = Lift13::field(L"field",L"Reference");
-            entry.field[0].form = Lift13::form(L"form",settings.reference.c_str(),Lift13::text(L"text",Lift13::span(L"span",results[REFERENCE])));
+            entry.field[0].form = Lift13::form(L"form",settings.reference.c_str(),Lift13::text(LTEXT,Lift13::span(SPAN,results[REFERENCE])));
 
             // build the sense field
             entry.sense = Lift13::sense(L"sense",createUUID().c_str(),i);
-            entry.sense[0].gloss = Lift13::gloss(L"gloss",settings.gloss.c_str(),results[GLOSS]);
+            entry.sense[0].gloss = Lift13::gloss(L"gloss",settings.gloss.c_str(),Lift13::span(SPAN,results[GLOSS]));
         }
         document.entry.append(entry);
     }

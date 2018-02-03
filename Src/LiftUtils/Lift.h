@@ -21,7 +21,9 @@ using namespace XML;
 namespace Lift {
 
 typedef wstring url;
+typedef wstring href;
 typedef wstring datetime;
+typedef wstring clazz;
 typedef wstring key;
 typedef wstring lang;
 typedef wstring refid;
@@ -39,6 +41,8 @@ extern wstring createDate();
 #define SOURCE          L"source"
 #define SPAN            L"span"
 #define ANNOTATION      L"annotation"
+#define LTEXT			L"text"
+#define CLAZZ			L"class"
 
 template<class T> class required {
 public:

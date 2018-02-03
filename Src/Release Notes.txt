@@ -1,4 +1,7 @@
-SA - 3.1.0.141 1/29/2017
+SA - 3.1.0.142 2/2/2018
+- Fixed two syntax problems in the LIFT export feature.
+
+SA - 3.1.0.141 1/29/2018
 - Fixed crash that occurs when using SA with Phonology Assistant.
 - Fixed some rendering issues for MiniCaptionBar feature.
 

@@ -19,14 +19,6 @@ using namespace Lift;
 
 namespace Lift14 {
 
-typedef wstring url;
-typedef wstring datetime;
-typedef wstring key;
-typedef wstring lang;
-typedef wstring href;
-typedef wstring clazz;
-typedef wstring refid;
-
 class multitext;
 
 class span : public lift_base {
@@ -35,8 +27,8 @@ public:
         lift_base(_name),
         lang(L"lang"),
         href(L"href"),
-        clazz(L"clazz"),
-        _span(SPAN) {
+        clazz(CLAZZ),
+		zmspan(SPAN) {
     };
 
     void load(Element * in) {
@@ -45,7 +37,7 @@ public:
         load_attribute(href,in);
         load_attribute(clazz,in);
         load_value(pcdata,in);
-        load_element(_span,in);
+        load_element(zmspan,in);
     };
 
     Element * store() {
@@ -54,7 +46,7 @@ public:
         store_attribute(href,out);
         store_attribute(clazz,out);
         store_value(pcdata,out);
-        store_element(_span,out);
+        store_element(zmspan,out);
         return out;
     };
 
@@ -62,7 +54,7 @@ public:
 		if (lang!=right.lang) return false;
 		if (href!=right.href) return false;
 		if (clazz!=right.clazz) return false;
-		if (_span!=right._span) return false;
+		if (zmspan !=right.zmspan) return false;
 		if (pcdata.compare(right.pcdata)!=0) return false;
 		return true;
     }
@@ -71,7 +63,7 @@ public:
     optional<href> href;
     optional<clazz> clazz;
     wstring pcdata;
-    zero_more<span> _span;
+    zero_more<span> zmspan;
 };
 
 class annotation;
@@ -80,7 +72,7 @@ class text : public lift_base {
 public:
     text(LPCTSTR _name) :
         lift_base(_name),
-		span(SPAN) {
+		zmspan(SPAN) {
     };
 
     void load(Element * in) {
@@ -89,7 +81,7 @@ public:
     }
 
     void load_derived(Element * in) {
-        load_element(span,in);
+        load_element(zmspan,in);
     }
 
     Element * store() {
@@ -99,17 +91,17 @@ public:
     }
 
     void store_derived(Element * out) {
-        store_element(span,out);
+        store_element(zmspan,out);
     }
 
     bool operator==(const text & right) const {
-		if (span!=right.span) {
+		if (zmspan !=right.zmspan) {
 			return false;
 		}
 		return true;
     }
 
-	zero_more<span> span;
+	zero_more<span> zmspan;
 };
 
 class trait;
@@ -190,7 +182,7 @@ public:
     form(LPCTSTR _name) :
         lift_base(_name),
         lang(L"lang"),
-        text(L"text"),
+        text(LTEXT),
         annotation(ANNOTATION) {
     };
 
@@ -359,7 +351,7 @@ public:
         datecreated(DATE_CREATED),
         datemodified(DATE_MODIFIED),
         form(L"form"),
-        text(L"text"),
+        text(LTEXT),
         field(L"field"),
         trait(L"trait"),
         annotation(ANNOTATION) {
@@ -663,28 +655,28 @@ public:
     phonetic(LPCTSTR name) :
         multitext_extensible(name),
         media(L"media"),
-        form(L"form") {
+		zmform(L"form") {
     };
 
     void load(Element * in) {
         expect(in,name);
         multitext_extensible::load_derived(in);
         load_element(media,in);
-        load_element(form,in);
+        load_element(zmform,in);
     };
 
     Element * store() {
         Element * out = new Element(name);
         multitext_extensible::store_derived(out);
         store_element(media,out);
-        store_element(form,out);
+        store_element(zmform,out);
         return out;
     };
 
     // attributes
     // elements
     zero_more<urlref> media;
-    zero_more<span> form;
+    zero_more<span> zmform;
 };
 
 class etymology : public extensible {

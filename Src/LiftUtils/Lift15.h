@@ -18,14 +18,6 @@ using namespace Lift;
 
 namespace Lift15 {
 
-typedef wstring url;
-typedef wstring datetime;
-typedef wstring key;
-typedef wstring lang;
-typedef wstring refid;
-typedef wstring href;
-typedef wstring clazz;
-
 class multitext;
 
 class span : public lift_base {
@@ -34,8 +26,8 @@ public:
         lift_base(_name),
         lang(L"lang"),
         href(L"href"),
-        clazz(L"clazz"),
-        _span(SPAN) {
+        clazz(CLAZZ),
+        zmspan(SPAN) {
     };
 
     void load(Element * in) {
@@ -44,7 +36,7 @@ public:
         load_attribute(href,in);
         load_attribute(clazz,in);
         load_value(pcdata,in);
-        load_element(_span,in);
+        load_element(zmspan,in);
     };
 
     Element * store() {
@@ -53,7 +45,7 @@ public:
         store_attribute(href,out);
         store_attribute(clazz,out);
         store_value(pcdata,out);
-        store_element(_span,out);
+        store_element(zmspan,out);
         return out;
     };
 
@@ -61,7 +53,7 @@ public:
 		if (lang!=right.lang) return false;
 		if (href!=right.href) return false;
 		if (clazz!=right.clazz) return false;
-		if (_span!=right._span) return false;
+		if (zmspan!=right.zmspan) return false;
 		if (pcdata.compare(right.pcdata)!=0) return false;
 		return true;
     }
@@ -70,7 +62,7 @@ public:
     optional<href> href;
     optional<clazz> clazz;
     wstring pcdata;
-    zero_more<span> _span;
+    zero_more<span> zmspan;
 };
 
 class annotation;
@@ -79,24 +71,24 @@ class text : public lift_base {
 public:
     text(LPCTSTR _name) :
         lift_base(_name),
-        _span(SPAN) {
+        zmspan(SPAN) {
     };
 
     void load(Element * in) {
         expect(in,name);
         load_value(pcdata,in);
-        load_element(_span,in);
+        load_element(zmspan,in);
     }
 
     Element * store() {
         Element * out = new Element(name);
         store_value(pcdata,out);
-        store_element(_span,out);
+        store_element(zmspan,out);
         return out;
     };
 
     wstring pcdata;
-    zero_more<span> _span;
+    zero_more<span> zmspan;
 };
 
 class form : public lift_base {
@@ -104,7 +96,7 @@ public:
     form(LPCTSTR _name) :
         lift_base(_name),
         lang(L"lang"),
-        text(L"text"),
+        text(LTEXT),
         annotation(ANNOTATION) {
     };
 
@@ -141,7 +133,7 @@ public:
     multitext(LPCTSTR _name) :
         lift_base(_name),
         form(L"form"),
-        text(L"text") {
+        text(LTEXT) {
     };
 
     void load(Element * in) {
@@ -333,7 +325,7 @@ public:
         datecreated(DATE_CREATED),
         datemodified(DATE_MODIFIED),
         form(L"form"),
-        text(L"text"),
+        text(LTEXT),
         field(L"field"),
         trait(L"trait"),
         annotation(ANNOTATION) {
@@ -557,7 +549,7 @@ public:
     field_definition(LPCTSTR _name) :
         lift_base(_name),
         name(L"name"),
-        clazz(L"class"),
+        clazz(CLAZZ),
         type(L"type"),
         option_range(L"option-range"),
         writing_system(L"writing-system"),
