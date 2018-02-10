@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0, 142
+ FILEVERSION 3,1,0,143
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.142"
+            VALUE "FileVersion", "v3.1.0.143"
             VALUE "InternalName", "SA_DEU"
             VALUE "LegalCopyright", "© 1996-2018 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_DEU.dll"
@@ -67,7 +67,9 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME_SA        ICON                    "RES\\SA.ICO"
+
 IDR_MAINFRAME_SAS       ICON                    "RES\\SA.ICO"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -98,27 +100,49 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_LAYOUT3B            ICON                    "RES\\3B.ICO"
+
 IDI_LAYOUT3A            ICON                    "RES\\3A.ICO"
+
 IDI_LAYOUT1             ICON                    "RES\\1.ICO"
+
 IDI_LAYOUT2A            ICON                    "RES\\2A.ICO"
+
 IDI_LAYOUT2B            ICON                    "RES\\2B.ICO"
+
 IDI_LAYOUT5             ICON                    "RES\\5.ICO"
+
 IDI_LAYOUT4B            ICON                    "RES\\4B.ICO"
+
 IDI_LAYOUT4A            ICON                    "RES\\4A.ICO"
+
 IDI_LAYOUT6A            ICON                    "RES\\6A.ICO"
+
 IDI_LAYOUT6B            ICON                    "RES\\6B.ICO"
+
 IDR_KLATT               ICON                    "res\\SA.ico"
+
 IDI_LAYOUT2C            ICON                    "res\\2c.ico"
+
 IDI_LAYOUT3C            ICON                    "res\\3c.ico"
+
 IDI_LAYOUT4C            ICON                    "res\\4c.ico"
+
 IDI_NEXT                ICON                    "res\\next.ico"
+
 IDI_PREV                ICON                    "res\\prev.ico"
+
 IDI_UP                  ICON                    "res\\up.ico"
+
 IDI_DOWN                ICON                    "res\\down.ico"
+
 IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\SA.ico"
+
 IDR_WORKBENCH           ICON                    "RES\\SA_WB.ICO"
+
 IDR_SPEECHANALYZER      ICON                    "RES\\SA.ICO"
+
 IDR_AUDIOSYNC           ICON                    "RES\\AS.ICO"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2443,15 +2467,15 @@ BEGIN
     CONTROL         "Phrase List 2",IDC_EXTAB_MUSIC_PL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,157,65,12
     LTEXT           "For each transcription to be exported, please specify the language code that identifies the language used for the transcription.",IDC_STATIC,14,17,261,20
     LTEXT           "Language Code",IDC_STATIC,96,39,52,8
-	COMBOBOX        IDC_LIST_REFERENCE, 95, 52, 170, 58, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-	COMBOBOX        IDC_LIST_PHONETIC, 95, 67, 170, 86, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-	COMBOBOX        IDC_LIST_PHONEMIC, 95, 82, 170, 80, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-	COMBOBOX        IDC_LIST_ORTHO, 95, 97, 170, 79, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-	COMBOBOX        IDC_LIST_GLOSS, 95, 112, 170, 95, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-	COMBOBOX        IDC_LIST_GLOSS_NAT, 95, 126, 170, 95, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-	COMBOBOX        IDC_LIST_MUSIC_PL1, 95, 141, 170, 95, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-	COMBOBOX        IDC_LIST_MUSIC_PL2, 95, 156, 170, 95, CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-	PUSHBUTTON      "Cancel",IDCANCEL,177,243,50,14
+    COMBOBOX        IDC_LIST_REFERENCE,95,52,170,58,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_PHONETIC,95,67,170,86,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_PHONEMIC,95,82,170,80,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_ORTHO,95,97,170,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_GLOSS,95,112,170,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_GLOSS_NAT,95,126,170,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_MUSIC_PL1,95,141,170,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LIST_MUSIC_PL2,95,156,170,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Cancel",IDCANCEL,177,243,50,14
     DEFPUSHBUTTON   "Export",IDOK,123,243,50,14,WS_DISABLED
     GROUPBOX        "Include",IDC_STATIC,9,6,271,170
     PUSHBUTTON      "&Help",IDHELP,231,243,50,14
@@ -2962,26 +2986,47 @@ END
 //
 
 IDR_BAR_BASIC           BITMAP                  "RES\\IDR_BAR_BASIC.BMP"
+
 IDB_KNOBHORIZ           BITMAP                  "RES\\KNOBH.BMP"
+
 IDB_LED                 BITMAP                  "RES\\LED.BMP"
+
 IDB_KNOBVERT            BITMAP                  "RES\\KNOBV.BMP"
+
 IDB_RESULTU             BITMAP                  "RES\\RESULTU.BMP"
+
 IDB_HPU                 BITMAP                  "RES\\HPU.BMP"
+
 IDB_LPU                 BITMAP                  "RES\\LPU.BMP"
+
 IDB_BPU                 BITMAP                  "RES\\BPU.BMP"
+
 IDB_ECHOU               BITMAP                  "RES\\ECHOU.BMP"
+
 IDB_REVU                BITMAP                  "RES\\REVU.BMP"
+
 IDB_EQU                 BITMAP                  "RES\\EQU.BMP"
+
 IDB_PORTU               BITMAP                  "RES\\PORTU.BMP"
+
 IDB_LANDU               BITMAP                  "RES\\LANDU.BMP"
+
 IDB_FACE                BITMAP                  "RES\\FACE.BMP"
+
 IDB_JAW                 BITMAP                  "RES\\JAW.BMP"
+
 IDB_TONGUE              BITMAP                  "RES\\TONGUE.BMP"
+
 IDR_BAR_ADVANCED        BITMAP                  "res\\IDR_BAR_ADVANCED.bmp"
+
 IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
+
 IDB_RAWU                BITMAP                  "Res\\RAWU.BMP"
+
 IDB_GENERATOR           BITMAP                  "Res\\GENERAL.BMP"
+
 IDB_PLAIN               BITMAP                  "Res\\PLAIN.BMP"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3055,10 +3100,10 @@ BEGIN
     BUTTON      ID_GRAPHS_ZOOM_CURSORS
     SEPARATOR
     BUTTON      ID_PLAYBACK_CURSORS
-    BUTTON      ID_PLAYBACK_LEFT_TO_STOP
-    BUTTON      ID_PLAYBACK_STOP_TO_RIGHT
-    BUTTON      ID_PLAYBACK_BEGINCURSOR
-    BUTTON      ID_PLAYBACK_ENDCURSOR
+    BUTTON      ID_PLAYBACK_LEFTWIN_TO_ENDCUR
+    BUTTON      ID_PLAYBACK_ENDCUR_TO_RIGHTWIN
+    BUTTON      ID_PLAYBACK_STARTCUR_TO_FILEEND
+    BUTTON      ID_PLAYBACK_ENCCUR_TO_FILEEND
     BUTTON      ID_PLAYBACK_WINDOW
     BUTTON      ID_PLAYBACK_FILE
     BUTTON      ID_PLAYER_PAUSE
@@ -3425,11 +3470,11 @@ BEGIN
     END
     POPUP "&Playback"
     BEGIN
-        MENUITEM "&Begin Cursor -> File End\tF6", ID_PLAYBACK_BEGINCURSOR
-        MENUITEM "&End Cursor -> File End\tF7", ID_PLAYBACK_ENDCURSOR
+        MENUITEM "&Begin Cursor -> File End\tF6", ID_PLAYBACK_STARTCUR_TO_FILEEND
+        MENUITEM "&End Cursor -> File End\tF7", ID_PLAYBACK_ENCCUR_TO_FILEEND
         MENUITEM "Between &Cursors\tF8",        ID_PLAYBACK_CURSORS
-        MENUITEM "&Left Window Border -> End Cursor\tF9", ID_PLAYBACK_LEFT_TO_STOP
-        MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOP_TO_RIGHT
+        MENUITEM "&Left Window Border -> End Cursor\tF9", ID_PLAYBACK_LEFTWIN_TO_ENDCUR
+        MENUITEM "End Cursor -> &Right Window Border\tF10", ID_PLAYBACK_ENDCUR_TO_RIGHTWIN
         MENUITEM "Current &Window\tF11",        ID_PLAYBACK_WINDOW
         MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
         MENUITEM "Pa&use\tSpace",               ID_PLAYER_PAUSE
@@ -4151,12 +4196,12 @@ BEGIN
     VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
     VK_INSERT,      ID_EDIT_SEGMENT_BOUNDARIES, VIRTKEY, NOINVERT
     VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
-    VK_F6,          ID_PLAYBACK_BEGINCURSOR, VIRTKEY, NOINVERT
+    VK_F6,          ID_PLAYBACK_STARTCUR_TO_FILEEND, VIRTKEY, NOINVERT
     VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
-    VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
+    VK_F7,          ID_PLAYBACK_ENCCUR_TO_FILEEND, VIRTKEY, NOINVERT
     VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
-    VK_F9,          ID_PLAYBACK_LEFT_TO_STOP, VIRTKEY, NOINVERT
-    VK_F10,         ID_PLAYBACK_STOP_TO_RIGHT, VIRTKEY, NOINVERT
+    VK_F9,          ID_PLAYBACK_LEFTWIN_TO_ENDCUR, VIRTKEY, NOINVERT
+    VK_F10,         ID_PLAYBACK_ENDCUR_TO_RIGHTWIN, VIRTKEY, NOINVERT
     VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
     VK_ESCAPE,      ID_PLAYER_STOP,         VIRTKEY, NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
@@ -4345,6 +4390,9 @@ BEGIN
 0x7543, 0x7272, 0x6e65, 0x2074, 0x6957, 0x646e, 0x776f, "\000" 
     IDC_PLAYMODE, 0x403, 12, 0
 0x6e45, 0x6974, 0x6572, 0x4620, 0x6c69, 0x0065, 
+    IDC_PLAYMODE, 0x403, 25, 0
+0x6542, 0x6967, 0x206e, 0x7543, 0x7372, 0x726f, 0x2d20, 0x203e, 0x6946, 
+0x656c, 0x4520, 0x646e, "\000" 
     0
 END
 
@@ -4396,7 +4444,11 @@ BEGIN
     IDC_PLAYMODE, 0x403, 12, 0
 0x6e45, 0x6974, 0x6572, 0x4620, 0x6c69, 0x0065, 
     0
-END
+		IDC_PLAYMODE, 0x403, 25, 0
+		0x6542, 0x6967, 0x206e, 0x7543, 0x7372, 0x726f, 0x2d20, 0x203e, 0x6946,
+		0x656c, 0x4520, 0x646e, "\000"
+		0
+		END
 
 IDD_PARAMETERSRAWDATAPAGE DLGINIT
 BEGIN
@@ -4771,11 +4823,28 @@ END
 //
 
 IDC_SFINGERNW           CURSOR                  "RES\\FINGERNW.CUR"
+
 IDC_SFINGERN            CURSOR                  "RES\\FINGERN.CUR"
+
 IDC_SHANDN              CURSOR                  "RES\\HANDN.CUR"
+
 IDC_MFINGERN            CURSOR                  "RES\\MedFingerN.cur"
+
 IDC_MFINGERNW           CURSOR                  "res\\MedFingerNW.cur"
+
 IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_PLAYER AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5072,9 +5141,9 @@ BEGIN
     ID_PLAYBACK_CURSORS     "Plays between the cursors in the window\nPlay Between Cursors"
     ID_PLAYBACK_WINDOW      "Plays the wave file shown in the window\nPlay Window"
     ID_PLAYBACK_FILE        "Plays the entire wave file\nPlay File"
-    ID_PLAYBACK_LEFT_TO_START 
+    ID_PLAYBACK_LEFTWIN_TO_STARTCUR 
                             "Plays the wave file part between the left window border and the Begin cursor\nPlay Left -> Begin cursor"
-    ID_PLAYBACK_START_TO_RIGHT 
+    ID_PLAYBACK_STARTCUR_TO_RIGHTWIN 
                             "Plays the wave file part between the Begin cursor and the right window border\nPlay Begin cursor -> Right"
     ID_TOOLS_OPTIONS        "User configuration\nConfiguration"
 END
@@ -5546,7 +5615,8 @@ BEGIN
     ID_EDIT_MOVE_RIGHT_MERGE_PREV 
                             "Move right and merge with previous segment\nMove Right And Merge"
     ID_EDIT_ADD_MARKUP      "Add markup\nAdd Markup"
-    ID_PLAYBACK_BEGINCURSOR "Plays between the begin cursor and the end of the file\nPlay Begin Cursor -> File End"
+    ID_PLAYBACK_STARTCUR_TO_FILEEND 
+                            "Plays between the begin cursor and the end of the file\nPlay Begin Cursor -> File End"
     ID_HELP_KEYBOARD_SHORTCUTS 
                             "List available keyboard short-cut keys\nView short-cuts"
     ID_SPLIT_MOVE_LEFT_AT   "Split segment located begin cursor and move text left\nSplit at Begin Cursor [S]"
@@ -5709,9 +5779,9 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_PLAYBACK_LEFT_TO_STOP 
+    ID_PLAYBACK_LEFTWIN_TO_ENDCUR 
                             "Plays between the left window border and the end cursor\nPlay Left -> End Cursor"
-    ID_PLAYBACK_STOP_TO_RIGHT 
+    ID_PLAYBACK_ENDCUR_TO_RIGHTWIN 
                             "Plays between the end cursor and the right window border\nPlay End Cursor -> Right"
     ID_IMPORT_TIME_TABLE    "Import Time Table data\nImport Time Table"
     ID_IMPORT_SFM           "Import Standard Format Markers\nImport SFM"
@@ -5868,7 +5938,8 @@ STRINGTABLE
 BEGIN
     ID_AUTOSAVE_ON          "Enables auto-saving of all documents every minute."
     ID_AUTOSAVE_OFF         "Disables the AutoSave feature."
-    ID_PLAYBACK_ENDCURSOR   "Plays between the end cursor and the end of the file\nPlay End Cursor -> File End"
+    ID_PLAYBACK_ENCCUR_TO_FILEEND 
+                            "Plays between the end cursor and the end of the file\nPlay End Cursor -> File End"
     ID_IMPORT_ELAN          "Import ELAN file\nImport ELAN"
     ID_EXPORT_LIFT          "Export the document data using Lexicon Interchange Format\nExport LIFT"
     ID_VIEW_TRANSCRIPTION_BOUNDARIES 
@@ -5984,7 +6055,7 @@ BEGIN
     IDS_RESTART_PROJECT     "Restart Project..."
     IDS_BROWSE              "Browse..."
     IDS_RESTART_CONFIRM     "Do you wish to delete the existing text segmentation and restart the project?\nAll existing work will be lost!\nThis operation cannot be undone."
-	IDS_ERROR_FAILED_TO_STORE_LIFT "Failed to store LIFT document."
+    IDS_ERROR_FAILED_TO_STORE_LIFT "Failed to store LIFT document."
 END
 
 #endif    // German (Germany) resources

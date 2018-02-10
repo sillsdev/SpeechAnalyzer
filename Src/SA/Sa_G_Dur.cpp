@@ -49,17 +49,17 @@ CPlotDurations::CPlotDurations() {
 
 
 void  CPlotDurations::CopyTo(CPlotWnd * pT) {
-    CPlotWnd::CopyTo(pT);
+	CPlotWnd::CopyTo(pT);
 }
 
 
 
 CPlotWnd * CPlotDurations::NewCopy(void) {
-    CPlotWnd * pRet = new CPlotDurations();
+	CPlotWnd * pRet = new CPlotDurations();
 
-    CopyTo(pRet);
+	CopyTo(pRet);
 
-    return pRet;
+	return pRet;
 }
 
 
@@ -80,22 +80,22 @@ CPlotDurations::~CPlotDurations() {
 // class do common jobs like drawing the cursors.
 /***************************************************************************/
 void CPlotDurations::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
-    // get pointer to main frame, graph, and document
-    CSaDoc * pDoc = pView->GetDocument();
-    // create loudness data
-    CProcessDurations * pDurations = (CProcessDurations *)pDoc->GetDurations(); // get pointer to loudness object
-    short int nResult = LOWORD(pDurations->Process(this, pDoc)); // process data
-    nResult = CheckResult(nResult, pDurations); // check the process result
-    if (nResult == PROCESS_ERROR) {
-        return;
-    }
-    if (nResult != PROCESS_CANCELED) {
-        SetBold(FALSE);
-        SetProcessMultiplier(PRECISION_MULTIPLIER);
-        DurationsPaint(0, pDurations->GetMaxDuration(), pDC, rWnd, rClip, pDurations); // do standard data paint
-    } else {
-        PlotPaintFinish(pDC, rWnd, rClip);
-    }
+	// get pointer to main frame, graph, and document
+	CSaDoc * pDoc = pView->GetDocument();
+	// create loudness data
+	CProcessDurations * pDurations = (CProcessDurations *)pDoc->GetDurations(); // get pointer to loudness object
+	short int nResult = LOWORD(pDurations->Process(this, pDoc)); // process data
+	nResult = CheckResult(nResult, pDurations); // check the process result
+	if (nResult == PROCESS_ERROR) {
+		return;
+	}
+	if (nResult != PROCESS_CANCELED) {
+		SetBold(FALSE);
+		SetProcessMultiplier(PRECISION_MULTIPLIER);
+		DurationsPaint(0, pDurations->GetMaxDuration(), pDC, rWnd, rClip, pDurations); // do standard data paint
+	} else {
+		PlotPaintFinish(pDC, rWnd, rClip);
+	}
 }
 
 
@@ -103,130 +103,130 @@ void CPlotDurations::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 // CPlotWnd::DurationsPaint
 //**************************************************************************/
 void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration, CDC * pDC,
-                                    CRect rWnd, CRect rClip,
-                                    CProcess * pProcess, int nFlags) {
-    UNUSED_ALWAYS(nFlags);
-    // get pointer to graph, view and document
-    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = pView->GetDocument();
-    UINT nSmpSize = pDoc->GetSampleSize();      // number of bytes per sample
+	CRect rWnd, CRect rClip,
+	CProcess * pProcess, int nFlags) {
 
-    // get pointer to phonetic string
-    CSegment * pSegment = pDoc->GetSegment(PHONETIC);
-    if (!pSegment->IsEmpty()) { // string is not empty
-        m_HelperWnd.SetMode(MODE_HIDDEN);
+	UNUSED_ALWAYS(nFlags);
+	// get pointer to graph, view and document
+	CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+	CSaView * pView = (CSaView *)pGraph->GetParent();
+	CSaDoc * pDoc = pView->GetDocument();
+	UINT nSmpSize = pDoc->GetSampleSize();      // number of bytes per sample
 
-        // get pointer to phonetic offset and duration arrays
-        CRect rDraw(rClip);
+	// get pointer to phonetic string
+	CSegment * pSegment = pDoc->GetSegment(PHONETIC);
+	if (!pSegment->IsEmpty()) { // string is not empty
+		m_HelperWnd.SetMode(MODE_HIDDEN);
 
-        // get necessary data from document and from view
+		// get pointer to phonetic offset and duration arrays
+		CRect rDraw(rClip);
+
+		// get necessary data from document and from view
 		// number of data points to display
-        DWORD dwDataFrame = pView->CalcDataFrame(rWnd.Width()); 
-        if (dwDataFrame == 0) {
-            return;    // nothing to draw
-        }
+		DWORD dwDataFrame = pView->CalcDataFrame(rWnd.Width());
+		if (dwDataFrame == 0) {
+			return;    // nothing to draw
+		}
 
-        // Conditionally inflate drawing area
-        if (rDraw.left > 0) {
-            rDraw.left--;
-        }
-        if (rDraw.right < rWnd.Width()) {
-            rDraw.right++;
-        }
+		// Conditionally inflate drawing area
+		if (rDraw.left > 0) {
+			rDraw.left--;
+		}
+		if (rDraw.right < rWnd.Width()) {
+			rDraw.right++;
+		}
 
-        double fHPixPerByte = (double)rWnd.Width() / (double)dwDataFrame;
-        double fDataPos   = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
-        DWORD dwDataStart = DWORD(fDataPos + (rDraw.left / fHPixPerByte));
+		double fHPixPerByte = (double)rWnd.Width() / (double)dwDataFrame;
+		double fDataPos = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
+		DWORD dwDataStart = DWORD(fDataPos + (rDraw.left / fHPixPerByte));
 
-        DWORD dwDataEnd = (DWORD)(fDataPos + rDraw.right / fHPixPerByte + 0.5);
-        if (dwDataEnd >= fDataPos + dwDataFrame) {
-            dwDataEnd = DWORD(fDataPos + int(dwDataFrame) - nSmpSize);
-        }
+		DWORD dwDataEnd = (DWORD)(fDataPos + rDraw.right / fHPixPerByte + 0.5);
+		if (dwDataEnd >= fDataPos + dwDataFrame) {
+			dwDataEnd = DWORD(fDataPos + int(dwDataFrame) - nSmpSize);
+		}
 
-        // find first segment in clip region
-        int nSymbol = 0;
-        DWORD dwSegOffset = 0;
-        for (int nSegStart = 0; nSegStart != -1; nSegStart = pSegment->GetNext(nSegStart)) {
-            if ((DWORD)pSegment->GetStop(nSegStart) >= dwDataStart) {
-                break;    // quit at segment just beyond start of clip region
-            }
-            nSymbol = nSegStart;  // index to first symbol of segment
-            dwSegOffset = (DWORD)pSegment->GetOffset(nSegStart);
-        }
+		// find first segment in clip region
+		int nSymbol = 0;
+		DWORD dwSegOffset = 0;
+		for (int nSegStart = 0; nSegStart != -1; nSegStart = pSegment->GetNext(nSegStart)) {
+			if ((DWORD)pSegment->GetStop(nSegStart) >= dwDataStart) {
+				break;    // quit at segment just beyond start of clip region
+			}
+			nSymbol = nSegStart;  // index to first symbol of segment
+			dwSegOffset = (DWORD)pSegment->GetOffset(nSegStart);
+		}
 
-        dwMaxDuration /= (DWORD)nSmpSize;   //convert from bytes to samples
-        double fMaxDuration = (double)dwMaxDuration / (double)pDoc->GetSamplesPerSec();  //in seconds
+		dwMaxDuration /= (DWORD)nSmpSize;   //convert from bytes to samples
+		double fMaxDuration = (double)dwMaxDuration / (double)pDoc->GetSamplesPerSec();  //in seconds
 
-        double fMaxBarTime = (double)ceil(fMaxDuration*100.)/100.;  // time in seconds, set to
-        // nearest 10 msec interval at or above maximum duration
+		double fMaxBarTime = (double)ceil(fMaxDuration*100.) / 100.;  // time in seconds, set to
+		// nearest 10 msec interval at or above maximum duration
 
-        // do common plot paint jobs
-        //!!scale should adjust if max bar stretched
-        pGraph->SetLegendScale(SCALE | NUMBERS, 0, (int)(fMaxBarTime * 1000.),
-                               _T("Duration (ms)")); // set legend scale     //!!allow for scaling up
-        PlotPrePaint(pDC, rWnd, rClip);
+		// do common plot paint jobs
+		//!!scale should adjust if max bar stretched
+		pGraph->SetLegendScale(SCALE | NUMBERS, 0, (int)(fMaxBarTime * 1000.),
+			_T("Duration (ms)")); // set legend scale     //!!allow for scaling up
+		PlotPrePaint(pDC, rWnd, rClip);
 
-        // get pointer to color structure from main frame
-        CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-        Colors * pColor = pMainWnd->GetColors();
+		// get pointer to color structure from main frame
+		CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+		Colors * pColor = pMainWnd->GetColors();
 
-        m_fVScale = (double)rWnd.Height() / ((double)fMaxBarTime * (double)pDoc->GetSamplesPerSec() * (double)nSmpSize);
+		m_fVScale = (double)rWnd.Height() / ((double)fMaxBarTime * (double)pDoc->GetSamplesPerSec() * (double)nSmpSize);
 
-        int nLineThickness = GetPenThickness();
-        CPen penData(PS_SOLID, nLineThickness, pColor->cPlotData[0]);
-        CPen * pOldPen = pDC->SelectObject(&penData);
+		int nLineThickness = GetPenThickness();
+		CPen penData(PS_SOLID, nLineThickness, pColor->cPlotData[0]);
+		CPen * pOldPen = pDC->SelectObject(&penData);
 
-        RECT rBar;
-        rBar.right = -1;
-        rBar.bottom = rWnd.bottom;   //!!-3 like other plots?
-        rBar.top = rBar.bottom;
+		RECT rBar;
+		rBar.right = -1;
+		rBar.bottom = rWnd.bottom;   //!!-3 like other plots?
+		rBar.top = rBar.bottom;
 
-        if (nSymbol > 0) {
-            DWORD dwPrevDuration = pProcess->GetProcessedData(nSymbol-1);
-            rBar.top = rBar.bottom - round2Int(dwPrevDuration * m_fVScale);
-        }
+		if (nSymbol > 0) {
+			DWORD dwPrevDuration = pProcess->GetProcessedData(nSymbol - 1);
+			rBar.top = rBar.bottom - round2Int(dwPrevDuration * m_fVScale);
+		}
 
-        while (pSegment->GetOffset(nSymbol) <= dwDataEnd) {
-            DWORD dwDuration = pProcess->GetProcessedData(nSymbol);
+		while (pSegment->GetOffset(nSymbol) <= dwDataEnd) {
+			DWORD dwDuration = pProcess->GetProcessedData(nSymbol);
 
-            rBar.left = round2Int((pSegment->GetOffset(nSymbol) - fDataPos) *
-                              fHPixPerByte);
-            pDC->MoveTo(rBar.left, rBar.bottom);  // space before segment
+			rBar.left = round2Int((pSegment->GetOffset(nSymbol) - fDataPos) *
+				fHPixPerByte);
+			pDC->MoveTo(rBar.left, rBar.bottom);  // space before segment
 
-            rBar.top = rBar.bottom - round2Int(dwDuration * m_fVScale);
-            pDC->LineTo(rBar.left, rBar.top);        // left side of bar
+			rBar.top = rBar.bottom - round2Int(dwDuration * m_fVScale);
+			pDC->LineTo(rBar.left, rBar.top);        // left side of bar
 
-            rBar.right = round2Int((pSegment->GetStop(nSymbol) - fDataPos) * fHPixPerByte);
-            pDC->LineTo(rBar.right, rBar.top);  // bar top (duration level)
+			rBar.right = round2Int((pSegment->GetStop(nSymbol) - fDataPos) * fHPixPerByte);
+			pDC->LineTo(rBar.right, rBar.top);  // bar top (duration level)
 
-            pDC->LineTo(rBar.right, rBar.bottom);  // right side of bar
+			pDC->LineTo(rBar.right, rBar.bottom);  // right side of bar
 
-            nSymbol = pSegment->GetNext(nSymbol);
-            if (nSymbol == -1) {
-                break;
-            }
-        }
+			nSymbol = pSegment->GetNext(nSymbol);
+			if (nSymbol == -1) {
+				break;
+			}
+		}
 
-        // restore old pen
-        pDC->SelectObject(pOldPen);
+		// restore old pen
+		pDC->SelectObject(pOldPen);
 
 
-        // do common plot paint jobs
-        PlotPaintFinish(pDC, rWnd, rClip);
+		// do common plot paint jobs
+		PlotPaintFinish(pDC, rWnd, rClip);
 
-    } else {
-        CRect rClient;
-        GetClientRect(rClient);
-        CDC * pDC = GetDC();
-        CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+	} else {
+		CRect rClient;
+		GetClientRect(rClient);
+		CDC * pDC2 = GetDC();
+		CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
 		// get application colors
-        Colors * pColor = pMainWnd->GetColors(); 
-        CBrush Eraser(pColor->cPlotBkg);
-        m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NO_DURATIONS, &rClient);
-
-        ReleaseDC(pDC);
-    }
+		Colors * pColor = pMainWnd->GetColors();
+		CBrush Eraser(pColor->cPlotBkg);
+		m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NO_DURATIONS, &rClient);
+		ReleaseDC(pDC2);
+	}
 }
 
 

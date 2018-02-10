@@ -205,8 +205,8 @@ void CDlgMbrola::OnLeaveCellMbrolaGrid() {
     switch (m_cGrid.GetRow()) {
     case 2:
     case 3:
-        double value;
-        char dummy[3];
+        float value;
+        wchar_t dummy[3];
         CString cellText = m_cGrid.GetText();
         if ((cellText.GetLength()) && (swscanf(cellText,_T("%f%2s"), &value, &dummy) != 1)) {
             CString error;

@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by SA_ENU.rc
+// Used by SA_DEU.rc
 //
 #define IDS_ACTIVEX                     1
 #define IDS_ACTIVEX_PPG                 2
@@ -1416,8 +1416,8 @@
 #define ID_PLAYBACK_CURSORS             32832
 #define ID_PLAYBACK_WINDOW              32833
 #define ID_PLAYBACK_FILE                32834
-#define ID_PLAYBACK_LEFT_TO_START       32835
-#define ID_PLAYBACK_START_TO_RIGHT      32836
+#define ID_PLAYBACK_LEFTWIN_TO_STARTCUR 32835
+#define ID_PLAYBACK_STARTCUR_TO_RIGHTWIN 32836
 #define ID_PLAYBACK_SPECIFIC            32837
 #define ID_PLAYBACK_ORIGINAL            32838
 #define ID_TOOLS_OPTIONS                32844
@@ -1583,8 +1583,8 @@
 #define ID_IMPORT_MIDI                  33128
 #define ID_EDIT_SEGMENT_SIZE            33129
 #define ID_FILE_OPENAS_NEW              33141
-#define ID_PLAYBACK_LEFT_TO_STOP        33142
-#define ID_PLAYBACK_STOP_TO_RIGHT       33143
+#define ID_PLAYBACK_LEFTWIN_TO_ENDCUR   33142
+#define ID_PLAYBACK_ENDCUR_TO_RIGHTWIN  33143
 #define ID_IMPORT_TIME_TABLE            33145
 #define ID_IMPORT_SFM                   33146
 #define ID_IMPORT_SAB                   33147
@@ -1667,7 +1667,7 @@
 #define ID_AUTOSAVE_ON                  33235
 #define ID_AUTOSAVE_OFF                 33236
 #define ID_TOOLS_ADJUST_SILENCE         33237
-#define ID_PLAYBACK_ENDCURSOR           33240
+#define ID_PLAYBACK_ENCCUR_TO_FILEEND   33240
 #define ID_IMPORT_ELAN                  33242
 #define ID_EXPORT_LIFT                  33243
 #define ID_VIEW_TRANSCRIPTION_BOUNDARIES 33244
@@ -1682,7 +1682,7 @@
 #define ID_EDIT_MOVE_RIGHT_MERGE_PREV   33253
 #define ID_EDIT_ADD_MARKUP              33254
 #define ID_EXPORT_CV_DATA               33255
-#define ID_PLAYBACK_BEGINCURSOR         33256
+#define ID_PLAYBACK_STARTCUR_TO_FILEEND 33256
 #define ID_HELP_KEYBOARD_SHORTCUTS      33257
 #define ID_POPUPTRANSCRIPTION_NEXTERROR 33258
 #define ID_POPUPTRANSCRIPTION_PREVIOUSERROR 33259
@@ -1825,7 +1825,6 @@
 #define IDS_ERROR_GONE_MISSING          61267
 #define IDS_ERROR_AUTOSAVE_FAIL         61267
 #define IDS_ERROR_FORMAT_CHANNELS       61268
-#define IDS_STRING61269                 61269
 #define IDS_ERROR_BADFILENAME_CHARS     61269
 #define IDS_ERROR_NO_SETTING_DIR        61270
 #define IDS_ERROR_UNKNOWN               61271
@@ -1855,7 +1854,6 @@
 #define IDS_IMPORT_ELAN_METHOD_ELAN2    61323
 #define IDS_IMPORT_ELAN_METHOD_SAYMORE  61324
 #define IDS_NO_ISO                      61325
-#define IDS_STRING4                     61326
 #define IDS_DISABLED_SEGMENT            61327
 #define IDS_DELETE_REFERENCE            61328
 #define IDS_ERROR_ELAN1                 61329
@@ -1904,7 +1902,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        394
+#define _APS_NEXT_RESOURCE_VALUE        395
 #define _APS_NEXT_COMMAND_VALUE         33290
 #define _APS_NEXT_CONTROL_VALUE         2125
 #define _APS_NEXT_SYMED_VALUE           105

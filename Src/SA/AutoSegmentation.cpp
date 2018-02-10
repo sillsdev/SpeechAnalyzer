@@ -46,14 +46,14 @@ vector<Verse> CAutoSegmentation::GetVerses( CTranscriptionData & td, bool usingG
 			wstring text = (*glit).Trim();
 			glit++;
 			// insert reference
-			wstring ref;
+			wstring ref2;
 			if (rit!=rend) {
-				ref = *rit;
+				ref2 = *rit;
 				rit++;
 			}
 			size_t wordCount = GetWordCount(text);
 			size_t phoneCount = GetNonVoicedCharacterCount(text);
-			Verse entry( ref.c_str(), text.c_str(), wordCount, phoneCount);
+			Verse entry( ref2.c_str(), text.c_str(), wordCount, phoneCount);
 			result.push_back(entry);
 		}
 	} else {
@@ -63,14 +63,14 @@ vector<Verse> CAutoSegmentation::GetVerses( CTranscriptionData & td, bool usingG
 			wstring text = (*gnit).Trim();
 			gnit++;
 			// insert reference
-			wstring ref;
+			wstring ref2;
 			if (rit!=rend) {
-				ref = *rit;
+				ref2 = *rit;
 				rit++;
 			}
 			size_t wordCount = GetWordCount(text);
 			size_t phoneCount = GetNonVoicedCharacterCount(text);
-			Verse entry( ref.c_str(), text.c_str(), wordCount, phoneCount);
+			Verse entry( ref2.c_str(), text.c_str(), wordCount, phoneCount);
 			result.push_back(entry);
 		}
 	}
@@ -137,7 +137,7 @@ vector<Phonetic> CAutoSegmentation::GetPhones( CSaDoc & doc, wofstream & ofs ) {
 		BOOL bRes = TRUE;
 		long nData = 0;
 		DWORD index = (offset + (length/2));
-		DWORD data = index / sizeFactor;
+		DWORD data = (DWORD)(index / sizeFactor);
 		// get data for this pixel
 		// SDM 1.5Test11.0
 		int nHere = pPitch->GetProcessedData( data, &bRes); 
@@ -218,19 +218,13 @@ vector<Word> CAutoSegmentation::GetWords( CSaDoc & doc, wofstream & ofs ) {
 		BOOL bRes = TRUE;
 		long nData = 0;
 		DWORD index = (offset + (length/2));
-		DWORD data = index / sizeFactor;
+		DWORD data = (DWORD)(index / sizeFactor);
 		// get data for this pixel
 		// SDM 1.5Test11.0
 		int nHere = pPitch->GetProcessedData( data, &bRes); 
 		if (nHere > 0) {
 			nData += nHere;
 			dwSamples++;
-		}
-		if ((dwSamples>0) && (bRes)) {
-			double fData = double(nData) / PRECISION_MULTIPLIER / dwSamples;
-			//TRACE("pitch value = %f\n",fData);
-		} else {
-			//TRACE("pitch value = none\n");
 		}
 		result.push_back(word);
 	}
@@ -276,7 +270,7 @@ vector<Phrase> CAutoSegmentation::GetPhrases( CSaDoc & doc, wofstream & ofs, int
 	// search based on least error
 	while (true) {
 
-		nextBreakWidth = (maxBreakWidth+minBreakWidth)/2.0f;
+		nextBreakWidth = (maxBreakWidth+minBreakWidth)/2;
 
 		TRACE("max=%d min=%d next=%d\n",maxBreakWidth,minBreakWidth,nextBreakWidth);
 
@@ -306,7 +300,7 @@ vector<Phrase> CAutoSegmentation::GetPhrases( CSaDoc & doc, wofstream & ofs, int
 			return result;
 		}
 
-		DWORD count = pGloss->GetOffsetSize();
+		int count = pGloss->GetOffsetSize();
 		TRACE("found %d segments\n",count);
 
 		if (count==goal) {
@@ -434,8 +428,8 @@ void CAutoSegmentation::DumpSegments( wofstream & ofs, vector<Verse> & verses, v
 	ofs << L"\tphones\t\t\t\twords\n";
 	ofs << L"ref\tactual\texpect\terror\tstat\tactual\texpect\terror\tstat\tmod\tstart\tstop\t\n";
 
-	int i = 0;
-	int j = 0;
+	size_t i = 0;
+	size_t j = 0;
 	bool done = false;
 	while (!done) {
 		wstring ref = L"";
@@ -577,14 +571,13 @@ void Phrase::FilterWords() {
 
 string CAutoSegmentation::GetKey( size_t v, DWORD o, DWORD d) {
 	char buffer[512];
-	sprintf(buffer,"%d_%d_%d",v,o,d);
-	string result = buffer;
-	return result;
+	sprintf_s(buffer,sizeof(buffer),"%d_%d_%d",v,o,d);
+	return string(buffer);
 }
 
 wstring CAutoSegmentation::GetTabs(size_t indent) {
 	wstring result;
-	for (int i=0;i<indent;i++) {
+	for (size_t i=0;i<indent;i++) {
 		result.append(L" ");
 	}
 	return result;
@@ -652,14 +645,14 @@ vector<Phrase> CAutoSegmentation::ConsiderPathsImpl( wofstream & ofs, vector<Ver
 
 		// what happens if we do?
 		// we will calculate where to split based on the score.
-		float duration = phrases[p].duration;
+		float duration = (float)phrases[p].duration;
 		float score = ScorePhone(verses[v],phrases[p]);
 		duration /= score;
 		// split this segment. insert after
 		DWORD oldoffset = phrases[p].offset;
 		DWORD oldstop = phrases[p].offset+phrases[p].duration;
 		DWORD offset1 = oldoffset;
-		DWORD duration1 = duration;
+		DWORD duration1 = (DWORD)duration;
 		DWORD offset2 = offset1+duration1+1;
 		DWORD duration2 = oldstop-offset2-1;
 		phrases[p].offset = offset1;
@@ -1008,8 +1001,8 @@ void Phrase::Merge(Phrase right) {
 * The closer the output value is to 1.0, the better
 */
 float CAutoSegmentation::ScorePhone( Verse & verse, Phrase & phrase) {
-	float actual = phrase.phones.size();
-	float expected = verse.GetPhoneCount();
+	float actual = (float)phrase.phones.size();
+	float expected = (float)verse.GetPhoneCount();
 	return (actual/expected);
 }
 
@@ -1018,8 +1011,8 @@ float CAutoSegmentation::ScorePhone( Verse & verse, Phrase & phrase) {
 * The closer the output value is to 1.0, the better
 */
 float CAutoSegmentation::ScoreWord( Verse & verse, Phrase & phrase) {
-	float actual = phrase.words.size();
-	float expected = verse.GetWordCount();
+	float actual = (float)phrase.words.size();
+	float expected = (float)verse.GetWordCount();
 	return (actual/expected);
 }
 
@@ -1045,27 +1038,27 @@ float CAutoSegmentation::ScorePath( wofstream & ofs, wstring tabs, vector<Verse>
 	}
 
 	float score = error/verses.size();
-	score = (score>1.0)?1.0:score;
+	score = (score>1.0f)?1.0f:score;
 	ofs << tabs << L"result "<<verses[v].ref<<L" op:"<<tag<<L" score:"<<score<<"\n";
 	return score;
 }
 
 bool CAutoSegmentation::NeedsSplit( Verse & v, Phrase & p) {
-	float pa = p.phones.size();
-	float pe = v.GetPhoneCount();
+	float pa = (float)p.phones.size();
+	float pe = (float)v.GetPhoneCount();
 	float pae = pa/pe;
-	float wa = p.words.size();
-	float we = v.GetWordCount();
+	float wa = (float)p.words.size();
+	float we = (float)v.GetWordCount();
 	float wae = wa/we;
 	return ((pae>MAX_PHONE_ERROR)&&(wae>MAX_WORD_ERROR));
 }
 
 bool CAutoSegmentation::NeedsMerge( Verse & v, Phrase & p) {
-	float pe = v.GetPhoneCount();
-	float pa = p.phones.size();
+	float pe = (float)v.GetPhoneCount();
+	float pa = (float)p.phones.size();
 	float pae = pa/pe;
-	float we = v.GetWordCount();
-	float wa = p.words.size();
+	float we = (float)v.GetWordCount();
+	float wa = (float)p.words.size();
 	float wae = wa/we;
 	return ((pae<MIN_PHONE_ERROR)&&(wae<MIN_WORD_ERROR));
 }

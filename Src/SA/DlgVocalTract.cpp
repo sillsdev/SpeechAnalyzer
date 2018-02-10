@@ -1387,16 +1387,9 @@ static double InterpolateWeight(double dLocation, double dBreakPoint, double dEn
     // second order
     if (dLocation < dBreakPoint) {
         return 1.0 - 0.5*(dLocation / dBreakPoint)*(dLocation / dBreakPoint);
-    } else {
-        return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint) * (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
     }
-
-    // simple linear for now
-    if (dLocation < dBreakPoint) {
-        return 1.0 - 0.5*(dLocation / dBreakPoint);
-    } else {
-        return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
-    }
+	// else
+    return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint) * (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
 }
 
 static void WeightChars(CIpaVTChar & cPrev, CIpaVTChar & cNext, double dWeight, CIpaVTChar & cThis) {

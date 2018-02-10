@@ -198,6 +198,10 @@
   <ItemGroup>
     <ResourceCompile Include="SA_DEU.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Res\GENERAL.BMP" />
+    <Image Include="Res\PLAIN.BMP" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

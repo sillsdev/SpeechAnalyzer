@@ -94,7 +94,7 @@ public:
 
     // helper functions
     BOOL WriteSettings();
-    BOOL ReadSettings();
+    BOOL ReadSettings(bool batchMode);
 	// create a new file and paste the clipboard into it
     void PasteClipboardToNewFile(HGLOBAL hData);		
     CSaDoc * OpenWavFileAsNew(LPCTSTR szTempPath);
@@ -159,7 +159,7 @@ public:
     void SetZ();
     // Set the current z-order of all MDI child views.
 	// read the open databases and windows
-    BOOL ReadProperties(CObjectIStream & obs);  
+    BOOL ReadProperties(CObjectIStream & obs, bool batchMode);  
 	// write the open databases and windows
     void WriteProperties(CObjectOStream & obs); 
     CSaString GetStartupMessage(CSaString szLastVersion);

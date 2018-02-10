@@ -1,3 +1,7 @@
+SA - 3.1.0.143 2/9/2018
+- Fixed problem where 'Hide' and 'Minimize' commands were not working correctly when batch mode was used.
+- Fixed problem where Player dialog does not observe setting in 'Play' dropdown list.
+
 SA - 3.1.0.142 2/2/2018
 - Fixed two syntax problems in the LIFT export feature.
 

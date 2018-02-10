@@ -1,1 +1,2 @@
-"C:\Temp\SAServer.exe" -L C:\Temp\Demo.lst
+"C:\Program Files (x86)\SIL\Speech Analyzer MSEA\SAServer.exe" -L C:\Temp\SATest\Demo.lst
+

@@ -800,7 +800,7 @@ BOOL CDlgAutoRecorder::Apply() {
         m_pDoc->SetNumberOfSamples(m_dwRecordSize / fmtParm.wBlockAlign);
         m_pDoc->SetRecordBandWidth(fmtParm.dwSamplesPerSec / 2);
         m_pDoc->SetSignalBandWidth(fmtParm.dwSamplesPerSec / 2);
-        m_pDoc->SetQuantization(fmtParm.wBitsPerSample);
+        m_pDoc->SetQuantization((BYTE)fmtParm.wBitsPerSample);
 
         m_pDoc->RestartAllProcesses();
         m_pDoc->InvalidateAllProcesses();

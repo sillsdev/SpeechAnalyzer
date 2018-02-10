@@ -1,7 +1,9 @@
 [Settings]
-ShowWindow=Size(632,261,500,276)
+ShowWindow=Hide
 [Commands]
-Command0=DisplayPlot(Pitch)
-Command1=Return(1)
+Command0=SelectFile(0)
+Command1=Play(25,50,1000,37000)
+Command2=Return(0)
 [AudioFiles]
-File0=C:\Working\SIL\MSEA\Docs\SAServer\Test.wav
+File0=C:\Temp\SATest\Test.wav
+

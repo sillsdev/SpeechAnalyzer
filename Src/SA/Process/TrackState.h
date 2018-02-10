@@ -26,10 +26,6 @@ public:
     VECTOR_CDBL filtered;
     VECTOR_CDBL zeroFilterCDBL;
     VECTOR_DBL zeroFilterDBL;
-
-    void DumpWindowed(LPCSTR ofilename);
-    void DumpFiltered(LPCSTR ofilename);
-    void DumpZeroFilterDBL(LPCSTR ofilename);
 };
 
 #endif

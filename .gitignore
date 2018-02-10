@@ -48,3 +48,12 @@ test_samples/out/
 /Src/TraceAndTestImpact.testsettings
 /Src/SpeechAnalyzer.sdf
 /Src/ConsoleApplication1
+/Test/ElanUtilsTest/Debug
+/Test/LiftUtilsTest/Debug
+/Test/ElanUtilsTest/Release
+/Test/LiftUtilsTest/Release
+/Test/SAScriptingTest/Debug
+/Test/WaveUtilsTest/Debug
+/Test/WaveUtilsTest/Release
+/*.opendb
+/Test/SAScriptingTest/Release

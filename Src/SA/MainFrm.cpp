@@ -981,8 +981,12 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam) {
             lParam = MAKELONG(LOWORD(lParam), FALSE);
         }
         // if player will not have size, set the old active window
-        if (!(BOOL)HIWORD(lParam)) {
-            pWnd->SetActiveWindow();
+		if (!(BOOL)HIWORD(lParam)) {
+			// if the window is minimized, it will be null
+			// this can occur during batch mode.
+			if (pWnd != NULL) {
+				pWnd->SetActiveWindow();
+			}
         }
 		// set player mode
         GetPlayer(false)->SetPlayerMode(mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, NULL);  
@@ -1238,6 +1242,7 @@ LRESULT CMainFrame::OnChangeView(WPARAM wParam, LPARAM lParam) {
 void CMainFrame::OnClose() {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
+
     if (pApp->GetBatchMode() == 1) {
         // TODO: this can probably be completely removed at some point
         SendMessage(WM_COMMAND, ID_FILE_RETURN, 0L);
@@ -2041,10 +2046,10 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
 //********************************************************************
 // Read the open databases and windows
 //********************************************************************
-BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
+BOOL CMainFrame::ReadProperties(CObjectIStream & obs, bool batchMode) {
 
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_mainframe)) {
-        return FALSE;
+		return FALSE;
     }
 
     BOOL b = FALSE;
@@ -2064,10 +2069,13 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
             wpl.ptMinPosition.x = -1;
             wpl.ptMinPosition.y = -1;
 
-            this->SetWindowPlacement(&wpl);
-
+			if (!batchMode) {
+				SetWindowPlacement(&wpl);
+			}
             if (wpl.showCmd == SW_SHOWMAXIMIZED) {
-                this->ShowWindow(wpl.showCmd);
+				if (!batchMode) {
+					ShowWindow(wpl.showCmd);
+				}
             }
         }
 
@@ -2628,6 +2636,10 @@ const CMusicParm * CMainFrame::GetMusicParmDefaults() const {
 }
 void CMainFrame::SetMusicParmDefaults(const CMusicParm & cParm) {
     m_musicParmDefaults = cParm;
+}
+void CMainFrame::SetMusicParmCalcBounds( int lowerBound, int upperBound) {
+	m_musicParmDefaults.nCalcLowerBound = lowerBound;
+	m_musicParmDefaults.nCalcUpperBound = upperBound;
 }
 const CIntensityParm & CMainFrame::GetCIntensityParmDefaults() const {
     return m_intensityParmDefaults;

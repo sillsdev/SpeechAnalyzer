@@ -204,13 +204,13 @@ short int CFormantChart::ProcessFormants() {
         dwFrameStart = FragParms.dwOffset * wSmpSize;
         dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
         SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
-        SpectraSelected.bLpcSpectrum = TRUE;
+        SpectraSelected.bLpcSpectrum = -1;
     } else {
         // formants extracted from cepstrally-smoothed and LPC spectra for sample data between start and stop cursors
         dwFrameStart = pView->GetStartCursorPosition();
         dwFrameSize = pView->GetStopCursorPosition() - dwFrameStart + wSmpSize;
-        SpectraSelected.bCepstralSpectrum = TRUE;
-        SpectraSelected.bLpcSpectrum = TRUE;
+        SpectraSelected.bCepstralSpectrum = -1;
+        SpectraSelected.bLpcSpectrum = -1;
     }
 
     // Process FormantTracker formants

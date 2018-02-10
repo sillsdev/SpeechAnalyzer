@@ -318,14 +318,16 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
     }
 
     //adjust last phonetic SDM 1.5Test11.0
-    int nPhonetic = pPhonetic->GetPrevious(-1);
-    if ((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic)==0)) {
-        DWORD dwPhoneticStop = nBlockAlign*(DWORD)(dwBreakStart * fFactor/nBlockAlign);
-        dwPhoneticStop = pDoc->SnapCursor(STOP_CURSOR, dwPhoneticStop,dwPhoneticStop,pDoc->GetDataSize(),SNAP_RIGHT);
-        if (dwPhoneticStop > pPhonetic->GetOffset(nPhonetic)) {
-            pPhonetic->Adjust(pDoc,nPhonetic, pPhonetic->GetOffset(nPhonetic),dwPhoneticStop - pPhonetic->GetOffset(nPhonetic), false);
-        }
-    }
+	{
+		int nPhonetic = pPhonetic->GetPrevious(-1);
+		if ((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic) == 0)) {
+			DWORD dwPhoneticStop = nBlockAlign*(DWORD)(dwBreakStart * fFactor / nBlockAlign);
+			dwPhoneticStop = pDoc->SnapCursor(STOP_CURSOR, dwPhoneticStop, dwPhoneticStop, pDoc->GetDataSize(), SNAP_RIGHT);
+			if (dwPhoneticStop > pPhonetic->GetOffset(nPhonetic)) {
+				pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic), dwPhoneticStop - pPhonetic->GetOffset(nPhonetic), false);
+			}
+		}
+	}
 
     // Adjust durations of inserted phonetic segments
     if (!pPhonetic->IsEmpty()) {

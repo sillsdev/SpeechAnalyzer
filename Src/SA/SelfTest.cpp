@@ -1034,8 +1034,8 @@ void Test017(CSelfTestRunner & runner, CSelfTest::Test & test) {
     pSpectrum->SetSpectrumParms(stParmSpec);
 
     SSpectProcSelect SpectraSelected;
-    SpectraSelected.bCepstralSpectrum = TRUE;    // turn off to reduce processing time
-    SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
+    SpectraSelected.bCepstralSpectrum = -1;    // turn off to reduce processing time
+    SpectraSelected.bLpcSpectrum = -1;          // use Lpc method for estimating formants
 
     ValidateProcess(LOWORD(pSpectrum->Process(&runner, doc.pDoc, 30870, 4410, SpectraSelected)));   // process data
 
@@ -1073,8 +1073,8 @@ void Test018(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CProcessFormants * pFormants = doc.pDoc->GetFormants();
 
     SSpectProcSelect SpectraSelected;
-    SpectraSelected.bCepstralSpectrum = TRUE;    // turn off to reduce processing time
-    SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
+    SpectraSelected.bCepstralSpectrum = -1;    // turn off to reduce processing time
+    SpectraSelected.bLpcSpectrum = -1;          // use Lpc method for estimating formants
 
     ValidateProcess(LOWORD(pFormants->Process(&runner, doc.pDoc,TRUE,30870,4410,SpectraSelected)));
     ValidateFileCompare(runner.FileCompare(test, pFormants->GetProcessFileName()/*,20*/));

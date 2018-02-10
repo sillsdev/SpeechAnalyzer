@@ -310,35 +310,6 @@ void CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate
             }
         }
 
-        // dump the filtered data
-        char path[MAX_PATH];
-
-#ifdef DUMP_AZF
-        sprintf_s(path,_countof(path),"\\working\\sil\\msea\\output\\debug\\selftest\\azf_%f_%d.csv",samplingRate,(int)formant);
-        {
-            FILE * ofile = NULL;
-            errno_t err = fopen_s(&ofile, path, "w");
-            fprintf(ofile, "ztransform %d\n",azf.m_nOrder);
-            fprintf(ofile,"num,num,denom,denom,state\n");
-            for (int i=0; i<azf.m_nOrder; i++) {
-                fprintf(ofile, "%f,%f,%f,%f\n",azf.m_pNumerator[i].real(),azf.m_pNumerator[i].real(),azf.m_pDenominator[i].imag(),azf.m_pDenominator[i].imag());
-            }
-            fflush(ofile);
-            fclose(ofile);
-
-            //std::vector<CZTransformGeneric<_Ty>> m_cStages;
-        }
-#endif
-
-        sprintf_s(path,_countof(path),"\\working\\sil\\msea\\output\\debug\\selftest\\windowed_%f_%d.csv",samplingRate,(int)formant);
-        state.DumpWindowed(path);
-
-        // dump the filtered data
-        sprintf_s(path,_countof(path),"\\working\\sil\\msea\\output\\debug\\selftest\\zerofiltered_%f_%d.csv",samplingRate,(int)formant);
-        state.DumpZeroFilterDBL(path);
-
-        //TRACE("freq=%f %d\n",samplingRate,formant);
-
         if (formantTrackerOptions.m_bAzfAddConjugateZeroes) {
             // The filter is real... CDBL*double is faster than CDBL*CDBL so this is an optimization
             // Flatten AZF
@@ -351,11 +322,6 @@ void CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate
                 //TRACE("temp=%f\n",temp);
                 state.zeroFilterDBL[z] = temp;
             }
-
-            // dump the filtered data
-            char path[MAX_PATH];
-            sprintf_s(path,_countof(path),"\\working\\sil\\msea\\output\\debug\\selftest\\zerofiltered_%f_%d.csv",samplingRate,(int)formant);
-            state.DumpZeroFilterDBL(path);
 
             // Apply AZF & DTF
             for (unsigned int i = zeroFilterOrder; i < state.windowed.size() ; i++) {
@@ -383,10 +349,6 @@ void CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate
                 state.filtered[i - zeroFilterOrder] = DTF.Tick(z);
             }
         }
-
-        // dump the filtered data
-        sprintf_s(path,_countof(path),"\\working\\sil\\msea\\output\\debug\\selftest\\filtered_%f_%d.csv",samplingRate,(int)formant);
-        state.DumpFiltered(path);
 
         // Calculate LPC
         CAnalyticLpcAnalysis lpc(state.filtered, 1);

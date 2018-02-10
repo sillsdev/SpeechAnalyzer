@@ -118,6 +118,7 @@ private:
 
     // Dialog Data
     enum { IDD = IDD_PLAYER };
+	// the combo box selection control
     int m_nComboPlayMode;
     UINT m_nVolume;
     UINT m_nSpeed;

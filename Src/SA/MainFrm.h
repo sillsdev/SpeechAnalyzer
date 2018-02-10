@@ -116,6 +116,7 @@ public:
     const CPitchParm * GetPitchParmDefaults() const;
     void SetPitchParmDefaults(const CPitchParm & cParm);
     const CMusicParm * GetMusicParmDefaults() const;
+	void SetMusicParmCalcBounds(int lowerBound, int upperBound);
     void SetMusicParmDefaults(const CMusicParm & cParm);
     const CIntensityParm & GetCIntensityParmDefaults() const;
     void SetCIntensityParmDefaults(const CIntensityParm & cParm);
@@ -133,7 +134,7 @@ public:
     void OnSetDefaultParameters();
 
     void WriteProperties(CObjectOStream & obs);
-    BOOL ReadProperties(CObjectIStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs, bool batchMode);
     BOOL ReadDefaultView(CObjectIStream & obs);
     void WriteDefaultView(CObjectOStream & obs);
     void DisplayPlot(CDisplayPlot * pPlot);

@@ -126,25 +126,25 @@ static char THIS_FILE[] = __FILE__;
 // Description: Manages shared data between applications, could be anything,
 //              but for this case it is the "command line arguments"
 class CSingleInstanceData {
-public :
-    // Constructor/Destructor
-    CSingleInstanceData(LPCTSTR aName);
-    virtual ~CSingleInstanceData();
+public:
+	// Constructor/Destructor
+	CSingleInstanceData(LPCTSTR aName);
+	virtual ~CSingleInstanceData();
 
-    // Getter/Setter
-    void SetValue(LPCTSTR aData);
-    CString GetValue() const;
+	// Getter/Setter
+	void SetValue(LPCTSTR aData);
+	CString GetValue() const;
 
-private :
-    enum { MAX_DATA = 512 };
+private:
+	enum { MAX_DATA = 512 };
 
-    // Data pointer
-    LPTSTR  mData;
-    // File handle
-    HANDLE  mMap;
-    // Acces mutex
-    CMutex * mMutex;
-} ;
+	// Data pointer
+	LPTSTR  mData;
+	// File handle
+	HANDLE  mMap;
+	// Acces mutex
+	CMutex * mMutex;
+};
 
 
 typedef HMODULE(__stdcall * SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
@@ -158,40 +158,40 @@ typedef HMODULE(__stdcall * SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
 // CSaApp message map
 
 BEGIN_MESSAGE_MAP(CSaApp, CWinApp)
-    ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
-    ON_COMMAND(ID_FILE_NEW, OnFileCreate)
-    ON_UPDATE_COMMAND_UI(ID_FILE_NEW, OnUpdateFileCreate)
-    ON_COMMAND(ID_FILE_RECORD, OnFileRecord)
-    ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
-    ON_COMMAND(ID_FILE_OPEN_SPECIAL, OnFileOpenSpecial)
-    ON_COMMAND(ID_FILE_OPENAS_PHONETICANALYSIS, OnFileOpenPA)
-    ON_COMMAND(ID_FILE_OPENAS_MUSICANALYSIS, OnFileOpenMA)
-    ON_UPDATE_COMMAND_UI(ID_FILE_RECORD, OnUpdateFileRecord)
-    ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, OnUpdateFileOpen)
-    ON_UPDATE_COMMAND_UI(ID_FILE_OPEN_SPECIAL, OnUpdateFileOpen)
-    ON_UPDATE_COMMAND_UI(ID_APP_EXIT, OnUpdateAppExit)
-    // TODO: remove OnFileReturn() (no longer used by PA?) 8/4/06
-    ON_COMMAND(ID_FILE_RETURN, OnFileReturn)
-    ON_UPDATE_COMMAND_UI(ID_FILE_RETURN, OnUpdateFileReturn)
-    ON_COMMAND(ID_HELP_CONTENTS, OnHelpContents)
+	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
+	ON_COMMAND(ID_FILE_NEW, OnFileCreate)
+	ON_UPDATE_COMMAND_UI(ID_FILE_NEW, OnUpdateFileCreate)
+	ON_COMMAND(ID_FILE_RECORD, OnFileRecord)
+	ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
+	ON_COMMAND(ID_FILE_OPEN_SPECIAL, OnFileOpenSpecial)
+	ON_COMMAND(ID_FILE_OPENAS_PHONETICANALYSIS, OnFileOpenPA)
+	ON_COMMAND(ID_FILE_OPENAS_MUSICANALYSIS, OnFileOpenMA)
+	ON_UPDATE_COMMAND_UI(ID_FILE_RECORD, OnUpdateFileRecord)
+	ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, OnUpdateFileOpen)
+	ON_UPDATE_COMMAND_UI(ID_FILE_OPEN_SPECIAL, OnUpdateFileOpen)
+	ON_UPDATE_COMMAND_UI(ID_APP_EXIT, OnUpdateAppExit)
+	// TODO: remove OnFileReturn() (no longer used by PA?) 8/4/06
+	ON_COMMAND(ID_FILE_RETURN, OnFileReturn)
+	ON_UPDATE_COMMAND_UI(ID_FILE_RETURN, OnUpdateFileReturn)
+	ON_COMMAND(ID_HELP_CONTENTS, OnHelpContents)
 	ON_COMMAND(ID_HELP_KEYBOARD_SHORTCUTS, OnHelpShortCuts)
-    ON_COMMAND(ID_HELP_WHATS_NEW, OnHelpWhatsNew)
-    ON_COMMAND(ID_HELP_SFMMARKERS, OnHelpSFMMarkers)
-    ON_COMMAND(ID_HELP_TROUBLE, OnHelpTrouble)
-    ON_COMMAND(ID_HELP_GRAPHS, OnHelpGraphs)
-    ON_COMMAND(ID_HELP_MUSIC, OnHelpMusic)
-    ON_COMMAND(ID_HELP_TRAINING_STUDENT, OnHelpTrainingStudent)
-    ON_COMMAND(ID_HELP_TRAINING_INSTRUCTOR, OnHelpTrainingInstructor)
-    ON_COMMAND(ID_AUDIO_CON, OnAudioCon)
-    ON_COMMAND(ID_HELP_USINGHELP, OnHelpOnHelp)
-    ON_COMMAND(ID_HELP_WORKBENCH, OnHelpWorkbench)
-    ON_COMMAND(ID_WORKBENCH, OnWorkbenchOpen)
-    ON_UPDATE_COMMAND_UI(ID_WORKBENCH, OnUpdateWorkbenchOpen)
-    ON_COMMAND(ID_PROCESS_BATCH_COMMANDS, OnProcessBatchCommands)
-    // Standard file based document commands
-    // Standard print setup command
-    ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
-    ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_MRU_FIRST, ID_FILE_MRU_LAST, OnUpdateRecentFileMenu)
+	ON_COMMAND(ID_HELP_WHATS_NEW, OnHelpWhatsNew)
+	ON_COMMAND(ID_HELP_SFMMARKERS, OnHelpSFMMarkers)
+	ON_COMMAND(ID_HELP_TROUBLE, OnHelpTrouble)
+	ON_COMMAND(ID_HELP_GRAPHS, OnHelpGraphs)
+	ON_COMMAND(ID_HELP_MUSIC, OnHelpMusic)
+	ON_COMMAND(ID_HELP_TRAINING_STUDENT, OnHelpTrainingStudent)
+	ON_COMMAND(ID_HELP_TRAINING_INSTRUCTOR, OnHelpTrainingInstructor)
+	ON_COMMAND(ID_AUDIO_CON, OnAudioCon)
+	ON_COMMAND(ID_HELP_USINGHELP, OnHelpOnHelp)
+	ON_COMMAND(ID_HELP_WORKBENCH, OnHelpWorkbench)
+	ON_COMMAND(ID_WORKBENCH, OnWorkbenchOpen)
+	ON_UPDATE_COMMAND_UI(ID_WORKBENCH, OnUpdateWorkbenchOpen)
+	ON_COMMAND(ID_PROCESS_BATCH_COMMANDS, OnProcessBatchCommands)
+	// Standard file based document commands
+	// Standard print setup command
+	ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_MRU_FIRST, ID_FILE_MRU_LAST, OnUpdateRecentFileMenu)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -201,30 +201,30 @@ END_MESSAGE_MAP()
 // CSaApp::CSaApp Constructor
 /***************************************************************************/
 CSaApp::CSaApp() :
-m_hEnglishResources(NULL),
-m_hGermanResources(NULL),
-m_hLocalizedResources(NULL) {
+	m_hEnglishResources(NULL),
+	m_hGermanResources(NULL),
+	m_hLocalizedResources(NULL) {
 
 	// no batch mode
-    m_nBatchMode = 0;       
-    m_bModified = FALSE;
+	m_nBatchMode = 0;
+	m_bModified = FALSE;
 	// reset number of entries in batch list file
-    m_nEntry = 0;           
-    m_nCommand =-1;         // SDM 1.5Test8.5 (not processing batch commands)
-    m_bNewDocument = FALSE;
-    m_pWbDoc = NULL;
-    m_szWbPath.Empty();
-    m_bWbOpenOnExit = FALSE;
-    m_bNewUser = FALSE;
-    m_OpenAsID = ID_FILE_OPEN;
+	m_nEntry = 0;
+	m_nCommand = -1;         // SDM 1.5Test8.5 (not processing batch commands)
+	m_bNewDocument = FALSE;
+	m_pWbDoc = NULL;
+	m_szWbPath.Empty();
+	m_bWbOpenOnExit = FALSE;
+	m_bNewUser = FALSE;
+	m_OpenAsID = ID_FILE_OPEN;
 	m_bOpenMore = true;
 
-    InitSingleton();
+	InitSingleton();
 }
 
 CSaApp::~CSaApp() {
-    TRACE("destroy CSaApp\n");
-    DestroySingleton();
+	TRACE("destroy CSaApp\n");
+	DestroySingleton();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -236,65 +236,65 @@ CSaApp theApp;
 
 HMODULE LoadCompatibleLibrary(LPCTSTR szTarget) {
 
-    // Is Library Compatible
-    wchar_t szApp[MAX_PATH*4];
-    wmemset(szApp,0,_countof(szApp));
+	// Is Library Compatible
+	wchar_t szApp[MAX_PATH * 4];
+	wmemset(szApp, 0, _countof(szApp));
 	GetModuleFileName(AfxGetInstanceHandle(), szApp, _countof(szApp));
 
-    wchar_t szName[MAX_PATH*4];
-    wcscpy_s(szName,_countof(szName),szTarget);
+	wchar_t szName[MAX_PATH * 4];
+	wcscpy_s(szName, _countof(szName), szTarget);
 
-    wchar_t * loc = wcsrchr(szApp,L'\\');
-    if (loc!=NULL) {
-        wmemset(szName,0,_countof(szName));
-        wcsncat_s(szName,_countof(szName),szApp,(loc-szApp)+1);
-        wcscat_s(szName,_countof(szName),szTarget);
-    }
+	wchar_t * loc = wcsrchr(szApp, L'\\');
+	if (loc != NULL) {
+		wmemset(szName, 0, _countof(szName));
+		wcsncat_s(szName, _countof(szName), szApp, (loc - szApp) + 1);
+		wcscat_s(szName, _countof(szName), szTarget);
+	}
 
-    DWORD dwHandle = 0;
-    DWORD dwSize = GetFileVersionInfoSize(szName, &dwHandle);
-    if (!dwSize) {
-        return 0;
-    }
+	DWORD dwHandle = 0;
+	DWORD dwSize = GetFileVersionInfoSize(szName, &dwHandle);
+	if (!dwSize) {
+		return 0;
+	}
 
-    array_ptr<BYTE> pLibVersion(dwSize);
-    if (!GetFileVersionInfo(szName, dwHandle, dwSize, pLibVersion.get())) {
-        return 0;
-    }
+	array_ptr<BYTE> pLibVersion(dwSize);
+	if (!GetFileVersionInfo(szName, dwHandle, dwSize, pLibVersion.get())) {
+		return 0;
+	}
 
-    unsigned int nLen = 0;
-    VS_FIXEDFILEINFO * pLibVS = NULL;
-    if (!VerQueryValue(pLibVersion.get(), _T("\\"), (LPVOID *)&pLibVS, &nLen)) {
-        return 0;
-    }
+	unsigned int nLen = 0;
+	VS_FIXEDFILEINFO * pLibVS = NULL;
+	if (!VerQueryValue(pLibVersion.get(), _T("\\"), (LPVOID *)&pLibVS, &nLen)) {
+		return 0;
+	}
 
 	// now read the local application version.
-    dwSize = GetFileVersionInfoSize(szApp, &dwHandle);
-    if (!dwSize) {
-        return 0;
-    }
+	dwSize = GetFileVersionInfoSize(szApp, &dwHandle);
+	if (!dwSize) {
+		return 0;
+	}
 
-    array_ptr<BYTE> pAppVersion(dwSize);
-    if (!GetFileVersionInfo(szApp, dwHandle, dwSize, pAppVersion.get())) {
-        return 0;
-    }
+	array_ptr<BYTE> pAppVersion(dwSize);
+	if (!GetFileVersionInfo(szApp, dwHandle, dwSize, pAppVersion.get())) {
+		return 0;
+	}
 
-    VS_FIXEDFILEINFO * pAppVS = NULL;
-    if (!VerQueryValue(pAppVersion.get(), _T("\\"), (void **) &pAppVS, &nLen)) {
-        return 0;
-    }
+	VS_FIXEDFILEINFO * pAppVS = NULL;
+	if (!VerQueryValue(pAppVersion.get(), _T("\\"), (void **)&pAppVS, &nLen)) {
+		return 0;
+	}
 
 	// we will only use the product version to track the relationship between
 	// SA, AS and SA_ENU
-    if ((pAppVS->dwProductVersionLS != pLibVS->dwProductVersionLS) ||
-        (pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS)) {
-        CSaString szMessage;
-        szMessage.FormatMessage(_T("%1 was found, but contains resources from incompatible version.\nIt will not be used."), szTarget);
-        AfxMessageBox(szMessage);
-        return 0;
-    }
+	if ((pAppVS->dwProductVersionLS != pLibVS->dwProductVersionLS) ||
+		(pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS)) {
+		CSaString szMessage;
+		szMessage.FormatMessage(_T("%1 was found, but contains resources from incompatible version.\nIt will not be used."), szTarget);
+		AfxMessageBox(szMessage);
+		return 0;
+	}
 
-    return LoadLibrary(szName);
+	return LoadLibrary(szName);
 }
 
 /***************************************************************************/
@@ -303,50 +303,50 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szTarget) {
 /***************************************************************************/
 BOOL CSaApp::InitInstance() {
 
-    // handle single instance
-    if (CreateAsSingleton(_T("418486C0-7EEE-448d-AD39-2522F5D553A7"))==FALSE) {
-        return FALSE;
-    }
+	// handle single instance
+	if (CreateAsSingleton(_T("418486C0-7EEE-448d-AD39-2522F5D553A7")) == FALSE) {
+		return FALSE;
+	}
 
 #ifdef DEBUG_MEMORY_OVERWRITE
 	// check for memory overwrites in debug version (see MSDN)
-    afxMemDF |= checkAlwaysMemDF;  
+	afxMemDF |= checkAlwaysMemDF;
 #endif
 
 	LANGID langid = GetUserDefaultLangID();
 
-    m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOC.DLL"));
+	m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOC.DLL"));
 
 	switch (langid) {
 	case 0x0407:
 #ifdef _DEBUG
 		// this allows us to use wchar for trace statements
 		// you should set the country code of yours
-		_tsetlocale(LC_ALL, _T("German")); 
+		_tsetlocale(LC_ALL, _T("German"));
 #endif
-	    m_hGermanResources = LoadCompatibleLibrary(_T("SA_DEU.DLL"));
+		m_hGermanResources = LoadCompatibleLibrary(_T("SA_DEU.DLL"));
 		break;
 	case 0x0409:
 	default:
 #ifdef _DEBUG
 		// this allows us to use wchar for trace statements
 		// you should set the country code of yours
-		_tsetlocale(LC_ALL, _T("English")); 
+		_tsetlocale(LC_ALL, _T("English"));
 #endif
-	    m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
+		m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
 		break;
 	}
 
-    if ((m_hEnglishResources==NULL) && 
-		(m_hGermanResources==NULL) &&
-		(m_hLocalizedResources==NULL)) {
-        AfxMessageBox(L"Speech Analyzer was unable to locate or use SA_ENU.DLL, SA_DEU.DLL or SA_LOC.DLL.\nIt will now exit.");
-        return FALSE;
-    }
+	if ((m_hEnglishResources == NULL) &&
+		(m_hGermanResources == NULL) &&
+		(m_hLocalizedResources == NULL)) {
+		AfxMessageBox(L"Speech Analyzer was unable to locate or use SA_ENU.DLL, SA_DEU.DLL or SA_LOC.DLL.\nIt will now exit.");
+		return FALSE;
+	}
 
 	switch (langid) {
 	case 0x0407:
-	    AfxSetResourceHandle(m_hGermanResources);
+		AfxSetResourceHandle(m_hGermanResources);
 		break;
 	case 0x0409:
 	default:
@@ -355,192 +355,197 @@ BOOL CSaApp::InitInstance() {
 	}
 
 
-    if (!CWinApp::InitInstance()) {
-        return FALSE;
-    }
+	if (!CWinApp::InitInstance()) {
+		return FALSE;
+	}
 
-    AfxEnableControlContainer();
+	AfxEnableControlContainer();
 
-    SetRegistryKey(_T("SIL"));
+	SetRegistryKey(_T("SIL"));
 
-    // Standard initialization
-    // If you are not using these features and wish to reduce the size
-    // of your final executable, you should remove from the following
-    // the specific initialization routines you do not need.
+	// Standard initialization
+	// If you are not using these features and wish to reduce the size
+	// of your final executable, you should remove from the following
+	// the specific initialization routines you do not need.
 
 #ifdef _DEBUG
-    //    afxTraceEnabled = 1;
-    //    afxTraceFlags = 1;
+	//    afxTraceEnabled = 1;
+	//    afxTraceFlags = 1;
 #endif
 
-    // Load standard INI file options (including MRU)
-    LoadStdProfileSettings(8);
+	// Load standard INI file options (including MRU)
+	LoadStdProfileSettings(8);
 
-    AfxOleInit();
+	AfxOleInit();
 
-    // Register the application's document templates.
-    // Document templates serve as the connection between documents, frame windows and views.
-    m_pDocTemplate = new CMultiDocTemplate(IDR_SPEECHANALYZER,
-                                           RUNTIME_CLASS(CSaDoc),
-                                           RUNTIME_CLASS(CChildFrame),
-                                           RUNTIME_CLASS(CSaView));
-    AddDocTemplate(m_pDocTemplate);
+	// Register the application's document templates.
+	// Document templates serve as the connection between documents, frame windows and views.
+	m_pDocTemplate = new CMultiDocTemplate(IDR_SPEECHANALYZER,
+		RUNTIME_CLASS(CSaDoc),
+		RUNTIME_CLASS(CChildFrame),
+		RUNTIME_CLASS(CSaView));
+	AddDocTemplate(m_pDocTemplate);
 
-    // add workbench template
-    AddDocTemplate(new CMultiDocTemplate(IDR_WORKBENCH,
-                                         RUNTIME_CLASS(CWorkbenchDoc),
-                                         RUNTIME_CLASS(CMDIChildWnd),
-                                         RUNTIME_CLASS(CSaWorkbenchView)));
+	// add workbench template
+	AddDocTemplate(new CMultiDocTemplate(IDR_WORKBENCH,
+		RUNTIME_CLASS(CWorkbenchDoc),
+		RUNTIME_CLASS(CMDIChildWnd),
+		RUNTIME_CLASS(CSaWorkbenchView)));
 
-    // check if SA runs in batchmode
-    m_nBatchMode = CheckForBatchMode(m_lpCmdLine);
-    if (!GetBatchMode()) {
+	// check if SA runs in batchmode
+	m_nBatchMode = CheckForBatchMode(m_lpCmdLine);
+	if (GetBatchMode() == 0) {
 
-        ISplashScreenPtr splash(NULL);
-        CSaString szSplashText;
+		ISplashScreenPtr splash(NULL);
+		CSaString szSplashText;
 
-        // display splash screen
-        //CoInitialize(NULL);
-        HRESULT createResult = splash.CreateInstance(__uuidof(SplashScreen));
-        if (createResult) {
-            CSaString szCreateResult;
-            szCreateResult.Format(_T("%x"), createResult);
-            CSaString szText;
-            AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE,  _T("SplashScreen.CreateInstance()"), szCreateResult);
-            AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
-        } else {
-            splash->ShowWithoutFade();
-            //splash->Show();
-            szSplashText.LoadString(IDS_SPLASH_LOADING);
-            splash->Message = (_bstr_t)szSplashText;
-            szSplashText.LoadString(IDR_MAINFRAME_SA);
-            splash->ProdName = (_bstr_t)szSplashText;
-            // load version info
+		// display splash screen
+		//CoInitialize(NULL);
+		HRESULT createResult = splash.CreateInstance(__uuidof(SplashScreen));
+		if (createResult) {
+			CSaString szCreateResult;
+			szCreateResult.Format(_T("%x"), createResult);
+			CSaString szText;
+			AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE, _T("SplashScreen.CreateInstance()"), szCreateResult);
+			AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
+		}
+		else {
+			splash->ShowWithoutFade();
+			//splash->Show();
+			szSplashText.LoadString(IDS_SPLASH_LOADING);
+			splash->Message = (_bstr_t)szSplashText;
+			szSplashText.LoadString(IDR_MAINFRAME_SA);
+			splash->ProdName = (_bstr_t)szSplashText;
+			// load version info
 			CSaApp * pApp = (CSaApp*)AfxGetApp();
 			CSaString szVersion = pApp->GetVersionString();
-            szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
-            // Beta version display
-            int nBuildIndex = szVersion.Find(_T("Build"));
-            if (nBuildIndex > 0) {
-                szVersion = szVersion.Left(nBuildIndex - 2);
-            }
-            // RC version display
-            int nRCIndex = szVersion.Find(_T("RC"));
-            if (nRCIndex > 0) {
-                szVersion = szVersion.Left(nRCIndex - 1);
-            }
-            splash->ProdVersion = (_bstr_t)szVersion;
-            // load version info
-            CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
-            splash->Copyright = (_bstr_t)szCopyright;
+			szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
+			// Beta version display
+			int nBuildIndex = szVersion.Find(_T("Build"));
+			if (nBuildIndex > 0) {
+				szVersion = szVersion.Left(nBuildIndex - 2);
+			}
+			// RC version display
+			int nRCIndex = szVersion.Find(_T("RC"));
+			if (nRCIndex > 0) {
+				szVersion = szVersion.Left(nRCIndex - 1);
+			}
+			splash->ProdVersion = (_bstr_t)szVersion;
+			// load version info
+			CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
+			splash->Copyright = (_bstr_t)szCopyright;
 
-            // Perform setup new user, if needed
-            if (m_bNewUser) {
-                szSplashText.LoadString(IDS_SPLASH_NEW_USER_SETUP);
-                splash->Message = (_bstr_t)szSplashText;
-            }
+			// Perform setup new user, if needed
+			if (m_bNewUser) {
+				szSplashText.LoadString(IDS_SPLASH_NEW_USER_SETUP);
+				splash->Message = (_bstr_t)szSplashText;
+			}
 
-            splash->Activate();
+			splash->Activate();
 
-            ::Sleep(1000);
+			::Sleep(1000);
 
-            splash->Close();
-            splash->Release();
-            splash = NULL;
-        }
-    }
+			splash->Close();
+			splash->Release();
+			splash = NULL;
+		}
+	}
 
-    // create main MDI Frame window
-    CMainFrame * pMainFrame = new CMainFrame();
-    if (!IsSAServer()) {
+	// create main MDI Frame window
+	CMainFrame * pMainFrame = new CMainFrame();
+	if (!IsSAServer()) {
 		if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SA)) {
 			return FALSE;
 		}
-    } else if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SAS)) {
-        return FALSE;
-    }
+	}
+	else if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SAS)) {
+		return FALSE;
+	}
 
-    m_pMainWnd = pMainFrame;
-    m_pMainWnd->ShowWindow(SW_SHOW);
+	m_pMainWnd = pMainFrame;
+	if (!GetBatchMode()) {
+		// defer display until we process the command line
+		m_pMainWnd->ShowWindow(SW_SHOW);
+	}
 
-    // update help file path
-    //      m_pszHelpFilePath;
-    char buffer[MAX_PATH];
-    memset(buffer,0,_countof(buffer));
-    _getcwd(buffer,_countof(buffer));
-    CSaString szNewPath = buffer;
-    szNewPath = szNewPath + "\\";
-    szNewPath = szNewPath + "Speech_Analyzer_Help.chm";
-    free((void *)m_pszHelpFilePath);
-    m_pszHelpFilePath = _tcsdup(szNewPath);
+	// update help file path
+	//      m_pszHelpFilePath;
+	char buffer[MAX_PATH];
+	memset(buffer, 0, _countof(buffer));
+	_getcwd(buffer, _countof(buffer));
+	CSaString szNewPath = buffer;
+	szNewPath = szNewPath + "\\";
+	szNewPath = szNewPath + "Speech_Analyzer_Help.chm";
+	free((void *)m_pszHelpFilePath);
+	m_pszHelpFilePath = _tcsdup(szNewPath);
 
-    if (IsSAServer()) {
-        if (!GetBatchMode()) {
-            AfxMessageBox(IDS_ERROR_SAS,MB_OK,0);
-            delete m_pMainWnd;
-            m_pMainWnd = 0;
-            return FALSE;
-        }
-    }
+	if (IsSAServer()) {
+		if (GetBatchMode() == 0) {
+			AfxMessageBox(IDS_ERROR_SAS, MB_OK, 0);
+			delete m_pMainWnd;
+			m_pMainWnd = 0;
+			return FALSE;
+		}
+	}
 
-    // enable file manager drag/drop
-    m_pMainWnd->DragAcceptFiles();
+	// enable file manager drag/drop
+	m_pMainWnd->DragAcceptFiles();
 
-    m_szLastVersion = _T("2.7");
-    if (!GetBatchMode()) {
+	m_szLastVersion = _T("2.7");
+	if (GetBatchMode() == 0) {
 
-        // RegisterShellFileTypes(FALSE);
-        EnableShellOpen();
-        // Parse command line for standard shell commands, DDE, file open
-        CCommandLineInfo cmdInfo;
-        ParseCommandLine(cmdInfo);
+		// RegisterShellFileTypes(FALSE);
+		EnableShellOpen();
+		// Parse command line for standard shell commands, DDE, file open
+		CCommandLineInfo cmdInfo;
+		ParseCommandLine(cmdInfo);
 
-        BOOL bSettingSuccess = ReadSettings();
+		BOOL bSettingSuccess = ReadSettings(false);
 
-        // Dispatch commands specified on the command line
-        if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) &&
-            (!ProcessShellCommand(cmdInfo))) {
-            return FALSE;
-        }
+		// Dispatch commands specified on the command line
+		if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) &&
+			(!ProcessShellCommand(cmdInfo))) {
+			return FALSE;
+		}
 
-        if (!bSettingSuccess) {
-            pMainFrame->ShowWindow(m_nCmdShow);
-        }
+		if (!bSettingSuccess) {
+			pMainFrame->ShowWindow(m_nCmdShow);
+		}
 
-        pMainFrame->UpdateWindow();
+		pMainFrame->UpdateWindow();
 
-        // Perform setup new user, if needed
-        if (m_bNewUser) {
-            SetupNewUser();
-        }
+		// Perform setup new user, if needed
+		if (m_bNewUser) {
+			SetupNewUser();
+		}
 
-        CSaString msg = GetStartupMessage(m_szLastVersion);
-        if (msg.GetLength()) {
-            AfxMessageBox(msg);
-        }
+		CSaString msg = GetStartupMessage(m_szLastVersion);
+		if (msg.GetLength()) {
+			AfxMessageBox(msg);
+		}
 
-        CAutoSave::Check(this);
+		CAutoSave::Check(this);
 
-        pMainFrame->InitializeAutoSave();
+		pMainFrame->InitializeAutoSave();
 
-        // Show startup dialog
-        CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-        if ((pMainWnd->GetShowStartupDlg()) && (!pMainWnd->GetCurrSaView())) {
-            ShowStartupDialog(TRUE);
-        }
+		// Show startup dialog
+		CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+		if ((pMainWnd->GetShowStartupDlg()) && (!pMainWnd->GetCurrSaView())) {
+			ShowStartupDialog(TRUE);
+		}
+		return TRUE;
+	}
 
-    } else {
-        if (!ReadSettings()) {
-            // settings read failed.  at least show the window correctly.
-            pMainFrame->ShowWindow(m_nCmdShow + 3);
-        }
+	// we are in batch mode
+	// in batch mode, messages will be dislayed, but we don't want
+	// to show the window yet.
+	BOOL bResult = ReadSettings(true);
 
-        // SDM 1.06.8 window size in this function needs to take precedence over save settings
-        // examine command line
-        ExamineCmdLine(m_lpCmdLine);
-        pMainFrame->UpdateWindow();
-    }
-    return TRUE;
+	// SDM 1.06.8 window size in this function needs to take precedence over save settings
+	// examine command line
+	ExamineCmdLine(m_lpCmdLine);
+	pMainFrame->UpdateWindow();
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -548,44 +553,46 @@ BOOL CSaApp::InitInstance() {
 // Called by framework to exit the application.
 /***************************************************************************/
 int CSaApp::ExitInstance() {
-    // delete the temp transcription DB
-    CoInitialize(NULL);
-    ISaAudioDocumentWriterPtr saAudioDocWriter;
-    saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
-    if (saAudioDocWriter!=NULL) {
-        saAudioDocWriter->DeleteTempDB();
-        saAudioDocWriter->Close();
-        saAudioDocWriter->Release();
-        saAudioDocWriter = NULL;
-    }
-    CoUninitialize();
+	// delete the temp transcription DB
+	CoInitialize(NULL);
+	ISaAudioDocumentWriterPtr saAudioDocWriter;
+	saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
+	if (saAudioDocWriter != NULL) {
+		saAudioDocWriter->DeleteTempDB();
+		saAudioDocWriter->Close();
+		saAudioDocWriter->Release();
+		saAudioDocWriter = NULL;
+	}
+	CoUninitialize();
 
-    if (m_hEnglishResources) {
-        FreeLibrary(m_hEnglishResources);
-    }
-    if (m_hGermanResources) {
-        FreeLibrary(m_hGermanResources);
-    }
-    if (m_hLocalizedResources) {
-        FreeLibrary(m_hLocalizedResources);
-    }
+	if (m_hEnglishResources) {
+		FreeLibrary(m_hEnglishResources);
+	}
+	if (m_hGermanResources) {
+		FreeLibrary(m_hGermanResources);
+	}
+	if (m_hLocalizedResources) {
+		FreeLibrary(m_hLocalizedResources);
+	}
 
-    BOOL bOK = FALSE;
-    try {
-        bOK = CWinApp::ExitInstance();
-        // standard implementation: save initialisation
-        SaveStdProfileSettings();
-    } catch (...) {
-    }
+	BOOL bOK = FALSE;
+	try {
+		bOK = CWinApp::ExitInstance();
+		// standard implementation: save initialisation
+		SaveStdProfileSettings();
+	}
+	catch (...) {
+	}
 
-    CAutoSave::CleanAll();
+	CAutoSave::CleanAll();
 
-    // standard implementation: save initialisation
-    if (bOK) {
-        return AfxGetCurrentMessage()->wParam;    // Returns the value from \QuitMessage
-    } else {
-        return bOK;
-    }
+	// standard implementation: save initialisation
+	if (bOK) {
+		return AfxGetCurrentMessage()->wParam;    // Returns the value from \QuitMessage
+	}
+	else {
+		return bOK;
+	}
 }
 
 /***************************************************************************/
@@ -593,28 +600,27 @@ int CSaApp::ExitInstance() {
 // The function returns TRUE, if SA should run in batch mode.
 /***************************************************************************/
 int CSaApp::CheckForBatchMode(LPTSTR pCmdLine) {
-    if ((pCmdLine[0] == '-') &&
-            ((pCmdLine[1] == 'L') ||
-             (pCmdLine[1] == 'l') ||
-             (pCmdLine[1] == 'R') ||
-             (pCmdLine[1] == 'r'))) {
-        return 1;
-    }
-
-    return 0;
+	if ((pCmdLine[0] == '-') &&
+		((pCmdLine[1] == 'L') ||
+			(pCmdLine[1] == 'l') ||
+			(pCmdLine[1] == 'R') ||
+			(pCmdLine[1] == 'r'))) {
+		return 1;
+	}
+	return 0;
 }
 
 CSaString CSaApp::GetBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpDefault) {
-    TCHAR lpBuffer[_MAX_PATH];
-    lpBuffer[0] = 0;
-    GetPrivateProfileString(lpSection, lpKey, lpDefault, lpBuffer, _MAX_PATH, m_szCmdFileName);
-    return CSaString(lpBuffer);
+	TCHAR lpBuffer[_MAX_PATH];
+	lpBuffer[0] = 0;
+	GetPrivateProfileString(lpSection, lpKey, lpDefault, lpBuffer, _MAX_PATH, m_szCmdFileName);
+	return CSaString(lpBuffer);
 }
 
 BOOL CSaApp::WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue) {
-    BOOL bResult = WritePrivateProfileString(lpSection, lpKey, lpValue, m_szCmdFileName);
-    WritePrivateProfileString(NULL, NULL, NULL, m_szCmdFileName); // Flush cache to file
-    return bResult;
+	BOOL bResult = WritePrivateProfileString(lpSection, lpKey, lpValue, m_szCmdFileName);
+	WritePrivateProfileString(NULL, NULL, NULL, m_szCmdFileName); // Flush cache to file
+	return bResult;
 }
 
 /***************************************************************************/
@@ -626,148 +632,168 @@ BOOL CSaApp::WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue)
 // the command line).
 /***************************************************************************/
 void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
-    if (pCmdLine[0] != '\0') {
-        //AfxMessageBox(pCmdLine);
-        // ASSERT(FALSE);  // Assert to allow debuging of the interface
-        CSaString szCmdLine = pCmdLine; // copy string into CSaString object
-        szCmdLine.MakeUpper(); // convert the whole string to upper case letters
-        DWORD dwStart = 0;
-        DWORD dwStop = 0;
-        if (GetBatchMode()) {
-            // cut out the intro
-            if (szCmdLine.Left(2) == "-L") {
-                wParam = SPEECH_WPARAM_SHOWSA;
-                szCmdLine = szCmdLine.Right(szCmdLine.GetLength() - 2); // SDM 1.5Test8.3
-            } else if (szCmdLine.Left(2) == "-R") { // SDM 1.5Test10.4
-                wParam = SPEECH_WPARAM_SHOWSAREC;
-                szCmdLine = szCmdLine.Right(szCmdLine.GetLength() - 2); // SDM 1.5Test8.3
-            } else { // SDM 1.5Test10.4
-                szCmdLine = " " + szCmdLine; // prepend space to allow swscanf_s to suceed
-            }
 
-            // sa has to read list file and open documents // SDM 1.5Test8.3
-            TCHAR in[512];
-            wmemset(in,0,512);
-            wcscpy_s(in,512,szCmdLine);
+	if (pCmdLine[0] == '\0') {
+		// no command line, go home
+		return;
+	}
 
-            TCHAR buffer[512];
-            wmemset(buffer,0,512);
-            swscanf_s(in, _T("%*[ 0123456789]%[^\n]"), buffer, 512);
-            m_szCmdFileName = buffer;
+	CSaString szCmdLine = pCmdLine; // copy string into CSaString object
+	szCmdLine.MakeUpper(); // convert the whole string to upper case letters
+	DWORD dwStart = 0;
+	DWORD dwStop = 0;
+	if (GetBatchMode() == 0) {
+		// not in batch mode - we are done.
+		return;
+	}
 
-            CFileStatus status;
-            if (m_szCmdFileName.GetLength()==0) {
-                // The file does not exist. use original profile
-                // i think only SPEECH_WPARAM_SHOWSAREC does not use a command line file
-                ASSERT(wParam == SPEECH_WPARAM_SHOWSAREC);
-            } else if (!CFile::GetStatus(m_szCmdFileName,status)) {
-                // if IPA Help is used to launch SA, it must be run using compatibility mode for Windows XP SP3.
-                CString msg;
-                msg.FormatMessage(L"The file:\n'%1'\nwas specified on the command line, but it does not exist.\nIf you are using IPA Help on Windows 7 or later, please use the compatibility mode for Windows XP.\nSpeech Analyzer will now exit.",(LPCTSTR)m_szCmdFileName);
-                AfxMessageBox(msg,MB_ICONEXCLAMATION);
-                ExitProcess(0);
-                return;
-            }
+	// cut out the intro
+	if (szCmdLine.Left(2) == "-L") {
+		wParam = SPEECH_WPARAM_SHOWSA;
+		szCmdLine = szCmdLine.Right(szCmdLine.GetLength() - 2); // SDM 1.5Test8.3
+	}
+	else if (szCmdLine.Left(2) == "-R") { // SDM 1.5Test10.4
+		wParam = SPEECH_WPARAM_SHOWSAREC;
+		szCmdLine = szCmdLine.Right(szCmdLine.GetLength() - 2); // SDM 1.5Test8.3
+	}
+	else { // SDM 1.5Test10.4
+		szCmdLine = " " + szCmdLine; // prepend space to allow swscanf_s to suceed
+	}
 
-            m_szCallingApp = GetBatchString(_T("Settings"), _T("CallingApp"), SM_CAPTION); // get the entry // SDM 1.5Test8.5
+	// sa has to read list file and open documents // SDM 1.5Test8.3
+	TCHAR in[512];
+	wmemset(in, 0, 512);
+	wcscpy_s(in, 512, szCmdLine);
 
-            // SDM 1.5Test8.3
-            CSaString szString = GetBatchString(_T("Settings"), _T("ShowWindow"), _T("")); // get the entry // SDM 1.5Test8.5
-            CSaString szReturn = szString;// SDM 1.5Test10.0
-            CSaString szParam;
-            swscanf_s(szString,_T("%16[^(](%20[^)]"),szReturn.GetBuffer(szReturn.GetLength()),szReturn.GetLength(),szParam.GetBuffer(szParam.GetLength()),szParam.GetLength());// SDM 1.5Test10.0
-            szReturn.ReleaseBuffer();
-            szParam.ReleaseBuffer();
-            szReturn.MakeUpper(); // convert the whole string to upper case letters
-            szReturn = szReturn.Mid(szReturn.SpanIncluding(_T(" ")).GetLength());  // Remove leading spaces
-            szReturn += "        ";  // Pad with spaces
-            szReturn = szReturn.Left(8);  //Take exactly 8 characters
+	TCHAR buffer[512];
+	wmemset(buffer, 0, 512);
+	swscanf_s(in, _T("%*[ 0123456789]%[^\n]"), buffer, 512);
+	m_szCmdFileName = buffer;
 
-            TRACE(_T("Settings:ShowWindow=%s\n"),szReturn);
+	CFileStatus status;
+	if (m_szCmdFileName.GetLength() == 0) {
+		// The file does not exist. use original profile
+		// i think only SPEECH_WPARAM_SHOWSAREC does not use a command line file
+		ASSERT(wParam == SPEECH_WPARAM_SHOWSAREC);
+	}
+	else if (!CFile::GetStatus(m_szCmdFileName, status)) {
+		// if IPA Help is used to launch SA, it must be run using compatibility mode for Windows XP SP3.
+		CString msg;
+		msg.FormatMessage(L"The file:\n'%1'\nwas specified on the command line, but it does not exist.\nIf you are using IPA Help on Windows 7 or later, please use the compatibility mode for Windows XP.\nSpeech Analyzer will now exit.", (LPCTSTR)m_szCmdFileName);
+		AfxMessageBox(msg, MB_ICONEXCLAMATION);
+		ExitProcess(0);
+		return;
+	}
 
-            if (szReturn == "HIDE    ") {
-                m_pMainWnd->ShowWindow(SW_HIDE);
-                m_nCmdShow = SW_HIDE; // to prevent MFC to restore on startup
-            } else if (szReturn == "SHOW    ") {
-                m_pMainWnd->ShowWindow(SW_SHOW);
-            } else if (szReturn == "RESTORE ") {
-                m_pMainWnd->ShowWindow(SW_RESTORE);
-            } else if (szReturn == "MAXIMIZE") {
-                m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED); // maximize the mainframe
-                m_nCmdShow = SW_HIDE; // to prevent MFC to restore on startup
-            } else if (szReturn == "MINIMIZE") {
-                m_pMainWnd->ShowWindow(SW_MINIMIZE);
-                m_nCmdShow = SW_MINIMIZE; // to prevent MFC to restore on startup
-            } else if (szReturn == "NONE    ") {
-                ; // do nothing
-            } else if (szReturn == "SIZE    ") { // SDM 1.5Test8.3
-                // set mainframe position and show it
-                int left,top,width,height;
-                if (swscanf_s(szParam,_T("%d,%d,%d,%d"),&left,&top, &width, &height) == 4) {
-                    m_pMainWnd->ShowWindow(SW_RESTORE);// SDM 1.5Test10.0
-                    m_pMainWnd->SetWindowPos(NULL,left, top, width, height,SWP_SHOWWINDOW|SWP_NOZORDER);// SDM 1.5Test10.0
-                } else {
-                    TRACE(_T("Incorrect Size Parameters\n"));// SDM 1.5Test10.0
-                    m_pMainWnd->ShowWindow(SW_SHOW);
-                }
-            } else {
-                m_pMainWnd->ShowWindow(SW_SHOW);
-                TRACE(_T("Position Missing\n"));
-            }
-            if (wParam == SPEECH_WPARAM_SHOWSA) {
-                // read WAV files in list file and open them
-                CSaString szEntry = "File0"; // set profile entry name
-                m_nEntry = 0;
-                TCHAR szTemp[3] = _T("0");
-                while (TRUE) {
-                    szReturn = GetBatchString(_T("AudioFiles"), szEntry); // get the entry
-                    if (szReturn.GetLength() <= 0) {
-                        break;    // no entry, finish loop
-                    }
-                    WriteBatchString(_T("AudioFiles"), szEntry, _T(":")); // set entry to unchanged
-                    // open the document
-                    CSaDoc * pDoc = (CSaDoc *)OpenDocumentFile(szReturn);
-                    if (pDoc) {
-                        // set document ID
-                        pDoc->SetID(m_nEntry);
-                        // get start and stop cursor positions
-                        szEntry = "Offset";
-                        szEntry += szTemp; // set entry
-                        // get start cursor position
-                        szReturn = GetBatchString(_T("BeginningWAVOffsets"), szEntry); // get the entry
-                        if (szReturn.GetLength() > 0) { // string found
-                            dwStart = _ttol(szReturn);
-                            // set stop cursor position
-                            szReturn = GetBatchString(_T("EndingWAVOffsets"), szEntry); // get the entry
-                            dwStop = _ttol(szReturn);
-                            // get pointer to view
-                            POSITION pos = pDoc->GetFirstViewPosition();
-                            CSaView * pView = (CSaView *)pDoc->GetNextView(pos); // get pointer to view
-                            if (dwStop > dwStart) {
-                                // set start and stop cursors and view frame
-                                pView->SetStartCursorPosition(dwStart);
-                                pView->SetStopCursorPosition(dwStop);
-                                pView->GraphsZoomCursors(dwStart, dwStop);
-                            }
-                        }
-                    }
-                    szEntry = "File";
-                    swprintf_s(szTemp, _T("%i"), ++m_nEntry); // create new number
-                    szEntry += szTemp; // add new file number
-                }
-                // SDM 1.06.8 Process Commands in Batch File
-                m_nCommand = 0;// SDM 1.5Test8.5
-                m_pMainWnd->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
-            }
-            if (wParam == SPEECH_WPARAM_SHOWSAREC) {
-                // create new file and launch recorder
-                CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
-                pMDIFrameWnd->PostMessage(WM_COMMAND, ID_FILE_RECORD, 0L);
-            }
-            m_bModified = FALSE; // batch file not yet modified
-        } else { // normal mode
-        }
-    }
+	m_szCallingApp = GetBatchString(_T("Settings"), _T("CallingApp"), SM_CAPTION); // get the entry // SDM 1.5Test8.5
+
+	// SDM 1.5Test8.3
+	CSaString szString = GetBatchString(_T("Settings"), _T("ShowWindow"), _T("")); // get the entry // SDM 1.5Test8.5
+
+	wchar_t param1[512];
+	wchar_t param2[512];
+	wmemset(param1, 0, _countof(param1));
+	wmemset(param2, 0, _countof(param2));
+	int iresult = swscanf_s(szString, _T("%16[^(](%20[^)]"), param1, _countof(param1), param2, _countof(param2));
+	TRACE(L"scanned %d parameters", iresult);
+
+	CSaString szReturn = (iresult == 0) ? szString : param1;
+	CSaString szParam = param2;
+
+	szReturn.MakeUpper(); // convert the whole string to upper case letters
+	szReturn = szReturn.Mid(szReturn.SpanIncluding(_T(" ")).GetLength());  // Remove leading spaces
+	szReturn += "        ";  // Pad with spaces
+	szReturn = szReturn.Left(8);  //Take exactly 8 characters
+
+	TRACE(_T("Settings:ShowWindow=%s\n"), szReturn);
+	if (szReturn == "HIDE    ") {
+		m_pMainWnd->ShowWindow(SW_HIDE);
+		m_nCmdShow = SW_HIDE; // to prevent MFC to restore on startup
+	}
+	else if (szReturn == "SHOW    ") {
+		m_pMainWnd->ShowWindow(SW_SHOW);
+	}
+	else if (szReturn == "RESTORE ") {
+		m_pMainWnd->ShowWindow(SW_RESTORE);
+	}
+	else if (szReturn == "MAXIMIZE") {
+		m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED); // maximize the mainframe
+		m_nCmdShow = SW_HIDE; // to prevent MFC to restore on startup
+	}
+	else if (szReturn == "MINIMIZE") {
+		m_pMainWnd->ShowWindow(SW_MINIMIZE);
+		m_nCmdShow = SW_MINIMIZE; // to prevent MFC to restore on startup
+	}
+	else if (szReturn == "NONE    ") {
+		; // do nothing
+	}
+	else if (szReturn == "SIZE    ") { // SDM 1.5Test8.3
+		// set mainframe position and show it
+		int left, top, width, height;
+		if (swscanf_s(szParam, _T("%d,%d,%d,%d"), &left, &top, &width, &height) == 4) {
+			m_pMainWnd->ShowWindow(SW_RESTORE);// SDM 1.5Test10.0
+			m_pMainWnd->SetWindowPos(NULL, left, top, width, height, SWP_SHOWWINDOW | SWP_NOZORDER);// SDM 1.5Test10.0
+		}
+		else {
+			TRACE(_T("Incorrect Size Parameters\n"));// SDM 1.5Test10.0
+			m_pMainWnd->ShowWindow(SW_SHOW);
+		}
+	}
+	else {
+		m_pMainWnd->ShowWindow(SW_SHOW);
+		TRACE(_T("Position Missing\n"));
+	}
+	if (wParam == SPEECH_WPARAM_SHOWSA) {
+		// read WAV files in list file and open them
+		CSaString szEntry = "File0"; // set profile entry name
+		m_nEntry = 0;
+		TCHAR szTemp[3] = _T("0");
+		while (TRUE) {
+			szReturn = GetBatchString(_T("AudioFiles"), szEntry); // get the entry
+			if (szReturn.GetLength() <= 0) {
+				break;    // no entry, finish loop
+			}
+			WriteBatchString(_T("AudioFiles"), szEntry, _T(":")); // set entry to unchanged
+			// open the document
+			CSaDoc * pDoc = (CSaDoc *)OpenDocumentFile(szReturn);
+			if (pDoc) {
+				// set document ID
+				pDoc->SetID(m_nEntry);
+				// get start and stop cursor positions
+				szEntry = "Offset";
+				szEntry += szTemp; // set entry
+				// get start cursor position
+				szReturn = GetBatchString(_T("BeginningWAVOffsets"), szEntry); // get the entry
+				if (szReturn.GetLength() > 0) { // string found
+					dwStart = _ttol(szReturn);
+					// set stop cursor position
+					szReturn = GetBatchString(_T("EndingWAVOffsets"), szEntry); // get the entry
+					dwStop = _ttol(szReturn);
+					// get pointer to view
+					POSITION pos = pDoc->GetFirstViewPosition();
+					CSaView * pView = (CSaView *)pDoc->GetNextView(pos); // get pointer to view
+					if (dwStop > dwStart) {
+						// set start and stop cursors and view frame
+						pView->SetStartCursorPosition(dwStart);
+						pView->SetStopCursorPosition(dwStop);
+						pView->GraphsZoomCursors(dwStart, dwStop);
+					}
+				}
+			}
+			szEntry = "File";
+			swprintf_s(szTemp, _T("%i"), ++m_nEntry); // create new number
+			szEntry += szTemp; // add new file number
+		}
+		// SDM 1.06.8 Process Commands in Batch File
+		m_nCommand = 0;// SDM 1.5Test8.5
+		m_pMainWnd->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
+	}
+	if (wParam == SPEECH_WPARAM_SHOWSAREC) {
+		// create new file and launch recorder
+		CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
+		pMDIFrameWnd->PostMessage(WM_COMMAND, ID_FILE_RECORD, 0L);
+	}
+	m_bModified = FALSE; // batch file not yet modified
 }
 
 // SDM 1.5Test8.3
@@ -775,20 +801,20 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
 // extractCommaField local helper function to get field from comma delimited string
 /***************************************************************************/
 static const CSaString extractCommaField(const CSaString & szLine, const int nField) {
-    int nCount = 0;
-    int nLoop = 0;
+	int nCount = 0;
+	int nLoop = 0;
 
-    while ((nLoop < szLine.GetLength()) && (nCount < nField)) {
-        if (szLine[nLoop] == ',') {
-            nCount++;
-        }
-        nLoop++;
-    }
-    int nBegin = nLoop;
-    while ((nLoop < szLine.GetLength()) && (szLine[nLoop] != ',')) {
-        nLoop++;
-    }
-    return szLine.Mid(nBegin, nLoop-nBegin);
+	while ((nLoop < szLine.GetLength()) && (nCount < nField)) {
+		if (szLine[nLoop] == ',') {
+			nCount++;
+		}
+		nLoop++;
+	}
+	int nBegin = nLoop;
+	while ((nLoop < szLine.GetLength()) && (szLine[nLoop] != ',')) {
+		nLoop++;
+	}
+	return szLine.Mid(nBegin, nLoop - nBegin);
 }
 
 // SDM 1.06.8 New
@@ -800,207 +826,215 @@ static const CSaString extractCommaField(const CSaString & szLine, const int nFi
 /***************************************************************************/
 void CSaApp::OnProcessBatchCommands() {
 
-    if (m_nCommand == -1) {
-        return;
-    }
+	if (m_nCommand == -1) {
+		return;
+	}
 
-    // Process Commands
-    CSaString szEntry;
-    CSaString szReturn;
-    CSaString szParameterList;
+	// Process Commands
+	CSaString szEntry;
+	CSaString szReturn;
+	CSaString szParameterList;
 
-    swprintf_s(szEntry.GetBuffer(12),12,_T("command%i"), m_nCommand);
-    szEntry.ReleaseBuffer();
-    szReturn = GetBatchString(_T("Commands"), szEntry, _T("")); // get the entry
-    szReturn.MakeUpper(); // convert the whole string to upper case letters
-    szEntry = szReturn;
-    swscanf_s(szEntry,_T("%[^(](%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList.GetBuffer(szReturn.GetLength()),szReturn.GetLength());
-    szReturn.ReleaseBuffer();
-    szParameterList.ReleaseBuffer();
+	swprintf_s(szEntry.GetBuffer(12), 12, _T("command%i"), m_nCommand);
+	szEntry.ReleaseBuffer();
+	szReturn = GetBatchString(_T("Commands"), szEntry, _T("")); // get the entry
+	szReturn.MakeUpper(); // convert the whole string to upper case letters
+	szEntry = szReturn;
+	swscanf_s(szEntry, _T("%[^(](%[^)]"), szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList.GetBuffer(szReturn.GetLength()), szReturn.GetLength());
+	szReturn.ReleaseBuffer();
+	szParameterList.ReleaseBuffer();
 
-    if (szReturn == "") {
-        // reset cursor positions after batch commands
-        POSITION position = m_pDocTemplate->GetFirstDocPosition();
-        while (position != NULL) {
-            CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
-            if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc *)pDoc)->GetID() != -1) {
-                swprintf_s(szEntry.GetBuffer(12),12,_T("Offset%i"), ((CSaDoc *)pDoc)->GetID()); // create new number
-                szEntry.ReleaseBuffer();
-                // get start cursor position
-                szReturn = GetBatchString(_T("BeginningWAVOffsets"), szEntry); // get the entry
-                if (szReturn.GetLength() > 0) { // string found
-                    DWORD dwStart = _ttol(szReturn);
-                    // set stop cursor position
-                    szReturn = GetBatchString(_T("EndingWAVOffsets"), szEntry); // get the entry
-                    DWORD dwStop = _ttol(szReturn);
-                    // get pointer to view
-                    POSITION pos = pDoc->GetFirstViewPosition();
-                    CSaView * pView = (CSaView *)pDoc->GetNextView(pos); // get pointer to view
-                    if (dwStop > dwStart) {
-                        // set start and stop cursors and view frame
-                        pView->SetStartCursorPosition(dwStart);
-                        pView->SetStopCursorPosition(dwStop);
-                        pView->GraphsZoomCursors(dwStart, dwStop);
-                    }
-                }
-            }
-        }
-        m_nCommand = -1;
-        TRACE(_T("End Batch File\n"));
-        return;
-    }
+	if (szReturn == "") {
+		// reset cursor positions after batch commands
+		POSITION position = m_pDocTemplate->GetFirstDocPosition();
+		while (position != NULL) {
+			CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
+			if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc *)pDoc)->GetID() != -1) {
+				swprintf_s(szEntry.GetBuffer(12), 12, _T("Offset%i"), ((CSaDoc *)pDoc)->GetID()); // create new number
+				szEntry.ReleaseBuffer();
+				// get start cursor position
+				szReturn = GetBatchString(_T("BeginningWAVOffsets"), szEntry); // get the entry
+				if (szReturn.GetLength() > 0) { // string found
+					DWORD dwStart = _ttol(szReturn);
+					// set stop cursor position
+					szReturn = GetBatchString(_T("EndingWAVOffsets"), szEntry); // get the entry
+					DWORD dwStop = _ttol(szReturn);
+					// get pointer to view
+					POSITION pos = pDoc->GetFirstViewPosition();
+					CSaView * pView = (CSaView *)pDoc->GetNextView(pos); // get pointer to view
+					if (dwStop > dwStart) {
+						// set start and stop cursors and view frame
+						pView->SetStartCursorPosition(dwStart);
+						pView->SetStopCursorPosition(dwStop);
+						pView->GraphsZoomCursors(dwStart, dwStop);
+					}
+				}
+			}
+		}
+		m_nCommand = -1;
+		TRACE(_T("End Batch File\n"));
+		return;
+	}
 
-    TRACE(_T("Batch Command:%s(%s)\n"), szReturn, szParameterList);
-    if (szReturn.Left(6) == "IMPORT") {
-        CSaString szPath = extractCommaField(szParameterList, 0);
+	TRACE(_T("Batch Command:%s(%s)\n"), szReturn, szParameterList);
+	if (szReturn.Left(6) == "IMPORT") {
+		CSaString szPath = extractCommaField(szParameterList, 0);
 
-        CImportSFM::EImportMode nMode = CImportSFM::KEEP;
-        CSaString szMode = extractCommaField(szParameterList, 1);
-        szMode.MakeUpper();
-        if (szMode.Find(_T("AUTO")) != -1) {
-            nMode = CImportSFM::AUTO;
-        } else if (szMode.Find(_T("MAN")) != -1) {
-            nMode = CImportSFM::MANUAL;
-        }
+		CImportSFM::EImportMode nMode = CImportSFM::KEEP;
+		CSaString szMode = extractCommaField(szParameterList, 1);
+		szMode.MakeUpper();
+		if (szMode.Find(_T("AUTO")) != -1) {
+			nMode = CImportSFM::AUTO;
+		}
+		else if (szMode.Find(_T("MAN")) != -1) {
+			nMode = CImportSFM::MANUAL;
+		}
 
-        CFileStatus status;
-        if (szPath.GetLength() && CFile::GetStatus(szPath, status)) { // SDM 1.5Test10.0
-            CImportSFM helper(szPath, TRUE);
-            helper.Import(nMode);
-            try { // SDM 1.5Test10.0
-                // delete the list file
-                FileUtils::Remove(szPath);
-            } catch (CFileException * e) {
-                // error removing file
-                ErrorMessage(IDS_ERROR_DELLISTFILE, szPath);
+		CFileStatus status;
+		if (szPath.GetLength() && CFile::GetStatus(szPath, status)) { // SDM 1.5Test10.0
+			CImportSFM helper(szPath, TRUE);
+			helper.Import(nMode);
+			try { // SDM 1.5Test10.0
+				// delete the list file
+				FileUtils::Remove(szPath);
+			}
+			catch (CFileException * e) {
+				// error removing file
+				ErrorMessage(IDS_ERROR_DELLISTFILE, szPath);
 				e->Delete();
-            }
-        } else {
-            CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
-            CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-            if ((pDoc->GetSegment(GLOSS)->IsEmpty())&& (nMode!=CImportSFM::KEEP)) {
-                // auto parse
-                if (!pDoc->AdvancedParseAuto()) {
-                    // process canceled by user
-                    pDoc->Undo(FALSE);
-                    return;
-                }
-            }
-            if (nMode == CImportSFM::AUTO) {
-                if (!pDoc->AdvancedSegment()) {
-                    // process canceled by user
-                    pDoc->Undo(FALSE);
-                    return;
-                }
-            }
-        }
-        m_pMainWnd->SendMessage(WM_COMMAND, ID_FILE_SAVE, 0l); // Save the file
-    } else if (szReturn.Left(10) == "SELECTFILE") {
-        int nID = 1;
-        swscanf_s(szParameterList, _T("%d"), &nID);
-        POSITION position = m_pDocTemplate->GetFirstDocPosition();
-        while (position != NULL) {
-            CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
-            if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc *)pDoc)->GetID() == nID) {
-                position = pDoc->GetFirstViewPosition();
-                CView * pView = pDoc->GetNextView(position);
-                pView->GetParent()->BringWindowToTop();
-            }
-        }
-    } else if (szReturn.Left(8) == "SAVEFILE") {
-        m_pMainWnd->SendMessage(WM_COMMAND, ID_FILE_SAVE, 0l);
-    } else if (szReturn.Left(4) == "PLAY") {
-        CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
-        CSaDoc * pDoc = 0;
-        if (pView) {
-            pDoc = pView->GetDocument();
-        }
+			}
+		}
+		else {
+			CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
+			CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+			if ((pDoc->GetSegment(GLOSS)->IsEmpty()) && (nMode != CImportSFM::KEEP)) {
+				// auto parse
+				if (!pDoc->AdvancedParseAuto()) {
+					// process canceled by user
+					pDoc->Undo(FALSE);
+					return;
+				}
+			}
+			if (nMode == CImportSFM::AUTO) {
+				if (!pDoc->AdvancedSegment()) {
+					// process canceled by user
+					pDoc->Undo(FALSE);
+					return;
+				}
+			}
+		}
+		m_pMainWnd->SendMessage(WM_COMMAND, ID_FILE_SAVE, 0l); // Save the file
+	}
+	else if (szReturn.Left(10) == "SELECTFILE") {
+		int nID = 1;
+		swscanf_s(szParameterList, _T("%d"), &nID);
+		POSITION position = m_pDocTemplate->GetFirstDocPosition();
+		while (position != NULL) {
+			CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
+			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc *)pDoc)->GetID() == nID) {
+				position = pDoc->GetFirstViewPosition();
+				CView * pView = pDoc->GetNextView(position);
+				pView->GetParent()->BringWindowToTop();
+			}
+		}
+	}
+	else if (szReturn.Left(8) == "SAVEFILE") {
+		m_pMainWnd->SendMessage(WM_COMMAND, ID_FILE_SAVE, 0l);
+	}
+	else if (szReturn.Left(4) == "PLAY") {
+		CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
+		CSaDoc * pDoc = 0;
+		if (pView) {
+			pDoc = pView->GetDocument();
+		}
 
-        enum {
-            Player_Batch_Settings = 24
-        };
+		enum {
+			Player_Batch_Settings = 24
+		};
 
-        ASSERT(pView && pDoc);
+		ASSERT(pView && pDoc);
 
-        CFnKeys * pKeys = ((CMainFrame *)m_pMainWnd)->GetFnKeys(0);
-        pKeys->bRepeat[Player_Batch_Settings] = FALSE;     // TRUE, if playback repeat enabled
-        pKeys->nDelay[Player_Batch_Settings] = 100;        // repeat delay time in ms
-        pKeys->nMode[Player_Batch_Settings] = ID_PLAYBACK_CURSORS;       // replay mode
+		CFnKeys * pKeys = ((CMainFrame *)m_pMainWnd)->GetFnKeys(0);
+		pKeys->bRepeat[Player_Batch_Settings] = FALSE;     // TRUE, if playback repeat enabled
+		pKeys->nDelay[Player_Batch_Settings] = 100;        // repeat delay time in ms
+		pKeys->nMode[Player_Batch_Settings] = ID_PLAYBACK_CURSORS;       // replay mode
 
-        //Get speed
-        pKeys->nSpeed[Player_Batch_Settings] = 50;        // default replay speed in %
-        CSaString szField = extractCommaField(szParameterList, 0);
-        swscanf_s(szField, _T("%u"), &(pKeys->nSpeed[Player_Batch_Settings]));
-        if (pKeys->nSpeed[Player_Batch_Settings] < 10) {
-            pKeys->nSpeed[Player_Batch_Settings] = 10;
-        }
-        if (pKeys->nSpeed[Player_Batch_Settings] > 333) {
-            pKeys->nSpeed[Player_Batch_Settings] = 333;
-        }
+		//Get speed
+		pKeys->nSpeed[Player_Batch_Settings] = 50;        // default replay speed in %
+		CSaString szField = extractCommaField(szParameterList, 0);
+		swscanf_s(szField, _T("%u"), &(pKeys->nSpeed[Player_Batch_Settings]));
+		if (pKeys->nSpeed[Player_Batch_Settings] < 10) {
+			pKeys->nSpeed[Player_Batch_Settings] = 10;
+		}
+		if (pKeys->nSpeed[Player_Batch_Settings] > 333) {
+			pKeys->nSpeed[Player_Batch_Settings] = 333;
+		}
 
-        //Get volume
-        pKeys->nVolume[Player_Batch_Settings] = 50;       // default play volume in %
-        szField = extractCommaField(szParameterList, 1);
-        swscanf_s(szField, _T("%u"), &(pKeys->nVolume[Player_Batch_Settings]));
-        if (pKeys->nVolume[Player_Batch_Settings] < 0) {
-            pKeys->nVolume[Player_Batch_Settings] = 0;
-        }
-        if (pKeys->nVolume[Player_Batch_Settings] > 100) {
-            pKeys->nVolume[Player_Batch_Settings] = 100;
-        }
+		//Get volume
+		pKeys->nVolume[Player_Batch_Settings] = 50;       // default play volume in %
+		szField = extractCommaField(szParameterList, 1);
+		swscanf_s(szField, _T("%u"), &(pKeys->nVolume[Player_Batch_Settings]));
+		if (pKeys->nVolume[Player_Batch_Settings] < 0) {
+			pKeys->nVolume[Player_Batch_Settings] = 0;
+		}
+		if (pKeys->nVolume[Player_Batch_Settings] > 100) {
+			pKeys->nVolume[Player_Batch_Settings] = 100;
+		}
 
-        //Get Start Position
-        DWORD dwStart = 0;
-        szField = extractCommaField(szParameterList, 2);
-        swscanf_s(szField, _T("%lu"), &dwStart);
+		//Get Start Position
+		DWORD dwStart = 0;
+		szField = extractCommaField(szParameterList, 2);
+		swscanf_s(szField, _T("%lu"), &dwStart);
 
-        //Get Stop Position
-        DWORD dwStop = pDoc->GetDataSize();
-        szField = extractCommaField(szParameterList, 3);
-        swscanf_s(szField, _T("%lu"), &dwStop);
+		//Get Stop Position
+		DWORD dwStop = pDoc->GetDataSize();
+		szField = extractCommaField(szParameterList, 3);
+		swscanf_s(szField, _T("%lu"), &dwStop);
 
-        // set start and stop cursors
-        pView->SetStartCursorPosition(dwStart);
-        pView->SetStopCursorPosition(dwStop);
+		// set start and stop cursors
+		pView->SetStartCursorPosition(dwStart);
+		pView->SetStopCursorPosition(dwStop);
 
-        TRACE(_T("PLAY(%u,%u,%lu,%lu)\n"),pKeys->nSpeed[Player_Batch_Settings],pKeys->nVolume[Player_Batch_Settings],dwStart,dwStop);
+		TRACE(_T("PLAY(%u,%u,%lu,%lu)\n"), pKeys->nSpeed[Player_Batch_Settings], pKeys->nVolume[Player_Batch_Settings], dwStart, dwStop);
 
-        m_pMainWnd->PostMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, MAKELONG(Player_Batch_Settings, -1));
-        m_nCommand++;
-        // Play Stop will resume batch processing
-        // m_pMainWnd->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
-        return;
-    } else if (szReturn.Left(11) == "DISPLAYPLOT") {
-        CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
-        CSaDoc * pDoc = 0;
-        if (pView) {
-            pDoc = pView->GetDocument();
-        }
+		m_pMainWnd->PostMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, MAKELONG(Player_Batch_Settings, -1));
+		m_nCommand++;
+		// Play Stop will resume batch processing
+		return;
+	}
+	else if (szReturn.Left(11) == "DISPLAYPLOT") {
+		CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
+		CSaDoc * pDoc = 0;
+		if (pView) {
+			pDoc = pView->GetDocument();
+		}
 
-        ASSERT(pView && pDoc);
-        // Get Type
-        CSaString szType = extractCommaField(szParameterList, 0);
+		ASSERT(pView && pDoc);
+		// Get Type
+		CSaString szType = extractCommaField(szParameterList, 0);
 
-        TRACE(_T("DisplayPlot(%s)\n"), szType);
-        ((CMainFrame *)AfxGetMainWnd())->DisplayPlot(new CDisplayPlot(szType));
+		TRACE(_T("DisplayPlot(%s)\n"), szType);
+		((CMainFrame *)AfxGetMainWnd())->DisplayPlot(new CDisplayPlot(szType));
 
-        m_nCommand++;
-        // DisplayPlot End will resume batch processing
-        // m_pMainWnd->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
-        return;
-    } else if (szReturn.Left(6) == "RETURN") {
-        int nHide = 1;
-        swscanf_s(szParameterList, _T("%d"), &nHide);
-        m_nCommand = -1;
-        FileReturn(nHide > 0);
-        return;
-    } else {
-        m_nCommand = -1;
-        TRACE(_T("Error End Batch File\n"));
-        return;
-    }
-    m_nCommand++;
-    m_pMainWnd->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
+		m_nCommand++;
+		// DisplayPlot End will resume batch processing
+		// m_pMainWnd->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
+		return;
+	}
+	else if (szReturn.Left(6) == "RETURN") {
+		int nHide = 1;
+		swscanf_s(szParameterList, _T("%d"), &nHide);
+		m_nCommand = -1;
+		FileReturn(nHide > 0);
+		return;
+	}
+	else {
+		m_nCommand = -1;
+		TRACE(_T("Error End Batch File\n"));
+		return;
+	}
+	m_nCommand++;
+	m_pMainWnd->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
 }
 
 /***************************************************************************/
@@ -1008,50 +1042,56 @@ void CSaApp::OnProcessBatchCommands() {
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
 void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
-    CSaString szText;
-    try {
-        // create the text
-        if (pszText1) {
-            if (pszText2) {
-                AfxFormatString2(szText, nTextID, pszText1, pszText2);
-            } else {
-                AfxFormatString1(szText, nTextID, pszText1);
-            }
-        } else {
-            szText.LoadString(nTextID);
-        }
+	CSaString szText;
+	try {
+		// create the text
+		if (pszText1) {
+			if (pszText2) {
+				AfxFormatString2(szText, nTextID, pszText1, pszText2);
+			}
+			else {
+				AfxFormatString1(szText, nTextID, pszText1);
+			}
+		}
+		else {
+			szText.LoadString(nTextID);
+		}
 		// add the string to the array
-        m_pszErrors.Add(szText); 
-    } catch (CMemoryException * e) {
-        // memory allocation error
-        ErrorMessage(IDS_ERROR_MEMALLOC);
+		m_pszErrors.Add(szText);
+	}
+	catch (CMemoryException * e) {
+		// memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
 		e->Delete();
-    }
+	}
 }
 
 /***************************************************************************/
 // CSaApp::Message Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::Message( UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
+void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
 	CSaString szText;
-    try {
-        // create the text
-        if (pszText1) {
-            if (pszText2) {
-                AfxFormatString2(szText, nTextID, pszText1, pszText2);
-            } else {
-                AfxFormatString1(szText, nTextID, pszText1);
-            }
-        } else {
-            szText.LoadString(nTextID);
-        }
-        m_pszMessages.Add(szText); // add the string to the array
-    } catch (CMemoryException * e) {
-        // memory allocation error
-        ErrorMessage(IDS_ERROR_MEMALLOC);
+	try {
+		// create the text
+		if (pszText1) {
+			if (pszText2) {
+				AfxFormatString2(szText, nTextID, pszText1, pszText2);
+			}
+			else {
+				AfxFormatString1(szText, nTextID, pszText1);
+			}
+		}
+		else {
+			szText.LoadString(nTextID);
+		}
+		m_pszMessages.Add(szText); // add the string to the array
+	}
+	catch (CMemoryException * e) {
+		// memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
 		e->Delete();
-    }
+	}
 }
 
 /***************************************************************************/
@@ -1060,10 +1100,10 @@ void CSaApp::Message( UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
 /***************************************************************************/
 void CSaApp::ErrorMessage(CSaString & szText) {
 #ifdef _DEBUG
-    ASSERT(FALSE);
+	ASSERT(FALSE);
 #endif
 	// add the string to the array
-    m_pszErrors.Add(szText); 
+	m_pszErrors.Add(szText);
 }
 
 /***************************************************************************/
@@ -1073,36 +1113,37 @@ void CSaApp::ErrorMessage(CSaString & szText) {
 // the changed file into the list file.
 /***************************************************************************/
 void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument * pDoc) {
-    
+
 	CSaDoc * pSaDoc = (CSaDoc *)pDoc;
-    TCHAR szTemp[3];
-    CSaString szEntry = "File";
-    if (nID == -1) {
-        // no valid entry, new file
-        swprintf_s(szTemp, _T("%i"), m_nEntry);
-    } else {
+	TCHAR szTemp[3];
+	CSaString szEntry = "File";
+	if (nID == -1) {
+		// no valid entry, new file
+		swprintf_s(szTemp, _T("%i"), m_nEntry);
+	}
+	else {
 		// create entry number from ID
 		// create number for entry
-        swprintf_s(szTemp, _T("%i"), nID);
-    }
+		swprintf_s(szTemp, _T("%i"), nID);
+	}
 	// create entry
-    szEntry += szTemp;
-    TCHAR szShortName[MAX_PATH];
-    GetShortPathName(szFileName, szShortName, MAX_PATH);
+	szEntry += szTemp;
+	TCHAR szShortName[MAX_PATH];
+	GetShortPathName(szFileName, szShortName, MAX_PATH);
 	// set entry to changed or new file
-    WriteBatchString(_T("AudioFiles"), szEntry, szShortName);
+	WriteBatchString(_T("AudioFiles"), szEntry, szShortName);
 	// no valid entry, new file
-    if (nID == -1) {
+	if (nID == -1) {
 		// set the new ID
-        pSaDoc->SetID(m_nEntry++);
-        szEntry = "DocID";
+		pSaDoc->SetID(m_nEntry++);
+		szEntry = "DocID";
 		// create entry
-        szEntry += szTemp;
+		szEntry += szTemp;
 		// set Doc ID to 0
-        WriteBatchString(_T("DocIDs"), szEntry, _T("0"));
-    }
+		WriteBatchString(_T("DocIDs"), szEntry, _T("0"));
+	}
 	// file has been modified
-    m_bModified = TRUE;
+	m_bModified = TRUE;
 }
 
 /***************************************************************************/
@@ -1112,19 +1153,19 @@ void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument * pDoc
 // is a match it returns a pointer to the document that matches, else NULL.
 /***************************************************************************/
 CDocument * CSaApp::IsFileOpened(LPCTSTR pszFileName) {
-    CSaString szFileName = pszFileName;
-    POSITION position = m_pDocTemplate->GetFirstDocPosition();
-    while (position != NULL) {
+	CSaString szFileName = pszFileName;
+	POSITION position = m_pDocTemplate->GetFirstDocPosition();
+	while (position != NULL) {
 		// get pointer to document
-        CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); 
-        CString szComparisonFile = pDoc->GetPathName();
-        TRACE(_T(":IsFileOpened %s %s\n"),(LPCTSTR)szComparisonFile,(LPCTSTR)szFileName);
-		if (szComparisonFile.CompareNoCase(szFileName)==0) {
+		CDocument * pDoc = m_pDocTemplate->GetNextDoc(position);
+		CString szComparisonFile = pDoc->GetPathName();
+		TRACE(_T(":IsFileOpened %s %s\n"), (LPCTSTR)szComparisonFile, (LPCTSTR)szFileName);
+		if (szComparisonFile.CompareNoCase(szFileName) == 0) {
 			// match
-            return pDoc;
-        }
-    }
-    return NULL;
+			return pDoc;
+		}
+	}
+	return NULL;
 }
 
 /***************************************************************************/
@@ -1134,17 +1175,17 @@ CDocument * CSaApp::IsFileOpened(LPCTSTR pszFileName) {
 // is a match it returns a pointer to the document that matches, else NULL.
 /***************************************************************************/
 bool CSaApp::IsDocumentOpened(const CSaDoc * pDoc) {
-    POSITION position = m_pDocTemplate->GetFirstDocPosition();
-    while (position != NULL) {
-        CDocument * pLoopDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
-        if (pLoopDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
-            CSaDoc * pSaDoc = (CSaDoc *)pLoopDoc;
-            if (pSaDoc == pDoc) {
-                return true; // match
-            }
-        }
-    }
-    return false;
+	POSITION position = m_pDocTemplate->GetFirstDocPosition();
+	while (position != NULL) {
+		CDocument * pLoopDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
+		if (pLoopDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
+			CSaDoc * pSaDoc = (CSaDoc *)pLoopDoc;
+			if (pSaDoc == pDoc) {
+				return true; // match
+			}
+		}
+	}
+	return false;
 }
 
 /***************************************************************************/
@@ -1152,11 +1193,12 @@ bool CSaApp::IsDocumentOpened(const CSaDoc * pDoc) {
 // If the pointer pszPath contains NULL, the path is cleared.
 /***************************************************************************/
 void CSaApp::SetWorkbenchPath(CSaString * pszPath) {
-    if (pszPath) {
-        m_szWbPath = *pszPath;
-    } else {
-        m_szWbPath.Empty();
-    }
+	if (pszPath) {
+		m_szWbPath = *pszPath;
+	}
+	else {
+		m_szWbPath.Empty();
+	}
 }
 
 /***************************************************************************/
@@ -1164,15 +1206,15 @@ void CSaApp::SetWorkbenchPath(CSaString * pszPath) {
 // Returns TRUE if workbench closed, FALSE if not.
 /***************************************************************************/
 BOOL CSaApp::CloseWorkbench(CDocument * pDoc) {
-    if (m_pWbDoc) {
-        // close the workbench view
-        POSITION pos = m_pWbDoc->GetFirstViewPosition();
-        CView * pView = m_pWbDoc->GetNextView(pos);
-        pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); // close view
-    }
-    BOOL bRet = (m_pWbDoc == NULL);
-    m_pWbDoc = pDoc;
-    return bRet;
+	if (m_pWbDoc) {
+		// close the workbench view
+		POSITION pos = m_pWbDoc->GetFirstViewPosition();
+		CView * pView = m_pWbDoc->GetNextView(pos);
+		pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); // close view
+	}
+	BOOL bRet = (m_pWbDoc == NULL);
+	m_pWbDoc = pDoc;
+	return bRet;
 }
 
 /***************************************************************************/
@@ -1181,58 +1223,59 @@ BOOL CSaApp::CloseWorkbench(CDocument * pDoc) {
 /***************************************************************************/
 void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) {
 
-    //because we now use true CF_WAVE we can save as temp then open
-    // temporary target file has to be created
-    TCHAR szTempPath[_MAX_PATH];
-    if (!CClipboardHelper::LoadFileFromData(hData, szTempPath,_MAX_PATH)) {
-        TRACE("unable to load clipboard data into file");
-        return;
-    }
+	//because we now use true CF_WAVE we can save as temp then open
+	// temporary target file has to be created
+	TCHAR szTempPath[_MAX_PATH];
+	if (!CClipboardHelper::LoadFileFromData(hData, szTempPath, _MAX_PATH)) {
+		TRACE("unable to load clipboard data into file");
+		return;
+	}
 
-    CopyClipboardTranscription(szTempPath);
+	CopyClipboardTranscription(szTempPath);
 
-    // open the new file
-    CSaDoc * pResult = OpenWavFileAsNew(szTempPath);
-    if (!pResult) {
-        // Error opening file, destroy temp
-        FileUtils::Remove(szTempPath);
-    }
+	// open the new file
+	CSaDoc * pResult = OpenWavFileAsNew(szTempPath);
+	if (!pResult) {
+		// Error opening file, destroy temp
+		FileUtils::Remove(szTempPath);
+	}
 }
 
 CSaDoc * CSaApp::OpenWavFileAsNew(LPCTSTR szTempPath) {
 
-    // create new MDI child, sa type
-    POSITION posTemplate = GetFirstDocTemplatePosition();
-    if (!GetNextDocTemplate(posTemplate)) {
-        TRACE0("Error : no document templates registered with CWinApp\n");
-        AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC,MB_OK,0);
-        return NULL;
-    }
+	// create new MDI child, sa type
+	POSITION posTemplate = GetFirstDocTemplatePosition();
+	if (!GetNextDocTemplate(posTemplate)) {
+		TRACE0("Error : no document templates registered with CWinApp\n");
+		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC, MB_OK, 0);
+		return NULL;
+	}
 	// this is a file new operation
-    m_bNewDocument = TRUE;	
-    posTemplate = GetFirstDocTemplatePosition();
-    CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
-    ASSERT(pTemplate != NULL);
-    ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
-    CSaDoc * pDoc = (CSaDoc *)pTemplate->OpenDocumentFile(NULL);
-    m_bNewDocument = FALSE;
+	m_bNewDocument = TRUE;
+	posTemplate = GetFirstDocTemplatePosition();
+	CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
+	ASSERT(pTemplate != NULL);
+	ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
+	CSaDoc * pDoc = (CSaDoc *)pTemplate->OpenDocumentFile(NULL);
+	m_bNewDocument = FALSE;
 
-    if ((!pDoc)||(!pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)))) {
-        if (pDoc) {
-            pDoc->OnCloseDocument();
-        }
-        // Error opening file, destroy temp
-        return NULL;
-    } else {
-        // Load temporarary file into document
-        if (!pDoc->LoadDataFiles(szTempPath, true)) {
-            if (pDoc) {
-                pDoc->OnCloseDocument();
-            }
-            return NULL;
-        }
-        return pDoc;
-    }
+	if ((!pDoc) || (!pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)))) {
+		if (pDoc) {
+			pDoc->OnCloseDocument();
+		}
+		// Error opening file, destroy temp
+		return NULL;
+	}
+	else {
+		// Load temporarary file into document
+		if (!pDoc->LoadDataFiles(szTempPath, true)) {
+			if (pDoc) {
+				pDoc->OnCloseDocument();
+			}
+			return NULL;
+		}
+		return pDoc;
+	}
 }
 
 /***************************************************************************/
@@ -1243,42 +1286,43 @@ CSaDoc * CSaApp::OpenWavFileAsNew(LPCTSTR szTempPath) {
 /***************************************************************************/
 void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath) {
 
-    _bstr_t szMD5HashCode = (wchar_t *)0;
+	_bstr_t szMD5HashCode = (wchar_t *)0;
 
-    CoInitialize(NULL);
-    ISaAudioDocumentWriterPtr saAudioDocWriter;
-    HRESULT hr = saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
-    if (hr) {
-        CSaString msg;
-        msg.Format(_T("%x"), hr);
-        ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.CreateInstance()"), msg);
-        return;
-    }
+	CoInitialize(NULL);
+	ISaAudioDocumentWriterPtr saAudioDocWriter;
+	HRESULT hr = saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
+	if (hr) {
+		CSaString msg;
+		msg.Format(_T("%x"), hr);
+		ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.CreateInstance()"), msg);
+		return;
+	}
 
-    if (!saAudioDocWriter->Initialize((_bstr_t)m_szLastClipboardPath, szMD5HashCode, VARIANT_TRUE)) {
-        // TODO: Display a meaningful error.
-        ErrorMessage(IDS_ERROR_WRITEPHONETIC, m_szLastClipboardPath);
-        EndWaitCursor();
-        saAudioDocWriter->Close();
-        saAudioDocWriter->Release();
-        saAudioDocWriter = NULL;
-        CoUninitialize();
-        return;
-    }
+	if (!saAudioDocWriter->Initialize((_bstr_t)m_szLastClipboardPath, szMD5HashCode, VARIANT_TRUE)) {
+		// TODO: Display a meaningful error.
+		ErrorMessage(IDS_ERROR_WRITEPHONETIC, m_szLastClipboardPath);
+		EndWaitCursor();
+		saAudioDocWriter->Close();
+		saAudioDocWriter->Release();
+		saAudioDocWriter = NULL;
+		CoUninitialize();
+		return;
+	}
 
-    try {
-        _bstr_t szDest = szTempPath;
-        hr = saAudioDocWriter->Copy(szDest, VARIANT_TRUE);
-        if (hr) {
-            CSaString msg;
-            msg.Format(_T("%x"), hr);
-            ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
-        }
-    } catch (_com_error & e) {
-        CString msg;
-        msg.Format(_T("%x"), hr);
-        ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
-    }
+	try {
+		_bstr_t szDest = szTempPath;
+		hr = saAudioDocWriter->Copy(szDest, VARIANT_TRUE);
+		if (hr) {
+			CSaString msg;
+			msg.Format(_T("%x"), hr);
+			ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
+		}
+	}
+	catch (_com_error & e) {
+		CString msg;
+		msg.Format(_T("%x"), hr);
+		ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
+	}
 }
 
 /***************************************************************************/
@@ -1289,33 +1333,34 @@ void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath) {
 /***************************************************************************/
 CDocument * CSaApp::OpenBlankView(bool bWithGraphs) {
 
-    // create new MDI child, sa type
-    POSITION posTemplate = GetFirstDocTemplatePosition();
-    if (!GetNextDocTemplate(posTemplate)) {
-        TRACE0("Error : no document templates registered with CWinApp\n");
-        AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC,MB_OK,0);
-        return NULL;
-    }
+	// create new MDI child, sa type
+	POSITION posTemplate = GetFirstDocTemplatePosition();
+	if (!GetNextDocTemplate(posTemplate)) {
+		TRACE0("Error : no document templates registered with CWinApp\n");
+		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC, MB_OK, 0);
+		return NULL;
+	}
 
-    CDocument * pDoc = NULL;
-    if (bWithGraphs) {
+	CDocument * pDoc = NULL;
+	if (bWithGraphs) {
 		SetOpenMore(false);
-        SetOpenAsID(ID_FILE_OPENAS_NEW);
-        posTemplate = GetFirstDocTemplatePosition();
-        CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
-        ASSERT(pTemplate != NULL);
-        ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
-        m_bNewDocument = TRUE;
-        pDoc = pTemplate->OpenDocumentFile(NULL);
-        m_bNewDocument = FALSE;
-    } else {
-        posTemplate = GetFirstDocTemplatePosition();
-        CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
-        ASSERT(pTemplate != NULL);
-        ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
-        pDoc = pTemplate->OpenDocumentFile(NULL);
-    }
-    return pDoc;
+		SetOpenAsID(ID_FILE_OPENAS_NEW);
+		posTemplate = GetFirstDocTemplatePosition();
+		CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
+		ASSERT(pTemplate != NULL);
+		ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
+		m_bNewDocument = TRUE;
+		pDoc = pTemplate->OpenDocumentFile(NULL);
+		m_bNewDocument = FALSE;
+	}
+	else {
+		posTemplate = GetFirstDocTemplatePosition();
+		CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
+		ASSERT(pTemplate != NULL);
+		ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
+		pDoc = pTemplate->OpenDocumentFile(NULL);
+	}
+	return pDoc;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1368,7 +1413,7 @@ void CSaApp::OnAppAbout() {
 	aboutDlg->Release();
 	aboutDlg = NULL;
 
-    CoUninitialize();
+	CoUninitialize();
 }
 
 /***************************************************************************/
@@ -1377,14 +1422,14 @@ void CSaApp::OnAppAbout() {
 // MFC OnFileNew, because MFC lets the user choose a view type.
 /***************************************************************************/
 void CSaApp::OnFileCreate() {
-    OpenBlankView(false);
+	OpenBlankView(false);
 }
 
 /***************************************************************************/
 // CSaApp::OnUpdateFileCreate Menu update
 /***************************************************************************/
 void CSaApp::OnUpdateFileCreate(CCmdUI * pCmdUI) {
-    pCmdUI->Enable(TRUE);
+	pCmdUI->Enable(TRUE);
 }
 
 /***************************************************************************/
@@ -1394,19 +1439,19 @@ void CSaApp::OnUpdateFileCreate(CCmdUI * pCmdUI) {
 // because MFC lets the user choose a view type.
 /***************************************************************************/
 void CSaApp::OnFileRecord() {
-	
-	// use auto naming
-    OpenBlankView(true); 
 
-    CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
-    ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+	// use auto naming
+	OpenBlankView(true);
+
+	CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
+	ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
 	// give editor a chance to close
-    pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0); 
+	pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);
 
-    // launch recorder in this new view
+	// launch recorder in this new view
 	// send message to start recorder
-    pMainFrame->MDIGetActive()->GetActiveView()->SendMessage(WM_USER_RECORDER, 0, 0); 
+	pMainFrame->MDIGetActive()->GetActiveView()->SendMessage(WM_USER_RECORDER, 0, 0);
 }
 
 /***************************************************************************/
@@ -1414,7 +1459,7 @@ void CSaApp::OnFileRecord() {
 //   RLJ 05/31/2000
 //   MOST OF THIS CODE WAS COPIED FROM OnFileRecord
 /***************************************************************************/
-void CSaApp::FileOpen( UINT openAsID) {
+void CSaApp::FileOpen(UINT openAsID) {
 
 	// cache values, initial update will overwrite them...
 	m_OpenAsID = openAsID;
@@ -1426,7 +1471,7 @@ void CSaApp::FileOpen( UINT openAsID) {
 	CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
 	ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 	// give editor a chance to close
-	pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);   
+	pMainFrame->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);
 
 	// restore
 	SetOpenMore(openMore);
@@ -1435,11 +1480,12 @@ void CSaApp::FileOpen( UINT openAsID) {
 	CString extension = _T("wav");
 	CString filename = _T("*.wav");
 	CString filter = _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Files (*.saxml) |*.saxml|Speech Analyzer Workbench Files (*.wb) |*.wb|ELAN Files (*.eaf)|*.eaf||");
-	CDlgFileOpen dlg( extension, filename, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, filter);
+	CDlgFileOpen dlg(extension, filename, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, filter);
 	CString defaultDir;
 	if (m_bOpenMore) {
 		defaultDir = GetDefaultDir();
-	} else {
+	}
+	else {
 		defaultDir = GetSamplesDir();
 	}
 	dlg.m_ofn.lpstrInitialDir = defaultDir;
@@ -1447,46 +1493,47 @@ void CSaApp::FileOpen( UINT openAsID) {
 		OpenDocumentFile(dlg.GetPathName());
 	}
 
-	if (pDoc!=NULL) {
+	if (pDoc != NULL) {
 		pDoc->OnCloseDocument();
 	}
 }
 
 CSaString CSaApp::GetDefaultDir() const {
-    
-    // prompt the user (with all document templates)
-    CSaString workingDir;
-    for (int i=0; i < _AFX_MRU_MAX_COUNT; i++) {
-        workingDir = GetMRUFilePath(i);
-        if (workingDir.GetLength() > 0) {
-            CSaString szPath = workingDir;
-            int nFind = szPath.ReverseFind('\\');
-            if (nFind != -1) {
-                CFileStatus status;
-                if ((CFile::GetStatus(szPath.Left(nFind), status)) && (status.m_attribute & CFile::directory)) {
-                    workingDir = szPath.Left(nFind + 1);
-                    break;
-                } else {
+
+	// prompt the user (with all document templates)
+	CSaString workingDir;
+	for (int i = 0; i < _AFX_MRU_MAX_COUNT; i++) {
+		workingDir = GetMRUFilePath(i);
+		if (workingDir.GetLength() > 0) {
+			CSaString szPath = workingDir;
+			int nFind = szPath.ReverseFind('\\');
+			if (nFind != -1) {
+				CFileStatus status;
+				if ((CFile::GetStatus(szPath.Left(nFind), status)) && (status.m_attribute & CFile::directory)) {
+					workingDir = szPath.Left(nFind + 1);
+					break;
+				}
+				else {
 					// directory does not exist
-                    workingDir.Empty(); 
-                }
-            }
-        }
-    }
+					workingDir.Empty();
+				}
+			}
+		}
+	}
 
-    if (workingDir.IsEmpty()) {
-        // check data location in registry
-        workingDir = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"));
-    }
+	if (workingDir.IsEmpty()) {
+		// check data location in registry
+		workingDir = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"));
+	}
 
-    if (workingDir.IsEmpty()) {
-        // fall back to the current directory
-        TCHAR Buffer[MAX_PATH];
-        GetCurrentDirectory(MAX_PATH, Buffer);
-        workingDir = Buffer;
-    }
+	if (workingDir.IsEmpty()) {
+		// fall back to the current directory
+		TCHAR Buffer[MAX_PATH];
+		GetCurrentDirectory(MAX_PATH, Buffer);
+		workingDir = Buffer;
+	}
 
-    return workingDir;
+	return workingDir;
 }
 
 // return the samples directory location, or if it doesn't exist, fall back to the 
@@ -1511,27 +1558,27 @@ CSaString CSaApp::GetSamplesDir() const {
 // CSaApp::OnFileOpen Opens an existing wave file
 /***************************************************************************/
 void CSaApp::OnFileOpen() {
-    FileOpen(ID_FILE_OPEN);
+	FileOpen(ID_FILE_OPEN);
 }
 
 /***************************************************************************/
 // Added on 09/01/2000 by DDO
 /***************************************************************************/
 void CSaApp::OnFileOpenSpecial() {
-    ShowStartupDialog(FALSE);
+	ShowStartupDialog(FALSE);
 }
 
 // CSaApp::OnFileOpenPA Opens an existing wave file for Phonetic Analysis
 /***************************************************************************/
 void CSaApp::OnFileOpenPA() {
-    FileOpen(ID_FILE_OPENAS_PHONETICANALYSIS);
+	FileOpen(ID_FILE_OPENAS_PHONETICANALYSIS);
 }
 
 /***************************************************************************/
 // CSaApp::OnFileOpenMA Opens an existing wave file for Music Analysis
 /***************************************************************************/
 void CSaApp::OnFileOpenMA() {
-    FileOpen(ID_FILE_OPENAS_MUSICANALYSIS);
+	FileOpen(ID_FILE_OPENAS_MUSICANALYSIS);
 }
 
 /***************************************************************************/
@@ -1539,7 +1586,7 @@ void CSaApp::OnFileOpenMA() {
 /***************************************************************************/
 void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 
-    CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
+	CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
 	CDlgStartMode dlg;
 	dlg.m_nDataMode = pMainFrame->GetStartDataMode();
 	dlg.m_bShowDontShowAgainOption = bAppIsStartingUp;
@@ -1551,15 +1598,15 @@ void CSaApp::ShowStartupDialog(BOOL bAppIsStartingUp = TRUE) {
 /***************************************************************************/
 void CSaApp::OnUpdateFileRecord(CCmdUI * pCmdUI) {
 
-    CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
-    BOOL bEnable = TRUE;
-    if (pMDIFrameWnd) {
-        CView * pView = pMDIFrameWnd->GetCurrSaView();
-        if (pView) {
-            bEnable = pView->IsKindOf(RUNTIME_CLASS(CSaView));
-        }
-    }
-    pCmdUI->Enable(bEnable);
+	CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
+	BOOL bEnable = TRUE;
+	if (pMDIFrameWnd) {
+		CView * pView = pMDIFrameWnd->GetCurrSaView();
+		if (pView) {
+			bEnable = pView->IsKindOf(RUNTIME_CLASS(CSaView));
+		}
+	}
+	pCmdUI->Enable(bEnable);
 }
 
 /***************************************************************************/
@@ -1567,7 +1614,7 @@ void CSaApp::OnUpdateFileRecord(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaApp::OnUpdateFileOpen(CCmdUI * pCmdUI) {
 
-    pCmdUI->Enable(!GetBatchMode()); // enabled only if no batch mode
+	pCmdUI->Enable(GetBatchMode() == 0); // enabled only if no batch mode
 }
 
 // SDM 1.06.8 New
@@ -1576,14 +1623,14 @@ void CSaApp::OnUpdateFileOpen(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaApp::OnUpdateRecentFileMenu(CCmdUI * pCmdUI) {
 
-    int nIndex = pCmdUI->m_nIndex;
-    // MFC only calls for first MRU entry
-    if (pCmdUI->m_nID == ID_FILE_MRU_FILE1) {
-        CWinApp::OnUpdateRecentFileMenu(pCmdUI);
-    }
-    // MFC skips other entries force full update
-    pCmdUI->m_nIndex= nIndex;
-    pCmdUI->Enable(!GetBatchMode()); // enabled only if no batch mode
+	int nIndex = pCmdUI->m_nIndex;
+	// MFC only calls for first MRU entry
+	if (pCmdUI->m_nID == ID_FILE_MRU_FILE1) {
+		CWinApp::OnUpdateRecentFileMenu(pCmdUI);
+	}
+	// MFC skips other entries force full update
+	pCmdUI->m_nIndex = nIndex;
+	pCmdUI->Enable(GetBatchMode() == 0); // enabled only if no batch mode
 }
 
 /***************************************************************************/
@@ -1594,60 +1641,67 @@ void CSaApp::OnUpdateRecentFileMenu(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaApp::OnFileReturn() {
 
-    FileReturn();
+	FileReturn();
 }
 
 void CSaApp::FileReturn(BOOL bHide) {
-    if (SaveAllModified()) {
-        CloseAllDocuments(FALSE);
-        if (!m_bModified) { // modified batch files are available
-            // there are no changes in the list file, so delete the list file
-            // delete the list file
-            FileUtils::Remove(m_szCmdFileName);
-        }
-        CWnd * pWnd = IsAppRunning(); // SDM 1.5Test8.5
-        if (pWnd!=NULL) {
-            if (bHide) { // Optional Hide
-                m_pMainWnd->ShowWindow(SW_HIDE);
-                m_nCmdShow = SW_HIDE; // to prevent MFC to restore on startup
-            }
-            pWnd->SendMessage(WM_USER_SPEECHAPPLICATION, SPEECH_WPARAM_SHOWSM, 0);
-            if (bHide) {
-                CancelBatchMode();
-                OnAppExit();
-            }
-        } else { // SDM 1.5Test8.5 allow option to exit app
-            TRACE(_T("CallingApp not found\n"));
-            if (AfxMessageBox(IDS_QUESTION_APPNOTFOUND, MB_YESNO | MB_ICONQUESTION, 0) == IDYES) {
-                CancelBatchMode();
-                OnAppExit();
-            }
-        }
-    }
+	if (SaveAllModified()) {
+		CloseAllDocuments(FALSE);
+		if (!m_bModified) { // modified batch files are available
+			// there are no changes in the list file, so delete the list file
+			// delete the list file
+			FileUtils::Remove(m_szCmdFileName);
+		}
+		CWnd * pWnd = IsAppRunning(); // SDM 1.5Test8.5
+		if (pWnd != NULL) {
+			if (bHide) { // Optional Hide
+				m_pMainWnd->ShowWindow(SW_HIDE);
+				m_nCmdShow = SW_HIDE; // to prevent MFC to restore on startup
+			}
+			pWnd->SendMessage(WM_USER_SPEECHAPPLICATION, SPEECH_WPARAM_SHOWSM, 0);
+			if (bHide) {
+				CancelBatchMode();
+				OnAppExit();
+			}
+		}
+		else { // SDM 1.5Test8.5 allow option to exit app
+			TRACE(_T("CallingApp not found\n"));
+			if (AfxMessageBox(IDS_QUESTION_APPNOTFOUND, MB_YESNO | MB_ICONQUESTION, 0) == IDYES) {
+				CancelBatchMode();
+				OnAppExit();
+			}
+		}
+	}
 }
 
 // SDM 1.5Test8.5
 /***************************************************************************/
-// CSaApp::IsAppRunning Checks, if the calling application is running
-// The function examines the top level windows after their caption. If it finds
-// the CallingApp caption text, returns a pointer to its window, else a NULL pointer.
+// CSaApp::IsAppRunning Checks if the calling application is running.
+// The function examines the top level windows after their caption. 
+// If it finds the CallingApp caption text, it returns a pointer to its window, 
+// else a NULL pointer.
 /***************************************************************************/
 CWnd * CSaApp::IsAppRunning() {
 
+	// why bother continuing?
+	if (m_szCallingApp.IsEmpty()) {
+		return NULL;
+	}
+
 	// get pointer to first toplevel window
-    CWnd * pTopWnd = AfxGetMainWnd()->GetWindow(GW_HWNDFIRST); 
-    while (pTopWnd != NULL) {
-        CSaString szCaption;
+	CWnd * pTopWnd = AfxGetMainWnd()->GetWindow(GW_HWNDFIRST);
+	while (pTopWnd != NULL) {
+		CSaString szCaption;
 		// get caption text
-        pTopWnd->GetWindowText(szCaption); 
-        if (szCaption.Left(m_szCallingApp.GetLength()) == m_szCallingApp) {
+		pTopWnd->GetWindowText(szCaption);
+		if (szCaption.Left(m_szCallingApp.GetLength()).CompareNoCase(m_szCallingApp) == 0) {
 			//found
-            return pTopWnd; 
-        }
+			return pTopWnd;
+		}
 		// get pointer to next toplevel window
-        pTopWnd = pTopWnd->GetWindow(GW_HWNDNEXT); 
-    }
-    return NULL;
+		pTopWnd = pTopWnd->GetWindow(GW_HWNDNEXT);
+	}
+	return NULL;
 }
 
 /***************************************************************************/
@@ -1655,7 +1709,7 @@ CWnd * CSaApp::IsAppRunning() {
 /***************************************************************************/
 void CSaApp::OnUpdateFileReturn(CCmdUI * pCmdUI) {
 	// enabled only if batch mode
-    pCmdUI->Enable(GetBatchMode()); 
+	pCmdUI->Enable(GetBatchMode() != 0);
 }
 
 /***************************************************************************/
@@ -1663,7 +1717,7 @@ void CSaApp::OnUpdateFileReturn(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaApp::OnUpdateAppExit(CCmdUI * pCmdUI) {
 	// enabled only if no batch mode
-    pCmdUI->Enable(!GetBatchMode()); 
+	pCmdUI->Enable(GetBatchMode() == 0);
 }
 
 /***************************************************************************/
@@ -1671,70 +1725,73 @@ void CSaApp::OnUpdateAppExit(CCmdUI * pCmdUI) {
 /***************************************************************************/
 BOOL CSaApp::OnIdle(LONG lCount) {
 
-    // during termination, the main window may no longer be valid
-    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    if (pMainWnd==NULL) {
-        return FALSE;
-    }
+	// during termination, the main window may no longer be valid
+	CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+	if (pMainWnd == NULL) {
+		return FALSE;
+	}
 
-    // SDM 1.06.5 Send mainframe idle update message
-    if (lCount <= 0) {
-        if ((pMainWnd->m_hWnd != NULL) &&
-            (pMainWnd->IsWindowVisible())) {
+	// SDM 1.06.5 Send mainframe idle update message
+	if (lCount <= 0) {
+		if ((pMainWnd->m_hWnd != NULL) &&
+			(pMainWnd->IsWindowVisible())) {
 			// SDM 32 bit conversion
-            pMainWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0L); 
-        }
+			pMainWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0L);
+		}
 
-    }
-    BOOL bMore = CWinApp::OnIdle(lCount);
-    // display error message if present
-    DisplayMessages();
+	}
+	BOOL bMore = CWinApp::OnIdle(lCount);
+	// display error message if present
+	DisplayMessages();
 
-    if (bMore) {
+	if (bMore) {
 		// more idle processing necessary
-        return TRUE;
-    }
+		return TRUE;
+	}
 
-    // get active document
-    CSaDoc * pSaDoc = pMainWnd->GetCurrDoc();
+	// get active document
+	CSaDoc * pSaDoc = pMainWnd->GetCurrDoc();
 
-    // perform pitch processing if not already done
-    if ((pSaDoc) &&
-        (pSaDoc->IsBackgroundProcessing()) &&
-        (pSaDoc->GetDataSize())) {
-        CProcessGrappl * pAutoPitch = pSaDoc->GetGrappl();
-        if (!pAutoPitch->IsDataReady()) {
-            if (pAutoPitch->IsCanceled()) {
-                pSaDoc->EnableBackgroundProcessing(FALSE);
-            } else {
+	// perform pitch processing if not already done
+	if ((pSaDoc) &&
+		(pSaDoc->IsBackgroundProcessing()) &&
+		(pSaDoc->GetDataSize())) {
+		CProcessGrappl * pAutoPitch = pSaDoc->GetGrappl();
+		if (!pAutoPitch->IsDataReady()) {
+			if (pAutoPitch->IsCanceled()) {
+				pSaDoc->EnableBackgroundProcessing(FALSE);
+			}
+			else {
 				// process data
-                short int nResult = LOWORD(pAutoPitch->Process(this, pSaDoc));
-                if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
-                    pAutoPitch->SetDataInvalid();
-                    pSaDoc->EnableBackgroundProcessing(FALSE);
-                    //pAutoPitch->RestartProcess(this);
-                } else if (pAutoPitch->IsDataReady()) {
-                    pSaDoc->NotifyAutoPitchDone(this);
-                }
-            }
-            return TRUE;
-        }
-        // run fragmenter if not already done
-        CProcessFragments * pFragmenter = pSaDoc->GetFragments();
-        if (!pFragmenter->IsDataReady()) {
+				short int nResult = LOWORD(pAutoPitch->Process(this, pSaDoc));
+				if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
+					pAutoPitch->SetDataInvalid();
+					pSaDoc->EnableBackgroundProcessing(FALSE);
+					//pAutoPitch->RestartProcess(this);
+				}
+				else if (pAutoPitch->IsDataReady()) {
+					pSaDoc->NotifyAutoPitchDone(this);
+				}
+			}
+			return TRUE;
+		}
+		// run fragmenter if not already done
+		CProcessFragments * pFragmenter = pSaDoc->GetFragments();
+		if (!pFragmenter->IsDataReady()) {
 			// process data
-            short int nResult = LOWORD(pFragmenter->Process(this, pSaDoc));
-            if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_NO_DATA) || (nResult == PROCESS_CANCELED)) {
-                pFragmenter->SetDataInvalid();
-                pSaDoc->EnableBackgroundProcessing(FALSE);
-                pFragmenter->RestartProcess();
-            } else {
-                return TRUE;
-            }
-        }
-    }
+			short int nResult = LOWORD(pFragmenter->Process(this, pSaDoc));
+			if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_NO_DATA) || (nResult == PROCESS_CANCELED)) {
+				pFragmenter->SetDataInvalid();
+				pSaDoc->EnableBackgroundProcessing(FALSE);
+				pFragmenter->RestartProcess();
+			}
+			else {
+				return TRUE;
+			}
+		}
+	}
 
-    return bMore;
+	return bMore;
 }
 
 /***************************************************************************/
@@ -1742,25 +1799,25 @@ BOOL CSaApp::OnIdle(LONG lCount) {
 /***************************************************************************/
 void CSaApp::DisplayMessages() {
 
-    if (m_pszErrors.GetSize() > 0) {
-        CSaString error = m_pszErrors.GetAt(0);
+	if (m_pszErrors.GetSize() > 0) {
+		CSaString error = m_pszErrors.GetAt(0);
 		// remove message (before we lose process thread)
-        m_pszErrors.RemoveAt(0, 1); 
-        AfxMessageBox(error, MB_OK | MB_ICONEXCLAMATION, 0);
-    }
-    if (m_pszMessages.GetSize() > 0) {
-        CSaString error = m_pszMessages.GetAt(0);
+		m_pszErrors.RemoveAt(0, 1);
+		AfxMessageBox(error, MB_OK | MB_ICONEXCLAMATION, 0);
+	}
+	if (m_pszMessages.GetSize() > 0) {
+		CSaString error = m_pszMessages.GetAt(0);
 		// remove message (before we lose process thread)
-        m_pszMessages.RemoveAt(0, 1); 
-        AfxMessageBox(error, MB_OK | MB_ICONINFORMATION, 0);
-    }
+		m_pszMessages.RemoveAt(0, 1);
+		AfxMessageBox(error, MB_OK | MB_ICONINFORMATION, 0);
+	}
 }
 
 /***************************************************************************/
 // CSaApp::OnHelpContents Call Help Index (Table of Contents)
 /***************************************************************************/
 void CSaApp::OnHelpContents() {
-    ::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);
+	::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);
 }
 
 void CSaApp::OnHelpShortCuts() {
@@ -1775,9 +1832,9 @@ void CSaApp::OnHelpShortCuts() {
 /***************************************************************************/
 void CSaApp::OnHelpTrouble() {
 
-    CSaString szPath = m_pszHelpFilePath;
-    szPath += "::/Troubleshooting/Troubleshooting_overview.htm";
-    ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+	CSaString szPath = m_pszHelpFilePath;
+	szPath += "::/Troubleshooting/Troubleshooting_overview.htm";
+	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
 /***************************************************************************/
@@ -1785,10 +1842,10 @@ void CSaApp::OnHelpTrouble() {
 /***************************************************************************/
 void CSaApp::OnHelpWhatsNew() {
 
-    CSaString szAppPath = m_pszHelpFilePath;
-    szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-    CSaString szCommandLine = "\"" + szAppPath + _T("\\Release Notes.txt\"");
-    ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
+	CSaString szAppPath = m_pszHelpFilePath;
+	szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
+	CSaString szCommandLine = "\"" + szAppPath + _T("\\Release Notes.txt\"");
+	ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
 /***************************************************************************/
@@ -1796,18 +1853,18 @@ void CSaApp::OnHelpWhatsNew() {
 /***************************************************************************/
 void CSaApp::OnHelpSFMMarkers() {
 
-    CDlgHelpSFMMarkers dlg;
-    dlg.DoModal();
+	CDlgHelpSFMMarkers dlg;
+	dlg.DoModal();
 }
 /***************************************************************************/
 // CSaApp::OnHelpGraphs Call Graphs overview help topic
 /***************************************************************************/
 void CSaApp::OnHelpGraphs() {
 
-    // create the pathname
-    CSaString szPath = m_pszHelpFilePath;
-    szPath = szPath + "::/User_Interface/Menus/Graphs/Graphs_overview.htm";
-    ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+	// create the pathname
+	CSaString szPath = m_pszHelpFilePath;
+	szPath = szPath + "::/User_Interface/Menus/Graphs/Graphs_overview.htm";
+	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
 /***************************************************************************/
@@ -1815,10 +1872,10 @@ void CSaApp::OnHelpGraphs() {
 /***************************************************************************/
 void CSaApp::OnHelpMusic() {
 
-    // create the pathname
-    CSaString szPath = m_pszHelpFilePath;
-    szPath = szPath + "::/User_Interface/Menus/Graphs/Graph_Types/Music_Graph_Types/Music_analysis.htm";
-    ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+	// create the pathname
+	CSaString szPath = m_pszHelpFilePath;
+	szPath = szPath + "::/User_Interface/Menus/Graphs/Graph_Types/Music_Graph_Types/Music_analysis.htm";
+	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
 /***************************************************************************/
@@ -1826,10 +1883,10 @@ void CSaApp::OnHelpMusic() {
 /***************************************************************************/
 void CSaApp::OnHelpTrainingStudent() {
 
-    CSaString szAppPath = m_pszHelpFilePath;
-    szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-    CSaString szCommandLine = "\"" + szAppPath + _T("\\Training\\SA Student Manual.pdf\"");
-    ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
+	CSaString szAppPath = m_pszHelpFilePath;
+	szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
+	CSaString szCommandLine = "\"" + szAppPath + _T("\\Training\\SA Student Manual.pdf\"");
+	ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
 /***************************************************************************/
@@ -1837,10 +1894,10 @@ void CSaApp::OnHelpTrainingStudent() {
 /***************************************************************************/
 void CSaApp::OnHelpTrainingInstructor() {
 
-    CSaString szAppPath = m_pszHelpFilePath;
-    szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-    CSaString szCommandLine = "\"" + szAppPath + _T("\\Training\\SA Instructor Guide.pdf\"");
-    ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
+	CSaString szAppPath = m_pszHelpFilePath;
+	szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
+	CSaString szCommandLine = "\"" + szAppPath + _T("\\Training\\SA Instructor Guide.pdf\"");
+	ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
 /***************************************************************************/
@@ -1848,11 +1905,11 @@ void CSaApp::OnHelpTrainingInstructor() {
 /***************************************************************************/
 void CSaApp::OnHelpOnHelp() {
 
-    // create the pathname
-    CSaString szPath = m_pszHelpFilePath;
-    szPath = szPath.Left(szPath.ReverseFind('\\'));
-    szPath = szPath + "\\"+ "Using_Help.chm" + "::/Using_Help/Using_Help_overview.htm";
-    ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+	// create the pathname
+	CSaString szPath = m_pszHelpFilePath;
+	szPath = szPath.Left(szPath.ReverseFind('\\'));
+	szPath = szPath + "\\" + "Using_Help.chm" + "::/Using_Help/Using_Help_overview.htm";
+	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
 /***************************************************************************/
@@ -1860,10 +1917,10 @@ void CSaApp::OnHelpOnHelp() {
 /***************************************************************************/
 void CSaApp::OnHelpWorkbench() {
 
-    // create the pathname
-    CString szPath = m_pszHelpFilePath;
-    szPath += "::/User_Interface/Menus/Tools/Workbench.htm";
-    ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+	// create the pathname
+	CString szPath = m_pszHelpFilePath;
+	szPath += "::/User_Interface/Menus/Tools/Workbench.htm";
+	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
 /***************************************************************************/
@@ -1871,36 +1928,39 @@ void CSaApp::OnHelpWorkbench() {
 /***************************************************************************/
 void CSaApp::OnAudioCon() {
 
-    // look for AudioCon in a sub-folder
-    CSaString szAppPath = m_pszHelpFilePath; // C:\Program Files\SIL Software\Speech Analyzer\SA.exe
-    CSaString szAudioConFolder = szAppPath.Left(szAppPath.ReverseFind('\\')) + "\\AudioCon";
-    CSaString szAudioConPath = szAudioConFolder + "\\winacon.exe";
+	// look for AudioCon in a sub-folder
+	CSaString szAppPath = m_pszHelpFilePath; // C:\Program Files\SIL Software\Speech Analyzer\SA.exe
+	CSaString szAudioConFolder = szAppPath.Left(szAppPath.ReverseFind('\\')) + "\\AudioCon";
+	CSaString szAudioConPath = szAudioConFolder + "\\winacon.exe";
 
-    try {
-        CFile file(szAudioConPath, CFile::modeRead);
-    } catch (CFileException * e) {
-        if (e->m_cause == CFileException::fileNotFound) {
-            ErrorMessage(IDS_ERROR_AUDIOCON_MISSING);
-            return;
-        } else if (e->m_cause == CFileException::sharingViolation) {
-            // just ignore this exception and open another AudioCon process
-        } else {
-            ErrorMessage(IDS_ERROR_AUDIOCON_UNKNOWN);
-            return;
-        }
-    }
+	try {
+		CFile file(szAudioConPath, CFile::modeRead);
+	}
+	catch (CFileException * e) {
+		if (e->m_cause == CFileException::fileNotFound) {
+			ErrorMessage(IDS_ERROR_AUDIOCON_MISSING);
+			return;
+		}
+		else if (e->m_cause == CFileException::sharingViolation) {
+			// just ignore this exception and open another AudioCon process
+		}
+		else {
+			ErrorMessage(IDS_ERROR_AUDIOCON_UNKNOWN);
+			return;
+		}
+	}
 
-    CSaString szMessage;
-    szMessage.Format(CSaString((LPCTSTR)IDS_AUDIOCON_SAXML_NOTICE), (LPCTSTR)szAudioConFolder);
-    AfxMessageBox(szMessage);
+	CSaString szMessage;
+	szMessage.Format(CSaString((LPCTSTR)IDS_AUDIOCON_SAXML_NOTICE), (LPCTSTR)szAudioConFolder);
+	AfxMessageBox(szMessage);
 
-    PROCESS_INFORMATION piAudioCon;
-    STARTUPINFO siAudioCon;
-    memset(&siAudioCon, 0, sizeof(siAudioCon));
-    siAudioCon.cb = sizeof(siAudioCon);
-    CreateProcess(szAudioConPath, NULL, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, szAudioConFolder, &siAudioCon, &piAudioCon);
+	PROCESS_INFORMATION piAudioCon;
+	STARTUPINFO siAudioCon;
+	memset(&siAudioCon, 0, sizeof(siAudioCon));
+	siAudioCon.cb = sizeof(siAudioCon);
+	CreateProcess(szAudioConPath, NULL, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, szAudioConFolder, &siAudioCon, &piAudioCon);
 
-    ShellExecute(NULL, _T("explore"), szAudioConFolder, NULL, NULL, SW_SHOWNORMAL);
+	ShellExecute(NULL, _T("explore"), szAudioConFolder, NULL, NULL, SW_SHOWNORMAL);
 }
 
 /***************************************************************************/
@@ -1910,45 +1970,47 @@ void CSaApp::OnAudioCon() {
 /***************************************************************************/
 void CSaApp::OnWorkbenchOpen() {
 
-    // get pointer to workbench template
-    POSITION posTemplate = GetFirstDocTemplatePosition();
-    if (!GetNextDocTemplate(posTemplate)) {
-        TRACE0("Error : no document templates registered with CWinApp\n");
-        AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC,MB_OK,0);
-        return;
-    }
-    posTemplate = GetFirstDocTemplatePosition();
-    GetNextDocTemplate(posTemplate);
-    CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
-    ASSERT(pTemplate != NULL);
-    ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
-    if (!m_pWbDoc) {
-        // create new MDI child, workbench type
-        if (m_szWbPath.IsEmpty()) {
-            m_pWbDoc = pTemplate->OpenDocumentFile(NULL);
-        } else {
-            m_pWbDoc = pTemplate->OpenDocumentFile(m_szWbPath);
-        }
-        if (!m_pWbDoc) {
+	// get pointer to workbench template
+	POSITION posTemplate = GetFirstDocTemplatePosition();
+	if (!GetNextDocTemplate(posTemplate)) {
+		TRACE0("Error : no document templates registered with CWinApp\n");
+		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC, MB_OK, 0);
+		return;
+	}
+	posTemplate = GetFirstDocTemplatePosition();
+	GetNextDocTemplate(posTemplate);
+	CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
+	ASSERT(pTemplate != NULL);
+	ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
+	if (!m_pWbDoc) {
+		// create new MDI child, workbench type
+		if (m_szWbPath.IsEmpty()) {
+			m_pWbDoc = pTemplate->OpenDocumentFile(NULL);
+		}
+		else {
+			m_pWbDoc = pTemplate->OpenDocumentFile(m_szWbPath);
+		}
+		if (!m_pWbDoc) {
 			// was not able to open file
-            m_szWbPath.Empty(); 
-        }
-    } else {
-        if (!m_szWbPath.IsEmpty()) {
-            // close actually opened workbench and open new one
-            POSITION pos = m_pWbDoc->GetFirstViewPosition();
-            CView * pView = m_pWbDoc->GetNextView(pos);
-            CSaString szSavePath = m_szWbPath;
+			m_szWbPath.Empty();
+		}
+	}
+	else {
+		if (!m_szWbPath.IsEmpty()) {
+			// close actually opened workbench and open new one
+			POSITION pos = m_pWbDoc->GetFirstViewPosition();
+			CView * pView = m_pWbDoc->GetNextView(pos);
+			CSaString szSavePath = m_szWbPath;
 			// close view
-            pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); 
-            m_szWbPath = szSavePath;
-            m_pWbDoc = pTemplate->OpenDocumentFile(m_szWbPath);
-            if (!m_pWbDoc) {
+			pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0);
+			m_szWbPath = szSavePath;
+			m_pWbDoc = pTemplate->OpenDocumentFile(m_szWbPath);
+			if (!m_pWbDoc) {
 				// was not able to open file
-                m_szWbPath.Empty(); 
-            }
-        }
-    }
+				m_szWbPath.Empty();
+			}
+		}
+	}
 }
 
 /***************************************************************************/
@@ -1956,7 +2018,7 @@ void CSaApp::OnWorkbenchOpen() {
 /***************************************************************************/
 void CSaApp::OnUpdateWorkbenchOpen(CCmdUI * pCmdUI) {
 
-    pCmdUI->SetCheck(m_pWbDoc != NULL);
+	pCmdUI->SetCheck(m_pWbDoc != NULL);
 }
 
 #define PDERR_PRINTERNOTFOUND  0x100B
@@ -1970,26 +2032,27 @@ void CSaApp::OnUpdateWorkbenchOpen(CCmdUI * pCmdUI) {
 /***************************************************************************/
 BOOL CSaApp::SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape) {
 
-    UpdatePrinterSelection(m_hDevNames == NULL); //force default if no current
-    if (m_hDevNames == NULL) {
-        return FALSE;               // no printer defaults
-    }
+	UpdatePrinterSelection(m_hDevNames == NULL); //force default if no current
+	if (m_hDevNames == NULL) {
+		return FALSE;               // no printer defaults
+	}
 
-    pPrintDlg->hDevNames = m_hDevNames;
-    pPrintDlg->hDevMode = m_hDevMode;
+	pPrintDlg->hDevNames = m_hDevNames;
+	pPrintDlg->hDevMode = m_hDevMode;
 
-    DEVMODE * theDM = (DEVMODE *)GlobalLock(pPrintDlg->hDevMode);
+	DEVMODE * theDM = (DEVMODE *)GlobalLock(pPrintDlg->hDevMode);
 
-    theDM->dmFields |= DM_ORIENTATION;
-    if (landscape) {
-        theDM->dmOrientation = DMORIENT_LANDSCAPE;
-    } else {
-        theDM->dmOrientation = DMORIENT_PORTRAIT;
-    }
+	theDM->dmFields |= DM_ORIENTATION;
+	if (landscape) {
+		theDM->dmOrientation = DMORIENT_LANDSCAPE;
+	}
+	else {
+		theDM->dmOrientation = DMORIENT_PORTRAIT;
+	}
 
-    ::GlobalUnlock(m_hDevNames);
-    ::GlobalUnlock(m_hDevMode);
-    return TRUE;
+	::GlobalUnlock(m_hDevNames);
+	::GlobalUnlock(m_hDevMode);
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -1999,236 +2062,237 @@ BOOL CSaApp::SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape) {
 /***************************************************************************/
 int CSaApp::SaDoPrintDialog(CPrintDialog * pPD, BOOL landscape) {
 
-    UpdatePrinterSelection(FALSE);
+	UpdatePrinterSelection(FALSE);
 
-    pPD->m_pd.hDevMode = m_hDevMode;
-    pPD->m_pd.hDevNames = m_hDevNames;
+	pPD->m_pd.hDevMode = m_hDevMode;
+	pPD->m_pd.hDevNames = m_hDevNames;
 
-    DEVMODE * theDM = pPD->GetDevMode();
+	DEVMODE * theDM = pPD->GetDevMode();
 
-    theDM->dmFields |= DM_ORIENTATION;
-    if (landscape) {
-        theDM->dmOrientation = DMORIENT_LANDSCAPE;
-    } else {
-        theDM->dmOrientation = DMORIENT_PORTRAIT;
-    }
+	theDM->dmFields |= DM_ORIENTATION;
+	if (landscape) {
+		theDM->dmOrientation = DMORIENT_LANDSCAPE;
+	}
+	else {
+		theDM->dmOrientation = DMORIENT_PORTRAIT;
+	}
 
-    pPD->m_pd.Flags |= PD_NOSELECTION; // change the PRINTDLG
+	pPD->m_pd.Flags |= PD_NOSELECTION; // change the PRINTDLG
 
-    int nResponse = pPD->DoModal();
+	int nResponse = pPD->DoModal();
 
-    // if OK or Cancel is selected we need to update cached devMode/Names
-    while (nResponse != IDOK && nResponse != IDCANCEL) {
-        switch (::CommDlgExtendedError()) {
-            // CommDlg cannot give these errors after NULLing these handles
-        case PDERR_PRINTERNOTFOUND:
-        case PDERR_DNDMMISMATCH:
-            if (pPD->m_pd.hDevNames != NULL) {
-                ASSERT(m_hDevNames == pPD->m_pd.hDevNames);
+	// if OK or Cancel is selected we need to update cached devMode/Names
+	while (nResponse != IDOK && nResponse != IDCANCEL) {
+		switch (::CommDlgExtendedError()) {
+			// CommDlg cannot give these errors after NULLing these handles
+		case PDERR_PRINTERNOTFOUND:
+		case PDERR_DNDMMISMATCH:
+			if (pPD->m_pd.hDevNames != NULL) {
+				ASSERT(m_hDevNames == pPD->m_pd.hDevNames);
 
-                ::GlobalFree(pPD->m_pd.hDevNames);
-                pPD->m_pd.hDevNames = NULL;
-                m_hDevNames = NULL;
-            }
+				::GlobalFree(pPD->m_pd.hDevNames);
+				pPD->m_pd.hDevNames = NULL;
+				m_hDevNames = NULL;
+			}
 
-            if (pPD->m_pd.hDevMode) {
-                ASSERT(m_hDevMode == pPD->m_pd.hDevMode);
+			if (pPD->m_pd.hDevMode) {
+				ASSERT(m_hDevMode == pPD->m_pd.hDevMode);
 
-                ::GlobalFree(pPD->m_pd.hDevMode);
-                pPD->m_pd.hDevMode = NULL;
-                m_hDevMode = NULL;
-            }
-            break;
+				::GlobalFree(pPD->m_pd.hDevMode);
+				pPD->m_pd.hDevMode = NULL;
+				m_hDevMode = NULL;
+			}
+			break;
 
-        default:
-            return nResponse;       // do not update cached devMode/Names
-        }
-        nResponse = pPD->DoModal();
-    }
+		default:
+			return nResponse;       // do not update cached devMode/Names
+		}
+		nResponse = pPD->DoModal();
+	}
 
-    //FreeResource(hTempDlg);
+	//FreeResource(hTempDlg);
 
-    m_hDevMode = pPD->m_pd.hDevMode;
-    m_hDevNames = pPD->m_pd.hDevNames;
+	m_hDevMode = pPD->m_pd.hDevMode;
+	m_hDevNames = pPD->m_pd.hDevNames;
 
-    return nResponse;
+	return nResponse;
 }
 
 /***************************************************************************/
 /***************************************************************************/
 CSaView * CSaApp::GetViewActive() {
 
-    CMainFrame * pwndMainFrame = (CMainFrame *)m_pMainWnd;
-    ASSERT(pwndMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+	CMainFrame * pwndMainFrame = (CMainFrame *)m_pMainWnd;
+	ASSERT(pwndMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
-    CSaView * pview = (pwndMainFrame ?
-                       pwndMainFrame->GetCurrSaView() :
-                       NULL);
+	CSaView * pview = (pwndMainFrame ?
+		pwndMainFrame->GetCurrSaView() :
+		NULL);
 
-    return pview;
+	return pview;
 }
 
 /***************************************************************************/
 /***************************************************************************/
 CSaView * CSaApp::GetViewTop() {
-    return GetViewEnd(GW_HWNDPREV);
+	return GetViewEnd(GW_HWNDPREV);
 }
 
 /***************************************************************************/
 /***************************************************************************/
 CSaView * CSaApp::GetViewBottom() {
-    return GetViewEnd(GW_HWNDNEXT);
+	return GetViewEnd(GW_HWNDNEXT);
 }
 
 /***************************************************************************/
 /***************************************************************************/
 CSaView * CSaApp::GetViewAbove(CSaView * pviewCur) {
 
-    return GetViewNeighbor(pviewCur, GW_HWNDPREV);
+	return GetViewNeighbor(pviewCur, GW_HWNDPREV);
 }
 
 /***************************************************************************/
 /***************************************************************************/
 CSaView * CSaApp::GetViewBelow(CSaView * pviewCur) {
 
-    return GetViewNeighbor(pviewCur, GW_HWNDNEXT);
+	return GetViewNeighbor(pviewCur, GW_HWNDNEXT);
 }
 
 /***************************************************************************/
 /***************************************************************************/
 void CSaApp::SetZ() {
 
-    int z = 0;
-    CSaView * pview = GetViewBottom();
-    for (; pview; pview = GetViewAbove(pview)) {
-        pview->SetZ(z++);
-    }
+	int z = 0;
+	CSaView * pview = GetViewBottom();
+	for (; pview; pview = GetViewAbove(pview)) {
+		pview->SetZ(z++);
+	}
 }
 
 /***************************************************************************/
 /***************************************************************************/
 CSaView * CSaApp::GetViewEnd(UINT uNextOrPrev) {
 
-    CSaView * pview = GetViewActive();
-    CSaView * pviewN = (pview ? GetViewNeighbor(pview, uNextOrPrev) : NULL);
-    for (; pviewN; pviewN = GetViewNeighbor(pviewN, uNextOrPrev)) {
-        pview = pviewN;
-    }
+	CSaView * pview = GetViewActive();
+	CSaView * pviewN = (pview ? GetViewNeighbor(pview, uNextOrPrev) : NULL);
+	for (; pviewN; pviewN = GetViewNeighbor(pviewN, uNextOrPrev)) {
+		pview = pviewN;
+	}
 
-    return pview;
+	return pview;
 }
 
 /***************************************************************************/
 /***************************************************************************/
 CSaView * CSaApp::GetViewNeighbor(CSaView * pviewCur, UINT uNextOrPrev) {
 
-    ASSERT(pviewCur);
-    CMDIChildWnd * pwndChildFrame = pviewCur->pwndChildFrame();
+	ASSERT(pviewCur);
+	CMDIChildWnd * pwndChildFrame = pviewCur->pwndChildFrame();
 
-    ASSERT(uNextOrPrev == GW_HWNDNEXT || uNextOrPrev == GW_HWNDPREV);
-    CWnd * pwndNext = pwndChildFrame->GetNextWindow(uNextOrPrev);
-    for (; pwndNext; pwndNext = pwndNext->GetNextWindow(uNextOrPrev))
-        if (pwndNext->IsKindOf(RUNTIME_CLASS(CMDIChildWnd)))
-            // NOTE: This test is to skip minimized icon windows,
-            // because they are *in addition to* the corresponding
-            // MDI child frame window which contains the view object.
-        {
-            break;
-        }
+	ASSERT(uNextOrPrev == GW_HWNDNEXT || uNextOrPrev == GW_HWNDPREV);
+	CWnd * pwndNext = pwndChildFrame->GetNextWindow(uNextOrPrev);
+	for (; pwndNext; pwndNext = pwndNext->GetNextWindow(uNextOrPrev))
+		if (pwndNext->IsKindOf(RUNTIME_CLASS(CMDIChildWnd)))
+			// NOTE: This test is to skip minimized icon windows,
+			// because they are *in addition to* the corresponding
+			// MDI child frame window which contains the view object.
+		{
+			break;
+		}
 
-    CSaView * pview = (pwndNext ? CSaView::GetViewActiveChild((CMDIChildWnd *)pwndNext) : NULL);
-    return pview;
+	CSaView * pview = (pwndNext ? CSaView::GetViewActiveChild((CMDIChildWnd *)pwndNext) : NULL);
+	return pview;
 }
 
 /***************************************************************************/
 /***************************************************************************/
-static LPCSTR psz_SaApp        = "SaApp";
+static LPCSTR psz_SaApp = "SaApp";
 static LPCSTR psz_settingsfile = "sa3.psa";
 static LPCSTR psz_batchsettingsfile = "sa batch.psa";
-static LPCSTR psz_workbench    = "workbench";
-static LPCSTR psz_wbonexit     = "wbonexit";
+static LPCSTR psz_workbench = "workbench";
+static LPCSTR psz_wbonexit = "wbonexit";
 
 /***************************************************************************/
 /***************************************************************************/
 void CSaApp::WriteProperties(CObjectOStream & obs) {
 
-    // get the version
+	// get the version
 	CSaString szVersion = GetVersionString();
-    CSaString szBuildNum;
-    szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
-    int nBuildIndex = szVersion.Find(_T("Build"));
-    if (nBuildIndex > 0) {
-        szBuildNum = _T(".") + szVersion.Mid(nBuildIndex + 6, szVersion.GetLength() - nBuildIndex - 7);
-        szVersion = szVersion.Left(szVersion.Find(' ')) + szBuildNum;
-    }
+	CSaString szBuildNum;
+	szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
+	int nBuildIndex = szVersion.Find(_T("Build"));
+	if (nBuildIndex > 0) {
+		szBuildNum = _T(".") + szVersion.Mid(nBuildIndex + 6, szVersion.GetLength() - nBuildIndex - 7);
+		szVersion = szVersion.Left(szVersion.Find(' ')) + szBuildNum;
+	}
 
-    // The open databases and windows
-    SetZ();  // Set the current z-order of all views
-    obs.WriteBeginMarker(psz_SaApp, szVersion.utf8().c_str());
-    ASSERT(m_pMainWnd);
-    ((CMainFrame *)m_pMainWnd)->WriteProperties(obs);
+	// The open databases and windows
+	SetZ();  // Set the current z-order of all views
+	obs.WriteBeginMarker(psz_SaApp, szVersion.utf8().c_str());
+	ASSERT(m_pMainWnd);
+	((CMainFrame *)m_pMainWnd)->WriteProperties(obs);
 
-    if ((!GetBatchMode()) && ((CMainFrame *)m_pMainWnd)->GetSaveOpenFiles()) {
-        //tdg 09/03/97
-        CDocList doclst; // get list of currently open documents
-        for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
-            if (pdoc->GetPathName().GetLength()==0) {
-                continue;
-            }
-            if (pdoc->IsTempFile()) {
-                continue;
-            }
-            // only write properties for files with paths
-            pdoc->WriteProperties(obs);
-        }
-    }
+	if ((GetBatchMode() == 0) && ((CMainFrame *)m_pMainWnd)->GetSaveOpenFiles()) {
+		//tdg 09/03/97
+		CDocList doclst; // get list of currently open documents
+		for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
+			if (pdoc->GetPathName().GetLength() == 0) {
+				continue;
+			}
+			if (pdoc->IsTempFile()) {
+				continue;
+			}
+			// only write properties for files with paths
+			pdoc->WriteProperties(obs);
+		}
+	}
 
-    ((CMainFrame *)m_pMainWnd)->WriteDefaultView(obs);
-    obs.WriteString(psz_workbench, m_szWbPath.utf8().c_str());
-    obs.WriteBool(psz_wbonexit, m_bWbOpenOnExit);
-    CDlgRecorder::GetStaticSourceInfo().WriteProperties(obs);
-    obs.WriteEndMarker(psz_SaApp);
+	((CMainFrame *)m_pMainWnd)->WriteDefaultView(obs);
+	obs.WriteString(psz_workbench, m_szWbPath.utf8().c_str());
+	obs.WriteBool(psz_wbonexit, m_bWbOpenOnExit);
+	CDlgRecorder::GetStaticSourceInfo().WriteProperties(obs);
+	obs.WriteEndMarker(psz_SaApp);
 }
 
 /***************************************************************************/
 // read the open databases and windows
 /***************************************************************************/
-BOOL CSaApp::ReadProperties(CObjectIStream & obs) {
+BOOL CSaApp::ReadProperties(CObjectIStream & obs, bool batchMode) {
 
-    char buffer[1024];
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_SaApp, buffer, _countof(buffer))) {
-        return FALSE;
-    }
-    CSaString szLastVersion;
-    szLastVersion.setUtf8(buffer);
+	char buffer[1024];
+	if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_SaApp, buffer, _countof(buffer))) {
+		return FALSE;
+	}
+	CSaString szLastVersion;
+	szLastVersion.setUtf8(buffer);
 
-    ASSERT(m_pMainWnd);
+	ASSERT(m_pMainWnd);
 
-    m_szLastVersion = szLastVersion.IsEmpty() ? _T("2.7") : szLastVersion;
+	m_szLastVersion = szLastVersion.IsEmpty() ? _T("2.7") : szLastVersion;
 
-    while (!obs.bAtEnd()) {
-        if (((CMainFrame *)m_pMainWnd)->ReadProperties(obs));
-        else if (!GetBatchMode() && CSaDoc::ReadProperties(obs));
-        else if (((CMainFrame *)m_pMainWnd)->ReadDefaultView(obs));
-        else if (ReadStreamString(obs, psz_workbench, m_szWbPath));
-        else if (obs.bReadBool(psz_wbonexit, m_bWbOpenOnExit));
-        else if (CDlgRecorder::GetStaticSourceInfo().ReadProperties(obs));
-        else if (obs.bEnd(psz_SaApp)) {
-            break;
-        }
-    }
+	while (!obs.bAtEnd()) {
+		if (((CMainFrame *)m_pMainWnd)->ReadProperties(obs, batchMode));
+		else if ((GetBatchMode() == 0) && (CSaDoc::ReadProperties(obs)));
+		else if (((CMainFrame *)m_pMainWnd)->ReadDefaultView(obs));
+		else if (ReadStreamString(obs, psz_workbench, m_szWbPath));
+		else if (obs.bReadBool(psz_wbonexit, m_bWbOpenOnExit));
+		else if (CDlgRecorder::GetStaticSourceInfo().ReadProperties(obs));
+		else if (obs.bEnd(psz_SaApp)) {
+			break;
+		}
+	}
 
-    // open the workbench
-    if ((m_bWbOpenOnExit) && (!m_szWbPath.IsEmpty())) {
-        OnWorkbenchOpen();
-    }
+	// open the workbench
+	if ((m_bWbOpenOnExit) && (!m_szWbPath.IsEmpty())) {
+		OnWorkbenchOpen();
+	}
 
-    // activate top window (not last document)
-    if (GetViewTop()) { // only if there is a top window
-        GetViewTop()->ShowInitialTopState();
-    }
+	// activate top window (not last document)
+	if (GetViewTop()) { // only if there is a top window
+		GetViewTop()->ShowInitialTopState();
+	}
 
-    return TRUE;
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -2243,25 +2307,26 @@ BOOL CSaApp::ReadProperties(CObjectIStream & obs) {
 /***************************************************************************/
 BOOL CSaApp::WriteSettings() {
 
-    BOOL ret = FALSE;
+	BOOL ret = FALSE;
 
-    CSaString szPath = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"));
-    szPath += "\\";
+	CSaString szPath = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"));
+	szPath += "\\";
 
-    if (GetBatchMode()) {
-        szPath += psz_batchsettingsfile;
-    } else {
-        szPath += psz_settingsfile;
-    }
+	if (GetBatchMode() != 0) {
+		szPath += psz_batchsettingsfile;
+	}
+	else {
+		szPath += psz_settingsfile;
+	}
 
-    CObjectOStream obs(szPath.utf8().c_str());
+	CObjectOStream obs(szPath.utf8().c_str());
 
-    if (!obs.getIos().fail()) {
-        WriteProperties(obs);
-        ret = TRUE;
-    }
+	if (!obs.getIos().fail()) {
+		WriteProperties(obs);
+		ret = TRUE;
+	}
 
-    return ret;
+	return ret;
 }
 
 /***************************************************************************/
@@ -2275,71 +2340,71 @@ BOOL CSaApp::WriteSettings() {
 *
 * These settings are set in HKEY_CURRENT_USER/Software/SIL/Speech Analyzer
 /***************************************************************************/
-BOOL CSaApp::ReadSettings() {
+BOOL CSaApp::ReadSettings(bool batchMode) {
 
-    BOOL ret = FALSE;
+	BOOL ret = FALSE;
 
-    // get the data location and create it if it doesn't exist
-    CSaString szPath = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"), _T("*Missing*"));
-    if (szPath == _T("*Missing*")) {
-        m_bNewUser = TRUE;
-        szPath.Empty();
-    }
+	// get the data location and create it if it doesn't exist
+	CSaString szPath = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"), _T("*Missing*"));
+	if (szPath == _T("*Missing*")) {
+		m_bNewUser = TRUE;
+		szPath.Empty();
+	}
 
-    if (szPath.IsEmpty()) {
-        // Set the DataLocation path and write it to the registry
-        szPath = GetShellFolderPath(CSIDL_PERSONAL);
-        if (szPath.Right(1) != "\\") {
-            szPath += _T("\\");
-        }
-        szPath += _T("Speech Analyzer");
-        WriteProfileString(_T(""), _T("DataLocation"), szPath);
-    }
-    if (szPath.Right(1) == "\\") {
-        szPath = szPath.Left(szPath.GetLength() - 1);
-    }
+	if (szPath.IsEmpty()) {
+		// Set the DataLocation path and write it to the registry
+		szPath = GetShellFolderPath(CSIDL_PERSONAL);
+		if (szPath.Right(1) != "\\") {
+			szPath += _T("\\");
+		}
+		szPath += _T("Speech Analyzer");
+		WriteProfileString(_T(""), _T("DataLocation"), szPath);
+	}
+	if (szPath.Right(1) == "\\") {
+		szPath = szPath.Left(szPath.GetLength() - 1);
+	}
 
-    if (!FileUtils::FolderExists(szPath)) {
-        // it doesn't exist...
-        if (!FileUtils::CreateFolder(szPath)) {
-            // and we can't create it.
-            CString error = FormatGetLastError(GetLastError());
-            CString msg;
-            AfxFormatString2(msg, IDS_ERROR_NO_SETTING_DIR, szPath, error);
-            AfxMessageBox(msg,MB_OK|MB_ICONEXCLAMATION,0);
-            return FALSE;
-        }
-    }
+	if (!FileUtils::FolderExists(szPath)) {
+		// it doesn't exist...
+		if (!FileUtils::CreateFolder(szPath)) {
+			// and we can't create it.
+			CString error = FormatGetLastError(GetLastError());
+			CString msg;
+			AfxFormatString2(msg, IDS_ERROR_NO_SETTING_DIR, szPath, error);
+			AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, 0);
+			return FALSE;
+		}
+	}
 
-    szPath += "\\";
+	szPath += "\\";
 
-    if (GetBatchMode()) {
-        szPath += psz_batchsettingsfile;
-    } else {
-        szPath += psz_settingsfile;
-    }
+	if (GetBatchMode() != 0) {
+		szPath += psz_batchsettingsfile;
+	}
+	else {
+		szPath += psz_settingsfile;
+	}
 
-    CObjectIStream obs(szPath.utf8().c_str());
-    if (!obs.bFail()) {
-        ret = ReadProperties(obs);
-    }
-
-    return ret;
+	CObjectIStream obs(szPath.utf8().c_str());
+	if (!obs.bFail()) {
+		ret = ReadProperties(obs,batchMode);
+	}
+	return ret;
 }
 
 /***************************************************************************/
 /***************************************************************************/
-CSaString CSaApp::GetStartupMessage( CSaString szLastVersion) {
-    CSaString msg;
-    if ((szLastVersion[0] < '2') || (szLastVersion[0] > '9')) {
-        szLastVersion = "2.7";
-    }
-    CSaString szRelease = szLastVersion.Left(3);
-    CSaString szBuild = szLastVersion.Right(szLastVersion.GetLength() - 4);
-    if (szRelease == "2.7") {
-        msg.LoadString(IDS_STARTUP_3_0);
-    }
-    return msg;
+CSaString CSaApp::GetStartupMessage(CSaString szLastVersion) {
+	CSaString msg;
+	if ((szLastVersion[0] < '2') || (szLastVersion[0] > '9')) {
+		szLastVersion = "2.7";
+	}
+	CSaString szRelease = szLastVersion.Left(3);
+	CSaString szBuild = szLastVersion.Right(szLastVersion.GetLength() - 4);
+	if (szRelease == "2.7") {
+		msg.LoadString(IDS_STARTUP_3_0);
+	}
+	return msg;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2350,86 +2415,86 @@ CSaString CSaApp::GetStartupMessage( CSaString szLastVersion) {
 /////////////////////////////////////////////////////////////////////////////
 void CSaApp::SetupNewUser() {
 
-    // get the data and app locations
-    CSaString szDataLocation = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"), _T("Missing"));
-    CSaString szAppLocation = m_pszHelpFilePath;
-    if (szDataLocation.IsEmpty() || szAppLocation.IsEmpty()) {
-        return;
-    }
-    szAppLocation = szAppLocation.Left(szAppLocation.ReverseFind(_T('\\')));
+	// get the data and app locations
+	CSaString szDataLocation = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"), _T("Missing"));
+	CSaString szAppLocation = m_pszHelpFilePath;
+	if (szDataLocation.IsEmpty() || szAppLocation.IsEmpty()) {
+		return;
+	}
+	szAppLocation = szAppLocation.Left(szAppLocation.ReverseFind(_T('\\')));
 
-    // create new user's samples folders
-    CSaString szSamplesLocation;
-    CSaString szMusicLocation;
-    szSamplesLocation = szDataLocation + _T("\\Samples");
-    szMusicLocation = szSamplesLocation + _T("\\Music");
-    FileUtils::CreateFolder(szSamplesLocation);
-    FileUtils::CreateFolder(szMusicLocation);
+	// create new user's samples folders
+	CSaString szSamplesLocation;
+	CSaString szMusicLocation;
+	szSamplesLocation = szDataLocation + _T("\\Samples");
+	szMusicLocation = szSamplesLocation + _T("\\Music");
+	FileUtils::CreateFolder(szSamplesLocation);
+	FileUtils::CreateFolder(szMusicLocation);
 
-    // copy the samples into the samples folders
-    CSaString szSearchPattern;
-    CSaString szSourcePath;
-    CSaString szDestPath;
-    CSaString subFolders[2] = {_T("\\Samples\\"), _T("\\Samples\\Music\\")};
+	// copy the samples into the samples folders
+	CSaString szSearchPattern;
+	CSaString szSourcePath;
+	CSaString szDestPath;
+	CSaString subFolders[2] = { _T("\\Samples\\"), _T("\\Samples\\Music\\") };
 
-    for (int i = 0; i < 2; i++) {
-        // initialize the search
-        WIN32_FIND_DATA FileData;
-        HANDLE hSearch;
-        BOOL bFinished = FALSE;
-        szSearchPattern = szAppLocation + subFolders[i] + _T("*.*");
-        hSearch = FindFirstFile(szSearchPattern, &FileData);
-        if (hSearch == INVALID_HANDLE_VALUE) {
-            return;
-        }
+	for (int i = 0; i < 2; i++) {
+		// initialize the search
+		WIN32_FIND_DATA FileData;
+		HANDLE hSearch;
+		BOOL bFinished = FALSE;
+		szSearchPattern = szAppLocation + subFolders[i] + _T("*.*");
+		hSearch = FindFirstFile(szSearchPattern, &FileData);
+		if (hSearch == INVALID_HANDLE_VALUE) {
+			return;
+		}
 
-        // copy each file to the new directory
-        while (!bFinished) {
-            szSourcePath = szAppLocation + subFolders[i] + FileData.cFileName;
-            szDestPath = szDataLocation + subFolders[i] + FileData.cFileName;
-            CopyFile(szSourcePath, szDestPath, FALSE);
+		// copy each file to the new directory
+		while (!bFinished) {
+			szSourcePath = szAppLocation + subFolders[i] + FileData.cFileName;
+			szDestPath = szDataLocation + subFolders[i] + FileData.cFileName;
+			CopyFile(szSourcePath, szDestPath, FALSE);
 
-            if (!FindNextFile(hSearch, &FileData) && (GetLastError() == ERROR_NO_MORE_FILES)) {
-                bFinished = TRUE;
-            }
-        }
-        FindClose(hSearch);
-    }
+			if (!FindNextFile(hSearch, &FileData) && (GetLastError() == ERROR_NO_MORE_FILES)) {
+				bFinished = TRUE;
+			}
+		}
+		FindClose(hSearch);
+	}
 }
 
 /***************************************************************************/
 /***************************************************************************/
 
 CDocument * CSaApp::OpenDocumentFile(LPCTSTR lpszFileName) {
-    CSaString szPrettyName = lpszFileName;
-    LPTSTR pszPretty = szPrettyName.GetBuffer(_MAX_PATH);
-    GetLongPathNameW(pszPretty, pszPretty, _MAX_PATH);
-    return CWinApp::OpenDocumentFile(pszPretty);
+	CSaString szPrettyName = lpszFileName;
+	LPTSTR pszPretty = szPrettyName.GetBuffer(_MAX_PATH);
+	GetLongPathNameW(pszPretty, pszPretty, _MAX_PATH);
+	return CWinApp::OpenDocumentFile(pszPretty);
 }
 
 BOOL CSaApp::m_bUseUnicodeEncoding = FALSE;
 
 // return application mode (batch or not, exit allowed)
 int CSaApp::GetBatchMode() {
-    return m_nBatchMode;
+	return m_nBatchMode;
 }
 
 // allow SA to exit
 void CSaApp::CancelBatchMode() {
-    if (m_nBatchMode != 0) {
-        m_nBatchMode = 3;
-    }
+	if (m_nBatchMode != 0) {
+		m_nBatchMode = 3;
+	}
 }
 
 CString CSaApp::GetMRUFilePath(int i) const {
-    CString result;
+	CString result;
 	// no entries, need to load from registry, this is the MRU list
-    if (!m_pRecentFileList->GetSize()) { 
-        m_pRecentFileList->ReadList();
-    }
-    if (i < m_pRecentFileList->GetSize()) {
-        result = (*m_pRecentFileList)[i];
-    }
+	if (!m_pRecentFileList->GetSize()) {
+		m_pRecentFileList->ReadList();
+	}
+	if (i < m_pRecentFileList->GetSize()) {
+		result = (*m_pRecentFileList)[i];
+	}
 	return result;
 }
 
@@ -2441,34 +2506,34 @@ bool CSaApp::IsSAServer() const {
 // Type:        Constructor
 // Description: Create shared memory mapped file or create view of it
 CSingleInstanceData::CSingleInstanceData(LPCTSTR aName) {
-    // Build names
-    CString lFileName = aName ;
-    lFileName += _T("-Data-Mapping-File");
+	// Build names
+	CString lFileName = aName;
+	lFileName += _T("-Data-Mapping-File");
 
-    CString lMutexName = aName ;
-    lMutexName += _T("-Data-Mapping-Mutex");
+	CString lMutexName = aName;
+	lMutexName += _T("-Data-Mapping-Mutex");
 
-    // Create mutex, global scope
-    mMutex = new CMutex(FALSE, lMutexName);
+	// Create mutex, global scope
+	mMutex = new CMutex(FALSE, lMutexName);
 
-    // Create file mapping
-    mMap = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0,sizeof(TCHAR) * MAX_DATA, lFileName);
-    if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        // Close handle
-        CloseHandle(mMap);
-        // Open existing file mapping
-        mMap = OpenFileMapping(FILE_MAP_WRITE, FALSE, lFileName);
-    }
+	// Create file mapping
+	mMap = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0, sizeof(TCHAR) * MAX_DATA, lFileName);
+	if (GetLastError() == ERROR_ALREADY_EXISTS) {
+		// Close handle
+		CloseHandle(mMap);
+		// Open existing file mapping
+		mMap = OpenFileMapping(FILE_MAP_WRITE, FALSE, lFileName);
+	}
 
-    // Set up data mapping
-    mData = (LPTSTR) MapViewOfFile(mMap, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR) * MAX_DATA);
+	// Set up data mapping
+	mData = (LPTSTR)MapViewOfFile(mMap, FILE_MAP_WRITE, 0, 0, sizeof(TCHAR) * MAX_DATA);
 
-    // Lock file
-    CSingleLock lock(mMutex, TRUE);
-    if (lock.IsLocked()) {
-        // Clear data
-        ZeroMemory(mData, sizeof(TCHAR) * MAX_DATA);
-    }
+	// Lock file
+	CSingleLock lock(mMutex, TRUE);
+	if (lock.IsLocked()) {
+		// Clear data
+		ZeroMemory(mData, sizeof(TCHAR) * MAX_DATA);
+	}
 }
 
 // Name:        ~CSingleInstanceData
@@ -2476,18 +2541,18 @@ CSingleInstanceData::CSingleInstanceData(LPCTSTR aName) {
 // Description: Close memory mapped file
 CSingleInstanceData::~CSingleInstanceData() {
 
-    if (mMap!=NULL) {
-        // Unmap data from file
-        UnmapViewOfFile(mData);
-        // Close file
-        CloseHandle(mMap);
-    }
+	if (mMap != NULL) {
+		// Unmap data from file
+		UnmapViewOfFile(mData);
+		// Close file
+		CloseHandle(mMap);
+	}
 
-    // Clean up mutex
-    if (mMutex!=NULL) {
-        delete mMutex;
-        mMutex = NULL;
-    }
+	// Clean up mutex
+	if (mMutex != NULL) {
+		delete mMutex;
+		mMutex = NULL;
+	}
 }
 
 // Name:        SetValue
@@ -2495,15 +2560,15 @@ CSingleInstanceData::~CSingleInstanceData() {
 // Description: Set value in memory mapped file
 void CSingleInstanceData::SetValue(LPCTSTR aData) {
 
-    // Lock file
-    CSingleLock lock(mMutex, TRUE);
-    if (lock.IsLocked()) {
-        // Check data length, prevent buffer over run
-        if (_tcslen(aData) < MAX_DATA) {
-            // Copy data
-            wcscpy_s(mData, MAX_DATA, aData);
-        }
-    }
+	// Lock file
+	CSingleLock lock(mMutex, TRUE);
+	if (lock.IsLocked()) {
+		// Check data length, prevent buffer over run
+		if (_tcslen(aData) < MAX_DATA) {
+			// Copy data
+			wcscpy_s(mData, MAX_DATA, aData);
+		}
+	}
 }
 
 // Name:        GetValue
@@ -2511,14 +2576,14 @@ void CSingleInstanceData::SetValue(LPCTSTR aData) {
 // Description: Get value from memory mapped file
 CString CSingleInstanceData::GetValue() const {
 
-    // Lock file
-    CSingleLock lock(mMutex, TRUE);
-    if (lock.IsLocked()) {
-        // Return the data
-        return mData;
-    }
-    // Not locked to return empty data
-    return _T("");
+	// Lock file
+	CSingleLock lock(mMutex, TRUE);
+	if (lock.IsLocked()) {
+		// Return the data
+		return mData;
+	}
+	// Not locked to return empty data
+	return _T("");
 }
 
 // Name:        Create
@@ -2529,81 +2594,81 @@ CString CSingleInstanceData::GetValue() const {
 // return TRUE on failure
 BOOL CSaApp::CreateAsSingleton(LPCTSTR aName) {
 
-    // evaluate the command line to see if we are running 'normally'
-    // we don't support single instance in batch mode
-    if (CheckForBatchMode(m_lpCmdLine)!=0) {
-        TRACE("SingleInstance not supported in batch mode\n");
-        return TRUE;
-    }
-    if (IsSAServer()) {
-        TRACE("SingleInstance not supported in server mode\n");
-        return TRUE;
-    }
+	// evaluate the command line to see if we are running 'normally'
+	// we don't support single instance in batch mode
+	if (CheckForBatchMode(m_lpCmdLine) != 0) {
+		TRACE("SingleInstance not supported in batch mode\n");
+		return TRUE;
+	}
+	if (IsSAServer()) {
+		TRACE("SingleInstance not supported in server mode\n");
+		return TRUE;
+	}
 
-    // Create shared data
-    mData = new CSingleInstanceData(aName);
-    if (mData==NULL) {
-        TRACE("Unable to create shared data object\n");
-        AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK|MB_ICONEXCLAMATION);
-        return TRUE;
-    }
+	// Create shared data
+	mData = new CSingleInstanceData(aName);
+	if (mData == NULL) {
+		TRACE("Unable to create shared data object\n");
+		AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK | MB_ICONEXCLAMATION);
+		return TRUE;
+	}
 
-    // Create event name
-    CString lEventName = aName;
-    lEventName += _T("-Event");
+	// Create event name
+	CString lEventName = aName;
+	lEventName += _T("-Event");
 
-    // Create named event, global scope
-    mEvent = new CEvent(FALSE, FALSE, lEventName);
-    if (mEvent==NULL) {
-        delete mData;
-        mData = NULL;
-        TRACE("Unable to create global event\n");
-        AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK|MB_ICONEXCLAMATION);
-        return TRUE;
-    }
+	// Create named event, global scope
+	mEvent = new CEvent(FALSE, FALSE, lEventName);
+	if (mEvent == NULL) {
+		delete mData;
+		mData = NULL;
+		TRACE("Unable to create global event\n");
+		AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK | MB_ICONEXCLAMATION);
+		return TRUE;
+	}
 
-    // Check we have a handle to a valid event
-    // Check last error status
-    DWORD lLastError = GetLastError();
-    if (lLastError == ERROR_ALREADY_EXISTS) {
-        // Set command line data
-        mData->SetValue(GetCommandLine());
-        // Not our event, so an instance is already running, signal thread in other instance to wake up
-        if (!mEvent->SetEvent()) {
-            // we couldn't notify the other application
-            delete mData;
-            mData = NULL;
-            delete mEvent;
-            mEvent = NULL;
-            TRACE("Unable to signal singleton instance\n");
-            AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK|MB_ICONEXCLAMATION);
-            return TRUE;
-        }
+	// Check we have a handle to a valid event
+	// Check last error status
+	DWORD lLastError = GetLastError();
+	if (lLastError == ERROR_ALREADY_EXISTS) {
+		// Set command line data
+		mData->SetValue(GetCommandLine());
+		// Not our event, so an instance is already running, signal thread in other instance to wake up
+		if (!mEvent->SetEvent()) {
+			// we couldn't notify the other application
+			delete mData;
+			mData = NULL;
+			delete mEvent;
+			mEvent = NULL;
+			TRACE("Unable to signal singleton instance\n");
+			AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK | MB_ICONEXCLAMATION);
+			return TRUE;
+		}
 
-        delete mData;
-        mData = NULL;
-        delete mEvent;
-        mEvent = NULL;
-        // another application is the singleton
-        return FALSE;
-    }
+		delete mData;
+		mData = NULL;
+		delete mEvent;
+		mEvent = NULL;
+		// another application is the singleton
+		return FALSE;
+	}
 
-    // we are the first process - setup a mechanism to wait for other processes
-    // Create event of thread syncronization, nameless local scope
-    mSignal = new CEvent();
-    if (mSignal==NULL) {
-        delete mData;
-        mData = NULL;
-        delete mEvent;
-        mEvent = NULL;
-        TRACE("Unable to create Signal event\n");
-        AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK|MB_ICONEXCLAMATION);
-        return TRUE;
-    }
+	// we are the first process - setup a mechanism to wait for other processes
+	// Create event of thread syncronization, nameless local scope
+	mSignal = new CEvent();
+	if (mSignal == NULL) {
+		delete mData;
+		mData = NULL;
+		delete mEvent;
+		mEvent = NULL;
+		TRACE("Unable to create Signal event\n");
+		AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK | MB_ICONEXCLAMATION);
+		return TRUE;
+	}
 
-    // Create thread
-    AfxBeginThread((AFX_THREADPROC)ActivationThread, (LPVOID)this);
-    return true;
+	// Create thread
+	AfxBeginThread((AFX_THREADPROC)ActivationThread, (LPVOID)this);
+	return true;
 }
 
 // Name:        WakeUp
@@ -2613,51 +2678,51 @@ BOOL CSaApp::CreateAsSingleton(LPCTSTR aName) {
 // message loops thread.  If we don't we will found some resources are not valid.
 void CSaApp::WakeUp(LPCTSTR aCommandLine) {
 
-    // Find application and main window
-    CWinApp * pApp = AfxGetApp();
-    if (pApp==NULL) {
-        TRACE("Unable to retrieve application pointer\n");
-        return;
-    }
-    if (pApp->m_pMainWnd==NULL) {
-        TRACE("Unable to retrieve application main window\n");
-        return;
-    }
+	// Find application and main window
+	CWinApp * pApp = AfxGetApp();
+	if (pApp == NULL) {
+		TRACE("Unable to retrieve application pointer\n");
+		return;
+	}
+	if (pApp->m_pMainWnd == NULL) {
+		TRACE("Unable to retrieve application main window\n");
+		return;
+	}
 
-    // Make main window foreground, flashy, flashy time
-    pApp->m_pMainWnd->SetForegroundWindow();
+	// Make main window foreground, flashy, flashy time
+	pApp->m_pMainWnd->SetForegroundWindow();
 	// display the window if it's minimized
 	pApp->m_pMainWnd->ShowWindow(SW_MAXIMIZE);
 
-    // we are expecting only one filename at this point
-    // parse the command line
-    LPWSTR * szArglist = NULL;
-    int nArgs = 0;
-    szArglist = CommandLineToArgvW(aCommandLine, &nArgs);
-    if (NULL == szArglist) {
-        TRACE(L"Unable to parse command line\n");
-        return;
-    }
-    if (nArgs!=2) {
-        TRACE("Unexpected number of arguments in commandline\n");
-        return;
-    }
+	// we are expecting only one filename at this point
+	// parse the command line
+	LPWSTR * szArglist = NULL;
+	int nArgs = 0;
+	szArglist = CommandLineToArgvW(aCommandLine, &nArgs);
+	if (NULL == szArglist) {
+		TRACE(L"Unable to parse command line\n");
+		return;
+	}
+	if (nArgs != 2) {
+		TRACE("Unexpected number of arguments in commandline\n");
+		return;
+	}
 
-    wchar_t buffer[512];
-    memset(buffer,0,_countof(buffer)*2);
-    wcscpy_s(buffer,_countof(buffer),szArglist[1]);
-    LocalFree(szArglist);
+	wchar_t buffer[512];
+	memset(buffer, 0, _countof(buffer) * 2);
+	wcscpy_s(buffer, _countof(buffer), szArglist[1]);
+	LocalFree(szArglist);
 
-    GetLongPathNameW(buffer, buffer, _MAX_PATH);
+	GetLongPathNameW(buffer, buffer, _MAX_PATH);
 
-    // structure holding data information.
-    COPYDATASTRUCT stCopyData = { 0 };
-    stCopyData.lpData = (void *)buffer;
-    stCopyData.cbData = wcslen(buffer)*2;
+	// structure holding data information.
+	COPYDATASTRUCT stCopyData = { 0 };
+	stCopyData.lpData = (void *)buffer;
+	stCopyData.cbData = wcslen(buffer) * 2;
 
-    // Send the data.
-    HWND me = pApp->m_pMainWnd->GetSafeHwnd();
-    ::SendMessage(me, WM_COPYDATA, (UINT)me, (ULONG) &stCopyData);
+	// Send the data.
+	HWND me = pApp->m_pMainWnd->GetSafeHwnd();
+	::SendMessage(me, WM_COPYDATA, (UINT)me, (ULONG)&stCopyData);
 }
 
 // Name:        Sleeper
@@ -2665,96 +2730,96 @@ void CSaApp::WakeUp(LPCTSTR aCommandLine) {
 // Description: Sleep on events, wake and activate application or wake and quit.
 UINT CSaApp::ActivationThread(CSaApp * pOwner) {
 
-    // Build event handle array
-    CSyncObject * lEvents [] = {
-        pOwner->mEvent,
-        pOwner->mSignal
-    };
+	// Build event handle array
+	CSyncObject * lEvents[] = {
+		pOwner->mEvent,
+		pOwner->mSignal
+	};
 
-    // Forever
-    BOOL lForever = TRUE;
-    while (lForever) {
-        CMultiLock lock(lEvents, 2);
-        // Goto sleep until one of the events signals, zero CPU overhead
-        DWORD lResult = lock.Lock(INFINITE, FALSE);
-        // What signaled, 0 = event, another instance started
-        if (lResult == WAIT_OBJECT_0 + 0) {
-            if (pOwner!=NULL) {
-                // Wake up the owner with the data (last command line)
-                pOwner->WakeUp(pOwner->mData->GetValue());
-            }
-        }
-        // 1 = signal, time to exit the thread
-        else if (lResult == WAIT_OBJECT_0 + 1) {
-            // Break the forever loop
-            lForever = FALSE;
-        }
-        lock.Unlock();
-    }
+	// Forever
+	BOOL lForever = TRUE;
+	while (lForever) {
+		CMultiLock lock(lEvents, 2);
+		// Goto sleep until one of the events signals, zero CPU overhead
+		DWORD lResult = lock.Lock(INFINITE, FALSE);
+		// What signaled, 0 = event, another instance started
+		if (lResult == WAIT_OBJECT_0 + 0) {
+			if (pOwner != NULL) {
+				// Wake up the owner with the data (last command line)
+				pOwner->WakeUp(pOwner->mData->GetValue());
+			}
+		}
+		// 1 = signal, time to exit the thread
+		else if (lResult == WAIT_OBJECT_0 + 1) {
+			// Break the forever loop
+			lForever = FALSE;
+		}
+		lock.Unlock();
+	}
 
-    // Set event to say thread is exiting
-    pOwner->mEvent->SetEvent();
-    return 0;
+	// Set event to say thread is exiting
+	pOwner->mEvent->SetEvent();
+	return 0;
 }
 
 void CSaApp::InitSingleton() {
-    // single instance handling members
-    mEvent = NULL;
-    mSignal = NULL;
-    mData = NULL;
+	// single instance handling members
+	mEvent = NULL;
+	mSignal = NULL;
+	mData = NULL;
 }
 
 void CSaApp::DestroySingleton() {
 
-    // If event and signal exist
-    if ((mEvent!=NULL) && (mSignal!=NULL)) {
-        // Set signal event to allow thread to exit
-        if (mSignal->SetEvent()) {
-            // Wait for thread to start exiting
-            CSingleLock lock(mEvent, FALSE);
-            lock.Lock();
-        }
+	// If event and signal exist
+	if ((mEvent != NULL) && (mSignal != NULL)) {
+		// Set signal event to allow thread to exit
+		if (mSignal->SetEvent()) {
+			// Wait for thread to start exiting
+			CSingleLock lock(mEvent, FALSE);
+			lock.Lock();
+		}
 
-        // Close all open handles
-        delete mEvent;
-        mEvent = NULL;
-        delete mSignal;
-        mSignal = NULL;
-    }
+		// Close all open handles
+		delete mEvent;
+		mEvent = NULL;
+		delete mSignal;
+		mSignal = NULL;
+	}
 
-    if (mData!=NULL) {
-        delete mData;
-        mData = NULL;
-    }
+	if (mData != NULL) {
+		delete mData;
+		mData = NULL;
+	}
 }
 
 void CSaApp::WorkbenchClosed() {
-    // signal, that workbench has been closed
-    m_pWbDoc = NULL;
+	// signal, that workbench has been closed
+	m_pWbDoc = NULL;
 }
 
 CSaString * CSaApp::GetWorkbenchPath() {
-    // returns a pointer to the workbench pathname
-    return &m_szWbPath;
+	// returns a pointer to the workbench pathname
+	return &m_szWbPath;
 }
 BOOL CSaApp::IsCreatingNewFile() {
-    // return TRUE if file new operation running
-    return m_bNewDocument;
+	// return TRUE if file new operation running
+	return m_bNewDocument;
 }
 CDocument * CSaApp::GetWbDoc() {
-    // return pointer to workbench document
-    return m_pWbDoc;
+	// return pointer to workbench document
+	return m_pWbDoc;
 }
 void CSaApp::SetWbOpenOnExit(BOOL value) {
-    m_bWbOpenOnExit = value;
+	m_bWbOpenOnExit = value;
 }
 UINT CSaApp::GetOpenAsID() {
-    // return m_OpenAsID
-    return m_OpenAsID;
+	// return m_OpenAsID
+	return m_OpenAsID;
 }
 void CSaApp::SetOpenAsID(UINT value) {
-    // set m_OpenAsID
-    m_OpenAsID = value;
+	// set m_OpenAsID
+	m_OpenAsID = value;
 }
 bool CSaApp::GetOpenMore() {
 	return m_bOpenMore;
@@ -2763,29 +2828,29 @@ void CSaApp::SetOpenMore(bool val) {
 	m_bOpenMore = val;
 }
 void CSaApp::SetLastClipboardPath(LPCTSTR value) {
-    m_szLastClipboardPath = value;
+	m_szLastClipboardPath = value;
 }
 
 LPCTSTR CSaApp::GetLastClipboardPath() {
-    return m_szLastClipboardPath;
+	return m_szLastClipboardPath;
 }
 
 typedef HMODULE(__stdcall * SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
 
 CSaString GetShellFolderPath(DWORD csidl) {
 
-    // select a directory to restore the file to.
-    TCHAR documentPath[_MAX_PATH];
-    wmemset(documentPath, 0, _countof(documentPath));
-    HMODULE hModule = LoadLibrary(_T("SHFOLDER.DLL"));
-    if (hModule != NULL) {
-        SHGETFOLDERPATH fnShGetFolderPath = (SHGETFOLDERPATH)GetProcAddress(hModule, "SHGetFolderPathW");
-        if (fnShGetFolderPath != NULL) {
-            fnShGetFolderPath(NULL, csidl, NULL, 0, documentPath);
-        }
-        FreeLibrary(hModule);
-    }
-    return CSaString(documentPath);
+	// select a directory to restore the file to.
+	TCHAR documentPath[_MAX_PATH];
+	wmemset(documentPath, 0, _countof(documentPath));
+	HMODULE hModule = LoadLibrary(_T("SHFOLDER.DLL"));
+	if (hModule != NULL) {
+		SHGETFOLDERPATH fnShGetFolderPath = (SHGETFOLDERPATH)GetProcAddress(hModule, "SHGetFolderPathW");
+		if (fnShGetFolderPath != NULL) {
+			fnShGetFolderPath(NULL, csidl, NULL, 0, documentPath);
+		}
+		FreeLibrary(hModule);
+	}
+	return CSaString(documentPath);
 }
 
 CString CSaApp::GetVersionString() {
@@ -2793,34 +2858,34 @@ CString CSaApp::GetVersionString() {
 	CString result;
 
 	// Is Library Compatible
-    wchar_t szApp[MAX_PATH*4];
-    wmemset(szApp,0,_countof(szApp));
-	GetModuleFileName( AfxGetInstanceHandle(), szApp, _countof(szApp));
+	wchar_t szApp[MAX_PATH * 4];
+	wmemset(szApp, 0, _countof(szApp));
+	GetModuleFileName(AfxGetInstanceHandle(), szApp, _countof(szApp));
 
 	// now read the local application version.
 	DWORD dwHandle = 0;
-    DWORD dwSize = GetFileVersionInfoSize(szApp, &dwHandle);
-    if (!dwSize) {
-        return result;
-    }
+	DWORD dwSize = GetFileVersionInfoSize(szApp, &dwHandle);
+	if (!dwSize) {
+		return result;
+	}
 
-    array_ptr<BYTE> pAppVersion(dwSize);
-    if (!GetFileVersionInfo(szApp, dwHandle, dwSize, pAppVersion.get())) {
-        return result;
-    }
+	array_ptr<BYTE> pAppVersion(dwSize);
+	if (!GetFileVersionInfo(szApp, dwHandle, dwSize, pAppVersion.get())) {
+		return result;
+	}
 
 	UINT nLen = 0;
-    VS_FIXEDFILEINFO * pAppVS = NULL;
-    if (!VerQueryValue(pAppVersion.get(), _T("\\"), (void **) &pAppVS, &nLen)) {
-        return result;
-    }
+	VS_FIXEDFILEINFO * pAppVS = NULL;
+	if (!VerQueryValue(pAppVersion.get(), _T("\\"), (void **)&pAppVS, &nLen)) {
+		return result;
+	}
 
-	DWORD major1 = (pAppVS->dwFileVersionMS & 0xffff0000)>>16;
+	DWORD major1 = (pAppVS->dwFileVersionMS & 0xffff0000) >> 16;
 	DWORD major2 = pAppVS->dwFileVersionMS & 0xffff;
-	DWORD minor3 = (pAppVS->dwFileVersionLS & 0xffff0000)>>16;
+	DWORD minor3 = (pAppVS->dwFileVersionLS & 0xffff0000) >> 16;
 	DWORD minor4 = pAppVS->dwFileVersionLS & 0xffff;
 
-	result.Format(L"Version %d.%d.%d.%d",major1,major2,minor3,minor4);
+	result.Format(L"Version %d.%d.%d.%d", major1, major2, minor3, minor4);
 	return result;
 }
 

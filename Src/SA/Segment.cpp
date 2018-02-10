@@ -228,7 +228,7 @@ void CSegment::Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace) 
 /***************************************************************************/
 // CSegment::ReplaceSelectedSegment
 /***************************************************************************/
-void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace, bool noSnap) {
+void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace, bool /*noSnap*/) {
     
 	if (m_nSelection==-1) {
         return;
@@ -1364,7 +1364,7 @@ void CSegment::InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration) {
 	}
 
 	if (m_nAnnotationType==ORTHO) {
-		TRACE("segment insertat type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,index,offset,duration);
+		//TRACE("segment insertat type=%d index=%d offset=%d duration=%d\n",m_nAnnotationType,index,offset,duration);
 	}
     m_Text.InsertAt(index,CString(text));
     m_Offset.InsertAt(index,offset);

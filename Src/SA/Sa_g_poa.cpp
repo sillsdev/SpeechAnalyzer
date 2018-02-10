@@ -72,6 +72,7 @@ CPlotPOA::~CPlotPOA() {
 // in this function.
 /***************************************************************************/
 void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
+
     // Get dimensions of client window.
     int nWndWidth = rWnd.Width();
     int nWndHeight = rWnd.Height();
@@ -279,9 +280,6 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
                                 DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);
             CFont * pOldFont = pDC->SelectObject(&TextFont); //select font
             // get text metrics
-            //TEXTMETRIC TextMetric;
-            //pDC->GetTextMetrics(&TextMetric);
-            CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); // get pointer to colors from main frame
             Colors * pColors = pMainWnd->GetColors();
             pDC->SetTextColor(pColors->cScaleFont); // set font color
             pDC->SetBkMode(TRANSPARENT);			// letters may overlap, so they must be transparent

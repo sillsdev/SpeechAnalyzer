@@ -123,16 +123,16 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
         dwFrameStart = FragParms.dwOffset * wSmpSize;
         dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
 		// turn off to reduce processing time
-        SpectraSelected.bCepstralSpectrum = TRUE;    
-        SpectraSelected.bLpcSpectrum = TRUE;
+        SpectraSelected.bCepstralSpectrum = -1;    
+        SpectraSelected.bLpcSpectrum = -1;
     } else {
         // show raw, cepstrally-smoothed, and LPC spectra for all sample data between start and stop cursors (resting state)
         dwFrameStart = pView->GetStartCursorPosition();
         dwFrameSize = pView->GetStopCursorPosition() - dwFrameStart + wSmpSize;
 		// display raw and cepstrally-smoothed power spectrum
-        SpectraSelected.bCepstralSpectrum = TRUE;
+        SpectraSelected.bCepstralSpectrum = -1;
 		// also LPC spectrum
-        SpectraSelected.bLpcSpectrum = TRUE;
+        SpectraSelected.bLpcSpectrum = -1;
     }
 
     // Construct eraser.
