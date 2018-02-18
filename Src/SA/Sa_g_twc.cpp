@@ -87,8 +87,8 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
 
     CProcessTonalWeightChart * pTonalWeightChart = (CProcessTonalWeightChart *)pDoc->GetTonalWeightChart(); // get pointer to TWC object
 
-    double dMaxSemitone;
-    double dMinSemitone;
+    double dMaxSemitone = 0.0;
+    double dMinSemitone = 0.0;
 
     if (!CPlotMelogram::GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone)) {
         short nMelGraphIndex = (short)pView->GetGraphIndexForIDD(IDD_MELOGRAM);

@@ -740,7 +740,7 @@ void CSaView::Init() {
 	m_bViewCreated = FALSE;
 	VERIFY(CStopwatch::CreateObject(&m_pStopwatch));
 
-	bEditBoundaries = false;
+	m_bEditBoundaries = false;
 	m_bEditSegmentSize = false;
 
 	m_dwStopCursor = 0;
@@ -5143,10 +5143,9 @@ void CSaView::OnUpdateGraphsParameters(CCmdUI * pCmdUI) {
 // CSaView::OnEditBoundaries
 /***************************************************************************/
 void CSaView::OnEditBoundaries() {
-	bEditBoundaries = !bEditBoundaries;
+	m_bEditBoundaries = !m_bEditBoundaries;
 	m_bEditSegmentSize = false;
 }
-
 
 /***************************************************************************/
 // CSaView::OnUpdateEditBoundaries
@@ -5163,7 +5162,7 @@ EBoundary CSaView::GetEditBoundaries(bool checkKeys) {
 	if ((m_bEditSegmentSize) && (checkKeys)) {
 		return BOUNDARIES_EDIT_SEGMENT_SIZE;
 	}
-	if ((bEditBoundaries) && (checkKeys)) {
+	if ((m_bEditBoundaries) && (checkKeys)) {
 		return BOUNDARIES_EDIT_BOUNDARIES;
 	}
 	return BOUNDARIES_EDIT_NULL;
@@ -5174,7 +5173,7 @@ EBoundary CSaView::GetEditBoundaries(bool checkKeys) {
 /***************************************************************************/
 void CSaView::OnEditSegmentSize() {
 	m_bEditSegmentSize = !m_bEditSegmentSize;
-	bEditBoundaries = false;
+	m_bEditBoundaries = false;
 }
 
 /***************************************************************************/
@@ -8071,7 +8070,7 @@ void CSaView::OnEditBoundaryStopRight() {
 }
 
 void CSaView::MoveBoundary(bool start, bool left) {
-	bool editSegment = (m_bEditSegmentSize | bEditBoundaries);
+	bool editSegment = (m_bEditSegmentSize | m_bEditBoundaries);
 	if (!editSegment) {
 		return;
 	}
@@ -9350,7 +9349,6 @@ void CSaView::EditSplit() {
 	pSeg->SetSelection(newsel);
 	SetCursorPosition(START_CURSOR, newStart);
 	SetCursorPosition(STOP_CURSOR, newStop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 }
 
@@ -9405,7 +9403,6 @@ DWORD CSaView::EditSplitAt(DWORD position) {
 	pSeg->SetSelection(newsel);
 	SetCursorPosition(START_CURSOR, newStart);
 	SetCursorPosition(STOP_CURSOR, newStop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 	return newStart;
 }
@@ -9452,7 +9449,6 @@ void CSaView::EditMerge() {
 	m_advancedSelection.SelectFromPosition(this, GLOSS, newStart, false);
 	SetCursorPosition(START_CURSOR, newStart);
 	SetCursorPosition(STOP_CURSOR, newStop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 }
 
@@ -9507,7 +9503,6 @@ void CSaView::EditMergeAt(DWORD position) {
 	pSeg->SetSelection(newsel);
 	SetCursorPosition(START_CURSOR, newStart);
 	SetCursorPosition(STOP_CURSOR, newStop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 }
 
@@ -9560,7 +9555,6 @@ void CSaView::EditMoveLeft() {
 	m_advancedSelection.SelectFromPosition(this, GLOSS, start, false);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 }
 
@@ -9620,7 +9614,6 @@ void CSaView::EditMoveLeftAt(CSaDoc * pDoc, DWORD position) {
 	m_advancedSelection.SelectFromPosition(this, GLOSS, start, false);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 }
 
@@ -9723,7 +9716,6 @@ void CSaView::EditMoveRight() {
 	pSeg->SetSelection(sel);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 }
 
@@ -9760,7 +9752,6 @@ void CSaView::EditMoveRightNext() {
 	pSeg->SetSelection(sel);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 }
 
@@ -9813,7 +9804,6 @@ void CSaView::OnMoveRightHere() {
 	pSeg->SetSelection(sel);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
-	bEditBoundaries = false;
 	RedrawGraphs(TRUE, FALSE);
 }
 

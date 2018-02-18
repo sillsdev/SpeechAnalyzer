@@ -1,3 +1,6 @@
+SA - 3.1.0.144 2/18/2018
+- Modified application so that 'Edit Boundaries' is no longer automatically disabled when performing 'split' and 'merge' operations.
+
 SA - 3.1.0.143 2/9/2018
 - Fixed problem where 'Hide' and 'Minimize' commands were not working correctly when batch mode was used.
 - Fixed problem where Player dialog does not observe setting in 'Play' dropdown list.

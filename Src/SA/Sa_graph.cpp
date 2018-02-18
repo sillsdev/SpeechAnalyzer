@@ -1003,7 +1003,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                         if (nPitchMode == HERTZ) {
                             swprintf_s(szText,_countof(szText), _T("F%d: %.1f Hz"), n, pFormFreqCurr->F[n]);
                         } else {
-                            swprintf_s(szText,_countof(szText), _T("F%d: %.1f st"), GetSemitone(pFormFreqCurr->F[n]));
+                            swprintf_s(szText,_countof(szText), _T("F%d: %.1f st"), n, GetSemitone(pFormFreqCurr->F[n]));
                         }
                     } else {
                         swprintf_s(szText,_countof(szText), _T("F%d:"), n);
@@ -1071,7 +1071,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                         if (nPitchMode == HERTZ) {
                             swprintf_s(szText,_countof(szText), _T("F%d: %.1f Hz"), n, pFormFreqCurr->F[n]);
                         } else {
-                            swprintf_s(szText,_countof(szText), _T("F%d: %.1f st"), GetSemitone(pFormFreqCurr->F[n]));
+                            swprintf_s(szText,_countof(szText), _T("F%d: %.1f st"), n, GetSemitone(pFormFreqCurr->F[n]));
                         }
                     } else {
                         swprintf_s(szText, _countof(szText),_T("F%d:"), n);

@@ -725,7 +725,7 @@ private:
 	// boundaries updated or not in transcription editor
     BOOL m_bUpdateBoundaries;
 	// TRUE = INS pressed
-    bool bEditBoundaries;
+    bool m_bEditBoundaries;
 	// TRUE = CTRL_SHIFT pressed
     bool m_bEditSegmentSize;
 	// graph drawing style line or solid
