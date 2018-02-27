@@ -1,0 +1,16 @@
+135 chin
+ 
+136 beard
+ 
+137 to shave (beard)
+ 
+137.25 neck 
+ 
+137.75 shoulder
+ 
+138 back (body part)
+ 
+139 abdomen / belly
+ 
+140 navel / belly
+ 

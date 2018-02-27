@@ -1,0 +1,21 @@
+﻿Ref	Phonetic	Ortho	Gloss
+1	tʰɔ́ːŋ fáː	ท้องฟ้า	#sky
+2	duaŋ ʔaːtʰít	ดวงอาทิตย์	#sun
+3	duaŋ t͡ɕan	ดวงจันทร์	#moon
+4	duaŋ daːw	ดวงดาว	#star
+5	mêːk	เมฆ	#cloud
+6	mɔ̀ːk	หมอก	#mist
+7	fǒn	ฝน	#rain
+8	rúŋ	รุ้ง	#rainbow
+9	fáː lɛ̂ːp	ฟ้าแลบ	#lightning
+10	fáː rɔ́ːŋ	ฟ้าร้อง	#thunder
+11	lom	ลม	#shadow
+12	klaːŋ kʰɯːn	กลางคืน	#night
+13	klaːŋ wan	กลางวัน	#day
+14	t͡ɕʰáw	เช้า	#morning
+15	tʰîaŋ	เที่ยง	#noon
+16	mɯ̂a waːn níː	เมื่อวานนี้	#yesterday
+17	pʰrûŋ níː	พรุ่งนี้	#tomorrow
+18	piː	ปี	#year
+19	tʰít tà wan ʔɔ̀ːk	ทิศตะวันออก	#east
+20	tʰít tà wan tòk	ทิศตะวันตก	#west

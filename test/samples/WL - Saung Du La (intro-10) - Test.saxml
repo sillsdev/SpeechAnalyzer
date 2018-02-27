@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="86C20A14-3EC4-EE87-1DDB-22FE37DB5A6E">
+  <SpeakerName />
+  <SpeakerGender> </SpeakerGender>
+  <EthnologueId />
+  <Region />
+  <Country />
+  <Family />
+  <LanguageName />
+  <Dialect />
+  <NoteBookReference />
+  <FreeFormTranslation />
+  <Transcriber />
+  <SADescription />
+  <SAFlags>0</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>1351738490</RecordTimeStamp>
+  <RecordBandWidth>22050</RecordBandWidth>
+  <RecordSampleSize>16</RecordSampleSize>
+  <SignalMax>0</SignalMax>
+  <SignalMin>0</SignalMin>
+  <SignalBandWidth>22050</SignalBandWidth>
+  <SignalEffSampSize>16</SignalEffSampSize>
+  <CalcFreqLow>40</CalcFreqLow>
+  <CalcFreqHigh>500</CalcFreqHigh>
+  <CalcVoicingThd>10240</CalcVoicingThd>
+  <CalcPercntChng>32</CalcPercntChng>
+  <CalcGrpSize>6</CalcGrpSize>
+  <CalcIntrpGap>7</CalcIntrpGap>
+  <Segments>
+    <SegmentData IsBookmark="false" Offset="17.820566893424036" Duration="3.2151247165532881" MarkDuration="3.2151247165532881">
+      <Phonetic>a</Phonetic>
+      <Phonemic>a</Phonemic>
+      <Orthographic>a</Orthographic>
+      <Gloss>a</Gloss>
+      <Reference>1</Reference>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="24.968390022675738" Duration="2.4861224489795917" MarkDuration="2.4861224489795917">
+      <Phonetic>b</Phonetic>
+      <Phonemic>b</Phonemic>
+      <Orthographic>b</Orthographic>
+      <Gloss>b</Gloss>
+      <Reference>2</Reference>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="30.181383219954647" Duration="2.5405668934240362" MarkDuration="2.5405668934240362">
+      <Phonetic>c</Phonetic>
+      <Phonemic>c</Phonemic>
+      <Orthographic>c</Orthographic>
+      <Gloss>c</Gloss>
+      <Reference>3</Reference>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="35.836553287981857" Duration="2.5361904761904763" MarkDuration="2.5361904761904763">
+      <Phonetic>d</Phonetic>
+      <Phonemic>d</Phonemic>
+      <Orthographic>d</Orthographic>
+      <Gloss>d</Gloss>
+      <Reference>4</Reference>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="42.886780045351472" Duration="2.8004535147392291" MarkDuration="2.8004535147392291">
+      <Phonetic>e</Phonetic>
+      <Phonemic>e</Phonemic>
+      <Orthographic>e</Orthographic>
+      <Gloss>e</Gloss>
+      <Reference>5</Reference>
+    </SegmentData>
+  </Segments>
+  <MusicSegments>
+    <MusicSegmentData PhraseLevel="1" Offset="13.986122448979591" Duration="7.0495691609977325">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="1" Offset="21.344784580498867" Duration="6.1097278911564628">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="1" Offset="27.635396825396825" Duration="5.0865532879818591">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="1" Offset="32.919183673469391" Duration="5.4535600907029478">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="1" Offset="38.652108843537412" Duration="7.0351247165532884">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="2" Offset="17.802040816326532" Duration="3.2336507936507934">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="2" Offset="24.935396825396825" Duration="2.5191156462585034">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="2" Offset="30.12424036281179" Duration="2.5977097505668936">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="2" Offset="35.836553287981857" Duration="2.5361904761904763">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+    <MusicSegmentData PhraseLevel="2" Offset="42.886780045351472" Duration="2.8004535147392291">
+      <Annotation>�</Annotation>
+    </MusicSegmentData>
+  </MusicSegments>
+</SaAudioDocument>
