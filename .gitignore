@@ -7,9 +7,9 @@
 /*.opendb
 /SpeechAnalyzer.sdf
 /Src/ConsoleApplication1
-/Src/Debug
 /Src/ElanUtils/Debug
 /Src/ElanUtils/Release
+/Src/ElanUtilsTest/Debug
 /Src/ElanUtilsTest/Release
 /Src/ElanUtilsTest/x64/Debug
 /Src/FileUtils/Debug
@@ -30,7 +30,6 @@
 /Src/MBROLA/Debug
 /Src/MBROLA/Release
 /Src/MBROLA/x64/Debug
-/Src/Release
 /Src/SA/Debug
 /Src/SA/Release
 /Src/SA/x64/Debug
