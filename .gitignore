@@ -64,6 +64,8 @@
 /Src/ZGraph/Debug
 /Src/ZGraph/Release
 /Src/ZGraph/x64/Debug
+/Debug
+/Release
 /x64/Debug
 Output/
 Src/build
