@@ -76,7 +76,7 @@ string TestHelper::CreateListFile(LPCSTR destDir, LPCSTR waveFile, LPCSTR showCm
 	fprintf(pFile, "ShowWindow = %s\n", showCmd);
 	fprintf(pFile, "[Commands]\n");
 	fprintf(pFile, "Command0 = SelectFile(0)\n");
-	fprintf(pFile, "Command1 = Play(%d, %d, 0, 37000)\n",speed, volume);
+	fprintf(pFile, "Command1 = Play(%d, %d, 0, 30000)\n",speed, volume);
 	fprintf(pFile, "Command2 = Return(1)\n");
 	fprintf(pFile, "[AudioFiles]\n");
 	fprintf(pFile, "File0 = %s\n", waveFile);
@@ -93,8 +93,8 @@ void TestHelper::LaunchSA( LPCSTR devHome, LPCSTR listFile) {
 	char server_path[256];
 	memset(app_path, 0, sizeof(app_path));
 	memset(server_path, 0, sizeof(server_path));
-	sprintf_s(app_path, "%s\\output\\debug\\sa.exe", devHome);
-	sprintf_s(server_path, "%s\\output\\debug\\saserver.exe", devHome);
+	sprintf_s(app_path, "%s\\debug\\sa.exe", devHome);
+	sprintf_s(server_path, "%s\\debug\\saserver.exe", devHome);
 	BOOL bResult = DeleteFileA(server_path);
 	bResult = CopyFileA(app_path, server_path, TRUE);
 	Assert::IsTrue(bResult!=0);
