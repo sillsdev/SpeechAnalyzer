@@ -375,7 +375,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
         vowelTitleFont.CreateFont(int(0.6*VOWEL_FONT_HEIGHT), 0, 0, 0, FW_NORMAL, 0, 0, 0,
                                   ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                                   DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), VowelTitleTypeface);
-        CFont * pOldFont = pDC->SelectObject(&vowelTitleFont);
+        CFont * pOldFont2 = pDC->SelectObject(&vowelTitleFont);
         CSize TitleSize = pDC->GetTextExtent((CString &)szVowelSetName);
         int nLeft = pFormantChart->X_LEFT + TitleSize.cy/3;
         int nRight = nLeft + TitleSize.cx;
@@ -386,16 +386,14 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
         pDC->DrawText(szVowelSetName, rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP | DT_NOPREFIX);
 
         if (pFormants->GetVowelCount(nGender) == 0) {
-            int nTop = pFormantChart->Y_TOP + (pFormantChart->Y_BOTTOM - pFormantChart->Y_TOP)/3;
-            CRect rVowel(pFormantChart->X_LEFT, nTop, pFormantChart->X_RIGHT,pFormantChart->Y_BOTTOM);
-
+            int nTop2 = pFormantChart->Y_TOP + (pFormantChart->Y_BOTTOM - pFormantChart->Y_TOP)/3;
+            CRect rVowel(pFormantChart->X_LEFT, nTop2, pFormantChart->X_RIGHT,pFormantChart->Y_BOTTOM);
             CSaString szWarning;
-
             szWarning.LoadString(IDS_EMPTY_FORMANT_VOWEL_SET);
             pDC->DrawText(szWarning, rVowel, DT_SINGLELINE | DT_CENTER | DT_TOP | DT_NOCLIP | DT_NOPREFIX);
         }
         pDC->SetTextColor(oldColor); // reset font color
-        pDC->SelectObject(pOldFont);
+        pDC->SelectObject(pOldFont2);
     }
 
     for (int nVowel = 0; nVowel < pFormants->GetVowelCount(nGender); nVowel++) {
@@ -1847,7 +1845,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                 if (bAverage) {
                     // build average inside step
                     long lAverageData = 0;
-                    for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++) {
+                    for (DWORD dwLoop2 = 0; dwLoop2 < (DWORD)lSteps; dwLoop2++) {
                         if (dwDataPos >= dwStart) {
                             // reload data
                             pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block

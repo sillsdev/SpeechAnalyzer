@@ -162,9 +162,9 @@ public:
 	// set view frame start and width of data to display
     void SetDataFrame(DWORD dwStart, DWORD dwFrame); 
 	// change the annotation selection
-    void ChangeAnnotationSelection(CSegment *, int nIndex, DWORD dwStart, DWORD dwStop); 
+    void ChangeAnnotationSelection(CSegment * pSegment, int nIndex, DWORD dwStart, DWORD dwStop); 
 	// change the annotation selection
-    void ChangeAnnotationSelection(CSegment *, int nIndex); 
+    void ChangeAnnotationSelection(CSegment * pSegment, int nIndex); 
 	// sets the focused graph pointer
     void SetFocusedGraph(CGraphWnd *);  
     CGraphWnd * GetFocusedGraphWnd();
@@ -185,7 +185,7 @@ public:
     void SetInitialCursors();
 	// adjust cursor positions to new file size
     void AdjustCursors(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bShrink); 
-    BOOL IsAnyAnnotationSelected(void);
+    bool IsAnyAnnotationSelected(void);
     BOOL IsCutAllowed();
     void OnUpdateHasSel(CCmdUI * pCmdUI);
     void OnEditCopy();
@@ -252,7 +252,7 @@ public:
 
     // selection
     BOOL SelectFromPosition(int nSegmentIndex, DWORD dwPosition, bool bFindExact);
-    BOOL SetSelectedAnnotationString(CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
+    BOOL SetSelectedAnnotationString(CSaString & szString, bool bIncludesDelimiter = false, bool bCheck=false);
     CSaString GetSelectedAnnotationString();
     CString GetSelectedAnnotationString(BOOL bRemoveDelimiter);
     void UpdateSelection(BOOL bClearVirtual=FALSE);

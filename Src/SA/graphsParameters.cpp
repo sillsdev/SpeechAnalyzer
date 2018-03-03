@@ -3102,10 +3102,10 @@ void CDlgParametersMusicPage::Apply() {
         if (m_nRange) {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-            CMusicParm cParm = *pMainFrame->GetMusicParmDefaults();
-            cParm.nManualLower = m_nLowerBound;
-            cParm.nManualUpper = m_nUpperBound;
-            pMainFrame->SetMusicParmDefaults(cParm);
+            CMusicParm paramdefaults = *pMainFrame->GetMusicParmDefaults();
+			paramdefaults.nManualLower = m_nLowerBound;
+			paramdefaults.nManualUpper = m_nUpperBound;
+            pMainFrame->SetMusicParmDefaults(paramdefaults);
         }
         pParm->nCalcUpperBound = m_nCalcUpperBound;
         pParm->nCalcLowerBound = m_nCalcLowerBound;

@@ -39,14 +39,12 @@ CFontTable * CGlossSegment::NewFontTable() const {
 // segment have to be removed too. The user will be informed before.
 /***************************************************************************/
 void CGlossSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
-
+	TRACE("Remove\n");
     // save state for undo ability
     if (bCheck) {
         pDoc->CheckPoint();
     }
-
     DWORD dwOldOffset = GetOffset(sel);
-
     // remove aligned dependent segments (ref and gn)
     for (int nLoop = GLOSS + 1; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         CSegment * pSegment = pDoc->GetSegment(nLoop);
@@ -57,15 +55,11 @@ void CGlossSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
             }
         }
     }
-
     RemoveAt(sel);
-
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-
-    pDoc->SetModifiedFlag(TRUE);                                // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);                           // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, sel, 0, 0);			// deselect
+	CSaView * pView = pDoc->GetFirstView();
+    pDoc->SetModifiedFlag(TRUE);						// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);					// transcription data has been modified
+    pView->ChangeAnnotationSelection(this, sel, 0, 0);	// deselect
     pView->RedrawGraphs(TRUE,FALSE);
 }
 

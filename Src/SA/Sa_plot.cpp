@@ -1641,16 +1641,18 @@ void CPlotWnd::ClearHighLightArea() {
 	SetHighLightArea( 0, 0, TRUE, FALSE);
 }
 
-/***************************************************************************/
-// CPlotWnd::SetHighLightArea Sets a highlighted area
-// dwStart and dwStop contain the area that has to be highlighted (in raw
-// data bytes). They always will be snapped to the next zero crossing unless
-// they are at the beginning or end of the raw data. If the flag bRedraw is
-// TRUE (default), the area that has to change its colors will be invali-
-// dated. It takes areas only for plots with visible and non private cursors.
-// Start and Stop are not range checked. Selected segments will be
-// deselected.
-//**************************************************************************/
+/***************************************************************************
+* CPlotWnd::SetHighLightArea 
+* Sets a highlighted area
+* dwStart and dwStop -  contain the area that has to be highlighted (in raw data bytes). 
+* They always will be snapped to the next zero crossing unless they are at the 
+* beginning or end of the raw data. 
+* bRedraw - If the flag bRedraw is TRUE (default), the area that has to change its 
+* colors will be invalidated. It takes areas only for plots with visible and non 
+* private cursors.
+* Start and Stop are not range checked. 
+* Selected segments will be deselected.
+***************************************************************************/
 void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL bSecondSelection) {
     
 	if (!m_bCursors) return;

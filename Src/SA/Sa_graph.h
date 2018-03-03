@@ -109,6 +109,16 @@ public:
     BOOL SetLegendScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.); // set legend scale
     void SetXScale(int nMode, int nMinValue, int nMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.); // set x-scale
     CAnnotationWnd * GetAnnotationWnd(int nIndex);
+	void SetHintUpdateBoundaries(int nIndex, bool bHint, bool bOverlap) {
+		if (HaveAnnotation(nIndex)) {
+			GetAnnotationWnd(nIndex)->SetHintUpdateBoundaries(bHint, bOverlap);
+		}
+	};
+	void SetHintUpdateBoundaries(int nIndex, bool bHint, DWORD dwStart, DWORD dwStop, bool bOverlap) {
+		if (HaveAnnotation(nIndex)) {
+			GetAnnotationWnd(nIndex)->SetHintUpdateBoundaries(bHint, dwStart, dwStop, bOverlap);
+		}
+	};
     CLegendWnd * GetLegendWnd();
     CXScaleWnd * GetXScaleWnd();
     void ShowLegend(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide legend window

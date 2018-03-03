@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="7A945996-71CE-F13C-B6FB-9B4DF1F08BEC">
+  <SpeakerName />
+  <SpeakerGender> </SpeakerGender>
+  <EthnologueId />
+  <Region />
+  <Country />
+  <Family />
+  <LanguageName />
+  <Dialect />
+  <NoteBookReference />
+  <FreeFormTranslation />
+  <Transcriber />
+  <SADescription />
+  <SAFlags>0</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>1519818691</RecordTimeStamp>
+  <RecordBandWidth>48000</RecordBandWidth>
+  <RecordSampleSize>24</RecordSampleSize>
+  <SignalMax>0</SignalMax>
+  <SignalMin>0</SignalMin>
+  <SignalBandWidth>48000</SignalBandWidth>
+  <SignalEffSampSize>24</SignalEffSampSize>
+  <CalcFreqLow>40</CalcFreqLow>
+  <CalcFreqHigh>500</CalcFreqHigh>
+  <CalcVoicingThd>10240</CalcVoicingThd>
+  <CalcPercntChng>32</CalcPercntChng>
+  <CalcGrpSize>6</CalcGrpSize>
+  <CalcIntrpGap>7</CalcIntrpGap>
+  <Segments>
+    <SegmentData IsBookmark="false" Offset="0.08746875" Duration="0.62794791666666672" MarkDuration="0.62794791666666672">
+      <Phonetic>testing</Phonetic>
+      <Phonemic />
+      <Tone />
+      <Orthographic />
+      <Gloss>testing</Gloss>
+      <Reference>1</Reference>
+    </SegmentData>
+  </Segments>
+  <MusicSegments />
+</SaAudioDocument>

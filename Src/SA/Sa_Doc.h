@@ -114,6 +114,8 @@ public:
     int GetWbProcess();
 	// pointer to file status structure
     CFileStatus * GetFileStatus();
+	// retrieve first view position
+	CSaView * GetFirstView() const;
 	// pointer to source parameters structure
     SourceParm * GetSourceParm();
 	// returns gender: 0 = male, 1 = female, 2 = child

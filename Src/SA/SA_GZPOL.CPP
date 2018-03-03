@@ -250,7 +250,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                 if (bAverage) {
                     // build average inside step
                     long lAverageData = 0;
-                    for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++) {
+                    for (DWORD dwLoop2 = 0; dwLoop2 < (DWORD)lSteps; dwLoop2++) {
                         if (dwDataPos >= dwStart) {
                             // reload data
                             pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
@@ -321,7 +321,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                 if (bAverage) {
                     // build average inside step
                     long lAverageData = 0;
-                    for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++) {
+                    for (DWORD dwLoop2 = 0; dwLoop2 < (DWORD)lSteps; dwLoop2++) {
                         if (dwDataPos >= dwStart) {
                             // reload data
                             pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block

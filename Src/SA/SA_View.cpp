@@ -2517,7 +2517,7 @@ void CSaView::OnUpdateBoundariesNone(CCmdUI * pCmdUI) {
 	BOOL bShown = FALSE;
 	for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
 		if (m_apGraphs[nLoop] == NULL) continue;
-		bShown |= m_apGraphs[nLoop]->HasBoundaries();
+		bShown |= (m_apGraphs[nLoop]->HasBoundaries())?TRUE:FALSE;
 	}
 	pCmdUI->SetCheck(!bShown);
 }
@@ -3990,7 +3990,6 @@ CSegment * CSaView::GetAnnotation(int annotSetID) {
 	if ((annotSetID >= 0) && (annotSetID < ANNOT_WND_NUMBER)) {
 		return GetDocument()->GetSegment(annotSetID);
 	}
-
 	return NULL;
 }
 
@@ -4745,7 +4744,7 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 					// cancel the process
 					pProcessOwner->CancelProcess();
 				} else {
-					m_advancedSelection.DeselectAnnotations(*this);
+					m_advancedSelection.DeselectAnnotations(this);
 				}
 			}
 			break;
@@ -5835,21 +5834,26 @@ void CSaView::RedrawGraphs(BOOL bEntire, BOOL bLegend) {
 	}
 }
 
-/***************************************************************************/
-// CSaView::ChangeAnnotationSelection Change the annotation selection
-// pSegment points to the segment, whose selection changes, all other
-// segments have to be deselected. The start and stop cursors have to be
-// moved in place of the selected segment (if not deselecting) and the
-// annotation windows have to be informed (via graph). nSelection contains
-// the new segment number to select and pSegment points to the annotation
-// segment, whose segment will be selected. If a segment becomes selected,
-// all the highlighted areas in the plots will be deleted.
-//**************************************************************************/
+/***************************************************************************
+* CSaView::ChangeAnnotationSelection 
+* Change the annotation selection.
+* pSegment - points to the segment whose selection changes, all other segments have to be deselected.
+* The start and stop cursors have to be moved in place of the selected segment (if not deselecting) 
+* and the annotation windows have to be informed (via graph). 
+* nSelection - contains the new segment number to select and pSegment points to the annotation
+* segment, whose segment will be selected. 
+* If a segment becomes selected, all the highlighted areas in the plots will be deleted.
+**************************************************************************/
 void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection, DWORD dwStart, DWORD dwStop) {
 
-	// set start - and stop cursor if not deselecting
-	BOOL bSelect = FALSE;
+	if (pSegment->IsEmpty()) {
+		nSelection = -1;
+	}
+	// set start and stop cursor if not changing selection
+	bool bSelect = false;
+	// is it changing?
 	if (nSelection != pSegment->GetSelection()) {
+		// we are selecting something else
 		if (nSelection != -1) {
 			// added conditional to prevent cursors from being set if just deselecting  AKE 8/3/2001
 			if (pSegment->GetOffset(nSelection) > GetStopCursorPosition()) {
@@ -5862,29 +5866,29 @@ void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection, DWO
 				SetStopCursorPosition(dwStop, SNAP_LEFT);
 			}
 		}
-		bSelect = TRUE;
+		bSelect = true;
 	}
 
 	// select this segment, deselect all the others
 	for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-		CSegment * pThis = GetAnnotation(nLoop);
-		if (pSegment == pThis) {
-			// this is the segment to select
+		CSegment * pCurrent = GetAnnotation(nLoop);
+		// is this 'our' segment?
+		if (pSegment == pCurrent) {
+			// this is the segment to select or deselect
 			pSegment->SetSelection(nSelection);
 			// change it in all graphs
 			for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) {
 				if (m_apGraphs[nGraphLoop]) {
 					m_apGraphs[nGraphLoop]->ChangeAnnotationSelection(nLoop);
 					if (bSelect) {
-						// deselect
 						m_apGraphs[nGraphLoop]->GetPlot()->SetHighLightArea(0, 0, TRUE, FALSE);
 					}
 				}
 			}
 		} else {
-			if (pThis->GetSelection() != -1) {
+			if (pCurrent->GetSelection() != -1) {
 				// this segment is to deselect
-				pThis->SetSelection(-1);
+				pCurrent->SetSelection(-1);
 				// change it in all graphs
 				for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) {
 					if (m_apGraphs[nGraphLoop]) {
@@ -5896,15 +5900,18 @@ void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection, DWO
 	}
 }
 
+/**
+* Change the annotation selection
+*/
 void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection) {
 
 	DWORD dwStart = GetStartCursorPosition();
 	DWORD dwStop = GetStopCursorPosition();
-	if ((pSegment != NULL) && (nSelection >= 0)) {
-		dwStart = pSegment->GetOffset(nSelection);
-	}
-	if ((pSegment != NULL) && (nSelection >= 0)) {
-		dwStop = pSegment->GetDuration(nSelection) + dwStart;
+	if (pSegment != NULL) {
+		if (nSelection >= 0) {
+			dwStart = pSegment->GetOffset(nSelection);
+			dwStop = pSegment->GetDuration(nSelection) + dwStart;
+		}
 	}
 	ChangeAnnotationSelection(pSegment, nSelection, dwStart, dwStop);
 }
@@ -7715,7 +7722,7 @@ void CSaView::OnEditPaste() {
 			if (NULL != (hClipData = GetClipboardData(CF_UNICODETEXT))) {
 				if (NULL != (lpClipData = (LPTSTR)GlobalLock(hClipData))) {
 					CSaString data(lpClipData);
-					m_advancedSelection.SetSelectedAnnotationString(this, data, FALSE, TRUE);
+					m_advancedSelection.SetSelectedAnnotationString(this, data, false, true);
 					GlobalUnlock(hClipData);
 					RedrawGraphs();
 				}
@@ -7762,7 +7769,7 @@ void CSaView::OnEditPasteNew() {
 // CSaView::IsAnyAnnotationSelected
 // Returns TRUE if something is selected in some annotation window, else FALSE.
 /***************************************************************************/
-BOOL CSaView::IsAnyAnnotationSelected(void) {
+bool CSaView::IsAnyAnnotationSelected(void) {
 	return (FindSelectedAnnotation() != NULL);
 }
 
@@ -7813,7 +7820,6 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str) {
 // CSaView::RemoveSelectedAnnotation
 /***************************************************************************/
 void CSaView::RemoveSelectedAnnotation() {
-
 	CSegment * pSegment = FindSelectedAnnotation();
 	if (pSegment == NULL) {
 		return;
@@ -9142,7 +9148,7 @@ void CSaView::EditAddGloss(bool bDelimiter) {
 				temp = WORD_DELIMITER + temp.Mid(1);
 			}
 			m_advancedSelection.Update(this);
-			m_advancedSelection.SetSelectedAnnotationString(this, temp, TRUE, TRUE);
+			m_advancedSelection.SetSelectedAnnotationString(this, temp, true, true);
 		}
 	}
 
@@ -9345,7 +9351,7 @@ void CSaView::EditSplit() {
 	int newsel = pSeg->GetNext(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
 	DWORD newStop = pSeg->GetStop(newsel);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	pSeg->SetSelection(newsel);
 	SetCursorPosition(START_CURSOR, newStart);
 	SetCursorPosition(STOP_CURSOR, newStop);
@@ -9399,7 +9405,7 @@ DWORD CSaView::EditSplitAt(DWORD position) {
 	int newsel = pSeg->GetNext(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
 	DWORD newStop = pSeg->GetStop(newsel);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	pSeg->SetSelection(newsel);
 	SetCursorPosition(START_CURSOR, newStart);
 	SetCursorPosition(STOP_CURSOR, newStop);
@@ -9445,7 +9451,7 @@ void CSaView::EditMerge() {
 	int newsel = pSeg->GetPrevious(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
 	DWORD newStop = pSeg->GetStop(newsel);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	m_advancedSelection.SelectFromPosition(this, GLOSS, newStart, false);
 	SetCursorPosition(START_CURSOR, newStart);
 	SetCursorPosition(STOP_CURSOR, newStop);
@@ -9499,7 +9505,7 @@ void CSaView::EditMergeAt(DWORD position) {
 	int newsel = pSeg->GetPrevious(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
 	DWORD newStop = pSeg->GetStop(newsel);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	pSeg->SetSelection(newsel);
 	SetCursorPosition(START_CURSOR, newStart);
 	SetCursorPosition(STOP_CURSOR, newStop);
@@ -9551,7 +9557,7 @@ void CSaView::EditMoveLeft() {
 	DWORD start = pPhonetic->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
 	pDoc->MoveDataLeft(start);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	m_advancedSelection.SelectFromPosition(this, GLOSS, start, false);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
@@ -9610,7 +9616,7 @@ void CSaView::EditMoveLeftAt(CSaDoc * pDoc, DWORD position) {
 	DWORD start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
 	pDoc->MoveDataLeft(start);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	m_advancedSelection.SelectFromPosition(this, GLOSS, start, false);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
@@ -9712,7 +9718,7 @@ void CSaView::EditMoveRight() {
 	pDoc->MoveDataRight(start);
 	start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	pSeg->SetSelection(sel);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
@@ -9748,7 +9754,7 @@ void CSaView::EditMoveRightNext() {
 	pDoc->MoveDataRight(start);
 	start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	pSeg->SetSelection(sel);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
@@ -9800,7 +9806,7 @@ void CSaView::OnMoveRightHere() {
 	pDoc->MoveDataRight(start);
 	start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 	pSeg->SetSelection(sel);
 	SetCursorPosition(START_CURSOR, start);
 	SetCursorPosition(STOP_CURSOR, stop);
@@ -10718,7 +10724,7 @@ void CSaView::OnMoveStopCursorHere() {
 		if ((dwStopCursor > pSegment->GetStop(nIndex)) ||
 			(dwStartCursor < pSegment->GetOffset(nIndex))) {
 			// Deselect segment
-			m_advancedSelection.DeselectAnnotations(*this);
+			m_advancedSelection.DeselectAnnotations(this);
 		}
 	}
 
@@ -10951,7 +10957,7 @@ BOOL CSaView::SelectFromPosition(int nSegmentIndex, DWORD dwPosition, bool bFind
 	return m_advancedSelection.SelectFromPosition(this, nSegmentIndex, dwPosition, bFindExact);
 }
 
-BOOL CSaView::SetSelectedAnnotationString(CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck) {
+BOOL CSaView::SetSelectedAnnotationString(CSaString & szString, bool bIncludesDelimiter, bool bCheck) {
 	return m_advancedSelection.SetSelectedAnnotationString(this, szString, bIncludesDelimiter, bCheck);
 }
 
@@ -10963,18 +10969,16 @@ CString CSaView::GetSelectedAnnotationString(BOOL bRemoveDelimiter) {
 // CSaView::GetSelectedAnnotationString
 /***************************************************************************/
 CSaString CSaView::GetSelectedAnnotationString() {
-	CSaString ret;
-
+	
 	for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-		CSegment * pSegments = GetAnnotation(nLoop);
-		if (pSegments->GetSelection() != -1) {
-			int selection = pSegments->GetSelection();
-			ret = pSegments->GetSegmentString(selection);
+		CSegment * pSegment = GetAnnotation(nLoop);
+		if (pSegment->GetSelection() != -1) {
+			int selection = pSegment->GetSelection();
+			return pSegment->GetSegmentString(selection);
 			break;
 		}
 	}
-
-	return ret;
+	return CSaString("");
 }
 
 void CSaView::UpdateSelection(BOOL bClearVirtual) {
@@ -12336,7 +12340,7 @@ bool CSaView::CanMergeSel(CPhoneticSegment * pSeg, int sel) {
 }
 
 void CSaView::DeselectAnnotations() {
-	m_advancedSelection.DeselectAnnotations(*this);
+	m_advancedSelection.DeselectAnnotations(this);
 }
 void CSaView::OnNextError() {
 }

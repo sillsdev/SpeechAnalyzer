@@ -145,11 +145,9 @@ void CDlgEditor::DoDataExchange(CDataExchange * pDX) {
 /***************************************************************************/
 CSaView * CDlgEditor::GetView() const {
     CSaView * pSaView = GetMainFrame()->GetCurrSaView();
-
     if ((pSaView!=NULL) && (!pSaView->IsKindOf(RUNTIME_CLASS(CSaView)))) {
         pSaView = NULL;    // Verify View is a CSaView type.
     }
-
     return pSaView;
 }
 
@@ -202,16 +200,14 @@ void CDlgEditor::OnPlaybackSegment() {
 // Sends a message to the player to playback the original gloss selection.
 /***************************************************************************/
 void CDlgEditor::OnPlaybackWord() {
-    if (!GetView()) {
+
+	if (!GetView()) {
         return;    // require doc and view
     }
-
     GetView()->OnPlaybackWord();
-
     // display pending error messages
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
     pApp->DisplayMessages();
-
     SetButtonState(IDC_PLAY_WORD,IDC_STOP_WORD,true);
 }
 
@@ -230,16 +226,14 @@ void CDlgEditor::OnStopWord() {
 // Sends a message to the player to playback the original phrase selection.
 /***************************************************************************/
 void CDlgEditor::OnPlaybackPhraseL1() {
+
     if (!GetView()) {
         return;    // require doc and view
     }
-
     GetView()->OnPlaybackPhraseL1();
-
     // display pending error messages
     CSaApp * pApp = (CSaApp *)AfxGetApp();  // get pointer to application
     pApp->DisplayMessages();
-
     SetButtonState(IDC_PLAY_PHRASE_L1,IDC_STOP_PHRASE_L1,true);
 }
 
@@ -286,9 +280,9 @@ void CDlgEditor::OnUpdateInputstring() {
 	// Insure selection has not changed
     if (!IsDifferent(FALSE)) { 
 		TRACE("updating selected annotation\n");
-		pView->SetSelectedAnnotationString(szString, FALSE, m_bCheck);
+		pView->SetSelectedAnnotationString(szString, false, m_bCheck);
         // We only want one checkpoint per changed segment
-        m_bCheck = FALSE;
+        m_bCheck = false;
         // Update IsDifferent check to changed string
         IsDifferent(TRUE);
     } else {
@@ -309,62 +303,62 @@ void CDlgEditor::UpdateDialog() {
         return;
     }
 
-    {
-        CFont * pFont = NULL;
-        CString szText;
-        szText.LoadString(IDS_DISABLED_SEGMENT);
-        BOOL bEnable = FALSE;
-        BOOL bEnableChart = FALSE;
-        BOOL bFontASAPSIL = FALSE;
+    CFont * pFont = NULL;
+    CString szText;
+    szText.LoadString(IDS_DISABLED_SEGMENT);
+    BOOL bEnable = FALSE;
+    BOOL bEnableChart = FALSE;
+    BOOL bFontASAPSIL = FALSE;
 
-        // Update all command buttons
-        UpdateDialogControls(GetMainFrame(), FALSE);
+    // Update all command buttons
+    UpdateDialogControls(GetMainFrame(), FALSE);
 
-        GetView()->UpdateSelection();
-        if (GetView()->GetSelectionIndex() != -1) {
-            //selection available
-            int nAnnotation = GetView()->GetSelectionIndex();
-            pFont = GetDoc()->GetFont(nAnnotation);
-            szText = GetView()->GetSelectedAnnotationString(TRUE);
-            bEnable = TRUE;
-            CString fontFace = GetMainFrame()->GetFontFace(nAnnotation);
-            bFontASAPSIL = (fontFace.Left(8) == "ASAP SIL");
-        } else {
-            pFont = GetDoc()->GetFont(GLOSS);
+	CSaView * pView = GetView();
+    pView->UpdateSelection();
+
+    if (pView->GetSelectionIndex() != -1) {
+        //selection available
+        int nAnnotation = pView->GetSelectionIndex();
+        pFont = GetDoc()->GetFont(nAnnotation);
+        szText = pView->GetSelectedAnnotationString(TRUE);
+        bEnable = TRUE;
+        CString fontFace = GetMainFrame()->GetFontFace(nAnnotation);
+        bFontASAPSIL = (fontFace.Left(8) == "ASAP SIL");
+    } else {
+        pFont = GetDoc()->GetFont(GLOSS);
+    }
+
+    if ((pFont)&&(((CFontTable *)pFont)->IsIPA())) {
+        bEnableChart = bFontASAPSIL;
+    }
+
+    CWnd * pChart = GetDlgItem(IDC_CHARACTERCHART);
+    if (pChart) {
+        pChart->EnableWindow(TRUE);
+    }
+
+    CEdit * pWnd = (CEdit *)GetDlgItem(IDC_INPUTSTRING);
+    if (pWnd!=NULL) {
+        if (pFont) {
+            pWnd->SetFont(pFont);
         }
-
-        if ((pFont)&&(((CFontTable *)pFont)->IsIPA())) {
-            bEnableChart = bFontASAPSIL;
-        }
-
-        CWnd * pChart = GetDlgItem(IDC_CHARACTERCHART);
-        if (pChart) {
-            pChart->EnableWindow(TRUE);
-        }
-
-        CEdit * pWnd = (CEdit *)GetDlgItem(IDC_INPUTSTRING);
-        if (pWnd!=NULL) {
-            if (pFont) {
-                pWnd->SetFont(pFont);
+        if (IsDifferent(TRUE)) {
+            pWnd->SetWindowText(szText);
+            if (bEnable) {
+                pWnd->SetSel(0,-1);         // Select all text
+            } else {
+                pWnd->SetSel(-1,-1);        // Select all text
             }
-            if (IsDifferent(TRUE)) {
-                pWnd->SetWindowText(szText);
-                if (bEnable) {
-                    pWnd->SetSel(0,-1);         // Select all text
-                } else {
-                    pWnd->SetSel(-1,-1);        // Select all text
-                }
-                pWnd->EnableWindow(bEnable);
-                if ((bEnable) && (m_bActivated)) {
-                    pWnd->SetFocus();
-                } else {
-                    if ((m_NextButton.m_hWnd!=NULL) && (m_bActivated) && (!bEnable)) {
-                        m_NextButton.SetFocus();
-                    }
+            pWnd->EnableWindow(bEnable);
+            if ((bEnable) && (m_bActivated)) {
+                pWnd->SetFocus();
+            } else {
+                if ((m_NextButton.m_hWnd!=NULL) && (m_bActivated) && (!bEnable)) {
+                    m_NextButton.SetFocus();
                 }
             }
-            m_bCheck = TRUE;
         }
+        m_bCheck = true;
     }
 }
 

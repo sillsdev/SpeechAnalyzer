@@ -378,7 +378,7 @@ int CDependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwStop,
 // CDependentSegment::Remove Remove dependent annotation segment
 /***************************************************************************/
 void CDependentSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
-
+	TRACE("Remove\n");
     // save state for undo ability
     if (bCheck) {
         pDoc->CheckPoint();
@@ -387,13 +387,12 @@ void CDependentSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
     ClearText(sel);
 
     // get pointer to view
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaView * pView = pDoc->GetFirstView();
 
     // refresh ui
     pDoc->SetModifiedFlag(TRUE);                        // document has been modified
     pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, sel, 0, 0);  // deselect
+    pView->ChangeAnnotationSelection(this, sel, 0, 0);			// deselect
     pView->RedrawGraphs(FALSE);							// refresh the graphs between cursors
 }
 

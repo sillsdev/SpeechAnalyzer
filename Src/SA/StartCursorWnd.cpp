@@ -288,11 +288,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
                 }
             }
             // detect update request and update annotationWnd to hint
-            if (pGraph->HaveAnnotation(nLoop)) {
-                // Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, dwCursor, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
-            }
+			pGraph->SetHintUpdateBoundaries(nLoop,m_nEditBoundaries!=0, dwCursor, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
         }
 
         // scroll left if the start cursor bumps up against the left edge of the plot window
@@ -430,11 +426,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
             }
         }
         // detect update request and update annotationWnd to hint
-        if (pGraph->HaveAnnotation(nLoop)) {
-            // Selected annotation is visible
-            CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-            pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_dwStartDragPos, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
-        }
+		pGraph->SetHintUpdateBoundaries(nLoop,m_nEditBoundaries!=0, m_dwStartDragPos, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
     } else {
         if (pView->IsSelectionVirtual()) {
             pView->DeselectAnnotations();
@@ -516,11 +508,7 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
         }
 
         // clear hint request
-        if (pGraph->HaveAnnotation(nLoop)) {
-            // Selected annotation is visible
-            CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-            pWnd->SetHintUpdateBoundaries(false, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
-        }
+		pGraph->SetHintUpdateBoundaries(nLoop,false, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE); //SDM 1.5Test8.1
     }
 
     // reset start cursor if beyond stop
@@ -603,11 +591,7 @@ void CStartCursorWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
         CSaView * pView = (CSaView *)pGraph->GetParent();
         int nLoop = pView->FindSelectedAnnotationIndex();
         if (nLoop != -1) {
-            if (pGraph->HaveAnnotation(nLoop)) { 
-				// Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
-            }
+			pGraph->SetHintUpdateBoundaries(nLoop,m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
         }
     }
 
@@ -626,10 +610,7 @@ void CStartCursorWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
         CSaView * pView = (CSaView *)pGraph->GetParent();
         int nLoop = pView->FindSelectedAnnotationIndex();
         if (nLoop != -1) {
-            if (pGraph->HaveAnnotation(nLoop)) { // Selected annotation is visible
-                CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
-            }
+			pGraph->SetHintUpdateBoundaries(nLoop,m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
         }
     }
 

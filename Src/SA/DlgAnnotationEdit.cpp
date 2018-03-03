@@ -75,7 +75,7 @@ void CDlgAnnotationEdit::OnOK() {
             CEdit * pEdit = (CEdit *)GetDlgItem(IDC_INPUTSTRING);
             CSaString szString;
             pEdit->GetWindowText(szString);
-            GetView()->SetSelectedAnnotationString(szString, FALSE, TRUE);
+            GetView()->SetSelectedAnnotationString(szString, false, true);
         }
         DestroyWindow();
     }

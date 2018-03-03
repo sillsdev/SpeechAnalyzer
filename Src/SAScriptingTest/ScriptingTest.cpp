@@ -104,7 +104,7 @@ public:
 	}
 
 
-	TEST_METHOD(TestSimplePlayback44k) {
+	TEST_METHOD(TestSimplePlayback96k) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "96KHz-24bit Mono.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());

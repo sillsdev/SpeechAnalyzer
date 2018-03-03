@@ -635,9 +635,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC * pDC, CRect rWnd, CRect rClip, CSa
 
 		// Vertical nearest neighbor
 		for (int y = 0; y < rWnd.bottom; y++) {
-			short nSpectrumIndex = (short)(fSpectrumIndex + 0.5);
-			pIndex[y] = nSpectrumIndex;
-
+			pIndex[y] = (short)(fSpectrumIndex + 0.5);
 			fSpectrumIndex += fSpectrumPointsPerPix;
 		}
 

@@ -73,8 +73,7 @@ void CMultiPlotWnd::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *) {
     while (pos) {
         CPlotWndInfo * pInfo = m_List.GetNext(pos);
         if (pApp->IsDocumentOpened(pInfo->m_pDoc)) {
-            POSITION pos = pInfo->m_pDoc->GetFirstViewPosition();
-            CSaView * pView = (CSaView *)pInfo->m_pDoc->GetNextView(pos);
+            CSaView * pView = pInfo->m_pDoc->GetFirstView();
             if (j) {
                 pMainWnd->SwapInOverlayColors(j);
             }

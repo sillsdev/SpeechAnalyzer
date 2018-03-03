@@ -31,18 +31,17 @@ public:
 	//Update Selection Record
     void Update(CSaView * pView, BOOL bClearVirtual = FALSE); 
     CString GetSelectedAnnotationString(CSaView * pView, BOOL bRemoveDelimiter = TRUE) const;
-    BOOL SetSelectedAnnotationString(CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
+    BOOL SetSelectedAnnotationString(CSaView * pView, CSaString & szString, bool bIncludesDelimiter = false, bool bCheck=false);
     DWORD GetSelectionStart();
     DWORD GetSelectionStop();
     int GetSelectionIndex();
     bool IsSelectionVirtual();
-	void DeselectAnnotations(CSaView & view);
+	void DeselectAnnotations(CSaView * view);
 
 protected:
     DWORD m_dwStart;
-    DWORD m_dwStop;
     DWORD m_dwDuration;
-    int m_nType;
+	int m_nType;
     bool m_bVirtual;
 
 private:

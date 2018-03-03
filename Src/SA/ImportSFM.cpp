@@ -831,7 +831,7 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
     if (nAnnotField[PHONETIC] != -1) {
         for (int nIndex = 0; nIndex < pPhonetic->GetOffsetSize(); nIndex++) {
             pView->SelectFromPosition(PHONETIC, pPhonetic->GetOffset(nIndex), true);
-            pView->SetSelectedAnnotationString(szString, TRUE, FALSE);
+            pView->SetSelectedAnnotationString(szString, true, false);
         }
     }
     for (int nIndex = PHONETIC+1; nIndex < ANNOT_WND_NUMBER; nIndex++) {
@@ -891,7 +891,7 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
                 if (bAppendGloss) {
                     szString = pView->GetSelectedAnnotationString(FALSE) + " " + szString;
                 }
-                pView->SetSelectedAnnotationString(szString, TRUE, FALSE);
+                pView->SetSelectedAnnotationString(szString, true, false);
             }
         }
         for (int nIndex = PHONETIC; nIndex < GLOSS; nIndex++) {
@@ -901,7 +901,7 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
                 if (bAppendPhonetic) {
                     szString = pView->GetSelectedAnnotationString(FALSE) + /*" " +*/ szString;    // SDM 1.5Test10.7 remove spaces
                 }
-                pView->SetSelectedAnnotationString(szString, TRUE, FALSE);
+                pView->SetSelectedAnnotationString(szString, true, false);
             }
         }
 

@@ -84,7 +84,7 @@ private:
     DWORD m_dwPreviousStop;
     CString m_szPreviousString;
     // OnUpdateInputStringData
-    BOOL m_bCheck;
+    bool m_bCheck;
     // Aid to help in setting focus
     BOOL m_bActivated;
     // Cursor scrolling data

@@ -105,15 +105,13 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace, bo
 // segment have to be removed too. The user will be informed before.
 /***************************************************************************/
 void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
-
+	TRACE("Remove\n");
     // save state for undo ability
     if (bCheck) {
         pDoc->CheckPoint();
     }
-
     DWORD dwOldOffset = GetOffset(sel);
     DWORD dwOldStop = GetStop(sel);
-
     // handle dependent gloss separately
     CGlossSegment * pGloss = (CGlossSegment *)pDoc->GetSegment(GLOSS);
     if (pGloss != NULL) {
@@ -194,14 +192,11 @@ void CPhoneticSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
     }
 
     RemoveAt(sel);
-
     // get pointer to view
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-
+    CSaView * pView = pDoc->GetFirstView();
     pDoc->SetModifiedFlag(TRUE);						// document has been modified
     pDoc->SetTransModifiedFlag(TRUE);					// transcription data has been modified
-    pView->ChangeAnnotationSelection(this, sel, 0, 0);  // deselect
+    pView->ChangeAnnotationSelection(this, sel, 0, 0);	// deselect
     pView->RedrawGraphs(TRUE,FALSE);
 }
 
