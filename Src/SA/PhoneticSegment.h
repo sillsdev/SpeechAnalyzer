@@ -22,7 +22,9 @@ public:
 protected:
 	// exit processing on error
     virtual long Exit(int nError); 
-    virtual CString GetDefaultText();
+	virtual CString GetDefaultText() {
+		return CString(SEGMENT_DEFAULT_CHAR);
+	}
 
 private:
     virtual CFontTable * NewFontTable() const;

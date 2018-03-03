@@ -8781,8 +8781,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
 
 	int i = GetGraphIndexForIDD(IDD_RAWDATA);
 	if ((i != -1) && (m_apGraphs[i] != NULL)) {
-		EAnnotation nAnnot = pSeg->GetAnnotationIndex();
-		m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
+		m_apGraphs[i]->ShowAnnotation(pSeg->GetAnnotationIndex(), TRUE, TRUE);
 	}
 }
 
@@ -9003,8 +9002,7 @@ void CSaView::OnEditAddAutoPhraseL2() {
 
 	int i = GetGraphIndexForIDD(IDD_RAWDATA);
 	if ((i != -1) && (m_apGraphs[i] != NULL)) {
-		EAnnotation nAnnot = pSeg->GetAnnotationIndex();
-		m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
+		m_apGraphs[i]->ShowAnnotation(pSeg->GetAnnotationIndex(), TRUE, TRUE);
 	}
 }
 
@@ -9137,8 +9135,7 @@ void CSaView::EditAddGloss(bool bDelimiter) {
 
 			int i = GetGraphIndexForIDD(IDD_RAWDATA);
 			if ((i != -1) && (m_apGraphs[i])) {
-				EAnnotation nAnnot = pGloss->GetAnnotationIndex();
-				m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
+				m_apGraphs[i]->ShowAnnotation(pGloss->GetAnnotationIndex(), TRUE, TRUE);
 			}
 		} else if (pGloss->GetSelection() != -1) { // Set Delimiter
 			CSaString temp = GetSelectedAnnotationString();
@@ -9154,8 +9151,7 @@ void CSaView::EditAddGloss(bool bDelimiter) {
 
 	int i = GetGraphIndexForIDD(IDD_RAWDATA);
 	if ((i != -1) && (m_apGraphs[i] != NULL)) {
-		EAnnotation nAnnot = pGloss->GetAnnotationIndex();
-		m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
+		m_apGraphs[i]->ShowAnnotation(pGloss->GetAnnotationIndex(), TRUE, TRUE);
 	}
 }
 

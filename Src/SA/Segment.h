@@ -187,7 +187,9 @@ public:
 	// return segment length
     virtual int GetSegmentLength(int nIndex) const;
 
-    virtual CString GetDefaultText();
+	virtual CString GetDefaultText() {
+		return CString("");
+	}
 
 	// return the contents of the entire segment
     CString GetContent() const;

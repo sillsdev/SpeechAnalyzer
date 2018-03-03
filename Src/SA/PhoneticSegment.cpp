@@ -590,10 +590,6 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pDoc, int nProgress, in
     return MAKELONG(nLevel, nProgress);
 }
 
-CString CPhoneticSegment::GetDefaultText() {
-    return CString(SEGMENT_DEFAULT_CHAR);
-}
-
 bool CPhoneticSegment::Filter() {
     bool changed = false;
     for (int i=0; i<m_Text.GetCount(); i++) {

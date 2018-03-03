@@ -1039,10 +1039,6 @@ bool CSegment::MoveDataRight(DWORD offset, bool sab) {
 	return true;
 }
 
-CString CSegment::GetDefaultText() {
-	return CString("");
-}
-
 CString CSegment::GetContent() const {
 	ASSERT(m_Offset.GetCount() == m_Text.GetCount());
 	CString text;

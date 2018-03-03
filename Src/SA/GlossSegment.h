@@ -21,6 +21,10 @@ public:
 
 	virtual void AddAt( CSaDoc * pDoc, int index, DWORD offset, DWORD duration);
 
+	virtual CString GetDefaultText() {
+		return CString(WORD_DELIMITER);
+	}
+
 protected:
 	// exit processing on error
     long Exit(int nError);
