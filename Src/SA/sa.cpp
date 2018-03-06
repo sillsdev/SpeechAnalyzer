@@ -646,7 +646,6 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
 		// not in batch mode - we are done.
 		return;
 	}
-
 	// cut out the intro
 	if (szCmdLine.Left(2) == "-L") {
 		wParam = SPEECH_WPARAM_SHOWSA;
@@ -992,8 +991,7 @@ void CSaApp::OnProcessBatchCommands() {
 		swscanf_s(szField, _T("%lu"), &dwStop);
 
 		// set start and stop cursors
-		pView->SetStartCursorPosition(dwStart);
-		pView->SetStopCursorPosition(dwStop);
+		pView->SetStartStopCursorPosition(dwStart, dwStop);
 
 		TRACE(_T("PLAY(%u,%u,%lu,%lu)\n"), pKeys->nSpeed[Player_Batch_Settings], pKeys->nVolume[Player_Batch_Settings], dwStart, dwStop);
 

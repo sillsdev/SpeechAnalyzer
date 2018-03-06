@@ -1,3 +1,9 @@
+SA - 3.1.0.145 3/5/2018
+- Fixed a bug where for 'Tools/Automatic Markup/Locate Words...' that when Gloss English segments are created, they are created without a delimiter ('#').  When you attempt then edit the transcription, the first letter typed becomes the WORD('#') or BOOKMARK ('!') delimiter.
+- Fixed a bug where a crash occurs after editing a lone phonetic segment with the transcription dialog editor, and then deleting the segment.  The segment must be the only segment in the document.
+- Fixed a bug where the SaServer was not observing the 'start' position for the 'PLAY' batch command.  The value was always treated as zero.
+- Updated the Visual C++ Runtime package to version 14.0.24212.
+
 SA - 3.1.0.144 2/18/2018
 - Modified application so that 'Edit Boundaries' is no longer automatically disabled when performing 'split' and 'merge' operations.
 

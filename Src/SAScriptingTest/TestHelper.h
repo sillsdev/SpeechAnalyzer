@@ -12,6 +12,7 @@ public:
 	static string CopyWaveFile(LPCSTR srcDir, LPCSTR destDir, LPCSTR filename);
 	static string CreateListFile(LPCSTR destDir, LPCSTR waveFile, LPCSTR showCmd);
 	static string CreateListFile(LPCSTR destDir, LPCSTR waveFile, LPCSTR showCmd, int speed, int volume);
+	static string CreateListFile(LPCSTR destDir, LPCSTR waveFile, LPCSTR showCmd, int speed, int volume, int start, int stop);
 	static void LaunchSA(LPCSTR devHome, LPCSTR listFile);
 };
 

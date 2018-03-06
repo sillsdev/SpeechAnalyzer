@@ -9125,7 +9125,7 @@ void CSaView::EditAddGloss(bool bDelimiter) {
 		if (nInsertAt != -1) {
 			SetStopCursorPosition(dwStop);
 			OnEditAddPhonetic();
-
+			
 			pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
 			// add a segment
 			pGloss->Add(pDoc, this, dwStart, szString, bDelimiter, false);

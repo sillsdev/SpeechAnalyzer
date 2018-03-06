@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA"
-#define MyAppVersion "3.1.0.144"
+#define MyAppVersion "3.1.0.145"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -37,19 +37,19 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
            
 [Files]
-Source: "C:\Working\SIL\MSEA\Output\Release\SA.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\SA.exe"; DestDir: "{app}"; DestName: "SAServer.exe"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\mbrola.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\SA_DSP.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\SA_ENU.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\SA_DEU.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\SAUtils.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\yeti.mmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Output\Release\zGraph.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\SA.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\SA.exe"; DestDir: "{app}"; DestName: "SAServer.exe"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\mbrola.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\SA_DSP.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\SA_ENU.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\SA_DEU.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\SAUtils.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\yeti.mmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\Release\zGraph.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Src\Release Notes.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\usp10.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Microsoft\vc2015\vc_redist.x86.exe"; DestDir: "{app}\components\vc2015"; Flags: ignoreversion;
+Source: "C:\Working\SIL\MSEA\DistFiles\Microsoft\vc2015\vc_redist.24212.x86.exe"; DestDir: "{app}\components\vc2015"; Flags: ignoreversion;
 Source: "C:\Working\SIL\MSEA\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\notice"; DestDir: "{app}"; Flags: ignoreversion
@@ -77,7 +77,7 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\components\vc2015\vc_redist.x86.exe"; Parameters: "/q"; WorkingDir: "{app}\components\vc2015"; Flags: waituntilterminated skipifdoesntexist; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; StatusMsg: "Installing Microsoft Visual C++ 2015 Redistributable"; Check: VCRedistNeedsInstall()
+Filename: "{app}\components\vc2015\vc_redist.24212.x86.exe"; Parameters: "/q"; WorkingDir: "{app}\components\vc2015"; Flags: waituntilterminated skipifdoesntexist; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; StatusMsg: "Installing Microsoft Visual C++ 2015 Redistributable"; Check: VCRedistNeedsInstall()
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "SAUtils.dll /tlb:SAUtils.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering SpeechToolsUtils"
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.mmedia.dll /tlb:yeti.mmedia.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.mmedia"
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.wmfsdk.dll /tlb:yeti.wmfsdk.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.wmfsdk"
@@ -156,6 +156,7 @@ const
   { Microsoft Visual C++ 2012 x86 Minimum Runtime - 11.0.61030.0 (Update 4) }
   VC_2012_REDIST_MIN_UPD4_X86 = '{BD95A8CD-1D9F-35AD-981A-3E7925026EBB}';
   VC_2012_REDIST_MIN_UPD4_X64 = '{CF2BEA3C-26EA-32F8-AA9B-331F7E34BA97}';
+
   { Microsoft Visual C++ 2012 x86 Additional Runtime - 11.0.61030.0 (Update 4)  }
   VC_2012_REDIST_ADD_UPD4_X86 = '{B175520C-86A2-35A7-8619-86DC379688B9}';
   VC_2012_REDIST_ADD_UPD4_X64 = '{37B8F9C7-03FB-3253-8781-2517C99D7C00}';
@@ -175,11 +176,11 @@ const
   VC_2015_REDIST_X64_ADD = '{BC958BD2-5DAC-3862-BB1A-C1BE0790438D}';
                                 
   { Visual C++ 2015 Redistributable 14.0.23506 }
-  VC_2015_REDIST_X86_MIN_B = '{A1C31BA5-5438-3A07-9EEE-A5FB2D0FDE36}';
+  VC_2015_REDIST_X86_14_0_23506 = '{A1C31BA5-5438-3A07-9EEE-A5FB2D0FDE36}';
 
   { Visual C++ 2015 Redistributable 14.0.24210 }
-  VC_2015_REDIST_X86 = '{8FD71E98-EE44-3844-9DAD-9CB0BBBC603C}';
-  VC_2015_REDIST_X64 = '{C0B2C673-ECAA-372D-94E5-E89440D087AD}';
+  VC_2015_REDIST_X86_14_0_24210 = '{8FD71E98-EE44-3844-9DAD-9CB0BBBC603C}';
+  VC_2015_REDIST_X64_14_0_24210 = '{C0B2C673-ECAA-372D-94E5-E89440D087AD}';
 
 function MsiQueryProductState(szProduct: string): INSTALLSTATE; 
   external 'MsiQueryProductState{#AW}@msi.dll stdcall';
@@ -191,7 +192,7 @@ end;
 
 function VCRedistNeedsInstall: Boolean;
 begin
-  Result := not (VCVersionInstalled(VC_2015_REDIST_X86_MIN));
+  Result := not (VCVersionInstalled(VC_2015_REDIST_X86_14_0_24210));
   if Result then
   begin
      Log('Installing VS Redistributable')
@@ -210,8 +211,8 @@ var
   sUnInstPath: String;
   sUnInstallString: String;
 begin
-  // VS 2015 minimum runtime key 
-  sUnInstPath := 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A1C31BA5-5438-3A07-9EEE-A5FB2D0FDE36}';
+  // VS 2015 24210 runtime key 
+  sUnInstPath := 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8FD71E98-EE44-3844-9DAD-9CB0BBBC603C}';
   sUnInstallString := '';
   if not RegQueryStringValue(HKEY_LOCAL_MACHINE, sUnInstPath, 'UninstallString', sUnInstallString) then
       RegQueryStringValue(HKEY_CURRENT_USER, sUnInstPath, 'UninstallString', sUnInstallString);

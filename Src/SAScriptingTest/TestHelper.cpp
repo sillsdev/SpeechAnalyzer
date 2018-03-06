@@ -59,10 +59,14 @@ string TestHelper::CopyWaveFile(LPCSTR srcDir, LPCSTR destDir, LPCSTR filename) 
 }
 
 string TestHelper::CreateListFile(LPCSTR destDir, LPCSTR waveFile, LPCSTR showCmd) {
-	return CreateListFile(destDir, waveFile, showCmd, 50, 50);
+	return CreateListFile(destDir, waveFile, showCmd, 50, 50, 0, 30000);
 }
 
 string TestHelper::CreateListFile(LPCSTR destDir, LPCSTR waveFile, LPCSTR showCmd, int speed, int volume) {
+	return CreateListFile(destDir, waveFile, showCmd, speed, volume, 0, 30000);
+}
+
+string TestHelper::CreateListFile(LPCSTR destDir, LPCSTR waveFile, LPCSTR showCmd, int speed, int volume, int start, int stop) {
 
 	string file;
 	file = MakePath(destDir, "demo.script");
@@ -70,18 +74,18 @@ string TestHelper::CreateListFile(LPCSTR destDir, LPCSTR waveFile, LPCSTR showCm
 	// write the file
 	FILE * pFile = NULL;
 	errno_t err = fopen_s(&pFile, file.c_str(), "w");
-	Assert::IsTrue(err==0);
+	Assert::IsTrue(err == 0);
 	fprintf(pFile, "[Settings]\n");
 	fprintf(pFile, "CallingApp = SpeechAnalyzer\n");
 	fprintf(pFile, "ShowWindow = %s\n", showCmd);
 	fprintf(pFile, "[Commands]\n");
 	fprintf(pFile, "Command0 = SelectFile(0)\n");
-	fprintf(pFile, "Command1 = Play(%d, %d, 0, 30000)\n",speed, volume);
+	fprintf(pFile, "Command1 = Play(%d, %d, %d, %d)\n", speed, volume, start, stop);
 	fprintf(pFile, "Command2 = Return(1)\n");
 	fprintf(pFile, "[AudioFiles]\n");
 	fprintf(pFile, "File0 = %s\n", waveFile);
 	fclose(pFile);
-	
+
 	return file;
 }
 
