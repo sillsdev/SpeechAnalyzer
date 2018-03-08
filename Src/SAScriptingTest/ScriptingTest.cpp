@@ -144,5 +144,41 @@ public:
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 39592, 79184);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
+
+	TEST_METHOD(TestSimplePlayback22kFullSpeedSecondHalfStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 19796, 39592);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestSimplePlayback22kHalfSpeedSecondHalfStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 19796, 39592);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestSimplePlayback44kStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo44k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show");
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestSimplePlayback44kHalfSpeedStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo44k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 0, 79184);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestSimplePlayback44kFullSpeedSecondHalfStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo44k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 39592, 79184);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestSimplePlayback44kHalfSpeedSecondHalfStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo44k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 39592, 79184);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
 	};
 }
