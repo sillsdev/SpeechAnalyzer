@@ -107,7 +107,7 @@ void CPrivateCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     CRect rWnd,rClip, rParent, rSect;
 
     if (pDC->IsPrinting()) {
-        rWnd    = printRect;
+        rWnd = printRect;
         rClip = printRect;
     } else {
         GetClientRect(rWnd);
@@ -193,7 +193,7 @@ void CPrivateCursorWnd::OnDrawHorizontalCursor(CDC * pDC, const CRect & printRec
     CRect rWnd,rClip, rParent, rSect;
 
     if (pDC->IsPrinting()) {
-        rWnd    = printRect;
+        rWnd = printRect;
         rClip = printRect;
     } else {
         GetClientRect(rWnd);

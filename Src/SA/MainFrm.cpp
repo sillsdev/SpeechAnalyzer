@@ -1408,9 +1408,6 @@ CSaDoc * CMainFrame::GetCurrDoc() {
     return pDoc;
 }
 
-
-
-
 /***************************************************************************/
 // CMainFrame::SetPrintingFlag
 // Sets the "is printing" state to true.  Passes on the setting to the

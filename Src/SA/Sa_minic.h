@@ -26,8 +26,6 @@ public:
     // Attributes
 protected:
     int m_iNCHeight;        // height of the mini-caption. not used for anything else.
-    int m_ixSizFrame;       // width of sizeable window frame
-    int m_iySizFrame;       // height of sizeable window frame
     BOOL m_bFocus;          // TRUE if this window has focus
     int m_nCaption;         // graph caption style
 
@@ -35,15 +33,14 @@ protected:
 public:
     virtual void SetGraphFocus(BOOL); // sets or resets the focus from this graph window and redraws the caption bar
     virtual void RedrawCaption();     // redraws the caption of this graph
-    void OnNcDraw(CDC * pDC, const CRect & printRect, BOOL printDoubleHeight);
+    void OnNcDraw(CDC * pDC, const CRect & printRect);
 private:
     // calculate the non-client areas (buttons, etc)
-    void CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL printDoubleHeight,
-                     LPRECT prcNC, LPRECT prcSysMenu, LPRECT prcCaption,
-                     LPRECT prcRightmost, LPRECT prcRightTwo, LPRECT prcRightOne,
-                     LPRECT prcFrame, BOOL bClientCoords = TRUE);
-
-    void DrawButton(CDC * pDC, UINT nIDResource, CRect * prButton); // draw transparent caption button
+    void CalcNCAreas(BOOL isPrinting, const CRect & printRect, LPRECT prcNC, LPRECT prcBar, LPRECT prcSysMenu, LPRECT prcCaption,
+                     LPRECT prcRightmost, LPRECT prcRightTwo, LPRECT prcRightOne);
+	void Darken(COLORREF & c);
+	void DrawButton(CDC * pDC, UINT nIDResource, CRect * prButton); // draw transparent caption button
+	void DrawCaption(CDC * pDC, LONG top, LONG left, LONG height, LONG width);
 
     // Generated message map functions
 protected:

@@ -128,7 +128,6 @@ enum EWordFilenameConvention CDlgSplitFile::GetWordFilenameConvention() {
     case 2:
         return WFC_REF_GLOSS;
     }
-    return WFC_REF_GLOSS;
 }
 
 enum EPhraseFilenameConvention CDlgSplitFile::GetPhraseFilenameConvention() {

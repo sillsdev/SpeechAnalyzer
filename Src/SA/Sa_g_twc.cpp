@@ -284,10 +284,10 @@ void CPlotTonalWeightChart::PaintHelper(CDC * pDC, CRect rWnd, CRect rClip,
 
         // calculate vertical scaling factor
         double fBase = pLegend->GetScaleBase() * pProcess->GetBinsPerSemitone();
-        double m_fVScale = pLegend->GetGridDistance() / fBase;
-        double dCenterPos = rWnd.bottom + (dScaleMin)*m_fVScale / pProcess->GetBinsPerSemitone();  // x-axis vertical position
+        double fVScale = pLegend->GetGridDistance() / fBase;
+        double dCenterPos = rWnd.bottom + (dScaleMin)*fVScale / pProcess->GetBinsPerSemitone();  // x-axis vertical position
 
-        pYScale = new CYScaleLinear(-m_fVScale, dCenterPos);
+        pYScale = new CYScaleLinear(-fVScale, dCenterPos);
     }
 
     CDataSource * pSource = new CDataSourceSimple(*pProcess);

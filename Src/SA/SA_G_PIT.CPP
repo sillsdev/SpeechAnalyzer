@@ -73,7 +73,7 @@ CPlotPitch::~CPlotPitch() {
 void CPlotPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc * pDoc = pView->GetDocument();
     // create pitch data
     CProcessPitch * pPitch = (CProcessPitch *)pDoc->GetPitch(); // get pointer to pitch object
     short int nResult = LOWORD(pPitch->Process(this, pDoc));    // process data
@@ -84,7 +84,6 @@ void CPlotPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     if (pPitch->IsStatusFlag(PROCESS_NO_PITCH)) {
         //temporarily disable till we think of something better.
         TRACE(_T("No data on %lp\n"),this);
-        CGraphWnd * pGraph = GetParent();
         if (!pGraph->GetPlot()->IsKindOf(RUNTIME_CLASS(CMultiPlotWnd))) {
             m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOVOICING, &rWnd);
         }

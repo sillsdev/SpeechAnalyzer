@@ -1915,7 +1915,7 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     double scaleY = (double)((1.0 * printRect->Height()) / graphRect.Height());
 
     // draw the window border
-    OnNcDraw(pDC, *printRect, TRUE);
+    OnNcDraw(pDC, *printRect);
 
     // phase 1 - get the CRect's
     m_pPlot->GetWindowRect(plotRect);

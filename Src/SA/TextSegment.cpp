@@ -196,31 +196,29 @@ int CTextSegment::CheckPosition(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
             }
         }
         return nTextIndex;
-    } else { // Add
-        if (pDoc->GetSegment(m_nMasterType)->IsEmpty()) {
-            //TRACE("no segment\n");
-            return -1;
-        }
-        if (IsEmpty()) {
-            return 0;    // No Text in Segment insert at 0 (Start)
-        }
-        nTextIndex = 0; // GetNext does not work for -1
-        while ((nTextIndex != -1) && (GetOffset(nTextIndex) < dwAlignedStart)) {
-            nTextIndex = GetNext(nTextIndex);
-        }
-
-        if (nTextIndex == -1) {
-            return GetOffsetSize();    // Insert at End
-        }
-
-        if (GetOffset(nTextIndex) == dwAlignedStart) {
-            return -1;
-        }
-
-        return nTextIndex;
     }
-    TRACE("unhandled rejection\n");
-    return -1;
+
+	// Add
+    if (pDoc->GetSegment(m_nMasterType)->IsEmpty()) {
+        //TRACE("no segment\n");
+        return -1;
+    }
+    if (IsEmpty()) {
+        return 0;    // No Text in Segment insert at 0 (Start)
+    }
+    nTextIndex = 0; // GetNext does not work for -1
+    while ((nTextIndex != -1) && (GetOffset(nTextIndex) < dwAlignedStart)) {
+        nTextIndex = GetNext(nTextIndex);
+    }
+
+    if (nTextIndex == -1) {
+        return GetOffsetSize();    // Insert at End
+    }
+
+    if (GetOffset(nTextIndex) == dwAlignedStart) {
+        return -1;
+    }
+    return nTextIndex;
 }
 
 // SDM 1.06.5

@@ -165,7 +165,7 @@ void CStopCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     CRect rWnd,rClip, rParent, rSect;
 
     if (pDC->IsPrinting()) {
-        rWnd    = printRect;
+        rWnd = printRect;
         rClip = printRect;
     } else {
         GetClientRect(rWnd);

@@ -18,167 +18,184 @@ public:
 		tempDir = TestHelper::GetTempDir();
 		devHome = TestHelper::GetDevHome();
 	}
-
-	TEST_METHOD(TestSimpleShowGarbage) {
+	// test the SHOW command
+	TEST_METHOD(TestShowGarbage) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Garbage");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimpleShowHide) {
+	TEST_METHOD(TestShowHide) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Hide");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimpleShowShow) {
+	TEST_METHOD(TestShowShow) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimpleShowRestore) {
+	TEST_METHOD(TestShowRestore) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Restore");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimpleShowMaximize) {
+	TEST_METHOD(TestShowMaximize) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Maximize");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimpleShowMinimize) {
+	TEST_METHOD(TestShowMinimize) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Minimize");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimpleShowSized) {
+	TEST_METHOD(TestShowSized) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Size(0, 0, 400, 200)");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimpleShowNone) {
+	TEST_METHOD(TestShowNone) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "None");
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlaybackNormal) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show");
-		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
-	}
-
-	TEST_METHOD(TestSimplePlaybackZero) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 0, 0);
-		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
-	}
-
-	TEST_METHOD(TestSimplePlayback100) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100);
-		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
-	}
-
-	TEST_METHOD(TestSimplePlayback50) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100);
-		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
-	}
-
-	TEST_METHOD(TestSimplePlaybackMax) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 333, 100);
-		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
-	}
-
-	TEST_METHOD(TestSimplePlaybackBelowRange) {
+	// RANGE TESTS
+	TEST_METHOD(TestRangeBelow) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", -1, -1);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlaybackAboveRange) {
+	TEST_METHOD(TestRangeAbove) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 500, 500);
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 1000, 1000);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback22kFullSpeedSecondHalf) {
+	// test the VOLUME parameter
+	TEST_METHOD(TestVolumeZero) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show",100, 0);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestVolumeHalf) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 50);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestVolumeFull) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	// test the SPEED parameter
+	TEST_METHOD(TestSpeedZero) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 0, 100);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestSpeedHalf) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestSpeedFull) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	// test the POSITION parameters
+	TEST_METHOD(TestPosition22kCompleteMono) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 0, 39592);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestPosition22kFirstHalfMono) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 0, 19796);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestPosition22kSecondHalfMono) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 19796, 39592);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback22kHalfSpeedSecondHalf) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test22k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 19796, 39592);
+	TEST_METHOD(TestPosition22kCompleteStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 0, 39592);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback44k) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test44k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show");
+	TEST_METHOD(TestPosition22kFirstHalfStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo22k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 0, 19796);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback44kHalfSpeed) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test44k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 0, 79184);
-		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
-	}
-
-	TEST_METHOD(TestSimplePlayback44kFullSpeedSecondHalf) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test44k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 39592, 79184);
-		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
-	}
-
-	TEST_METHOD(TestSimplePlayback44kHalfSpeedSecondHalf) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test44k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 39592, 79184);
-		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
-	}
-
-	TEST_METHOD(TestSimplePlayback22kFullSpeedSecondHalfStereo) {
+	TEST_METHOD(TestPosition22kSecondHalfStereo) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo22k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 19796, 39592);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback22kHalfSpeedSecondHalfStereo) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo22k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 19796, 39592);
+	TEST_METHOD(TestPosition44kCompleteMono) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test44k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 0, 79184);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback44kStereo) {
+	TEST_METHOD(TestPosition44kFirstHalfMono) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test44k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 0, 39592);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestPosition44kSecondHalfMono) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "test44k.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 39592, 79184);
+		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
+	}
+
+	TEST_METHOD(TestPosition44kCompleteStereo) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo44k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 0, 79184);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback44kHalfSpeedStereo) {
+	TEST_METHOD(TestPosition44kFirstHalfStereo) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo44k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 0, 79184);
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 0, 39592);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback44kFullSpeedSecondHalfStereo) {
+	TEST_METHOD(TestPosition44kSecondHalfStereo) {
 		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo44k.wav");
 		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 39592, 79184);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
 
-	TEST_METHOD(TestSimplePlayback44kHalfSpeedSecondHalfStereo) {
-		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "teststereo44k.wav");
-		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 50, 100, 39592, 79184);
+	TEST_METHOD(TestChFrenchStereo) {
+		string waveFile = TestHelper::CopyWaveFile(TestHelper::MakePath(devHome.c_str(), "test\\samples\\scripting").c_str(), tempDir.c_str(), "chfrenchstereo.wav");
+		string listFile = TestHelper::CreateListFile(tempDir.c_str(), waveFile.c_str(), "Show", 100, 100, 6900, 14800);
 		TestHelper::LaunchSA(devHome.c_str(), listFile.c_str());
 	}
+
 	};
 }

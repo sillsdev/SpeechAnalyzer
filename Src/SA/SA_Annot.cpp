@@ -1336,7 +1336,7 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     CRect rClip;
 
     if (pDC->IsPrinting()) {
-        rWnd  = printRect;
+        rWnd = printRect;
         rClip = printRect;
     } else {
         GetClientRect(rWnd);

@@ -48,7 +48,7 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     CRect rClip; // get invalid region
 
     if (pDC->IsPrinting()) {
-        rWnd  = printRect;
+        rWnd = printRect;
         rClip = printRect;
     } else {
         GetClientRect(rWnd);

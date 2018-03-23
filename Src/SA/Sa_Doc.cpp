@@ -5167,9 +5167,6 @@ BOOL CSaDoc::AdvancedParseWord() {
 	POSITION pos = GetFirstViewPosition();
 	CSaView * pView = (CSaView *)GetNextView(pos);
 
-	// add the gloss transcription bar to all views
-	pView->SendMessage(WM_COMMAND, ID_GLOSS_ALL);
-
 	RestartAllProcesses();
 
 	DeleteSegmentContents(REFERENCE);

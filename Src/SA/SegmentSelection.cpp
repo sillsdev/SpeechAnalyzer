@@ -392,9 +392,8 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
 * the segments or their selection
 ***************************************************************************/
 void CSegmentSelection::Update(CSaView * pView, BOOL bClearVirtual) {
-	TRACE("Update\n");
+
 	if (pView->IsAnyAnnotationSelected()) {
-		TRACE("annotation selected\n");
 		// Deselect Virtual Selection
 		if (m_bVirtual) {
 			RefreshAnnotation(pView, m_nType);
@@ -409,7 +408,6 @@ void CSegmentSelection::Update(CSaView * pView, BOOL bClearVirtual) {
 		m_dwDuration = pSegment->GetDuration(nSelection);
 		return;
 	}
-	TRACE("nothing selected\n");
 	// no annotations were selected
 	if ((bClearVirtual) && (m_bVirtual)) {
 		RefreshAnnotation(pView, m_nType);

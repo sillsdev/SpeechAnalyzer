@@ -184,13 +184,12 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
         }
 
         // Set start and end of plot.
-        int nFirstX, nLastX, y;
-        nFirstX = rClip.left;
+        int nFirstX = rClip.left;
         if (nFirstX > 0) {
 			// one pixel before to restore line entering left edge of clip region
             nFirstX--;
         }
-        nLastX = rClip.right;
+        int nLastX = rClip.right;
         if (nLastX < rWnd.right) {
 			// one pixel after to restore line exiting right edge of clip region
             nLastX++;
@@ -201,7 +200,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
         PlotPrePaint(pDC, rWnd, rClip, NULL, true, true);
 
         // Calculate plot scale factors.
-        int   PlotYRange = rWnd.Height();
+        int PlotYRange = rWnd.Height();
 		// max spectral intensity to plot
         float PlotYScaleMax = (float)pSpectrumParms->nPwrUpperBound;
 		// min spectral intensity to plot
@@ -242,6 +241,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
                 if (pSpectrumParms->nScaleMode == DB) {
                     BandPwr = (BandPwr == 0.)?MIN_LOG_PWR:10.*log10((double)BandPwr) - pSpectrum->GetSpectralPowerRange().fdBRef;
                 }
+				int y;
                 if (BandPwr > PlotYScaleMax) {
                     y = PlotYRange;
                 } else if (BandPwr < PlotYScaleMin) {
@@ -277,7 +277,8 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
                     if (pSpectrumParms->nScaleMode == DB) {
                         BandPwr = (BandPwr == 0.)?MIN_LOG_PWR:10.*log10((double)BandPwr) - pSpectrum->GetSpectralPowerRange().fdBRef;
                     }
-                    if (BandPwr > PlotYScaleMax) {
+					int y;
+					if (BandPwr > PlotYScaleMax) {
                         y = PlotYRange;
                     } else if (BandPwr < PlotYScaleMin) {
                         y = 0;
@@ -334,7 +335,8 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
                 } else {
                     BandPwr /= LpcRef;
                 }
-                if (BandPwr > PlotYScaleMax) {
+				int y;
+				if (BandPwr > PlotYScaleMax) {
                     y = PlotYRange;
                 } else if (BandPwr < PlotYScaleMin) {
                     y = 0;
