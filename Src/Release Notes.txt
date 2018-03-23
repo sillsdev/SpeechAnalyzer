@@ -1,3 +1,9 @@
+SA - 3.1.0.145 3/23/2018
+- Fixed mini-caption bar rendering issues that occurs when Windows Themes are changed to 'classic' mode. 
+- Fixed mini-caption bar rendering issues that occur when window is minimized.  When minimized, the window now uses the 'Normal' format in all cases (e.g. without/without caption, no caption, etc).
+- Fixed mini-caption bar rendering issues that occur when window as in use.  Some edges were not properly calculated causing display problems.
+- Fixed bug that causes the Gloss Transcription bar to be displayed when performing 'Tools/Automatic Markup/Locate Words...'
+
 SA - 3.1.0.145 3/5/2018
 - Fixed a bug where for 'Tools/Automatic Markup/Locate Words...' that when Gloss English segments are created, they are created without a delimiter ('#').  When you attempt then edit the transcription, the first letter typed becomes the WORD('#') or BOOKMARK ('!') delimiter.
 - Fixed a bug where a crash occurs after editing a lone phonetic segment with the transcription dialog editor, and then deleting the segment.  The segment must be the only segment in the document.
