@@ -19,7 +19,10 @@ public:
     enum { IDD = IDD_FILEOPEN };
 
 protected:
-    afx_msg void OnPlay();
+	virtual BOOL CDlgFileOpen::OnInitDialog();
+	afx_msg void OnPlay();
+	afx_msg void OnStop();
+	afx_msg LRESULT OnMCINotify(WPARAM wParams, LPARAM lParams);
     DECLARE_MESSAGE_MAP()
 };
 
