@@ -1478,7 +1478,8 @@ void CSaApp::FileOpen(UINT openAsID) {
 	CString extension = _T("wav");
 	CString filename = _T("*.wav");
 	CString filter = _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Files (*.saxml) |*.saxml|Speech Analyzer Workbench Files (*.wb) |*.wb|ELAN Files (*.eaf)|*.eaf||");
-	CDlgFileOpen dlg(extension, filename, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, filter);
+
+	CDlgFileOpen dlg(extension, filename, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_EXPLORER, filter);
 	CString defaultDir;
 	if (m_bOpenMore) {
 		defaultDir = GetDefaultDir();

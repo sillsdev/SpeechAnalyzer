@@ -51,7 +51,6 @@ BEGIN_MESSAGE_MAP(CDlgStartMode, CDialog)
     ON_COMMAND(IDHELP, OnHelpStartMode)
 END_MESSAGE_MAP()
 
-//CDlgStartMode::CDlgStartMode(CWnd* pParent /*=NULL*/)
 CDlgStartMode::CDlgStartMode(CWnd * pParent) : CDialog(CDlgStartMode::IDD, pParent) {
     m_nDontShowAgain = FALSE;
     m_bShowDontShowAgainOption = TRUE;
@@ -172,7 +171,8 @@ BOOL CDlgStartMode::OnInitDialog() {
     //**************************************************
     GetDlgItem(IDC_STARTMODE_TEMPLATE)->EnableWindow(bEnableUserSpec);
     GetDlgItem(IDC_STATIC1)->EnableWindow(bEnableUserSpec);
-    GetDlgItem(IDC_PLAY)->EnableWindow(FALSE);
+	GetDlgItem(IDC_PLAY)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STOP)->EnableWindow(FALSE);
 
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -206,7 +206,10 @@ bool CDlgStartMode::Cleanup() {
 	CMainFrame * pMain = (CMainFrame*)AfxGetMainWnd();
     pMain->SetShowStartupDlg(!m_nDontShowAgain);
     pMain->SetStartDataMode(m_nDataMode);
-    return true;
+	player.Close();
+	GetDlgItem(IDC_PLAY)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STOP)->EnableWindow(FALSE);
+	return true;
 }
 
 //****************************************************************
@@ -267,15 +270,19 @@ void CDlgStartMode::OnPlay() {
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         CSaString file;
         file = pApp->GetMRUFilePath(nIndex - 2);
-        PlaySound(LPCTSTR(file), 0, SND_ASYNC | SND_NODEFAULT | SND_FILENAME);
-    }
+		player.Play(file, GetSafeHwnd());
+		GetDlgItem(IDC_PLAY)->EnableWindow(FALSE);
+		GetDlgItem(IDC_STOP)->EnableWindow(TRUE);
+	}
 }
 
 //****************************************************************
 // OnStop  Stop playback file
 //****************************************************************
 void CDlgStartMode::OnStop() {
-    PlaySound(NULL, 0, SND_PURGE | SND_NODEFAULT);
+	player.Stop();
+	GetDlgItem(IDC_PLAY)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STOP)->EnableWindow(FALSE);
 }
 
 //****************************************************************

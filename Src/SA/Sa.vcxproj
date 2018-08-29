@@ -183,6 +183,7 @@
     <ClCompile Include="IndependentSegment.cpp" />
     <ClCompile Include="LegendWnd.cpp" />
     <ClCompile Include="Lpc.cpp" />
+    <ClCompile Include="MCIPlayer.cpp" />
     <ClCompile Include="MusicPhraseSegment.cpp" />
     <ClCompile Include="ObjectIStream.cpp" />
     <ClCompile Include="ObjectOStream.cpp" />
@@ -436,6 +437,7 @@
     <ClInclude Include="IWaveNotifiable.h" />
     <ClInclude Include="LegendWnd.h" />
     <ClInclude Include="Lpc.h" />
+    <ClInclude Include="MCIPlayer.h" />
     <ClInclude Include="mshflexgrid.h" />
     <ClInclude Include="MusicPhraseSegment.h" />
     <ClInclude Include="ObjectIStream.h" />

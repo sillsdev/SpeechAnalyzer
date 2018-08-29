@@ -14,6 +14,8 @@
 #ifndef _SA_START_H
 #define _SA_START_H
 
+#include "MCIPlayer.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CDlgStartMode dialog
 // RLJ - April 18, 2000
@@ -37,8 +39,8 @@ public:
     // Attributes
 private:
     CSaApp * pSaApp;
-
     CFont m_Font;
+	CMCIPlayer player;
 
     // Implementation
 public:
