@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 3, 1, 0, 147
+FILEVERSION 3, 1, 0, 148
 PRODUCTVERSION 2, 0, 0, 0
 FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BLOCK "040904e4"
 BEGIN
 VALUE "CompanyName", "SIL International"
 VALUE "FileDescription", "Speech Analyzer Resource DLL"
-VALUE "FileVersion", "v3.1.0.147"
+VALUE "FileVersion", "v3.1.0.148"
 VALUE "InternalName", "SA_ENU"
 VALUE "LegalCopyright", "© 1996-2018 SIL International (MSEA)"
 VALUE "OriginalFilename", "SA_ENU.dll"
@@ -3732,7 +3732,6 @@ MENUITEM "Snapshot Spectrogram\tEnter", ID_RESTART_PROCESS
 MENUITEM SEPARATOR
 POPUP "Synthesis"
 BEGIN
-MENUITEM "MBROLA Synthesis", ID_SYNTHESIS
 MENUITEM "Klatt Waveform Synthesizer", ID_KLATT_FRAGMENTS
 MENUITEM "Klatt IPA Text Synthesizer", ID_KLATT_IPA_BLEND
 MENUITEM "&LPC Vocal Tract Synthesizer", ID_SYNTHESIS_VTRACT
@@ -3815,7 +3814,6 @@ MENUITEM "Snapshot Spectrogram\tEnter", ID_RESTART_PROCESS
 MENUITEM SEPARATOR
 POPUP "Synthesis"
 BEGIN
-MENUITEM "MBROLA Synthesis", ID_SYNTHESIS
 MENUITEM "Klatt Waveform Synthesizer", ID_KLATT_FRAGMENTS
 MENUITEM "Klatt IPA Text Synthesizer", ID_KLATT_IPA_BLEND
 MENUITEM "&LPC Vocal Tract Synthesizer", ID_SYNTHESIS_VTRACT
