@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(CDlgStartMode, CDialog)
     ON_LBN_SELCHANGE(IDC_RECENTLIST, OnSelchangeRecentlist)
     ON_BN_CLICKED(IDC_STOP, OnStop)
     ON_COMMAND(IDHELP, OnHelpStartMode)
+	ON_MESSAGE(MM_MCINOTIFY, OnMCINotify)
 END_MESSAGE_MAP()
 
 CDlgStartMode::CDlgStartMode(CWnd * pParent) : CDialog(CDlgStartMode::IDD, pParent) {
@@ -196,6 +197,14 @@ void CDlgStartMode::OnCloseButton() {
     }
     CDialog::OnOK();
 }
+
+LRESULT CDlgStartMode::OnMCINotify(WPARAM wParam, LPARAM) {
+	player.Stop();
+	GetDlgItem(IDC_PLAY)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STOP)->EnableWindow(FALSE);
+	return 0;
+}
+
 
 //****************************************************************
 //****************************************************************

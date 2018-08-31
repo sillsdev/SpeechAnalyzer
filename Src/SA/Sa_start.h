@@ -59,7 +59,8 @@ protected:
     afx_msg void OnPlay();
     afx_msg void OnSelchangeRecentlist();
     afx_msg void OnStop();
-    DECLARE_MESSAGE_MAP()
+	afx_msg LRESULT OnMCINotify(WPARAM wParams, LPARAM lParams);
+	DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_START_H
