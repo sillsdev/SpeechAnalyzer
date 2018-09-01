@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA"
-#define MyAppVersion "3.1.0.147"
+#define MyAppVersion "3.1.0.148"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -39,7 +39,6 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 Source: "C:\Working\SIL\MSEA\Release\SA.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Release\SA.exe"; DestDir: "{app}"; DestName: "SAServer.exe"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\mbrola.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Release\SA_DSP.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Release\SA_ENU.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Release\SA_DEU.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -98,6 +97,7 @@ Name: "{app}\Training"
 Type: files; Name: "{app}\SA MSEA Release Notes.txt"
 Type: files; Name: "{app}\SA MSEA Roadmap.txt"
 Type: files; Name: "{app}\Roadmap.txt"
+Type: files; Name: "{app}\mbrola.dll"
 
 [UninstallDelete]
 Type: files; Name: "{app}\SAUtils.tlb"

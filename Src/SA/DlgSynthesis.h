@@ -30,7 +30,6 @@ public:
 public:
     void OnHelpSynthesis();
     void OnHelp();
-    CDlgMbrola * m_pDlgMbrolaPage;
 
     CButton m_cOK;
     // CButton m_cHelp;

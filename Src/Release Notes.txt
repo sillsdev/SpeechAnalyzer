@@ -1,3 +1,7 @@
+SA - 3.1.0.147 9/1/2018
+-Fixed bug where Play and Stop buttons on Start dialog weren't restored after playback completed.
+-Removed MBROLA feature.
+
 SA - 3.1.0.147 8/28/2018
 - Fixed bug where the 'Open' and 'Open Startup' dialog boxes were not able to play .mp3 files.
 

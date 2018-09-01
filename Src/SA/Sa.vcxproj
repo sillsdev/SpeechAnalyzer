@@ -56,7 +56,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\Lang;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\src;..\uriparser\include;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\Lang;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\src;..\uriparser\include;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -105,7 +105,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\Lang;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\src;..\uriparser\include;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\Lang;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\src;..\uriparser\include;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -306,7 +306,6 @@
     <ClCompile Include="StringStream.cpp" />
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="DlgKlattAll.cpp" />
-    <ClCompile Include="DlgMbrola.cpp" />
     <ClCompile Include="DlgMultiChannel.cpp" />
     <ClCompile Include="DlgSplitFile.cpp" />
     <ClCompile Include="DlgSynthesis.cpp" />
@@ -570,7 +569,6 @@
     <ClInclude Include="StringStream.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="DlgKlattAll.h" />
-    <ClInclude Include="DlgMbrola.h" />
     <ClInclude Include="DlgSynthesis.h" />
     <ClInclude Include="DlgVocalTract.h" />
     <ClInclude Include="TaskBar.h" />
@@ -616,9 +614,6 @@
     <ClInclude Include="WaveWarp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MBROLA\mbrola.vcxproj">
-      <Project>{70e56708-42c2-4233-af98-dc57f936c968}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\SA_DSP\SA_DSP.vcxproj">
       <Project>{bb3f670e-28af-42ce-9c9f-de267d3cb986}</Project>
     </ProjectReference>

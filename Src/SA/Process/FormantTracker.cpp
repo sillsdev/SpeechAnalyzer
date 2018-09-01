@@ -393,6 +393,7 @@ SFormantFreq * CProcessFormantTracker::GetFormant(DWORD dwIndex) {
 }
 
 void CProcessFormantTracker::Dump(LPCSTR ofilename) {
+	/*
     return;
     FILE * ofile = NULL;
     errno_t err = fopen_s(&ofile, ofilename, "w");
@@ -423,4 +424,5 @@ void CProcessFormantTracker::Dump(LPCSTR ofilename) {
     fprintf(ofile, "%d values read\n",count);
     fflush(ofile);
     fclose(ofile);
+	*/
 }

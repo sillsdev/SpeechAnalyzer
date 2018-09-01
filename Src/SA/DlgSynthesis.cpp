@@ -15,7 +15,6 @@
 #include "stdafx.h"
 #include "DlgSynthesis.h"
 #include "mainfrm.h"
-#include "DlgMbrola.h"
 
 // The debugger can't handle symbols more than 255 characters long.
 // STL often creates symbols longer than that.
@@ -44,8 +43,6 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgSynthesis::CDlgSynthesis(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage)
     : CPropertySheet(pszCaption, pParent, iSelectPage) {
-    m_pDlgMbrolaPage = new CDlgMbrola;
-    AddPage(m_pDlgMbrolaPage);
 }
 
 
@@ -53,9 +50,6 @@ CDlgSynthesis::CDlgSynthesis(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPag
 // CDlgSynthesis::~CDlgSynthesis Destructor
 /***************************************************************************/
 CDlgSynthesis::~CDlgSynthesis() {
-    if (m_pDlgMbrolaPage) {
-        delete m_pDlgMbrolaPage;
-    }
 }
 
 

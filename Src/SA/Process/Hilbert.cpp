@@ -93,6 +93,7 @@ CZTransform CProcessHilbert::DelayHalf() {
 }
 
 void CProcessHilbert::Dump(LPCSTR ofilename) {
+	/*
     return;
     FILE * ofile = NULL;
     errno_t err = fopen_s(&ofile, ofilename, "w");
@@ -154,4 +155,5 @@ void CProcessHilbert::Dump(LPCSTR ofilename) {
     }
     fflush(ofile);
     fclose(ofile);
+	*/
 }
