@@ -702,7 +702,7 @@ Also, if the user imports another file, and it successfully loads, it will be se
 - Moved location of 'Split File' menu item so that it isn't near 'Save'
 - Added 'Redo' to toolbar
 - Fixed 'phrase level 2' bug (see #4)
-10) Added error message for 'Auto Reference Numbering'.
+- Added error message for 'Auto Reference Numbering'.
 
 # SA - 3.1.0.22 - 1/13/2013
 - Updates for 'Split File' feature.  Added controls to allow user to control whether data is overwritten or not.  Changed dialog layout.
