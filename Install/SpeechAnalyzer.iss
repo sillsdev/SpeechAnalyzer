@@ -21,7 +21,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\SIL\{#MyAppName}
 DefaultGroupName={#MyAppName}
-OutputDir=C:\Working\SIL\MSEA\Install\Output
+OutputDir=.\Output
 OutputBaseFilename=SpeechAnalyzerMSEA
 Compression=lzma
 SolidCompression=yes
@@ -37,38 +37,38 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
            
 [Files]
-Source: "C:\Working\SIL\MSEA\Release\SA.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\SA.exe"; DestDir: "{app}"; DestName: "SAServer.exe"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\SA_DSP.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\SA_ENU.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\SA_DEU.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\SAUtils.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\yeti.mmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Release\zGraph.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\Src\Release Notes.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\usp10.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Microsoft\vc2015\vc_redist.24212.x86.exe"; DestDir: "{app}\components\vc2015"; Flags: ignoreversion;
-Source: "C:\Working\SIL\MSEA\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\xerces\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\xerces\notice"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\xerces\license"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\What's New.pdf"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Speech_Analyzer_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Using_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\uriparser\uriparser_copying"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\iso639.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\SA.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\SA.exe"; DestDir: "{app}"; DestName: "SAServer.exe"; Flags: ignoreversion
+Source: "..\Release\SA_DSP.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\SA_ENU.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\SA_DEU.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\SAUtils.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\yeti.mmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\zGraph.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Src\Release Notes.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\usp10.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\Microsoft\vc2015\vc_redist.24212.x86.exe"; DestDir: "{app}\components\vc2015"; Flags: ignoreversion;
+Source: "..\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\xerces\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\xerces\notice"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\xerces\license"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\What's New.pdf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\Speech_Analyzer_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\Using_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\uriparser\uriparser_copying"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\iso639.txt"; DestDir: "{app}"; Flags: ignoreversion
 ;samples
-Source: "C:\Working\SIL\MSEA\DistFiles\Samples\*"; DestDir: "{userdocs}\Speech Analyzer\Samples"; Flags: ignoreversion
-Source: "C:\Working\SIL\MSEA\DistFiles\Samples\Music\*"; DestDir: "{userdocs}\Speech Analyzer\Samples\Music"; Flags: ignoreversion
+Source: "..\DistFiles\Samples\*"; DestDir: "{userdocs}\Speech Analyzer\Samples"; Flags: ignoreversion
+Source: "..\DistFiles\Samples\Music\*"; DestDir: "{userdocs}\Speech Analyzer\Samples\Music"; Flags: ignoreversion
 ;training
-Source: "C:\Working\SIL\MSEA\DistFiles\Training\*.pdf"; DestDir: "{app}\Training"; Flags: ignoreversion
+Source: "..\DistFiles\Training\*.pdf"; DestDir: "{app}\Training"; Flags: ignoreversion
 ;fonts
-Source: "C:\Working\SIL\MSEA\DistFiles\Fonts\DoulosSILR.ttf"; DestDir: "{fonts}"; FontInstall: "Doulos SIL"; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "C:\Working\SIL\MSEA\Lib\Fonts\Musique\MusiqueU.ttf"; DestDir: "{fonts}"; FontInstall: "Musique"; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "C:\Working\SIL\MSEA\Lib\Fonts\Musique\Musique Unicode.ttf"; DestDir: "{fonts}"; FontInstall: "Musique Unicode"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "..\DistFiles\Fonts\DoulosSILR.ttf"; DestDir: "{fonts}"; FontInstall: "Doulos SIL"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "..\Lib\Fonts\Musique\MusiqueU.ttf"; DestDir: "{fonts}"; FontInstall: "Musique"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "..\Lib\Fonts\Musique\Musique Unicode.ttf"; DestDir: "{fonts}"; FontInstall: "Musique Unicode"; Flags: onlyifdoesntexist uninsneveruninstall
 ;dtds for musicxml
-Source: "C:\Working\SIL\MSEA\DistFiles\MusicXML\dtds\*" ; DestDir: "{app}\dtds"; Flags: ignoreversion
+Source: "..\DistFiles\MusicXML\dtds\*" ; DestDir: "{app}\dtds"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
