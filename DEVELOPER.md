@@ -18,7 +18,10 @@ The installation file *vc_redist.24212.x86.exe* is stored in the project subdire
 
 # Build Procedure
 To build Speech Analyzer, do the following:
-1. Obtain the source code from GitHub.  The checkout will take a while.
+1. Obtain the source code from GitHub.  The checkout will take a while. Note: Src/xerces-c is a submodule so you'll need to clone with:
+```bash
+git clone --recurse-submodules https://github.com/sillsdev/SpeechAnalyzer
+```
 1. Open Visual Studio 2015 and select and open the solution file : *SpeechAnalyzer\SpeechAnalyzer.sln.*
 1. On the menu bar, select the *Debug* or *Release* configuration.  If you want to build a installer executable later on, you will need to select the *Release* configuration.
 1. In the solution explorer, right click on the *SA* project and select the *Set as Startup Project* menu item.
