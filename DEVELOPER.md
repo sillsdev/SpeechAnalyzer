@@ -33,6 +33,11 @@ The xerces-c library needs to be built for Speech Analyzer.
 
 Make note of these files because you will also copy them later for the Speech Analyzer build.
 
+## Install Fonts
+Some of the following fonts in `Lib\Fonts\Musique` need to be installed for using the music features:
+* Musique Unicode.ttf
+* MusicqueU.ttf
+
 # Build Speech Analyzer
 To build Speech Analyzer, do the following:
 1. Open Visual Studio 2019 as Administrator and select and open the solution file : *SpeechAnalyzer\SpeechAnalyzer.sln.*
