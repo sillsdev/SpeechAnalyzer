@@ -15,7 +15,7 @@
 *
 * Since the Ref+space+Gloss string will become the filename, protect the
 * Windows Write function from crashing by testing for invalid characters
-* in the string (i.e. \ / : * ? “ < > | );
+* in the string (See FilterName)
 * If you find one I suggest you replace it with a hyphen so the user knows
 * something is not correct.
 *
@@ -132,7 +132,7 @@ wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameC
 *
 * Since the Ref+space+Gloss string will become the filename, protect the
 * Windows Write function from crashing by testing for invalid characters
-* in the string (i.e. \ / : * ? “ < > | );
+* in the string (See FilterName);
 * If you find one I suggest you replace it with a hyphen so the user knows
 * something is not correct.
 *
@@ -683,6 +683,8 @@ int ExportPhraseSegment(CMusicPhraseSegment * seg, int index, wstring & filename
 
 /**
 * filters a segment name so that it is usable in a filename
+* (i.e. \ / : * ? " “ < > | )
+* Sanitized with '-' character so user knows something is not quite correct.
 */
 wstring FilterName(LPCTSTR text) {
     wstring result;
@@ -697,6 +699,7 @@ wstring FilterName(LPCTSTR text) {
         case ':':
         case '*':
         case '?':
+        case '"':
         case '“':
         case '<':
         case '>':
