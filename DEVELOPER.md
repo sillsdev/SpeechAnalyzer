@@ -34,9 +34,9 @@ The xerces-c library needs to be built for Speech Analyzer.
 Make note of these files because you will also copy them later for the Speech Analyzer build.
 
 ## Install Fonts
-Some of the following fonts in `Lib\Fonts\Musique` need to be installed for using the music features:
-* Musique Unicode.ttf
-* MusicqueU.ttf
+The following fonts need to be installed before using the music features:
+* [Lib\Fonts\Musique\Musique Unicode.ttf](https://github.com/sillsdev/SpeechAnalyzer/raw/master/Lib/Fonts/Musique/Musique%20Unicode.ttf)
+* [Lib\Fonts\Musique\MusicqueU.ttf](https://github.com/sillsdev/SpeechAnalyzer/raw/master/Lib/Fonts/Musique/MusiqueU.ttf)
 
 # Build Speech Analyzer
 To build Speech Analyzer, do the following:
