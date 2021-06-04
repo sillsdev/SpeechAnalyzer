@@ -20,11 +20,13 @@ git clone https://github.com/sillsdev/SpeechAnalyzer
 ## Build xerces-c
 The xerces-c library needs to be built for Speech Analyzer.
 1. Download the xerces-c 3.1 source from https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.4.zip and extract it into a folder `xerces-c\`
-1. Set the Windows Environment variable `XERCES_VC10_HOME` to the full path for you have xerces-c\
+1. Set the Windows Environment variable `XERCES_VC10_HOME` to the full path for you have xerces-c (no trailing slash)
 1. Open Visual Studio 2019 and select and open the solution file : *xerces-c\projects\Win32\VC14\xerces-all\xerces-all.sln*
-1. On the menu bar, select the *Release* configuration for *Win32*.
-1. Rebuild the solution.
+1. On the menu bar, rebuild the solution for both *Debug* and *Release* configurations for *Win32*.
 1. Create a `lib\` directory in xerces-c\
+1. Copy the following files from xerces-c\Build\Win32\VC14\Debug\ into the created lib\ directory:
+  * xerces-c_3_1D.dll
+  * xerces-c_3D.lib
 1. Copy the following files from xerces-c\Build\Win32\VC14\Release\ into the created lib\ directory:
   * xerces-c_3_1.dll
   * xerces-c_3.lib
@@ -33,7 +35,8 @@ Make note of these files because you will also copy them later for the Speech An
 
 # Build Speech Analyzer
 To build Speech Analyzer, do the following:
-1. Open Visual Studio 2019 and select and open the solution file : *SpeechAnalyzer\SpeechAnalyzer.sln.*
+1. Open Visual Studio 2019 as Administrator and select and open the solution file : *SpeechAnalyzer\SpeechAnalyzer.sln.*
+(Administrator rights needed to get SAUtils to register its library)
 1. On the menu bar, select the *Debug* or *Release* configuration.  If you want to build a installer executable later on, you will need to select the *Release* configuration.
 1. In the solution explorer, right click on the *SA* project and select the *Set as Startup Project* menu item.
 1. Use *Ctrl-Alt-F7* or select *Build/Rebuild Solution* from the menu to build the project.
@@ -54,8 +57,3 @@ To build Speech Analyzer, do the following:
 - Src\SA.rc : change both instances in FILEVERSION
 - Src\SA\Sa_Doc.cpp : change Lift reference.
 - Src\Lang\SA_DEU.rc : change both instances in FILEVERSION
-
-
-
-
-
