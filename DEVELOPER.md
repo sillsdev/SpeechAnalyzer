@@ -7,6 +7,11 @@ Speech Analyzer is a 32-bit application.  Use (x86) installers where appropriate
 Building Speech Analyzer requires the following software to be installed:
 1. Speech Analyzer.
 1. Microsoft Visual Studio 2019
+    1. Workloads
+        * Desktop development with C++
+    1. Individual components
+        * Windows 10 SDK
+        * C++ MFC for latest v142 build tools (x86 & x64)
 1. .NET Framework 4.6.1 Developer Pack
 1. InnoSetup 5.5.3 'unicode'.  You will need to install both isetup-5.5.3-unicode.exe and ispack-5.5.3-unicode.exe.  Innosetup is found at http://files.jrsoftware.org/is/5/.  Accept all defaults when installing the application(s).
 
@@ -36,7 +41,7 @@ Make note of these files because you will also copy them later for the Speech An
 ## Install Fonts
 The following fonts need to be installed before using the music features:
 * [Lib\Fonts\Musique\Musique Unicode.ttf](https://github.com/sillsdev/SpeechAnalyzer/raw/master/Lib/Fonts/Musique/Musique%20Unicode.ttf)
-* [Lib\Fonts\Musique\MusicqueU.ttf](https://github.com/sillsdev/SpeechAnalyzer/raw/master/Lib/Fonts/Musique/MusiqueU.ttf)
+* [Lib\Fonts\Musique\MusiqueU.ttf](https://github.com/sillsdev/SpeechAnalyzer/raw/master/Lib/Fonts/Musique/MusiqueU.ttf)
 
 # Build Speech Analyzer
 To build Speech Analyzer, do the following:
