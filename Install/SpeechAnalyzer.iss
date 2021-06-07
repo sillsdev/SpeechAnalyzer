@@ -43,6 +43,7 @@ Source: "..\Release\SA_DSP.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Release\SA_ENU.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Release\SA_DEU.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Release\SAUtils.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Release\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Release\yeti.mmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Release\zGraph.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -50,9 +51,8 @@ Source: "..\Src\Release Notes.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DistFiles\usp10.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DistFiles\Microsoft\vc2015\vc_redist.24212.x86.exe"; DestDir: "{app}\components\vc2015"; Flags: ignoreversion;
 Source: "..\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DistFiles\xerces\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DistFiles\xerces\notice"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DistFiles\xerces\license"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\Xerces\NOTICE"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\Xerces\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DistFiles\What's New.pdf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DistFiles\Speech_Analyzer_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DistFiles\Using_Help.chm"; DestDir: "{app}"; Flags: ignoreversion

@@ -58,7 +58,7 @@ To build Speech Analyzer, do the following:
 
 # Installer Creation
 1. Double click on the *SpeechAnalyzer\Install\SpeechAnalyzer.iss* to open it with InnoSetup/Studio.
-1. In InnoSetup, select *Project\Compile* or use *Ctrl-F9*.
+1. In InnoSetup, select *Build\Compile* or use *Ctrl-F9*.
 1. After the compile is completed, the installer executable will be stored in the *SpeechAnalyzer/Install/Output* subdirectory.  DO NOT commit this directory when committing the branch.
 
 # Updating version tags
