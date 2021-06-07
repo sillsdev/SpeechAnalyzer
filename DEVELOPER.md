@@ -13,7 +13,8 @@ Building Speech Analyzer requires the following software to be installed:
         * Windows 10 SDK
         * C++ MFC for latest v142 build tools (x86 & x64)
 1. .NET Framework 4.6.1 Developer Pack
-1. InnoSetup 5.5.3 'unicode'.  You will need to install both isetup-5.5.3-unicode.exe and ispack-5.5.3-unicode.exe.  Innosetup is found at http://files.jrsoftware.org/is/5/.  Accept all defaults when installing the application(s).
+1. InnoSetup 5.5.3 'unicode'.  You will need to install both isetup-5.5.3-unicode.exe and ispack-5.5.3-unicode.exe. 
+Innosetup is found at http://files.jrsoftware.org/is/5/.  Accept all defaults when installing the application(s).
 
 # Prerequisites
 1. Speech Analyzer.  Install Speech Analyzer to create application directories and install application dependencies that are needed by Speech Analyzer.  Data samples will also be installed.
@@ -24,9 +25,12 @@ git clone https://github.com/sillsdev/SpeechAnalyzer
 
 ## Build xerces-c
 The xerces-c library needs to be built for Speech Analyzer.
-1. Download the xerces-c 3.1 source from https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.4.zip and extract it into a folder `xerces-c\`
+1. Download the xerces-c 3.1 source from https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.4.zip 
+and extract it into a folder `xerces-c\`
 1. Set the Windows Environment variable `XERCES_VC10_HOME` to the full path for you have xerces-c (no trailing slash)
 1. Open Visual Studio 2019 and select and open the solution file : *xerces-c\projects\Win32\VC14\xerces-all\xerces-all.sln*
+1. Right-click on the top level solution and select *Retarget solution*. Accept the defaults to update all the projects 
+to Windows 10 SDK and platform toolset to v142.
 1. On the menu bar, rebuild the solution for both *Debug* and *Release* configurations for *Win32*.
 1. Create a `lib\` directory in xerces-c\
 1. Copy the following files from xerces-c\Build\Win32\VC14\Debug\ into the created lib\ directory:
