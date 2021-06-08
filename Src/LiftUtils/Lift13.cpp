@@ -20,10 +20,10 @@ using std::endl;
 using std::basic_string;
 
 using namespace XML;
-using namespace xercesc_3_1;
+using namespace xercesc;
 using namespace Lift13;
 
-void toDOM(xercesc_3_1::DOMDocument * pDoc, DOMElement * pElement, Element * element) {
+void toDOM(xercesc::DOMDocument * pDoc, DOMElement * pElement, Element * element) {
 
     AttributeList::iterator it = element->attributes.begin();
     while (it!=element->attributes.end()) {
@@ -47,7 +47,7 @@ void toDOM(xercesc_3_1::DOMDocument * pDoc, DOMElement * pElement, Element * ele
     }
 }
 
-xercesc_3_1::DOMDocument * toDOM(Document & document) {
+xercesc::DOMDocument * toDOM(Document & document) {
 
     DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(L"Core");
     if (impl == NULL) {
@@ -56,7 +56,7 @@ xercesc_3_1::DOMDocument * toDOM(Document & document) {
     if (document.element==NULL) {
         throw logic_error("document element is empty");
     }
-    xercesc_3_1::DOMDocument * pDoc = impl->createDocument(0, document.element->localname.c_str(), 0);
+    xercesc::DOMDocument * pDoc = impl->createDocument(0, document.element->localname.c_str(), 0);
     DOMElement * pElement = pDoc->getDocumentElement();
     toDOM(pDoc, pElement, document.element);
     return pDoc;
@@ -65,7 +65,7 @@ xercesc_3_1::DOMDocument * toDOM(Document & document) {
 void Lift13::write_document(Document & doc, LPCTSTR filename) {
 
     // convert to xerces DOM
-    xercesc_3_1::DOMDocument * pDoc = toDOM(doc);
+    xercesc::DOMDocument * pDoc = toDOM(doc);
 
     // checking file existence
     FileUtils::Remove(filename);

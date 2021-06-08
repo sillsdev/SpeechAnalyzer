@@ -9,7 +9,7 @@ using std::endl;
 
 using namespace Lift15;
 using namespace XML;
-using namespace xercesc_3_1;
+using namespace xercesc;
 
 /**
 * store the lift structure to filename

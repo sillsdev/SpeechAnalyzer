@@ -17,7 +17,7 @@
 #include "DlgImportElanSheet.h"
 #include "Elan.h"
 
-using namespace xercesc_3_1;
+using namespace xercesc;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -81,7 +81,7 @@ LPCTSTR GetPhraseLevel(EAnnotation ea) {
 //      <Annotation></Annotation>
 //   </MusicSegmentData>
 
-DOMElement * CreateElement(xercesc_3_1::DOMDocument * doc, EAnnotation ea, LPCTSTR value) {
+DOMElement * CreateElement(xercesc::DOMDocument * doc, EAnnotation ea, LPCTSTR value) {
     DOMElement * pElement = doc->createElement(GetAnnotationName(ea));
     pElement->appendChild(doc->createTextNode(value));
     return pElement;
@@ -127,7 +127,7 @@ void CSAXMLUtils::WriteSAXML(LPCTSTR filename, Elan::CAnnotationDocument & docum
     }
 
     try {
-        xercesc_3_1::DOMDocument * doc = impl->createDocument(0, L"SaAudioDocument", 0);
+        xercesc::DOMDocument * doc = impl->createDocument(0, L"SaAudioDocument", 0);
         DOMElement * rootElem = doc->getDocumentElement();
         rootElem->setAttribute(L"DocVersion",L"2");
         DOMElement * pElement = doc->createElement(L"SpeakerGender");
@@ -236,7 +236,7 @@ void CSAXMLUtils::WriteSAXML(LPCTSTR filename, Elan::CAnnotationDocument & docum
 * If this is the root node - (no parent ID) - then we will control the segment loop
 * If not, then we only add one entry for the specified parent ID
 */
-bool CSAXMLUtils::ProcessTier(EAnnotation type, list<EAnnotation> stack, xercesc_3_1::DOMDocument * doc, xercesc_3_1::DOMElement & parent, ElanMap & assignments, Elan::CAnnotationDocument & document, wstring parentID) {
+bool CSAXMLUtils::ProcessTier(EAnnotation type, list<EAnnotation> stack, xercesc::DOMDocument * doc, xercesc::DOMElement & parent, ElanMap & assignments, Elan::CAnnotationDocument & document, wstring parentID) {
 
     ElanMap::iterator it = assignments.find(type);
     if (it==assignments.end()) {
@@ -419,7 +419,7 @@ Elan::CTier * CSAXMLUtils::FindTier(Elan::CAnnotationDocument & document, wstrin
 }
 
 void CSAXMLUtils::AddPhraseSegments(EAnnotation atype,
-                                    xercesc_3_1::DOMDocument * doc,
+                                    xercesc::DOMDocument * doc,
                                     DOMElement & element,
                                     Elan::CAnnotationDocument & document,
                                     Elan::CTier & tier) {

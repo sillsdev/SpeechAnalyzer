@@ -1,7 +1,7 @@
 #include "Document.h"
 #include "XML.h"
 
-using namespace xercesc_3_1;
+using namespace xercesc;
 #include <vector>
 
 using std::vector;

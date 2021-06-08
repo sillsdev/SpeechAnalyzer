@@ -37,8 +37,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -143,6 +142,7 @@
     <ClCompile Include="ZTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="SA_DSP.def" />
   </ItemGroup>
   <ItemGroup>
@@ -181,5 +181,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets" Condition="Exists('..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets'))" />
+  </Target>
 </Project>

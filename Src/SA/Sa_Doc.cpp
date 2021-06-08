@@ -184,11 +184,11 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #pragma comment( lib, "elanutils")
 #pragma comment( lib, "fileutils")
 #pragma comment( lib, "uriparser")
-#ifdef _DEBUG
-#pragma comment( lib, "xerces-c_3d")
-#else
-#pragma comment( lib, "xerces-c_3")
-#endif
+//#ifdef _DEBUG
+//#pragma comment( lib, "xerces-c_3d")
+//#else
+//#pragma comment( lib, "xerces-c_3")
+//#endif
 
 //###########################################################################
 // CSaDoc

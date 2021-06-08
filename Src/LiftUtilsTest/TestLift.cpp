@@ -11,11 +11,6 @@ using namespace Lift13;
 #pragma comment( lib, "XMLUtils")
 #pragma comment( lib, "LiftUtils")
 #pragma comment( lib, "FileUtils")
-#ifdef _DEBUG
-#pragma comment( lib, "xerces-c_3D")
-#else
-#pragma comment( lib, "xerces-c_3")
-#endif
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\uriparser-0.8.0.1\win32\Visual_Studio_2010\uriparser.vcxproj" />
+    <None Include="packages.config" />
     <None Include="Res\2A.ICO" />
     <None Include="Res\2B.ICO" />
     <None Include="Res\2c.ico" />
@@ -200,10 +201,17 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets" Condition="Exists('..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets')" />
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties RESOURCE_FILE="SA.rc" />
     </VisualStudio>
   </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets'))" />
+  </Target>
 </Project>

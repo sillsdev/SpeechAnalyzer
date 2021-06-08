@@ -16,6 +16,9 @@
   <ItemGroup>
     <ClInclude Include="FileUtils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D8D07210-F968-4438-919C-456B0CDB6E26}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -86,5 +89,12 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets" Condition="Exists('..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets'))" />
+  </Target>
 </Project>
