@@ -51,7 +51,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../XMLUtils;$(XERCES_VC10_HOME)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../XMLUtils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -68,7 +68,7 @@
       </FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../XMLUtils;$(XERCES_VC10_HOME)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../XMLUtils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -84,7 +84,19 @@
   <ItemGroup>
     <ClCompile Include="Elan.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets" Condition="Exists('..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets')" />
+    <Import Project="..\..\packages\xerces-c-static.3.2.3.1\build\native\xerces-c-static.targets" Condition="Exists('..\..\packages\xerces-c-static.3.2.3.1\build\native\xerces-c-static.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xerces-c-static.redist.3.2.3.1\build\native\xerces-c-static.redist.targets'))" />
+    <Error Condition="!Exists('..\..\packages\xerces-c-static.3.2.3.1\build\native\xerces-c-static.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xerces-c-static.3.2.3.1\build\native\xerces-c-static.targets'))" />
+  </Target>
 </Project>

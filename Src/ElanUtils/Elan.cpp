@@ -25,7 +25,7 @@ using std::logic_error;
 using std::wstring;
 using std::auto_ptr;
 
-using namespace xercesc_3_1;
+using namespace xercesc;
 using namespace Elan;
 
 #ifdef _DEBUG

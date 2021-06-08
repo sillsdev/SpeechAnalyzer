@@ -7,7 +7,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using namespace XML;
-using namespace xercesc_3_1;
+using namespace xercesc;
 using namespace Lift14;
 
 /**

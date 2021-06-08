@@ -13,7 +13,7 @@
 #include "Element.h"
 #include "Document.h"
 
-using namespace xercesc_3_1;
+using namespace xercesc;
 
 namespace XML {
 
