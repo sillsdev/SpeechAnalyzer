@@ -1,4 +1,4 @@
-name: Build
+name: Build and Run Tests
 
 on: [push]
 
@@ -30,3 +30,15 @@ jobs:
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration="${{env.BUILD_CONFIGURATION}}" ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Setup VSTest and add to PATH
+      uses: darenm/Setup-VSTest@v1
+
+    - name: Run Unit Tests
+      working-directory: .\${{env.BUILD_CONFIGURATION}}
+      run: vstest.console.exe ElanUtilsTest.dll LiftUtilsTest.dll URIParserTest.dll WaveUtilsTest.dll
+
+    # This currently fails on github actions due to requiring the Speech Analyzer program to load up for scripting and testing
+    #- name: Run Integration Tests
+    #  working-directory: .\Release
+    #  run: vstest.console.exe SAScriptingTest.dll
