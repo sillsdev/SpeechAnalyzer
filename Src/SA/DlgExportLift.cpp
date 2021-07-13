@@ -127,19 +127,26 @@ BOOL CDlgExportLift::OnInitDialog() {
 
     map<wstring,wstring>::iterator it = countryCodes.begin();
     while (it!=countryCodes.end()) {
-		// the key is the language name
-		// the value is the language code
-		wstring name = it->first;
+		    // the key is the language name
+		    // the value is the language code
+		    wstring name = it->first;
+    
         ctlReferenceList.AddString(name.c_str());
         ctlOrthoList.AddString(name.c_str());
-        ctlGlossList.AddString(name.c_str());
         ctlGlossNatList.AddString(name.c_str());
-        ctlPhonemicList.AddString(name.c_str());
-        ctlPhoneticList.AddString(name.c_str());
-		ctlPhraseList1List.AddString(name.c_str());
-		ctlPhraseList2List.AddString(name.c_str());
+		    ctlPhraseList1List.AddString(name.c_str());
+		    ctlPhraseList2List.AddString(name.c_str());
         it++;
     }
+
+    // Hardcode english gloss
+    wstring english = L"English";
+    ctlGlossList.AddString(english.c_str());
+
+    // Hardcode phonemic and phonetic language lists to IPA
+    wstring ipa = L"International Phonetic Alphabet (IPA)";
+    ctlPhonemicList.AddString(ipa.c_str());
+    ctlPhoneticList.AddString(ipa.c_str());
 
     ctlReferenceList.SetCurSel(0);
     ctlOrthoList.SetCurSel(0);
@@ -147,8 +154,8 @@ BOOL CDlgExportLift::OnInitDialog() {
     ctlGlossNatList.SetCurSel(0);
     ctlPhonemicList.SetCurSel(0);
     ctlPhoneticList.SetCurSel(0);
-	ctlPhraseList1List.SetCurSel(0);
-	ctlPhraseList2List.SetCurSel(0);
+	  ctlPhraseList1List.SetCurSel(0);
+	  ctlPhraseList2List.SetCurSel(0);
 
     UpdateData(FALSE);
 
@@ -185,6 +192,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         ctlEditFolder.GetWindowTextW(buffer);
         settings.szPath = buffer;
 
+        // Gloss English is hardcoded to English
         ctlGlossList.GetWindowTextW(buffer);
         settings.gloss = lookupCountryCode(buffer);
 
@@ -197,11 +205,12 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         ctlOrthoList.GetWindowTextW(buffer);
         settings.ortho = lookupCountryCode(buffer);
 
+        // Hardcode Phonemic and Phonetic list
         ctlPhonemicList.GetWindowTextW(buffer);
-        settings.phonemic = lookupCountryCode(buffer);
+        settings.phonemic = L"-fonipa-x-emic";
 
         ctlPhoneticList.GetWindowTextW(buffer);
-        settings.phonetic = lookupCountryCode(buffer);
+        settings.phonetic = L"-fonipa-x-etic";
 
         ctlPhraseList1List.GetWindowTextW(buffer);
         settings.phrase1 = lookupCountryCode(buffer);

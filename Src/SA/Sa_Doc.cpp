@@ -7486,19 +7486,31 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", settings.ortho.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[ORTHO]))));
 			}
 
-			// add the phonetic (based on ortho language tag)
+			// Build the IPA language tags from Ortho if available, fall back to "und" (BCP-47 for undefined)
+
+			// add the phonetic
 			if (settings.bPhonetic) {
 				wstring phonetic;
-				phonetic.append(settings.ortho.c_str());
-				phonetic.append(L"-fonipa-x-etic");
+				if (settings.bOrtho) {
+					phonetic.append(settings.ortho.c_str());
+				} else {
+					phonetic.append(L"und");
+				}
+				phonetic.append(settings.phonetic);
+
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonetic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONETIC]))));
 			}
 
-			// add the phonemic (based on ortho language tag)
+			// add the phonemic
 			if (settings.bPhonemic) {
 				wstring phonemic;
-				phonemic.append(settings.ortho.c_str());
-				phonemic.append(L"-fonipa-x-emic");
+				if (settings.bOrtho) {
+					phonemic.append(settings.ortho.c_str());
+				}	else {
+					phonemic.append(L"und");
+				}
+				phonemic.append(settings.phonemic);
+
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonemic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONEMIC]))));
 			}
 
