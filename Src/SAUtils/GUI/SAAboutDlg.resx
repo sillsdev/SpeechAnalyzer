@@ -280,7 +280,7 @@
     <value>24</value>
   </data>
   <data name="lnkWebsite.Text" xml:space="preserve">
-    <value>For more information, visit http://www-01.sil.org/computing/sa</value>
+    <value>For more information, visit https://software.sil.org/speech-analyzer/</value>
   </data>
   <data name="&gt;&gt;lnkWebsite.Name" xml:space="preserve">
     <value>lnkWebsite</value>
