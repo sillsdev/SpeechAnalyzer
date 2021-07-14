@@ -20,12 +20,9 @@ string TestHelper::GetTempDir() {
 }
 
 string TestHelper::GetDevHome() {
-	
-	char buffer[512];
-	memset(buffer, 0, sizeof(buffer));
-	DWORD count = ::GetEnvironmentVariableA(SA_DEV_HOME, buffer, sizeof(buffer));
-	Assert::IsTrue(count != 0);
-	return string(buffer);
+	string result;
+	result.append("..\\");
+	return string(result);
 }
 
 string TestHelper::MakePath(LPCSTR partA, LPCSTR partB) {
