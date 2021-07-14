@@ -1,4 +1,5 @@
-SA - 3.1.0.149a 7/13/2021
+SA - 3.1.1.1 7/14/2021
+- Fix test sample paths for unit tests.
 - Fix phonemic and phonetic pronunciations in the LIFT export feature.
 - Fixed double-quote '"' problem when saving file names.
 - Get xerces dependency as nuget package.
