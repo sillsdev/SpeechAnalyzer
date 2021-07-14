@@ -2460,12 +2460,12 @@ FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     CONTROL         "Reference",IDC_EXTAB_REFERENCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,52,65,12
     CONTROL         "Phonetic",IDC_EXTAB_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,67,65,12
-    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,81,65,12
-    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,97,65,12
+    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",WS_TABSTOP,14,81,65,12
+    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",WS_TABSTOP,14,97,65,12
     CONTROL         "Gloss English",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,113,65,12
-    CONTROL         "Gloss National",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,127,65,12
-    CONTROL         "Phrase List 1",IDC_EXTAB_MUSIC_PL1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,142,65,12
-    CONTROL         "Phrase List 2",IDC_EXTAB_MUSIC_PL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,157,65,12
+    CONTROL         "Gloss National",IDC_EXTAB_GLOSS_NAT,"Button",WS_TABSTOP,14,127,65,12
+    CONTROL         "Phrase List 1",IDC_EXTAB_MUSIC_PL1,"Button",WS_TABSTOP,14,142,65,12
+    CONTROL         "Phrase List 2",IDC_EXTAB_MUSIC_PL2,"Button",WS_TABSTOP,14,157,65,12
     LTEXT           "For each transcription to be exported, please specify the language code that identifies the language used for the transcription.",IDC_STATIC,14,17,261,20
     LTEXT           "Language Code",IDC_STATIC,96,39,52,8
     COMBOBOX        IDC_LIST_REFERENCE,95,52,170,58,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP

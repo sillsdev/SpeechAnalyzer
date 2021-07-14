@@ -127,28 +127,25 @@ BOOL CDlgExportLift::OnInitDialog() {
 
     map<wstring,wstring>::iterator it = countryCodes.begin();
     while (it!=countryCodes.end()) {
-		// the key is the language name
-		// the value is the language code
-		wstring name = it->first;
+		    // the key is the language name
+		    // the value is the language code
+		    wstring name = it->first;
+    
         ctlReferenceList.AddString(name.c_str());
         ctlOrthoList.AddString(name.c_str());
-        ctlGlossList.AddString(name.c_str());
         ctlGlossNatList.AddString(name.c_str());
-        ctlPhonemicList.AddString(name.c_str());
-        ctlPhoneticList.AddString(name.c_str());
-		ctlPhraseList1List.AddString(name.c_str());
-		ctlPhraseList2List.AddString(name.c_str());
+		    ctlPhraseList1List.AddString(name.c_str());
+		    ctlPhraseList2List.AddString(name.c_str());
         it++;
     }
 
+    // Phonemic, Phonetic, and English Gloss already hard coded
+
     ctlReferenceList.SetCurSel(0);
     ctlOrthoList.SetCurSel(0);
-    ctlGlossList.SetCurSel(0);
     ctlGlossNatList.SetCurSel(0);
-    ctlPhonemicList.SetCurSel(0);
-    ctlPhoneticList.SetCurSel(0);
-	ctlPhraseList1List.SetCurSel(0);
-	ctlPhraseList2List.SetCurSel(0);
+	  ctlPhraseList1List.SetCurSel(0);
+	  ctlPhraseList2List.SetCurSel(0);
 
     UpdateData(FALSE);
 
@@ -169,10 +166,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
     DDX_Check(pDX, IDC_EXTAB_MUSIC_PL2, settings.bPhrase2);
     DDX_Control(pDX, IDOK, ctlButtonOK);
     DDX_Control(pDX, IDC_LIST_REFERENCE, ctlReferenceList);
-    DDX_Control(pDX, IDC_LIST_PHONEMIC, ctlPhonemicList);
-    DDX_Control(pDX, IDC_LIST_PHONETIC, ctlPhoneticList);
     DDX_Control(pDX, IDC_LIST_ORTHO, ctlOrthoList);
-    DDX_Control(pDX, IDC_LIST_GLOSS, ctlGlossList);
     DDX_Control(pDX, IDC_LIST_GLOSS_NAT, ctlGlossNatList);
     DDX_Control(pDX, IDC_LIST_MUSIC_PL1, ctlPhraseList1List);
     DDX_Control(pDX, IDC_LIST_MUSIC_PL2, ctlPhraseList2List);
@@ -185,8 +179,8 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         ctlEditFolder.GetWindowTextW(buffer);
         settings.szPath = buffer;
 
-        ctlGlossList.GetWindowTextW(buffer);
-        settings.gloss = lookupCountryCode(buffer);
+        // Gloss English is hardcoded to English
+        settings.gloss = L"en";
 
         ctlGlossNatList.GetWindowTextW(buffer);
         settings.glossNat = lookupCountryCode(buffer);
@@ -197,11 +191,10 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         ctlOrthoList.GetWindowTextW(buffer);
         settings.ortho = lookupCountryCode(buffer);
 
-        ctlPhonemicList.GetWindowTextW(buffer);
-        settings.phonemic = lookupCountryCode(buffer);
+        // Hardcode Phonemic and Phonetic list
+        settings.phonemic = L"-fonipa-x-emic";
 
-        ctlPhoneticList.GetWindowTextW(buffer);
-        settings.phonetic = lookupCountryCode(buffer);
+        settings.phonetic = L"-fonipa-x-etic";
 
         ctlPhraseList1List.GetWindowTextW(buffer);
         settings.phrase1 = lookupCountryCode(buffer);

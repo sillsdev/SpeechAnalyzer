@@ -7409,14 +7409,8 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			// build the pronunciation for phonetic
 			entry.pronunciation = Lift13::phonetic(L"pronunciation");
 
-			// add the phonetic
-			wstring buffer;
-			buffer.append(settings.phonetic);
-			buffer.append(L"-fonipa-x-etic");
-			entry.pronunciation[0].form.append(Lift13::form(L"form", buffer.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONETIC]))));
-
 			// add phonetic media file
-			{
+			if (settings.bGloss) {
 				wstring filename;
 				int index = FindNearestGlossIndex(gloss, dwStart, dwStop);
 				if (index >= 0) {
@@ -7441,7 +7435,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			}
 
 			// add PL1 media file
-			if (results[MUSIC_PL1].GetLength() > 0) {
+			if ((results[MUSIC_PL1].GetLength() > 0) && settings.bPhrase1) {
 				wstring filename;
 				int index = FindNearestPhraseIndex(pl1, dwStart, dwStop);
 				if (index >= 0) {
@@ -7463,8 +7457,8 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				}
 			}
 
-			// add PL1 media file
-			if (results[MUSIC_PL2].GetLength() > 0) {
+			// add PL2 media file
+			if ((results[MUSIC_PL2].GetLength() > 0) && settings.bPhrase2) {
 				wstring filename;
 				int index = FindNearestPhraseIndex(pl2, dwStart, dwStop);
 				if (index >= 0) {
@@ -7488,21 +7482,49 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 
 			// build the lexical unit
 			entry.lexical_unit = Lift13::multitext(L"lexical-unit");
-			entry.lexical_unit.get().form.append(Lift13::form(L"form", settings.ortho.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[ORTHO]))));
-			entry.lexical_unit.get().form.append(Lift13::form(L"form", settings.phonetic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONETIC]))));
+			if (settings.bOrtho) {
+				entry.lexical_unit.get().form.append(Lift13::form(L"form", settings.ortho.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[ORTHO]))));
+			}
 
-			wstring phonemic;
-			phonemic.append(settings.phonemic);
-			phonemic.append(L"-fonipa-x-emic");
-			entry.lexical_unit.get().form.append(Lift13::form(L"form", phonemic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONEMIC]))));
+			// Build the IPA language tags from Ortho if available, fall back to "und" (BCP-47 for undefined)
+
+			// add the phonetic
+			if (settings.bPhonetic) {
+				wstring phonetic;
+				if (settings.bOrtho) {
+					phonetic.append(settings.ortho.c_str());
+				} else {
+					phonetic.append(L"und");
+				}
+				phonetic.append(settings.phonetic);
+
+				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonetic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONETIC]))));
+			}
+
+			// add the phonemic
+			if (settings.bPhonemic) {
+				wstring phonemic;
+				if (settings.bOrtho) {
+					phonemic.append(settings.ortho.c_str());
+				}	else {
+					phonemic.append(L"und");
+				}
+				phonemic.append(settings.phonemic);
+
+				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonemic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONEMIC]))));
+			}
 
 			// build the field
-			entry.field = Lift13::field(L"field", L"Reference");
-			entry.field[0].form = Lift13::form(L"form", settings.reference.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[REFERENCE])));
+			if (settings.bReference) {
+				entry.field = Lift13::field(L"field", L"Reference");
+				entry.field[0].form = Lift13::form(L"form", settings.reference.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[REFERENCE])));
+			}
 
 			// build the sense field
-			entry.sense = Lift13::sense(L"sense", createUUID().c_str(), i);
-			entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.gloss.c_str(), Lift13::span(SPAN, results[GLOSS]));
+			if (settings.bGloss) {
+				entry.sense = Lift13::sense(L"sense", createUUID().c_str(), i);
+				entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.gloss.c_str(), Lift13::span(SPAN, results[GLOSS]));
+			}
 		}
 		document.entry.append(entry);
 	}

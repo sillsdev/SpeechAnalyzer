@@ -70,9 +70,6 @@ protected:
     BOOL bReferenceDflt;
 
     CComboBox ctlReferenceList;
-    CComboBox ctlPhonemicList;
-    CComboBox ctlPhoneticList;
-    CComboBox ctlGlossList;
     CComboBox ctlGlossNatList;
     CComboBox ctlPhraseList1List;
     CComboBox ctlPhraseList2List;
