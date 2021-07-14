@@ -16,16 +16,16 @@ int round2Int(double value) {
 }
 
 wstring buildResultPath(LPCTSTR filename) {
-    FileUtils::CreateFolder(L"\\working\\sil\\msea\\test\\samples\\out\\");
+    FileUtils::CreateFolder(L"..\\test\\samples\\out\\");
     wstring result;
-    result.append(L"\\working\\sil\\msea\\test\\samples\\out\\");
+    result.append(L"..\\test\\samples\\out\\");
     result.append(filename);
     return result;
 }
 
 wstring buildSourcePath(LPCTSTR filename) {
     wstring result;
-    result.append(L"\\working\\sil\\msea\\test\\samples\\");
+    result.append(L"..\\test\\samples\\");
     result.append(filename);
     return result;
 }
