@@ -1,4 +1,11 @@
-SA - 3.1.0.147 9/1/2018
+SA - 3.1.1.1 7/14/2021
+- Fix test sample paths for unit tests.
+- Fix phonemic and phonetic pronunciations in the LIFT export feature.
+- Fixed double-quote '"' problem when saving file names.
+- Get xerces dependency as nuget package.
+- Updated SA project and dependencies so that it is now built with Microsoft Visual Studio 2019.
+
+SA - 3.1.0.148 9/1/2018
 -Fixed bug where Play and Stop buttons on Start dialog weren't restored after playback completed.
 -Removed MBROLA feature.
 
