@@ -1412,10 +1412,10 @@ void CSaView::ExtractCountryCodes(LPCTSTR fullPath, map<wstring, wstring> & code
 		}
 	}
 
-	// pull in the 2-character country codes and the description
+	// pull in the BCP-47 tag and the description
 	list<wstring>::iterator it = lines.begin();
 	while (it != lines.end()) {
-		// we only extract if both the 2-character code and the name are present
+		// we only extract if both the BCP-47 tag and the name are present
 		wstring line = *it;
 		vector<wstring> tokens = CTextHelper::Tokenize(line, L"|");
 		if (tokens.size() > 3) {
