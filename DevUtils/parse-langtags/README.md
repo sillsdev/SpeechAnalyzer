@@ -68,7 +68,7 @@ npm run watch
 ### Debugging with Visual Studio Code
 Open Folder as a VS Code Project
 
-Edit your applicable parameters in [launch.json](./.vscode/launch.json). If using Windows paths, you'll need to escape the slashes (e.g. `-p "C:\\somewhere\\to\\paratext-project"`)
+Edit your applicable parameters in [launch.json](./.vscode/launch.json). If using Windows paths, you'll need to escape the slashes (e.g. `-p "C:\\somewhere\\to\\iso639.txt"`)
 
 -------------
 
