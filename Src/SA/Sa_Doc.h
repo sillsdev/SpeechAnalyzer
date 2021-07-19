@@ -467,6 +467,8 @@ private:
 
     void CreateSAXML(LPCTSTR filename, Elan::CAnnotationDocument & document, map<EAnnotation,wstring> & assignments);
 
+    void AppendFonipaTag(wstring& str, wstring privateUse);
+
     void NormalizePhoneticDependencies();
     int GetInsertionIndex(CSegment * pSegment, DWORD offset);
 

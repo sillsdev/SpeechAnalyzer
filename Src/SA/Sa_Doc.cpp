@@ -7496,7 +7496,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				} else {
 					phonetic.append(L"und");
 				}
-				phonetic.append(settings.phonetic);
+				AppendFonipaTag(phonetic, L"etic");
 
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonetic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONETIC]))));
 			}
@@ -7509,7 +7509,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				}	else {
 					phonemic.append(L"und");
 				}
-				phonemic.append(settings.phonemic);
+				AppendFonipaTag(phonemic, L"emic");
 
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonemic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONEMIC]))));
 			}
@@ -7529,6 +7529,22 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 		document.entry.append(entry);
 	}
 	return true;
+}
+
+/**
+* Merges the "fonipa-x-" variant to the language tag.
+* @param str - The language tag
+* @param privateUse - private use variant of "etic" or "emic"
+*/
+void CSaDoc::AppendFonipaTag(wstring & str, wstring privateUse) {
+	// Determine if str already contains private use variant
+	int index = str.find(L"-x-");
+	if (index > 0) {
+		str.insert(index + 3, privateUse + L"-");
+		str.insert(index, L"-fonipa");
+	} else {
+		str.append(L"-fonipa-x-" + privateUse);
+	}
 }
 
 bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings,

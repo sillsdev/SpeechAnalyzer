@@ -1,0 +1,7 @@
+# Dependencies
+node_modules
+
+langtags.json
+
+# Compiled Output files
+dist/
