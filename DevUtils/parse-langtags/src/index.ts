@@ -51,16 +51,30 @@ export class iso639Type {
           if (subtags.length > 2) {
             this.name += ', ';
           }
-        } else if (subtags[i] == l.region && l.regionname) {
-          this.name += l.regionname;
+        } else if (subtags[i] == l.region) {
+          if (l.regionname) {
+            this.name += l.regionname;
+          } else if (l.region == 'XK') {
+            // Industry practice of XK for Kosovo
+            // Reference: https://unicode.org/reports/tr35/#unicode_region_subtag_validity
+            this.name += 'Kosovo';
+          }
         } else if (subtags[i] == 'x') {
           // private-use variant
           this.name += 'x-' + subtags[i+1];
           break;
+        } else if (subtags[i] == 'valencia') {
+          // Valencian dialect of Catalan is registered in the Language Subtag Registry
+          this.name += 'Valencia';
         }
       }
       this.name += ')';
     }
+
+    // Since the output file is separated by '|' U+007C (VERTICAL LINE), we have to remove that
+    // character from any language names. Currently only affects "Hai|ǁom", which has iana name "Haiǁom".
+    // Note, some language names use 'ǀ' U+01C0 LATIN LETTER DENTAL CLICK which is OK
+    this.name = this.name.replace('|', '');
 
     this.localname = (l.localname) ? l.localname : '';
   }
@@ -88,7 +102,7 @@ let langtagsJson = loadLangtagsJson();
 
 let langtags : iso639Type[] = [];
 langtagsJson.forEach(l => {
-  if (l.full) {
+  if (l.full && l.full != 'x-bad-mru-Cyrl-RU') {
     let langtag: iso639Type = new iso639Type(l);
     langtags.push(langtag);
   }
