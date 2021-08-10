@@ -1385,8 +1385,8 @@ void CSaView::ExtractCountryCodes(LPCTSTR fullPath, map<wstring, wstring> & code
 	filepath.append(L"\\");
 	filepath.append(L"iso639.txt");
 
-  // Read UTF-8 file into wstring
-  // https://stackoverflow.com/questions/4775437/read-unicode-utf-8-file-into-wstring
+	// Read UTF-8 file into wstring
+	// https://stackoverflow.com/questions/4775437/read-unicode-utf-8-file-into-wstring
 	const std::locale empty_locale = std::locale::empty();
 	typedef std::codecvt_utf8<wchar_t> converter_type;
 	const converter_type* converter = new converter_type;
