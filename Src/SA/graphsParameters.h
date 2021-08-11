@@ -134,7 +134,8 @@ class CDlgParametersSpectroPage : public CPropertyPage {
 
 public:
     // graphId is the IDD_SPECTROGRAMA or B.
-    CDlgParametersSpectroPage(UINT dialogID, UINT graphId, const CSpectroParm * defaults);
+    CDlgParametersSpectroPage(UINT dialogID, UINT graphId, const CSpectroParm * defaults, 
+      DWORD nStartCursor, DWORD nStopCursor, double nDurationSec);
 
     void Apply();
 
@@ -148,6 +149,9 @@ protected:
     int     m_nFrequency;
     int     m_nMaxThreshold;
     int     m_nMinThreshold;
+    DWORD   m_nStartCursor;
+    DWORD   m_nStopCursor;
+    double  m_nDurationSec;
     BOOL m_bModified; // TRUE if page member data modified
     enum { IDD = IDD_PARAMETERSSPECTROPAGE };
     CStatic m_cMinStatic;
@@ -188,6 +192,7 @@ protected:
     afx_msg void OnModifiedFormants();
     afx_msg void OnMoreInfo();
     afx_msg void OnModifiedFormants(BOOL bMessage);
+    BOOL DurationAllowsFormants();
 
     DECLARE_MESSAGE_MAP()
 };
@@ -531,7 +536,7 @@ class CDlgGraphsParameters : public CPropertySheet {
 
 // Construction/destruction/creation
 public:
-    CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent);
+    CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent, DWORD nStartCursor, DWORD nStopCursor, double nDurationSec);
     ~CDlgGraphsParameters();// SDM 1.5Test10.3
 
     // Attributes

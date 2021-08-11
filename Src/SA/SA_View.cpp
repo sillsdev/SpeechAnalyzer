@@ -5117,7 +5117,8 @@ void CSaView::OnGraphsParameters() {
 	// create the property sheet according to the existing graphs
 	CDlgGraphsParameters * dlgGraphsParameters; // graph parameters dialog
 
-	dlgGraphsParameters = new CDlgGraphsParameters(szCaption, NULL);
+	double durationSec = pDoc->GetTimeFromBytes(m_dwStopCursor - m_dwStartCursor);
+	dlgGraphsParameters = new CDlgGraphsParameters(szCaption, NULL, m_dwStartCursor, m_dwStopCursor, durationSec);
 
 	// set workbench process
 	BOOL bProcessChange = FALSE;

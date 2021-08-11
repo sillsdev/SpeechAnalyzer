@@ -1044,7 +1044,8 @@ BEGIN_MESSAGE_MAP(CDlgParametersSpectroPage, CPropertyPage)
     ON_BN_CLICKED(IDC_SHOW_PITCH, OnModifiedFormants)
 END_MESSAGE_MAP()
 
-CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, const CSpectroParm * pSpectroParmDefaults) :
+CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, const CSpectroParm * pSpectroParmDefaults, 
+    DWORD nStartCursor, DWORD nStopCursor, double nDurationSec) :
     CPropertyPage(CDlgParametersSpectroPage::IDD, nID) {
 
     m_GraphId = graphId;
@@ -1063,6 +1064,9 @@ CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, con
     m_nFrequency = (UINT) pSpectroParmDefaults->nFrequency;
     m_nMaxThreshold = (UINT) pSpectroParmDefaults->nMaxThreshold;
     m_nMinThreshold = (UINT) pSpectroParmDefaults->nMinThreshold;
+    m_nStartCursor = nStartCursor;
+    m_nStopCursor = nStopCursor;
+    m_nDurationSec = nDurationSec;
     m_bModified = FALSE;
 }
 
@@ -1212,6 +1216,10 @@ BOOL CDlgParametersSpectroPage::OnInitDialog() {
     m_cSliderMin.SetPageSize(24);
     SetMaxThreshold(pSpectroParm->nMaxThreshold);
     SetMinThreshold(pSpectroParm->nMinThreshold);
+
+    // Enable checkbox to show formants if 0.5 sec < nDurationSec < 15 sec
+    GetDlgItem(IDC_FORMANTS)->EnableWindow(DurationAllowsFormants());
+
     OnModifiedFormants(FALSE);
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -1387,6 +1395,13 @@ void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage) {
     GetDlgItem(IDC_MORE_INFO)->EnableWindow(m_bShowFormants);
 }
 
+/***************************************************************************/
+// CDlgParametersSpectroPage::DurationAllowsFormants  Check if the duraction in seconds
+// allows for formants to be processed
+/***************************************************************************/
+BOOL CDlgParametersSpectroPage::DurationAllowsFormants() {
+  return ((m_nDurationSec > 0.5) && (m_nDurationSec < 15.0));
+}
 
 /***************************************************************************/
 // CDlgParametersSpectroPage::OnModifiedSmoothFormantTracks  Smooth formant tracks on/off changed
@@ -3501,7 +3516,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgGraphsParameters::CDlgGraphsParameters Constructor
 /***************************************************************************/
-CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
+CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent, DWORD nStartCursor, DWORD nStopCursor, double nDurationSec)
     : CPropertySheet(pszCaption, pParent) {
 
     m_pDlgSpectrogramPage = NULL;
@@ -3547,7 +3562,8 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
     }
 
     if (pView->GetGraphIndexForIDD(IDD_SPECTROGRAM) >= 0) {
-        m_pDlgSpectrogramPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SPECTROGRAM, IDD_SPECTROGRAM, pMainWnd->GetSpectrogramParmDefaults());
+        m_pDlgSpectrogramPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SPECTROGRAM, IDD_SPECTROGRAM, pMainWnd->GetSpectrogramParmDefaults(), 
+          nStartCursor, nStopCursor, nDurationSec);
         AddPage(m_pDlgSpectrogramPage);
         if (nFocusedID == IDD_SPECTROGRAM) {
             nPage = GetPageCount() - 1;
@@ -3556,7 +3572,8 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
 
 
     if (pView->GetGraphIndexForIDD(IDD_SNAPSHOT) >= 0) {
-        m_pDlgSnapshotPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SNAPSHOT, IDD_SNAPSHOT, pMainWnd->GetSnapshotParmDefaults());
+        m_pDlgSnapshotPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SNAPSHOT, IDD_SNAPSHOT, pMainWnd->GetSnapshotParmDefaults(),
+          nStartCursor, nStopCursor, nDurationSec);
         AddPage(m_pDlgSnapshotPage);
         if (nFocusedID == IDD_SNAPSHOT) {
             nPage = GetPageCount() - 1;
