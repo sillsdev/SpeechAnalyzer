@@ -24,7 +24,7 @@ public:
 
     void Init(); // initialisation
     void SetProcessOwner(void * pProcess, void * pCaller, int nProcessID = -1); // save the process owner
-    void * GetProcessOwner();       // return the process owner
+    CProcess * GetProcessOwner();   // return the process owner
     void * GetProcessCaller();      // return the process caller
     void InitProgress();            // initialisation of progress bar
     void SetProgress(int nVal);     // set progress bar
@@ -42,7 +42,7 @@ protected:
 
 private:
     CFont * m_pFont;                // status bar font
-    void * m_pProcessOwner;         // process owner
+    CProcess * m_pProcessOwner;     // process owner
     void * m_pProcessCaller;        // process caller
     CProgressBar m_ProgressBar;     // progress bar object
     BOOL m_bIsPrinting;
