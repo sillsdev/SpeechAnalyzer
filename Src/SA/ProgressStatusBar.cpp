@@ -16,6 +16,7 @@
 #include "mainfrm.h"
 #include "sa_doc.h"
 #include "ProgressStatusBar.h"
+#include "Process\process.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -64,19 +65,19 @@ CProgressStatusBar::~CProgressStatusBar() {
 
 /***************************************************************************/
 // CProgressStatusBar::MessageLoop Do windows message loop
-// This function enables the escape key down message to come trough long
+// This function enables the escape key down message to come through long
 // processing. Each call will allow to do windows key message processing
 // of MFC for this message.
 /***************************************************************************/
 void CProgressStatusBar::MessageLoop() {
 
-	// This will allow first call to succeed
+    // This will allow first call to succeed
     static volatile DWORD dwTickLast = 0;
-	// MS since system start
-    DWORD dwThis = GetTickCount(); 
+    // MS since system start
+    DWORD dwThis = GetTickCount();
 
     if (dwThis - dwTickLast > 90) {
-		// Update when timer has expired
+        // Update when timer has expired
         dwTickLast = dwThis; 
         MSG msg;
 
@@ -87,6 +88,11 @@ void CProgressStatusBar::MessageLoop() {
             while (::PeekMessage(&msg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE)) {
                 AfxGetApp()->PumpMessage();
             }
+
+            if (m_pProcessOwner) {
+              m_pProcessOwner->CancelProcess();
+            }
+            return;
         }
         // let MFC do its idle processing
         LONG lIdle = 0L;
@@ -135,7 +141,7 @@ void CProgressStatusBar::Init() {
 /***************************************************************************/
 void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, int nProcessID) {
 
-    m_pProcessOwner = pProcess;
+    m_pProcessOwner = (CProcess *)pProcess;
     m_pProcessCaller = pCaller;
 
     if (GetSafeHwnd()) {
@@ -251,7 +257,7 @@ void CProgressStatusBar::DelayShow() {
     // do nothing.
 }
 
-void * CProgressStatusBar::GetProcessOwner() {
+CProcess * CProgressStatusBar::GetProcessOwner() {
     return m_pProcessOwner;   // return the process owner
 }
 
