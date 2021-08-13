@@ -1,4 +1,15 @@
-# SA - 3.1.0.147 9/1/2018
+# SA - 3.1.1.1 8/16/2021
+- Updated language list
+- Fix 'Esc' key to cancel progress status bar
+- Fix phonemic and phonetic pronunciations in the LIFT export feature.
+- Fixed double-quote '"' problem when saving file names.
+- Developer Changes:
+    - Create parse-langtags tool to generate language list
+    - Fix test sample paths for unit tests.
+    - Get xerces dependency as nuget package.
+    - Updated SA project and dependencies so that it is now built with Microsoft Visual Studio 2019.
+
+# SA - 3.1.0.148 9/1/2018
 - Fixed bug where Play and Stop buttons on Start dialog weren't restored after playback completed.
 - Removed MBROLA feature.
 
@@ -828,9 +839,9 @@ Also, if the user imports another file, and it successfully loads, it will be se
 - Fix for Vista compatibility issue in FileOpen/FileSaveAs dialog boxes.
 
 # SA 3.0.1.4 - 10/31/2011
-- ‘MoveStopCursorHere’ feature added to graph popup menu.  This feature allows the user to locate the stop cursor by using the right-click/popup menu on a graph instead of a key-press and a left mouse click.
+- 'MoveStopCursorHere' feature added to graph popup menu.  This feature allows the user to locate the stop cursor by using the right-click/popup menu on a graph instead of a key-press and a left mouse click.
 - Cleanup of CRT_SECURE warnings.  
-- Workaround for ‘SaveAs’ dialog box.  Presently the SaveAs dialog box was crashing when launched by the user because of a Vista/XP compatibility issue.  The offending code was disabled.  The code is now using the WINVER=0x501 define to allow WinXP compatibility.  The problem will be fixed more completely in a later release.
+- Workaround for 'SaveAs' dialog box.  Presently the SaveAs dialog box was crashing when launched by the user because of a Vista/XP compatibility issue.  The offending code was disabled.  The code is now using the WINVER=0x501 define to allow WinXP compatibility.  The problem will be fixed more completely in a later release.
 - Made project (.vcproj) files more consistent.
 
 # SA 3.0.1.3 - 10/24/2011
