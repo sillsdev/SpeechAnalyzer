@@ -1,4 +1,6 @@
-SA - 3.1.1.1 7/14/2021
+SA - 3.1.1.1 8/16/2021
+- Parse langtags.json to generate language list
+- Fix 'Esc' key to cancel progress status bar
 - Fix test sample paths for unit tests.
 - Fix phonemic and phonetic pronunciations in the LIFT export feature.
 - Fixed double-quote '"' problem when saving file names.
@@ -108,16 +110,16 @@ SA - 3.1.0.129 8/7/2015
 -Modified wording is SaveAs dialog box.
 
 SA - 3.1.0.128 8/4/2015
-Removed message that occurs when application is converting a incoming wave file to 16-bit format.  Text is now displayed on the status bar during the conversion.
-Modified the 'SaveAs' dialog so that the user now has the choice to downsample the file to 22khz or 44khz, dependent on the current wave file sample rate.
+- Removed message that occurs when application is converting a incoming wave file to 16-bit format.  Text is now displayed on the status bar during the conversion.
+- Modified the 'SaveAs' dialog so that the user now has the choice to downsample the file to 22khz or 44khz, dependent on the current wave file sample rate.
 
 SA - 3.1.0.127 7/26/2015
-Install bug fixes.
-Changed application install name from 'Speech Analyzer MSEA Beta' to 'Speech Analyzer MSEA'.
-Branched audio-sync project.
-Removed audio-sync code dependencies and resources.
-Implemented color options for reference, gloss nat, and taskbar pages.
-Added 'Pastel' color set and made it the default for SA.
+- Install bug fixes.
+- Changed application install name from 'Speech Analyzer MSEA Beta' to 'Speech Analyzer MSEA'.
+- Branched audio-sync project.
+- Removed audio-sync code dependencies and resources.
+- Implemented color options for reference, gloss nat, and taskbar pages.
+- Added 'Pastel' color set and made it the default for SA.
 
 SA - 3.1.0.126 7/1/2015
 -First build after AS release.
@@ -210,7 +212,7 @@ SA - 3.1.0.112 2/5/2015
 -Fixed bug where transcription boundary state from property file is not properly displayed when opening an document. 
 
 SA - 3.1.0.111 2/4/2015
-Fixing text-change bugs.
+- Fixing text-change bugs.
 
 SA - 3.1.0.110 2/2/2015
 -Modified code so that phonetic, phonemic and orthographic segments use an array of text strings for data storage, rather than using a single string buffer.
@@ -234,9 +236,9 @@ SA - 3.1.0.106 12/26/2014
 -Fixed segment alignment problem that occurs when splitting segments
 
 SA - 3.1.0.105 12/22/2014
-Modified splash screen so that it displays and closes quicker.  It is now on it's own thread.
-Merged the yeti*.dlls, ST_Audio.dll, SILTools.dll, SILUtils.dll into SpeechToolsUtils.dll
-Improved SAB features - All features are operational.
+- Modified splash screen so that it displays and closes quicker.  It is now on it's own thread.
+- Merged the yeti*.dlls, ST_Audio.dll, SILTools.dll, SILUtils.dll into SpeechToolsUtils.dll
+- Improved SAB features - All features are operational.
 The following hot keys are implemented:
 CTRL-G 		- Split annotations
 SHIFT-G 	- Move annotations left
@@ -247,21 +249,21 @@ CTRL-SHIFT-H 	- Move annotations right and merge
 
 
 SA - 3.1.0.104 11/13/2014
-Improved SAB features - split and merge segments
+- Improved SAB features - split and merge segments
 
 SA - 3.1.0.103 11/10/2014
-Updated application icons
-Added SAB features - split and merge segments
+- Updated application icons
+- Added SAB features - split and merge segments
 
 SA - 3.1.0.102 10/22/2014
-Modified several dialogs to change 'Gloss' to 'Gloss English' and 'Gloss Nat.' to 'Gloss National'.
-Modified SFM export dialog combo list box to use the term 'Rows' instead of 'Default'
-Added a SFM Marker help dialog box.
-Fixed problem where transcription alignment importing was not functioning for gloss national transcription fields when using reference numbers for importing.
+- Modified several dialogs to change 'Gloss' to 'Gloss English' and 'Gloss Nat.' to 'Gloss National'.
+- Modified SFM export dialog combo list box to use the term 'Rows' instead of 'Default'
+- Added a SFM Marker help dialog box.
+- Fixed problem where transcription alignment importing was not functioning for gloss national transcription fields when using reference numbers for importing.
 
 SA - 3.1.0.101 10/20/2014
-Fixed two bugs related to refreshing annotations.
-Fixed 'gloss national' bugs in 'export SFM'
+- Fixed two bugs related to refreshing annotations.
+- Fixed 'gloss national' bugs in 'export SFM'
 
 SA - 3.1.0.100 10/14/2014
 1) Removed POS data type.
@@ -857,9 +859,9 @@ SA 3.0.1.5 - 11/1/2011
 
 SA 3.0.1.4 - 10/31/2011
 -----------------------
-1) ‘MoveStopCursorHere’ feature added to graph popup menu.  This feature allows the user to locate the stop cursor by using the right-click/popup menu on a graph instead of a key-press and a left mouse click.
+1) 'MoveStopCursorHere' feature added to graph popup menu.  This feature allows the user to locate the stop cursor by using the right-click/popup menu on a graph instead of a key-press and a left mouse click.
 2) Cleanup of CRT_SECURE warnings.  
-3) Workaround for ‘SaveAs’ dialog box.  Presently the SaveAs dialog box was crashing when launched by the user because of a Vista/XP compatibility issue.  The offending code was disabled.  The code is now using the WINVER=0x501 define to allow WinXP compatibility.  The problem will be fixed more completely in a later release.
+3) Workaround for 'SaveAs' dialog box.  Presently the SaveAs dialog box was crashing when launched by the user because of a Vista/XP compatibility issue.  The offending code was disabled.  The code is now using the WINVER=0x501 define to allow WinXP compatibility.  The problem will be fixed more completely in a later release.
 4) Made project (.vcproj) files more consistent.
 
 
