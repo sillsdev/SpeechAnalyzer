@@ -37,7 +37,8 @@ To build Speech Analyzer, do the following:
 1. Use *Ctrl-Alt-F7* or select *Build/Rebuild Solution* from the menu to build the project.
 1. Wait for the build to complete.  You will see the following in the *Build Output* window then the project is done compiling:  *Rebuild All: 15 succeeded, 0 failed, 0 skipped*
 1. Depending on the build configuration you selected, *Debug* or *Release*, Visual Studio will create either a *Debug* or *Release* directory at the root of the project. (e.g. SpeechAnalyzer/Debug*).
-1. Copy DistFiles\iso639.txt into the *Debug* or *Release* directory. You will only need to do this once.
+1. Copy DistFiles\iso639.txt into the *Debug* or *Release* directory. You will only need to do this once. 
+Refer to [README.md](DevUtils\parse-langtags\README.md) if you need to re-generate iso639.txt.
 1. Start SpeechAnalyzer by right-clicking on the *SA* project and selecting *Debug/Start new instance*.
 
 # Installer Creation

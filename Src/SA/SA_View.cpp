@@ -219,6 +219,11 @@
 #include "WaveUtils.h"
 #include "ScopedStatusBar.h"
 
+#include <locale>
+#include <codecvt>
+#include <fstream>
+#include <cstdlib>
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
@@ -1380,50 +1385,28 @@ void CSaView::ExtractCountryCodes(LPCTSTR fullPath, map<wstring, wstring> & code
 	filepath.append(L"\\");
 	filepath.append(L"iso639.txt");
 
-	FILE * ifile = NULL;
-	errno_t err = fopen_s(&ifile, utf8(filepath.c_str()).c_str(), "rb");
-	if (err != 0) {
+	// Read UTF-8 file into wstring
+	// https://stackoverflow.com/questions/4775437/read-unicode-utf-8-file-into-wstring
+	const std::locale empty_locale = std::locale::empty();
+	typedef std::codecvt_utf8<wchar_t> converter_type;
+	const converter_type* converter = new converter_type;
+	const std::locale utf8_locale = std::locale(empty_locale, converter);
+	wifstream stream(filepath);
+	if (stream) {
+		stream.imbue(utf8_locale);
+		wstring line;
+		while (std::getline(stream, line)) {
+			vector<wstring> tokens = CTextHelper::Tokenize(line, L"|");
+			if (tokens.size() > 3) {
+				// we only extract if both the BCP-47 tag and the name are present
+				if ((tokens[2].length() > 0) && (tokens[3].length() > 0)) {
+					codes[tokens[3]] = tokens[2];
+				}
+			}
+		}
+	}	else {
 		GetApp().ErrorMessage(IDS_NO_ISO, filepath.c_str());
 		return;
-	}
-
-	DWORD len = FileUtils::GetFileSize(utf8(filepath.c_str()).c_str());
-	// read in the file
-	char * data = new char[len];
-	size_t read = fread(data, 1, len, ifile);
-	fclose(ifile);
-	if (read != len) {
-		delete[] data;
-		ErrorMessage(IDS_NO_ISO);
-		return;
-	}
-
-	// break the data into lines
-	list<wstring> lines;
-	string buffer;
-	for (size_t i = 0; i < read; i++) {
-		if ((data[i] == 0x0d) || (data[i] == 0x0a)) {
-			if (buffer.size() > 0) {
-				lines.push_back(utf16(buffer));
-				buffer.clear();
-			}
-		} else {
-			buffer.push_back(data[i]);
-		}
-	}
-
-	// pull in the 2-character country codes and the description
-	list<wstring>::iterator it = lines.begin();
-	while (it != lines.end()) {
-		// we only extract if both the 2-character code and the name are present
-		wstring line = *it;
-		vector<wstring> tokens = CTextHelper::Tokenize(line, L"|");
-		if (tokens.size() > 3) {
-			if ((tokens[2].length() > 0) && (tokens[3].length() > 0)) {
-				codes[tokens[3]] = tokens[2];
-			}
-		}
-		it++;
 	}
 }
 
