@@ -13,6 +13,9 @@ public:
     int  nFrequency;        // frequency range to calculate
     int  nMinThreshold;     // minimum threshold
     int  nMaxThreshold;     // maximum threshold
+    DWORD nStartCursor;     // start cursor position
+    DWORD nStopCursor;      // stop cursor position
+    double nDurationSec;    // cursor duration in seconds
     BOOL bShowFormants;     // true if picture or any of the formants should be displayed
     BOOL bShowF1;           // show/hide formants (TRUE = show)
     BOOL bShowF2;

@@ -122,6 +122,9 @@ void CSpectroParm::Init() {
     nFrequency = 3200;
     nMinThreshold = 61;
     nMaxThreshold = 209;
+    nStartCursor = UNDEFINED_CURSOR;
+    nStopCursor = UNDEFINED_CURSOR;
+    nDurationSec = 0;
     bSmoothSpectra = TRUE;
     bFormantColor = TRUE;
     bShowPitch = FALSE;

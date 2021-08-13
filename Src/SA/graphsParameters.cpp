@@ -1109,6 +1109,13 @@ void CDlgParametersSpectroPage::Apply() {
         pSpectroParm->nFrequency = m_nFrequency;
         pSpectroParm->nMaxThreshold = m_nMaxThreshold;
         pSpectroParm->nMinThreshold = m_nMinThreshold;
+
+        if (DurationAllowsFormants()) {
+          pSpectroParm->nStartCursor = m_nStartCursor;
+          pSpectroParm->nStopCursor = m_nStopCursor;
+          pSpectroParm->nDurationSec = m_nDurationSec;
+        }
+
         pSpectroParm->nResolution = m_nResolution;
         pSpectroParm->nColor = m_nColor;
         pSpectroParm->nOverlay = m_nOverlay;
