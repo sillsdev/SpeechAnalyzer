@@ -1,11 +1,13 @@
 SA - 3.1.1.1 8/16/2021
-- Parse langtags.json to generate language list
+- Updated language list
 - Fix 'Esc' key to cancel progress status bar
-- Fix test sample paths for unit tests.
 - Fix phonemic and phonetic pronunciations in the LIFT export feature.
 - Fixed double-quote '"' problem when saving file names.
-- Get xerces dependency as nuget package.
-- Updated SA project and dependencies so that it is now built with Microsoft Visual Studio 2019.
+- Developer Changes:
+    - Create parse-langtags tool to generate language list
+    - Fix test sample paths for unit tests.
+    - Get xerces dependency as nuget package.
+    - Updated SA project and dependencies so that it is now built with Microsoft Visual Studio 2019.
 
 SA - 3.1.0.148 9/1/2018
 -Fixed bug where Play and Stop buttons on Start dialog weren't restored after playback completed.
