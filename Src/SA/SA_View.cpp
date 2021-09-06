@@ -363,6 +363,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_COMMAND(ID_LEGEND_RAWDATA, OnLegendRawdata)
 	ON_COMMAND(ID_MOVE_STOP_CURSOR_HERE, OnMoveStopCursorHere)
 	ON_COMMAND(ID_NEXT_GRAPH, OnNextGraph)
+	ON_COMMAND(ID_PREVIOUS_GRAPH, OnPreviousGraph)
 	ON_COMMAND(ID_PLAYBACK_CURSORS, OnPlaybackCursors)
 	ON_COMMAND(ID_PLAYBACK_FILE, OnPlaybackFile)
 	ON_COMMAND(ID_PLAYBACK_LEFTWIN_TO_STARTCUR, OnPlaybackLeftToStart)
@@ -3183,6 +3184,26 @@ void CSaView::OnNextGraph() {
 		}
 	} else {
 		nSelection = 0;
+	}
+
+	m_apGraphs[nSelection]->SendMessage(WM_LBUTTONDOWN, 0, MAKELONG(0, 0)); // change focus
+}
+
+/***************************************************************************/
+// CSaView::OnPopupRawdata switch focus to previous graph
+/***************************************************************************/
+void CSaView::OnPreviousGraph() {
+	int nSelection = -1;
+	int nNumberOfGraphs = GetNumberOfGraphs(&m_anGraphID[0]);
+
+	if (m_pFocusedGraph) {
+		nSelection = GraphPtrToOffset(m_pFocusedGraph) - 1;
+		if (nSelection < 0 || !m_apGraphs[nSelection]) {
+			nSelection = nNumberOfGraphs-1;
+		}
+	}
+	else {
+		nSelection = nNumberOfGraphs-1;
 	}
 
 	m_apGraphs[nSelection]->SendMessage(WM_LBUTTONDOWN, 0, MAKELONG(0, 0)); // change focus

@@ -1590,6 +1590,7 @@
 #define ID_IMPORT_SAB                   33147
 #define ID_NEXT_GRAPH                   33148
 #define IDC_SYNTHESIS                   33149
+#define ID_PREVIOUS_GRAPH               33150
 #define ID_SYNTHESIS                    33151
 #define ID_WAVEFORM_GENERATOR           33152
 #define ID_PLAY_SYNTH                   33153
