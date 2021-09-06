@@ -47,7 +47,7 @@ Source: "..\Release\xerces-c_3_2Win32.dll"; DestDir: "{app}"; Flags: ignoreversi
 Source: "..\Release\yeti.mmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Release\zGraph.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Src\Release Notes.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\CHANGELOG.md"; DestDir: "{app}"; DestName: "Release Notes.txt"; Flags: ignoreversion
 Source: "..\DistFiles\usp10.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\DistFiles\Microsoft\vc2015\vc_redist.24212.x86.exe"; DestDir: "{app}\components\vc2015"; Flags: ignoreversion;
 Source: "..\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ignoreversion
