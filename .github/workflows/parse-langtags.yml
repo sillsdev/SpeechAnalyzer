@@ -1,0 +1,64 @@
+# This workflow will get the latest langtags.json file to generate iso639.txt
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Update iso639.txt with parse-lantags
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ./DevUtils/parse-langtags
+    strategy:
+      matrix:
+        node-version: [14.x]
+        architecture: [x64]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+
+    - name: Install project dependencies
+      run: npm install
+
+    - name: Get the latest langtags.json
+      run: C:\msys64\usr\bin\wget.exe -O langtags.json https://github.com/silnrsi/langtags/raw/master/pub/langtags.json
+
+    - name: Install TypeScript
+      run: npx tsc
+
+    - name: Compile parse-langtags
+      run: npm run build
+
+    - name: Generate iso639.txt
+      run: npx ./dist/index.js -o iso639.txt
+
+    - name: Overwrite file in DistFiles/
+      run: move iso639.txt ../../DistFiles/ -Force
+
+    - name: Create branch
+      uses: peterjgrainger/action-create-branch@v2.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        branch: 'chore/update-iso639'
+
+    - name: git-auto-commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        # Optional, but recommended
+        commit_message: 'chore: Update iso639.txt'
+
+        # Optional branch name where commit should be pushed to.
+        branch: chore/update-iso639
+
+        commit_options: '--no-verify --signoff'
+        file_pattern: DistFiles/iso639.txt
+        repository: .
+        status_options: '--untracked-files=no'
