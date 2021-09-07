@@ -1,6 +1,7 @@
 
 # parse-langtags
 Utility to convert [langtags.json](https://github.com/silnrsi/langtags) into a language list for Speech Analyzer.
+Manually trigger the GitHub action [parse-langtags.yml](../../.github/workflows/parse-langtags.yml) to update the iso639.txt file. Changes will be commited on a new branch `chore/update-iso639` which can then be used to create a PR.
 
 ## Usage
 Command-line:
