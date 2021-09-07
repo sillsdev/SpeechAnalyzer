@@ -343,6 +343,7 @@ protected:
     afx_msg void OnFileInformation();
     afx_msg void OnGraphsRetile();
     afx_msg void OnNextGraph();
+    afx_msg void OnPreviousGraph();
     afx_msg void OnLegendAll();
     afx_msg void OnUpdateLegendAll(CCmdUI * pCmdUI);
     afx_msg void OnLegendRawdata();
