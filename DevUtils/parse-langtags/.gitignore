@@ -5,3 +5,6 @@ langtags.json
 
 # Compiled Output files
 dist/
+
+# Generated output
+iso639.txt
