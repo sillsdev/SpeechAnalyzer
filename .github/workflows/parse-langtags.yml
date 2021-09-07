@@ -6,8 +6,8 @@ name: Update iso639.txt with parse-lantags
 on:
   workflow_dispatch:
   schedule:
-    # Every 6 months
-    - cron: '0 0 1 */6 *'
+    # Every week
+    - cron: '0 5 * * 0'
 jobs:
   build:
 
