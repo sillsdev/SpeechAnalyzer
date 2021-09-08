@@ -1,6 +1,14 @@
-name: Build and Run Tests
+name: Build and Run Tests. Compile and Upload Installer for Releases
 
-on: [push]
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+  release:
+    types:
+      # Doesn't trigger for draft releases
+      - published
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -42,3 +50,46 @@ jobs:
     #- name: Run Integration Tests
     #  working-directory: .\Release
     #  run: vstest.console.exe SAScriptingTest.dll
+
+    - name: Upload Release/ for installer job
+      if: github.event_name == 'release'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Release
+        path: Release/
+        retention-days: 3
+
+  installer:
+    name: Compile installer and upload asset to release
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Release/
+        uses: actions/download-artifact@v2
+        with:
+          name: Release
+          path: Release/
+
+      # Copy iso639.txt to DistFiles
+      - name: Copy iso639.txt file
+        run: copy DistFiles/iso639.txt Release/
+
+      # Create Installer exe
+      - name: Run InnoSetup
+        working-directory: Install/
+        run: iscc SpeechAnalyzer.iss
+
+      - name: Upload the Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: SpeechAnalyzerInstaller
+          path: Install/Output/
+
+      # Upload installer to release tag which triggered this build
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: Install/Output/SpeechAnalyzer.exe
+          tag_name: ${{ github.event.release.tag_name }}
