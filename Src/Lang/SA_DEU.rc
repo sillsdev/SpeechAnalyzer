@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,1,1
+ FILEVERSION 3,1,1,2
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,9 +44,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.1.1"
+            VALUE "FileVersion", "v3.1.1.2"
             VALUE "InternalName", "SA_DEU"
-            VALUE "LegalCopyright", "© 1996-2021 SIL International"
+            VALUE "LegalCopyright", "ï¿½ 1996-2021 SIL International"
             VALUE "OriginalFilename", "SA_DEU.dll"
             VALUE "ProductName", "SA"
             VALUE "ProductVersion", "2.0.0.0"
@@ -2191,7 +2191,7 @@ BEGIN
     LTEXT           "Order:",IDC_STATIC,93,108,20,8
     EDITTEXT        IDC_RESEARCH_LPC_ORDER_FS_MULT_EDIT,120,107,14,12,ES_AUTOHSCROLL
     EDITTEXT        IDC_RESEARCH_LPC_ORDER_EXTRA_EDIT,153,107,14,12,ES_AUTOHSCROLL
-    LTEXT           "·Fs +",IDC_STATIC,135,109,18,8
+    LTEXT           "ï¿½Fs +",IDC_STATIC,135,109,18,8
     EDITTEXT        IDC_RESEARCH_LPC_ORDER_AUX_MAX_EDIT,179,107,15,12,ES_AUTOHSCROLL
     LTEXT           "+",IDC_STATIC,171,109,8,8
     LTEXT           "(max) aux poles",IDC_STATIC,196,109,51,9
@@ -3145,7 +3145,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Record New...\tCtrl+R",      ID_FILE_RECORD
-        MENUITEM "&Öffnen...\tCtrl+O",          ID_FILE_OPEN
+        MENUITEM "&ï¿½ffnen...\tCtrl+O",          ID_FILE_OPEN
         MENUITEM "Ope&n Startup...",            ID_FILE_OPEN_SPECIAL
         MENUITEM SEPARATOR
         MENUITEM "Print Se&tup...",             ID_FILE_PRINT_SETUP
@@ -3187,7 +3187,7 @@ BEGIN
     BEGIN
         MENUITEM "&Record New...\tCtrl+R",      ID_FILE_RECORD
         MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
-        MENUITEM "&Öffnen...\tCtrl+O",          ID_FILE_OPEN
+        MENUITEM "&ï¿½ffnen...\tCtrl+O",          ID_FILE_OPEN
         MENUITEM "Open Startup...",             ID_FILE_OPEN_SPECIAL
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
@@ -3829,7 +3829,7 @@ IDR_WORKBENCH MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Öffnen...\tCtrl+O",          ID_FILE_OPEN
+        MENUITEM "&ï¿½ffnen...\tCtrl+O",          ID_FILE_OPEN
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM SEPARATOR
@@ -4006,7 +4006,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Record...\tCtrl+R",          ID_FILE_RECORD
-        MENUITEM "&Öffnen...\tCtrl+O",          ID_FILE_OPEN
+        MENUITEM "&ï¿½ffnen...\tCtrl+O",          ID_FILE_OPEN
         MENUITEM "Ope&n Startup...",            ID_FILE_OPEN_SPECIAL
         MENUITEM SEPARATOR
         MENUITEM "Print Se&tup...",             ID_FILE_PRINT_SETUP
@@ -4034,7 +4034,7 @@ IDR_KLATT MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Öffnen\tCtrl+O",             ID_FILE_OPEN
+        MENUITEM "&ï¿½ffnen\tCtrl+O",             ID_FILE_OPEN
         MENUITEM "&Save As\tCtrl+S",            ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Display Synthesized\tF2",    ID_SYNTH_DISPLAY
@@ -4105,7 +4105,7 @@ IDR_SYNTHESIS_VOCAL_TRACT MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Öffnen\tCtrl+O",             ID_FILE_OPEN
+        MENUITEM "&ï¿½ffnen\tCtrl+O",             ID_FILE_OPEN
         MENUITEM "&Save As\tCtrl+S",            ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Display Synthesized\tF2",    ID_SYNTH_DISPLAY
@@ -4852,7 +4852,7 @@ END
 
 STRINGTABLE
 BEGIN
-    VS_COPYRIGHT            "© 1996-2021 SIL International.\nAll Rights Reserved."
+    VS_COPYRIGHT            "ï¿½ 1996-2021 SIL International.\nAll Rights Reserved."
     IDR_MAINFRAME_SA        "Speech Analyzer"
     IDR_MAINFRAME_AS        "Audio-Sync"
     IDR_SPEECHANALYZER      "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4946,7 +4946,7 @@ END
 STRINGTABLE
 BEGIN
     ID_FILE_NEW             "Create a new workbench document\nNew"
-    ID_FILE_OPEN            "Open an existing document\nÖffnen"
+    ID_FILE_OPEN            "Open an existing document\nï¿½ffnen"
     ID_FILE_CLOSE           "Close the active document\nClose"
     ID_FILE_SAVE            "Save the active document \nSave"
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
@@ -4981,10 +4981,10 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_FILE_MRU_FILE1       "Open this document\nÖffnen"
-    ID_FILE_MRU_FILE2       "Open this document\nÖffnen"
-    ID_FILE_MRU_FILE3       "Open this document\nÖffnen"
-    ID_FILE_MRU_FILE4       "Open this document\nÖffnen"
+    ID_FILE_MRU_FILE1       "Open this document\nï¿½ffnen"
+    ID_FILE_MRU_FILE2       "Open this document\nï¿½ffnen"
+    ID_FILE_MRU_FILE3       "Open this document\nï¿½ffnen"
+    ID_FILE_MRU_FILE4       "Open this document\nï¿½ffnen"
 END
 
 STRINGTABLE

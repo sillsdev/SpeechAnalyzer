@@ -1,4 +1,4 @@
-# SA - 3.1.1.2 9/8/2021
+# SA - 3.1.1.2 9/10/2021
 - Add shortcut keys for Ctrl-Down and Ctrl-Up to select next/previous graph.
 - Consolidate CHANGELOG.md and 'Release Notes.txt'
 - Developer Changes:
