@@ -27,6 +27,7 @@ aax|aax|aax|Mandobo Atas|
 aaz|aaz|aaz|Amarasi|Amarasi
 abk|abk|ab|Abkhaz|
 abk|abk|ab-Geor|Abkhaz (Geor script)|
+abk|abk|ab-Latn|Abkhaz (Latn script)|
 aba|aba|aba|Abé|
 abb|abb|abb|Bankon|
 abc|abc|abc|Ayta, Ambala|
@@ -861,7 +862,7 @@ bje|bje|bje|Biao-Jiao Mien|
 bjf|bjf|bjf|Barzani-Sandu Jewish Neo-Aramaic|
 bjg|bjg|bjg|Bidyogo|
 bjh|bjh|bjh|Bahinemo|Bahinemo
-bji|bji|bji|Burji|ቡረጊ
+bji|bji|bji|Burji|
 bji|bji|bji-Ethi|Burji (Ethi script)|ቡረጊ
 bjj|bjj|bjj|Kanauji|
 bjk|bjk|bjk|Barok|
@@ -1933,6 +1934,7 @@ dof|dof|dof|Domu|
 doh|doh|doh|Dong|
 doi|doi|doi|Dogri (macrolanguage)|डोगरी
 doi|doi|doi-Arab|Dogri (macrolanguage) (Arab script)|
+doi|doi|doi-Dogr|Dogri (macrolanguage) (Dogr script)|
 doi|doi|doi-Takr|Dogri (macrolanguage) (Takr script)|
 dok|dok|dok|Dondo|
 dol|dol|dol|Doso|
@@ -4809,6 +4811,7 @@ mip|mip|mip|Mixtec, Apasco-Apoala|
 miq|miq|miq|Mískito|
 mir|mir|mir|Mixe, Isthmus|hagunaax
 mis|mis|mis|Uncoded languages|
+mis|mis|mis-Latn|Uncoded languages (Latn script)|
 mit|mit|mit|Mixtec, Southern Puebla|Da'an davi
 miu|miu|miu|Mixtec, Cacaloxtepec|
 miw|miw|miw|Akoye|Akoye
@@ -7815,6 +7818,7 @@ tvu|tvu|tvu|Tunen|Tunen
 tvw|tvw|tvw|Sedoa|
 tvx|tvx|tvx|Taivoan|
 tvy|tvy|tvy|Pidgin, Timor|
+twi|twi|tw-x-asante|Twi (x-asante)|
 twa|twa|twa|Twana|
 twb|twb|twb|Tawbuid|
 twc|twc|twc|Teshenawa|
@@ -8565,6 +8569,7 @@ xnn|xnn|xnn|Kankanay, Northern|Kankanay, Northern
 xno|xno|xno|Anglo-Norman|
 xnq|xnq|xnq|Xingoni|
 xnr|xnr|xnr|Kangri|
+xnr|xnr|xnr-Takr|Kangri (Takr script)|
 xns|xns|xns|Kanashi|
 xnt|xnt|xnt|Narragansett|
 xnu|xnu|xnu|Nunukul|
