@@ -865,7 +865,7 @@ bje|bje|bje|Biao-Jiao Mien|
 bjf|bjf|bjf|Barzani-Sandu Jewish Neo-Aramaic|
 bjg|bjg|bjg|Bidyogo|
 bjh|bjh|bjh|Bahinemo|Bahinemo
-bji|bji|bji|Burji|
+bji|bji|bji|Burji|ቡረጊ
 bji|bji|bji-Ethi|Burji (Ethi script)|ቡረጊ
 bjj|bjj|bjj|Kanauji|
 bjk|bjk|bjk|Barok|
@@ -3002,6 +3002,7 @@ hmc|hmc|hmc|Miao, Central Huishui|
 hmd|hmd|hmd|Miao, Large Flowery|
 hmd|hmd|hmd-Hmng|Miao, Large Flowery (Hmng script)|
 hmd|hmd|hmd-Latn|Miao, Large Flowery (Latn script)|
+hmd|hmd|hmd-x-normal|Miao, Large Flowery (x-normal)|
 hme|hme|hme|Miao, Eastern Huishui|
 hmf|hmf|hmf|Hmong Don|
 hmg|hmg|hmg|Miao, Southwestern Guiyang|
@@ -4167,6 +4168,7 @@ kxs|kxs|kxs|Kangjia|
 kxt|kxt|kxt|Koiwat|
 kxu|kxu|kxu|Kui (India)|
 kxv|kxv|kxv|Kuvi|
+kxv|kxv|kxv-Latn|Kuvi (Latn script)|
 kxv|kxv|kxv-Telu|Kuvi (Telu script)|
 kxw|kxw|kxw|Konai|Kala̱i̱
 kxx|kxx|kxx|Likuba|
