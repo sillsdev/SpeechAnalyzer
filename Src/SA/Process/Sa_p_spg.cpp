@@ -170,7 +170,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
             dwDataLength = pDoc->GetDataSize();
             nWidth = dwDataLength / minSpectraInterval + 1;
         }
-        SetStatusFlag(MAX_RESOLUTION);
+        SetStatusFlag(MAX_RESOLUTION,TRUE);
     }
 
     // save the frame

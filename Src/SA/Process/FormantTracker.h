@@ -25,7 +25,7 @@ private:
 
     void AdvanceData(STrackState & state, DWORD dwDataPos, int nSamples);
     void WriteTrack(STrackState & state, double samplingRate, int pitch); // write a block into the temporary file
-    void BuildTrack(STrackState & state, double samplingRate, int pitch);
+    bool BuildTrack(STrackState & state, double samplingRate, int pitch);
 };
 
 #endif

@@ -146,11 +146,11 @@ short int CFormantChart::ProcessFTFormants() {
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc   = pView->GetDocument();
     // Process FormantTracker formants
-    CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
+    // get pointer to FormantTracker object
+    CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); 
     short int nResult = LOWORD(pFTFormants->Process(pView, pDoc));
-    nResult = CheckResult(nResult, pFTFormants); // check the process result
-
-    return nResult;
+    // check the process result
+    return CheckResult(nResult, pFTFormants); 
 }
 
 /***************************************************************************/
@@ -215,7 +215,9 @@ short int CFormantChart::ProcessFormants() {
 
     // Process FormantTracker formants
     nResult = ProcessFTFormants();
-    if (nResult == PROCESS_ERROR) {
+    switch (nResult) {
+    case PROCESS_ERROR:
+    case PROCESS_CANCELED:
         return nResult;
     }
 
@@ -720,17 +722,16 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
                 pWavePlot->UpdateWindow();
             }
         }
+        bDataValid = FALSE;
+        break;
     }
-    bDataValid = FALSE;
-    break;
     case PROCESS_ERROR:
     case PROCESS_NO_DATA:
     case PROCESS_UNVOICED:
         bDataValid = FALSE;
         break;
     case PROCESS_DONE:
-        //  Invalidate();
-        //  return;
+        TRACE("done processing\n");
         break;
     }
 
@@ -748,7 +749,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(SFormantFreq) / 2);
     double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
     DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-    SFormantFreq * formants = pFTFormants->GetFormant(ftIndex);
+    SFormantFreq * formants = (bDataValid)?pFTFormants->GetFormant(ftIndex):NULL;
 
     double meanF1 = 0;
     double meanF2 = 0;
@@ -984,17 +985,16 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
                 pWavePlot->UpdateWindow();
             }
         }
+        bDataValid = FALSE;
+        break;
     }
-    bDataValid = FALSE;
-    break;
     case PROCESS_ERROR:
     case PROCESS_NO_DATA:
     case PROCESS_UNVOICED:
         bDataValid = FALSE;
         break;
     case PROCESS_DONE:
-        //  Invalidate();
-        //  return;
+        TRACE("done processing\n");
         break;
     }
 
@@ -1010,7 +1010,7 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(SFormantFreq) / 2);
     double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
     DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-    SFormantFreq * formants = pFTFormants->GetFormant(ftIndex);
+    SFormantFreq * formants = (bDataValid)?pFTFormants->GetFormant(ftIndex):NULL;
 
     double meanF1 = 0;
     double meanF2 = 0;
@@ -1239,17 +1239,16 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
                 pWavePlot->UpdateWindow();
             }
         }
+        bDataValid = FALSE;
+        break;
     }
-    bDataValid = FALSE;
-    break;
     case PROCESS_ERROR:
     case PROCESS_NO_DATA:
     case PROCESS_UNVOICED:
         bDataValid = FALSE;
         break;
     case PROCESS_DONE:
-        //  Invalidate();
-        //  return;
+        TRACE("done processing\n");
         break;
     }
 
@@ -1265,7 +1264,7 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(SFormantFreq) / 2);
     double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
     DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-    SFormantFreq * formant = pFTFormants->GetFormant(ftIndex);
+    SFormantFreq * formant = (bDataValid)?pFTFormants->GetFormant(ftIndex):NULL;
 
     double meanF1 = 0;
     double meanF2 = 0;
@@ -1472,17 +1471,16 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                 pWavePlot->UpdateWindow();
             }
         }
+        bDataValid = FALSE;
+        break;
     }
-    bDataValid = FALSE;
-    break;
     case PROCESS_ERROR:
     case PROCESS_NO_DATA:
     case PROCESS_UNVOICED:
         bDataValid = FALSE;
         break;
     case PROCESS_DONE:
-        //  Invalidate();
-        //  return;
+        TRACE("done processing\n");
         break;
     }
 
@@ -1498,7 +1496,7 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(SFormantFreq) / 2);
     double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
     DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-    SFormantFreq * formants = pFTFormants->GetFormant(ftIndex);
+    SFormantFreq * formants = (bDataValid)?pFTFormants->GetFormant(ftIndex):NULL;
 
     double meanF1 = 0;
     double meanF2 = 0;
@@ -1916,7 +1914,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                 if (bAverage) {
                     // build average inside step
                     long lAverageData = 0;
-                    for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++) {
+                    for (DWORD dwLoop2 = 0; dwLoop2 < (DWORD)lSteps; dwLoop2++) {
                         if (dwDataPos >= dwStart) {
                             // reload data
                             pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block

@@ -874,14 +874,13 @@ void CPlotWnd::RedrawPlot( BOOL bEntire) {
 // the canceled state. In case of processing error, the graph will be closed.
 //**************************************************************************/
 short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess) {
-    m_pLastProcess = pProcess; // save pointer to process object for further use
+    // save pointer to process object for further use
+    m_pLastProcess = pProcess; 
     if (!this->GetSafeHwnd()) {
         return nResult;
     }
-
     CRect rClient;
     GetClientRect(rClient);
-
     CDC * pDC = GetDC();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     Colors * pColor = pMainWnd->GetColors(); // get application colors
@@ -902,9 +901,7 @@ short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess) {
         // pDC->FillRect(&rClient, &Eraser);  // clear the plot area
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_CURCLOSER, &rClient);
         break;
-    case PROCESS_UNVOICED:
-
-    {
+    case PROCESS_UNVOICED: {
         // process data is unvoiced
         // pDC->FillRect(&rClient, &Eraser);  // clear the plot area
         CGraphWnd * pGraph = (CGraphWnd *)GetParent();
