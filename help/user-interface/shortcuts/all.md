@@ -58,6 +58,8 @@ The following four tables of shortcut keys are organized by type of key:
 |Zoom in very slowly.|**Down Arrow**|
 |Select the transcription bar *above* the currently selected one.|**Alt+Up Arrow**|
 |Select the transcription bar *below* the currently selected one.|**Alt+Down Arrow**|
+| Select the graph *above* the currently selected one.|**Ctrl+Up Arrow**|
+| Select the graph *below* the currently selected one.|**Ctrl+Down Arrow**|
 |Pan slowly to the left.|**Left Arrow**|
 |Pan slowly to the right.|**Right Arrow**|
 |Move the begin cursor one very small step to the left.|**Ctrl+Left Arrow**|
