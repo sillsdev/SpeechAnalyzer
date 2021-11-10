@@ -11695,6 +11695,18 @@ void CSaView::OnFileSaveAs() {
 /***************************************************************************/
 void CSaView::OnUpdateFileSaveAs(CCmdUI * pCmdUI) {
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	CSaDoc & doc = *GetDocument();
+	CString docname = doc.GetPathName();
+	if (docname.IsEmpty()) {
+		docname = doc.GetFilenameFromTitle().c_str();
+	}
+
+	if (FileUtils::EndsWith(docname, L".mp3")) {
+		// Disable SaveAs for mp3 files
+		pCmdUI->Enable(false);
+		return;
+	}
+
 	pCmdUI->Enable(pApp->GetBatchMode() == 0); // SDM 1.5Test8.2
 }
 
