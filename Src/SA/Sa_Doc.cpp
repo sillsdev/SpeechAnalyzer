@@ -7994,6 +7994,10 @@ wstring CSaDoc::GetFilenameFromTitle() {
 	return result;
 }
 
+wstring CSaDoc::GetConvertedWaveFilename() {
+	return m_szTempConvertedWave;
+}
+
 wstring CSaDoc::GetTranscriptionFilename() {
 	// a prerecorded file
 	wstring result = GetPathName();

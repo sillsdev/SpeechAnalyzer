@@ -11611,7 +11611,13 @@ void CSaView::OnFileSaveAs() {
 			// get the current view caption string
 			path = doc.GetFilenameFromTitle().c_str();
 		}
-		path = FileUtils::ReplaceExtension((LPCTSTR)path, L".wav").c_str();
+
+		if (FileUtils::EndsWith((LPCTSTR)path, L".mp3")) {
+			// If path is mp3 file, use the temporary converted wavefile already in use:
+			path = doc.GetConvertedWaveFilename().c_str();
+		} else {
+			path = FileUtils::ReplaceExtension((LPCTSTR)path, L".wav").c_str();
+		}
 		docname = path;
 	}
 
@@ -11695,6 +11701,7 @@ void CSaView::OnFileSaveAs() {
 /***************************************************************************/
 void CSaView::OnUpdateFileSaveAs(CCmdUI * pCmdUI) {
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
+	/*
 	CSaDoc & doc = *GetDocument();
 	CString docname = doc.GetPathName();
 	if (docname.IsEmpty()) {
@@ -11706,7 +11713,7 @@ void CSaView::OnUpdateFileSaveAs(CCmdUI * pCmdUI) {
 		pCmdUI->Enable(false);
 		return;
 	}
-
+	*/
 	pCmdUI->Enable(pApp->GetBatchMode() == 0); // SDM 1.5Test8.2
 }
 

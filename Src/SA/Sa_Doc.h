@@ -285,6 +285,7 @@ public:
     bool IsTempFile();
     bool CanEdit();
     wstring GetFilenameFromTitle();
+    wstring GetConvertedWaveFilename();
 
     // wave helper functions
 	// get a copy of the format parameters structure
