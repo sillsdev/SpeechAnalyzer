@@ -22,23 +22,23 @@ You can import transcriptions or music notations. The **Import** command appears
 To import Staff Notes, you must display the active file on the [Staff](../graphs/types/music/staff).
 
 1. Do one of the following:
-   1. On the **File** menu, point to **Import** and then click **Staff Notes**.
-   1. Right-click the **Staff**, and then click **Import from file**.
-   1. On the **Staff**, click **Import**.
+   * On the **File** menu, point to **Import** and then click **Staff Notes**.
+   * Right-click the **Staff**, and then click **Import from file**.
+   * On the **Staff**, click **Import**.
 
     The **Open** dialog box appears.
 
 1. If needed, in the **Look in** list, browse to a *different folder* to import.
 1. In the **Files of type** box, do one of the following:
-   1. To import from a MusicXML, select **MusicXML file (\*.xml)**.
+   * To import from a MusicXML, select **MusicXML file (\*.xml)**.
 
         **MusicXML** is an open, XML-based music notation file format. This is a richer format than MIDI. Many music notation packages, like Sibelius and Finale, support this interchange format.
 
-    1. To import from a MIDI file, select **MIDI file (\*.mid)**.
+    * To import from a MIDI file, select **MIDI file (\*.mid)**.
 
         **MIDI** stands for Musical Instrument Digital Interface. It is an electronic standard used for the transmission of digitally encoded music.
 
-    1. To import from a text file, select **Text file (\*.txt)**.
+    * To import from a text file, select **Text file (\*.txt)**.
 
       The files of that type appear in the current folder.
 

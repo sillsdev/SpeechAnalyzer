@@ -4,8 +4,8 @@ title: Cut, Copy, and Paste
 
 ### **To copy an audio portion**
 1. [Select a segment](select-segment) or [select a waveform portion](select-waveform) you want to copy, and then do one of the following:
-   1. On the **Edit** menu, click **Copy**, or press the [shortcut key](../../shortcuts/overview) **Ctrl+C**.
-   1. On the **Edit** menu, click **Cut**, or press the shortcut key **Ctrl+X**.
+   * On the **Edit** menu, click **Copy**, or press the [shortcut key](../../shortcuts/overview) **Ctrl+C**.
+   * On the **Edit** menu, click **Cut**, or press the shortcut key **Ctrl+X**.
 1. Move the insertion point to the destination where you want to copy the item.
 
     If you want to copy the item to *another document*, or application, switch to the destination document (or application).
@@ -25,8 +25,8 @@ title: Cut, Copy, and Paste
 
 ### **To copy a music notation**
 1. On the [Staff](../graphs/types/music/staff), drag the mouse pointer over the selected note(s) to copy or cut, and then do one of the following:
-   1. On the [Staff shortcut menu](../graphs/types/music/staff-shortcut-menu), click **Copy**, or press the [shortcut key](../../shortcuts/overview) **Ctrl+C.**
-   1. On the Staff shortcut menu, click **Cut**, or press the [shortcut key](../../shortcuts/overview) **Ctrl+X**.
+   * On the [Staff shortcut menu](../graphs/types/music/staff-shortcut-menu), click **Copy**, or press the [shortcut key](../../shortcuts/overview) **Ctrl+C.**
+   * On the Staff shortcut menu, click **Cut**, or press the [shortcut key](../../shortcuts/overview) **Ctrl+X**.
 1. Move the insertion point to the destination where you want to copy the item.
 
     If you want to copy the item to *another document*, or application, switch to the destination document (or application).

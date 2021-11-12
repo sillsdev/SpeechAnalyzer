@@ -15,8 +15,8 @@ To cause the [begin and end cursors](begin-end-cursors) to snap to the nearest f
 1. Move the end cursor as close as possible to the begin cursor *without moving* the begin cursor.
 1. Use [zoom](zoom) until you believe you have selected *only* a single fragment.
 1. To ensure you have selected a *single* fragment, do the following:
-   1. With the begin cursor at the beginning of the desired fragment, drag the end cursor as close as possible to the begin cursor without moving the begin cursor, and release the mouse button.
-   1. If the end cursor snaps to the right, it is at the true end of the fragment.
+   * With the begin cursor at the beginning of the desired fragment, drag the end cursor as close as possible to the begin cursor without moving the begin cursor, and release the mouse button.
+   * If the end cursor snaps to the right, it is at the true end of the fragment.
 
 #### **Related Topics**
 [Graphs overview](overview)

@@ -13,12 +13,12 @@ If the sound recorded from a microphone or tape recorder in Speech Analyzer soun
     The [Recording Control](../user-interface/menus/file/recording-control) dialog box appears.
 
 1. If the slider for the device you are recording from does not display, do the following:
-   1. On the **Options** menu, click **Properties**, and select **Recording**.
-   1. In the **Show the following volume controls** area, select the device you are recording from (for example, **Microphone**), and then click **OK**.
+   * On the **Options** menu, click **Properties**, and select **Recording**.
+   * In the **Show the following volume controls** area, select the device you are recording from (for example, **Microphone**), and then click **OK**.
 1. Adjust the **Volume** slider up or down on the device you are recording from (for example, Microphone).
 1. If you are using a microphone, and the recording level is still too low, do the following:
-   1. On the **Options** menu, click **Advanced Controls** to display the **Advanced** button under the **Microphone** area.
-   1. Under the **Microphone** area, click **Advanced**.
+   * On the **Options** menu, click **Advanced Controls** to display the **Advanced** button under the **Microphone** area.
+   * Under the **Microphone** area, click **Advanced**.
 
       The **Advanced Controls for Microphone** dialog box appears.
 

@@ -6,25 +6,25 @@ A *transcription* is a text that is time-aligned with the audio data, such as th
 
 1. [Select a segment](../select-segment) or area to add a new [segment](../segment) with the [begin and end cursors](../../graphs/begin-end-cursors).
 1. To open **Transcription Editor** dialog box, do one of the following:
-   1. On the [Edit](../overview) menu, point to **Transcription**, and then click **Show Transcription Editor**.
-   1. Double-click any transcription bar.
-   1. Right-click in the **Phonetic** area, and then click **Show Transcription Editor**.
-   1. Press **F4**.
+   * On the [Edit](../overview) menu, point to **Transcription**, and then click **Show Transcription Editor**.
+   * Double-click any transcription bar.
+   * Right-click in the **Phonetic** area, and then click **Show Transcription Editor**.
+   * Press **F4**.
 
 If you do not select a segment, the message **Disabled - select or add a segment** appears in the **Transcription Editor** dialog box.
 
 1. To view different segments, do one of the following:
-   1. To view the previous segment to the left, click ![](../../../../images/055.png).
-   1. To view the next segment to the right, click ![](../../../../images/056.png).
-   1. To view the segment in the transcription bar above, click ![](../../../../images/076.png).
-   1. To view the segment in the transcription bar below, click ![](../../../../images/077.png).
+   * To view the previous segment to the left, click ![](../../../../images/055.png).
+   * To view the next segment to the right, click ![](../../../../images/056.png).
+   * To view the segment in the transcription bar above, click ![](../../../../images/076.png).
+   * To view the segment in the transcription bar below, click ![](../../../../images/077.png).
 1. To select symbols to insert in the transcription, click [IPA Chart](../character-chart).
 
 You can click symbols in the **Character Chart** dialog box to add to the transcription.
 
 1. To playback a *portion* of the recording in the **Playback** area, click **Segment** or **Word**.
 1. To add a segment, do one of the following:
-   1. Select a **Phonetic** segment, and then click **Add**.
+   * Select a **Phonetic** segment, and then click **Add**.
 
 A 100 millisecond phonetic segment appears to the right. You can then [resize these segments](../segment-resizing).
 

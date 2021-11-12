@@ -9,14 +9,14 @@ On the [Player](player) dialog box, you can set the balance and volume for playb
 The **Volume Control** dialog box appears.
 
 1. If the device you want to adjust does not show on the dialog box, click **Options**, and then click **Properties**.
-   1. Select a **Mixer device** from the list.
-   1. In the **Adjust volume for** area, select **Playback**.
-   1. In the **Show the following volume controls** area, select or clear any auxiliary devices check boxes.
-   1. Click **OK**.
+   * Select a **Mixer device** from the list.
+   * In the **Adjust volume for** area, select **Playback**.
+   * In the **Show the following volume controls** area, select or clear any auxiliary devices check boxes.
+   * Click **OK**.
 1. To adjust the **Balance** for each device, move the slider to the left or right.
 1. To adjust the **Volume** for each device, move the slider up or down.
-   1. To eliminate *any sound from a device*, select **Mute** under that device.
-   1. To eliminate *all sound from every device*, select **Mute all**.
+   * To eliminate *any sound from a device*, select **Mute** under that device.
+   * To eliminate *all sound from every device*, select **Mute all**.
 
 #### **Related Topics**
 [Player](player)

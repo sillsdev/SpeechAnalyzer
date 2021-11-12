@@ -7,20 +7,20 @@ title: SFM Time Table
     The **Export Time Table** dialog box appears.
 
 1. In the **Sample** area, do one of the following:
-   1. Select **Phonetic Segments**.
+   * Select **Phonetic Segments**.
 
       A message can appear **No phonetic segments. Sample on time interval**. Click **OK**.
 
-    1. Select **Every** in the **Sample** area and enter the interval in milliseconds in the box.
+    * Select **Every** in the **Sample** area and enter the interval in milliseconds in the box.
 
     The available items in the **Include** area change accordingly.
 
 1. In the **Calculations** area, select either **Midpoint Value** or **Average Value**.
 1. In the **Region** area, select either **Between Cursors** or **Entire File**.
 1. In the **Include** area, do any of the following:
-   1. Select the **Segment Start** check box and/or the **Segment Length** check box.
-   1. Select either the **All Transcriptions** check box or clear the **All Transcriptions** check box, and *select individual transcriptions to export*.
-   1. Select either the **All Calculations** check box or clear **All Calculations** check box, and *select individual calculations to export*.
+   * Select the **Segment Start** check box and/or the **Segment Length** check box.
+   * Select either the **All Transcriptions** check box or clear the **All Transcriptions** check box, and *select individual transcriptions to export*.
+   * Select either the **All Calculations** check box or clear **All Calculations** check box, and *select individual calculations to export*.
 
       If you clear the **All Calculations** check box, select the **All Formants** check box, or clear the **All Formants** check box, and select *individual* formants to export (for example **F1**, **F2**, and so on).
 

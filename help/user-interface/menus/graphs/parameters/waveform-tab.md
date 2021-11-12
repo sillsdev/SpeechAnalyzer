@@ -8,11 +8,11 @@ To change the **Waveform** tab parameters, do the following:
 
 1. Select an [active](../active-graph) [graph type](../types/overview).
 1. Do one of the following:
-   1. On the [Graphs](../overview) menu, click **Parameters**.
-   1. Right-click in a plot area, and then click **Parameters**.
+   * On the [Graphs](../overview) menu, click **Parameters**.
+   * Right-click in a plot area, and then click **Parameters**.
 1. Click the **Waveform** tab.
 1. Do one of the following:
-   1. In the **Data Source** area, select either **Wave File** or a **Process** defined in the [Workbench](../../tools/workbench) on the **Tools** menu. **Wave File** is the default.
+   * In the **Data Source** area, select either **Wave File** or a **Process** defined in the [Workbench](../../tools/workbench) on the **Tools** menu. **Wave File** is the default.
 
 This allows you to *change the source* of data displayed in the waveform graph.
 

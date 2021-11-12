@@ -15,13 +15,13 @@ If file changes have been made, do one of the following.
 
 1. If needed, in the **Save in** list, browse to a *different folder* to save.
 1. In the **Save** area, do one of the following:
-   1. To save the whole file under a new name, click **Entire File**.
-   1. To save the visible part of the active file, click **Current View**.
-   1. To save the part of the file between the cursors, click **Between Cursors**.
+   * To save the whole file under a new name, click **Entire File**.
+   * To save the visible part of the active file, click **Current View**.
+   * To save the part of the file between the cursors, click **Between Cursors**.
 1. In the **Keep Open** area, do one of the following:
-   1. To keep open the new saved file, click **New File**.
-   1. To keep open the original file, click **Original File**.
-   1. To keep open the save and original files, click **Both Files**.
+   * To keep open the new saved file, click **New File**.
+   * To keep open the original file, click **Original File**.
+   * To keep open the save and original files, click **Both Files**.
 1. In the **File name** box, enter or type a new name, and then click **Save**.
 
 #### ![](../../../images/001.png) **Note**

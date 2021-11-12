@@ -9,19 +9,19 @@ The filtering can apply to the *whole recording* or only data between the [begin
 To configure a process, do the following:
 
 1. To select a process to configure, do one of the following:
-   1. Double-click the **Wave File** ![](../../../images/024.png) icon of the process.
-   1. On the **Properties** menu, select a process.
+   * Double-click the **Wave File** ![](../../../images/024.png) icon of the process.
+   * On the **Properties** menu, select a process.
 
       A dialog box appears with **Process** (number) as the title.
 
 1. For each of the three filters you use, do the following:
-   1. Select a [filter selection](workbench-filter-selections) from the list, other than **Plain**.
+   * Select a [filter selection](workbench-filter-selections) from the list, other than **Plain**.
 
       You may not use the *same* filter selection *twice* in a process.
 
       The **Properties** button activates.
 
-    1. If you selected **Highpass**, **Lowpass**, or **Bandpass**, click **Properties**, and then do the following:
+    * If you selected **Highpass**, **Lowpass**, or **Bandpass**, click **Properties**, and then do the following:
 
         Enter or type the **Upper** and **Lower** numbers in the **Cutoff Frequency** area.
 
@@ -29,13 +29,13 @@ To configure a process, do the following:
 
         Select or clear the **Forward & Reverse Passes** check box.
 
-    1. If you selected **Reverb** or **Echo**, click **Properties**, and then do the following:
+    * If you selected **Reverb** or **Echo**, click **Properties**, and then do the following:
 
         Enter or type the **Delay** numbers (in milliseconds).
 
         Enter or type the **Gain** numbers (in decibels).
 
-    1. If you selected **Equation**, click **Properties** and do the following:
+    * If you selected **Equation**, click **Properties** and do the following:
 
         Type or enter an equation in **Enter Equation f(x)**.
 

@@ -7,11 +7,11 @@ You can designate a specific keyboard shortcut (for example, **Ctrl+F1**) to pla
 This feature is particularly useful if certain combinations of volume, speed, and repetition are frequently used to playback files.
 
 1. You can find the **Function Keys Setup** dialog box in either one of two ways:
-   1. On the [Playback](overview) menu, click **Setup Function Keys**.
-   1. On the [Player](player) dialog box, click **Fn-Keys**.
+   * On the [Playback](overview) menu, click **Setup Function Keys**.
+   * On the [Player](player) dialog box, click **Fn-Keys**.
 1. To change settings in the **Function Keys Setup** dialog box, do any of the following:
-   1. In the **Ctrl+Fn** area, select a key combination to assign values.
-   1. In the **Settings** area, adjust any of the following:
+   * In the **Ctrl+Fn** area, select a key combination to assign values.
+   * In the **Settings** area, adjust any of the following:
 
 To adjust the play volume, move the **Volume** slider or arrows.
 

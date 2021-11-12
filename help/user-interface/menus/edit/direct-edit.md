@@ -11,9 +11,9 @@ To activate **Direct Edit**, do one of the following:
 
 1. [Select a segment](select-segment).
 1. To activate **Direct Edit** mode, do one of the following:
-   1. On the **Edit** menu, point to [Transcription](transcription/overview), and then click **Direct Edit**.
-   1. Click the selected segment, *a second time*.
-   1. Press **F2**.
+   * On the **Edit** menu, point to [Transcription](transcription/overview), and then click **Direct Edit**.
+   * Click the selected segment, *a second time*.
+   * Press **F2**.
 
     The transcription text turns white and highlights.
 

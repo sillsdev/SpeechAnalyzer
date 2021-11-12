@@ -6,7 +6,7 @@ To adjust the cursor alignment of a file, do the following:
 
 1. On the [Tools](../tools/overview) menu, click **Options**.
 1. In the [Cursor Alignment](cursor-alignment) area, select one of the following;
-   1. **Sample** either cursor will stay where it is positioned.
+   * **Sample** either cursor will stay where it is positioned.
 
 A *sample* is a value taken from an audio signal at a precise point in time. The sequence of these samples graphed over time is the waveform (or Raw Waveform).
 

@@ -6,7 +6,7 @@ title: Improve formant displays
 If the [formant](formants) results appear to incorrect, do the following:
 
 1. Examine the begin cursor position in the [Raw Waveform graph](raw-waveform).
-   1. Make sure that the cursor is not in a region of coarticulation, unless that is what you intended to analyze.
+   * Make sure that the cursor is not in a region of coarticulation, unless that is what you intended to analyze.
 
 *Coarticulation* is the influence successive speech sounds exert on each other, especially on the boundary between sounds.
 

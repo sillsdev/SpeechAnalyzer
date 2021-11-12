@@ -8,8 +8,8 @@ To change the **Music** tab parameters, do the following
 
 1. Select an [active](../active-graph) [graph type](../types/overview).
 1. Do one of the following:
-   1. On the [Graphs](../overview) menu, click **Parameters**.
-   1. Right-click in a plot area, and then click **Parameters**.
+   * On the [Graphs](../overview) menu, click **Parameters**.
+   * Right-click in a plot area, and then click **Parameters**.
 1. Click the **Music** tab.
 1. In the **Display** area or **Calculation** area, in the **Range** list, select either **Auto** or **Manual**.
 

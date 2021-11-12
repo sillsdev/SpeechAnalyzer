@@ -5,18 +5,18 @@ title: Record New
 In Speech Analyzer, you can record [audio input](audio-input-devices) from a microphone or an external recording device.
 
 1. Do one of the following:
-   1. On the [File](overview) menu, click **Record New**.
-   1. On the [toolbar](../../toolbar/toolbar), click **Record** ![](../../../images/050.png).
-   1. Press the [shortcut key](../../shortcuts/menu) **Ctrl+R**.
+   * On the [File](overview) menu, click **Record New**.
+   * On the [toolbar](../../toolbar/toolbar), click **Record** ![](../../../images/050.png).
+   * Press the [shortcut key](../../shortcuts/menu) **Ctrl+R**.
 
     The **Recorder** dialog box appears.
 
 1. Do any of the following:
-   1. To adjust audio input volume, use the **Rec Vol** slider or arrows, or click [Input](recording-control).
+   * To adjust audio input volume, use the **Rec Vol** slider or arrows, or click [Input](recording-control).
 
       To control distortion, avoid red **Record Level** bars while recording.
 
-    1. To change recorder settings, click [Settings](recorder-settings).
+    * To change recorder settings, click [Settings](recorder-settings).
 1. To record, click **Rec**.
 
     The **Cur** box displays the running elapsed time of the recording.

@@ -5,15 +5,15 @@ title: Graph Types
 Speech Analyzer can display 19 different graphs, but you can *only select 6 graphs* to display at a time (plus the [Position View graph](position-view)).
 
 1. To display the **Graph Types** dialog box, do one of the following:
-   1. On the **Graphs** menu, click **Types**.
-   1. On the [toolbar](../../../toolbar/toolbar), click **Graph Types** ![](../../../../images/061.png).
-   1. Press **F7**.
+   * On the **Graphs** menu, click **Types**.
+   * On the [toolbar](../../../toolbar/toolbar), click **Graph Types** ![](../../../../images/061.png).
+   * Press **F7**.
 1. To see the pre-selected graph configurations for *speech*, do one of the following:
-   1. Click the **Phonetic** tab, and then select an entry in the **screen configuration** list.
-   1. Click the **Phonetic** [taskbar](../../tools/options/taskbar) pane, and then click an icon.
+   * Click the **Phonetic** tab, and then select an entry in the **screen configuration** list.
+   * Click the **Phonetic** [taskbar](../../tools/options/taskbar) pane, and then click an icon.
 1. To see the pre-selected graph configurations for *music*, do one of the following:
-   1. Click the **Music** tab, and then select an entry in the **screen configuration** list.
-   1. Click the **Music** taskbar pane, and then click an icon.
+   * Click the **Music** tab, and then select an entry in the **screen configuration** list.
+   * Click the **Music** taskbar pane, and then click an icon.
 1. If the **Phonetic** or **Music** lists do not contain the set of graphs you need, click [Custom](custom), select the desired graph types, and then click **OK**.
 
 Reopen the **Graph Types** dialog box. If the **screen configuration** list does not contain the currently displayed *custom* set of graphs, click **Save Current**.

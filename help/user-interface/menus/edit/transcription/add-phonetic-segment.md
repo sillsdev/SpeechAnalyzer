@@ -6,10 +6,10 @@ To add a new phonetic segment, do the following:
 
 1. [Select a segment](../select-segment), or any unsegmented area with the [begin and end cursor](../../graphs/begin-end-cursors).
 1. Do one of the following:
-   1. On the **Edit** menu, point to [Transcription](overview), and then click **Add Phonetic Segment**.
-   1. On the [toolbar](../../../toolbar/toolbar), click **Add Phonetic Segment** ![](../../../../images/057.png).
-   1. Right-click in the **Phonetic** area, and then click **Add Phonetic**.
-   1. Press **Alt+=**
+   * On the **Edit** menu, point to [Transcription](overview), and then click **Add Phonetic Segment**.
+   * On the [toolbar](../../../toolbar/toolbar), click **Add Phonetic Segment** ![](../../../../images/057.png).
+   * Right-click in the **Phonetic** area, and then click **Add Phonetic**.
+   * Press **Alt+=**
 
 In the **Phonetic** area, a new segment appears. If you selected a segment, a 100 millisecond phonetic segment appears to the right of the selected segment.
 

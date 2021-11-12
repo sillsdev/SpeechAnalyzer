@@ -9,10 +9,10 @@ In Speech Analyzer, you can control how the recording graphs are viewed, what co
 The **Options** dialog box appears.
 
 1. Select any of the following tabs:
-   1. Click the [View tab](view-tab) to display the taskbar, status bar, advanced tools, control cursor alignment, display gridlines, and control fragment updates.
-   1. Click the [Colors tab](colors-tab) to adjust the **Graph**, **Transcription**, **Scale**, and **Overlay** colors.
-   1. Click the [Fonts tab](fonts-tab) to change the font properties for different transcriptions.
-   1. Click the [Startup tab](startup-tab) to adjust what graphs appear when Speech Analyzer starts.
+   * Click the [View tab](view-tab) to display the taskbar, status bar, advanced tools, control cursor alignment, display gridlines, and control fragment updates.
+   * Click the [Colors tab](colors-tab) to adjust the **Graph**, **Transcription**, **Scale**, and **Overlay** colors.
+   * Click the [Fonts tab](fonts-tab) to change the font properties for different transcriptions.
+   * Click the [Startup tab](startup-tab) to adjust what graphs appear when Speech Analyzer starts.
 
 #### **Related Topics**
 [Tools overview](../overview)

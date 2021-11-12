@@ -8,8 +8,8 @@ To change the [formants](../types/formants) tab graph parameters, do the followi
 
 1. Select an [active](../active-graph) [graph type](../types/overview).
 1. Do one of the following:
-   1. On the [Graphs](../overview) menu, click **Parameters.**
-   1. Right-click in a plot area, and then click **Parameters**.
+   * On the [Graphs](../overview) menu, click **Parameters.**
+   * Right-click in a plot area, and then click **Parameters**.
 1. Click the **Formants** tab.
 1. In the **Graph Options** area, select (or clear) the **Use mel-scaled grid** check box.
 1. To save the settings and *not close* the dialog box, click **Apply**.

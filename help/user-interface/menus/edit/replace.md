@@ -6,11 +6,11 @@ On the [Edit](overview) menu, you can replace text found in the **Phonetic**, **
 
 1. [Select a segment](select-segment).
 1. Do one of the following:
-   1. Use [Find](find) to locate text, and then click **Replace**.
+   * Use [Find](find) to locate text, and then click **Replace**.
 
       The **Replace All** button appears.
 
-    1. On the **Edit** menu, click **Replace**, and then locate text, using **Find Next**.
+    * On the **Edit** menu, click **Replace**, and then locate text, using **Find Next**.
 1. In the **Replace With** box, enter the characters to replace.
 1. To view and listen to possible replacement characters, click [IPA Chart](character-chart)
 1. To replace the first occurrence, click **Replace**.

@@ -3,8 +3,8 @@ title: Standard Format or Extensible Markup
 ---
 
 1. On the **File** menu, point to [Export](overview) and do one of the following:
-   1. To export the file in SIL Standard Format for the Field Linguist's Toolbox, click [Standard Format (.SFM)](sfm)
-   1. To export the file in a format readable by modern web browsers, click [Extensible Markup (.XML)](xml)
+   * To export the file in SIL Standard Format for the Field Linguist's Toolbox, click [Standard Format (.SFM)](sfm)
+   * To export the file in a format readable by modern web browsers, click [Extensible Markup (.XML)](xml)
 
     The **Export Speech Format** dialog box appears.
 

@@ -3,9 +3,9 @@ title: Open
 ---
 
 1. To open an existing recording, do one of the following:
-   1. On the **File** menu, click **Open**.
-   1. On the [toolbar](../../toolbar/toolbar), click **Open** ![](../../../images/051.png).
-   1. Press the [shortcut key](../../shortcuts/overview) **Ctrl+O**.
+   * On the **File** menu, click **Open**.
+   * On the [toolbar](../../toolbar/toolbar), click **Open** ![](../../../images/051.png).
+   * Press the [shortcut key](../../shortcuts/overview) **Ctrl+O**.
 
     The **Open** dialog appears.
 

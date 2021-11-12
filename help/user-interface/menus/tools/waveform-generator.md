@@ -7,13 +7,13 @@ To generate a simple waveform, do the following:
 1. On the [Tools](overview) menu, click **Waveform Generator**.
 1. Select the **Sinusoid 1** check box.
 1. Next to **Sinusoid 1** check box, do the following:
-   1. Under **Amplitude (%)**, type **70**.
-   1. Under **Frequency (Hz)**, enter a desired frequency (for example, 440).
-   1. Under **Phase (Degrees)**, leave **0** in the box.
+   * Under **Amplitude (%)**, type **70**.
+   * Under **Frequency (Hz)**, enter a desired frequency (for example, 440).
+   * Under **Phase (Degrees)**, leave **0** in the box.
 1. Leave all other check boxes and options unchanged.
 1. In the **Handle discontinities** area, do the following:
-   1. Select **Ideal**.
-   1. Select **Limit harmonics to**.
+   * Select **Ideal**.
+   * Select **Limit harmonics to**.
 
       The **Limit harmonics to** box activates.
 

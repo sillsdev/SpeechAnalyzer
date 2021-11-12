@@ -6,9 +6,9 @@ To modify the colors used for **Graph**, **Transcription**, **Scale**, and **Ove
 
 1. On the **Tools** menu, click [Options](overview), and then click **Colors**.
 1. In the **Windows Setup** area, do any of the following:
-   1. In the [Graph](../../graphs/overview), [Transcription](../../edit/transcription/overview), [Scale](../../graphs/view), or [Overlay](../../graphs/overlay) list, select an option.
-   1. Select an option from the list.
-   1. If needed, you can select a *different* custom color by doing the following:
+   * In the [Graph](../../graphs/overview), [Transcription](../../edit/transcription/overview), [Scale](../../graphs/view), or [Overlay](../../graphs/overlay) list, select an option.
+   * Select an option from the list.
+   * If needed, you can select a *different* custom color by doing the following:
 
 Click ![](../../../../images/078.png) to display the [Color](color-palette) dialog box.
 

@@ -65,8 +65,8 @@ The procedure depends on the version of Microsoft Windows.
     **"C:\\Program Files\\SIL\\Speech Analyzer\\Sa.exe" "%L"**
 
 1. Do one of the following:
-   1. To be able to open *multiple* Wave Sound files, each in a *different* Speech Analyzer window, clear the **Use DDE** check box.
-   1. To be able to open *multiple* Wave Sound files, all in the *same* Speech Analyzer window, select the **Use DDE** check box, and then in the **DDE Message** box, type **[open ("%L")]**
+   * To be able to open *multiple* Wave Sound files, each in a *different* Speech Analyzer window, clear the **Use DDE** check box.
+   * To be able to open *multiple* Wave Sound files, all in the *same* Speech Analyzer window, select the **Use DDE** check box, and then in the **DDE Message** box, type **[open ("%L")]**
 
 1. Click **OK** three times.
 

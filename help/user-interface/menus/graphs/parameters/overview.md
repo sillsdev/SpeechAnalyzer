@@ -6,8 +6,8 @@ To change Graph Parameters for a recording, do the following:
 
 1. Select an [active](../active-graph) [graph type](../types/overview).
 1. Do one of the following:
-   1. On the [Graphs](../overview) menu, click **Parameters**.
-   1. Right-click a plot area in a graph, and then click **Parameters**.
+   * On the [Graphs](../overview) menu, click **Parameters**.
+   * Right-click a plot area in a graph, and then click **Parameters**.
 
 The **Graph Parameters** dialog box appears.
 

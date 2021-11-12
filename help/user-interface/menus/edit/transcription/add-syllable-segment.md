@@ -8,8 +8,8 @@ To add a syllable segment to a recording, do the following:
 
 1. [Select a phonetic segment](../select-segment).
 1. To add a syllable segment, do one of the following:
-   1. On the **Edit** menu, point to [Transcription](overview), and then click **Add Syllable Segment**.
-   1. On the [toolbar](../../../toolbar/toolbar), click **Add Syllable Segment** ![](../../../../images/058.png), or press **Ctrl+L**.
+   * On the **Edit** menu, point to [Transcription](overview), and then click **Add Syllable Segment**.
+   * On the [toolbar](../../../toolbar/toolbar), click **Add Syllable Segment** ![](../../../../images/058.png), or press **Ctrl+L**.
 
 An empty segment appears to the left of the selected segment.
 

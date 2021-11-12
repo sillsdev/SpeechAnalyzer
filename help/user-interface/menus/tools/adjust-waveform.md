@@ -5,15 +5,15 @@ title: Adjust Waveform
 To modify the [Raw Waveform graph](../graphs/types/raw-waveform), do the following:
 
 1. On the [Tools](overview) menu, point to **Adjust Waveform**, and then click one of the following:
-   1. To *invert* a waveform, click **Invert**.
+   * To *invert* a waveform, click **Invert**.
 
         The **Raw Waveform** graph is inverted (negative values become positive values, and positive values become negative values).
 
-    1. To *normalize* a waveform, click **Normalize**.
+    * To *normalize* a waveform, click **Normalize**.
 
         All the sample values in the waveform increase until the highest peak is at 100% (at the top of the graph).
 
-    1. To remove sound-card offset in a waveform, click **Zero Offset**. Sound-card offset occurs when the sound card *incorrectly* detects the zero-point of the waveform.
+    * To remove sound-card offset in a waveform, click **Zero Offset**. Sound-card offset occurs when the sound card *incorrectly* detects the zero-point of the waveform.
 
         The **Raw Waveform** graph centers on the zero line of the graph.
 

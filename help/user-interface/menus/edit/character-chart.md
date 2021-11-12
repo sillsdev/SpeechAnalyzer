@@ -13,9 +13,9 @@ To use the **Character Chart** dialog box, do one of the following:
     A different chart displays with each tab.
 
 1. To compare **Character Chart** sounds with the selected segment, select any of the following, and place the cursor over an IPA character:
-   1. To hear a sample IPA sound, select the **Sound** check box.
-   1. To hear the gloss segment containing the selected segment, select the **Word** check box.
-   1. To hear the selected *segment*, select the **Segment** check box.
+   * To hear a sample IPA sound, select the **Sound** check box.
+   * To hear the gloss segment containing the selected segment, select the **Word** check box.
+   * To hear the selected *segment*, select the **Segment** check box.
 
     A *larger* character image appears, and the sound plays
 

@@ -17,9 +17,9 @@ To *open an existing file*, do the following:
 To listen to a *selected* file, select the **Play** and **Stop** buttons.
 
 1. In the **Display What Types of Graphs** area, do one of the following:
-   1. To continue to display the graphs previously selected as **Permanently** or **Temporarily** in the **Startup tab** on the **Options** dialog box (the **User Specified** check box is selected), *do nothing*.
-   1. To display the [Raw Waveform](menus/graphs/types/raw-waveform) and [Auto Pitch](menus/graphs/types/auto-pitch) graphs, click **Phonetic**.
-   1. To display the [Position View graph](menus/graphs/types/position-view), [Melogram](menus/graphs/types/music/melogram), and [Staff](menus/graphs/types/music/staff), click **Music**.
+   * To continue to display the graphs previously selected as **Permanently** or **Temporarily** in the **Startup tab** on the **Options** dialog box (the **User Specified** check box is selected), *do nothing*.
+   * To display the [Raw Waveform](menus/graphs/types/raw-waveform) and [Auto Pitch](menus/graphs/types/auto-pitch) graphs, click **Phonetic**.
+   * To display the [Position View graph](menus/graphs/types/position-view), [Melogram](menus/graphs/types/music/melogram), and [Staff](menus/graphs/types/music/staff), click **Music**.
 1. To *not show* the dialog box again, select the **Don't show this dialog again** check box.
 1. Click **OK**.
 1. If the selected file contains *transcription data from a previous version* of Speech Analyzer, select mapping converters in the [Transcription Encoding Converters](menus/file/transcription-encoding-converters) dialog box that appears.

@@ -26,8 +26,8 @@ To resize segments whose widths are dependent upon the phonetic segment width:
 1. [Select the phonetic segment](select-segment) to place the gap.
 1. Place the [begin and end cursors](../graphs/begin-end-cursors) at the border of the phonetic segment to resize.
 1. Hold down **Ctrl + Shift,** and then do one of the following:
-   1. Drag the begin cursor to the right to make a gap to the left of this segment.
-   1. Drag the end cursor to the left to make a gap to the right of this segment.
+   * Drag the begin cursor to the right to make a gap to the left of this segment.
+   * Drag the end cursor to the left to make a gap to the right of this segment.
 1. Insert a Gloss [word break](transcription/add-gloss-word-segment) character where you wish the gap to begin.
 
 An empty segment will span the gap but there will be no text inside.
@@ -37,8 +37,8 @@ An empty segment will span the gap but there will be no text inside.
 
 1. Click the **Phonetic** segment you wish to coarticulate.
 1. Hold down **Ctrl + Shift**, and do one of the following:
-   1. Drag the end cursor to the right.
-   1. Drag the begin cursor to the left.
+   * Drag the end cursor to the right.
+   * Drag the begin cursor to the left.
 
 #### ![](../../../images/001.png) **Note**
 - Always release the mouse button *before* you release **Ctrl + Shift**.

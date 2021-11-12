@@ -11,9 +11,9 @@ To insert a bookmark, do the following:
 1. Select a [Raw Waveform graph](../../graphs/types/raw-waveform) to display.
 1. [Select a segment](../select-segment), in the **Gloss** transcription bar, to indicate the placement of the bookmark character.
 1. Do one of the following:
-   1. On the **Edit** menu, point to [Transcription](overview), and then click **Add Gloss Bookmark**.
-   1. Right-click in the **Phonetic** transcription bar, and then click **Add Bookmark**.
-   1. Press **Ctrl+B**.
+   * On the **Edit** menu, point to [Transcription](overview), and then click **Add Gloss Bookmark**.
+   * Right-click in the **Phonetic** transcription bar, and then click **Add Bookmark**.
+   * Press **Ctrl+B**.
 
 The **Gloss** [transcription bar](guidelines) appears with a bookmark character ( ! ) to the left of the segment.
 

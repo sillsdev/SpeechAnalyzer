@@ -10,9 +10,9 @@ The **Options** dialog box appears.
 
 1. Click the [Colors tab](../../tools/options/colors-tab).
 1. In the **Graph** list, do one of the following:
-   1. To change the cepstral plot line, select **First Data**.
-   1. To change the FFT plot line, select **Second Data**.
-   1. To change the LPC plot line, select **Third Data**.
+   * To change the cepstral plot line, select **First Data**.
+   * To change the FFT plot line, select **Second Data**.
+   * To change the LPC plot line, select **Third Data**.
 1. Click the ellipsis button ![](../../../../images/078.png).
 
 The [Color palette](../../tools/options/color-palette) appears.

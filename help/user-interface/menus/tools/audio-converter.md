@@ -17,21 +17,21 @@ To convert audio data to and from UTT and wav file formats, do the following:
     Copying files into this folder, however, might only be allowed for users in the administrator group. If you are not a member of the administrator group, you might need to browse to a different folder in Audio Converter to find the location of the audio files you wish to convert. 
 
 1. In the **Input** area, do one of the following:
-   1. To select a file to convert, search the **UTT Files** or **WAV Files** folders.
-   1. When you locate the file to convert, select it in the list.
+   * To select a file to convert, search the **UTT Files** or **WAV Files** folders.
+   * When you locate the file to convert, select it in the list.
 
       The **Output** area becomes active, and the file information displays under the list.
 
 1. In the **Output** area, do the following:
-   1. Select the output **Sampling Rate (Hz)**, and **Sample size**.
+   * Select the output **Sampling Rate (Hz)**, and **Sample size**.
 
       Using the **Options** menu, you can type *your own* sampling rate.
 
-    1. In the **File Spec** area, select the output folder to write the converted file.
-    1. If needed, type a new **File Name** in the text box.
-    1. To add a job to the convert queue, click **Add**.
-    1. To delete a job from the convert queue, select the job, and click **Delete**.
-    1. To revise a job in the convert queue, select the job, and click **Revise**.
+    * In the **File Spec** area, select the output folder to write the converted file.
+    * If needed, type a new **File Name** in the text box.
+    * To add a job to the convert queue, click **Add**.
+    * To delete a job from the convert queue, select the job, and click **Delete**.
+    * To revise a job in the convert queue, select the job, and click **Revise**.
 1. To convert the file, click **Convert**.
 
     The conversion bar displays the job progress, and the **AudioCon Job Status** box displays completed job messages.

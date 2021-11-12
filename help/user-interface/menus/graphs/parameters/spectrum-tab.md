@@ -8,8 +8,8 @@ To change the **Spectrum** tab parameters, do the following:
 
 1. Select an [active](../active-graph) [graph type](../types/overview).
 1. Do one of the following:
-   1. On the [Graphs](../overview) menu, click **Parameters**.
-   1. Right-click in a plot area, and then click **Parameters**.
+   * On the [Graphs](../overview) menu, click **Parameters**.
+   * Right-click in a plot area, and then click **Parameters**.
 1. Click the **Spectrum** tab.
 1. In the **Power Scale** area, type or use the arrows to set the **Upper Boundary** and **Lower Boundary** levels displayed on the **Spectrum** graph.
 1. In the **Frequency Range** area, select **Full Scale**, **Half Scale**, **Third Scale**, or **Quarter Scale**.
@@ -17,7 +17,7 @@ To change the **Spectrum** tab parameters, do the following:
 (**Full Scale** displays the spectrum from 0 to half the sampling rate.)
 
 1. In the **Calculations** area, select one of the following:
-   1. Select **Perform LPC Smoothing**.
+   * Select **Perform LPC Smoothing**.
 
 The [Peak Sharpening Factor](peak-sharpening) list activates. Type or select numbers using the arrows.
 
@@ -26,7 +26,7 @@ The [Peak Sharpening Factor](peak-sharpening) list activates. Type or select num
 The [Smoothing Level](cepstral-smoothing) list activates. Type or select numbers using the arrows.
 
 1. In the **Formant Display** area, do any of the following:
-   1. To display formant frequencies in hertz (Hz), select the **Frequency** check box.
+   * To display formant frequencies in hertz (Hz), select the **Frequency** check box.
 
 The **Bandwidth** check box activates. Select this box to display formant bandwidths in hertz (Hz).
 

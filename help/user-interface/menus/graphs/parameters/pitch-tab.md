@@ -8,12 +8,12 @@ To change the **Pitch** tab parameters, do the following:
 
 1. Select an [active](../active-graph) [graph type](../types/overview).
 1. Do one of the following:
-   1. On the [Graphs](../overview) menu, click **Parameters**.
-   1. Right-click in a plot area, and then click **Parameters**.
+   * On the [Graphs](../overview) menu, click **Parameters**.
+   * Right-click in a plot area, and then click **Parameters**.
 1. Click the **Pitch** tab.
 1. In the **Display** area, do any of the following:
-   1. In the **Scaling** list, select **Linear**, **Logarithmic**, or **Semitones**. A semitone represents a half step on a musical scale.
-   1. In the **Range list**, select **Auto** or **Manual**.
+   * In the **Scaling** list, select **Linear**, **Logarithmic**, or **Semitones**. A semitone represents a half step on a musical scale.
+   * In the **Range list**, select **Auto** or **Manual**.
 
 **Auto** automatically scales the graph legend to match the lowest to highest frequency present.
 
@@ -22,7 +22,7 @@ To change the **Pitch** tab parameters, do the following:
 **Upper Boundary** is the upper boundary of frequencies (*Y*-axis). **Lower Boundary** is the lower boundary of frequencies (*Y*-axis).
 
 1. In the **Manual Settings** area, you can change any of the pitch contour calculation numbers, helping to eliminate pitch outliers and inaccurate voicing assessments:
-   1. The *first three parameters* apply to the Raw Pitch, Custom Pitch, and Smoothed Pitch graphs.
+   * The *first three parameters* apply to the Raw Pitch, Custom Pitch, and Smoothed Pitch graphs.
 
 **Min Frequency** sets the lower bound for pitch calculations.
 

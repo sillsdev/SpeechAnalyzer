@@ -13,12 +13,12 @@ If the speaker playback volume is too low, and you have already adjusted the spe
     The **Volume Control** dialog box appears.
 
 1. If the **Volume Control** or **Wave** devices *are not* displayed, do the following:
-   1. On the **Options** menu, click **Properties**.
+   * On the **Options** menu, click **Properties**.
 
       The **Properties** dialog box appears.
 
-   1. In the **Adjust volume for** area, click **Playback**.
-   1. Select the **Volume Control** or **Wave** check box, and then click **OK**.
+   * In the **Adjust volume for** area, click **Playback**.
+   * Select the **Volume Control** or **Wave** check box, and then click **OK**.
 1. Under the sliders, *clear all* the **Mute** check boxes.
 1. Drag the slider for **Volume Control** and **Wave** to the desired level.
 

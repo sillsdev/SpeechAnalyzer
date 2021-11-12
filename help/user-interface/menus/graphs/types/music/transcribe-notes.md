@@ -9,7 +9,7 @@ For each note in the audio data, do the following:
 1. Notice the music notation (note name and octave) that appears in parentheses in the third pane of the [status bar](../../../tools/status-bar) at the lower right of the Speech Analyzer window.
 1. Click where you need to enter the note in the [Staff](staff).
 1. To enter the note, do one of the following:
-   1. [Type the music notation](notation).
+   * [Type the music notation](notation).
 
 A note appears on the Staff.
 

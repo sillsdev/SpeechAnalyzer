@@ -6,11 +6,11 @@ Before you can [cut or copy](cut-copy-paste) a portion of audio data, you must s
 
 ### **Move the cursors**
 1. To mark a portion of audio data, do one of the following:
-   1. Move the [begin and end cursors](../graphs/begin-end-cursors) in any time-based graph.
-   1. [Select a segment](select-segment).
+   * Move the [begin and end cursors](../graphs/begin-end-cursors) in any time-based graph.
+   * [Select a segment](select-segment).
 1. Do one of the following:
-   1. On the **Edit** menu, click **Select Waveform**.
-   1. Press the [shortcut keys](../../shortcuts/overview) **Ctrl+A**.
+   * On the **Edit** menu, click **Select Waveform**.
+   * Press the [shortcut keys](../../shortcuts/overview) **Ctrl+A**.
 
     The audio data between the cursors is selected (highlighted).
 

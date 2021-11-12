@@ -9,8 +9,8 @@ The **Screen Capture** function enables you to copy an image of the screen, or p
 ### **Save a Screen Capture to a file**
 1. Adjust the size and position of the Speech Analyzer window and its graphs. The image will be captured from the current size and layout of the Speech Analyzer window.
 1. On the [File](../overview) menu, point to **Screen Capture**, and then do any of the following:
-   1. To [save](../save) the Speech Analyzer window image to a file, click **Save Window**.
-   1. To save the graphs image to a file, click **Save Graphs**.
+   * To [save](../save) the Speech Analyzer window image to a file, click **Save Window**.
+   * To save the graphs image to a file, click **Save Graphs**.
 
 The **Save As** dialog box appears.
 
@@ -22,8 +22,8 @@ The **Save As** dialog box appears.
 ### **Copy a Screen Capture to the Clipboard**
 1. Adjust the size and position of the Speech Analyzer window and its graphs. The image will be captured from the current size and layout of the Speech Analyzer window.
 1. On the **File** menu, point to **Screen Capture**, and then do any of the following:
-   1. To [copy](../../edit/cut-copy-paste) the Speech Analyzer window image to the Clipboard, click **Copy Window**.
-   1. To copy the graphs image to the Clipboard, click **Copy Graphs**.
+   * To [copy](../../edit/cut-copy-paste) the Speech Analyzer window image to the Clipboard, click **Copy Window**.
+   * To copy the graphs image to the Clipboard, click **Copy Graphs**.
 
 The specified area copies to the Clipboard.
 

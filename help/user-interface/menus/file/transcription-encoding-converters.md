@@ -14,8 +14,8 @@ An arrow ![](../../../images/004.png) appears at the left of a selected transcri
 
 1. Click the down arrow in the **Converter** column.
 1. In the list, select **none**, an encoding converter, or **Browse**.
-   1. If you select **Browse**, the **Find Converter Mapping File** dialog box appears.
-   1. Find the converter mapping file using the **Look in** folder list, and click **Open**.
+   * If you select **Browse**, the **Find Converter Mapping File** dialog box appears.
+   * Find the converter mapping file using the **Look in** folder list, and click **Open**.
 
 The converter mapping file name appears in the **Converter** list.
 
