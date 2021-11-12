@@ -11614,6 +11614,11 @@ void CSaView::OnFileSaveAs() {
 
 		if (FileUtils::EndsWith((LPCTSTR)path, L".mp3")) {
 			// If path is mp3 file, use the temporary converted wavefile already in use:
+			CString tempConvertedWav = doc.GetConvertedWaveFilename().c_str();
+			if (!doc.CheckWaveFormatForOpen(tempConvertedWav)) {
+				app.ErrorMessage(IDS_ERROR_CANT_READ_WAVE_FILE, (LPCTSTR)tempConvertedWav);
+				return;
+			}
 			path = doc.GetConvertedWaveFilename().c_str();
 		} else {
 			path = FileUtils::ReplaceExtension((LPCTSTR)path, L".wav").c_str();
@@ -11701,19 +11706,6 @@ void CSaView::OnFileSaveAs() {
 /***************************************************************************/
 void CSaView::OnUpdateFileSaveAs(CCmdUI * pCmdUI) {
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	/*
-	CSaDoc & doc = *GetDocument();
-	CString docname = doc.GetPathName();
-	if (docname.IsEmpty()) {
-		docname = doc.GetFilenameFromTitle().c_str();
-	}
-
-	if (FileUtils::EndsWith(docname, L".mp3")) {
-		// Disable SaveAs for mp3 files
-		pCmdUI->Enable(false);
-		return;
-	}
-	*/
 	pCmdUI->Enable(pApp->GetBatchMode() == 0); // SDM 1.5Test8.2
 }
 
