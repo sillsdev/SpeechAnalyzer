@@ -1089,17 +1089,18 @@ void CDlgParametersSpectroPage::Apply() {
             }
         }
         // get spectrogram parameters
-        CSpectroParm cSpectroParm = pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->GetSpectroParm();
+        CProcessSpectrogram* pProcess = (m_GraphId == IDD_SPECTROGRAM) ? pDoc->GetSpectrogram() : pDoc->GetSnapshot();
+        CSpectroParm cSpectroParm = pProcess->GetSpectroParm();
         CSpectroParm * pSpectroParm = &cSpectroParm;
         // save member data
         if (pSpectroParm->nResolution != m_nResolution) {
             // processed data is invalid
-            pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->SetDataInvalid();
+            pProcess->SetDataInvalid();
         }
 
         if (pSpectroParm->bSmoothFormantTracks != m_bSmoothFormantTracks) {
             // processed data is invalid
-            pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->SetDataInvalid();
+            pDoc->GetSpectrogram()->SetProcessDataInvalid();
         }
 
         pSpectroParm->nFrequency = m_nFrequency;
@@ -1123,7 +1124,7 @@ void CDlgParametersSpectroPage::Apply() {
         m_bModified = FALSE;
         SetModified(FALSE);
         // set the new spectrogram parameters
-        pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->SetSpectroParm(*pSpectroParm);
+        pProcess->SetSpectroParm(*pSpectroParm);
         pDoc->RestartAllProcesses();
         // refresh the spectrogram
         pGraph->RedrawGraph(TRUE, TRUE);
@@ -1185,7 +1186,8 @@ BOOL CDlgParametersSpectroPage::OnInitDialog() {
         }
     }
     // get spectrogram parameters
-    const CSpectroParm * pSpectroParm = &pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->GetSpectroParm();
+    CProcessSpectrogram* pProcess = (m_GraphId == IDD_SPECTROGRAM) ? pDoc->GetSpectrogram() : pDoc->GetSnapshot();
+    const CSpectroParm * pSpectroParm = &pProcess->GetSpectroParm();
     // initialize member data
     m_nResolution = pSpectroParm->nResolution;
     m_nColor = pSpectroParm->nColor;
@@ -3293,7 +3295,7 @@ void CDlgParametersResearchPage::Apply() {
               ResearchSettings.m_nLpcCepstralSmooth != m_workingSettings.m_nLpcCepstralSmooth));
 
         if (bSpectrumSettingsChanged) {
-            pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->SetDataInvalid();
+            pDoc->GetSpectrogram()->SetProcessDataInvalid();
             CProcessSpectrum * pSpectrum = pDoc->GetSpectrum();
             // invalidate processed data
             pSpectrum->SetDataInvalid();
@@ -3301,7 +3303,7 @@ void CDlgParametersResearchPage::Apply() {
 
         if (ResearchSettings.m_cWindow.m_nType != m_workingSettings.m_cWindow.m_nType) {
             // processed data is invalid
-            pDoc->GetSpectrogram(TRUE)->SetDataInvalid();
+            pDoc->GetSpectrogram()->SetDataInvalid();
         }
 
         ResearchSettings = m_workingSettings;
@@ -3716,14 +3718,8 @@ void CDlgGraphsParameters::DoDataExchange(CDataExchange * pDX) {
 // CDlgGraphsParameters::OnCreate Dialog creation
 /***************************************************************************/
 int CDlgGraphsParameters::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-
-    if (CPropertySheet::OnCreate(lpCreateStruct) == -1) {
-        return -1;
-    }
-
-    return 0;
+    return (CPropertySheet::OnCreate(lpCreateStruct) == -1) ? -1 : 0;
 }
-
 
 /***************************************************************************/
 // CDlgGraphsParameters::OnApply Apply button hit

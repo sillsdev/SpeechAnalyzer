@@ -3477,11 +3477,11 @@ void CSaDoc::InvalidateAllProcesses() {
 	}
 	if (m_pProcessSpectrogram) {
 		m_pProcessSpectrogram->SetDataInvalid();
-		m_pProcessSpectrogram->GetFormantProcess()->SetDataInvalid();
+		m_pProcessSpectrogram->SetProcessDataInvalid();
 	}
 	if (m_pProcessSnapshot) {
 		m_pProcessSnapshot->SetDataInvalid();
-		m_pProcessSnapshot->GetFormantProcess()->SetDataInvalid();
+		m_pProcessSnapshot->SetProcessDataInvalid();
 	}
 	if (m_pProcessFormants) {
 		m_pProcessFormants->SetDataInvalid();
@@ -3616,14 +3616,7 @@ void CSaDoc::RestartAllProcesses() {
 		m_pProcessRatio->RestartProcess();
 	}
 	if (m_pProcessSpectrogram) {
-		if (m_pProcessSpectrogram->IsCanceled()) {
-			m_pProcessSpectrogram->SetDataInvalid();
-			m_pProcessSpectrogram->RestartProcess();
-		}
-		if (m_pProcessSpectrogram->GetFormantProcess()->IsCanceled()) {
-			m_pProcessSpectrogram->GetFormantProcess()->SetDataInvalid();
-			m_pProcessSpectrogram->GetFormantProcess()->RestartProcess();
-		}
+		m_pProcessSpectrogram->InvalidateAndRestart();
 	}
 	if (m_nWbProcess > 0) {
 		CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
@@ -3711,7 +3704,7 @@ BOOL CSaDoc::AnyProcessCanceled() {
 	if (m_pProcessSpectrogram && m_pProcessSpectrogram->IsCanceled()) {
 		return TRUE;
 	}
-	if (m_pProcessSpectrogram && m_pProcessSpectrogram->GetFormantProcess() && m_pProcessSpectrogram->GetFormantProcess()->IsCanceled()) {
+	if (m_pProcessSpectrogram && m_pProcessSpectrogram->IsProcessCanceled()) {
 		return TRUE;
 	}
 	if (m_pProcessSnapshot && m_pProcessSnapshot->IsCanceled()) {
@@ -5654,19 +5647,20 @@ void CSaDoc::GetAlignInfo(CAlignInfo & info) {
 	info.bValid = TRUE;
 }
 
-CProcessSpectrogram * CSaDoc::GetSpectrogram(bool bRealTime) {
-	CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-	if (bRealTime) {
-		if (!m_pProcessSpectrogram) {
-			m_pProcessSpectrogram = new CProcessSpectrogram(*pMainWnd->GetSpectrogramParmDefaults(), this, bRealTime);
-		}
-		return m_pProcessSpectrogram;
-	} else {
-		if (!m_pProcessSnapshot) {
-			m_pProcessSnapshot = new CProcessSpectrogram(*pMainWnd->GetSnapshotParmDefaults(), this, bRealTime);
-		}
-		return m_pProcessSnapshot;
+CProcessSpectrogram * CSaDoc::GetSpectrogram() {
+	if (!m_pProcessSpectrogram) {
+		CMainFrame* pMainFrame = (CMainFrame*)::AfxGetMainWnd();
+		m_pProcessSpectrogram = new CProcessSpectrogram(*pMainFrame->GetSpectrogramParmDefaults(), this, TRUE);
 	}
+	return m_pProcessSpectrogram;
+}
+
+CProcessSpectrogram* CSaDoc::GetSnapshot() {
+	if (!m_pProcessSnapshot) {
+		CMainFrame* pMainFrame = (CMainFrame*)::AfxGetMainWnd();
+		m_pProcessSnapshot = new CProcessSpectrogram(*pMainFrame->GetSnapshotParmDefaults(), this, FALSE);
+	}
+	return m_pProcessSnapshot;
 }
 
 CProcessSDP * CSaDoc::GetSDP(int nIndex) {
@@ -7416,7 +7410,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				if (index >= 0) {
 					int result = ComposeWordSegmentFilename(gloss, index, wordConvention, szPath, filename, L"", L"");
 					if (result == 0) {
-						int result = ExportWordSegment(gloss, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
+						result = ExportWordSegment(gloss, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
 						if (result == 0) {
 							size_t index = filename.find_last_of('\\');
 							wstring uri = filename.substr(index + 1);
@@ -9571,4 +9565,18 @@ void CSaDoc::SplitSegment(CPhoneticSegment * pPhonetic, int sel, DWORD splitPosi
 
 	SetModifiedFlag(((modified) ? TRUE : FALSE) | IsModified());
 	SetTransModifiedFlag(modified | IsTransModified());
+}
+
+void CSaDoc::ToggleSpectrogram() {
+
+	CSpectroParm parameters = GetSpectrogram()->GetSpectroParm();
+	BOOL bFormantSelected = !parameters.bShowFormants;
+	GetSpectrogram()->SetShowFormants(bFormantSelected);
+	GetSnapshot()->SetShowFormants(bFormantSelected);
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pMainFrame->SetShowFormants(bFormantSelected);
+
+	if ((bFormantSelected) && ((GetSpectrogram()->IsProcessCanceled()) || (GetSnapshot()->IsProcessCanceled()))) {
+		RestartAllProcesses();
+	}
 }

@@ -958,7 +958,7 @@ int CProcess::GetMinValue() const {
 }
 
 long CProcess::IsStatusFlag(long nStatus) const {
-    return (GetStatus() & nStatus) == nStatus;
+    return (m_nStatus & nStatus) == nStatus;
 }
 
 // return TRUE if process is idle

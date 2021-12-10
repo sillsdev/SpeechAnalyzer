@@ -982,7 +982,7 @@ void Test015(CSelfTestRunner & runner, CSelfTest::Test & test) {
 
 void Test016(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
-    CProcessSpectrogram * pSpectrogram = (CProcessSpectrogram *)doc.pDoc->GetSpectrogram(TRUE); // get pointer to spectrogram object
+    CProcessSpectrogram * pSpectrogram = (CProcessSpectrogram *)doc.pDoc->GetSpectrogram(); // get pointer to spectrogram object
     pSpectrogram->SetDataInvalid();
     // set spectrogram parameters
     CSpectroParm cSpectroParm = pSpectrogram->GetSpectroParm();

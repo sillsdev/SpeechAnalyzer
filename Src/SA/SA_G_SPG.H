@@ -34,7 +34,7 @@ public:
     virtual BOOL IsAreaGraph() const;
 
 protected:
-    virtual BOOL  EraseBkgnd(CDC * pDC);
+    virtual BOOL EraseBkgnd(CDC * pDC);
 
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg BOOL OnSetCursor(CWnd * pWnd, UINT nHitTest, UINT message);
@@ -43,23 +43,21 @@ protected:
 private:
     BOOL CreateSpectroPalette(CDC * pDC, CDocument * pDoc); // creates the palette
     void populateBmiColors(RGBQUAD * Quadcolors,CSaView * pView);
-    BOOL OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-    BOOL OnDrawSpectrogram(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView, BOOL bSmooth, BOOL * bAliased = NULL);
-    BOOL OnDrawFormantTracks(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-    BOOL OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-    BOOL OnDrawFormantTracksTime(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    bool OnDraw2(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CSaView * pView);
+    void OnDrawSpectrogram(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CSaView * pView, BOOL bSmooth, BOOL * bAliased = NULL);
+    void OnDrawFormantTracksFragment(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CSaView * pView);
+    void OnDrawFormantTracksTime(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CSaView * pView);
     CProcessSpectrogram * GetSpectrogram(CSaDoc * pDoc);
-    CProcessSpectroFormants * GetFormantProcess(CSaDoc * pDoc);
 
-    enum PaletteMode {                        // mode of palette
+    enum PaletteMode {                      // mode of palette
         SYSTEMCOLOR,
         HALFCOLOR,
         FULLCOLOR,
     };
-    static BOOL bPaletteInit;              // TRUE, if palette initialized
-    static int nPaletteMode;        // mode of created palette
-    static CPalette SpectroPalette;     // color palette
-    char SpectroAB;                       // indicates whether the plotted spectrogram is SpectrogramA or SpectrogramB
+    static BOOL bPaletteInit;               // TRUE, if palette initialized
+    static int nPaletteMode;                // mode of created palette
+    static CPalette SpectroPalette;         // color palette
+    char SpectroAB;                         // indicates whether the plotted spectrogram is SpectrogramA or SpectrogramB
 
 };
 

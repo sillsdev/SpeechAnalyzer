@@ -29,6 +29,10 @@ void CSpectroParm::WritePropertiesB(CObjectOStream & obs) {
     WriteProperties(psz_spectroB, obs);
 }
 
+void CSpectroParm::SetShowFormants(boolean value) {
+    bShowFormants = value;
+}
+
 // Write spectroParm properties to *.psa file.
 void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs) {
     obs.WriteBeginMarker(pszMarker);
@@ -47,7 +51,8 @@ void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs) {
     obs.WriteInteger(psz_MinThreshold, nMinThreshold);
     obs.WriteInteger(psz_Overlay, nOverlay);
     obs.WriteBool(psz_ShowPitch, bShowPitch);
-    obs.WriteBool(psz_ShowFormants, bShowFormants);
+    // disable the storing of the current state of 'show formants'
+    obs.WriteBool(psz_ShowFormants, FALSE);
 
     obs.WriteEndMarker(pszMarker);
 }
@@ -66,7 +71,9 @@ BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs) {
         return FALSE;
     }
 
-    bool showFormants = false;
+    // true if showFormats was found in the settings file
+    bool showFormantsFound = false;
+    BOOL dummy;
 
     while (!obs.bAtEnd()) {
         if (obs.bReadInteger(psz_Resolution, nResolution));
@@ -85,8 +92,9 @@ BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs) {
         else if (obs.bReadInteger(psz_MinThreshold, nMinThreshold));
         else if (obs.bReadInteger(psz_Overlay, nOverlay));
         else if (obs.bReadBool(psz_ShowPitch, bShowPitch));
-        else if (obs.bReadBool(psz_ShowFormants, bShowFormants)) {
-            showFormants=true;
+        // disable the reading of the value of 'show formats', but still trigger the original logic.
+        else if (obs.bReadBool(psz_ShowFormants, dummy)) {
+            showFormantsFound=true;
         } else if (obs.bEnd(pszMarker)) {
             break;
         }
@@ -100,7 +108,7 @@ BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs) {
     * - so - if we don't find it in the settings file, we will assume this is a 'old' settings file, and
     * and use the settings for the formant and pitch booleans to set the 'showFormants' member.
     */
-    if ((!showFormants) && ((bShowF1) || (bShowF2) || (bShowF3) || (bShowF4) || (bShowF5andUp) || (bShowPitch))) {
+    if ((!showFormantsFound) && ((bShowF1) || (bShowF2) || (bShowF3) || (bShowF4) || (bShowF5andUp) || (bShowPitch))) {
         bShowFormants = TRUE;
     }
     return TRUE;

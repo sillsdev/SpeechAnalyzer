@@ -168,14 +168,13 @@ CRect CPlotHelperWnd::SetPosition(int nWidth, int nHeight, CRect * prParent) {
 /***************************************************************************/
 int CPlotHelperWnd::SetMode(int nMode, int nID, CRect * prParent) {
     int nOldMode = m_nMode; // save actual mode
-    static int nOldID = 0; // save last mode
     if (prParent == NULL) {
         prParent = &m_rParent;    // don't change the coordinates
     }
     CRect rWnd(0, 0, 0, 0);
-    if ((nMode != m_nMode) || (nID != nOldID) || (*prParent != m_rParent)) {
+    if ((nMode != m_nMode) || (nID != m_nId) || (*prParent != m_rParent)) {
         m_nMode = nMode;
-        nOldID = nID;
+        m_nId = nID;
         m_rParent = *prParent;
         switch (m_nMode & MODE_MASK) {
         case MODE_TEXT: {
@@ -281,6 +280,10 @@ void CPlotHelperWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     ClientToScreen(&point);
     pWnd->ScreenToClient(&point);
     pWnd->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
+}
+
+bool CPlotHelperWnd::IsCanceled() {
+    return (m_nId == IDS_HELPERWND_CANCELED);
 }
 
 //###########################################################################
@@ -873,7 +876,7 @@ void CPlotWnd::RedrawPlot( BOOL bEntire) {
 // second case, the helper window will be activated with the message about
 // the canceled state. In case of processing error, the graph will be closed.
 //**************************************************************************/
-short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess) {
+short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess, bool clearPlot) {
     // save pointer to process object for further use
     m_pLastProcess = pProcess; 
     if (!this->GetSafeHwnd()) {
@@ -884,26 +887,32 @@ short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess) {
     CDC * pDC = GetDC();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     Colors * pColor = pMainWnd->GetColors(); // get application colors
-    CBrush Eraser(pColor->cPlotBkg);
+    CBrush backgroundBrush(pColor->cPlotBkg);
     switch (nResult) {
     case PROCESS_CANCELED:
+        TRACE("canceled\n");
         // process has been canceled, display helper window
-        pDC->FillRect(&rClient, &Eraser);  // clear the plot area
+        if (clearPlot) {
+            // clear the plot area
+            pDC->FillRect(&rClient, &backgroundBrush);
+        }
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_CANCELED, &rClient);
         break;
     case PROCESS_NO_DATA:
-        // no data to process
-        pDC->FillRect(&rClient, &Eraser);  // clear the plot area
-        //m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOVOICING, &rClient);
+        TRACE("nodata\n");
+        if (clearPlot) {
+            // no data to process
+            // clear the plot area
+            pDC->FillRect(&rClient, &backgroundBrush);
+        }
+        m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOVOICING, &rClient);
         break;
     case PROCESS_DATA_OVERLOAD:
         // too much data to process
-        // pDC->FillRect(&rClient, &Eraser);  // clear the plot area
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_CURCLOSER, &rClient);
         break;
     case PROCESS_UNVOICED: {
         // process data is unvoiced
-        // pDC->FillRect(&rClient, &Eraser);  // clear the plot area
         CGraphWnd * pGraph = (CGraphWnd *)GetParent();
         CSaView * pView = (CSaView *)pGraph->GetParent();
         bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
@@ -1566,17 +1575,14 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
 // CPlotWnd::IsCanceled Return cancel state
 //**************************************************************************/
 BOOL CPlotWnd::IsCanceled() {
-    if (m_pLastProcess) {
-        return m_pLastProcess->IsCanceled();
-    }
-    return FALSE;
+    return (m_pLastProcess) ? m_pLastProcess->IsCanceled() : FALSE;
 }
 
 /***************************************************************************/
 // CPlotWnd::RestartProcess Restart a canceled process or recalc an area graph
 //**************************************************************************/
 void CPlotWnd::RestartProcess() {
-    m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
+    m_HelperWnd.SetMode(MODE_HIDDEN);   // hide helper window
     if (IsAreaGraph()) {
         m_pAreaProcess->UpdateArea();
         CGraphWnd * pGraph = (CGraphWnd *)GetParent();
@@ -2012,7 +2018,6 @@ void CPlotWnd::OnMouseMove(UINT nFlags, CPoint point) {
 // OnDraw is reused by both OnPaint and OnPrint.
 /***************************************************************************/
 void CPlotWnd::OnPaint() {
-    //TRACE("OnPaint %lp\n",this);
     CPaintDC dc(this);              // device context for painting
     CRect rWnd, rClip;
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
@@ -2021,10 +2026,8 @@ void CPlotWnd::OnPaint() {
     GetClientRect(rWnd);
     dc.GetClipBox(&rClip);
     dc.LPtoDP(&rClip);
-
-    //TRACE("clip %d %d %d %d wnd %d %d %d %d\n",rClip.top,rClip.left,rClip.bottom,rClip.right,rWnd.top,rWnd.left,rWnd.bottom,rWnd.right);
-
     OnDraw(&dc,rWnd,rClip, pView);  // virtual
+
 }
 
 CPlotWnd * CPlotWnd::NewCopy(void) {

@@ -1719,7 +1719,7 @@ void CMainFrame::OnSetDefaultParameters() {
         // Copy current Spectrogram parameter values to object
         // containing Spectrogram defaults.
         //********************************************************
-        CProcessSpectrogram * pSpectro               = (CProcessSpectrogram *)pDoc->GetSpectrogram(TRUE);
+        CProcessSpectrogram * pSpectro = (CProcessSpectrogram *)pDoc->GetSpectrogram();
         m_spectrogramParmDefaults = pSpectro->GetSpectroParm();
 
         if (m_spectrogramParmDefaults.nFrequency >= int(pDoc->GetSamplesPerSec()*45/100))
@@ -1746,9 +1746,7 @@ void CMainFrame::OnSetDefaultParameters() {
         // Copy current Snapshot parameter values to object
         // containing Snapshot defaults.
         //********************************************************
-        CProcessSpectrogram * pSpectro               = (CProcessSpectrogram *)pDoc->GetSpectrogram(FALSE);
-        m_snapshotParmDefaults = pSpectro->GetSpectroParm();
-
+        m_snapshotParmDefaults = pDoc->GetSnapshot()->GetSpectroParm();
         if (m_snapshotParmDefaults.nFrequency >= int(pDoc->GetSamplesPerSec()*45/100))
             // This spectrogram is set to near nyquist
             // Assume the user wants all spectrograms to be display at nyquist
@@ -2653,14 +2651,8 @@ CSpectrumParm * CMainFrame::GetSpectrumParmDefaults() {
 const CSpectroParm * CMainFrame::GetSpectrogramParmDefaults() const {
     return &m_spectrogramParmDefaults;
 }
-void CMainFrame::SetSpectrogramParmDefaults(const CSpectroParm & cParm) {
-    m_spectrogramParmDefaults = cParm;
-}
 const CSpectroParm * CMainFrame::GetSnapshotParmDefaults() const {
     return &m_snapshotParmDefaults;
-}
-void CMainFrame::SetSnapshotParmDefaults(const CSpectroParm & cParm) {
-    m_snapshotParmDefaults = cParm;
 }
 const CSaView * CMainFrame::pDefaultViewConfig() {
     return m_pDefaultViewConfig;
@@ -2880,6 +2872,11 @@ void CMainFrame::OnAutoSaveOff() {
     KillTimer(ID_TIMER_AUTOSAVE);
     CAutoSave::CleanAll();
     m_bAutoSave = FALSE;
+}
+
+void CMainFrame::SetShowFormants(BOOL value) {
+    m_spectrogramParmDefaults.bShowFormants = value;
+    m_snapshotParmDefaults.bShowFormants = value;
 }
 
 LRESULT CMainFrame::OnUpdatePlayer(WPARAM wParam, LPARAM /*lParam*/) {

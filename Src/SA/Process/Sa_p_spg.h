@@ -29,6 +29,10 @@ public:
     int GetWindowWidth() const;
     int GetWindowHeight() const;
     CProcessSpectroFormants * GetFormantProcess();
+    void SetShowFormants(BOOL value);
+    void SetProcessDataInvalid();
+    bool IsProcessCanceled();
+    void InvalidateAndRestart();
 
 protected:
     virtual long Exit(int nError);                      // exit processing on error
@@ -36,7 +40,6 @@ protected:
 private:
     int SpectraBandwidth();
     int NyquistSpectraInterval(double dSourceSamplingRate);
-    virtual ISaDoc * GetDocument() const;
 
     int m_nWindowWidth;
     int m_nWindowHeight;
