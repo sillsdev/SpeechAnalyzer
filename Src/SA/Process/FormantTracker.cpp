@@ -126,12 +126,6 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
     CDspWin window = CDspWin::FromBandwidth(formantTrackerOptions.m_dWindowBandwidth, pDoc->GetSamplesPerSec(), formantTrackerOptions.m_nWindowType);
     state.window.assign(window.WindowDouble(),window.WindowDouble()+window.Length());
 
-    //char path[MAX_PATH];
-    //memset(path,0,_countof(path));
-    //sprintf_s(path,_countof(path),"\\working\\sil\\msea\\output\\debug\\selftest\\dspwin_%d.csv",pDoc->GetSamplesPerSec());
-    // this method is present disabled
-    //window.Dump(path);
-
     // determine processing interval
     DWORD dwInterval = DWORD(samplingRate / formantTrackerOptions.m_dUpdateRate);
 
@@ -247,6 +241,7 @@ void CProcessFormantTracker::AdvanceData(STrackState & state, DWORD dwDataPos, i
 * @param[in,out] state the current process state
 * @param[in] the wave form sample rate
 * @param[in] the pitch value
+* @returns false if the user cancels the process, otherwise true
 */
 bool CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate, int pitch) {
     ASSERT(state.window.size() == state.data.size());

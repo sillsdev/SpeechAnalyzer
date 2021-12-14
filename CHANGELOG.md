@@ -1,3 +1,6 @@
+# SA - 3.1.1.3 12/18/2021
+- Fixed bug that caused the 'Esc' key to be unresponsive during Formant Track processing.
+
 # SA - 3.1.1.2 9/10/2021
 - Add shortcut keys for Ctrl-Down and Ctrl-Up to select next/previous graph.
 - Consolidate CHANGELOG.md and 'Release Notes.txt'
@@ -871,3 +874,4 @@ Code was casting char buffer into widechar buffer and corrupt output of gcvt cal
 - Fix for Semitone2Name exception.
 - Merged VS2005 changes to MSEA branch.
 - Made minimal changes required to get project to compile in VS2008.
+
