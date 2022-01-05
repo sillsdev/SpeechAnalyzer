@@ -78,11 +78,10 @@ MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL
             mixerLine.dwDestination = dst;
             mixerLine.dwSource = source;
 
-            MMRESULT result = mixerGetLineInfo((HMIXEROBJ)hmx, &mixerLine,  MIXER_GETLINEINFOF_SOURCE);
-
-            if (result != MMSYSERR_NOERROR) { // Can't Find Destination Line
+            MMRESULT result2 = mixerGetLineInfo((HMIXEROBJ)hmx, &mixerLine,  MIXER_GETLINEINFOF_SOURCE);
+            if (result2 != MMSYSERR_NOERROR) { // Can't Find Destination Line
                 mixerClose(hmx);
-                return result;
+                return result2;
             }
 
             if (mixerLine.dwComponentType == m_dwComponentType) {

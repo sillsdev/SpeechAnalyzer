@@ -394,16 +394,3 @@ int32 CDspWin::Type() const {
 float CKaiserWin::Coeff(uint32 i) {
     return m_Coeff[i];
 }
-
-void CDspWin::Dump(const char * ofilename) {
-    return;
-    FILE * ofile = NULL;
-    errno_t err = fopen_s(&ofile, ofilename, "w");
-    fprintf(ofile, "dspwin data\n");
-    fprintf(ofile, "double,float\n");
-    for (int i=0; i<m_cDWindow.size(); i++) {
-        fprintf(ofile, "%f,%f\n",m_cDWindow[i],m_cFWindow[i]);
-    }
-    fflush(ofile);
-    fclose(ofile);
-}

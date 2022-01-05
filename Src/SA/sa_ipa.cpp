@@ -469,12 +469,10 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int & nIndex, const CString & szS
             }
             nIndex = nWrkIndex;
             return szWorking;
-        } else {
-            nIndex = nIndependent + 1;
-            szWorking += szPostfix;
-            return szWorking;
         }
-        return szString[nIndex++];
+        nIndex = nIndependent + 1;
+        szWorking += szPostfix;
+        return szWorking;
     }
     break;
     case DELIMITEDWORD: {

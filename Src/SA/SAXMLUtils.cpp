@@ -225,7 +225,7 @@ void CSAXMLUtils::WriteSAXML(LPCTSTR filename, Elan::CAnnotationDocument & docum
         doc->release();
     } catch (const OutOfMemoryException &) {
         throw logic_error("out of memory");
-    } catch (const DOMException & e) {
+    } catch (const DOMException & ) {
         throw logic_error("dom exception");
     } catch (...) {
         throw logic_error("unexpected exception");

@@ -43,7 +43,6 @@ public:
     int32 Length() const;
     double Bandwidth() const;
     int32 Type() const;
-    void Dump(const char * ofilename);
 
 public:
     enum { kRect=0, kHanning=1, kHann=1, kHamming=2, kBlackman=3, kBlackmanHarris=4, kGaussian=5 };
