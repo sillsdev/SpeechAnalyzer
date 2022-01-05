@@ -706,7 +706,7 @@ void CPlotSpectrogram::OnDrawFormantTracksFragment(unique_ptr<CDC>& memDC, CRect
 	nResult = LOWORD(pSpectroFormants->ExtractFormants(pDoc, 0, pDoc->GetDataSize(), pSpectroParm->bSmoothFormantTracks));
 	// check the process result. dont clear the graph because we've already drawn the spectrogram
 	nResult = CheckResult(nResult, pSpectroFormants,false); 
-	if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_CANCELED) || (!pFragments->IsDataReady())) {
+	if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_CANCELED) || (!pSpectroFormants->IsDataReady())) {
 		return;
 	}
 
