@@ -45,7 +45,7 @@
 
 #include <locale.h>
 
-using std::auto_ptr;
+using std::unique_ptr;
 using std::char_traits;
 using std::distance;
 using std::find;

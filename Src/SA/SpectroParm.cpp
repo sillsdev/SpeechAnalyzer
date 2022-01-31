@@ -29,10 +29,6 @@ void CSpectroParm::WritePropertiesB(CObjectOStream & obs) {
     WriteProperties(psz_spectroB, obs);
 }
 
-void CSpectroParm::SetShowFormants(boolean value) {
-    bShowFormants = value;
-}
-
 // Write spectroParm properties to *.psa file.
 void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs) {
     obs.WriteBeginMarker(pszMarker);

@@ -983,6 +983,7 @@ void CDlgParametersPitchPage::OnPitchManualDefaultApp() {
 }
 
 void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults) {
+    
     CUttParm UttDefault;
     CUttParm * pUttParm = &UttDefault;
 
@@ -1049,8 +1050,8 @@ CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, con
 
     m_GraphId = graphId;
     m_nResolution = (UINT) pSpectroParmDefaults->nResolution;
-    m_nColor = (UINT) pSpectroParmDefaults->nColor;
-    m_bShowFormants = pSpectroParmDefaults->bShowFormants;
+    m_nColor = (UINT) pSpectroParmDefaults->GetColor();
+    m_bShowFormants = pSpectroParmDefaults->GetShowFormants();
     m_bF1 = (UINT) pSpectroParmDefaults->bShowF1;
     m_bF2 = (UINT) pSpectroParmDefaults->bShowF2;
     m_bF3 = (UINT) pSpectroParmDefaults->bShowF3;
@@ -1107,9 +1108,9 @@ void CDlgParametersSpectroPage::Apply() {
         pSpectroParm->nMaxThreshold = m_nMaxThreshold;
         pSpectroParm->nMinThreshold = m_nMinThreshold;
         pSpectroParm->nResolution = m_nResolution;
-        pSpectroParm->nColor = m_nColor;
+        pSpectroParm->SetColor(m_nColor);
         pSpectroParm->nOverlay = m_nOverlay;
-        pSpectroParm->bShowFormants = m_bShowFormants;
+        pSpectroParm->SetShowFormants(m_bShowFormants);
         pSpectroParm->bShowPitch = m_bShowPitch;
         pSpectroParm->bShowF1 = m_bF1;
         pSpectroParm->bShowF2 = m_bF2;
@@ -1190,9 +1191,9 @@ BOOL CDlgParametersSpectroPage::OnInitDialog() {
     const CSpectroParm * pSpectroParm = &pProcess->GetSpectroParm();
     // initialize member data
     m_nResolution = pSpectroParm->nResolution;
-    m_nColor = pSpectroParm->nColor;
+    m_nColor = pSpectroParm->GetColor();
     m_nOverlay = pSpectroParm->nOverlay;
-    m_bShowFormants = pSpectroParm->bShowFormants;
+    m_bShowFormants = pSpectroParm->GetShowFormants();
     m_bF1 = pSpectroParm->bShowF1;
     m_bF2 = pSpectroParm->bShowF2;
     m_bF3 = pSpectroParm->bShowF3;

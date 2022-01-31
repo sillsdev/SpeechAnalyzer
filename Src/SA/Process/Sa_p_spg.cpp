@@ -349,8 +349,8 @@ CProcessSpectroFormants * CProcessSpectrogram::GetFormantProcess() {
     return m_pSpectroFormants;
 }
 
-void CProcessSpectrogram::SetShowFormants(BOOL value) {
-    m_SpectroParm.bShowFormants = value;
+void CProcessSpectrogram::SetShowFormants(bool value) {
+    m_SpectroParm.SetShowFormants(value);
     // force check on nyquist limits
     SetSpectroParm(m_SpectroParm);
 }

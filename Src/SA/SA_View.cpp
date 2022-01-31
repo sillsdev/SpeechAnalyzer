@@ -8519,8 +8519,7 @@ void CSaView::OnEditAddPhonetic() {
 
 		// Adjust Gloss
 		if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt))) {
-			int nPrevious = pPhonetic->GetPrevious(nInsertAt);
-			int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
+			int nIndex = pGloss->FindStop(pPhonetic->GetStop(pPhonetic->GetPrevious(nInsertAt)));
 			if (nIndex != -1) {
 				pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc, nIndex), false);
 				pGlossNat->Adjust(pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc, nIndex), false);
@@ -8715,8 +8714,8 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
 				DWORD nextOffset = pSeg->GetOffset(nNext);
 				if (nextOffset < (stopPos + byteCount)) { // SDM 1.5Test10.2
 					DWORD stop = pSeg->GetStop(nNext);
-					CURSORPOS stopPos = GetStopCursorPosition();
-					pSeg->Adjust(pDoc, nNext, stopPos, stop - stopPos, false);
+					CURSORPOS stopPos2 = GetStopCursorPosition();
+					pSeg->Adjust(pDoc, nNext, stopPos2, stop - stopPos2, false);
 				}
 			}
 		}
@@ -9400,7 +9399,6 @@ DWORD CSaView::EditSplitAt(DWORD position) {
 	if (sel == -1) {
 		return -1;
 	}
-
 	pDoc->SplitSegment(pSeg, sel, position);
 	int newsel = pSeg->GetNext(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
@@ -10597,21 +10595,19 @@ int CSaView::GetAnimationFrameRate() {
 }
 
 void CSaView::OnSpectroFormants() {
-
 	CSaDoc * pDoc = GetDocument();
 	pDoc->ToggleSpectrogram();
 	RedrawGraphs();
 }
 
 void CSaView::OnUpdateSpectroFormants(CCmdUI * pCmdUI) {
-
 	CSaDoc * pDoc = GetDocument();
 	CSpectroParm parameters = pDoc->GetSpectrogram()->GetSpectroParm();
-	if ((parameters.bShowFormants) && pDoc->GetSpectrogram()->IsProcessCanceled()) {
+	if ((parameters.GetShowFormants()) && pDoc->GetSpectrogram()->IsProcessCanceled()) {
 		// update the display with the current state
 		OnSpectroFormants();
 	}
-	pCmdUI->SetCheck(parameters.bShowFormants);
+	pCmdUI->SetCheck(parameters.GetShowFormants());
 }
 
 void CSaView::OnMoveStopCursorHere() {

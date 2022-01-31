@@ -394,38 +394,3 @@ SFormantFreq * CProcessFormantTracker::GetFormant(DWORD dwIndex) {
     size_t sSize = sizeof(SFormantFreq);
     return (SFormantFreq *)GetProcessedObject(dwIndex, sSize);
 }
-
-void CProcessFormantTracker::Dump(LPCSTR ofilename) {
-	/*
-    return;
-    FILE * ofile = NULL;
-    errno_t err = fopen_s(&ofile, ofilename, "w");
-    fprintf(ofile, "formant tracker data\n");
-
-    int count=0;
-    {
-        string ifilename = Utf8(GetProcessFileName());
-        FILE * ifile = NULL;
-        err = fopen_s(&ifile, ifilename.c_str(), "rb");
-        SFormantFreq buffer;
-        while (true) {
-            int read = fread(&buffer, 1, sizeof(SFormantFreq), ifile);
-            if (read<sizeof(SFormantFreq)) {
-                break;
-            }
-            fprintf(ofile, "%s ",buffer.Dump().c_str());
-            fprintf(ofile, "\n");
-            count++;
-        }
-        if (!feof(ifile)) {
-            fprintf(ofile, "premature termination");
-        }
-        fflush(ifile);
-        fclose(ifile);
-    }
-    fprintf(ofile, "\n");
-    fprintf(ofile, "%d values read\n",count);
-    fflush(ofile);
-    fclose(ofile);
-	*/
-}

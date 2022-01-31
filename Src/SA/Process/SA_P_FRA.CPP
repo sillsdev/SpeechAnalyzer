@@ -55,9 +55,8 @@ CProcessFragments::~CProcessFragments() {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                                int nLevel) {
-    //TRACE(_T("Process: CProcessFragments\n"));
+long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
+    TRACE(_T("Process: CProcessFragments\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -82,6 +81,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         }
         return MAKELONG(nResult, nProgress);
     }
+
     DWORD dwOldPitchBlock = pAutoPitch->GetProcessBufferIndex();  // save current pitch buffer block offset
 
     // start processing fragments
@@ -184,7 +184,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
 
     // fragment waveform
-    dspError_t lStatus;
+    dspError_t lStatus = 0;
     do {
         lStatus = m_pFragmenter->Fragment();
         switch (lStatus) {

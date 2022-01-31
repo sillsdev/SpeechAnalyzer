@@ -8,12 +8,10 @@
 class CSpectroParm {                 // spectrogram parameters
 public:
     int  nResolution;       // resolution of display
-    int  nColor;            // color of display
     int  nOverlay;          // formants overlay mode
     int  nFrequency;        // frequency range to calculate
     int  nMinThreshold;     // minimum threshold
     int  nMaxThreshold;     // maximum threshold
-    BOOL bShowFormants;     // true if picture or any of the formants should be displayed
     BOOL bShowF1;           // show/hide formants (TRUE = show)
     BOOL bShowF2;
     BOOL bShowF3;
@@ -37,10 +35,24 @@ public:
     float Bandwidth() const {
         return Bandwidth(nResolution);
     }
-    void SetShowFormants(boolean value);
+    void SetShowFormants(bool value) {
+        bShowFormants = value;
+    }
+    bool GetShowFormants() const {
+        return bShowFormants;
+    }
+    void SetColor(int color) {
+        nColor = color;
+    }
+    int GetColor() const {
+        return nColor;
+    }
 
 private:
     void WriteProperties(LPCSTR pszMarker, CObjectOStream & obs);
     BOOL ReadProperties(LPCSTR pszMarker, CObjectIStream & obs);
+
+    bool bShowFormants;     // true if picture or any of the formants should be displayed
+    int  nColor;            // color of display
 };
 #endif

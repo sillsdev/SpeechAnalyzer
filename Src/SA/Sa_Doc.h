@@ -44,6 +44,7 @@
 #include "Process\ProcessDoc.h"
 #include "SegmentOps.h"
 #include "AutoSave.h"
+#include "ThreadManager.h"
 
 #import "SAUtils.tlb" no_namespace named_guids
 
@@ -423,6 +424,14 @@ public:
 
     void ToggleSpectrogram();
 
+    CProcessSpectrogram* GetSpectrogram(bool realTime) {
+        return realTime ? GetSpectrogram() : GetSnapshot();
+    }
+
+    CThreadManager & getThreadManager() {
+        return *threadManager;
+    }
+
 protected:
     virtual void DeleteContents();
     virtual BOOL OnNewDocument();
@@ -580,6 +589,8 @@ private:
     bool m_bMultiChannel;
     int m_nSelectedChannel;
     CAutoSave m_AutoSave;
+
+    CThreadManager * threadManager = new CThreadManager();
 };
 
 #endif

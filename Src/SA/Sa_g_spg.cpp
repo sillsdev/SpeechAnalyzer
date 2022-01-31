@@ -32,6 +32,7 @@
 #include "Process\sa_p_sfmt.h"
 #include "Process\sa_p_gra.h"
 #include "Process\FormantTracker.h"
+#include "AppContext.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -67,11 +68,8 @@ CPlotSpectrogram::~CPlotSpectrogram() {
 
 void  CPlotSpectrogram::CopyTo(CPlotWnd * pT) {
 	CPlotSpectrogram * pTarg = (CPlotSpectrogram *)pT;
-
 	CPlotWnd::CopyTo(pT);
-
 	pTarg->SpectroAB = SpectroAB;
-
 	// Take possession of process data
 	pTarg->m_pAreaProcess = m_pAreaProcess;
 	m_pAreaProcess = NULL;
@@ -181,7 +179,7 @@ char CPlotSpectrogram::GetSpectroAB() const {
 // function creates the full 233 grayscale and above the 233 color palette.
 // The function returns FALSE in case on error, else TRUE.
 /***************************************************************************/
-BOOL CPlotSpectrogram::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
+BOOL CPlotSpectrogram::CreateSpectroPalette(CDC * pDC) {
 #define SET_RGB(r,g,b) ((PC_NOCOLLAPSE << 24) | RGB(r,g,b)) // PC_NOCOLLAPSE make new entry if possible
 
 	// get device capabilities
@@ -301,14 +299,12 @@ int CPlotSpectrogram::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	// get pointer to document
 	CView * pView = (CView *)GetParent()->GetParent();
 	CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-
 	// save process
 	GetSpectrogram(pDoc);
-
 	return 0;
 }
 
-void CPlotSpectrogram::populateBmiColors(RGBQUAD * QuadColors, CSaView * pView) {
+void CPlotSpectrogram::PopulateBmiColors(RGBQUAD * QuadColors, CSaView * pView) {
 
 	CSaDoc * pDoc = pView->GetDocument();
 	CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
@@ -318,15 +314,15 @@ void CPlotSpectrogram::populateBmiColors(RGBQUAD * QuadColors, CSaView * pView) 
 	Colors * pColors = pMain->GetColors();
 	// create palette
 	Color[235] = pColors->cPlotBkg;  // background
-	Color[236] = pColors->cPlotData[0];;  // formant tracks
-	Color[237] = pColors->cPlotData[1];;  // formant tracks
-	Color[238] = pColors->cPlotData[2];;  // formant tracks
-	Color[239] = pColors->cPlotData[3];;  // formant tracks
-	Color[240] = pColors->cPlotData[4];;  // formant tracks
-	Color[241] = pColors->cPlotData[5];;  // formant tracks
+	Color[236] = pColors->cPlotData[0];  // formant tracks
+	Color[237] = pColors->cPlotData[1];  // formant tracks
+	Color[238] = pColors->cPlotData[2];  // formant tracks
+	Color[239] = pColors->cPlotData[3];  // formant tracks
+	Color[240] = pColors->cPlotData[4];  // formant tracks
+	Color[241] = pColors->cPlotData[5];  // formant tracks
 
 	const CSpectroParm * pSpectroParm = &GetSpectrogram(pDoc)->GetSpectroParm();
-	if (pSpectroParm->nColor) {
+	if (pSpectroParm->GetColor()) {
 		// create grayscale palette
 		Color[0] = RGB(255, 255, 255);   // white
 		Color[234] = RGB(0, 0, 0);     // black
@@ -420,7 +416,7 @@ void CPlotSpectrogram::OnDrawSpectrogram(std::unique_ptr<CDC>& memDC, CRect rWnd
 	// get pointer to spectrogram parameters
 	const CSpectroParm * pSpectroParm = &GetSpectrogram(pDoc)->GetSpectroParm();
 
-	BOOL bOverlay = (pSpectroParm->nOverlay == 0) || (!pSpectroParm->bShowFormants);
+	BOOL bOverlay = (pSpectroParm->nOverlay == 0) || (!pSpectroParm->GetShowFormants());
 	if (!bOverlay) {
 		CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
 		memDC->FillSolidRect(rWnd, pMain->GetColors()->cPlotBkg);
@@ -623,8 +619,7 @@ void CPlotSpectrogram::OnDrawSpectrogram(std::unique_ptr<CDC>& memDC, CRect rWnd
 		pPowerLeft = NULL;
 		delete[] pIndex;
 		delete[] pBottom;
-	}
-	else {
+	} else {
 		uint8 * pPowerRight = new uint8[rWnd.bottom];
 		short * pIndex = new short[rWnd.bottom];
 
@@ -675,6 +670,21 @@ void CPlotSpectrogram::OnDrawSpectrogram(std::unique_ptr<CDC>& memDC, CRect rWnd
 	PlotPaintFinish(memDC.get(), rWnd, rClip);
 }
 
+struct SFragmentParams {
+public:
+	CSaDoc* pDoc;
+	CPlotSpectrogram* pPlot;
+};
+
+UINT FragmentTask(LPVOID pParam) {
+	TRACE("running FragmentTask\n");
+	SFragmentParams * params = (SFragmentParams*)pParam;
+	CProcessFragments* pFragments = (CProcessFragments*)params->pDoc->GetFragments();
+	WORD result = LOWORD(pFragments->Process(params->pPlot, params->pDoc));
+	TRACE("FragmentTask complete %d\n",result);
+	return result;
+}
+
 /***************************************************************************/
 // CPlotSpectrogram::OnDraw Drawing
 // The data to draw is coming from a temporary file, created by the
@@ -683,27 +693,39 @@ void CPlotSpectrogram::OnDrawSpectrogram(std::unique_ptr<CDC>& memDC, CRect rWnd
 // the drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotSpectrogram::OnDrawFormantTracksFragment(unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CSaView * pView) {
-	// get pointer to graph, view, document, application and mainframe
-	CSaDoc * pDoc = pView->GetDocument();
-	DWORD nSmpSize = pDoc->GetSampleSize();
-	CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
+void CPlotSpectrogram::OnDrawFormantTracksFragment(unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CAppContext& appContext) {
 
-	CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-	short int nResult = LOWORD(pFragments->Process(this, pDoc));
+	// get pointer to process class and spectrogram parameters
+	CProcessSpectrogram* pSpectrogram = GetSpectrogram(appContext.getDoc()); // get pointer to spectrogram object
+	CProcessSpectroFormants* pSpectroFormants = pSpectrogram->GetFormantProcess(); // get pointer to spectrogram object
+	const CSpectroParm* pSpectroParm = &appContext.getDoc()->GetSpectrogram(IsRealTime())->GetSpectroParm();
+
+	// get pointer to graph, view, document, application and mainframe
+	DWORD nSmpSize = appContext.getDoc()->GetSampleSize();
+
+	if (threadId == -1) {
+		if (pSpectroParm->GetShowFormants() && !pSpectroFormants->IsCanceled()) {
+			SFragmentParams* params = new SFragmentParams();
+			params->pDoc = appContext.getDoc();
+			params->pPlot = this;
+			threadId = appContext.getDoc()->getThreadManager().start(FragmentTask, params);
+		}
+	} else {
+		if (!appContext.getDoc()->getThreadManager().isComplete(threadId)) {
+			return;
+		}
+	}
+
+	CProcessFragments* pFragments = (CProcessFragments*)appContext.getDoc()->GetFragments();
+	short int nResult = LOWORD(pFragments->Process(this, appContext.getDoc()));
 	// check the process result. dont clear the graph because we've already drawn the spectrogram
 	nResult = CheckResult(nResult, pFragments,false);
 	if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_CANCELED) || (!pFragments->IsDataReady())) {
 		return;
 	}
 
-	// get pointer to process class and spectrogram parameters
-	CProcessSpectrogram* pSpectrogram = GetSpectrogram(pDoc); // get pointer to spectrogram object
-	CProcessSpectroFormants * pSpectroFormants = pSpectrogram->GetFormantProcess(); // get pointer to spectrogram object
-	const CSpectroParm * pSpectroParm = &GetSpectrogram(pDoc)->GetSpectroParm();
-
 	// draw the formants tracks if requested
-	nResult = LOWORD(pSpectroFormants->ExtractFormants(pDoc, 0, pDoc->GetDataSize(), pSpectroParm->bSmoothFormantTracks));
+	nResult = LOWORD(pSpectroFormants->ExtractFormants(appContext.getDoc(), 0, appContext.getDoc()->GetDataSize(), pSpectroParm->bSmoothFormantTracks));
 	// check the process result. dont clear the graph because we've already drawn the spectrogram
 	nResult = CheckResult(nResult, pSpectroFormants,false); 
 	if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_CANCELED) || (!pSpectroFormants->IsDataReady())) {
@@ -711,11 +733,11 @@ void CPlotSpectrogram::OnDrawFormantTracksFragment(unique_ptr<CDC>& memDC, CRect
 	}
 
 	// get pointer to plot colors
-	Colors * pColors = pMain->GetColors();
+	Colors * pColors = appContext.getMainFrame()->GetColors();
 
 	// get sample data frame parameters
-	double fDataStart = pView->GetDataPosition(rWnd.Width()) / nSmpSize; // index of first sample displayed in raw waveform plot
-	DWORD dwDataLength = pView->GetDataFrame() / nSmpSize;   // number of samples displayed in raw waveform plot
+	double fDataStart = appContext.getView()->GetDataPosition(rWnd.Width()) / nSmpSize; // index of first sample displayed in raw waveform plot
+	DWORD dwDataLength = appContext.getView()->GetDataFrame() / nSmpSize;   // number of samples displayed in raw waveform plot
 
 	if (!IsRealTime()) {
 		// Spectrogram B special case
@@ -739,43 +761,43 @@ void CPlotSpectrogram::OnDrawFormantTracksFragment(unique_ptr<CDC>& memDC, CRect
 	if (dwFirstFragment > 0) {
 		dwFirstFragment--;
 	}
-	if (dwLastFragment < pFragments->GetFragmentIndex(pDoc->GetDataSize() / nSmpSize - 1)) {
+	if (dwLastFragment < pFragments->GetFragmentIndex(appContext.getDoc()->GetDataSize() / nSmpSize - 1)) {
 		dwLastFragment++;
 	}
 
 	double fFormantFactor = (double)pSpectroParm->nFrequency / (double)rWnd.Height();
 
-	COLORREF cFormantColor = pColors->cPlotData[pSpectroParm->nColor && pSpectroParm->bFormantColor ? 4 : 0];
+	COLORREF cFormantColor = pColors->cPlotData[pSpectroParm->GetColor() && pSpectroParm->bFormantColor ? 4 : 0];
 	CPen penFormantTrack(PS_SOLID, 2, cFormantColor);
 	CPen * pOldPen = memDC->SelectObject(&penFormantTrack);
 	int nDrawMode = 0;
-	if (pSpectroParm->nColor && !pSpectroParm->bFormantColor) {
+	if (pSpectroParm->GetColor() && !pSpectroParm->bFormantColor) {
 		nDrawMode = memDC->SetROP2(R2_NOTMASKPEN);
 	}
 	for (int nFormantIndex = 1; nFormantIndex <= MAX_NUM_FORMANTS; nFormantIndex++) {
 		switch (nFormantIndex) {
 		case 1:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF1)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF1)) {
 				continue;
 			}
 			break;
 		case 2:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF2)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF2)) {
 				continue;
 			}
 			break;
 		case 3:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF3)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF3)) {
 				continue;
 			}
 			break;
 		case 4:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF4)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF4)) {
 				continue;
 			}
 			break;
 		default:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF5andUp)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF5andUp)) {
 				continue;
 			}
 		}
@@ -817,12 +839,28 @@ void CPlotSpectrogram::OnDrawFormantTracksFragment(unique_ptr<CDC>& memDC, CRect
 		}
 	}
 	memDC->SelectObject(pOldPen);
-	if (pSpectroParm->nColor && !pSpectroParm->bFormantColor) {
+	if (pSpectroParm->GetColor() && !pSpectroParm->bFormantColor) {
 		memDC->SetROP2(nDrawMode);
 	}
 	return;
 }
 
+struct SFormantParams {
+public:
+	CSaDoc* pDoc;
+	CSaView* pView;
+};
+
+UINT FormantTask(LPVOID pParam) {
+	TRACE("running FormantTask\n");
+	SFormantParams* params = (SFormantParams*)pParam;
+	// get pointer to spectrogram object
+	CProcessFormantTracker* pSpectroFormants = params->pDoc->GetFormantTracker(); 
+	WORD result = LOWORD(pSpectroFormants->Process(params->pView, params->pDoc));
+	delete params;
+	TRACE("FormantTask complete %d\n",result);
+	return result;
+}
 
 /***************************************************************************/
 // CPlotSpectrogram::OnDraw Drawing
@@ -832,19 +870,31 @@ void CPlotSpectrogram::OnDrawFormantTracksFragment(unique_ptr<CDC>& memDC, CRect
 // the drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotSpectrogram::OnDrawFormantTracksTime(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CSaView * pView) {
-	// get pointer to graph, view, document, application and mainframe
-	CSaDoc  *  pDoc = pView->GetDocument();
-	DWORD nSmpSize = pDoc->GetSampleSize();
-	CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
+void CPlotSpectrogram::OnDrawFormantTracksTime(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CAppContext& appContext) {
 
 	// get pointer to process class and spectrogram parameters
-	CProcessFormantTracker * pSpectroFormants = pDoc->GetFormantTracker(); // get pointer to spectrogram object
-	CProcessSpectrogram* pSpectrogram = GetSpectrogram(pDoc); // get pointer to spectrogram object
-	const CSpectroParm * pSpectroParm = &pSpectrogram->GetSpectroParm();
+	CProcessFormantTracker* pSpectroFormants = appContext.getDoc()->GetFormantTracker(); // get pointer to spectrogram object
+	CProcessSpectrogram* pSpectrogram = appContext.getDoc()->GetSpectrogram(IsRealTime()); // get pointer to spectrogram object
+	const CSpectroParm* pSpectroParm = &pSpectrogram->GetSpectroParm();
+
+	// get pointer to graph, view, document, application and mainframe
+	DWORD nSmpSize = appContext.getDoc()->GetSampleSize();
+
+	if (threadId == -1) {
+		if (pSpectroParm->GetShowFormants() && !pSpectroFormants->IsCanceled() && threadId == -1) {
+			SFormantParams* params = new SFormantParams();
+			params->pDoc = appContext.getDoc();
+			params->pView = appContext.getView();
+			threadId = appContext.getDoc()->getThreadManager().start(FormantTask, params);
+		}
+	} else {
+		if (!appContext.getDoc()->getThreadManager().isComplete(threadId)) {
+			return;
+		}
+	}
 
 	// draw the formants tracks if requested
-	short int nResult = LOWORD(pSpectroFormants->Process(pView, pDoc));
+	short int nResult = LOWORD(pSpectroFormants->Process(appContext.getView(),appContext.getDoc()));
 	// not the process result. dont clear the plot because we've already drawn the spectrogram
 	nResult = CheckResult(nResult, pSpectroFormants,false);
 	if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_CANCELED)) {
@@ -852,13 +902,13 @@ void CPlotSpectrogram::OnDrawFormantTracksTime(std::unique_ptr<CDC> & memDC, CRe
 	}
 
 	// OK so far
-	double dSamplesPerSlice = pDoc->GetDataSize() / nSmpSize / double(pSpectroFormants->GetDataSize(sizeof(SFormantFreq)));
+	double dSamplesPerSlice = appContext.getDoc()->GetDataSize() / nSmpSize / double(pSpectroFormants->GetDataSize(sizeof(SFormantFreq)));
 	// get pointer to plot colors
-	Colors * pColors = pMain->GetColors();
+	Colors * pColors = appContext.getMainFrame()->GetColors();
 
 	// get sample data frame parameters
-	double fDataStart = pView->GetDataPosition(rWnd.Width()) / nSmpSize; // index of first sample displayed in raw waveform plot
-	DWORD dwDataLength = pView->GetDataFrame() / nSmpSize;   // number of samples displayed in raw waveform plot
+	double fDataStart = appContext.getView()->GetDataPosition(rWnd.Width()) / nSmpSize; // index of first sample displayed in raw waveform plot
+	DWORD dwDataLength = appContext.getView()->GetDataFrame() / nSmpSize;   // number of samples displayed in raw waveform plot
 
 	if (!IsRealTime()) {
 		// Spectrogram B special case
@@ -881,37 +931,37 @@ void CPlotSpectrogram::OnDrawFormantTracksTime(std::unique_ptr<CDC> & memDC, CRe
 
 		double fFormantFactor = (double)pSpectroParm->nFrequency / (double)rWnd.Height();
 
-	COLORREF cFormantColor = pColors->cPlotData[pSpectroParm->nColor && pSpectroParm->bFormantColor ? 4 : 0];
+	COLORREF cFormantColor = pColors->cPlotData[pSpectroParm->GetColor() && pSpectroParm->bFormantColor ? 4 : 0];
 	CPen penFormantTrack(PS_SOLID, 2, cFormantColor);
 	CPen * pOldPen = memDC->SelectObject(&penFormantTrack);
 	int nDrawMode = 0;
-	if (pSpectroParm->nColor && !pSpectroParm->bFormantColor) {
+	if (pSpectroParm->GetColor() && !pSpectroParm->bFormantColor) {
 		nDrawMode = memDC->SetROP2(R2_NOTMASKPEN);
 	}
 	for (int nFormantIndex = 1; nFormantIndex <= MAX_NUM_FORMANTS; nFormantIndex++) {
 		switch (nFormantIndex) {
 		case 1:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF1)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF1)) {
 				continue;
 			}
 			break;
 		case 2:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF2)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF2)) {
 				continue;
 			}
 			break;
 		case 3:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF3)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF3)) {
 				continue;
 			}
 			break;
 		case 4:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF4)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF4)) {
 				continue;
 			}
 			break;
 		default:
-			if ((pSpectroParm->bShowFormants) && (!pSpectroParm->bShowF5andUp)) {
+			if ((pSpectroParm->GetShowFormants()) && (!pSpectroParm->bShowF5andUp)) {
 				continue;
 			}
 		}
@@ -952,28 +1002,25 @@ void CPlotSpectrogram::OnDrawFormantTracksTime(std::unique_ptr<CDC> & memDC, CRe
 	}
 
 	memDC->SelectObject(pOldPen);
-	if (pSpectroParm->nColor && !pSpectroParm->bFormantColor) {
+	if (pSpectroParm->GetColor() && !pSpectroParm->bFormantColor) {
 		memDC->SetROP2(nDrawMode);
 	}
 }
 
-bool CPlotSpectrogram::OnDraw2(unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CSaView * pView) {
+bool CPlotSpectrogram::OnDraw2(unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CAppContext & appContext) {
 
 	if (GetSafeHwnd() && IsIconic()) {
 		return false;    // nothing to draw
 	}
-	// get pointer to graph, view, document, application and mainframe
-	CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-	CSaDoc * pDoc = pView->GetDocument();
-	// get pointer to process class
-	CProcessSpectrogram * pSpectrogram = GetSpectrogram(pDoc); // get pointer to spectrogram object
-	CProcessSpectroFormants* pSpectroFormants = pSpectrogram->GetFormantProcess(); // get pointer to spectrogram formants object
-	// get pointer to spectrogram parameters
-	const CSpectroParm * pSpectroParm = &pSpectrogram->GetSpectroParm();
 
 	if (rWnd.Height() <= 0) {
 		return false;    // nothing to draw
 	}
+
+	// get pointer to process class
+	CProcessSpectrogram* pSpectrogram = GetSpectrogram(appContext.getDoc()); // get pointer to spectrogram object
+	// get pointer to spectrogram parameters
+	const CSpectroParm* pSpectroParm = &pSpectrogram->GetSpectroParm();
 
 	// check if process is idle
 	if (pSpectrogram->IsIdle() && !IsRealTime()) {
@@ -982,7 +1029,7 @@ bool CPlotSpectrogram::OnDraw2(unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip,
 	}
 
 	// create spectrogram data
-	short int nResult = LOWORD(pSpectrogram->Process(this, pDoc, pView, rWnd.Width(), rWnd.Height())); // process data
+	short int nResult = LOWORD(pSpectrogram->Process(this, appContext.getDoc(), appContext.getView(), rWnd.Width(), rWnd.Height())); // process data
 	nResult = CheckResult(nResult, pSpectrogram); // check the process result
 	if (nResult == PROCESS_ERROR) {
 		return false;
@@ -995,13 +1042,13 @@ bool CPlotSpectrogram::OnDraw2(unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip,
 	ShowCursors(false, true);
 
 	// set legend scale
+	CGraphWnd* pGraph = (CGraphWnd*)GetParent();
 	pGraph->SetLegendScale(SCALE | NUMBERS, 0, (int)pSpectroParm->nFrequency, _T("f(Hz)")); // set legend scale
 
 	// prepare to draw
 	BOOL bSmoothSpectra = pSpectroParm->bSmoothSpectra;
 	BOOL bAliased = pSpectrogram->IsAliased();
-	OnDrawSpectrogram(memDC, rWnd, rClip, pView, bSmoothSpectra, &bAliased);
-
+	OnDrawSpectrogram(memDC, rWnd, rClip, appContext.getView(), bSmoothSpectra, &bAliased);
 	if (nResult) {
 		// new data processed, all has to be displayed
 		// This gets the mplot wnd in overlay situation
@@ -1009,71 +1056,75 @@ bool CPlotSpectrogram::OnDraw2(unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip,
 		return true;
 	}
 
-	if (pSpectroParm->bShowFormants) {
-		if (pSpectroParm->bShowPitch) {
-			BOOL bPitch = TRUE;
-			CProcessGrappl * pGrappl = (CProcessGrappl *)pDoc->GetGrappl(); // get pointer to grappl object
-			pGrappl->Process(this, pDoc);
-			if (bPitch && pGrappl->IsDataReady() && !pGrappl->IsStatusFlag(PROCESS_NO_PITCH)) {
-				SetProcessMultiplier(PRECISION_MULTIPLIER);
-				SetBold(TRUE);
-				CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-				int j = pSpectroParm->nColor && pSpectroParm->bFormantColor ? 2 : 0;
-				pMainWnd->SwapInOverlayColors(j);
-				PlotPrePaint(memDC.get(), rWnd, rClip); // Calculate Legend before drawing
-				PlotStandardPaint(memDC.get(), rWnd, rWnd, pGrappl, pDoc, SKIP_UNSET); // do standard data paint */
-				pMainWnd->SwapOutOverlayColors();
-			}
+	CProcessSpectroFormants* pSpectroFormants = pSpectrogram->GetFormantProcess(); // get pointer to spectrogram formants object
+	if (!pSpectroParm->GetShowFormants()) {
+		// update state
+		if (threadId != -1) {
+			appContext.getDoc()->getThreadManager().stop(threadId);
 		}
-
-		if (pSpectroFormants->IsCanceled()) {
-			m_pLastProcess = pDoc->GetSpectrogram()->GetFormantProcess();
-			return true;
-		}
-
-		if (!formantTrackerOptions.m_bShowOriginalFormantTracks) {
-			OnDrawFormantTracksTime(memDC, rWnd, rClip, pView);
-		}
-		if (formantTrackerOptions.m_bShowOriginalFormantTracks) {
-			OnDrawFormantTracksFragment(memDC, rWnd, rClip, pView);
-		}
-		if (pSpectroFormants->IsCanceled()) {
-			return true;
+		// if the user toggled to state of the display of formants while the process was cancelled, we can take down the 'cancelled' display.
+		if ((pSpectrogram->IsIdle() || pSpectrogram->IsDataReady()) &&
+			(pSpectroFormants->IsIdle() || pSpectroFormants->IsDataReady()) &&
+			m_HelperWnd.IsCanceled()) {
+			m_HelperWnd.SetMode(MODE_HIDDEN);
 		}
 		return true;
 	}
 
-	// if the user toggled to state of the display of formants while the process was cancelled, we can take down the 'cancelled' display.
-	if ((pSpectrogram->IsIdle() || pSpectrogram->IsDataReady()) &&
-		(pSpectroFormants->IsIdle() || pSpectroFormants->IsDataReady()) &&
-		m_HelperWnd.IsCanceled()) {
-		m_HelperWnd.SetMode(MODE_HIDDEN);
+	if (pSpectroParm->bShowPitch) {
+		BOOL bPitch = TRUE;
+		CProcessGrappl * pGrappl = (CProcessGrappl *)appContext.getDoc()->GetGrappl(); // get pointer to grappl object
+		pGrappl->Process(this, appContext.getDoc());
+		if (bPitch && pGrappl->IsDataReady() && !pGrappl->IsStatusFlag(PROCESS_NO_PITCH)) {
+			SetProcessMultiplier(PRECISION_MULTIPLIER);
+			SetBold(TRUE);
+			int j = pSpectroParm->GetColor() && pSpectroParm->bFormantColor ? 2 : 0;
+			appContext.getMainFrame()->SwapInOverlayColors(j);
+			PlotPrePaint(memDC.get(), rWnd, rClip); // Calculate Legend before drawing
+			PlotStandardPaint(memDC.get(), rWnd, rWnd, pGrappl, appContext.getDoc(), SKIP_UNSET); // do standard data paint */
+			appContext.getMainFrame()->SwapOutOverlayColors();
+		}
+	}
+
+	if (pSpectroFormants->IsCanceled()) {
+		// update state
+		if (threadId != -1) {
+			appContext.getDoc()->getThreadManager().stop(threadId);
+		}
+		m_pLastProcess = appContext.getDoc()->GetSpectrogram()->GetFormantProcess();
+		return true;
+	}
+
+	if (!formantTrackerOptions.m_bShowOriginalFormantTracks) {
+		OnDrawFormantTracksTime(memDC, rWnd, rClip, appContext);
+	} else {
+		OnDrawFormantTracksFragment(memDC, rWnd, rClip, appContext);
+	}
+	if (pSpectroFormants->IsCanceled()) {
+		return true;
 	}
 	return true;
 }
 
 void CPlotSpectrogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
+	
+	CAppContext appContext(pView);
 	CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-	CSaDoc * pDoc = pView->GetDocument();
 
-	if (!CreateSpectroPalette(pDC, pDoc)) {
+	if (!CreateSpectroPalette(pDC)) {
 		// error creating color palette
-		pApp->ErrorMessage(IDS_ERROR_SPECTROPALETTE);
+		appContext.getApp()->ErrorMessage(IDS_ERROR_SPECTROPALETTE);
 		pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
 		return;
 	}
 
-	CSpectroParm cSpectroParm = GetSpectrogram(pDoc)->GetSpectroParm();
-	CSpectroParm * pSpectroParm = &cSpectroParm;
-
-	BOOL isColor = (pDC->GetDeviceCaps(BITSPIXEL) > 1);
-	int  backupNcolor = pSpectroParm->nColor;
-
+	bool isColor = (pDC->GetDeviceCaps(BITSPIXEL) > 1);
+	int backupColor = appContext.getDoc()->GetSpectrogram(IsRealTime())->GetColor();
 	if (!isColor) {
-		pSpectroParm->nColor = 1; // use greyscale to match b/w printer.
-		GetSpectrogram(pDoc)->SetSpectroParm(*pSpectroParm);
+		// use greyscale to match b/w printer.
+		appContext.getDoc()->GetSpectrogram(IsRealTime())->SetColor(1);
 	}
+
 	// create a temporary DC for the reading the screen
 	std::unique_ptr<CDC> memDC(new CDC());
 	if (!memDC.get()) {
@@ -1109,7 +1160,7 @@ void CPlotSpectrogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVie
 	info->bmiHeader.biXPelsPerMeter = info->bmiHeader.biYPelsPerMeter = 2835; // 72 DPI
 	info->bmiHeader.biClrUsed = 0; // fully populated bmiColors
 	info->bmiHeader.biClrImportant = 0;
-	populateBmiColors(info->bmiColors, pView);
+	PopulateBmiColors(info->bmiColors, pView);
 
 	void * pBits;
 	HBITMAP hBitmap = CreateDIBSection(memDC->m_hDC, info.get(), DIB_RGB_COLORS, &pBits, NULL, 0);
@@ -1124,7 +1175,7 @@ void CPlotSpectrogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVie
 
 	HBITMAP hOldBitmap = (HBITMAP)::SelectObject(memDC->m_hDC, hBitmap);
 	// paint the data into the bitmap
-	if (OnDraw2(memDC, rWnd, rClip, pView)) {
+	if (OnDraw2(memDC, rWnd, rClip, appContext)) {
 		GdiFlush();  // finish all drawing to memDC
 		// copy to destination
 		if (!pDC->BitBlt(rWnd.left, rWnd.top, rWnd.Width(), rWnd.Height(), memDC.get(), 0, 0, SRCCOPY)) {
@@ -1144,13 +1195,7 @@ void CPlotSpectrogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVie
 	memDC->SelectObject(hOldBitmap);
 	DeleteObject(hBitmap);
 
-	pSpectroParm->nColor = backupNcolor;
-	GetSpectrogram(pDoc)->SetSpectroParm(*pSpectroParm);
-}
-
-CProcessSpectrogram * CPlotSpectrogram::GetSpectrogram(CSaDoc * pDoc) {
-	m_pAreaProcess = (IsRealTime())?pDoc->GetSpectrogram():pDoc->GetSnapshot();
-	return static_cast<CProcessSpectrogram *>(m_pAreaProcess);
+	appContext.getDoc()->GetSpectrogram(IsRealTime())->SetColor(backupColor);
 }
 
 BOOL CPlotSpectrogram::OnSetCursor(CWnd * /*pWnd*/, UINT /*nHitTest*/, UINT /*message*/) {
@@ -1163,8 +1208,8 @@ BOOL CPlotSpectrogram::OnSetCursor(CWnd * /*pWnd*/, UINT /*nHitTest*/, UINT /*me
 	CProcessSpectroFormants* pSpectroFormants = pSpectrogram->GetFormantProcess(); // get pointer to spectrogram formants object
 	// get pointer to spectrogram parameters
 	const CSpectroParm * pSpectroParm = &pSpectrogram->GetSpectroParm();
-	BOOL bShowFormantTracks = ((pSpectroParm->bShowFormants) && (pSpectroFormants->AreFormantTracksReady()));
-	BOOL bHasFocus = (pGraph == pView->GetFocusedGraphWnd());
+	bool bShowFormantTracks = ((pSpectroParm->GetShowFormants()) && (pSpectroFormants->AreFormantTracksReady()));
+	bool bHasFocus = (pGraph == pView->GetFocusedGraphWnd());
 	if (bShowFormantTracks || !bHasFocus) {
 		::SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 	}
@@ -1185,4 +1230,9 @@ BOOL CPlotSpectrogram::IsAreaGraph() const {
 BOOL CPlotSpectrogram::EraseBkgnd(CDC * /*pDC*/) {
 	// we don't need to erase this plot
 	return TRUE;
+}
+
+CProcessSpectrogram* CPlotSpectrogram::GetSpectrogram(CSaDoc* pDoc) {
+	m_pAreaProcess = (IsRealTime()) ? pDoc->GetSpectrogram() : pDoc->GetSnapshot();
+	return static_cast<CProcessSpectrogram*>(m_pAreaProcess);
 }

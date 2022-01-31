@@ -7627,8 +7627,7 @@ bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings,
 			if (index >= 0) {
 				int result = ComposeWordSegmentFilename(g, index, wordConvention, szPath, filename, L"", L"");
 				if (result == 0) {
-					int result = ExportWordSegment(g, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
-					if (result < 0) {
+					if (ExportWordSegment(g, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount) < 0) {
 						return false;
 					}
 					TCHAR szBuffer[MAX_PATH];
@@ -7647,8 +7646,7 @@ bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings,
 					TRACE("--exporting PL1\n");
 					int result = ComposePhraseSegmentFilename(MUSIC_PL1, pl1, index, phraseConvention, szPath, filename, L"", L"");
 					if (result == 0) {
-						int result = ExportPhraseSegment(pl1, index, filename, dataCount, wavCount);
-						if (result < 0) {
+						if (ExportPhraseSegment(pl1, index, filename, dataCount, wavCount) < 0) {
 							return false;
 						}
 						TCHAR szBuffer[MAX_PATH];
@@ -7666,8 +7664,7 @@ bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings,
 					TRACE("--exporting PL2\n");
 					int result = ComposePhraseSegmentFilename(MUSIC_PL2, pl2, index, phraseConvention, szPath, filename, L"", L"");
 					if (result == 0) {
-						int result = ExportPhraseSegment(pl2, index, filename, dataCount, wavCount);
-						if (result < 0) {
+						if (ExportPhraseSegment(pl2, index, filename, dataCount, wavCount) < 0) {
 							return false;
 						}
 						TCHAR szBuffer[MAX_PATH];
@@ -8226,8 +8223,7 @@ bool CSaDoc::IsSegmental(CPhoneticSegment * pPhonetic, int sel) {
 		return false;
 	}
 
-	DWORD offset = pPhonetic->GetOffset(sel);
-	int gsel = pGloss->FindFromPosition(offset);
+	int gsel = pGloss->FindFromPosition(pPhonetic->GetOffset(sel));
 	if (gsel == -1) {
 		return false;
 	}
@@ -8371,7 +8367,7 @@ void CSaDoc::DeselectAll() {
 /**
 * Normal method called during 'import SAB menu item
 */
-void CSaDoc::ImportSAB(CSaView & view, LPCTSTR filename, int algorithm) {
+void CSaDoc::ImportSAB(CSaView & /*view*/, LPCTSTR filename, int /*algorithm*/) {
 
 	CheckPoint();
 
@@ -8998,12 +8994,7 @@ void CSaDoc::ExportTimeTable(LPCTSTR filename,
 				}
 
 				if (bReference) {
-					int nIndex = GetSegment(REFERENCE)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						szString = GetSegment(REFERENCE)->GetSegmentString(nIndex) + "\t";
-					} else {
-						szString = "\t";
-					}
+					GetSegment(REFERENCE)->GetString(dwPhonetic, szString, false);
 					WriteFileUtf8(&file, szString);
 				}
 				if (bPhonetic) {
@@ -9011,60 +9002,23 @@ void CSaDoc::ExportTimeTable(LPCTSTR filename,
 					WriteFileUtf8(&file, szString);
 				}
 				if (bTone) {
-					int nIndex = GetSegment(TONE)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						szString = GetSegment(TONE)->GetSegmentString(nIndex) + "\t";
-					} else {
-						szString = "\t";
-					}
+					GetSegment(TONE)->GetString(dwPhonetic, szString, false);
 					WriteFileUtf8(&file, szString);
 				}
 				if (bPhonemic) {
-					int nIndex = GetSegment(PHONEMIC)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						szString = GetSegment(PHONEMIC)->GetSegmentString(nIndex) + "\t";
-					} else {
-						szString = "\t";
-					}
+					GetSegment(PHONEMIC)->GetString(dwPhonetic, szString, false);
 					WriteFileUtf8(&file, szString);
 				}
 				if (bOrtho) {
-					int nIndex2 = GetSegment(ORTHO)->FindOffset(dwPhonetic);
-					if (nIndex2 != -1) {
-						szString = GetSegment(ORTHO)->GetSegmentString(nIndex2) + "\t";
-					} else {
-						szString = "\t";
-					}
+					GetSegment(ORTHO)->GetString(dwPhonetic, szString, false);
 					WriteFileUtf8(&file, szString);
 				}
 				if (bGloss) {
-					int nIndex = GetSegment(GLOSS)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						// SDM 1.5Test10.1
-						szString = GetSegment(GLOSS)->GetSegmentString(nIndex);
-						if ((szString.GetLength() > 1) && (szString[0] == WORD_DELIMITER)) {
-							// Remove Word Delimiter
-							szString = szString.Mid(1);
-						}
-						szString += "\t";
-					} else {
-						szString = "\t";
-					}
+					GetSegment(GLOSS)->GetString(dwPhonetic, szString, true);
 					WriteFileUtf8(&file, szString);
 				}
 				if (bGlossNat) {
-					int nIndex = GetSegment(GLOSS_NAT)->FindOffset(dwPhonetic);
-					if (nIndex != -1) {
-						// SDM 1.5Test10.1
-						szString = GetSegment(GLOSS_NAT)->GetSegmentString(nIndex);
-						if ((szString.GetLength() > 1) && (szString[0] == WORD_DELIMITER)) {
-							// Remove Word Delimiter
-							szString = szString.Mid(1);
-						}
-						szString += "\t";
-					} else {
-						szString = "\t";
-					}
+					GetSegment(GLOSS_NAT)->GetString(dwPhonetic, szString, true);
 					WriteFileUtf8(&file, szString);
 				}
 				nIndex = pPhonetic->GetNext(nIndex);
@@ -9570,12 +9524,11 @@ void CSaDoc::SplitSegment(CPhoneticSegment * pPhonetic, int sel, DWORD splitPosi
 void CSaDoc::ToggleSpectrogram() {
 
 	CSpectroParm parameters = GetSpectrogram()->GetSpectroParm();
-	BOOL bFormantSelected = !parameters.bShowFormants;
+	bool bFormantSelected = !parameters.GetShowFormants();
 	GetSpectrogram()->SetShowFormants(bFormantSelected);
 	GetSnapshot()->SetShowFormants(bFormantSelected);
 	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
 	pMainFrame->SetShowFormants(bFormantSelected);
-
 	if ((bFormantSelected) && ((GetSpectrogram()->IsProcessCanceled()) || (GetSnapshot()->IsProcessCanceled()))) {
 		RestartAllProcesses();
 	}

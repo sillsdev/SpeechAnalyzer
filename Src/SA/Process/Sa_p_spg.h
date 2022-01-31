@@ -29,10 +29,16 @@ public:
     int GetWindowWidth() const;
     int GetWindowHeight() const;
     CProcessSpectroFormants * GetFormantProcess();
-    void SetShowFormants(BOOL value);
+    void SetShowFormants(bool value);
     void SetProcessDataInvalid();
     bool IsProcessCanceled();
     void InvalidateAndRestart();
+    void SetColor(int color) {
+        m_SpectroParm.SetColor(color);
+    };
+    int GetColor() {
+        return m_SpectroParm.GetColor();
+    }
 
 protected:
     virtual long Exit(int nError);                      // exit processing on error

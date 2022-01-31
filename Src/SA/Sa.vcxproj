@@ -15,6 +15,7 @@
     <RootNamespace>SaUnicode</RootNamespace>
     <Keyword>MFCProj</Keyword>
     <ProjectName>SA</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -58,13 +59,13 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\Lang;..\SA_DSP;..\zGraph;..\uriparser\include;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)stdafx.pch</PrecompiledHeaderOutputFile>
       <BrowseInformation>false</BrowseInformation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile />
     <Link>
@@ -139,11 +140,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AlignInfo.cpp" />
+    <ClCompile Include="AppContext.cpp" />
     <ClCompile Include="ArchiveTransfer.cpp" />
     <ClCompile Include="AutoSave.cpp" />
     <ClCompile Include="AutoSegmentation.cpp" />
     <ClCompile Include="ChildFrame.cpp" />
     <ClCompile Include="ClipboardHelper.cpp" />
+    <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="DataStatusBar.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
@@ -205,10 +208,10 @@
     <ClCompile Include="Process\ProcessDoc.cpp" />
     <ClCompile Include="Process\SA_P_DUR.CPP" />
     <ClCompile Include="Process\SA_P_FMT.CPP" />
-    <ClCompile Include="Process\SA_P_FRA.CPP" />
+    <ClCompile Include="Process\sa_p_fra.cpp" />
     <ClCompile Include="Process\Sa_p_glo.cpp" />
     <ClCompile Include="Process\Sa_p_gra.cpp" />
-    <ClCompile Include="Process\sa_p_InstantaneousPower.cpp" />
+    <ClCompile Include="Process\sa_p_instantaneouspower.cpp" />
     <ClCompile Include="Process\Sa_p_lou.cpp" />
     <ClCompile Include="Process\sa_p_mel.cpp" />
     <ClCompile Include="Process\Sa_p_pit.cpp" />
@@ -258,7 +261,7 @@
     <ClCompile Include="Sa_g_raw.cpp" />
     <ClCompile Include="sa_g_rec.cpp" />
     <ClCompile Include="Sa_g_spe.cpp" />
-    <ClCompile Include="Sa_g_spg.cpp" />
+    <ClCompile Include="sa_g_spg.cpp" />
     <ClCompile Include="Sa_g_spi.cpp" />
     <ClCompile Include="Sa_g_spu.cpp" />
     <ClCompile Include="SA_G_Stf.cpp" />
@@ -384,9 +387,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignInfo.h" />
+    <ClInclude Include="AppContext.h" />
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="AutoSegmentation.h" />
+    <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="DataStatusBar.h" />
     <ClInclude Include="DlgAnnotationEdit.h" />
     <ClInclude Include="DlgAutoRecorder.h" />
@@ -536,7 +541,7 @@
     <ClInclude Include="SA_G_RAW.H" />
     <ClInclude Include="sa_g_rec.h" />
     <ClInclude Include="SA_G_SPE.H" />
-    <ClInclude Include="SA_G_SPG.H" />
+    <ClInclude Include="sa_g_spg.h" />
     <ClInclude Include="SA_G_SPI.H" />
     <ClInclude Include="SA_G_SPU.H" />
     <ClInclude Include="sa_g_stf.h" />

@@ -988,7 +988,7 @@ void Test016(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CSpectroParm cSpectroParm = pSpectrogram->GetSpectroParm();
     CSpectroParm * pSpectroParm = &cSpectroParm;
     pSpectroParm->nResolution = 2;
-    pSpectroParm->nColor = 0;
+    pSpectroParm->SetColor(0);
     pSpectroParm->nOverlay = 0;
     pSpectroParm->bShowPitch = 1;
     pSpectroParm->bShowF1 = 1;

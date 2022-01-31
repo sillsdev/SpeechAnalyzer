@@ -213,7 +213,7 @@ public:
     afx_msg void OnAutoSaveOn();
     afx_msg void OnAutoSaveOff();
 
-    void SetShowFormants(BOOL value);
+    void SetShowFormants(bool value);
 
     // transcription fonts
     CStringArray m_GraphFontFaces;			// array of graph font face strings

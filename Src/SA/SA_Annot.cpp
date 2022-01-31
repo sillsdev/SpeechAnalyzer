@@ -946,10 +946,10 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                     CBrush brushHigh(pColors->cSysColorHilite);
                     CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
                     CBrush * pOldBrush = (CBrush *)pDC->SelectObject(&brushHigh);
-                    CPen * pOldPen = pDC->SelectObject(&penHigh);
+                    CPen * pOldPen2 = pDC->SelectObject(&penHigh);
                     pDC->Rectangle(rWnd.left, rWnd.top - 1, rWnd.right, rWnd.bottom);
                     pDC->SelectObject(pOldBrush);
-                    pDC->SelectObject(pOldPen);
+                    pDC->SelectObject(pOldPen2);
                 }
 
                 DrawTranscriptionBorders(pDC,rWnd,pColors);
@@ -995,10 +995,10 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         CBrush brushBk(pColors->cSysColorHilite);
         CPen penHigh(PS_INSIDEFRAME, 1, pColors->cSysColorHilite);
         CBrush * pOldBrush = (CBrush *)pDC->SelectObject(&brushBk);
-        CPen * pOldPen = pDC->SelectObject(&penHigh);
+        CPen * pOldPen2 = pDC->SelectObject(&penHigh);
         pDC->Rectangle(rWnd.left, rWnd.top + 1, rWnd.right, rWnd.bottom - 1);
         pDC->SelectObject(pOldBrush);
-        pDC->SelectObject(pOldPen);
+        pDC->SelectObject(pOldPen2);
     }
     pDC->SelectObject(pOldFont);  // set back old font
 }
@@ -1524,10 +1524,10 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
             CBrush brushHigh(pColors->cSysColorHilite);
             CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
             CBrush * pOldBrush = (CBrush *)pDC->SelectObject(&brushHigh);
-            CPen * pOldPen = pDC->SelectObject(&penHigh);
+            CPen * pOldPen2 = pDC->SelectObject(&penHigh);
             pDC->Rectangle(rWnd.left, rWnd.top - 1, rWnd.right, rWnd.bottom);
             pDC->SelectObject(pOldBrush);
-            pDC->SelectObject(pOldPen);
+            pDC->SelectObject(pOldPen2);
         }
 
         DrawTranscriptionBorders(pDC,rWnd,pColors);

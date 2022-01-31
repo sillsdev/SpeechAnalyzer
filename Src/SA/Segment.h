@@ -219,6 +219,22 @@ public:
     virtual bool MoveDataLeft(DWORD offset);
     virtual bool MoveDataRight(DWORD offset, bool sab);
 
+    void GetString(DWORD offset, CSaString & szString, bool removeDelimiter) {
+        int nIndex = FindOffset(offset);
+        if (nIndex != -1) {
+            szString = GetSegmentString(nIndex);
+            if (removeDelimiter) {
+                if ((szString.GetLength() > 1) && (szString[0] == WORD_DELIMITER)) {
+                    // Remove Word Delimiter
+                    szString = szString.Mid(1);
+                }
+            }
+            szString += "\t";
+        } else {
+            szString = "\t";
+        }
+    }
+
 protected:
     int GetReferenceCount(CSegment * pSegment, int sel);
 	virtual int Add( DWORD offset, DWORD duration);

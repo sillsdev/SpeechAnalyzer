@@ -2874,9 +2874,9 @@ void CMainFrame::OnAutoSaveOff() {
     m_bAutoSave = FALSE;
 }
 
-void CMainFrame::SetShowFormants(BOOL value) {
-    m_spectrogramParmDefaults.bShowFormants = value;
-    m_snapshotParmDefaults.bShowFormants = value;
+void CMainFrame::SetShowFormants(bool value) {
+    m_spectrogramParmDefaults.SetShowFormants(value);
+    m_snapshotParmDefaults.SetShowFormants(value);
 }
 
 LRESULT CMainFrame::OnUpdatePlayer(WPARAM wParam, LPARAM /*lParam*/) {

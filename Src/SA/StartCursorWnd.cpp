@@ -519,10 +519,10 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
     // set the highlight area for raw data
     if (m_bSelectDrag) {
         // calculate the location where the mouse was lifted
-        CRect rWnd;
-        pWnd->GetClientRect(rWnd);
+        CRect rWnd2;
+        pWnd->GetClientRect(rWnd2);
         DWORD dwTempStopCursor = 0;
-        DWORD dwCursor = CalculateCursorPosition(pView, point.x, rWnd.Width(), &dwTempStopCursor);
+        DWORD dwCursor = CalculateCursorPosition(pView, point.x, rWnd2.Width(), &dwTempStopCursor);
         if (dwCursor > m_dwStartDragPos) {
             dwStartCursor = m_dwStartDragPos;
             dwStopCursor = dwCursor;

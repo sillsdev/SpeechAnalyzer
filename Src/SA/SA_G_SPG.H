@@ -13,9 +13,13 @@
 #define _SA_G_SPG_H
 
 #include "Sa_plot.h"
+#include "ProgressStatusBar.h"
+#include "AppContext.h"
 
 class CProcessSpectrogram;
 class CProcessSpectroFormants;
+class CSaDoc;
+class CMainFrame;
 
 class CPlotSpectrogram : public CPlotWnd {
 
@@ -41,13 +45,13 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-    BOOL CreateSpectroPalette(CDC * pDC, CDocument * pDoc); // creates the palette
-    void populateBmiColors(RGBQUAD * Quadcolors,CSaView * pView);
-    bool OnDraw2(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CSaView * pView);
+    BOOL CreateSpectroPalette(CDC * pDC); // creates the palette
+    void PopulateBmiColors(RGBQUAD * Quadcolors,CSaView * pView);
+    bool OnDraw2(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CAppContext& appContext);
     void OnDrawSpectrogram(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CSaView * pView, BOOL bSmooth, BOOL * bAliased = NULL);
-    void OnDrawFormantTracksFragment(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CSaView * pView);
-    void OnDrawFormantTracksTime(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CSaView * pView);
-    CProcessSpectrogram * GetSpectrogram(CSaDoc * pDoc);
+    void OnDrawFormantTracksFragment(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CAppContext & appContext);
+    void OnDrawFormantTracksTime(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CAppContext& appContext);
+    CProcessSpectrogram* GetSpectrogram(CSaDoc* pDoc);
 
     enum PaletteMode {                      // mode of palette
         SYSTEMCOLOR,
@@ -58,7 +62,7 @@ private:
     static int nPaletteMode;                // mode of created palette
     static CPalette SpectroPalette;         // color palette
     char SpectroAB;                         // indicates whether the plotted spectrogram is SpectrogramA or SpectrogramB
-
+    unsigned long threadId = -1;            // thread id for formant track processor
 };
 
 #endif

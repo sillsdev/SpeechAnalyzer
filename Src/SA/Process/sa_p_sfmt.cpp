@@ -437,11 +437,11 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
 /***************************************************************************/
 // CProcessSpectroFormants::AreFormantTracksReady Return TRUE if formant data is ready
 /***************************************************************************/
-BOOL CProcessSpectroFormants::AreFormantTracksReady() {
+bool CProcessSpectroFormants::AreFormantTracksReady() {
     if (IsCanceled()) {
-        return FALSE;
+        return false;
     }
-    return IsDataReady();
+    return IsDataReady()!=0;
 }
 
 /**

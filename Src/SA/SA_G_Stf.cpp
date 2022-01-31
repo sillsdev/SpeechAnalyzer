@@ -518,10 +518,9 @@ void CPlotStaff::Convert() {
             if (bVoiced) {
                 pHistogram = pTWC->MakeTwcHistogram(pMelogram, 10, dMinSemitone, dMaxSemitone, dwOffsetBegin, (dwDataOffset-dwOffsetBegin));
 
-                for (USHORT i=0; i < pHistogram->GetHistogramParms().nBins; i++) {
+                for (USHORT bin=0; bin < pHistogram->GetHistogramParms().nBins; bin++) {
                     int nValue = 0;
-
-                    pHistogram->GetBin(nValue, i, 1.0, COUNTS);
+                    pHistogram->GetBin(nValue, bin, 1.0, COUNTS);
                     if (nValue > pHistogram->GetMaxValue(this)*dHistogramThreshold) {
                         nStableFrames += nValue;
                     }

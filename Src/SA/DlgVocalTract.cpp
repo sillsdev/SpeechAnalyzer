@@ -716,10 +716,8 @@ void CDlgVocalTract::NumberGrid(int nGrid) {
 CString CDlgVocalTract::GetDefaultsPath(int nOrder) {
     CSaString szPath = AfxGetApp()->GetProfileString(_T(""), _T("DataLocation"));
     szPath += "\\";
-
     CString szPathOrder;
     szPathOrder.Format(_T("%sVTDefaults%d.txt"), szPath, nOrder);
-
     return szPathOrder;
 }
 

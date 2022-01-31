@@ -29,7 +29,7 @@ public:
     long Process(void * pCaller, CView * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
     SFormantFreq * GetFormant(DWORD dwIndex); // return spectrogram slice data
     long ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth = TRUE, int nProgress = 0, int nLevel = 1);
-    BOOL AreFormantTracksReady(); // return TRUE if processed formants data is ready
+    bool AreFormantTracksReady(); // return TRUE if processed formants data is ready
 };
 
 #endif

@@ -16,7 +16,6 @@ public:
 
     virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
     SFormantFreq * GetFormant(DWORD dwIndex);
-    void Dump(LPCSTR ofilename);
 
 private:
     CProcess * m_pReal;
