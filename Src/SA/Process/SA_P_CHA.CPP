@@ -8,7 +8,6 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_p_cha.h"
-#include "sa_p_pit.h"
 #include "sa_p_lou.h"
 #include "isa_doc.h"
 #include "FileUtils.h"

@@ -78,7 +78,7 @@ public:
     void SetProcessBufferSize(DWORD dwSize);
     void DeleteProcessFileName();
     BOOL SmoothData(int nTimes); // smooth data in the temporary file nTimes times
-    void Dump(LPCSTR tag);
+    virtual void Dump(LPCSTR tag);
     DWORD GetProcessedWaveDataBufferSize();
     DWORD GetBufferSize();
 
@@ -118,37 +118,6 @@ private:
     long m_nStatus;
     CFileStatus m_fileStatus;   // file status
     CFile * m_pFile;            // file object
-};
-
-//###########################################################################
-// CAreaDataProcess
-
-class CProcessAreaData : public CProcess {
-    // Construction/destruction/creation
-public:
-    CProcessAreaData();
-    virtual ~CProcessAreaData();
-
-    // Attributes
-private:
-    DWORD  m_dwAreaPos;      // array of graph area positions
-    DWORD  m_dwAreaLength;   // array of graph area lengths
-
-
-    // Operations
-public:
-    virtual void UpdateArea();
-    BOOL SetArea(CSaView * pView);
-
-    DWORD GetAreaPosition();
-    DWORD GetAreaLength();
-
-protected:
-    BOOL SetArea(DWORD dwAreaPos, DWORD dwAreaLength);
-};
-
-
-class CProcessSDP : public CProcessAreaData {
 };
 
 template<class _Ty>

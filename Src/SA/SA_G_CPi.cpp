@@ -8,7 +8,7 @@
 #include "sa_plot.h"
 #include "sa_g_cpi.h"
 #include "Process\Process.h"
-#include "Process\sa_p_cpi.h"
+#include "Process\sa_p_custompitch.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "sa_doc.h"

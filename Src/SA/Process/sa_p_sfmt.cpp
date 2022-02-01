@@ -14,7 +14,7 @@
 #include "Process.h"
 #include "sa_p_sfmt.h"
 #include "sa_p_zcr.h"
-#include "sa_p_gra.h"
+#include "sa_p_grappl.h"
 #include "sa_p_fra.h"
 #include "sa_p_fmt.h"
 #include "isa_doc.h"

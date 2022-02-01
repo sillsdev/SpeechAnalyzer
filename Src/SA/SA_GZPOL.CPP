@@ -8,8 +8,8 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "Process\Process.h"
+#include "Process/ProcessAreaData.h"
 #include "sa_gZpol.h"
-
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_view.h"

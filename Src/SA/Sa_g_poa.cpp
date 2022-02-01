@@ -11,7 +11,7 @@
 #include "Process\Process.h"
 #include "Process\sa_p_poa.h"
 #include "Process\sa_p_fra.h"
-#include "Process\sa_p_gra.h"
+#include "Process\sa_p_grappl.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include <math.h>

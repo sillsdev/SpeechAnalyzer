@@ -120,22 +120,22 @@
 #include "Process\Process.h"
 #include "Process\ProcessDoc.h"
 #include "Process\sa_p_cha.h"
-#include "Process\sa_p_cpi.h"
+#include "Process\sa_p_custompitch.h"
 #include "Process\sa_p_dur.h"
 #include "Process\sa_p_fmt.h"
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_glo.h"
-#include "Process\sa_p_gra.h"
+#include "Process\sa_p_grappl.h"
 #include "Process\sa_p_lou.h"
-#include "Process\sa_p_mel.h"
-#include "Process\sa_p_pit.h"
+#include "Process\sa_p_melogram.h"
 #include "Process\sa_p_poa.h"
+#include "Process\sa_p_pitch.h"
 #include "Process\sa_p_rat.h"
 #include "Process\sa_p_raw.h"
 #include "Process\sa_p_sfmt.h"
 #include "Process\sa_p_spg.h"
-#include "Process\sa_p_spi.h"
+#include "Process\sa_p_smoothedpitch.h"
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_twc.h"
 #include "Process\sa_p_zcr.h"
@@ -4498,7 +4498,6 @@ DWORD CSaDoc::GetRawDataSize() const {
 // dwOffset is the sample index
 /***************************************************************************/
 HPSTR CSaDoc::GetWaveData(DWORD dwOffset, BOOL bBlockBegin) {
-	//TRACE("GetWaveData %d %d\n",dwOffset,bBlockBegin);
 	if (m_nWbProcess > 0) {
 		CProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
 		if (pWbProcess != NULL) {

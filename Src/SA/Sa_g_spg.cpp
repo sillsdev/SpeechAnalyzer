@@ -30,7 +30,7 @@
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_spg.h"
 #include "Process\sa_p_sfmt.h"
-#include "Process\sa_p_gra.h"
+#include "Process\sa_p_grappl.h"
 #include "Process\FormantTracker.h"
 #include "AppContext.h"
 

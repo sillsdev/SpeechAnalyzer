@@ -9,7 +9,7 @@
 #include "Process.h"
 #include "sa_p_spu.h"
 #include "sa_p_fra.h"
-#include "sa_p_gra.h"
+#include "sa_p_grappl.h"
 #include "isa_doc.h"
 #include "SaParam.h"
 

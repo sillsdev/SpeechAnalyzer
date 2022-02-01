@@ -253,7 +253,7 @@ bool grapplGetResults(pGrappl work,pGrappl_res * res,int16 * nres, bool * alldon
     }
 }
 
-bool grapplInit(pGrappl work,pGrappl_parms parms) {
+bool grapplInit(pGrappl work, SGrapplParms* parms) {
     /* initialise GRAPPL invocation */
     SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     ((pWorkspace)(work))->check=CHECKVAL;
@@ -362,35 +362,8 @@ bool grapplSetInbuff(pGrappl work, pGrappl data, uint16 length, bool alldone) {
     return true;
 }
 
+/** return space to allocate as workspace, plus safety margin */
 uint32 grapplWorkspace(void) {
-    /* return space to allocate as workspace, plus safety margin */
-#define  WDEBUG 0
-#if  WDEBUG
-    {
-        /* on first call, print details of workspace component sizes */
-        enum{ Tab1=16,Tab2=23 };
-        static int16 init=true;
-
-        if (init) {
-            init=false;
-            io_io("\r\ncheck% %i\r\n",Tab1,sizeof(int32));
-            io_io("wave[%i]% %i\r\n",Maxdata,Tab1,Maxdata*sizeof(int8));
-            io_io("swave[%i]% %i\r\n",Maxdata,Tab1,Maxdata*sizeof(int8));
-            io_io("cross[%i]% %i\r\n",Maxcross,Tab1,Maxcross*sizeof(int32));
-            io_io("userres[%i]% %i% (%i*%i)\r\n",Maxres,Tab1,
-                  Maxres*sizeof(Grappl_res),Tab2,Maxres,
-                  sizeof(Grappl_res));
-            io_io("sysres[%i]% %i% (%i*%i)\r\n",Maxres,Tab1,
-                  Maxres*sizeof(Sysres),Tab2,Maxres,Maxres,
-                  sizeof(Sysres));
-            io_io("lagelem[%i]% %i\r\n",Maxlag+5,Tab1,(Maxlag+5)*
-                  sizeof(Lagelem));
-            io_io("sysparms% %i\r\n",Tab1,sizeof(Sysparms));
-            io_io("--------\r\nWorkspace% %l\r\n",Tab1,
-                  (int32)sizeof(Workspace));
-        }
-    }
-#endif
     return(sizeof(SWorkspace)+10U);
 }
 

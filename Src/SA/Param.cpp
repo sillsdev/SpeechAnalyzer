@@ -14,11 +14,11 @@
 #include "objectostream.h"
 #include "sa_doc.h"
 #include "Process\Process.h"
-#include "Process\sa_p_gra.h"
-#include "Process\sa_p_mel.h"
-#include "Process\sa_p_cpi.h"
-#include "Process\sa_p_pit.h"
-#include "Process\sa_p_spi.h"
+#include "Process/sa_p_pitch.h"
+#include "Process\sa_p_grappl.h"
+#include "Process\sa_p_melogram.h"
+#include "Process\sa_p_custompitch.h"
+#include "Process\sa_p_smoothedpitch.h"
 
 static LPCSTR psz_parse            = "parse";
 static LPCSTR psz_breakWidth       = "break_ms";

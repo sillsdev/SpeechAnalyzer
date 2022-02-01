@@ -44,7 +44,6 @@ struct SGrapplParms {
     int16 maxinterp_pc10;   /* max % change (x10) to join contours across 1-pt gap */
     int16 reslag;           /* max results to hold in store (0=maximum possible) */
 };
-typedef SGrapplParms * pGrappl_parms;
 
 /* output result structure */
 struct SGrapplResult {
@@ -60,7 +59,7 @@ typedef SGrapplResult * pGrappl_res;
 /* function prototypes */
 int16  grapplGetError(pGrappl);
 bool grapplGetResults(pGrappl work,pGrappl_res * results,int16 * numResults,bool  * alldone);
-bool grapplInit(pGrappl,pGrappl_parms);
+bool grapplInit(pGrappl, SGrapplParms*);
 bool grapplSetInbuff(pGrappl work, pGrappl data, uint16 length, bool allDone);
 uint32 grapplWorkspace(void);
 

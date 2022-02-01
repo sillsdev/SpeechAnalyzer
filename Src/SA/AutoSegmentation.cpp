@@ -9,7 +9,7 @@
 #include "PhonemicSegment.h"
 #include "OrthoSegment.h"
 #include "TranscriptionData.h"
-#include "Process\SA_P_GRA.H"
+#include "Process\sa_p_grappl.h"
 #include <iomanip>
 #include "Sa_Doc.h"
 #include "SA_View.h"

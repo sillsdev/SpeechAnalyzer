@@ -30,7 +30,7 @@
 #include "DlgPlayer.h"
 #include "Process\Process.h"
 #include "Process\sa_p_twc.h"
-#include "Process\sa_p_mel.h"
+#include "Process\sa_p_melogram.h"
 #include "Process\sa_p_lou.h"
 
 #ifdef _DEBUG

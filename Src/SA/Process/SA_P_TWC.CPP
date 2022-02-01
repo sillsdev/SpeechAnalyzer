@@ -20,7 +20,7 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_p_twc.h"
-#include "sa_p_mel.h"
+#include "sa_p_melogram.h"
 #include "isa_doc.h"
 #include "math.h"
 

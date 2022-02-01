@@ -160,7 +160,7 @@
     <ClInclude Include="fft.h" />
     <ClInclude Include="Formants.h" />
     <ClInclude Include="Fragment.h" />
-    <ClInclude Include="Grappl.h" />
+    <ClInclude Include="grappl.h" />
     <ClInclude Include="Hpfltr70.h" />
     <ClInclude Include="SA_DSP.h" />
     <ClInclude Include="Scale.h" />

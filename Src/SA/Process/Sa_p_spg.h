@@ -13,6 +13,7 @@
 #define _SA_P_SPG_H
 
 #include "SpectroParm.h"
+#include "processareadata.h"
 
 class CSpectroParm;
 class CProcessSpectroFormants;

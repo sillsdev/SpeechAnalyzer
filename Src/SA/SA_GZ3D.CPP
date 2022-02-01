@@ -16,7 +16,7 @@
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_fmt.h"
 #include "Process\sa_p_fra.h"
-#include "Process\sa_p_gra.h"
+#include "Process\sa_p_grappl.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "DlgVowelFormants.h"
@@ -28,6 +28,7 @@
 #include "mainfrm.h"
 #include "Process\FormantTracker.h"
 #include "LegendWnd.h"
+#include "Process/ProcessAreaData.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

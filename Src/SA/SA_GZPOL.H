@@ -7,6 +7,8 @@
 #ifndef _SA_GZPOL_H
 #define _SA_GZPOL_H
 
+#include "Process/ProcessAreaData.h"
+
 //###########################################################################
 // CZPlotPolar plot window
 

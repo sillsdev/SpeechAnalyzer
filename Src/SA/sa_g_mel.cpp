@@ -9,7 +9,7 @@
 #include "sa_plot.h"
 #include "sa_g_mel.h"
 #include "Process\Process.h"
-#include "Process\sa_p_mel.h"
+#include "Process\sa_p_melogram.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "mainfrm.h"
