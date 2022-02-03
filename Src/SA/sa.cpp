@@ -754,10 +754,10 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
 			}
 			WriteBatchString(_T("AudioFiles"), szEntry, _T(":")); // set entry to unchanged
 			// open the document
-			CSaDoc * pDoc = (CSaDoc *)OpenDocumentFile(szReturn);
-			if (pDoc) {
+			CSaDoc * pModel = (CSaDoc *)OpenDocumentFile(szReturn);
+			if (pModel) {
 				// set document ID
-				pDoc->SetID(m_nEntry);
+				pModel->SetID(m_nEntry);
 				// get start and stop cursor positions
 				szEntry = "Offset";
 				szEntry += szTemp; // set entry
@@ -769,8 +769,8 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
 					szReturn = GetBatchString(_T("EndingWAVOffsets"), szEntry); // get the entry
 					dwStop = _ttol(szReturn);
 					// get pointer to view
-					POSITION pos = pDoc->GetFirstViewPosition();
-					CSaView * pView = (CSaView *)pDoc->GetNextView(pos); // get pointer to view
+					POSITION pos = pModel->GetFirstViewPosition();
+					CSaView * pView = (CSaView *)pModel->GetNextView(pos); // get pointer to view
 					if (dwStop > dwStart) {
 						// set start and stop cursors and view frame
 						pView->SetStartCursorPosition(dwStart);
@@ -847,9 +847,9 @@ void CSaApp::OnProcessBatchCommands() {
 		// reset cursor positions after batch commands
 		POSITION position = m_pDocTemplate->GetFirstDocPosition();
 		while (position != NULL) {
-			CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
-			if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc *)pDoc)->GetID() != -1) {
-				swprintf_s(szEntry.GetBuffer(12), 12, _T("Offset%i"), ((CSaDoc *)pDoc)->GetID()); // create new number
+			CDocument * pModel = m_pDocTemplate->GetNextDoc(position); // get pointer to document
+			if (pModel && pModel->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc *)pModel)->GetID() != -1) {
+				swprintf_s(szEntry.GetBuffer(12), 12, _T("Offset%i"), ((CSaDoc *)pModel)->GetID()); // create new number
 				szEntry.ReleaseBuffer();
 				// get start cursor position
 				szReturn = GetBatchString(_T("BeginningWAVOffsets"), szEntry); // get the entry
@@ -859,8 +859,8 @@ void CSaApp::OnProcessBatchCommands() {
 					szReturn = GetBatchString(_T("EndingWAVOffsets"), szEntry); // get the entry
 					DWORD dwStop = _ttol(szReturn);
 					// get pointer to view
-					POSITION pos = pDoc->GetFirstViewPosition();
-					CSaView * pView = (CSaView *)pDoc->GetNextView(pos); // get pointer to view
+					POSITION pos = pModel->GetFirstViewPosition();
+					CSaView * pView = (CSaView *)pModel->GetNextView(pos); // get pointer to view
 					if (dwStop > dwStart) {
 						// set start and stop cursors and view frame
 						pView->SetStartCursorPosition(dwStart);
@@ -905,19 +905,19 @@ void CSaApp::OnProcessBatchCommands() {
 		}
 		else {
 			CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
-			CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-			if ((pDoc->GetSegment(GLOSS)->IsEmpty()) && (nMode != CImportSFM::KEEP)) {
+			CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+			if ((pModel->GetSegment(GLOSS)->IsEmpty()) && (nMode != CImportSFM::KEEP)) {
 				// auto parse
-				if (!pDoc->AdvancedParseAuto()) {
+				if (!pModel->AdvancedParseAuto()) {
 					// process canceled by user
-					pDoc->Undo(FALSE);
+					pModel->Undo(FALSE);
 					return;
 				}
 			}
 			if (nMode == CImportSFM::AUTO) {
-				if (!pDoc->AdvancedSegment()) {
+				if (!pModel->AdvancedSegment()) {
 					// process canceled by user
-					pDoc->Undo(FALSE);
+					pModel->Undo(FALSE);
 					return;
 				}
 			}
@@ -929,10 +929,10 @@ void CSaApp::OnProcessBatchCommands() {
 		swscanf_s(szParameterList, _T("%d"), &nID);
 		POSITION position = m_pDocTemplate->GetFirstDocPosition();
 		while (position != NULL) {
-			CDocument * pDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
-			if (pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc *)pDoc)->GetID() == nID) {
-				position = pDoc->GetFirstViewPosition();
-				CView * pView = pDoc->GetNextView(position);
+			CDocument * pModel = m_pDocTemplate->GetNextDoc(position); // get pointer to document
+			if (pModel->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc *)pModel)->GetID() == nID) {
+				position = pModel->GetFirstViewPosition();
+				CView * pView = pModel->GetNextView(position);
 				pView->GetParent()->BringWindowToTop();
 			}
 		}
@@ -942,16 +942,16 @@ void CSaApp::OnProcessBatchCommands() {
 	}
 	else if (szReturn.Left(4) == "PLAY") {
 		CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
-		CSaDoc * pDoc = 0;
+		CSaDoc * pModel = 0;
 		if (pView) {
-			pDoc = pView->GetDocument();
+			pModel = pView->GetDocument();
 		}
 
 		enum {
 			Player_Batch_Settings = 24
 		};
 
-		ASSERT(pView && pDoc);
+		ASSERT(pView && pModel);
 
 		CFnKeys * pKeys = ((CMainFrame *)m_pMainWnd)->GetFnKeys(0);
 		pKeys->bRepeat[Player_Batch_Settings] = FALSE;     // TRUE, if playback repeat enabled
@@ -986,7 +986,7 @@ void CSaApp::OnProcessBatchCommands() {
 		swscanf_s(szField, _T("%lu"), &dwStart);
 
 		//Get Stop Position
-		DWORD dwStop = pDoc->GetDataSize();
+		DWORD dwStop = pModel->GetDataSize();
 		szField = extractCommaField(szParameterList, 3);
 		swscanf_s(szField, _T("%lu"), &dwStop);
 
@@ -1002,12 +1002,12 @@ void CSaApp::OnProcessBatchCommands() {
 	}
 	else if (szReturn.Left(11) == "DISPLAYPLOT") {
 		CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
-		CSaDoc * pDoc = 0;
+		CSaDoc * pModel = 0;
 		if (pView) {
-			pDoc = pView->GetDocument();
+			pModel = pView->GetDocument();
 		}
 
-		ASSERT(pView && pDoc);
+		ASSERT(pView && pModel);
 		// Get Type
 		CSaString szType = extractCommaField(szParameterList, 0);
 
@@ -1110,9 +1110,9 @@ void CSaApp::ErrorMessage(CSaString & szText) {
 // file (application in batch mode) to changed state by writing the name of
 // the changed file into the list file.
 /***************************************************************************/
-void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument * pDoc) {
+void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument * pModel) {
 
-	CSaDoc * pSaDoc = (CSaDoc *)pDoc;
+	CSaDoc * pSaDoc = (CSaDoc *)pModel;
 	TCHAR szTemp[3];
 	CSaString szEntry = "File";
 	if (nID == -1) {
@@ -1155,12 +1155,12 @@ CDocument * CSaApp::IsFileOpened(LPCTSTR pszFileName) {
 	POSITION position = m_pDocTemplate->GetFirstDocPosition();
 	while (position != NULL) {
 		// get pointer to document
-		CDocument * pDoc = m_pDocTemplate->GetNextDoc(position);
-		CString szComparisonFile = pDoc->GetPathName();
+		CDocument * pModel = m_pDocTemplate->GetNextDoc(position);
+		CString szComparisonFile = pModel->GetPathName();
 		TRACE(_T(":IsFileOpened %s %s\n"), (LPCTSTR)szComparisonFile, (LPCTSTR)szFileName);
 		if (szComparisonFile.CompareNoCase(szFileName) == 0) {
 			// match
-			return pDoc;
+			return pModel;
 		}
 	}
 	return NULL;
@@ -1172,13 +1172,13 @@ CDocument * CSaApp::IsFileOpened(LPCTSTR pszFileName) {
 // documents file names with the one given as parameter (full path). If there
 // is a match it returns a pointer to the document that matches, else NULL.
 /***************************************************************************/
-bool CSaApp::IsDocumentOpened(const CSaDoc * pDoc) {
+bool CSaApp::IsDocumentOpened(const CSaDoc * pModel) {
 	POSITION position = m_pDocTemplate->GetFirstDocPosition();
 	while (position != NULL) {
 		CDocument * pLoopDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
 		if (pLoopDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
 			CSaDoc * pSaDoc = (CSaDoc *)pLoopDoc;
-			if (pSaDoc == pDoc) {
+			if (pSaDoc == pModel) {
 				return true; // match
 			}
 		}
@@ -1203,7 +1203,7 @@ void CSaApp::SetWorkbenchPath(CSaString * pszPath) {
 // CSaApp::CloseWorkbench Close the workbench
 // Returns TRUE if workbench closed, FALSE if not.
 /***************************************************************************/
-BOOL CSaApp::CloseWorkbench(CDocument * pDoc) {
+BOOL CSaApp::CloseWorkbench(CDocument * pModel) {
 	if (m_pWbDoc) {
 		// close the workbench view
 		POSITION pos = m_pWbDoc->GetFirstViewPosition();
@@ -1211,7 +1211,7 @@ BOOL CSaApp::CloseWorkbench(CDocument * pDoc) {
 		pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); // close view
 	}
 	BOOL bRet = (m_pWbDoc == NULL);
-	m_pWbDoc = pDoc;
+	m_pWbDoc = pModel;
 	return bRet;
 }
 
@@ -1254,25 +1254,25 @@ CSaDoc * CSaApp::OpenWavFileAsNew(LPCTSTR szTempPath) {
 	CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
 	ASSERT(pTemplate != NULL);
 	ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
-	CSaDoc * pDoc = (CSaDoc *)pTemplate->OpenDocumentFile(NULL);
+	CSaDoc * pModel = (CSaDoc *)pTemplate->OpenDocumentFile(NULL);
 	m_bNewDocument = FALSE;
 
-	if ((!pDoc) || (!pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)))) {
-		if (pDoc) {
-			pDoc->OnCloseDocument();
+	if ((!pModel) || (!pModel->IsKindOf(RUNTIME_CLASS(CSaDoc)))) {
+		if (pModel) {
+			pModel->OnCloseDocument();
 		}
 		// Error opening file, destroy temp
 		return NULL;
 	}
 	else {
 		// Load temporarary file into document
-		if (!pDoc->LoadDataFiles(szTempPath, true)) {
-			if (pDoc) {
-				pDoc->OnCloseDocument();
+		if (!pModel->LoadDataFiles(szTempPath, true)) {
+			if (pModel) {
+				pModel->OnCloseDocument();
 			}
 			return NULL;
 		}
-		return pDoc;
+		return pModel;
 	}
 }
 
@@ -1339,7 +1339,7 @@ CDocument * CSaApp::OpenBlankView(bool bWithGraphs) {
 		return NULL;
 	}
 
-	CDocument * pDoc = NULL;
+	CDocument * pModel = NULL;
 	if (bWithGraphs) {
 		SetOpenMore(false);
 		SetOpenAsID(ID_FILE_OPENAS_NEW);
@@ -1348,7 +1348,7 @@ CDocument * CSaApp::OpenBlankView(bool bWithGraphs) {
 		ASSERT(pTemplate != NULL);
 		ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
 		m_bNewDocument = TRUE;
-		pDoc = pTemplate->OpenDocumentFile(NULL);
+		pModel = pTemplate->OpenDocumentFile(NULL);
 		m_bNewDocument = FALSE;
 	}
 	else {
@@ -1356,9 +1356,9 @@ CDocument * CSaApp::OpenBlankView(bool bWithGraphs) {
 		CDocTemplate * pTemplate = GetNextDocTemplate(posTemplate);
 		ASSERT(pTemplate != NULL);
 		ASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CDocTemplate)));
-		pDoc = pTemplate->OpenDocumentFile(NULL);
+		pModel = pTemplate->OpenDocumentFile(NULL);
 	}
-	return pDoc;
+	return pModel;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1464,7 +1464,7 @@ void CSaApp::FileOpen(UINT openAsID) {
 	bool openMore = m_bOpenMore;
 
 	// uses auto naming
-	CDocument * pDoc = OpenBlankView(true);
+	CDocument * pModel = OpenBlankView(true);
 	// this allows screen to be drawn
 	CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
 	ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -1492,8 +1492,8 @@ void CSaApp::FileOpen(UINT openAsID) {
 		OpenDocumentFile(dlg.GetPathName());
 	}
 
-	if (pDoc != NULL) {
-		pDoc->OnCloseDocument();
+	if (pModel != NULL) {
+		pModel->OnCloseDocument();
 	}
 }
 

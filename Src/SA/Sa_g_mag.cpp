@@ -85,10 +85,10 @@ CPlotMagnitude::~CPlotMagnitude() {
 void CPlotMagnitude::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to main frame, graph, and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc * pDoc = pView->GetDocument();
+    CSaDoc * pModel = pView->GetDocument();
     // create loudness data
-    CProcessLoudness * pLoudness = (CProcessLoudness *)pDoc->GetLoudness(); // get pointer to loudness object
-    short int nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
+    CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to loudness object
+    short int nResult = LOWORD(pLoudness->Process(this, pModel)); // process data
     nResult = CheckResult(nResult, pLoudness); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -98,7 +98,7 @@ void CPlotMagnitude::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);
         SetBold(FALSE);
-        PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pDoc); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pModel); // do standard data paint
     }
     // do common plot paint jobs
     PlotPaintFinish(pDC, rWnd, rClip);

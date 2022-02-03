@@ -12,14 +12,14 @@ public:
     CGlossSegment(EAnnotation index, int master = -1);
     virtual ~CGlossSegment();
 
-    virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual long Process(void * pCaller, ISaDoc * pModel, int nProgress = 0, int nLevel = 1);
 	// remove a segment
-    virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);     
+    virtual void Remove(CSaDoc * pModel, int index, BOOL bCheck);     
     void CorrectGlossDurations(ISaDoc * pSaDoc);
     virtual void Serialize(CArchive & ar);
 	virtual bool ContainsText( DWORD offset, DWORD stop);
 
-	virtual void AddAt( CSaDoc * pDoc, int index, DWORD offset, DWORD duration);
+	virtual void AddAt( CSaDoc * pModel, int index, DWORD offset, DWORD duration);
 
 	virtual CString GetDefaultText() {
 		return CString(WORD_DELIMITER);

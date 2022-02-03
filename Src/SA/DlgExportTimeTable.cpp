@@ -60,10 +60,10 @@ CDlgExportTimeTable::CDlgExportTimeTable( CWnd * pParent /*=NULL*/) :
     m_nRegion = 0;
     m_bMelogram = TRUE;
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
 	// no annotations
-    if (pDoc->GetSegment(PHONETIC)->IsEmpty()) { 
+    if (pModel->GetSegment(PHONETIC)->IsEmpty()) { 
         m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = FALSE;
 		// no segments
         m_bSegmentStart = m_bSegmentLength = FALSE; 
@@ -207,9 +207,9 @@ BOOL CDlgExportTimeTable::OnInitDialog() {
 
     CDialog::OnInitDialog();
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    if (pDoc->GetSegment(PHONETIC)->IsEmpty()) { // no annotations
+    if (pModel->GetSegment(PHONETIC)->IsEmpty()) { // no annotations
         BOOL bEnable = FALSE;
         SetEnable(IDC_EXTAB_PHONETIC, bEnable);
         SetEnable(IDC_EXTAB_TONE, bEnable);
@@ -292,9 +292,9 @@ void CDlgExportTimeTable::OnUpdateIntervalTime() {
 void CDlgExportTimeTable::OnSample() {
 
     UpdateData(TRUE);
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 	// no annotations
-    if (pDoc->GetSegment(PHONETIC)->IsEmpty()) { 
+    if (pModel->GetSegment(PHONETIC)->IsEmpty()) { 
         if (m_nSampleRate == 0) {
             AfxMessageBox(IDS_ERROR_NOSEGMENTS,MB_OK,0);
             m_nSampleRate = 1;
@@ -342,38 +342,38 @@ static LPCSTR psz_Table = "table";
 
 static void CreateWordSegments(const int nWord, int & nSegments) {
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    if (pDoc->GetSegment(GLOSS)->GetOffsetSize() > nWord) {
+    if (pModel->GetSegment(GLOSS)->GetOffsetSize() > nWord) {
         DWORD dwStart;
         DWORD dwStop;
         int nPhonetic;
-        CPhoneticSegment * pPhonetic = (CPhoneticSegment *) pDoc->GetSegment(PHONETIC);
+        CPhoneticSegment * pPhonetic = (CPhoneticSegment *) pModel->GetSegment(PHONETIC);
 
         if (nWord == -1) {
             dwStart = 0;
-            if (pDoc->GetSegment(GLOSS)->IsEmpty()) {
-                dwStop = pDoc->GetDataSize();
+            if (pModel->GetSegment(GLOSS)->IsEmpty()) {
+                dwStop = pModel->GetDataSize();
             } else {
-                dwStop = pDoc->GetSegment(GLOSS)->GetOffset(0);
+                dwStop = pModel->GetSegment(GLOSS)->GetOffset(0);
             }
-            if (dwStart + pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > dwStop) {
+            if (dwStart + pModel->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > dwStop) {
                 return;
             }
             nPhonetic = 0;
         } else {
             ASSERT(nSegments);
-            dwStart = pDoc->GetSegment(GLOSS)->GetOffset(nWord);
-            dwStop = pDoc->GetSegment(GLOSS)->GetDuration(nWord) + dwStart;
+            dwStart = pModel->GetSegment(GLOSS)->GetOffset(nWord);
+            dwStop = pModel->GetSegment(GLOSS)->GetDuration(nWord) + dwStart;
             nPhonetic = pPhonetic->FindOffset(dwStart);
         }
         // Limit number of segments
-        if (nSegments*pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > (dwStop -dwStart)) {
-            nSegments = (int)((dwStop -dwStart)/pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+        if (nSegments*pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > (dwStop -dwStart)) {
+            nSegments = (int)((dwStop -dwStart)/pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
             if (!nSegments) {
                 nSegments = 1;
             }
-            if (nSegments*pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > (dwStop -dwStart)) {
+            if (nSegments*pModel->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > (dwStop -dwStart)) {
                 return;
             }
         }
@@ -383,13 +383,13 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
         while ((nIndex != -1) && (pPhonetic->GetOffset(nIndex) < dwStop)) {
             if (nCount >= nSegments) {
                 // no checkpoint
-                pPhonetic->Remove(pDoc, nIndex, FALSE);
+                pPhonetic->Remove(pModel, nIndex, FALSE);
                 if (nIndex >= pPhonetic->GetOffsetSize()) {
                     break;
                 }
             } else {
                 DWORD dwBegin = dwStart + nCount;
-                pPhonetic->Adjust(pDoc, nIndex, dwBegin, 1, false);
+                pPhonetic->Adjust(pModel, nIndex, dwBegin, 1, false);
                 nIndex = pPhonetic->GetNext(nIndex);
                 nCount++;
             }
@@ -410,10 +410,10 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
         }
         // adjust segment spacing
         DWORD dwSize = (dwStop - dwStart)/nSegments;
-        if (pDoc->Is16Bit()) {
+        if (pModel->Is16Bit()) {
             dwSize &= ~1;
         }
-        dwSize += pDoc->GetBlockAlign();
+        dwSize += pModel->GetBlockAlign();
         if (nIndex == -1) {
             nIndex = pPhonetic->GetOffsetSize();
         }
@@ -425,7 +425,7 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
             if ((dwBegin + dwDuration) > dwStop) {
                 dwDuration = dwStop - dwBegin;
             }
-            pPhonetic->Adjust(pDoc, nIndex, dwBegin, dwDuration, false);
+            pPhonetic->Adjust(pModel, nIndex, dwBegin, dwDuration, false);
             nIndex = pPhonetic->GetPrevious(nIndex);
         }
     }

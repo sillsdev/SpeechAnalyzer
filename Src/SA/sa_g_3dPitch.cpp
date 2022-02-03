@@ -325,7 +325,7 @@ void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) 
 /***************************************************************************/
 BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to graph, view, document, application and mainframe
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
 
     BITMAP * pBitmap = new BITMAP;
     HBITMAP hBitmap = (HBITMAP) GetCurrentObject(pDC->GetSafeHdc(),OBJ_BITMAP);
@@ -342,8 +342,8 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaVie
     double fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
     double fDataLength = pView->GetDataFrame(); // number of data points to display
 
-    fDataStart *= double(nWidth)/pDoc->GetDataSize();
-    fDataLength *= double(nWidth)/pDoc->GetDataSize();
+    fDataStart *= double(nWidth)/pModel->GetDataSize();
+    fDataLength *= double(nWidth)/pModel->GetDataSize();
     double fWidthFactor = double(rWnd.Width())/fDataLength;
 
     double fHeightFactor = (double)rWnd.Height() / (double)nHeight;
@@ -404,7 +404,7 @@ BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
     }
     // get pointer to graph, view, document, application and mainframe
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
 
     if (rWnd.Height() <= 0) {
         return FALSE;    // nothing to draw
@@ -413,7 +413,7 @@ BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
     // check if process is idle
     {
         // create spectrogram data
-        short int nResult = LOWORD(m_p3dPitch->Process(this, pDoc)); // process data
+        short int nResult = LOWORD(m_p3dPitch->Process(this, pModel)); // process data
         nResult = CheckResult(nResult, m_p3dPitch); // check the process result
         if (nResult == PROCESS_ERROR) {
             return FALSE;
@@ -442,9 +442,9 @@ BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc * pDoc = pView->GetDocument();
+    CSaDoc * pModel = pView->GetDocument();
 
-    if (!CreateSpectroPalette(pDC, pDoc)) {
+    if (!CreateSpectroPalette(pDC, pModel)) {
         // error creating color palette
         pApp->ErrorMessage(IDS_ERROR_SPECTROPALETTE);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph

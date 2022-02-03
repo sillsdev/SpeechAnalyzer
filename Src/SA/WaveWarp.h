@@ -10,7 +10,7 @@ class CWaveWarp {
 public:
     static char * Copyright(void);
     static float Version(void);
-    static dspError_t CreateObject(CWaveWarp ** ppWaveWarp, ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed,
+    static dspError_t CreateObject(CWaveWarp ** ppWaveWarp, ISaDoc * pModel, ULONG dwWaveStart, USHORT wSpeed,
                                    SFragParms * pstFragStart);
     dspError_t SetWaveBuffer(void * pWaveBfr);
     dspError_t SetPlayBuffer(void * pPlayBfr, ULONG dwPlayBfrLength);
@@ -26,7 +26,7 @@ public:
     ~CWaveWarp(void);
 
 private:
-    CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFragStart);
+    CWaveWarp(ISaDoc * pModel, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFragStart);
 
     ISaDoc * m_pDoc;
     int m_nSegmentIndex;

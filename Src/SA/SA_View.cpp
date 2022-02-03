@@ -60,13 +60,13 @@
 //        RLJ Added ChangeDisplayedGraphs(int OpenMode)
 //        RLJ In order to reduce Sa_view.obj size enough for LINK/DEBUG to work:
 //              Added pSaApp, pViewMainFrame, and pSourceParm.
-//              Eliminated unused pDoc definitions.
-//              For any function in which pDoc was defined but only used once,
+//              Eliminated unused pModel definitions.
+//              For any function in which pModel was defined but only used once,
 //                eliminated the definition and replaced the reference with
 //                a direct GetDocument() call.
 //              For any function in which GetDocument() was directly called
-//                more than once, defined pDoc and replaced original
-//                GetDocument() calls with pDoc references.
+//                more than once, defined pModel and replaced original
+//                GetDocument() calls with pModel references.
 // 1.5Test11.4
 //        SDM added support for editing PHONEMIC/TONE/ORTHO to span multiple segments
 //        SDM connected REFERENCE menus
@@ -915,8 +915,8 @@ DWORD CSaView::OnPlaybackSegment() {
 DWORD CSaView::OnPlaybackWord() {
 
 	// find actual gloss segment for playback
-	CSaDoc * pDoc = GetDocument();
-	if (pDoc == NULL) {
+	CSaDoc * pModel = GetDocument();
+	if (pModel == NULL) {
 		//no document
 		return 0;
 	}
@@ -943,7 +943,7 @@ DWORD CSaView::OnPlaybackWord() {
 		} else {
 			// there is no gloss, playback the whole file
 			OnPlaybackFile();
-			return pDoc->GetDataSize();
+			return pModel->GetDataSize();
 		}
 	} else {
 		if (pGloss->GetSelection() == nActualGloss) {
@@ -979,8 +979,8 @@ DWORD CSaView::OnPlaybackWord() {
 DWORD CSaView::OnPlaybackPhraseL1() {
 
 	// find actual gloss segment for playback
-	CSaDoc * pDoc = GetDocument();
-	if (!pDoc) {
+	CSaDoc * pModel = GetDocument();
+	if (!pModel) {
 		//no document
 		return 0;
 	}
@@ -1007,7 +1007,7 @@ DWORD CSaView::OnPlaybackPhraseL1() {
 		} else {
 			// there is no gloss, playback the whole file
 			OnPlaybackFile();
-			return pDoc->GetDataSize();
+			return pModel->GetDataSize();
 		}
 	} else {
 		if (pSegment->GetSelection() == nActualPhrase) {
@@ -1330,20 +1330,20 @@ void CSaView::OnExportXML() {
 /***************************************************************************/
 void CSaView::OnExportLift() {
 
-	CSaDoc * pDoc = GetDocument();
-	int count = pDoc->GetSegmentSize(REFERENCE);
+	CSaDoc * pModel = GetDocument();
+	int count = pModel->GetSegmentSize(REFERENCE);
 	if (count == 0) {
 		ErrorMessage(IDS_ERROR_NO_REFERENCE);
 		return;
 	}
 
-	CSaString title = pDoc->GetTitle();
-	BOOL gloss = pDoc->HasSegmentData(GLOSS);
-	BOOL glossNat = pDoc->HasSegmentData(GLOSS_NAT);
-	BOOL ortho = pDoc->HasSegmentData(ORTHO);
-	BOOL phonemic = pDoc->HasSegmentData(PHONEMIC);
-	BOOL phonetic = pDoc->HasSegmentData(PHONETIC);
-	BOOL reference = pDoc->HasSegmentData(REFERENCE);
+	CSaString title = pModel->GetTitle();
+	BOOL gloss = pModel->HasSegmentData(GLOSS);
+	BOOL glossNat = pModel->HasSegmentData(GLOSS_NAT);
+	BOOL ortho = pModel->HasSegmentData(ORTHO);
+	BOOL phonemic = pModel->HasSegmentData(PHONEMIC);
+	BOOL phonetic = pModel->HasSegmentData(PHONETIC);
+	BOOL reference = pModel->HasSegmentData(REFERENCE);
 
 	wstring path = GetApp().m_pszExeName;
 	path.append(L".exe");
@@ -1376,7 +1376,7 @@ void CSaView::OnExportLift() {
 	CDlgExportLift dlg(title, exportDir, gloss, glossNat, ortho, phonemic, phonetic, reference, codes);
 	if (dlg.DoModal() == IDOK) {
 		pApp->WriteProfileStringW(L"Lift", L"LastExport", dlg.settings.szPath);
-		pDoc->DoExportLift(dlg.settings);
+		pModel->DoExportLift(dlg.settings);
 	}
 }
 
@@ -1417,26 +1417,26 @@ void CSaView::ExtractCountryCodes(LPCTSTR fullPath, map<wstring, wstring> & code
 // Modified on 07/27/2000
 /***************************************************************************/
 void CSaView::OnExportFW() {
-	CSaDoc * pDoc = GetDocument();
-	int count = pDoc->GetSegmentSize(REFERENCE);
+	CSaDoc * pModel = GetDocument();
+	int count = pModel->GetSegmentSize(REFERENCE);
 	if (count == 0) {
 		ErrorMessage(IDS_ERROR_NO_REFERENCE);
 		return;
 	}
 
-	CSaString title = pDoc->GetTitle();
-	BOOL gloss = pDoc->HasSegmentData(GLOSS);
-	BOOL glossNat = pDoc->HasSegmentData(GLOSS_NAT);
-	BOOL ortho = pDoc->HasSegmentData(ORTHO);
-	BOOL tone = pDoc->HasSegmentData(TONE);
-	BOOL phonemic = pDoc->HasSegmentData(PHONEMIC);
-	BOOL phonetic = pDoc->HasSegmentData(PHONETIC);
-	BOOL reference = pDoc->HasSegmentData(REFERENCE);
-	BOOL phrase = pDoc->HasSegmentData(MUSIC_PL1) | pDoc->HasSegmentData(MUSIC_PL1);
+	CSaString title = pModel->GetTitle();
+	BOOL gloss = pModel->HasSegmentData(GLOSS);
+	BOOL glossNat = pModel->HasSegmentData(GLOSS_NAT);
+	BOOL ortho = pModel->HasSegmentData(ORTHO);
+	BOOL tone = pModel->HasSegmentData(TONE);
+	BOOL phonemic = pModel->HasSegmentData(PHONEMIC);
+	BOOL phonetic = pModel->HasSegmentData(PHONETIC);
+	BOOL reference = pModel->HasSegmentData(REFERENCE);
+	BOOL phrase = pModel->HasSegmentData(MUSIC_PL1) | pModel->HasSegmentData(MUSIC_PL1);
 
 	CDlgExportFW dlg(title, gloss, glossNat, ortho, tone, phonemic, phonetic, reference, phrase);
 	if (dlg.DoModal() == IDOK) {
-		pDoc->DoExportFieldWorks(dlg.settings);
+		pModel->DoExportFieldWorks(dlg.settings);
 	}
 }
 
@@ -1446,8 +1446,8 @@ void CSaView::OnExportFW() {
 // Modified on 07/27/2000
 /***************************************************************************/
 void CSaView::OnExportSFM() {
-	CSaDoc * pDoc = GetDocument();
-	CDlgExportSFM dlg(pDoc->GetTitle());
+	CSaDoc * pModel = GetDocument();
+	CDlgExportSFM dlg(pModel->GetTitle());
 	dlg.DoModal();
 }
 
@@ -1458,13 +1458,13 @@ void CSaView::OnExportTimeTable() {
 
 	CDlgExportTimeTable dlg;
 	if (dlg.DoModal() == IDOK) {
-		CSaDoc * pDoc = GetDocument();
+		CSaDoc * pModel = GetDocument();
 		wstring filename;
-		int result = pDoc->GetSaveAsFilename(pDoc->GetTitle(), _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
+		int result = pModel->GetSaveAsFilename(pModel->GetTitle(), _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
 		if (result != IDOK) {
 			return;
 		}
-		pDoc->ExportTimeTable(filename.c_str(),
+		pModel->ExportTimeTable(filename.c_str(),
 			dlg.m_bF1,
 			dlg.m_bF2,
 			dlg.m_bF3,
@@ -1503,9 +1503,9 @@ void CSaView::OnExportMIDI() {
 
 	// Get Export File Type and Name
 	/*
-	CSaDoc* pDoc = (CSaDoc*)GetDocument();
+	CSaDoc* pModel = (CSaDoc*)GetDocument();
 	CSaString szTitle;
-	szTitle = pDoc->GetTitle();                                  // load file name
+	szTitle = pModel->GetTitle();                                  // load file name
 	int nFind = szTitle.Find(':');
 	if (nFind != -1)
 	szTitle = szTitle.Left(nFind);              // extract part left of :
@@ -1522,7 +1522,7 @@ void CSaView::OnExportMIDI() {
 	CSaString szString;
 	CSaString szCrLf = "\r\n";
 
-	szString = "Wave file is " + pDoc->GetPathName() + szCrLf;
+	szString = "Wave file is " + pModel->GetPathName() + szCrLf;
 	pFile->Write(szString,szString.GetLength());
 
 	if (pFile)
@@ -1702,20 +1702,20 @@ void CSaView::OnFilePhonologyAssistant() {
 /***************************************************************************/
 
 void CSaView::OnFileInformation() {
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
-	SourceParm * pSourceParm = pDoc->GetSourceParm();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
+	SourceParm * pSourceParm = pModel->GetSourceParm();
 	CSaString szCaption, szTitle;
 	szCaption.LoadString(IDS_DLGTITLE_FILEINFO);                // load caption string
-	szTitle = pDoc->GetFilenameFromTitle().c_str();                      // load file name
+	szTitle = pModel->GetFilenameFromTitle().c_str();                      // load file name
 	szCaption += " - " + szTitle;                               // build new caption string
 	CDlgFileInformation dlg(szCaption, NULL, 0);                // file information dialog
 	// set file description string
-	dlg.m_dlgUserPage.m_szFileDesc = pDoc->GetDescription();
+	dlg.m_dlgUserPage.m_szFileDesc = pModel->GetDescription();
 	dlg.m_dlgUserPage.m_szFreeTranslation = pSourceParm->szFreeTranslation;
 	if (dlg.DoModal() == IDOK) {
 		// get new file description string
 		BOOL modified = FALSE;
-		if (!pDoc->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc)) {
+		if (!pModel->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc)) {
 			modified = TRUE;
 		}
 		if (pSourceParm->szFreeTranslation != dlg.m_dlgUserPage.m_szFreeTranslation) {
@@ -1738,19 +1738,19 @@ void CSaView::OnFileInformation() {
 		}
 
 		if (modified) {
-			pDoc->CheckPoint();
+			pModel->CheckPoint();
 		}
 
 
-		if (!pDoc->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc)) {
-			pDoc->SetDescription(dlg.m_dlgUserPage.m_szFileDesc);
-			pDoc->SetModifiedFlag(TRUE);                        // document has been modified
-			pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
+		if (!pModel->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc)) {
+			pModel->SetDescription(dlg.m_dlgUserPage.m_szFileDesc);
+			pModel->SetModifiedFlag(TRUE);                        // document has been modified
+			pModel->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
 		}
 		if (pSourceParm->szFreeTranslation != dlg.m_dlgUserPage.m_szFreeTranslation) {
 			pSourceParm->szFreeTranslation = dlg.m_dlgUserPage.m_szFreeTranslation;
-			pDoc->SetModifiedFlag(TRUE);                        // document has been modified
-			pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
+			pModel->SetModifiedFlag(TRUE);                        // document has been modified
+			pModel->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
 		}
 
 
@@ -1769,8 +1769,8 @@ void CSaView::OnFileInformation() {
 			pSourceParm->szSpeaker = dlg.m_dlgSourcePage.m_szSpeaker;
 			pSourceParm->szReference = dlg.m_dlgSourcePage.m_szReference;
 			pSourceParm->szTranscriber = dlg.m_dlgSourcePage.m_szTranscriber;
-			pDoc->SetModifiedFlag(TRUE);                        // document has been modified
-			pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
+			pModel->SetModifiedFlag(TRUE);                        // document has been modified
+			pModel->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
 		}
 
 		if (bGenderChanged) {
@@ -2649,7 +2649,7 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 
 	//TRACE(">>OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
 	// get pointer to document
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	// zooming is enabled
 	if (m_fZoom > 1.0) {
 		// save actual data position
@@ -2669,15 +2669,15 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 			break;
 		case SB_RIGHT:
 			// scroll to the rightmost position
-			m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
+			m_dwDataPosition = pModel->GetDataSize() - GetDataFrame();
 			break;
 		case SB_LINERIGHT:
 			// scroll one line right
-			if ((m_dwDataPosition <= (pDoc->GetDataSize() - GetDataFrame() - m_dwScrollLine)) &&
-				(pDoc->GetDataSize() >= (GetDataFrame() + m_dwScrollLine))) {
+			if ((m_dwDataPosition <= (pModel->GetDataSize() - GetDataFrame() - m_dwScrollLine)) &&
+				(pModel->GetDataSize() >= (GetDataFrame() + m_dwScrollLine))) {
 				m_dwDataPosition += m_dwScrollLine;
 			} else {
-				m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
+				m_dwDataPosition = pModel->GetDataSize() - GetDataFrame();
 			}
 			break;
 		case SB_PAGELEFT:
@@ -2690,19 +2690,19 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 			break;
 		case SB_PAGERIGHT:
 			// scroll one page right
-			if ((m_dwDataPosition <= (pDoc->GetDataSize() - 2 * GetDataFrame())) &&
-				(pDoc->GetDataSize() >= (2 * GetDataFrame()))) {
+			if ((m_dwDataPosition <= (pModel->GetDataSize() - 2 * GetDataFrame())) &&
+				(pModel->GetDataSize() >= (2 * GetDataFrame()))) {
 				m_dwDataPosition += GetDataFrame();
 			} else {
-				m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
+				m_dwDataPosition = pModel->GetDataSize() - GetDataFrame();
 			}
 			break;
 		case SB_THUMBTRACK:
 		case SB_THUMBPOSITION:
 			// scroll to position
 			m_dwDataPosition = nPos * m_dwHScrollFactor;
-			if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) {
-				m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
+			if (m_dwDataPosition > (pModel->GetDataSize() - GetDataFrame())) {
+				m_dwDataPosition = pModel->GetDataSize() - GetDataFrame();
 			}
 			break;
 		case SB_ENDSCROLL:
@@ -2710,7 +2710,7 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 			break;
 		}
 		// for 16 bit data value must be even
-		if (pDoc->Is16Bit()) {
+		if (pModel->Is16Bit()) {
 			m_dwDataPosition &= ~1;
 		}
 		// is scrolling necessary?
@@ -2801,7 +2801,7 @@ void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 // CSaView::OnSize Sizeing the view
 /***************************************************************************/
 void CSaView::OnSize(UINT nType, int cx, int cy) {
-	CSaDoc * pDoc = GetDocument(); // get pointer to document
+	CSaDoc * pModel = GetDocument(); // get pointer to document
 
 	CView::OnSize(nType, cx, cy);
 
@@ -2820,10 +2820,10 @@ void CSaView::OnSize(UINT nType, int cx, int cy) {
 		SetScrolling();
 		if (m_fZoom > 1.0) {
 			// set horizontal scroll bar
-			SetScrollRange(SB_HORZ, 0, (int)((pDoc->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
+			SetScrollRange(SB_HORZ, 0, (int)((pModel->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
 			SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
 		}
-		if (GetMainFrame().IsScrollZoom() && (pDoc->GetDataSize() > 0)) {
+		if (GetMainFrame().IsScrollZoom() && (pModel->GetDataSize() > 0)) {
 			// set vertical scroll bar
 			SetScrollRange(SB_VERT, ZOOM_SCROLL_RESOLUTION, (int)m_fVScrollSteps, FALSE);
 			SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
@@ -3217,7 +3217,7 @@ void CSaView::OnPreviousGraph() {
 // to be stopped immediately.
 /***************************************************************************/
 void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDeactivateView) {
-	CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
+	CSaDoc * pModel = (CSaDoc *)GetDocument(); // get pointer to document
 	CView::OnActivateView(bActivate, pActivateView, pDeactivateView);
 
 	m_bViewIsActive = bActivate;
@@ -3231,11 +3231,11 @@ void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDea
 		// inform mainframe
 		GetMainFrame().SendMessage(WM_USER_CHANGEVIEW, TRUE, (LONG)this);
 		// process workbench if necessary
-		if (pDoc->WorkbenchProcess()) {
+		if (pModel->WorkbenchProcess()) {
 			RedrawGraphs(TRUE, TRUE);
 		};
 		// redraw statusbar if data is present
-		if (pDoc->GetDataSize() != 0) {
+		if (pModel->GetDataSize() != 0) {
 			if (m_pFocusedGraph) {
 				m_pFocusedGraph->UpdateStatusBar(GetStartCursorPosition(), GetStopCursorPosition(), TRUE);
 			}
@@ -4088,13 +4088,13 @@ void CSaView::OnAddOverlay() {
 	// call ChangeGraph to merge them in.
 	if (m_pFocusedGraph && CGraphWnd::IsMergeableGraph(m_pFocusedGraph, TRUE)) {
 		// get pointer to document
-		CSaDoc * pDoc = GetDocument();
+		CSaDoc * pModel = GetDocument();
 		m_pPickOverlay->ResetGraphsPtr();
 
-		POSITION position = pDoc->GetTemplate()->GetFirstDocPosition();
+		POSITION position = pModel->GetTemplate()->GetFirstDocPosition();
 		while (position != NULL) {
 			// get pointer to document
-			CDocument * pNextDoc = pDoc->GetTemplate()->GetNextDoc(position);
+			CDocument * pNextDoc = pModel->GetTemplate()->GetNextDoc(position);
 			if (pNextDoc) {
 				POSITION pos = pNextDoc->GetFirstViewPosition();
 				while (pos != NULL) {
@@ -4122,11 +4122,11 @@ void CSaView::OnUpdateAddOverlay(CCmdUI * pCmdUI) {
 		POSITION position = GetDocument()->GetTemplate()->GetFirstDocPosition();
 		while (position != NULL) {
 			// get pointer to document
-			CDocument * pDoc = GetDocument()->GetTemplate()->GetNextDoc(position);
-			if (pDoc) {
-				POSITION pos = pDoc->GetFirstViewPosition();
+			CDocument * pModel = GetDocument()->GetTemplate()->GetNextDoc(position);
+			if (pModel) {
+				POSITION pos = pModel->GetFirstViewPosition();
 				while (pos != NULL) {
-					CSaView * pView = (CSaView *)(pDoc->GetNextView(pos));
+					CSaView * pView = (CSaView *)(pModel->GetNextView(pos));
 					m_pPickOverlay->SetGraphsPtr(pView->m_apGraphs, m_pFocusedGraph);
 				}
 			}
@@ -4835,8 +4835,8 @@ void CSaView::OnImportSAB() {
 	CSaString szPath = dlgFile.GetPathName();
 
 	CMainFrame * pMainFrame = (CMainFrame*)AfxGetMainWnd();
-	CSaDoc * pDoc = GetDocument();
-	pDoc->ImportSAB(*this, szPath, pMainFrame->GetAudioSyncAlgorithm());
+	CSaDoc * pModel = GetDocument();
+	pModel->ImportSAB(*this, szPath, pMainFrame->GetAudioSyncAlgorithm());
 
 	// refresh the graphs between cursors
 	RedrawGraphs(TRUE);
@@ -5113,7 +5113,7 @@ void CSaView::OnGraphsParameters() {
 	// load caption string
 	szCaption.LoadString(IDS_DLGTITLE_GRAPHSPARA);
 	// set the pitch parameters to enable manual analysing
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 	// create the property sheet according to the existing graphs
 	CDlgGraphsParameters * dlgGraphsParameters; // graph parameters dialog
 
@@ -5121,16 +5121,16 @@ void CSaView::OnGraphsParameters() {
 
 	// set workbench process
 	BOOL bProcessChange = FALSE;
-	dlgGraphsParameters->m_dlgRawdataPage.m_nProcess = pDoc->GetWbProcess();
+	dlgGraphsParameters->m_dlgRawdataPage.m_nProcess = pModel->GetWbProcess();
 	if ((dlgGraphsParameters->DoModal() == IDOK) &&
-		(pDoc->GetWbProcess() != dlgGraphsParameters->m_dlgRawdataPage.m_nProcess)) {
-		pDoc->SetWbProcess(dlgGraphsParameters->m_dlgRawdataPage.m_nProcess);
+		(pModel->GetWbProcess() != dlgGraphsParameters->m_dlgRawdataPage.m_nProcess)) {
+		pModel->SetWbProcess(dlgGraphsParameters->m_dlgRawdataPage.m_nProcess);
 		bProcessChange = TRUE;
 	}
 	delete dlgGraphsParameters;
 
 	// process workbench if necessary
-	if ((bProcessChange) && (pDoc->WorkbenchProcess(TRUE, TRUE))) {
+	if ((bProcessChange) && (pModel->WorkbenchProcess(TRUE, TRUE))) {
 		RedrawGraphs(TRUE, TRUE);
 	}
 }
@@ -5962,10 +5962,10 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
 		CSaString szCaption;
 		pWnd->GetWindowText(szGraph.GetBuffer(64), 64);     // load the graph caption
 		szGraph.ReleaseBuffer(-1);
-		CSaDoc * pDoc = GetDocument();
-		szCaption = pDoc->GetFilenameFromTitle().c_str();   // get current view's caption string
+		CSaDoc * pModel = GetDocument();
+		szCaption = pModel->GetFilenameFromTitle().c_str();   // get current view's caption string
 
-		if ((pDoc->IsTempFile()) && (pDoc->CanEdit())) {
+		if ((pModel->IsTempFile()) && (pModel->CanEdit())) {
 			CString szCopy;
 			szCopy.LoadString(IDS_COPY);
 			szCaption.Append(L" : ");
@@ -5973,12 +5973,12 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
 		}
 		szCaption.Append(L" : ");
 		szCaption.Append(szGraph);                          // add new document title
-		pDoc->SetTitle(szCaption);                          // write the new caption string
+		pModel->SetTitle(szCaption);                          // write the new caption string
 	}
 
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 	// update the status bar
-	if (pDoc->GetDataSize() > 0) {
+	if (pModel->GetDataSize() > 0) {
 		pWnd->UpdateStatusBar(GetStartCursorPosition(), GetStopCursorPosition(), TRUE);
 	}
 }
@@ -5994,9 +5994,9 @@ void CSaView::ResetFocusedGraph() {
 	// delete name of graph in caption of view
 	CSaString szCaption;
 	if (m_pDocument && GetSafeHwnd()) {
-		CSaDoc * pDoc = GetDocument();  // get pointer to document
-		szCaption = pDoc->GetFilenameFromTitle().c_str();    // get the current view caption string
-		pDoc->SetTitle(szCaption);      // write the new caption string
+		CSaDoc * pModel = GetDocument();  // get pointer to document
+		szCaption = pModel->GetFilenameFromTitle().c_str();    // get the current view caption string
+		pModel->SetTitle(szCaption);      // write the new caption string
 	}
 }
 
@@ -6010,10 +6010,10 @@ void CSaView::ResetFocusedGraph() {
 void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
 
 	// get pointer to document
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	CRect rWnd;
 	GetClientRect(rWnd);
-	DWORD wSmpSize = pDoc->GetSampleSize();
+	DWORD wSmpSize = pModel->GetSampleSize();
 
 	// zoom in
 	if (bZoom) {
@@ -6047,13 +6047,13 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
 
 	// limit right border
 	// is data position too high?
-	if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) {
+	if (m_dwDataPosition > (pModel->GetDataSize() - GetDataFrame())) {
 		// reduce data position to maximum
-		m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
+		m_dwDataPosition = pModel->GetDataSize() - GetDataFrame();
 	}
 
 	// set scroll bar
-	SetScrollRange(SB_HORZ, 0, (int)((pDoc->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
+	SetScrollRange(SB_HORZ, 0, (int)((pModel->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
 	SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
 
 	// if scrolling zoom enabled, set the new position
@@ -6083,8 +6083,8 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
 void CSaView::ZoomOut(double fZoomAmount) {
 
 	// get pointer to document
-	CSaDoc * pDoc = GetDocument();
-	DWORD wSmpSize = pDoc->GetSampleSize();
+	CSaDoc * pModel = GetDocument();
+	DWORD wSmpSize = pModel->GetSampleSize();
 
 	if (m_fZoom > 1.0) {
 		// subtract zoom
@@ -6107,7 +6107,7 @@ void CSaView::ZoomOut(double fZoomAmount) {
 				// set new data position
 				m_dwDataPosition = dwDataCenter - GetDataFrame() / 2;
 				// for 16 bit data value must be even
-				if (pDoc->Is16Bit()) {
+				if (pModel->Is16Bit()) {
 					m_dwDataPosition &= ~1;
 				}
 			} else {
@@ -6115,9 +6115,9 @@ void CSaView::ZoomOut(double fZoomAmount) {
 			}
 			// limit right border
 			// is data position too high?
-			if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) {
+			if (m_dwDataPosition > (pModel->GetDataSize() - GetDataFrame())) {
 				// reduce data position to maximum
-				m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
+				m_dwDataPosition = pModel->GetDataSize() - GetDataFrame();
 			}
 			// set scroll bar
 			// one line scroll width
@@ -6126,7 +6126,7 @@ void CSaView::ZoomOut(double fZoomAmount) {
 				m_dwScrollLine = wSmpSize;
 			}
 
-			SetScrollRange(SB_HORZ, 0, (int)((pDoc->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
+			SetScrollRange(SB_HORZ, 0, (int)((pModel->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
 			SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
 		}
 
@@ -6156,8 +6156,8 @@ void CSaView::ZoomOut(double fZoomAmount) {
 // CSaView::SetScrolling Set new scrolling parameters
 /***************************************************************************/
 void CSaView::SetScrolling() {
-	CSaDoc * pDoc = GetDocument();                                                  // get pointer to document
-	DWORD wSmpSize = pDoc->GetSampleSize();
+	CSaDoc * pModel = GetDocument();                                                  // get pointer to document
+	DWORD wSmpSize = pModel->GetSampleSize();
 	CRect rWnd;
 	GetClientRect(rWnd);
 	if (rWnd.Width()) {
@@ -6165,7 +6165,7 @@ void CSaView::SetScrolling() {
 		if (m_dwScrollLine < wSmpSize) {
 			m_dwScrollLine = wSmpSize;
 		}
-		m_fMaxZoom = (double)(pDoc->GetNumSamples()) / (double)rWnd.Width() * 8.;  // max zoom factor
+		m_fMaxZoom = (double)(pModel->GetNumSamples()) / (double)rWnd.Width() * 8.;  // max zoom factor
 		m_fVScrollSteps = ZOOM_SCROLL_RESOLUTION * m_fMaxZoom;
 		if (m_fVScrollSteps > 0x7FFFFFFF) {
 			m_fVScrollSteps = 0x7FFFFFFF;
@@ -6178,19 +6178,19 @@ void CSaView::SetScrolling() {
 // CSaView::SetInitialCursors Set initial cursor positions
 /***************************************************************************/
 void CSaView::SetInitialCursors() {
-	CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
+	CSaDoc * pModel = (CSaDoc *)GetDocument(); // get pointer to document
 	DWORD dwOffset = 0;
-	if (pDoc->GetDataSize() > 0) {
+	if (pModel->GetDataSize() > 0) {
 		CRect rWnd;
 		GetClientRect(rWnd);
 		if (rWnd.Width() && GetDataFrame()) {
 			double fBytesPerPix = (double)GetDataFrame() / (double)rWnd.Width(); // calculate data samples per pixel
 			if ((DWORD)rWnd.Width() > GetDataFrame()) {
-				fBytesPerPix = (double)pDoc->GetBlockAlign();
+				fBytesPerPix = (double)pModel->GetBlockAlign();
 			}
 			dwOffset = (DWORD)(CURSOR_WINDOW_HALFWIDTH / 2 * fBytesPerPix);
 		}
-		//DWORD dwStop = (pDoc->GetDataSize() == 0)? 0 : pDoc->GetDataSize() - 1 - dwOffset;
+		//DWORD dwStop = (pModel->GetDataSize() == 0)? 0 : pModel->GetDataSize() - 1 - dwOffset;
 		DWORD dwStop = dwOffset * 2;
 		SetStartStopCursorPosition(dwOffset, dwStop, SNAP_BOTH);  // start cursor position is first sample plus offset
 	}
@@ -6242,8 +6242,8 @@ void CSaView::AdjustCursors(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bS
 // CSaView::OnDraw Drawing
 /***************************************************************************/
 void CSaView::OnDraw(CDC * /*pDC*/) {
-	CSaDoc * pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
+	CSaDoc * pModel = GetDocument();
+	ASSERT_VALID(pModel);
 }
 
 // SDM 1.06.6U5 split function
@@ -6265,13 +6265,13 @@ void CSaView::InitialUpdate(BOOL bTemp) {
 	if (s_pobsAutoload) {
 		ReadProperties(*s_pobsAutoload, TRUE);
 	} else if ((pApp->IsCreatingNewFile()) || (!GetMainFrame().DefaultIsValid())) {
-		CSaDoc * pDoc = GetDocument();
-		CSaString docPath = pDoc->GetPathName();
+		CSaDoc * pModel = GetDocument();
+		CSaString docPath = pModel->GetPathName();
 		CFileStatus status;
 		if ((CFile::GetStatus(docPath, status)) &&
 			((status.m_attribute & CFile::readOnly) == CFile::readOnly)) {
-			CSaString docTitle = pDoc->GetTitle() + " (Read-Only)";
-			pDoc->SetTitle(docTitle);
+			CSaString docTitle = pModel->GetTitle() + " (Read-Only)";
+			pModel->SetTitle(docTitle);
 		}
 		// SDM don't open 10-20 blank graphs...
 		CreateOpenAsGraphs(pApp->GetOpenAsID());
@@ -6493,8 +6493,8 @@ DWORD CSaView::CalcDataFrame(int nWndWidth) {
 	}
 
 	// get pointer to document
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
-	DWORD dwDataSize = pDoc->GetDataSize();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
+	DWORD dwDataSize = pModel->GetDataSize();
 	if (dwDataSize >= GetDataPosition(nWndWidth) && (GetDataPosition(nWndWidth) + dwDataFrame) > dwDataSize) {
 		dwDataFrame = DWORD(dwDataSize - GetDataPosition(nWndWidth));
 	}
@@ -6512,8 +6512,8 @@ void CSaView::SetCursorPosition(ECursorSelect nCursorSelect,
 	case START_CURSOR:
 		SetStartCursorPosition(dwNewPos, nSnapDirection, nCursorAlignment);
 		if (GetDynamicGraphCount()) {
-			CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
-			DWORD nSampleSize = pDoc->GetSampleSize();
+			CSaDoc * pModel = (CSaDoc *)GetDocument(); // get pointer to document
+			DWORD nSampleSize = pModel->GetSampleSize();
 			if (GetAnimationGraphCount()) {
 				StartAnimation(m_dwStartCursor / nSampleSize, m_dwStopCursor / nSampleSize);
 			}
@@ -6569,9 +6569,9 @@ void CSaView::SetStartStopCursorPosition(WAVETIME startTime,
 	WAVETIME stopTime,
 	ESnapDirection nSnapDirection,
 	ECursorAlignment nCursorAlignment) {
-	CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
-	DWORD startPos = pDoc->ToBytes(startTime, true);
-	DWORD stopPos = pDoc->ToBytes(stopTime, true);
+	CSaDoc * pModel = (CSaDoc *)GetDocument(); // get pointer to document
+	DWORD startPos = pModel->ToBytes(startTime, true);
+	DWORD stopPos = pModel->ToBytes(stopTime, true);
 	SetStartStopCursorPosition(startPos, stopPos, nSnapDirection, nCursorAlignment);
 }
 
@@ -6589,31 +6589,31 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
 		nCursorAlignment = GetCursorAlignment();
 	}
 
-	CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
+	CSaDoc * pModel = (CSaDoc *)GetDocument(); // get pointer to document
 	m_dwStartCursor = dwNewStartPos;
 	m_dwStopCursor = dwNewStopPos;
 
 	// position limit
-	if (pDoc->GetDataSize() > 0) {
-		if (m_dwStartCursor >= pDoc->GetDataSize()) {
-			m_dwStartCursor = pDoc->GetDataSize() - 1;
+	if (pModel->GetDataSize() > 0) {
+		if (m_dwStartCursor >= pModel->GetDataSize()) {
+			m_dwStartCursor = pModel->GetDataSize() - 1;
 		}
-		if (m_dwStopCursor >= pDoc->GetDataSize()) {
-			m_dwStopCursor = pDoc->GetDataSize() - 1;
+		if (m_dwStopCursor >= pModel->GetDataSize()) {
+			m_dwStopCursor = pModel->GetDataSize() - 1;
 		}
 	}
 
 	// for 16 bit data value must be even
-	if (pDoc->Is16Bit()) {
+	if (pModel->Is16Bit()) {
 		m_dwStartCursor &= ~1;
 		m_dwStopCursor &= ~1;
 	}
 
 	// snap the start cursor if necessary
-	DWORD nSampleSize = pDoc->GetSampleSize();
+	DWORD nSampleSize = pModel->GetSampleSize();
 
-	m_dwStartCursor = pDoc->SnapCursor(START_CURSOR, m_dwStartCursor, 0, m_dwStopCursor - nSampleSize, nSnapDirection, nCursorAlignment);
-	m_dwStopCursor = pDoc->SnapCursor(STOP_CURSOR, m_dwStopCursor, m_dwStartCursor + nSampleSize, GetDocument()->GetDataSize() - nSampleSize, nSnapDirection, nCursorAlignment);
+	m_dwStartCursor = pModel->SnapCursor(START_CURSOR, m_dwStartCursor, 0, m_dwStopCursor - nSampleSize, nSnapDirection, nCursorAlignment);
+	m_dwStopCursor = pModel->SnapCursor(STOP_CURSOR, m_dwStopCursor, m_dwStartCursor + nSampleSize, GetDocument()->GetDataSize() - nSampleSize, nSnapDirection, nCursorAlignment);
 
 	// move start cursors in all the graphs
 	for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
@@ -6773,24 +6773,24 @@ void CSaView::MoveStopCursor(DWORD dwNewPos) {
 void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame) {
 
 	// get pointer to document
-	CSaDoc * pDoc = GetDocument();
-	DWORD wSmpSize = pDoc->GetSampleSize();
+	CSaDoc * pModel = GetDocument();
+	DWORD wSmpSize = pModel->GetSampleSize();
 	CRect rWnd;
 	GetClientRect(rWnd);
 	// set start position
 	m_dwDataPosition = dwStart;
 	// for 16 bit data value must be even
-	if (pDoc->Is16Bit()) {
+	if (pModel->Is16Bit()) {
 		m_dwDataPosition &= ~1;
 	}
 	// calculate zooming factor
-	DWORD dwDataSize = pDoc->GetDataSize();
+	DWORD dwDataSize = pModel->GetDataSize();
 	// zoom factor
 	double fZoom = (double)dwDataSize / (double)dwFrame;
 	if (fZoom > m_fMaxZoom) {
 		fZoom = m_fMaxZoom;
 		dwFrame = DWORD(dwDataSize / fZoom);
-		if (pDoc->Is16Bit()) {
+		if (pModel->Is16Bit()) {
 			dwFrame &= ~1;
 		}
 	}
@@ -6838,11 +6838,11 @@ void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame) {
 void CSaView::GetDataFrame(DWORD & dwStart, DWORD & dwFrame) {
 
 	// get pointer to document
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	// set start position
 	dwStart = m_dwDataPosition;
 	// calculate zooming factor
-	DWORD dwDataSize = pDoc->GetDataSize();
+	DWORD dwDataSize = pModel->GetDataSize();
 	// zoom factor
 	dwFrame = (DWORD)(((double)dwDataSize) / m_fZoom + 0.5);
 }
@@ -6850,8 +6850,8 @@ void CSaView::GetDataFrame(DWORD & dwStart, DWORD & dwFrame) {
 LRESULT CSaView::OnCursorInFragment(WPARAM nCursorSelect, LPARAM dwFragmentIndex) {
 	switch (nCursorSelect) {
 	case START_CURSOR:
-		CSaDoc * pDoc = GetDocument();
-		CProcessFragments * pFragments = pDoc->GetFragments();
+		CSaDoc * pModel = GetDocument();
+		CProcessFragments * pFragments = pModel->GetFragments();
 		SFragParms FragmentParms = pFragments->GetFragmentParms(dwFragmentIndex);
 		if (GetDynamicGraphCount()) {
 			StartAnimation(FragmentParms.dwOffset, FragmentParms.dwOffset);
@@ -6903,9 +6903,9 @@ LRESULT CSaView::OnGraphUpdateModeChanged(WPARAM, LPARAM) {
 	int GraphUpdateMode = GetGraphUpdateMode();
 
 	if (GraphUpdateMode == DYNAMIC_UPDATE) {
-		CSaDoc * pDoc = GetDocument();
-		DWORD wSmpSize = pDoc->GetSampleSize();
-		CProcessFragments * pFragments = pDoc->GetFragments();
+		CSaDoc * pModel = GetDocument();
+		DWORD wSmpSize = pModel->GetSampleSize();
+		CProcessFragments * pFragments = pModel->GetFragments();
 		DWORD dwFragmentIndex = pFragments->GetFragmentIndex(m_dwStartCursor / wSmpSize);
 		OnCursorInFragment(START_CURSOR, dwFragmentIndex);
 	} else {
@@ -6965,8 +6965,8 @@ UINT CSaView::GetAnimationGraphCount(void) {
 /***************************************************************************/
 BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex) {
 
-	CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
-	CProcessFragments * pFragments = pDoc->GetFragments();
+	CSaDoc * pModel = (CSaDoc *)GetDocument(); // get pointer to document
+	CProcessFragments * pFragments = pModel->GetFragments();
 	if (!pFragments->IsDataReady()) {
 		return FALSE;
 	}
@@ -7612,10 +7612,10 @@ void CSaView::OnEditCopy() {
 			// get the wave section boundaries
 			DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
 			DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
-			CSaDoc * pDoc = GetDocument();
-			WAVETIME start = pDoc->toTime(dwSectionStart, true);
-			WAVETIME length = pDoc->toTime(dwSectionLength, true);
-			pDoc->PutWaveToClipboard(start, length);
+			CSaDoc * pModel = GetDocument();
+			WAVETIME start = pModel->toTime(dwSectionStart, true);
+			WAVETIME length = pModel->toTime(dwSectionLength, true);
+			pModel->PutWaveToClipboard(start, length);
 		}
 	}
 }
@@ -7646,13 +7646,13 @@ void CSaView::OnEditCopyMeasurements() {
 	DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
 	DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
 	BOOL pbRes;
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	CSaString ctext;
 	if (bSection) {
-		ctext = pDoc->GetMeasurementsString(dwSectionStart, dwSectionLength, &pbRes);
+		ctext = pModel->GetMeasurementsString(dwSectionStart, dwSectionLength, &pbRes);
 	} else {
-		ctext = pDoc->GetMeasurementsString(dwOffset, 0, &pbRes);
+		ctext = pModel->GetMeasurementsString(dwOffset, 0, &pbRes);
 	}
 
 	int len = ctext.GetLength();
@@ -7700,11 +7700,11 @@ void CSaView::OnEditCut() {
 		// get the wave section boundaries
 		DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
 		DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
-		CSaDoc * pDoc = (CSaDoc *)GetDocument();
-		WAVETIME start = pDoc->toTime(dwSectionStart, true);
-		WAVETIME length = pDoc->toTime(dwSectionLength, true);
-		if (pDoc->PutWaveToClipboard(start, length, TRUE)) {
-			pDoc->InvalidateAllProcesses();
+		CSaDoc * pModel = (CSaDoc *)GetDocument();
+		WAVETIME start = pModel->toTime(dwSectionStart, true);
+		WAVETIME length = pModel->toTime(dwSectionLength, true);
+		if (pModel->PutWaveToClipboard(start, length, TRUE)) {
+			pModel->InvalidateAllProcesses();
 			RedrawGraphs();
 			m_pFocusedGraph->GetPlot()->ClearHighLightArea();
 		}
@@ -7716,7 +7716,7 @@ void CSaView::OnEditCut() {
 /***************************************************************************/
 void CSaView::OnEditPaste() {
 	// get pointer to document
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 	// is an annotation selected?
 	if (IsAnyAnnotationSelected()) {
 		if (OpenClipboard()) {
@@ -7741,10 +7741,10 @@ void CSaView::OnEditPaste() {
 				HGLOBAL hGlobal = GetClipboardData(CF_WAVE);
 				if (hGlobal != NULL) {
 					DWORD start = GetStartCursorPosition();
-					WAVETIME startTime = pDoc->toTime(start, true);
-					if (pDoc->PasteClipboardToWave(hGlobal, startTime)) {
+					WAVETIME startTime = pModel->toTime(start, true);
+					if (pModel->PasteClipboardToWave(hGlobal, startTime)) {
 						// get wave from the clipboard
-						pDoc->InvalidateAllProcesses();
+						pModel->InvalidateAllProcesses();
 						RedrawGraphs();
 						m_pFocusedGraph->GetPlot()->ClearHighLightArea();
 					}
@@ -7808,14 +7808,14 @@ int CSaView::FindSelectedAnnotationIndex() {
 /***************************************************************************/
 void CSaView::ChangeSelectedAnnotationData(const CSaString & str) {
 	// get pointer to document
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
-	ASSERT(pDoc);
-	pDoc->CheckPoint();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
+	ASSERT(pModel);
+	pModel->CheckPoint();
 	{
 		CSegment * pAnnotationSet = FindSelectedAnnotation();
 		ASSERT(pAnnotationSet);
 		if (pAnnotationSet != NULL) {
-			pAnnotationSet->ReplaceSelectedSegment(pDoc, str, false);
+			pAnnotationSet->ReplaceSelectedSegment(pModel, str, false);
 		}
 	}
 }
@@ -7855,9 +7855,9 @@ void CSaView::OnUpdateEditPaste(CCmdUI * pCmdUI) {
 		}
 	}
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	if (m_nFocusedID == IDD_RAWDATA) {
-		if (!pDoc->GetWbProcess()) {
+		if (!pModel->GetWbProcess()) {
 			if (OpenClipboard()) {
 				if (IsClipboardFormatAvailable(CF_WAVE)) {
 					enablePaste = TRUE;
@@ -7905,10 +7905,10 @@ void CSaView::OnUpdateHasSel(CCmdUI * pCmdUI) {
 // CSaView::OnEditUndo
 /***************************************************************************/
 void CSaView::OnEditUndo() {
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
-	pDoc->Undo();
-	if (pDoc->IsWaveToUndo()) {
-		pDoc->UndoWaveFile();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
+	pModel->Undo();
+	if (pModel->IsWaveToUndo()) {
+		pModel->UndoWaveFile();
 	}
 	// SDM 1.06.6U4 Set cursors to selected segment on undo
 	CSegment * pSegment = FindSelectedAnnotation();
@@ -7946,15 +7946,15 @@ void CSaView::OnUpdateEditRedo(CCmdUI * pCmdUI) {
 // CSaView::OnEditCursorStartLeft Move Start Cursor Left
 /***************************************************************************/
 void CSaView::OnEditCursorStartLeft() {
-	CSaDoc * pDoc = GetDocument();
-	int nBlockAlign = pDoc->GetBlockAlign();
+	CSaDoc * pModel = GetDocument();
+	int nBlockAlign = pModel->GetBlockAlign();
 	DWORD movementScale = ((DWORD)(m_fMaxZoom / m_fZoom + 0.5))* nBlockAlign;
 	DWORD dwOffset = GetStartCursorPosition();
 	if (dwOffset < movementScale) {
 		return;
 	}
 
-	DWORD dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset - movementScale, SNAP_LEFT);
+	DWORD dwOffsetNew = pModel->SnapCursor(START_CURSOR, dwOffset - movementScale, SNAP_LEFT);
 	if (dwOffset != dwOffsetNew) {
 		SetStartCursorPosition(dwOffsetNew);
 	}
@@ -7964,10 +7964,10 @@ void CSaView::OnEditCursorStartLeft() {
 // CSaView::OnEditCursorStartRight Move Start Cursor Right
 /***************************************************************************/
 void CSaView::OnEditCursorStartRight() {
-	CSaDoc * pDoc = GetDocument();
-	int nBlockAlign = pDoc->GetBlockAlign();
+	CSaDoc * pModel = GetDocument();
+	int nBlockAlign = pModel->GetBlockAlign();
 	DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom / m_fZoom))) * nBlockAlign;
-	DWORD dataSize = pDoc->GetDataSize();
+	DWORD dataSize = pModel->GetDataSize();
 	DWORD movementScale = ((DWORD)(m_fMaxZoom / m_fZoom + 0.5))* nBlockAlign;
 	DWORD dwOffset = GetStartCursorPosition();
 	// off the end!
@@ -7975,14 +7975,14 @@ void CSaView::OnEditCursorStartRight() {
 		return;
 	}
 
-	DWORD dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset + movementScale, SNAP_RIGHT);
+	DWORD dwOffsetNew = pModel->SnapCursor(START_CURSOR, dwOffset + movementScale, SNAP_RIGHT);
 	DWORD dwStop = GetStopCursorPosition();
 	DWORD dwStopNew = dwStop;
 	if (dwOffsetNew + minSeparation > dwStopNew) {
-		dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
+		dwStopNew = pModel->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
 	}
 	if (dwOffsetNew + minSeparation > dwStopNew) {
-		dwOffsetNew = pDoc->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation) : 0, SNAP_LEFT);
+		dwOffsetNew = pModel->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation) : 0, SNAP_LEFT);
 	}
 	if (dwOffsetNew + minSeparation > dwStopNew) {
 		return;
@@ -7999,16 +7999,16 @@ void CSaView::OnEditCursorStartRight() {
 // CSaView::OnEditCursorStopRight Move Stop Cursor Right
 /***************************************************************************/
 void CSaView::OnEditCursorStopRight() {
-	CSaDoc * pDoc = GetDocument();
-	int nBlockAlign = pDoc->GetBlockAlign();
-	DWORD dataSize = pDoc->GetDataSize();
+	CSaDoc * pModel = GetDocument();
+	int nBlockAlign = pModel->GetBlockAlign();
+	DWORD dataSize = pModel->GetDataSize();
 	DWORD movementScale = ((DWORD)(m_fMaxZoom / m_fZoom + 0.5))* nBlockAlign;
 	DWORD dwStop = GetStopCursorPosition();
 	if (dwStop + movementScale >= dataSize) {
 		return;
 	}
 
-	DWORD dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop + movementScale, SNAP_RIGHT);
+	DWORD dwStopNew = pModel->SnapCursor(STOP_CURSOR, dwStop + movementScale, SNAP_RIGHT);
 	if (dwStop != dwStopNew) {
 		SetStopCursorPosition(dwStopNew);
 	}
@@ -8018,8 +8018,8 @@ void CSaView::OnEditCursorStopRight() {
 // CSaView::OnEditCursorStopLeft Move Stop Cursor Left
 /***************************************************************************/
 void CSaView::OnEditCursorStopLeft() {
-	CSaDoc * pDoc = GetDocument();
-	int nBlockAlign = pDoc->GetBlockAlign();
+	CSaDoc * pModel = GetDocument();
+	int nBlockAlign = pModel->GetBlockAlign();
 	DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom / m_fZoom))) * nBlockAlign;
 	DWORD movementScale = ((DWORD)(m_fMaxZoom / m_fZoom + 0.5))* nBlockAlign;
 	DWORD dwStop = GetStopCursorPosition();
@@ -8027,15 +8027,15 @@ void CSaView::OnEditCursorStopLeft() {
 		return;
 	}
 
-	DWORD dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop - movementScale, SNAP_LEFT);
+	DWORD dwStopNew = pModel->SnapCursor(STOP_CURSOR, dwStop - movementScale, SNAP_LEFT);
 
 	DWORD dwOffset = GetStartCursorPosition();
 	DWORD dwOffsetNew = dwOffset;
 	if ((dwOffsetNew + minSeparation) > dwStopNew) {
-		dwOffsetNew = pDoc->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation) : 0, SNAP_LEFT);
+		dwOffsetNew = pModel->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation) : 0, SNAP_LEFT);
 	}
 	if ((dwOffsetNew + minSeparation) > dwStopNew) {
-		dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
+		dwStopNew = pModel->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
 	}
 
 	if (dwOffsetNew + minSeparation > dwStopNew) {
@@ -8138,11 +8138,11 @@ void CSaView::MoveBoundary(bool start, bool left) {
 	// Limit positions of cursors
 	CSegment::ELimit mode = (start) ? ((overlap) ? CSegment::LIMIT_MOVING_START : CSegment::LIMIT_MOVING_START_NO_OVERLAP) : ((overlap) ? CSegment::LIMIT_MOVING_STOP : CSegment::LIMIT_MOVING_STOP_NO_OVERLAP);
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
-	int nBlockAlign = pDoc->GetBlockAlign();
+	int nBlockAlign = pModel->GetBlockAlign();
 	DWORD movement = ((DWORD)(m_fMaxZoom / m_fZoom + 0.5))* nBlockAlign;
-	DWORD minSeparation = GetMinimumSeparation(pDoc, pGraph, pPlot);
+	DWORD minSeparation = GetMinimumSeparation(pModel, pGraph, pPlot);
 	TRACE("minSep=%d\n", minSeparation);
 
 	DWORD dwStart = GetStartCursorPosition();
@@ -8168,7 +8168,7 @@ void CSaView::MoveBoundary(bool start, bool left) {
 		}
 	}
 
-	DWORD dataSize = pDoc->GetDataSize();
+	DWORD dataSize = pModel->GetDataSize();
 
 	ESnapDirection snap = (left) ? SNAP_LEFT : SNAP_RIGHT;
 
@@ -8188,14 +8188,14 @@ void CSaView::MoveBoundary(bool start, bool left) {
 		dwStart = (dwStart > maxStart) ? maxStart : dwStart;
 		if (left) {
 		}
-		dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, snap);
+		dwStart = pModel->SnapCursor(START_CURSOR, dwStart, snap);
 	} else {
 		dwStop = (left) ? ((dwStop < movement) ? 0 : (dwStop - movement)) : (dwStop += movement);
 		dwStop = (overlap) ? ((dwStop < startGap) ? startGap : dwStop) : dwStop;
 		// check limits
 		dwStop = (dwStop < minStop) ? minStop : dwStop;
 		dwStop = (dwStop > maxStop) ? maxStop : dwStop;
-		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, snap);
+		dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, snap);
 	}
 
 	//TRACE("start=%d stop=%d\n",dwStart,dwStop);
@@ -8220,7 +8220,7 @@ void CSaView::MoveBoundary(bool start, bool left) {
 			}
 			dwStop = (dwStop < minStop) ? minStop : dwStop;
 			dwStop = (dwStop > maxStop) ? maxStop : dwStop;
-			dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop);
+			dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop);
 		} else {
 			stopGap = dwStop - minSeparation;
 			dwStart = (dwStart>stopGap) ? stopGap : dwStart;
@@ -8236,27 +8236,27 @@ void CSaView::MoveBoundary(bool start, bool left) {
 			}
 			dwStart = (dwStart < minStart) ? minStart : dwStart;
 			dwStart = (dwStart > maxStart) ? maxStart : dwStart;
-			dwStart = pDoc->SnapCursor(START_CURSOR, dwStart);
+			dwStart = pModel->SnapCursor(START_CURSOR, dwStart);
 		}
 	}
 
 	// see if it will fly...
-	if (pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_AUTOMATIC, overlap) == -1) {
+	if (pSegment->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_AUTOMATIC, overlap) == -1) {
 		TRACE("failed check\n");
 		return;
 	}
 
 	// start making changes...
-	pDoc->CheckPoint(); // Save state
+	pModel->CheckPoint(); // Save state
 
 	TRACE("(e) start=%d stop=%d\n", dwStart, dwStop);
 
-	pSegment->LimitPosition(pDoc, dwStart, dwStop, mode);
+	pSegment->LimitPosition(pModel, dwStart, dwStop, mode);
 
 	SetStartCursorPosition(dwStart);
 	SetStopCursorPosition(dwStop);
 	pWnd->SetHintUpdateBoundaries(false, overlap);
-	pDoc->UpdateSegmentBoundaries(overlap);
+	pModel->UpdateSegmentBoundaries(overlap);
 }
 
 //SDM 1.06.6U2
@@ -8264,8 +8264,8 @@ void CSaView::MoveBoundary(bool start, bool left) {
 // CSaView::OnEditAddSyllable Add Syllable Break to Phonetic Segment
 /***************************************************************************/
 void CSaView::OnEditAddSyllable() {
-	CSaDoc * pDoc = GetDocument(); // get pointer to document
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument(); // get pointer to document
+	pModel->CheckPoint();
 	CSaString szString = "."; //Fill new segment with segment break character
 
 	CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
@@ -8276,28 +8276,28 @@ void CSaView::OnEditAddSyllable() {
 		DWORD dwMaxStop;
 		DWORD dwStop;
 
-		dwMaxStop = dwStart + pSeg->GetDuration(nSelection) - pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
+		dwMaxStop = dwStart + pSeg->GetDuration(nSelection) - pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
 
-		if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+		if (pModel->Is16Bit()) { // SDM 1.5Test8.2
 			dwMaxStop = dwMaxStop & ~1; // Round down
 		}
 
 		// Snap Start Position
-		dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
+		dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
-		dwStop = (dwStart + pDoc->GetBytesFromTime(ADD_SYLLABLE_TIME));
+		dwStop = (dwStart + pModel->GetBytesFromTime(ADD_SYLLABLE_TIME));
 
-		if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+		if (pModel->Is16Bit()) { // SDM 1.5Test8.2
 			dwStop = (dwStop + 1) & ~1; // Round up
 		}
 
-		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+		dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 
 		if (dwStop <= dwMaxStop) { // enough room
-			pSeg->Adjust(pDoc, nSelection, dwStop, pSeg->GetDuration(nSelection) + dwStop - pSeg->GetOffset(nSelection), false);
+			pSeg->Adjust(pModel, nSelection, dwStop, pSeg->GetDuration(nSelection) + dwStop - pSeg->GetOffset(nSelection), false);
 			pSeg->Insert(nSelection, szString, true, dwStart, dwStop - dwStart);
-			pDoc->SetModifiedFlag(TRUE); // document has been modified
-			pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+			pModel->SetModifiedFlag(TRUE); // document has been modified
+			pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
 			pSeg->SetSelection(-1);
 			m_advancedSelection.SelectFromPosition(this, PHONETIC, dwStart, true);
 			RedrawGraphs(TRUE);
@@ -8313,7 +8313,7 @@ void CSaView::OnEditAddSyllable() {
 // CSaView::OnUpdateEditAddSyllable
 /***************************************************************************/
 void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument(); // get pointer to document
+	CSaDoc * pModel = GetDocument(); // get pointer to document
 	BOOL bEnable = FALSE;
 
 	CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
@@ -8324,22 +8324,22 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI) {
 		DWORD dwMaxStop;
 		DWORD dwStop;
 
-		dwMaxStop = dwStart + pSeg->GetDuration(nSelection) - pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
+		dwMaxStop = dwStart + pSeg->GetDuration(nSelection) - pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
 
-		if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+		if (pModel->Is16Bit()) {          // SDM 1.5Test8.2
 			dwMaxStop = dwMaxStop & ~1; // Round down
 		}
 
 		// Snap Start Position
-		dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
+		dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
-		dwStop = (dwStart + pDoc->GetBytesFromTime(ADD_SYLLABLE_TIME));
+		dwStop = (dwStart + pModel->GetBytesFromTime(ADD_SYLLABLE_TIME));
 
-		if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+		if (pModel->Is16Bit()) {          // SDM 1.5Test8.2
 			dwStop = (dwStop + 1) & ~1; // Round up
 		}
 
-		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+		dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 
 		if (dwStop <= dwMaxStop) { // enough room
 			bEnable = TRUE;
@@ -8385,8 +8385,8 @@ void CSaView::OnEditAutoAddStorySection() {
 	DWORD stop = GetStopCursorPosition();
 
 	// move the start cursor to the end of the last phonetic segment
-	CSaDoc * pDoc = GetDocument();  // get pointer to document
-	int nSelection = pDoc->GetLastSegmentBeforePosition(PHONETIC, stop);
+	CSaDoc * pModel = GetDocument();  // get pointer to document
+	int nSelection = pModel->GetLastSegmentBeforePosition(PHONETIC, stop);
 	DWORD offset = 0;
 	if (nSelection != -1) {
 		CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
@@ -8486,22 +8486,22 @@ void CSaView::OnUpdateEditAutoAddStorySection(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnEditAddPhonetic() {
 
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetAnnotation(PHONETIC);
 	CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
 	CGlossNatSegment * pGlossNat = (CGlossNatSegment *)GetAnnotation(GLOSS_NAT);
 	CReferenceSegment * pReference = (CReferenceSegment *)GetAnnotation(REFERENCE);
 
-	pDoc->CheckPoint();
+	pModel->CheckPoint();
 	//Fill new segment with default character
 	CSaString szString = SEGMENT_DEFAULT_CHAR;
 
-	int nInsertAt = pPhonetic->CheckPosition(pDoc, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD);
+	int nInsertAt = pPhonetic->CheckPosition(pModel, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD);
 	if (nInsertAt != -1) {
 		int nPrevious = pPhonetic->GetPrevious(nInsertAt);
 		if ((nPrevious != -1) &&
-			(pPhonetic->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME) > GetStartCursorPosition())) {
-			pPhonetic->Adjust(pDoc, nPrevious, pPhonetic->GetOffset(nPrevious), GetStartCursorPosition() - pPhonetic->GetOffset(nPrevious), false);
+			(pPhonetic->GetStop(nPrevious) + pModel->GetBytesFromTime(MAX_ADD_JOIN_TIME) > GetStartCursorPosition())) {
+			pPhonetic->Adjust(pModel, nPrevious, pPhonetic->GetOffset(nPrevious), GetStartCursorPosition() - pPhonetic->GetOffset(nPrevious), false);
 		}
 
 		int nNext = -1;
@@ -8511,24 +8511,24 @@ void CSaView::OnEditAddPhonetic() {
 			nNext = nInsertAt;
 		}
 		if ((nNext != -1) &&
-			(pPhonetic->GetOffset(nNext) < GetStopCursorPosition() + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))) {
-			pPhonetic->Adjust(pDoc, nNext, GetStopCursorPosition(), pPhonetic->GetStop(nNext) - GetStopCursorPosition(), false);
+			(pPhonetic->GetOffset(nNext) < GetStopCursorPosition() + pModel->GetBytesFromTime(MAX_ADD_JOIN_TIME))) {
+			pPhonetic->Adjust(pModel, nNext, GetStopCursorPosition(), pPhonetic->GetStop(nNext) - GetStopCursorPosition(), false);
 		}
 
-		pPhonetic->AddAt(pDoc, nInsertAt, GetStartCursorPosition(), GetStopCursorPosition() - GetStartCursorPosition());
+		pPhonetic->AddAt(pModel, nInsertAt, GetStartCursorPosition(), GetStopCursorPosition() - GetStartCursorPosition());
 
 		// Adjust Gloss
 		if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt))) {
 			int nIndex = pGloss->FindStop(pPhonetic->GetStop(pPhonetic->GetPrevious(nInsertAt)));
 			if (nIndex != -1) {
-				pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc, nIndex), false);
-				pGlossNat->Adjust(pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc, nIndex), false);
-				pReference->Adjust(pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc, nIndex), false);
+				pGloss->Adjust(pModel, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pModel, nIndex), false);
+				pGlossNat->Adjust(pModel, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pModel, nIndex), false);
+				pReference->Adjust(pModel, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pModel, nIndex), false);
 			}
 		}
 
-		pDoc->SetModifiedFlag(TRUE); // document has been modified
-		pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+		pModel->SetModifiedFlag(TRUE); // document has been modified
+		pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
 		RedrawGraphs(TRUE);
 		pPhonetic->SetSelection(-1);
 		m_advancedSelection.SelectFromPosition(this, PHONETIC, GetStartCursorPosition(), true);
@@ -8542,27 +8542,27 @@ void CSaView::OnEditAddPhonetic() {
 			DWORD dwStop;
 
 			if (pPhonetic->GetNext(nSelection) == -1) { // Last Selection
-				dwMaxStop = pDoc->GetDataSize();
+				dwMaxStop = pModel->GetDataSize();
 			} else { // Fit before next
 				dwMaxStop = pPhonetic->GetOffset(pPhonetic->GetNext(nSelection));
 			}
 
 			// Snap Start Position
-			dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
-			dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+			dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
+			dwStop = (dwStart + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-			if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+			if (pModel->Is16Bit()) {          // SDM 1.5Test8.2
 				dwStop = (dwStop + 1) & ~1; // Round up
 			}
 
 			if (pPhonetic->GetNext(nSelection) != -1) {
-				dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+				dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 			}
 
 			if (dwStop <= dwMaxStop) { // enough room
-				dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
+				dwStop = dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-				if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+				if (pModel->Is16Bit()) {          // SDM 1.5Test8.2
 					dwStop = (dwStop + 1) & ~1; // Round up
 				}
 
@@ -8571,26 +8571,26 @@ void CSaView::OnEditAddPhonetic() {
 				} else
 					// Snap Stop Position
 				{
-					dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
+					dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
 				}
 
-				nInsertAt = pPhonetic->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);
+				nInsertAt = pPhonetic->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);
 				ASSERT(nInsertAt >= 0);
-				pPhonetic->AddAt(pDoc, nInsertAt, dwStart, dwStop - dwStart);
+				pPhonetic->AddAt(pModel, nInsertAt, dwStart, dwStop - dwStart);
 
 				// Adjust Gloss
 				if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt))) {
 					int nPrevious = pPhonetic->GetPrevious(nInsertAt);
 					int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
 					if (nIndex != -1) {
-						pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc, nIndex), false);
-						pGlossNat->Adjust(pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc, nIndex), false);
-						pReference->Adjust(pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc, nIndex), false);
+						pGloss->Adjust(pModel, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pModel, nIndex), false);
+						pGlossNat->Adjust(pModel, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pModel, nIndex), false);
+						pReference->Adjust(pModel, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pModel, nIndex), false);
 					}
 				}
 
-				pDoc->SetModifiedFlag(TRUE); // document has been modified
-				pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+				pModel->SetModifiedFlag(TRUE); // document has been modified
+				pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
 				RedrawGraphs(TRUE);
 				pPhonetic->SetSelection(-1);
 				m_advancedSelection.SelectFromPosition(this, PHONETIC, dwStart, true);
@@ -8614,11 +8614,11 @@ void CSaView::OnEditAddPhonetic() {
 */
 BOOL CSaView::AllowEditAdd(bool story) {
 
-	CSaDoc * pDoc = GetDocument(); // get pointer to document
+	CSaDoc * pModel = GetDocument(); // get pointer to document
 	CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
 	DWORD startCursor = GetStartCursorPosition();
 	DWORD stopCursor = GetStopCursorPosition();
-	int nInsertAt = pSeg->CheckPosition(pDoc, startCursor, stopCursor, CSegment::MODE_ADD);
+	int nInsertAt = pSeg->CheckPosition(pModel, startCursor, stopCursor, CSegment::MODE_ADD);
 	if (nInsertAt != -1) {
 		m_advancedSelection.Update(this);
 		int nLoop = m_advancedSelection.GetSelectionIndex();
@@ -8631,7 +8631,7 @@ BOOL CSaView::AllowEditAdd(bool story) {
 	int nSelection = pSeg->GetSelection();
 	if (nSelection == -1) {           // Phonetic Segment not selected
 		if (story) {
-			nSelection = pDoc->GetLastSegmentBeforePosition(PHONETIC, stopCursor);
+			nSelection = pModel->GetLastSegmentBeforePosition(PHONETIC, stopCursor);
 		} else {
 			return FALSE;
 		}
@@ -8640,28 +8640,28 @@ BOOL CSaView::AllowEditAdd(bool story) {
 	DWORD dwStart = pSeg->GetStop(nSelection);  // Start at current stop
 	DWORD dwMaxStop = 0;
 	if (pSeg->GetNext(nSelection) == -1) {      // Last Selection
-		dwMaxStop = pDoc->GetDataSize();
+		dwMaxStop = pModel->GetDataSize();
 	} else { // Fit before next
 		dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
 	}
 
 	// Snap Start Position
-	dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);;
-	DWORD dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-	if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+	dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);;
+	DWORD dwStop = (dwStart + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+	if (pModel->Is16Bit()) {          // SDM 1.5Test8.2
 		dwStop = (dwStop + 1) & ~1; // Round up
 	}
 
 	if (pSeg->GetNext(nSelection) != -1) {
-		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+		dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 	}
 
 	if (dwStop > dwMaxStop) { // not enough room
 		return FALSE;
 	}
 
-	dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
-	if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+	dwStop = dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
+	if (pModel->Is16Bit()) { // SDM 1.5Test8.2
 		dwStop = (dwStop + 1) & ~1; // Round up
 	}
 
@@ -8669,10 +8669,10 @@ BOOL CSaView::AllowEditAdd(bool story) {
 		dwStop = dwMaxStop;
 	} else {
 		// Snap Stop Position
-		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
+		dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
 	}
 
-	nInsertAt = pSeg->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);
+	nInsertAt = pSeg->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);
 	if (nInsertAt >= 0) {
 		return TRUE;
 	}
@@ -8690,19 +8690,19 @@ void CSaView::OnUpdateEditAddPhonetic(CCmdUI * pCmdUI) {
 // CSaView::OnEditAddPhrase
 /***************************************************************************/
 void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 
-	pDoc->CheckPoint();
+	pModel->CheckPoint();
 	//Fill new segment with default character
 	CSaString szString = SEGMENT_DEFAULT_CHAR;
 
-	int nInsertAt = pSeg->CheckPosition(pDoc, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD);
+	int nInsertAt = pSeg->CheckPosition(pModel, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD);
 	if (nInsertAt != -1) {
 		int nPrevious = pSeg->GetPrevious(nInsertAt);
 		if (nPrevious != -1) {
 			// is the previous segment+jointime overlapping our start?
-			if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME) > GetStartCursorPosition()) { // SDM 1.5Test10.2
-				pSeg->Adjust(pDoc, nPrevious, pSeg->GetOffset(nPrevious), GetStartCursorPosition() - pSeg->GetOffset(nPrevious), false);
+			if (pSeg->GetStop(nPrevious) + pModel->GetBytesFromTime(MAX_ADD_JOIN_TIME) > GetStartCursorPosition()) { // SDM 1.5Test10.2
+				pSeg->Adjust(pModel, nPrevious, pSeg->GetOffset(nPrevious), GetStartCursorPosition() - pSeg->GetOffset(nPrevious), false);
 			}
 		}
 
@@ -8710,20 +8710,20 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
 			int nNext = pSeg->GetNext(nInsertAt);
 			if (nNext != -1) {
 				CURSORPOS stopPos = GetStopCursorPosition();
-				DWORD byteCount = pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME);
+				DWORD byteCount = pModel->GetBytesFromTime(MAX_ADD_JOIN_TIME);
 				DWORD nextOffset = pSeg->GetOffset(nNext);
 				if (nextOffset < (stopPos + byteCount)) { // SDM 1.5Test10.2
 					DWORD stop = pSeg->GetStop(nNext);
 					CURSORPOS stopPos2 = GetStopCursorPosition();
-					pSeg->Adjust(pDoc, nNext, stopPos2, stop - stopPos2, false);
+					pSeg->Adjust(pModel, nNext, stopPos2, stop - stopPos2, false);
 				}
 			}
 		}
 		pSeg->Insert(nInsertAt, szString, false, GetStartCursorPosition(), GetStopCursorPosition() - GetStartCursorPosition());
 		// document has been modified
-		pDoc->SetModifiedFlag(TRUE);
+		pModel->SetModifiedFlag(TRUE);
 		// transcription data has been modified
-		pDoc->SetTransModifiedFlag(TRUE);
+		pModel->SetTransModifiedFlag(TRUE);
 		RedrawGraphs(TRUE);
 		pSeg->SetSelection(-1);
 		m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), true);
@@ -8738,28 +8738,28 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
 			DWORD dwStop;
 
 			if (pSeg->GetNext(nSelection) == -1) { // Last Selection
-				dwMaxStop = pDoc->GetDataSize();
+				dwMaxStop = pModel->GetDataSize();
 			} else { // Fit before next
 				dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
 			}
 
 			// Snap Start Position
-			dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
+			dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
-			dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+			dwStop = (dwStart + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-			if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+			if (pModel->Is16Bit()) { // SDM 1.5Test8.2
 				dwStop = (dwStop + 1) & ~1; // Round up
 			}
 
 			if (pSeg->GetNext(nSelection) != -1) {
-				dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+				dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 			}
 
 			if (dwStop <= dwMaxStop) { // enough room
-				dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
+				dwStop = dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-				if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+				if (pModel->Is16Bit()) { // SDM 1.5Test8.2
 					dwStop = (dwStop + 1) & ~1; // Round up
 				}
 
@@ -8768,13 +8768,13 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
 				} else
 					// Snap Stop Position
 				{
-					dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
+					dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
 				}
 
-				nInsertAt = pSeg->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);
+				nInsertAt = pSeg->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);
 				pSeg->Insert(nInsertAt, szString, true, dwStart, dwStop - dwStart);
-				pDoc->SetModifiedFlag(TRUE); // document has been modified
-				pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+				pModel->SetModifiedFlag(TRUE); // document has been modified
+				pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
 				RedrawGraphs(TRUE);
 				pSeg->SetSelection(-1);
 				m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), dwStart, true);
@@ -8789,11 +8789,11 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
 }
 
 BOOL CSaView::AllowAddPhrase(EAnnotation annot, bool story) {
-	CSaDoc * pDoc = GetDocument(); // get pointer to document
+	CSaDoc * pModel = GetDocument(); // get pointer to document
 	CMusicPhraseSegment * pSeg = (CMusicPhraseSegment *)GetAnnotation(annot);
 	DWORD startCursor = GetStartCursorPosition();
 	DWORD stopCursor = GetStopCursorPosition();
-	int nInsertAt = pSeg->CheckPosition(pDoc, startCursor, stopCursor, CSegment::MODE_ADD);
+	int nInsertAt = pSeg->CheckPosition(pModel, startCursor, stopCursor, CSegment::MODE_ADD);
 	if (nInsertAt != -1) {
 		return TRUE;
 	}
@@ -8801,7 +8801,7 @@ BOOL CSaView::AllowAddPhrase(EAnnotation annot, bool story) {
 	int nSelection = pSeg->GetSelection();
 	if (nSelection == -1) {           // no segment selected
 		if (story) {
-			nSelection = pDoc->GetLastSegmentBeforePosition(PHONETIC, stopCursor);
+			nSelection = pModel->GetLastSegmentBeforePosition(PHONETIC, stopCursor);
 		} else {
 			return FALSE;
 		}
@@ -8811,21 +8811,21 @@ BOOL CSaView::AllowAddPhrase(EAnnotation annot, bool story) {
 	DWORD dwMaxStop = 0;
 
 	if (pSeg->GetNext(nSelection) == -1) {      // Last Selection
-		dwMaxStop = pDoc->GetDataSize();
+		dwMaxStop = pModel->GetDataSize();
 	} else { // Fit before next
 		dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
 	}
 
 	// Snap Start Position
-	dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
+	dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
-	DWORD dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-	if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+	DWORD dwStop = (dwStart + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+	if (pModel->Is16Bit()) { // SDM 1.5Test8.2
 		dwStop = (dwStop + 1) & ~1; // Round up
 	}
 
 	if (pSeg->GetNext(nSelection) != -1) {
-		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+		dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 	}
 
 	if (dwStop <= dwMaxStop) { // enough room
@@ -8845,8 +8845,8 @@ void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, EAnnotation annot) {
 void CSaView::OnEditAddAutoPhraseL2() {
 	CMusicPhraseSegment * pSeg = (CMusicPhraseSegment *)GetAnnotation(MUSIC_PL2);
 
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
+	pModel->CheckPoint();
 	CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
 
 	if (pSeg->IsEmpty()) {
@@ -8924,13 +8924,13 @@ void CSaView::OnEditAddAutoPhraseL2() {
 		}
 	}
 
-	int nInsertAt = pSeg->CheckPosition(pDoc, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD);
+	int nInsertAt = pSeg->CheckPosition(pModel, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD);
 	if (nInsertAt != -1) {
 		int nPrevious = pSeg->GetPrevious(nInsertAt);
 		if (nPrevious != -1) {
 			// SDM 1.5Test10.2
-			if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME) > GetStartCursorPosition()) {
-				pSeg->Adjust(pDoc, nPrevious, pSeg->GetOffset(nPrevious), GetStartCursorPosition() - pSeg->GetOffset(nPrevious), false);
+			if (pSeg->GetStop(nPrevious) + pModel->GetBytesFromTime(MAX_ADD_JOIN_TIME) > GetStartCursorPosition()) {
+				pSeg->Adjust(pModel, nPrevious, pSeg->GetOffset(nPrevious), GetStartCursorPosition() - pSeg->GetOffset(nPrevious), false);
 			}
 		}
 		int nNext = -1;
@@ -8941,13 +8941,13 @@ void CSaView::OnEditAddAutoPhraseL2() {
 		}
 		if (nNext != -1) {
 			// SDM 1.5Test10.2
-			if (pSeg->GetOffset(nNext) < GetStopCursorPosition() + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) {
-				pSeg->Adjust(pDoc, nNext, GetStopCursorPosition(), pSeg->GetStop(nNext) - GetStopCursorPosition(), false);
+			if (pSeg->GetOffset(nNext) < GetStopCursorPosition() + pModel->GetBytesFromTime(MAX_ADD_JOIN_TIME)) {
+				pSeg->Adjust(pModel, nNext, GetStopCursorPosition(), pSeg->GetStop(nNext) - GetStopCursorPosition(), false);
 			}
 		}
 		pSeg->Insert(nInsertAt, szString, false, GetStartCursorPosition(), GetStopCursorPosition() - GetStartCursorPosition());
-		pDoc->SetModifiedFlag(TRUE); // document has been modified
-		pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+		pModel->SetModifiedFlag(TRUE); // document has been modified
+		pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
 		RedrawGraphs(TRUE);
 		pSeg->SetSelection(-1);
 		m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), true);
@@ -8959,28 +8959,28 @@ void CSaView::OnEditAddAutoPhraseL2() {
 			DWORD dwStop;
 
 			if (pSeg->GetNext(nSelection) == -1) { // Last Selection
-				dwMaxStop = pDoc->GetDataSize();
+				dwMaxStop = pModel->GetDataSize();
 			} else { // Fit before next
 				dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
 			}
 
 			// Snap Start Position
-			dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
+			dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
-			dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+			dwStop = (dwStart + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-			if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+			if (pModel->Is16Bit()) { // SDM 1.5Test8.2
 				dwStop = (dwStop + 1) & ~1; // Round up
 			}
 
 			if (pSeg->GetNext(nSelection) != -1) {
-				dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+				dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 			}
 
 			if (dwStop <= dwMaxStop) { // enough room
-				dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
+				dwStop = dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-				if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+				if (pModel->Is16Bit()) { // SDM 1.5Test8.2
 					dwStop = (dwStop + 1) & ~1; // Round up
 				}
 
@@ -8989,13 +8989,13 @@ void CSaView::OnEditAddAutoPhraseL2() {
 				} else
 					// Snap Stop Position
 				{
-					dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
+					dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
 				}
 
-				nInsertAt = pSeg->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);
+				nInsertAt = pSeg->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);
 				pSeg->Insert(nInsertAt, szString, true, dwStart, dwStop - dwStart);
-				pDoc->SetModifiedFlag(TRUE); // document has been modified
-				pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+				pModel->SetModifiedFlag(TRUE); // document has been modified
+				pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
 				RedrawGraphs(TRUE);
 				pSeg->SetSelection(-1);
 				m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), dwStart, true);
@@ -9061,9 +9061,9 @@ void CSaView::OnEditAddMarkup() {
 	OnEditAddPhonetic();
 	OnEditAddGloss();
 
-	CSaDoc * pDoc = GetDocument();  // get pointer to document
-	pDoc->SetModifiedFlag(TRUE); // document has been modified
-	pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+	CSaDoc * pModel = GetDocument();  // get pointer to document
+	pModel->SetModifiedFlag(TRUE); // document has been modified
+	pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
 	RedrawGraphs(TRUE);
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetAnnotation(PHONETIC);
 	pPhonetic->SetSelection(-1);
@@ -9087,7 +9087,7 @@ void CSaView::OnEditAddBookmark() {
 /***************************************************************************/
 void CSaView::EditAddGloss(bool bDelimiter) {
 
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();    // get pointer to document
+	CSaDoc * pModel = (CSaDoc *)GetDocument();    // get pointer to document
 	CSaString szString = "";                    //Fill new segment with default character
 	CSaString szEmpty = "";
 
@@ -9098,14 +9098,14 @@ void CSaView::EditAddGloss(bool bDelimiter) {
 	DWORD dwStartR = GetStartCursorPosition();
 	DWORD dwStopR = GetStopCursorPosition();
 
-	int nInsertAt = pGloss->CheckPosition(pDoc, dwStartR, dwStopR, CSegment::MODE_ADD);
+	int nInsertAt = pGloss->CheckPosition(pModel, dwStartR, dwStopR, CSegment::MODE_ADD);
 	if (nInsertAt != -1) {
 		DWORD dwStart = 0;
-		pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
+		pGloss->AdjustCursorsToMaster(pModel, FALSE, &dwStart);
 		// add a segment
-		pGloss->Add(pDoc, this, dwStart, szString, bDelimiter, true);
-		pReference->Add(pDoc, this, dwStart, szEmpty, bDelimiter, true);
-		pGlossNat->Add(pDoc, this, dwStart, szEmpty, bDelimiter, true);
+		pGloss->Add(pModel, this, dwStart, szString, bDelimiter, true);
+		pReference->Add(pModel, this, dwStart, szEmpty, bDelimiter, true);
+		pGlossNat->Add(pModel, this, dwStart, szEmpty, bDelimiter, true);
 		RedrawGraphs(FALSE);
 	} else {
 		//SDM 1.5Test8.2
@@ -9119,21 +9119,21 @@ void CSaView::EditAddGloss(bool bDelimiter) {
 
 		DWORD dwStop = 0;
 		if ((nPos == -1) || (nPos >= pGloss->GetOffsetSize())) {
-			dwStop = pDoc->GetDataSize();
+			dwStop = pModel->GetDataSize();
 		} else {
 			dwStop = pGloss->GetOffset(nPos);
 		}
 
-		nInsertAt = GetAnnotation(PHONETIC)->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);
+		nInsertAt = GetAnnotation(PHONETIC)->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);
 		if (nInsertAt != -1) {
 			SetStopCursorPosition(dwStop);
 			OnEditAddPhonetic();
 			
-			pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
+			pGloss->AdjustCursorsToMaster(pModel, FALSE, &dwStart);
 			// add a segment
-			pGloss->Add(pDoc, this, dwStart, szString, bDelimiter, false);
-			pReference->Add(pDoc, this, dwStart, szEmpty, bDelimiter, true);
-			pGlossNat->Add(pDoc, this, dwStart, szEmpty, bDelimiter, true);
+			pGloss->Add(pModel, this, dwStart, szString, bDelimiter, false);
+			pReference->Add(pModel, this, dwStart, szEmpty, bDelimiter, true);
+			pGlossNat->Add(pModel, this, dwStart, szEmpty, bDelimiter, true);
 			RedrawGraphs(FALSE);
 
 			int i = GetGraphIndexForIDD(IDD_RAWDATA);
@@ -9165,10 +9165,10 @@ void CSaView::EditAddGloss(bool bDelimiter) {
 /***************************************************************************/
 void CSaView::OnUpdateEditAddGloss(CCmdUI * pCmdUI) {
 	// get pointer to document
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 
 	CSegment * pSeg = GetAnnotation(GLOSS);
-	if (pSeg->CheckPosition(pDoc, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD) != -1) {
+	if (pSeg->CheckPosition(pModel, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD) != -1) {
 		// if we are completely within a segment we are good...
 		pCmdUI->Enable(TRUE);
 		return;
@@ -9197,13 +9197,13 @@ void CSaView::OnUpdateEditAddGloss(CCmdUI * pCmdUI) {
 		// if we weren't within a segment or we are on the last segment
 		if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize())) {
 			// stop will be at end of data
-			dwStop = pDoc->GetDataSize();
+			dwStop = pModel->GetDataSize();
 		} else {
 			// stop is at end of selected segment
 			dwStop = pSeg->GetOffset(nPos);
 		}
 		// if segments are within phonetic
-		if (GetAnnotation(PHONETIC)->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD) != -1) {
+		if (GetAnnotation(PHONETIC)->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD) != -1) {
 			pCmdUI->Enable(TRUE);
 			return;
 		}
@@ -9229,14 +9229,14 @@ void CSaView::OnUpdateEditAddGloss(CCmdUI * pCmdUI) {
 	// if we weren't within a segment or we are on the last segment
 	if (nPos >= pSeg->GetOffsetSize()) {
 		// stop will be at end of data
-		dwStop = pDoc->GetDataSize();
+		dwStop = pModel->GetDataSize();
 	} else {
 		// stop is at end of selected segment
 		dwStop = pSeg->GetOffset(nPos);
 	}
 
 	// if segments are within phonetic
-	if (GetAnnotation(PHONETIC)->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD) != -1) {
+	if (GetAnnotation(PHONETIC)->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD) != -1) {
 		pCmdUI->Enable(TRUE);
 		return;
 	}
@@ -9270,10 +9270,10 @@ void CSaView::OnUpdateEditAddMarkup(CCmdUI * pCmdUI) {
 void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI) {
 
 	BOOL bEnable = FALSE;
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 
 	CSegment * pSeg = GetAnnotation(GLOSS);
-	int nInsertAt = pSeg->CheckPosition(pDoc, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD);
+	int nInsertAt = pSeg->CheckPosition(pModel, GetStartCursorPosition(), GetStopCursorPosition(), CSegment::MODE_ADD);
 	if (nInsertAt != -1) {
 		bEnable = TRUE;
 	} else {
@@ -9289,12 +9289,12 @@ void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI) {
 
 		DWORD dwStop;
 		if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize())) {
-			dwStop = pDoc->GetDataSize();
+			dwStop = pModel->GetDataSize();
 		} else {
 			dwStop = pSeg->GetOffset(nPos);
 		}
 
-		nInsertAt = GetAnnotation(PHONETIC)->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);
+		nInsertAt = GetAnnotation(PHONETIC)->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);
 		if (nInsertAt != -1) {
 			bEnable = TRUE;
 		} else if (pSeg->GetSelection() != -1) { // Set Delimiter
@@ -9326,14 +9326,14 @@ void CSaView::OnUpdateEditSplit(CCmdUI * pCmdUI) {
 * CSaView::OnEditSplit
 **/
 void CSaView::OnEditSplit() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	EditSplit();
 }
 
 void CSaView::EditSplit() {
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	CSegment * pSeg = FindSelectedAnnotation();
 	if (pSeg == NULL) {
 		return;
@@ -9346,7 +9346,7 @@ void CSaView::EditSplit() {
 		return;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	pDoc->SplitSegment(pPhonetic, sel, -1);
+	pModel->SplitSegment(pPhonetic, sel, -1);
 	int newsel = pSeg->GetNext(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
 	DWORD newStop = pSeg->GetStop(newsel);
@@ -9362,12 +9362,12 @@ void CSaView::EditSplit() {
 **/
 void CSaView::OnUpdateSplitHere(CCmdUI * pCmdUI) {
 	TRACE("OnUpdateEditSplitHere\n");
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = CalculatePositionFromMouse();
 	if (position != -1) {
-		if (CanSplitAt(pDoc, pSeg, position)) {
+		if (CanSplitAt(pModel, pSeg, position)) {
 			enable = TRUE;
 		}
 	}
@@ -9382,16 +9382,16 @@ void CSaView::OnSplitHere() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
 	EditSplitAt(position);
 }
 
 DWORD CSaView::EditSplitAt(DWORD position) {
 
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	if (pSeg == NULL) {
 		return -1;
 	}
@@ -9399,7 +9399,7 @@ DWORD CSaView::EditSplitAt(DWORD position) {
 	if (sel == -1) {
 		return -1;
 	}
-	pDoc->SplitSegment(pSeg, sel, position);
+	pModel->SplitSegment(pSeg, sel, position);
 	int newsel = pSeg->GetNext(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
 	DWORD newStop = pSeg->GetStop(newsel);
@@ -9423,14 +9423,14 @@ void CSaView::OnUpdateEditMerge(CCmdUI * pCmdUI) {
 // CSaView::OnEditMerge
 /***************************************************************************/
 void CSaView::OnEditMerge() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	EditMerge();
 }
 
 void CSaView::EditMerge() {
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	CSegment * pSeg = FindSelectedAnnotation();
 	if (pSeg == NULL) {
 		return;
@@ -9445,7 +9445,7 @@ void CSaView::EditMerge() {
 		return;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	pDoc->MergeSegments(pPhonetic, sel);
+	pModel->MergeSegments(pPhonetic, sel);
 	int newsel = pSeg->GetPrevious(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
 	DWORD newStop = pSeg->GetStop(newsel);
@@ -9460,12 +9460,12 @@ void CSaView::EditMerge() {
 * CSaView::OnUpdateEditMergeHere
 **/
 void CSaView::OnUpdateMergeHere(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment *)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = CalculatePositionFromMouse();
 	if (position != -1) {
-		if (CanMergeAt(pDoc, pSeg, position)) {
+		if (CanMergeAt(pModel, pSeg, position)) {
 			enable = TRUE;
 		}
 	}
@@ -9480,16 +9480,16 @@ void CSaView::OnMergeHere() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
 	EditMergeAt(position);
 }
 
 void CSaView::EditMergeAt(DWORD position) {
 
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	if (pSeg == NULL) {
 		return;
 	}
@@ -9499,7 +9499,7 @@ void CSaView::EditMergeAt(DWORD position) {
 	}
 
 	// standard case
-	pDoc->MergeSegments(pSeg, sel);
+	pModel->MergeSegments(pSeg, sel);
 	int newsel = pSeg->GetPrevious(sel);
 	DWORD newStart = pSeg->GetOffset(newsel);
 	DWORD newStop = pSeg->GetStop(newsel);
@@ -9523,14 +9523,14 @@ void CSaView::OnUpdateEditMoveLeft(CCmdUI * pCmdUI) {
 * The selection should be on the segment to be filled - a blank segment
 **/
 void CSaView::OnEditMoveLeft() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	EditMoveLeft();
 }
 
 void CSaView::EditMoveLeft() {
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	CSegment * pSeg = FindSelectedAnnotation();
 	if (pSeg == NULL) {
 		TRACE("segment not found\n");
@@ -9554,7 +9554,7 @@ void CSaView::EditMoveLeft() {
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
 	DWORD start = pPhonetic->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
-	pDoc->MoveDataLeft(start);
+	pModel->MoveDataLeft(start);
 	m_advancedSelection.DeselectAnnotations(this);
 	m_advancedSelection.SelectFromPosition(this, GLOSS, start, false);
 	SetCursorPosition(START_CURSOR, start);
@@ -9566,12 +9566,12 @@ void CSaView::EditMoveLeft() {
 * CSaView::OnUpdateEditMoveLeftHere
 **/
 void CSaView::OnUpdateMoveLeftHere(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment *)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = CalculatePositionFromMouse();
 	if (position != -1) {
-		if (CanMoveDataLeftAt(pDoc, pSeg, position, true)) {
+		if (CanMoveDataLeftAt(pModel, pSeg, position, true)) {
 			enable = TRUE;
 		}
 	}
@@ -9587,15 +9587,15 @@ void CSaView::OnMoveLeftHere() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
-	EditMoveLeftAt(pDoc, position);
+	EditMoveLeftAt(pModel, position);
 }
 
-void CSaView::EditMoveLeftAt(CSaDoc * pDoc, DWORD position) {
+void CSaView::EditMoveLeftAt(CSaDoc * pModel, DWORD position) {
 
-	CPhoneticSegment * pSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
+	CPhoneticSegment * pSeg = (CPhoneticSegment *)pModel->GetSegment(PHONETIC);
 	if (pSeg == NULL) {
 		TRACE("segment not found\n");
 		return;
@@ -9613,7 +9613,7 @@ void CSaView::EditMoveLeftAt(CSaDoc * pDoc, DWORD position) {
 
 	DWORD start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
-	pDoc->MoveDataLeft(start);
+	pModel->MoveDataLeft(start);
 	m_advancedSelection.DeselectAnnotations(this);
 	m_advancedSelection.SelectFromPosition(this, GLOSS, start, false);
 	SetCursorPosition(START_CURSOR, start);
@@ -9639,8 +9639,8 @@ void CSaView::OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI) {
 * CSaView::OnEditSplitMoveLeft
 **/
 void CSaView::OnEditSplitMoveLeft() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	EditSplit();
 	EditMoveLeft();
 }
@@ -9650,13 +9650,13 @@ void CSaView::OnEditSplitMoveLeft() {
 **/
 void CSaView::OnUpdateSplitMoveLeftHere(CCmdUI * pCmdUI) {
 	TRACE("OnUpdateEditSplitMoveLeftHere\n");
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = CalculatePositionFromMouse();
 	if (position != -1) {
-		if (CanSplitAt(pDoc, pPhonetic, position)) {
-			if (CanMoveDataLeftAt(pDoc, pPhonetic, position, false)) {
+		if (CanSplitAt(pModel, pPhonetic, position)) {
+			if (CanMoveDataLeftAt(pModel, pPhonetic, position, false)) {
 				enable = TRUE;
 			}
 		}
@@ -9672,11 +9672,11 @@ void CSaView::OnSplitMoveLeftHere() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
 	DWORD newPosition = EditSplitAt(position);
-	EditMoveLeftAt(pDoc, newPosition + 1);
+	EditMoveLeftAt(pModel, newPosition + 1);
 }
 
 /**
@@ -9691,13 +9691,13 @@ void CSaView::OnUpdateEditMoveRight(CCmdUI * pCmdUI) {
 * CSaView::OnEditMoveRight
 **/
 void CSaView::OnEditMoveRight() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	EditMoveRight();
 }
 
 void CSaView::EditMoveRight() {
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	CSegment * pSeg = FindSelectedAnnotation();
 	if (pSeg == NULL) {
 		return;
@@ -9713,7 +9713,7 @@ void CSaView::EditMoveRight() {
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	DWORD start = pPhonetic->GetOffset(sel);
-	pDoc->MoveDataRight(start);
+	pModel->MoveDataRight(start);
 	start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
 	m_advancedSelection.DeselectAnnotations(this);
@@ -9728,7 +9728,7 @@ void CSaView::EditMoveRight() {
 **/
 void CSaView::EditMoveRightNext() {
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	CSegment * pSeg = FindSelectedAnnotation();
 	if (pSeg == NULL) {
 		return;
@@ -9749,7 +9749,7 @@ void CSaView::EditMoveRightNext() {
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	DWORD start = pPhonetic->GetOffset(sel);
-	pDoc->MoveDataRight(start);
+	pModel->MoveDataRight(start);
 	start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
 	m_advancedSelection.DeselectAnnotations(this);
@@ -9763,8 +9763,8 @@ void CSaView::EditMoveRightNext() {
 * CSaView::OnUpdateEditMoveRightHere
 **/
 void CSaView::OnUpdateMoveRightHere(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment *)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = CalculatePositionFromMouse();
 	if (position != -1) {
@@ -9783,10 +9783,10 @@ void CSaView::OnMoveRightHere() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
-	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CPhoneticSegment * pSeg = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	if (pSeg == NULL) {
 		return;
 	}
@@ -9801,7 +9801,7 @@ void CSaView::OnMoveRightHere() {
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	DWORD start = pPhonetic->GetOffset(sel);
-	pDoc->MoveDataRight(start);
+	pModel->MoveDataRight(start);
 	start = pSeg->GetOffset(sel);
 	DWORD stop = pSeg->GetStop(sel);
 	m_advancedSelection.DeselectAnnotations(this);
@@ -9826,8 +9826,8 @@ void CSaView::OnUpdateEditMoveRightMergeNext(CCmdUI * pCmdUI) {
 // CSaView::OnEditMoveRightMergeNext
 /***************************************************************************/
 void CSaView::OnEditMoveRightMergeNext() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	EditMoveRightNext();
 	EditMerge();
 }
@@ -9850,8 +9850,8 @@ void CSaView::OnUpdateEditMoveRightMergePrev(CCmdUI * pCmdUI) {
 // CSaView::OnEditMoveRightMergePrev
 /***************************************************************************/
 void CSaView::OnEditMoveRightMergePrev() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	EditMoveRight();
 	EditMerge();
 }
@@ -9869,13 +9869,13 @@ void CSaView::OnUpdateEditRemove(CCmdUI * pCmdUI) {
 }
 
 void CSaView::OnUpdateMoveRightMergeNextHere(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = CalculatePositionFromMouse();
 	if (position != -1) {
 		if (CanMoveDataRightNextAt(pSeg, position)) {
-			if (CanMergeAtNext(pDoc, pSeg, position)) {
+			if (CanMergeAtNext(pModel, pSeg, position)) {
 				enable = TRUE;
 			}
 		}
@@ -9888,8 +9888,8 @@ void CSaView::OnMoveRightMergeNextHere() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	// select the new annotation
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
 	EditMoveRightNext();
@@ -9897,13 +9897,13 @@ void CSaView::OnMoveRightMergeNextHere() {
 }
 
 void CSaView::OnUpdateMoveRightMergePrevHere(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = CalculatePositionFromMouse();
 	if (position != -1) {
 		if (CanMoveDataRightAt(pSeg, position)) {
-			if (CanMergeAt(pDoc, pSeg, position)) {
+			if (CanMergeAt(pModel, pSeg, position)) {
 				enable = TRUE;
 			}
 		}
@@ -9916,8 +9916,8 @@ void CSaView::OnMoveRightMergePrevHere() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	// select the new annotation
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
 	EditMoveRight();
@@ -10256,11 +10256,11 @@ void CSaView::OnEditPrevious() {
 // CSaView::OnUpdateEditPrevious Menu update
 /***************************************************************************/
 void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 	int nLoop;
 
 	BOOL bEnable = FALSE;
-	if ((pDoc->GetDataSize() != 0) && GetFocusedGraphWnd()) { // needs focused graph
+	if ((pModel->GetDataSize() != 0) && GetFocusedGraphWnd()) { // needs focused graph
 		m_advancedSelection.Update(this);
 		nLoop = m_advancedSelection.GetSelectionIndex();
 		// only work from visible selections
@@ -10460,11 +10460,11 @@ void CSaView::OnEditNext() {
 // CSaView::OnUpdateEditNext Menu update
 /***************************************************************************/
 void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = (CSaDoc *)GetDocument();
+	CSaDoc * pModel = (CSaDoc *)GetDocument();
 	int nLoop = 0;
 
 	BOOL bEnable = FALSE;
-	if ((pDoc->GetDataSize() != 0) &&
+	if ((pModel->GetDataSize() != 0) &&
 		(GetFocusedGraphWnd() != NULL) &&
 		(!(GetAnnotation(PHONETIC)->IsEmpty()))) { // needs focused graph
 		m_advancedSelection.Update(this);
@@ -10595,15 +10595,15 @@ int CSaView::GetAnimationFrameRate() {
 }
 
 void CSaView::OnSpectroFormants() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->ToggleSpectrogram();
+	CSaDoc * pModel = GetDocument();
+	pModel->ToggleSpectrogram();
 	RedrawGraphs();
 }
 
 void CSaView::OnUpdateSpectroFormants(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CSpectroParm parameters = pDoc->GetSpectrogram()->GetSpectroParm();
-	if ((parameters.GetShowFormants()) && pDoc->GetSpectrogram()->IsProcessCanceled()) {
+	CSaDoc * pModel = GetDocument();
+	CSpectroParm parameters = pModel->GetSpectrogram()->GetSpectroParm();
+	if ((parameters.GetShowFormants()) && pModel->GetSpectrogram()->IsProcessCanceled()) {
 		// update the display with the current state
 		OnSpectroFormants();
 	}
@@ -10626,7 +10626,7 @@ void CSaView::OnMoveStopCursorHere() {
 
 	// set the new positions
 	// get pointer to document
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	CPoint point = m_pFocusedGraph->GetPopupMenuPosition();
 	if ((point.x == UNDEFINED_OFFSET) && (point.y == UNDEFINED_OFFSET)) {
@@ -10654,8 +10654,8 @@ void CSaView::OnMoveStopCursorHere() {
 		dwDataFrame = CalcDataFrame(nWidth);
 	}
 
-	DWORD dwDataSize = pDoc->GetDataSize();
-	DWORD nSmpSize = pDoc->GetSampleSize();
+	DWORD dwDataSize = pModel->GetDataSize();
+	DWORD nSmpSize = pModel->GetSampleSize();
 	// calculate data samples per pixel
 	ASSERT(nWidth);
 	double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
@@ -10891,7 +10891,7 @@ CGraphWnd * CSaView::GetGraphForAnnotation(int annotation) {
 	return NULL;
 }
 
-DWORD CSaView::GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot) {
+DWORD CSaView::GetMinimumSeparation(CSaDoc * pModel, CGraphWnd * pGraph, CPlotWnd * pPlot) {
 
 	// get window coordinates of parent
 	CRect rWnd;
@@ -10913,7 +10913,7 @@ DWORD CSaView::GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd 
 		// number of data points to display
 		dwDataFrame = CalcDataFrame(nWidth);
 	}
-	DWORD nSmpSize = pDoc->GetSampleSize();
+	DWORD nSmpSize = pModel->GetSampleSize();
 	// calculate data samples per pixel
 	ASSERT(nWidth);
 	double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
@@ -11034,14 +11034,14 @@ void CSaView::OnToolsAdjustSilence() {
 	CURSORPOS oldStart = GetStartCursorPosition();
 	CURSORPOS oldStop = GetStopCursorPosition();
 
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 
-	CDlgInsertSilence dlg(pDoc);
+	CDlgInsertSilence dlg(pModel);
 	if (dlg.DoModal() != IDOK) {
-		pDoc->UndoWaveFile();
+		pModel->UndoWaveFile();
 		// get wave from the clipboard
-		pDoc->InvalidateAllProcesses();
+		pModel->InvalidateAllProcesses();
 		// restore the cursors
 		SetStartCursorPosition(oldStart);
 		SetStopCursorPosition(oldStop);
@@ -11054,53 +11054,53 @@ void CSaView::OnUpdateToolsAdjustSilence(CCmdUI * pCmdUI) {
 }
 
 void CSaView::OnToolsAdjustZero() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->AdjustZero();
+	CSaDoc * pModel = GetDocument();
+	pModel->AdjustZero();
 	RedrawGraphs();
 }
 
 void CSaView::OnUpdateToolsAdjustZero(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->SetCheck(pDoc->GetZero());
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->SetCheck(pModel->GetZero());
 }
 
 void CSaView::OnToolsAdjustNormalize() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->AdjustNormalize();
+	CSaDoc * pModel = GetDocument();
+	pModel->AdjustNormalize();
 	RedrawGraphs();
 }
 
 void CSaView::OnUpdateToolsAdjustNormalize(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->SetCheck(pDoc->GetNormalize());
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->SetCheck(pModel->GetNormalize());
 }
 
 void CSaView::OnToolsAdjustInvert() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->AdjustInvert();
+	CSaDoc * pModel = GetDocument();
+	pModel->AdjustInvert();
 	RedrawGraphs();
 }
 
 void CSaView::OnUpdateToolsAdjustInvert(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->SetCheck(pDoc->GetInvert());
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->SetCheck(pModel->GetInvert());
 }
 
 /***************************************************************************/
 // CSaView::OnAutoSnapUpdate Adjust all independent segments to snap boundaries
 /***************************************************************************/
 void CSaView::OnAutoSnapUpdate(void) {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
-	pDoc->AutoSnapUpdate();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
+	pModel->AutoSnapUpdate();
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateAutoSnapUpdate
 /***************************************************************************/
 void CSaView::OnUpdateAutoSnapUpdate(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->Enable(pDoc->AutoSnapUpdateNeeded());
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->Enable(pModel->AutoSnapUpdateNeeded());
 }
 
 // SDM Added Function in Release 1.06.5
@@ -11114,27 +11114,27 @@ void CSaView::OnUpdateBoundaries(void) {
 		return;
 	}
 
-	CSaDoc * pDoc = GetDocument();
-	if (pDoc->GetSegment(nLoop)->CheckCursors(pDoc, GetEditBoundaries(false) == BOUNDARIES_EDIT_SEGMENT_SIZE) != -1) {
+	CSaDoc * pModel = GetDocument();
+	if (pModel->GetSegment(nLoop)->CheckCursors(pModel, GetEditBoundaries(false) == BOUNDARIES_EDIT_SEGMENT_SIZE) != -1) {
 		// save state for undo ability
 		DWORD dwNewStart = GetStartCursorPosition();
 		DWORD dwNewStop = GetStopCursorPosition();
-		int nIndex = pDoc->GetSegment(nLoop)->GetSelection();
+		int nIndex = pModel->GetSegment(nLoop)->GetSelection();
 
 		// first adjust cursors to old segment boundaries (undo to here)
-		SetStartCursorPosition(pDoc->GetSegment(nLoop)->GetOffset(nIndex), SNAP_RIGHT);
-		SetStopCursorPosition(pDoc->GetSegment(nLoop)->GetStop(nIndex), SNAP_LEFT);
+		SetStartCursorPosition(pModel->GetSegment(nLoop)->GetOffset(nIndex), SNAP_RIGHT);
+		SetStopCursorPosition(pModel->GetSegment(nLoop)->GetStop(nIndex), SNAP_LEFT);
 
 		// If independent segment boundaries have moved they need to be updated for snapping
-		if (((pDoc->GetSegment(nLoop)->GetMasterIndex() == -1) &&
-			((GetStartCursorPosition() != pDoc->GetSegment(nLoop)->GetOffset(nIndex)) ||
-				(GetStopCursorPosition() != (pDoc->GetSegment(nLoop)->GetStop(nIndex)))))) {
+		if (((pModel->GetSegment(nLoop)->GetMasterIndex() == -1) &&
+			((GetStartCursorPosition() != pModel->GetSegment(nLoop)->GetOffset(nIndex)) ||
+				(GetStopCursorPosition() != (pModel->GetSegment(nLoop)->GetStop(nIndex)))))) {
 			// Phonetic Segment was not snapped - automatically update it
 			PostMessage(WM_COMMAND, ID_EDIT_AUTO_SNAP_UPDATE, 0L);
 		}
 
 		// Save state
-		pDoc->CheckPoint();
+		pModel->CheckPoint();
 
 		// Reload cursor locations to new segment boundaries
 		SetStartCursorPosition(dwNewStart, SNAP_LEFT);
@@ -11142,7 +11142,7 @@ void CSaView::OnUpdateBoundaries(void) {
 
 		// Do update
 		//SDM 1.5Test8.1
-		pDoc->UpdateSegmentBoundaries(GetEditBoundaries(false) == BOUNDARIES_EDIT_SEGMENT_SIZE);
+		pModel->UpdateSegmentBoundaries(GetEditBoundaries(false) == BOUNDARIES_EDIT_SEGMENT_SIZE);
 	}
 }
 
@@ -11152,22 +11152,22 @@ void CSaView::OnUpdateBoundaries(void) {
 /***************************************************************************/
 void CSaView::OnUpdateUpdateBoundaries(CCmdUI * pCmdUI) {
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	BOOL enable = FALSE;
 	int nLoop = FindSelectedAnnotationIndex();
-	if ((nLoop != -1) && (pDoc->GetSegment(nLoop)->CheckCursors(pDoc, GetEditBoundaries(false) == BOUNDARIES_EDIT_SEGMENT_SIZE) != -1)) {
-		int nSelection = pDoc->GetSegment(nLoop)->GetSelection();
+	if ((nLoop != -1) && (pModel->GetSegment(nLoop)->CheckCursors(pModel, GetEditBoundaries(false) == BOUNDARIES_EDIT_SEGMENT_SIZE) != -1)) {
+		int nSelection = pModel->GetSegment(nLoop)->GetSelection();
 		DWORD dwStart = GetStartCursorPosition();
 		DWORD dwStop = GetStopCursorPosition();
 
-		if ((pDoc->GetSegment(nLoop)->GetMasterIndex() == -1) &&
-			((dwStart != pDoc->GetSegment(nLoop)->GetOffset(nSelection)) || (dwStop != pDoc->GetSegment(nLoop)->GetStop(nSelection)))) {
+		if ((pModel->GetSegment(nLoop)->GetMasterIndex() == -1) &&
+			((dwStart != pModel->GetSegment(nLoop)->GetOffset(nSelection)) || (dwStop != pModel->GetSegment(nLoop)->GetStop(nSelection)))) {
 			enable = TRUE;
 		} else {
-			if (dwStart != pDoc->SnapCursor(START_CURSOR, pDoc->GetSegment(nLoop)->GetOffset(nSelection), 0, pDoc->GetDataSize(), SNAP_RIGHT)) {
+			if (dwStart != pModel->SnapCursor(START_CURSOR, pModel->GetSegment(nLoop)->GetOffset(nSelection), 0, pModel->GetDataSize(), SNAP_RIGHT)) {
 				enable = TRUE;
 			}
-			if (dwStop != pDoc->SnapCursor(STOP_CURSOR, pDoc->GetSegment(nLoop)->GetStop(nSelection), 0, pDoc->GetDataSize(), SNAP_LEFT)) {
+			if (dwStop != pModel->SnapCursor(STOP_CURSOR, pModel->GetSegment(nLoop)->GetStop(nSelection), 0, pModel->GetDataSize(), SNAP_LEFT)) {
 				enable = TRUE;
 			}
 		}
@@ -11182,11 +11182,11 @@ void CSaView::OnUpdateUpdateBoundaries(CCmdUI * pCmdUI) {
 void CSaView::OnAddReferenceData() {
 
 	// get pointer to application
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 
 	// determine how many words there are
-	CGlossSegment * pGloss = (CGlossSegment *)pDoc->GetSegment(GLOSS);
+	CGlossSegment * pGloss = (CGlossSegment *)pModel->GetSegment(GLOSS);
 	if (pGloss->IsEmpty()) {
 		ErrorMessage(IDS_ERROR_NO_WORDS_ON_AUTO_REFERENCE);
 		return;
@@ -11201,7 +11201,7 @@ void CSaView::OnAddReferenceData() {
 	int numWords = pGloss->GetOffsetSize();
 
 	// query the user
-	CDlgAutoReferenceData dlg(pDoc, numWords);
+	CDlgAutoReferenceData dlg(pModel, numWords);
 
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 
@@ -11225,7 +11225,7 @@ void CSaView::OnAddReferenceData() {
 	pApp->WriteProfileInt(L"AutoRef", L"UsingNumbers", ((dlg.mUsingNumbers) ? 1 : 0));
 	pApp->WriteProfileInt(L"AutoRef", L"UsingFirstGloss", ((dlg.mUsingFirstGloss) ? 1 : 0));
 
-	if (pDoc->PreflightAddReferenceData(dlg, selection)) {
+	if (pModel->PreflightAddReferenceData(dlg, selection)) {
 		int result = AfxMessageBox(IDS_DELETE_REFERENCE, MB_YESNO | MB_ICONQUESTION);
 		if (result != IDYES) {
 			return;
@@ -11233,9 +11233,9 @@ void CSaView::OnAddReferenceData() {
 	}
 
 	// do it for real
-	pDoc->AddReferenceData(dlg, selection);
+	pModel->AddReferenceData(dlg, selection);
 
-	pDoc->SetModifiedFlag(TRUE); // data has been modified
+	pModel->SetModifiedFlag(TRUE); // data has been modified
 
 	// refresh the tables
 	CGraphWnd * pGraph = GraphIDtoPtr(IDD_RAWDATA);
@@ -11248,8 +11248,8 @@ void CSaView::OnAddReferenceData() {
 
 void CSaView::OnUpdateAddReferenceData(CCmdUI * pCmdUI) {
 	// enable if data is available
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->Enable(pDoc->GetDataSize() != 0);
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->Enable(pModel->GetDataSize() != 0);
 }
 
 // SDM 1.06.4
@@ -11258,10 +11258,10 @@ void CSaView::OnUpdateAddReferenceData(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnAutoAlign() {
 
-	CSaDoc * pDoc = GetDocument();
-	pDoc->ClearTranscriptionCount();
+	CSaDoc * pModel = GetDocument();
+	pModel->ClearTranscriptionCount();
 
-	CDlgAlignTranscriptionDataSheet dlg(NULL, pDoc);
+	CDlgAlignTranscriptionDataSheet dlg(NULL, pModel);
 
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
 
@@ -11284,13 +11284,13 @@ void CSaView::OnAutoAlign() {
 		pApp->WriteProfileInt(L"TranscriptionAlignment", L"Reference", (dlg.init.m_bReference) ? 1 : 0);
 		pApp->WriteProfileInt(L"TranscriptionAlignment", L"UseReference", (dlg.init.m_bUseReference) ? 1 : 0);
 	} else if (result == IDCANCEL) {
-		pDoc->RevertAllTranscriptionChanges();
+		pModel->RevertAllTranscriptionChanges();
 	}
 }
 
 void CSaView::OnUpdateAutoAlign(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->Enable(pDoc->GetDataSize() != 0); // enable if data is available
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->Enable(pModel->GetDataSize() != 0); // enable if data is available
 }
 
 // Split function SDM 1.5Test8.2
@@ -11298,10 +11298,10 @@ void CSaView::OnUpdateAutoAlign(CCmdUI * pCmdUI) {
 // CSaView::OnAdvancedParseWords Parse wave data
 /***************************************************************************/
 void CSaView::OnAdvancedParseWords() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	if (m_pDlgAdvancedParseWords == NULL) {
-		m_pDlgAdvancedParseWords = new CDlgAdvancedParseWords(pDoc);
+		m_pDlgAdvancedParseWords = new CDlgAdvancedParseWords(pModel);
 		if (!m_pDlgAdvancedParseWords->Create()) {
 			ErrorMessage(IDS_ERROR_NO_DIALOG);
 			delete m_pDlgAdvancedParseWords;
@@ -11309,15 +11309,15 @@ void CSaView::OnAdvancedParseWords() {
 			return;
 		}
 	}
-	m_pDlgAdvancedParseWords->Show((LPCTSTR)pDoc->GetTitle());
+	m_pDlgAdvancedParseWords->Show((LPCTSTR)pModel->GetTitle());
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateAdvancedParseWords Menu update
 /***************************************************************************/
 void CSaView::OnUpdateAdvancedParseWords(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->Enable(pDoc->GetDataSize() != 0); // enable if data is available
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->Enable(pModel->GetDataSize() != 0); // enable if data is available
 }
 
 // Split function SDM 1.5Test8.2
@@ -11325,10 +11325,10 @@ void CSaView::OnUpdateAdvancedParseWords(CCmdUI * pCmdUI) {
 // CSaView::OnAdvancedParsePhrases Parse wave data
 /***************************************************************************/
 void CSaView::OnAdvancedParsePhrases() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	if (m_pDlgAdvancedParsePhrases == NULL) {
-		m_pDlgAdvancedParsePhrases = new CDlgAdvancedParsePhrases(pDoc);
+		m_pDlgAdvancedParsePhrases = new CDlgAdvancedParsePhrases(pModel);
 		if (!m_pDlgAdvancedParsePhrases->Create()) {
 			ErrorMessage(IDS_ERROR_NO_DIALOG);
 			delete m_pDlgAdvancedParsePhrases;
@@ -11336,15 +11336,15 @@ void CSaView::OnAdvancedParsePhrases() {
 			return;
 		}
 	}
-	m_pDlgAdvancedParsePhrases->Show((LPCTSTR)pDoc->GetTitle());
+	m_pDlgAdvancedParsePhrases->Show((LPCTSTR)pModel->GetTitle());
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateAdvancedParsePhrases Menu update
 /***************************************************************************/
 void CSaView::OnUpdateAdvancedParsePhrases(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->Enable(pDoc->GetDataSize() != 0); // enable if data is available
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->Enable(pModel->GetDataSize() != 0); // enable if data is available
 }
 
 // Split function SDM 1.5Test8.2
@@ -11352,10 +11352,10 @@ void CSaView::OnUpdateAdvancedParsePhrases(CCmdUI * pCmdUI) {
 // CSaView::OnAdvancedSegment Segment wave data
 /***************************************************************************/
 void CSaView::OnAdvancedSegment() {
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	if (m_pDlgAdvancedSegment == NULL) {
-		m_pDlgAdvancedSegment = new CDlgAdvancedSegment(pDoc);
+		m_pDlgAdvancedSegment = new CDlgAdvancedSegment(pModel);
 		if (!m_pDlgAdvancedSegment->Create()) {
 			ErrorMessage(IDS_ERROR_NO_DIALOG);
 			delete m_pDlgAdvancedSegment;
@@ -11363,15 +11363,15 @@ void CSaView::OnAdvancedSegment() {
 			return;
 		}
 	}
-	m_pDlgAdvancedSegment->Show((LPCTSTR)pDoc->GetTitle());
+	m_pDlgAdvancedSegment->Show((LPCTSTR)pModel->GetTitle());
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateAdvancedSegment Menu update
 /***************************************************************************/
 void CSaView::OnUpdateAdvancedSegment(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	pCmdUI->Enable(pDoc->GetDataSize() != 0); // enable if data is available
+	CSaDoc * pModel = GetDocument();
+	pCmdUI->Enable(pModel->GetDataSize() != 0); // enable if data is available
 }
 
 /***************************************************************************/
@@ -11381,8 +11381,8 @@ void CSaView::OnUpdateAdvancedSegment(CCmdUI * pCmdUI) {
 void CSaView::OnFileSplitFile() {
 
 	CSaApp * pApp = (CSaApp*)AfxGetApp();
-	CSaDoc * pDoc = GetDocument();
-	CString fileName = pDoc->GetPathName();
+	CSaDoc * pModel = GetDocument();
+	CString fileName = pModel->GetPathName();
 	wchar_t buffer[MAX_PATH];
 	swprintf_s(buffer, _countof(buffer), fileName);
 	wchar_t drive[_MAX_DRIVE];
@@ -11559,13 +11559,13 @@ void CSaView::OnUpdateFileSplit(CCmdUI * pCmdUI) {
 // CSaView::OnUpdateFileSave Menu Update
 /***************************************************************************/
 void CSaView::OnUpdateFileSave(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	if (!pDoc->HasFullName()) {
+	CSaDoc * pModel = GetDocument();
+	if (!pModel->HasFullName()) {
 		// no path name provided
 		pCmdUI->Enable(FALSE);
 	} else {
 		// path name ok, enable if dirty or processed
-		pCmdUI->Enable((pDoc->IsModified() || (pDoc->GetWbProcess())));
+		pCmdUI->Enable((pModel->IsModified() || (pModel->GetWbProcess())));
 	}
 }
 
@@ -11700,12 +11700,12 @@ void CSaView::OnUpdateFileSaveAs(CCmdUI * pCmdUI) {
 void CSaView::OnGenerateCVData() {
 
 	// verify markup exists for phonetic
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
-	pDoc->CheckPoint();
+	pModel->CheckPoint();
 
 	// we will assume for now that the user will provide the phonetic segmentation..
-	CSegment * pTone = pDoc->GetSegment(TONE);
+	CSegment * pTone = pModel->GetSegment(TONE);
 	if (pTone->GetOffsetSize() != 0) {
 		bool empty = true;
 		for (int i = 0; i < pTone->GetOffsetSize(); i++) {
@@ -11721,7 +11721,7 @@ void CSaView::OnGenerateCVData() {
 	{
 		CScopedCursor cursor(this);
 		// automatically create CV data for the Tone Segment
-		pDoc->GenerateCVData(*this);
+		pModel->GenerateCVData(*this);
 	}
 
 	// show tone on the .. graph
@@ -11734,8 +11734,8 @@ void CSaView::OnGenerateCVData() {
 }
 
 void CSaView::OnExportCVData() {
-	CSaDoc * pDoc = GetDocument();
-	CDlgExportSFM dlg(pDoc->GetTitle());
+	CSaDoc * pModel = GetDocument();
+	CDlgExportSFM dlg(pModel->GetTitle());
 	dlg.DoModal();
 }
 
@@ -11808,7 +11808,7 @@ DWORD CSaView::CalculatePositionFromMouse() {
 
 	// set the new positions
 	// get pointer to document
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	CPoint point = m_pFocusedGraph->GetPopupMenuPosition();
 	if ((point.x == UNDEFINED_OFFSET) && (point.y == UNDEFINED_OFFSET)) {
@@ -11836,8 +11836,8 @@ DWORD CSaView::CalculatePositionFromMouse() {
 		dwDataFrame = CalcDataFrame(nWidth);
 	}
 
-	DWORD dwDataSize = pDoc->GetDataSize();
-	DWORD nSmpSize = pDoc->GetSampleSize();
+	DWORD dwDataSize = pModel->GetDataSize();
+	DWORD nSmpSize = pModel->GetSampleSize();
 	// calculate data samples per pixel
 	ASSERT(rWnd.Width());
 	double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
@@ -11859,7 +11859,7 @@ DWORD CSaView::CalculatePositionFromMouse() {
 
 bool CSaView::CanMoveDataLeft(CSegment * pSeg, bool discrete) {
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	if (pSeg == NULL) {
 		return false;
 	}
@@ -11885,11 +11885,11 @@ bool CSaView::CanMoveDataLeft(CSegment * pSeg, bool discrete) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	bool segmental = pDoc->IsSegmental(pPhonetic, sel);
+	bool segmental = pModel->IsSegmental(pPhonetic, sel);
 	return !segmental;
 }
 
-bool CSaView::CanMoveDataLeftAt(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position, bool discrete) {
+bool CSaView::CanMoveDataLeftAt(CSaDoc * pModel, CPhoneticSegment * pSeg, DWORD position, bool discrete) {
 
 	if (pSeg == NULL) {
 		return false;
@@ -11915,7 +11915,7 @@ bool CSaView::CanMoveDataLeftAt(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD po
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	bool segmental = pDoc->IsSegmental(pPhonetic, sel);
+	bool segmental = pModel->IsSegmental(pPhonetic, sel);
 	if (segmental) {
 		return false;
 	}
@@ -11931,7 +11931,7 @@ bool CSaView::CanMoveDataRight(CSegment * pSeg) {
 		return false;
 	}
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	// standard case
 	// allow move right on last segment
@@ -11941,7 +11941,7 @@ bool CSaView::CanMoveDataRight(CSegment * pSeg) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	bool segmental = pDoc->IsSegmental(pPhonetic, sel);
+	bool segmental = pModel->IsSegmental(pPhonetic, sel);
 	return !segmental;
 }
 
@@ -11963,7 +11963,7 @@ bool CSaView::CanMoveDataRightNext(CSegment * pSeg) {
 		return false;
 	}
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	// standard case
 	// allow move right on last segment
@@ -11973,7 +11973,7 @@ bool CSaView::CanMoveDataRightNext(CSegment * pSeg) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	bool segmental = pDoc->IsSegmental(pPhonetic, sel);
+	bool segmental = pModel->IsSegmental(pPhonetic, sel);
 	return !segmental;
 }
 
@@ -11989,7 +11989,7 @@ bool CSaView::CanMoveDataRightSel(CSegment * pSeg, int sel) {
 		return false;
 	}
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	// standard case
 	// allow move right on last segment
@@ -11999,7 +11999,7 @@ bool CSaView::CanMoveDataRightSel(CSegment * pSeg, int sel) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	bool segmental = pDoc->IsSegmental(pPhonetic, sel);
+	bool segmental = pModel->IsSegmental(pPhonetic, sel);
 	return !segmental;
 }
 
@@ -12011,7 +12011,7 @@ bool CSaView::CanMoveDataRightAt(CPhoneticSegment * pSeg, DWORD position) {
 	if (sel == -1) {
 		return false;
 	}
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	// standard case
 	// allow move right on last segment
@@ -12021,7 +12021,7 @@ bool CSaView::CanMoveDataRightAt(CPhoneticSegment * pSeg, DWORD position) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	bool segmental = pDoc->IsSegmental(pPhonetic, sel);
+	bool segmental = pModel->IsSegmental(pPhonetic, sel);
 	return !segmental;
 }
 
@@ -12037,7 +12037,7 @@ bool CSaView::CanMoveDataRightNextAt(CPhoneticSegment * pSeg, DWORD position) {
 	if (sel >= pSeg->GetOffsetSize()) {
 		return false;
 	}
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	// standard case
 	// allow move right on last segment
@@ -12047,7 +12047,7 @@ bool CSaView::CanMoveDataRightNextAt(CPhoneticSegment * pSeg, DWORD position) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
-	bool segmental = pDoc->IsSegmental(pPhonetic, sel);
+	bool segmental = pModel->IsSegmental(pPhonetic, sel);
 	return !segmental;
 }
 
@@ -12069,16 +12069,16 @@ bool CSaView::CanSplit(CSegment * pSeg) {
 		}
 	}
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	if (!pSeg->Is(PHONETIC)) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
-	if (pDoc->IsSegmental(pPhonetic, sel)) return false;
+	if (pModel->IsSegmental(pPhonetic, sel)) return false;
 	return true;
 }
 
-bool CSaView::CanSplitAt(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position) {
+bool CSaView::CanSplitAt(CSaDoc * pModel, CPhoneticSegment * pSeg, DWORD position) {
 
 	if (pSeg == NULL) {
 		return false;
@@ -12110,7 +12110,7 @@ bool CSaView::CanSplitAt(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position)
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
-	if (pDoc->IsSegmental(pPhonetic, sel)) {
+	if (pModel->IsSegmental(pPhonetic, sel)) {
 		return false;
 	}
 	return true;
@@ -12134,20 +12134,20 @@ bool CSaView::CanMerge(CSegment * pSeg) {
 		return false;
 	}
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	// phonetic not selected
 	if (!pSeg->Is(PHONETIC)) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	// if we are in a segmental transcription, we can't merge left
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel))) {
 		//TRACE("current segment is boundary-segmental\n");
 		return false;
 	}
 	// if we are not segmental, but the segment to our
 	// left is segmental, we cannot merge.
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel - 1))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel - 1))) {
 		//TRACE("adjacent segment is boundary-segmental\n");
 		return false;
 	}
@@ -12173,27 +12173,27 @@ bool CSaView::CanMergeNext(CSegment * pSeg) {
 		return false;
 	}
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 	// phonetic not selected
 	if (!pSeg->Is(PHONETIC)) {
 		return false;
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	// if we are in a segmental transcription, we can't merge left
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel))) {
 		//TRACE("current segment is boundary-segmental\n");
 		return false;
 	}
 	// if we are not segmental, but the segment to our
 	// left is segmental, we cannot merge.
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel - 1))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel - 1))) {
 		//TRACE("adjacent segment is boundary-segmental\n");
 		return false;
 	}
 	return true;
 }
 
-bool CSaView::CanMergeAt(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position) {
+bool CSaView::CanMergeAt(CSaDoc * pModel, CPhoneticSegment * pSeg, DWORD position) {
 
 	if (pSeg == NULL) {
 		return false;
@@ -12217,20 +12217,20 @@ bool CSaView::CanMergeAt(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position)
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	// if we are in a segmental transcription, we can't merge left
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel))) {
 		//TRACE("current segment is boundary-segmental\n");
 		return false;
 	}
 	// if we are not segmental, but the segment to our
 	// left is segmental, we cannot merge.
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel - 1))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel - 1))) {
 		//TRACE("adjacent segment is boundary-segmental\n");
 		return false;
 	}
 	return true;
 }
 
-bool CSaView::CanMergeAtNext(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD position) {
+bool CSaView::CanMergeAtNext(CSaDoc * pModel, CPhoneticSegment * pSeg, DWORD position) {
 
 	if (pSeg == NULL) {
 		return false;
@@ -12257,13 +12257,13 @@ bool CSaView::CanMergeAtNext(CSaDoc * pDoc, CPhoneticSegment * pSeg, DWORD posit
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	// if we are in a segmental transcription, we can't merge left
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel))) {
 		//TRACE("current segment is boundary-segmental\n");
 		return false;
 	}
 	// if we are not segmental, but the segment to our
 	// left is segmental, we cannot merge.
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel - 1))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel - 1))) {
 		//TRACE("adjacent segment is boundary-segmental\n");
 		return false;
 	}
@@ -12286,7 +12286,7 @@ bool CSaView::CanMergeSel(CPhoneticSegment * pSeg, int sel) {
 		return false;
 	}
 
-	CSaDoc * pDoc = GetDocument();
+	CSaDoc * pModel = GetDocument();
 
 	// phonetic not selected
 	if (!pSeg->Is(PHONETIC)) {
@@ -12294,13 +12294,13 @@ bool CSaView::CanMergeSel(CPhoneticSegment * pSeg, int sel) {
 	}
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment *)pSeg;
 	// if we are in a segmental transcription, we can't merge left
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel))) {
 		//TRACE("current segment is boundary-segmental\n");
 		return false;
 	}
 	// if we are not segmental, but the segment to our
 	// left is segmental, we cannot merge.
-	if ((pDoc->IsBoundary(pPhonetic, sel)) && (pDoc->IsSegmental(pPhonetic, sel - 1))) {
+	if ((pModel->IsBoundary(pPhonetic, sel)) && (pModel->IsSegmental(pPhonetic, sel - 1))) {
 		//TRACE("adjacent segment is boundary-segmental\n");
 		return false;
 	}
@@ -12321,21 +12321,21 @@ void CSaView::OnSplitMoveLeftAt() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
 	DWORD newPosition = EditSplitAt(position);
-	EditMoveLeftAt(pDoc, newPosition + 1);
+	EditMoveLeftAt(pModel, newPosition + 1);
 }
 
 void CSaView::OnUpdateSplitMoveLeftAt(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = m_dwStartCursor;
 	if (position != -1) {
-		if (CanSplitAt(pDoc, pPhonetic, position)) {
-			if (CanMoveDataLeftAt(pDoc, pPhonetic, position, false)) {
+		if (CanSplitAt(pModel, pPhonetic, position)) {
+			if (CanMoveDataLeftAt(pModel, pPhonetic, position, false)) {
 				enable = TRUE;
 			}
 		}
@@ -12344,8 +12344,8 @@ void CSaView::OnUpdateSplitMoveLeftAt(CCmdUI * pCmdUI) {
 }
 
 void CSaView::OnUpdateMoveRightMergePrevAt(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	DWORD position = m_dwStartCursor;
 	BOOL enable = FALSE;
 	int sel = pSeg->FindWithin(position);
@@ -12364,16 +12364,16 @@ void CSaView::OnMoveRightMergePrevAt() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
 	EditMoveRight();
 	EditMerge();
 }
 
 void CSaView::OnUpdateMoveRightMergeNextAt(CCmdUI * pCmdUI) {
-	CSaDoc * pDoc = GetDocument();
-	CPhoneticSegment * pSeg = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC);
+	CSaDoc * pModel = GetDocument();
+	CPhoneticSegment * pSeg = (CPhoneticSegment*)pModel->GetSegment(PHONETIC);
 	BOOL enable = FALSE;
 	DWORD position = m_dwStartCursor;
 	int sel = pSeg->FindWithin(position);
@@ -12393,8 +12393,8 @@ void CSaView::OnMoveRightMergeNextAt() {
 	if (position == -1) {
 		return;
 	}
-	CSaDoc * pDoc = GetDocument();
-	pDoc->CheckPoint();
+	CSaDoc * pModel = GetDocument();
+	pModel->CheckPoint();
 	m_advancedSelection.SelectFromPosition(this, PHONETIC, position, false);
 	EditMoveRightNext();
 	EditMerge();

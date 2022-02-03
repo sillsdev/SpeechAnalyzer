@@ -57,7 +57,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\Lang;..\SA_DSP;..\zGraph;..\uriparser\include;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\Lang;..\SA_DSP;..\zGraph;..\uriparser\include;..\saprocessor;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
@@ -106,7 +106,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\Lang;..\SA_DSP;..\zGraph;..\uriparser\include;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\Lang;..\SA_DSP;..\zGraph;..\uriparser\include;..\saprocessor;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -149,7 +149,6 @@
     <ClCompile Include="Process\AbstractPitchProcess.cpp" />
     <ClCompile Include="Process\PitchProcess.cpp" />
     <ClCompile Include="Process\ProcessAreaData.cpp" />
-    <ClCompile Include="Process\sa_p_pitch.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="DataStatusBar.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
@@ -189,7 +188,6 @@
     <ClCompile Include="ImportSFM.cpp" />
     <ClCompile Include="IndependentSegment.cpp" />
     <ClCompile Include="LegendWnd.cpp" />
-    <ClCompile Include="Lpc.cpp" />
     <ClCompile Include="MCIPlayer.cpp" />
     <ClCompile Include="MusicPhraseSegment.cpp" />
     <ClCompile Include="ObjectIStream.cpp" />
@@ -205,31 +203,8 @@
     <ClCompile Include="Process\Hilbert.cpp" />
     <ClCompile Include="Process\IIRFilter.cpp" />
     <ClCompile Include="Process\TrackState.cpp" />
-    <ClCompile Include="Process\sa_p_3dPitch.cpp" />
-    <ClCompile Include="Process\SA_P_CHA.CPP" />
-    <ClCompile Include="Process\sa_p_cor.cpp" />
-    <ClCompile Include="Process\sa_p_custompitch.cpp" />
     <ClCompile Include="Process\ProcessDoc.cpp" />
-    <ClCompile Include="Process\SA_P_DUR.CPP" />
-    <ClCompile Include="Process\SA_P_FMT.CPP" />
-    <ClCompile Include="Process\sa_p_fra.cpp" />
-    <ClCompile Include="Process\Sa_p_glo.cpp" />
-    <ClCompile Include="Process\sa_p_grappl.cpp" />
-    <ClCompile Include="Process\sa_p_instantaneouspower.cpp" />
-    <ClCompile Include="Process\Sa_p_lou.cpp" />
-    <ClCompile Include="Process\sa_p_melogram.cpp" />
-    <ClCompile Include="Process\sa_p_poa.cpp" />
-    <ClCompile Include="Process\SA_P_RAT.CPP" />
-    <ClCompile Include="Process\Sa_p_raw.cpp" />
-    <ClCompile Include="Process\sa_p_sfmt.cpp" />
-    <ClCompile Include="Process\Sa_p_spg.cpp" />
-    <ClCompile Include="Process\sa_p_smoothedpitch.cpp" />
-    <ClCompile Include="Process\Sa_p_spu.cpp" />
-    <ClCompile Include="Process\SA_P_TWC.CPP" />
-    <ClCompile Include="Process\sa_p_wavelet.cpp" />
-    <ClCompile Include="Process\SA_P_ZCR.CPP" />
     <ClCompile Include="Process\Process.cpp" />
-    <ClCompile Include="Process\SA_W_ADJ.CPP" />
     <ClCompile Include="Process\SA_W_EQU.CPP" />
     <ClCompile Include="Process\SA_W_PAS.CPP" />
     <ClCompile Include="Process\SA_W_REV.CPP" />
@@ -242,7 +217,6 @@
     <ClCompile Include="RecMixer.cpp" />
     <ClCompile Include="ReferenceSegment.cpp" />
     <ClCompile Include="ReferenceWnd.cpp" />
-    <ClCompile Include="SaParam.cpp" />
     <ClCompile Include="SaString.cpp" />
     <ClCompile Include="SAXMLUtils.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
@@ -281,7 +255,6 @@
     <ClCompile Include="Sa_wbch.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="Param.cpp" />
     <ClCompile Include="Ch_dlg.cpp" />
     <ClCompile Include="Ch_dlwnd.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
@@ -304,7 +277,6 @@
     <ClCompile Include="SegmentOps.cpp" />
     <ClCompile Include="SelfTest.cpp" />
     <ClCompile Include="SFMHelper.cpp" />
-    <ClCompile Include="SpectroParm.cpp" />
     <ClCompile Include="SplitFileUtils.cpp" />
     <ClCompile Include="StartCursorWnd.cpp" />
     <ClCompile Include="StopCursorWnd.cpp" />
@@ -377,7 +349,6 @@
     <ClCompile Include="WaveWarp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Release Notes.txt" />
     <None Include="Annotation.cd" />
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />
@@ -397,7 +368,6 @@
     <ClInclude Include="Process\AbstractPitchProcess.h" />
     <ClInclude Include="Process\PitchProcess.h" />
     <ClInclude Include="Process\ProcessAreaData.h" />
-    <ClInclude Include="Process\sa_p_pitch.h" />
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="DataStatusBar.h" />
     <ClInclude Include="DlgAnnotationEdit.h" />
@@ -433,7 +403,6 @@
     <ClInclude Include="DlgSelectTranscriptionBars.h" />
     <ClInclude Include="DlgWaveformGenerator.h" />
     <ClInclude Include="DlgWaveNotifyObj.h" />
-    <ClInclude Include="dsp\lpc.h" />
     <ClInclude Include="dsp\WaveWarp.h" />
     <ClInclude Include="ExportFWSettings.h" />
     <ClInclude Include="ExportLiftSettings.h" />
@@ -448,7 +417,6 @@
     <ClInclude Include="IndependentSegment.h" />
     <ClInclude Include="IWaveNotifiable.h" />
     <ClInclude Include="LegendWnd.h" />
-    <ClInclude Include="Lpc.h" />
     <ClInclude Include="MCIPlayer.h" />
     <ClInclude Include="mshflexgrid.h" />
     <ClInclude Include="MusicPhraseSegment.h" />
@@ -470,20 +438,8 @@
     <ClInclude Include="process\Process.h" />
     <ClInclude Include="process\ProcessDoc.h" />
     <ClInclude Include="Process\Hilbert.h" />
-    <ClInclude Include="process\sa_p_3dpitch.h" />
-    <ClInclude Include="process\sa_p_cha.h" />
-    <ClInclude Include="Process\sa_p_custompitch.h" />
-    <ClInclude Include="process\sa_p_dur.h" />
-    <ClInclude Include="process\sa_p_fmt.h" />
-    <ClInclude Include="process\sa_p_fra.h" />
-    <ClInclude Include="process\sa_p_glo.h" />
-    <ClInclude Include="process\sa_p_grappl.h" />
-    <ClInclude Include="process\sa_p_instantaneouspower.h" />
-    <ClInclude Include="process\sa_p_lou.h" />
-    <ClInclude Include="process\sa_p_melogram.h" />
     <ClInclude Include="RecMixer.h" />
     <ClInclude Include="ReferenceWnd.h" />
-    <ClInclude Include="SaParam.h" />
     <ClInclude Include="SaString.h" />
     <ClInclude Include="DocList.h" />
     <ClInclude Include="FaceDiag.h" />
@@ -494,21 +450,9 @@
     <ClInclude Include="ISa_Doc.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Mixer.h" />
-    <ClInclude Include="Param.h" />
     <ClInclude Include="Partiture.hpp" />
     <ClInclude Include="plotwndInfo.h" />
     <ClInclude Include="PrintDim.h" />
-    <ClInclude Include="process\sa_p_poa.h" />
-    <ClInclude Include="process\sa_p_rat.h" />
-    <ClInclude Include="process\sa_p_raw.h" />
-    <ClInclude Include="process\sa_p_sfmt.h" />
-    <ClInclude Include="process\sa_p_spg.h" />
-    <ClInclude Include="process\sa_p_smoothedpitch.h" />
-    <ClInclude Include="process\sa_p_spu.h" />
-    <ClInclude Include="process\sa_p_twc.h" />
-    <ClInclude Include="process\sa_p_wavelet.h" />
-    <ClInclude Include="process\sa_p_zcr.h" />
-    <ClInclude Include="process\sa_w_adj.h" />
     <ClInclude Include="process\sa_w_equ.h" />
     <ClInclude Include="process\SA_W_PAS.h" />
     <ClInclude Include="process\sa_w_rev.h" />
@@ -572,14 +516,12 @@
     <ClInclude Include="SelfTest.h" />
     <ClInclude Include="SFMHelper.h" />
     <ClInclude Include="SourceParm.h" />
-    <ClInclude Include="SpectroParm.h" />
     <ClInclude Include="SplitFileUtils.h" />
     <ClInclude Include="StartCursorWnd.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StopCursorWnd.h" />
     <ClInclude Include="StopWatch.h" />
     <ClInclude Include="StringStream.h" />
-    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="DlgKlattAll.h" />
     <ClInclude Include="DlgSynthesis.h" />
     <ClInclude Include="DlgVocalTract.h" />

@@ -141,7 +141,7 @@ protected:
     void ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaVTChar & columnChar);
     void ParseParameterGrid(int nGrid, CIpaVTCharVector & cChar);
     void ParseParameterGrid(CFlexEditGrid & cGrid, CIpaVTCharVector & cChars);
-    void SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pDoc, DWORD dwDuration, WORD wSmpSize);
+    void SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pModel, DWORD dwDuration, WORD wSmpSize);
     void ShowGrid(int nView);
 
     void ConvertCStringToCharVector(CString const & szString, CIpaVTCharVector & cChars);
@@ -187,7 +187,7 @@ protected:
     void OnGetFragments(CFlexEditGrid & cGrid);
     void OnApplyIpaDefaults(CFlexEditGrid & cGrid);
     void OnBlendSegments(int nSrc, CFlexEditGrid & cGrid);
-    void LabelDocument(CSaDoc * pDoc);
+    void LabelDocument(CSaDoc * pModel);
 
     afx_msg void OnGetAll();
     afx_msg void OnClose();

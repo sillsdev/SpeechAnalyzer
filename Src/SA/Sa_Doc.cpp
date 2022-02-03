@@ -4372,7 +4372,7 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap) {
 /***************************************************************************/
 BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelection, DWORD dwNewOffset, DWORD dwNewStop) {
 
-	CSaDoc * pDoc = this;
+	CSaDoc * pModel = this;
 
 	int nLoop = nAnnotation;
 	if (nLoop == -1) {
@@ -4383,7 +4383,7 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 
 	if (GetSegment(nLoop)->GetMasterIndex() == -1) {
 		// Prepare for Update Boundaries
-		CIndependentSegment * pSegment = (CIndependentSegment *)pDoc->GetSegment(nLoop); //SDM 1.5Test8.1
+		CIndependentSegment * pSegment = (CIndependentSegment *)pModel->GetSegment(nLoop); //SDM 1.5Test8.1
 
 		DWORD dwOffset = pSegment->GetOffset(nSelection);
 		DWORD dwStop = pSegment->GetStop(nSelection);
@@ -4426,18 +4426,18 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 
 		int nNextSegment = pSegment->GetNext(nSelection);
 
-		((CDependentSegment *)pSegment)->AdjustPositionToMaster(pDoc, dwNewOffset, dwNewStop);
+		((CDependentSegment *)pSegment)->AdjustPositionToMaster(pModel, dwNewOffset, dwNewStop);
 
 		if ((dwNewOffset == dwOffset) && (dwNewStop == dwStop)) {
 			return FALSE;
 		}
 
 		// Adjust Offset for current & Duration for previous segment & dependent segments
-		((CGlossSegment *)pSegment)->Adjust(pDoc, nSelection, dwNewOffset, dwNewStop - dwNewOffset, false);
+		((CGlossSegment *)pSegment)->Adjust(pModel, nSelection, dwNewOffset, dwNewStop - dwNewOffset, false);
 
 		if (dwOffset != dwNewOffset) {
 			if (nSelection > 0) { // Adjust previous segment
-				((CGlossSegment *)pSegment)->Adjust(pDoc, nSelection - 1, pSegment->GetOffset(nSelection - 1), ((CGlossSegment *)pSegment)->CalculateDuration(pDoc, nSelection - 1), false);
+				((CGlossSegment *)pSegment)->Adjust(pModel, nSelection - 1, pSegment->GetOffset(nSelection - 1), ((CGlossSegment *)pSegment)->CalculateDuration(pModel, nSelection - 1), false);
 			}
 		}
 
@@ -4448,7 +4448,7 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 
 				DWORD dwNextOffset = pPhonetic->GetOffset(pPhonetic->GetNext(pPhonetic->FindStop(dwNewStop)));
 				// Adjust offset for next and duration for previous segment & dependent segments
-				((CGlossSegment *)pSegment)->Adjust(pDoc, nNextSegment, dwNextOffset, dwNextStop - dwNextOffset, false);
+				((CGlossSegment *)pSegment)->Adjust(pModel, nNextSegment, dwNextOffset, dwNextStop - dwNextOffset, false);
 			}
 		}
 	}
@@ -4456,7 +4456,7 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 		DWORD dwOffset = pSegment->GetOffset(nSelection);
 		DWORD dwStop = pSegment->GetStop(nSelection);
 
-		((CDependentSegment *)pSegment)->AdjustPositionToMaster(pDoc, dwNewOffset, dwNewStop);
+		((CDependentSegment *)pSegment)->AdjustPositionToMaster(pModel, dwNewOffset, dwNewStop);
 
 		if ((dwNewOffset == dwOffset) && (dwNewStop == dwStop)) {
 			return FALSE;

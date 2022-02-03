@@ -8,16 +8,16 @@ class CPhoneticSegment : public CIndependentSegment {
 public:
     CPhoneticSegment(EAnnotation index, int master = -1);
 
-    virtual long Process(void * pCaller, CSaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual long Process(void * pCaller, CSaDoc * pModel, int nProgress = 0, int nLevel = 1);
 	// remove a segment
-    virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);          
+    virtual void Remove(CSaDoc * pModel, int index, BOOL bCheck);          
     virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace, bool noSnap);
     virtual bool Filter();
     virtual bool Filter(CString & text);
 	virtual bool ContainsText( DWORD offset, DWORD stop);
 
-	virtual int Add( CSaDoc * pDoc, DWORD offset, DWORD duration);
-	virtual void AddAt( CSaDoc * pDoc, int index, DWORD offset, DWORD duration);
+	virtual int Add( CSaDoc * pModel, DWORD offset, DWORD duration);
+	virtual void AddAt( CSaDoc * pModel, int index, DWORD offset, DWORD duration);
 
 protected:
 	// exit processing on error

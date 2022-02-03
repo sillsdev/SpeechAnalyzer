@@ -79,10 +79,10 @@ CPlotWnd * CPlotChange::NewCopy(void) {
 void CPlotChange::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
     // create change data
-    CProcessChange * pChange = (CProcessChange *)pDoc->GetChange(); // get pointer to change object
-    short int nResult = LOWORD(pChange->Process(this, pDoc)); // process data
+    CProcessChange * pChange = (CProcessChange *)pModel->GetChange(); // get pointer to change object
+    short int nResult = LOWORD(pChange->Process(this, pModel)); // process data
     nResult = CheckResult(nResult, pChange); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -92,7 +92,7 @@ void CPlotChange::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);
         SetProcessMultiplier(PRECISION_MULTIPLIER);
-        PlotStandardPaint(pDC, rWnd, rClip, pChange, pDoc); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pChange, pModel); // do standard data paint
     }
     // do common plot paint jobs
     PlotPaintFinish(pDC, rWnd, rClip);

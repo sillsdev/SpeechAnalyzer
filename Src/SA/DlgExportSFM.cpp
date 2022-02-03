@@ -279,11 +279,11 @@ void CDlgExportSFM::ExportDefault() {
     CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
     CSaString szString;
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    ExportFile(pDoc, file);
+    ExportFile(pModel, file);
 
-    if (!pDoc->GetSegment(PHONETIC)->IsEmpty()) {
+    if (!pModel->GetSegment(PHONETIC)->IsEmpty()) {
         CSaString szAnnotation[ANNOT_WND_NUMBER];
         CSaString szPOS;
         int nMaxLength = 0;
@@ -293,9 +293,9 @@ void CDlgExportSFM::ExportDefault() {
         while (nNumber != -1) {
             BOOL bBreak = FALSE;
 
-            dwOffset = pDoc->GetSegment(PHONETIC)->GetOffset(nNumber);
+            dwOffset = pModel->GetSegment(PHONETIC)->GetOffset(nNumber);
 
-            int nFind = pDoc->GetSegment(GLOSS)->FindOffset(dwOffset);
+            int nFind = pModel->GetSegment(GLOSS)->FindOffset(dwOffset);
             if ((nNumber > 0) && (nFind != -1)) {
                 bBreak = TRUE;
             }
@@ -306,15 +306,15 @@ void CDlgExportSFM::ExportDefault() {
                 szPOS +=" ";
             }
 
-            szAnnotation[PHONETIC] += pDoc->GetSegment(PHONETIC)->GetSegmentString(nNumber);
+            szAnnotation[PHONETIC] += pModel->GetSegment(PHONETIC)->GetSegmentString(nNumber);
 
             for (int nLoop = PHONETIC+1; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-                nFind = pDoc->GetSegment(nLoop)->FindOffset(dwOffset);
+                nFind = pModel->GetSegment(nLoop)->FindOffset(dwOffset);
                 if (nFind != -1) {
                     if (nLoop == GLOSS) {
-                        szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
+                        szAnnotation[nLoop] += pModel->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
                     } else {
-                        szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind);
+                        szAnnotation[nLoop] += pModel->GetSegment(nLoop)->GetSegmentString(nFind);
                     }
                 }
                 if (szAnnotation[nLoop].GetLength() > nMaxLength) {
@@ -322,7 +322,7 @@ void CDlgExportSFM::ExportDefault() {
                 }
             }
 
-            nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
+            nNumber = pModel->GetSegment(PHONETIC)->GetNext(nNumber);
         }
         // write out results
         if (m_bReference) { // \ref  Reference
@@ -359,12 +359,12 @@ void CDlgExportSFM::ExportDefault() {
 
         szString.Format(_T("\\phr%d "), nPhrase - MUSIC_PL1 + 1);
         CSaString szPhrase;
-        if ((m_bPhrase) && (!pDoc->GetSegment(nPhrase)->IsEmpty())) {
+        if ((m_bPhrase) && (!pModel->GetSegment(nPhrase)->IsEmpty())) {
             int nNumber = 0;
             while (nNumber != -1) {
-                szPhrase += pDoc->GetSegment(nPhrase)->GetSegmentString(nNumber);
+                szPhrase += pModel->GetSegment(nPhrase)->GetSegmentString(nNumber);
                 szPhrase += L" ";
-                nNumber = pDoc->GetSegment(nPhrase)->GetNext(nNumber);
+                nNumber = pModel->GetSegment(nPhrase)->GetNext(nNumber);
             }
         }
         if (m_bPhrase) { // \phr1-\phr3  Phrase Level
@@ -374,10 +374,10 @@ void CDlgExportSFM::ExportDefault() {
         }
     }
 
-    ExportCounts(pDoc, file);
-    ExportAllFileInformation(pDoc, file);
-    ExportAllParameters(pDoc, file);
-    ExportAllSource(pDoc, file);
+    ExportCounts(pModel, file);
+    ExportAllFileInformation(pModel, file);
+    ExportAllParameters(pModel, file);
+    ExportAllSource(pModel, file);
 
     file.Close();
 }
@@ -389,9 +389,9 @@ void CDlgExportSFM::ExportColumnar() {
     CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
     CSaString szString;
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    ExportFile(pDoc, file);
+    ExportFile(pModel, file);
 
     // \name write filename
     szString.Empty();
@@ -448,12 +448,12 @@ void CDlgExportSFM::ExportColumnar() {
     szString.Empty();
 
     // generate the data
-    if (!TryExportColumnsBy(REFERENCE,pDoc,file)) {
-        if (!TryExportColumnsBy(GLOSS,pDoc,file)) {
-            if (!TryExportColumnsBy(ORTHO,pDoc,file)) {
-                if (!TryExportColumnsBy(PHONEMIC,pDoc,file)) {
-                    if (!TryExportColumnsBy(TONE,pDoc,file)) {
-                        TryExportColumnsBy(PHONETIC,pDoc,file);
+    if (!TryExportColumnsBy(REFERENCE,pModel,file)) {
+        if (!TryExportColumnsBy(GLOSS,pModel,file)) {
+            if (!TryExportColumnsBy(ORTHO,pModel,file)) {
+                if (!TryExportColumnsBy(PHONEMIC,pModel,file)) {
+                    if (!TryExportColumnsBy(TONE,pModel,file)) {
+                        TryExportColumnsBy(PHONETIC,pModel,file);
                     }
                 }
             }
@@ -464,10 +464,10 @@ void CDlgExportSFM::ExportColumnar() {
     szString.Append(szCrLf);
     WriteFileUtf8(&file, szString);
 
-    ExportCounts(pDoc, file);
-    ExportAllFileInformation(pDoc, file);
-    ExportAllParameters(pDoc, file);
-    ExportAllSource(pDoc, file);
+    ExportCounts(pModel, file);
+    ExportAllFileInformation(pModel, file);
+    ExportAllParameters(pModel, file);
+    ExportAllSource(pModel, file);
 
     file.Close();
 }
@@ -480,11 +480,11 @@ void CDlgExportSFM::ExportInterlinear() {
     CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
     CSaString szString;
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    ExportFile(pDoc, file);
+    ExportFile(pModel, file);
 
-    if (!pDoc->GetSegment(PHONETIC)->IsEmpty()) {
+    if (!pModel->GetSegment(PHONETIC)->IsEmpty()) {
         CSaString szAnnotation[ANNOT_WND_NUMBER];
         CSaString szPOS;
         int nMaxLength = 0;
@@ -494,9 +494,9 @@ void CDlgExportSFM::ExportInterlinear() {
         while (nNumber != -1) {
             BOOL bBreak = FALSE;
 
-            dwOffset = pDoc->GetSegment(PHONETIC)->GetOffset(nNumber);
+            dwOffset = pModel->GetSegment(PHONETIC)->GetOffset(nNumber);
 
-            int nFind = pDoc->GetSegment(GLOSS)->FindOffset(dwOffset);
+            int nFind = pModel->GetSegment(GLOSS)->FindOffset(dwOffset);
             if ((nNumber > 0) && (nFind != -1)) {
                 bBreak = TRUE;
             }
@@ -511,15 +511,15 @@ void CDlgExportSFM::ExportInterlinear() {
                 }
             }
 
-            szAnnotation[PHONETIC] += pDoc->GetSegment(PHONETIC)->GetSegmentString(nNumber);
+            szAnnotation[PHONETIC] += pModel->GetSegment(PHONETIC)->GetSegmentString(nNumber);
 
             for (int nLoop = PHONETIC+1; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-                nFind = pDoc->GetSegment(nLoop)->FindOffset(dwOffset);
+                nFind = pModel->GetSegment(nLoop)->FindOffset(dwOffset);
                 if (nFind != -1) {
                     if (nLoop == GLOSS) {
-                        szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
+                        szAnnotation[nLoop] += pModel->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
                     } else {
-                        szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind);
+                        szAnnotation[nLoop] += pModel->GetSegment(nLoop)->GetSegmentString(nFind);
                     }
                 }
                 if (szAnnotation[nLoop].GetLength() > nMaxLength) {
@@ -527,7 +527,7 @@ void CDlgExportSFM::ExportInterlinear() {
                 }
             }
 
-            nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
+            nNumber = pModel->GetSegment(PHONETIC)->GetNext(nNumber);
         }
         // write out results
         if (m_bReference) { // \ref  Reference
@@ -564,12 +564,12 @@ void CDlgExportSFM::ExportInterlinear() {
 
         szString.Format(_T("\\phr%d "), nPhrase - MUSIC_PL1 + 1);
         CSaString szPhrase;
-        if ((m_bPhrase) && (!pDoc->GetSegment(nPhrase)->IsEmpty())) {
+        if ((m_bPhrase) && (!pModel->GetSegment(nPhrase)->IsEmpty())) {
             int nNumber = 0;
             while (nNumber != -1) {
-                szPhrase += pDoc->GetSegment(nPhrase)->GetSegmentString(nNumber);
+                szPhrase += pModel->GetSegment(nPhrase)->GetSegmentString(nNumber);
                 szPhrase += L" ";
-                nNumber = pDoc->GetSegment(nPhrase)->GetNext(nNumber);
+                nNumber = pModel->GetSegment(nPhrase)->GetNext(nNumber);
             }
         }
         if (m_bPhrase) { // \phr1-\phr3  Phrase Level
@@ -579,10 +579,10 @@ void CDlgExportSFM::ExportInterlinear() {
         }
     }
 
-    ExportCounts(pDoc, file);
-    ExportAllFileInformation(pDoc, file);
-    ExportAllParameters(pDoc, file);
-    ExportAllSource(pDoc, file);
+    ExportCounts(pModel, file);
+    ExportAllFileInformation(pModel, file);
+    ExportAllParameters(pModel, file);
+    ExportAllSource(pModel, file);
 
     file.Close();
 }
@@ -595,18 +595,18 @@ void CDlgExportSFM::ExportMultiRecord() {
     CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
     CSaString szString;
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    ExportFile(pDoc, file);
+    ExportFile(pModel, file);
 
-    if (!TryExportSegmentsBy(REFERENCE,pDoc,file)) {
-        if (!TryExportSegmentsBy(GLOSS,pDoc,file)) {
-            if (!TryExportSegmentsBy(GLOSS_NAT,pDoc,file)) {
-                if (!TryExportSegmentsBy(ORTHO,pDoc,file)) {
-                    if (!TryExportSegmentsBy(TONE,pDoc,file)) {
-                        if (!TryExportSegmentsBy(PHONEMIC,pDoc,file)) {
-                            if (!TryExportSegmentsBy(TONE,pDoc,file)) {
-                                TryExportSegmentsBy(PHONETIC,pDoc,file);
+    if (!TryExportSegmentsBy(REFERENCE,pModel,file)) {
+        if (!TryExportSegmentsBy(GLOSS,pModel,file)) {
+            if (!TryExportSegmentsBy(GLOSS_NAT,pModel,file)) {
+                if (!TryExportSegmentsBy(ORTHO,pModel,file)) {
+                    if (!TryExportSegmentsBy(TONE,pModel,file)) {
+                        if (!TryExportSegmentsBy(PHONEMIC,pModel,file)) {
+                            if (!TryExportSegmentsBy(TONE,pModel,file)) {
+                                TryExportSegmentsBy(PHONETIC,pModel,file);
                             }
                         }
                     }
@@ -615,21 +615,21 @@ void CDlgExportSFM::ExportMultiRecord() {
         }
     }
 
-    ExportCounts(pDoc, file);
-    ExportAllFileInformation(pDoc, file);
-    ExportAllParameters(pDoc, file);
-    ExportAllSource(pDoc, file);
+    ExportCounts(pModel, file);
+    ExportAllFileInformation(pModel, file);
+    ExportAllParameters(pModel, file);
+    ExportAllSource(pModel, file);
 
     file.Close();
 }
 
-bool CDlgExportSFM::TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile & file) {
+bool CDlgExportSFM::TryExportSegmentsBy(EAnnotation master, CSaDoc * pModel, CFile & file) {
 
     if (!GetFlag(master)) {
         return false;
     }
 
-    CSegment * pSeg = pDoc->GetSegment(master);
+    CSegment * pSeg = pModel->GetSegment(master);
 
     if (pSeg->GetOffsetSize() == 0) {
         return false;
@@ -654,14 +654,14 @@ bool CDlgExportSFM::TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile
             if (!GetFlag(target)) {
                 continue;
             }
-            results[target] = BuildRecord(target,dwStart,dwStop,pDoc,false);
+            results[target] = BuildRecord(target,dwStart,dwStop,pModel,false);
         }
 
         if (m_bPhrase) {
-            results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop, pDoc,false);
-            results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop, pDoc,false);
-            results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop, pDoc,false);
-            results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop, pDoc,false);
+            results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop, pModel,false);
+            results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop, pModel,false);
+            results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop, pModel,false);
+            results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop, pModel,false);
         }
 
         if (results[REFERENCE].GetLength()>0) {
@@ -704,13 +704,13 @@ bool CDlgExportSFM::TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile
     return true;
 }
 
-bool CDlgExportSFM::TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile & file) {
+bool CDlgExportSFM::TryExportColumnsBy(EAnnotation master, CSaDoc * pModel, CFile & file) {
 
     if (!GetFlag(master)) {
         return false;
     }
 
-    CSegment * pSeg = pDoc->GetSegment(master);
+    CSegment * pSeg = pModel->GetSegment(master);
 
     if (pSeg->GetOffsetSize() == 0) {
         return false;
@@ -733,14 +733,14 @@ bool CDlgExportSFM::TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile 
             if (!GetFlag(target)) {
                 continue;
             }
-            results[target] = BuildRecord(target,dwStart,dwStop,pDoc,true);
+            results[target] = BuildRecord(target,dwStart,dwStop,pModel,true);
         }
 
         if (m_bPhrase) {
-            results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop, pDoc,true);
-            results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop, pDoc,true);
-            results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop, pDoc,true);
-            results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop, pDoc,true);
+            results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop, pModel,true);
+            results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop, pModel,true);
+            results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop, pModel,true);
+            results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop, pModel,true);
         }
 
         CString result;
@@ -794,9 +794,9 @@ bool CDlgExportSFM::TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile 
     return true;
 }
 
-CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain) {
+CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pModel, bool plain) {
     CSaString szTag = GetTag(target);
-    CSegment * pSegment = pDoc->GetSegment(target);
+    CSegment * pSegment = pModel->GetSegment(target);
     CSaString szText = pSegment->GetContainedText(dwStart,dwStop);
     szText = szText.Trim();
     if (szText.GetLength()==0) {
@@ -810,10 +810,10 @@ CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dw
     return (plain) ? (szText) : (szTag + L" " + szText + szCrLf);
 }
 
-CSaString CDlgExportSFM::BuildPhrase(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain) {
+CSaString CDlgExportSFM::BuildPhrase(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pModel, bool plain) {
 
     CSaString szTag = GetTag(target);
-    CSegment * pSegment = pDoc->GetSegment(GetIndex(target));
+    CSegment * pSegment = pModel->GetSegment(GetIndex(target));
     CSaString szText =  pSegment->GetOverlappingText(dwStart,dwStop);
     szText = szText.Trim();
     if (szText.GetLength()==0) {
@@ -937,7 +937,7 @@ EAnnotation CDlgExportSFM::GetAnnotation(int val) {
     return PHONETIC;
 }
 
-void CDlgExportSFM::ExportFile(CSaDoc * pDoc, CFile & file) {
+void CDlgExportSFM::ExportFile(CSaDoc * pModel, CFile & file) {
 
     CSaString szString;
 
@@ -951,29 +951,29 @@ void CDlgExportSFM::ExportFile(CSaDoc * pDoc, CFile & file) {
     WriteFileUtf8(&file, szString);
 
     if (m_bFileName) { // \wav  Audio FileName
-        szString = "\\wav " + pDoc->GetPathName() + szCrLf;
+        szString = "\\wav " + pModel->GetPathName() + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 }
 
-void CDlgExportSFM::ExportCounts(CSaDoc * pDoc, CFile & file) {
+void CDlgExportSFM::ExportCounts(CSaDoc * pModel, CFile & file) {
 
     WriteFileUtf8(&file, szCrLf);
 
     CSaString szString;
     if (m_bFree) { // \ft   Free Translation
-        szString = "\\ft " + pDoc->GetSourceParm()->szFreeTranslation + szCrLf;
+        szString = "\\ft " + pModel->GetSourceParm()->szFreeTranslation + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bPhones) { // \np   Number of Phones
         // create and write number of phones text
         int nNumber = 0;
         int nLoop = 0;
-        if (pDoc->GetSegment(PHONETIC)->GetContentLength() > 0) {
+        if (pModel->GetSegment(PHONETIC)->GetContentLength() > 0) {
             // find number of phones
             while (TRUE) {
                 nLoop++;
-                nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
+                nNumber = pModel->GetSegment(PHONETIC)->GetNext(nNumber);
                 if (nNumber < 0) {
                     break;
                 }
@@ -985,19 +985,19 @@ void CDlgExportSFM::ExportCounts(CSaDoc * pDoc, CFile & file) {
         WriteFileUtf8(&file, szString);
     }
     if (m_bWords) { // \nw   Number of Words
-        swprintf_s(szString.GetBuffer(25),25,_T("%u"), ((CTextSegment *)pDoc->GetSegment(GLOSS))->CountWords());
+        swprintf_s(szString.GetBuffer(25),25,_T("%u"), ((CTextSegment *)pModel->GetSegment(GLOSS))->CountWords());
         szString.ReleaseBuffer();
         szString = "\\nw " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 }
 
-void CDlgExportSFM::ExportAllFileInformation(CSaDoc * pDoc, CFile & file) {
+void CDlgExportSFM::ExportAllFileInformation(CSaDoc * pModel, CFile & file) {
 
     WriteFileUtf8(&file, szCrLf);
 
     CSaString szString;
-    CFileStatus * pFileStatus = pDoc->GetFileStatus();
+    CFileStatus * pFileStatus = pModel->GetFileStatus();
     if (pFileStatus->m_szFullName[0] != 0) { // file name is defined
         if (m_bOriginalDate) { // \ct   Creation Time
             szString = "\\ct " + pFileStatus->m_ctime.Format("%A, %B %d, %Y, %X") + szCrLf;
@@ -1014,8 +1014,8 @@ void CDlgExportSFM::ExportAllFileInformation(CSaDoc * pDoc, CFile & file) {
             WriteFileUtf8(&file, szString);
         }
         if (m_bOriginalFormat) { // \of   Original Format
-            if (pDoc->IsValidRecordFileFormat()) {
-                szString.LoadString((UINT)pDoc->GetRecordFileFormat() + IDS_FILETYPE_UTT);
+            if (pModel->IsValidRecordFileFormat()) {
+                szString.LoadString((UINT)pModel->GetRecordFileFormat() + IDS_FILETYPE_UTT);
                 szString = "\\of " + szString + szCrLf;
                 WriteFileUtf8(&file, szString);
             }
@@ -1024,21 +1024,21 @@ void CDlgExportSFM::ExportAllFileInformation(CSaDoc * pDoc, CFile & file) {
 
 }
 
-void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file) {
+void CDlgExportSFM::ExportAllParameters(CSaDoc * pModel, CFile & file) {
 
     WriteFileUtf8(&file, szCrLf);
 
     CSaString szString;
 
     if (m_bNumberSamples) { // \samp Number of Samples
-        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetNumSamples());
+        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pModel->GetNumSamples());
         szString.ReleaseBuffer();
         szString = "\\samp " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bLength) { // \len  Length
         // create and write length text
-        double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());  // get sampled data size in seconds
+        double fDataSec = pModel->GetTimeFromBytes(pModel->GetDataSize());  // get sampled data size in seconds
         int nMinutes = (int)fDataSec / 60;
 
         if (nMinutes == 0) { // length is less than one minute
@@ -1052,73 +1052,73 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file) {
         WriteFileUtf8(&file, szString);
     }
     if (m_bSampleRate) { // \freq Sampling Frequency
-        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSamplesPerSec());
+        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pModel->GetSamplesPerSec());
         szString.ReleaseBuffer();
         szString = "\\freq " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bBandwidth) { // \bw   Bandwidth
-        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetRecordBandWidth());
+        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pModel->GetRecordBandWidth());
         szString.ReleaseBuffer();
         szString = "\\bw " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bHighPass) { // \hpf  HighPass Filter
-        szString = pDoc->IsUsingHighPassFilter() ? "Yes":"No";
+        szString = pModel->IsUsingHighPassFilter() ? "Yes":"No";
         szString = "\\hpf " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bBits) { // \bits Storage Format
-        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetBitsPerSample());
+        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pModel->GetBitsPerSample());
         szString.ReleaseBuffer();
         szString = "\\bits " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bQuantization) { // \size Quantization Size
-        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pDoc->GetRecordSampleSize());
+        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pModel->GetRecordSampleSize());
         szString.ReleaseBuffer();
         szString = "\\qsize " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 }
 
-void CDlgExportSFM::ExportAllSource(CSaDoc * pDoc, CFile & file) {
+void CDlgExportSFM::ExportAllSource(CSaDoc * pModel, CFile & file) {
 
     WriteFileUtf8(&file, szCrLf);
 
     CSaString szString;
 
     if (m_bLanguage) { // \ln   Language Name
-        szString = "\\ln " + pDoc->GetSourceParm()->szLanguage + szCrLf;
+        szString = "\\ln " + pModel->GetSourceParm()->szLanguage + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 
     if (m_bDialect) { // \dlct Dialect
-        szString = "\\dlct " + pDoc->GetSourceParm()->szDialect + szCrLf;
+        szString = "\\dlct " + pModel->GetSourceParm()->szDialect + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bFamily) { // \fam  Family
-        szString = "\\fam " + pDoc->GetSourceParm()->szFamily + szCrLf;
+        szString = "\\fam " + pModel->GetSourceParm()->szFamily + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bEthnologue) { // \id   Ethnologue ID number
-        szString = "\\id " + pDoc->GetSourceParm()->szEthnoID + szCrLf;
+        szString = "\\id " + pModel->GetSourceParm()->szEthnoID + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bCountry) { // \cnt  Country
-        szString = "\\cnt " + pDoc->GetSourceParm()->szCountry + szCrLf;
+        szString = "\\cnt " + pModel->GetSourceParm()->szCountry + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bRegion) { // \reg  Region
-        szString = "\\reg " + pDoc->GetSourceParm()->szRegion + szCrLf;
+        szString = "\\reg " + pModel->GetSourceParm()->szRegion + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bSpeaker) { // \spkr Speaker Name
-        szString = "\\spkr " + pDoc->GetSourceParm()->szSpeaker + szCrLf;
+        szString = "\\spkr " + pModel->GetSourceParm()->szSpeaker + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bGender) { // \gen  Gender
-        switch (pDoc->GetSourceParm()->nGender) {
+        switch (pModel->GetSourceParm()->nGender) {
         case 0:
             szString = "Adult Male";
             break;
@@ -1136,15 +1136,15 @@ void CDlgExportSFM::ExportAllSource(CSaDoc * pDoc, CFile & file) {
         WriteFileUtf8(&file, szString);
     }
     if (m_bNotebookRef) { // \nbr  Notebook Reference
-        szString = "\\nbr " + pDoc->GetSourceParm()->szReference + szCrLf;
+        szString = "\\nbr " + pModel->GetSourceParm()->szReference + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bTranscriber) { // \tr   Transcriber
-        szString = "\\tr " + pDoc->GetSourceParm()->szTranscriber + szCrLf;
+        szString = "\\tr " + pModel->GetSourceParm()->szTranscriber + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bComments) { // \desc Description
-        szString = "\\desc " + pDoc->GetDescription() + szCrLf;
+        szString = "\\desc " + pModel->GetDescription() + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 }

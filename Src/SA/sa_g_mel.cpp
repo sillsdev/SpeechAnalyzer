@@ -88,14 +88,14 @@ CGrid CPlotMelogram::GetGrid() const {
     return modifiedGrid;
 }
 
-bool CPlotMelogram::GetScaleValues(CSaDoc * pDoc, double * dMaxSemitone,double * dMinSemitone) {
-    const CMusicParm * pParm = pDoc->GetMusicParm();
+bool CPlotMelogram::GetScaleValues(CSaDoc * pModel, double * dMaxSemitone,double * dMinSemitone) {
+    const CMusicParm * pParm = pModel->GetMusicParm();
 
     int nUpperBound = pParm->nUpperBound;
     int nLowerBound = pParm->nLowerBound;
 
     if (pParm->nRangeMode == 0) {
-        CMusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
+        CMusicParm::GetAutoRange(pModel->GetMelogram(), nUpperBound, nLowerBound);
     }
 
     if (dMaxSemitone) {
@@ -106,7 +106,7 @@ bool CPlotMelogram::GetScaleValues(CSaDoc * pDoc, double * dMaxSemitone,double *
         *dMinSemitone = nLowerBound;
     }
 
-    CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
+    CProcessMelogram * pMelogram = (CProcessMelogram *)pModel->GetMelogram(); // get pointer to melogram object
     return (pMelogram->IsDataReady() == TRUE);
 }
 
@@ -122,10 +122,10 @@ void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
     TRACE(_T("Draw Mel\n"));
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
     // create melogram data
-    CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
-    short int nResult = LOWORD(pMelogram->Process(this, pDoc)); // process data
+    CProcessMelogram * pMelogram = (CProcessMelogram *)pModel->GetMelogram(); // get pointer to melogram object
+    short int nResult = LOWORD(pMelogram->Process(this, pModel)); // process data
     nResult = CheckResult(nResult, pMelogram); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -137,12 +137,12 @@ void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
         double dMaxSemitone;
         double dMinSemitone;
 
-        GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone);
+        GetScaleValues(pModel, &dMaxSemitone,&dMinSemitone);
 
         // always use linear display
         pGraph->SetLegendScale(SCALE | NUMBERS, dMinSemitone, dMaxSemitone, _T("Semitones")); // set legend scale
 
-        const CMusicParm * pParm = pDoc->GetMusicParm();
+        const CMusicParm * pParm = pModel->GetMusicParm();
 
         if (pParm->nCalcRangeMode != 0) {
             // Load a font for tagging formants.
@@ -188,7 +188,7 @@ void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 
         SetProcessMultiplier(MEL_MULT);
 
-        PlotStandardPaint(pDC, rWnd, rClip, pMelogram, pDoc, (m_bDotDraw ? PAINT_DOTS : 0) | SKIP_UNSET); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pMelogram, pModel, (m_bDotDraw ? PAINT_DOTS : 0) | SKIP_UNSET); // do standard data paint
     }
     // do common plot paint jobs
     PlotPaintFinish(pDC, rWnd, rClip);

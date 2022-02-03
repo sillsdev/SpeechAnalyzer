@@ -2215,10 +2215,10 @@ void CTranscriptionDisp::Init(UINT nID, CWnd * pParent) {
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
         ASSERT(pView->IsKindOf(RUNTIME_CLASS(CSaView)));
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        CString content = pDoc->GetSegment(PHONETIC)->GetContent();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+        CString content = pModel->GetSegment(PHONETIC)->GetContent();
         pWnd->SetWindowText(content);
-        CFont * pFont = pDoc->GetFont(PHONETIC);
+        CFont * pFont = pModel->GetFont(PHONETIC);
         pWnd->SetFont(pFont);
     }
 }

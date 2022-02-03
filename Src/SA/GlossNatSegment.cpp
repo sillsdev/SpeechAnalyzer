@@ -66,25 +66,25 @@ int CGlossNatSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwAlignedStar
 /***************************************************************************/
 // Add Add dependent annotation segment
 /***************************************************************************/
-void CGlossNatSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool /*delimiter*/, bool bCheck) {
+void CGlossNatSegment::Add( CSaDoc * pModel, CSaView * pView, DWORD dwStart, CSaString & szString, bool /*delimiter*/, bool bCheck) {
 
     // get the offset and duration from master
-    int nSegment = pDoc->GetSegment(GLOSS)->FindOffset(dwStart);
+    int nSegment = pModel->GetSegment(GLOSS)->FindOffset(dwStart);
     if (nSegment == -1) {
         return; // return on error
     }
 
-    DWORD dwDuration = pDoc->GetSegment(GLOSS)->GetDuration(nSegment);
+    DWORD dwDuration = pModel->GetSegment(GLOSS)->GetDuration(nSegment);
     DWORD dwStop = dwStart + dwDuration;
 
-    int nPos = CheckPosition( pDoc, dwStart, dwStop, MODE_ADD); // get the insert position
+    int nPos = CheckPosition( pModel, dwStart, dwStop, MODE_ADD); // get the insert position
     if (nPos == -1) {
         return; // return on error
     }
 
     // save state for undo ability
     if (bCheck) {
-        pDoc->CheckPoint();
+        pModel->CheckPoint();
     }
 
     // insert or append the new dependent segment
@@ -93,8 +93,8 @@ void CGlossNatSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaSt
         return;                                                     // return on error or not inserted.
     }
 
-    pDoc->SetModifiedFlag(TRUE);                                    // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE);                               // transcription data has been modified
+    pModel->SetModifiedFlag(TRUE);                                    // document has been modified
+    pModel->SetTransModifiedFlag(TRUE);                               // transcription data has been modified
     pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop);  // change the selection
 }
 

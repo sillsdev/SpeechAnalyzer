@@ -102,11 +102,11 @@ BOOL CPlotRawData::SetLegendScale() {
 void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 
     // get pointer to graph, view and document
-    CSaDoc * pDoc = pView->GetDocument();
+    CSaDoc * pModel = pView->GetDocument();
 
     // create raw data
-    CProcessRaw * pRaw = pDoc->GetRaw();                    // get pointer to change object
-    short int nResult = LOWORD(pRaw->Process(this, pDoc));  // process data
+    CProcessRaw * pRaw = pModel->GetRaw();                    // get pointer to change object
+    short int nResult = LOWORD(pRaw->Process(this, pModel));  // process data
     nResult = CheckResult(nResult, pRaw);                   // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -119,13 +119,13 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         SetProcessMultiplier(32768.0/100.0);
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);
-        PlotStandardPaint(pDC, rWnd, rClip, pRaw, pDoc, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pRaw, pModel, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
     }
 
-    if (ResearchSettings.m_bShowHilbertTransform) {
+    if (researchSettings.m_bShowHilbertTransform) {
         // create raw data
-        CProcessHilbert * pHilbert = pDoc->GetHilbert();    // get pointer to change object
-        nResult = LOWORD(pHilbert->Process(this, pDoc));    // process data
+        CProcessHilbert * pHilbert = pModel->GetHilbert();    // get pointer to change object
+        nResult = LOWORD(pHilbert->Process(this, pModel));    // process data
         nResult = CheckResult(nResult, pHilbert);           // check the process result
         if (nResult == PROCESS_ERROR) {
             return;
@@ -134,7 +134,7 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             SetProcessMultiplier(0.5*32768./100.);          // Because of potential for overflow the hilbert transformed data is scaled 50%
             CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
             pMainWnd->SwapInOverlayColors(4);
-            PlotStandardPaint(pDC, rWnd, rClip, pHilbert, pDoc, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
+            PlotStandardPaint(pDC, rWnd, rClip, pHilbert, pModel, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
             pMainWnd->SwapOutOverlayColors();
         }
     }

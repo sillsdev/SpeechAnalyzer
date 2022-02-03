@@ -186,31 +186,31 @@ float CWaveWarp::Version(void) {
 // Class function to construct waveform warping object if parameters are valid.       //
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
-                                   ISaDoc * pDoc,
+                                   ISaDoc * pModel,
                                    ULONG dwWaveStart,
                                    USHORT wSpeed,
                                    SFragParms * pstFragStart) {
 
     // Validate parameters passed.
-    if ((ppWaveWarp==NULL) || (pDoc==NULL)) {
+    if ((ppWaveWarp==NULL) || (pModel==NULL)) {
         return(Code(INVALID_PARM_PTR));
     }
 
     *ppWaveWarp = NULL;
-    ULONG dwWaveLength = pDoc->GetNumSamples();
+    ULONG dwWaveLength = pModel->GetNumSamples();
     if (dwWaveStart >= dwWaveLength) {
         return(Code(INVALID_BLOCK));
     }
     if (!wSpeed) {
         return(Code(INVALID_WARP_SPEED));
     }
-    if ((!pDoc->IsPCM()) ||
-            ((pDoc->GetBitsPerSample()!=8) && (pDoc->GetBitsPerSample()!=16))) {
+    if ((!pModel->IsPCM()) ||
+            ((pModel->GetBitsPerSample()!=8) && (pModel->GetBitsPerSample()!=16))) {
         return(Code(UNSUPP_SMP_DATA_FMT));
     }
 
     // Locate fragment containing starting position for waveform warping.
-    CProcessFragments * pFragments = pDoc->GetFragments();
+    CProcessFragments * pFragments = pModel->GetFragments();
     ULONG dwFragCount = pFragments->GetFragmentCount();
     ULONG dwFragBfrLength = pFragments->GetBufferLength();
 
@@ -249,7 +249,7 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
     *pstFragStart = pstFragBfr[dwFragBfrIndex];   // return parameters for fragment to load into waveform buffer
 
     // Construct wavewarp object.
-    *ppWaveWarp = new CWaveWarp(pDoc, dwWaveStart, wSpeed, dwFragBlock + dwFragBfrIndex);
+    *ppWaveWarp = new CWaveWarp(pModel, dwWaveStart, wSpeed, dwFragBlock + dwFragBfrIndex);
     if (*ppWaveWarp==NULL) {
         return (Code(OUT_OF_MEMORY));
     }
@@ -261,10 +261,10 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
 ////////////////////////////////////////////////////////////////////////////////////////
 // Wavewarp object constructor.                                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-CWaveWarp::CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFragStart) {
+CWaveWarp::CWaveWarp(ISaDoc * pModel, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFragStart) {
 
     // Initialize member variables.
-    m_pDoc = pDoc;
+    m_pDoc = pModel;
     m_pWaveBfr = NULL;
     m_dwWarpStart = dwWaveStart;
     m_dwWarpIndex = 0;
@@ -272,10 +272,10 @@ CWaveWarp::CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFr
     m_dwPlayBfrLength = 0;
     m_dwPlayLength = 0;
     m_dwFragBlock = dwFragStart;
-    m_pstFragBfr = pDoc->GetFragments()->GetFragmentBlock(dwFragStart);  // load fragment at beginning of buffer
+    m_pstFragBfr = pModel->GetFragments()->GetFragmentBlock(dwFragStart);  // load fragment at beginning of buffer
     m_dwFragBfrIndex = 0;
     m_wSpeed = wSpeed;
-    m_sbSmpDataFmt = (char)((pDoc->GetBitsPerSample() == 8) ? PCM_UBYTE: PCM_2SSHORT);
+    m_sbSmpDataFmt = (char)((pModel->GetBitsPerSample() == 8) ? PCM_UBYTE: PCM_2SSHORT);
     m_dJitterFactor = 0.;
     m_dSmpTime = m_pstFragBfr[m_dwFragBfrIndex].dwOffset;
     m_nSegmentIndex = 0;

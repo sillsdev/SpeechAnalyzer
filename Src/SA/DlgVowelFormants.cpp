@@ -673,27 +673,6 @@ CVowelFormantSet CVowelFormantSets::SynthesisLadefoged() {
     return CVowelFormantSet(_T("Synthesis - Ladefoged (2001)"), vowels, FALSE);
 }
 
-CVowelFormantSets & GetVowelSets() {
-    CSaString szPath(AfxGetApp()->GetProfileString(_T(""), _T("DataLocation")));
-    if (szPath.Right(1) != _T("\\")) {
-        szPath += _T("\\");
-    }
-
-    szPath = szPath + _T("vowelsUtf8.psa");
-
-    static CVowelFormantSets theVowelSets(szPath);
-    return theVowelSets;
-}
-
-const CVowelFormantSet & GetDefaultVowelSet() {
-    CVowelFormantSets & cSets = GetVowelSets();
-    return cSets[cSets.GetDefaultSet()];
-}
-
-const CVowelFormantsVector & GetVowelVector(int nGender) {
-    return GetDefaultVowelSet().GetVowelFormants(nGender);
-}
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgVowelFormants dialog

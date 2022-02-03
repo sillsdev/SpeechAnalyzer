@@ -78,11 +78,11 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     
 	// get pointer to main frame, graph, and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
 
     // create grappl data
-    CProcessGrappl * pGrappl = (CProcessGrappl *)pDoc->GetGrappl(); // get pointer to grappl object
-    short int nResult = LOWORD(pGrappl->Process(this, pDoc));       // process data
+    CProcessGrappl * pGrappl = (CProcessGrappl *)pModel->GetGrappl(); // get pointer to grappl object
+    short int nResult = LOWORD(pGrappl->Process(this, pModel));       // process data
     nResult = CheckResult(nResult, pGrappl);                        // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -95,7 +95,7 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         }
     } else if (pGrappl->IsDataReady()) {
         // get pointer to pitch parameters
-        const CPitchParm * pPitchParm = pDoc->GetPitchParm();
+        const CPitchParm * pPitchParm = pModel->GetPitchParm();
         // set data range
         int nMinData = 0;
         int nMaxData = 0;
@@ -105,7 +105,7 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             nMaxData = pPitchParm->nUpperBound;
         } else {
             // auto range mode
-            CPitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
+            CPitchParm::GetAutoRange(pModel->GetGrappl(), nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         SetBold(FALSE);
@@ -114,7 +114,7 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             pGraph->SetLegendScale(SCALE | NUMBERS, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
-            PlotStandardPaint(pDC, rWnd, rClip, pGrappl, pDoc, SKIP_UNSET); // do standard data paint */
+            PlotStandardPaint(pDC, rWnd, rClip, pGrappl, pModel, SKIP_UNSET); // do standard data paint */
         } else  if (pPitchParm->nScaleMode == 2) {
             // semitone display
             static const double dSemitoneScale = 12.0 / log(2.0);
@@ -124,13 +124,13 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             pGraph->SetLegendScale(SCALE | NUMBERS, dMin, dMax, _T("Semitones")); // set legend scale
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
-            PlotStandardPaint(pDC, rWnd, rClip, pGrappl, pDoc, SKIP_UNSET | PAINT_SEMITONES); // do standard data paint
+            PlotStandardPaint(pDC, rWnd, rClip, pGrappl, pModel, SKIP_UNSET | PAINT_SEMITONES); // do standard data paint
         } else {
             // logarithmic display
             pGraph->SetLegendScale(SCALE | NUMBERS | LOG10, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
-            PlotStandardPaint(pDC, rWnd, rClip, pGrappl, pDoc, SKIP_UNSET | PAINT_LOG10); // do standard data paint
+            PlotStandardPaint(pDC, rWnd, rClip, pGrappl, pModel, SKIP_UNSET | PAINT_LOG10); // do standard data paint
         }
     }
     // do common plot paint jobs

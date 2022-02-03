@@ -115,20 +115,20 @@ HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD 
     // check if player is playing
     if (pMainWnd->IsPlayerPlaying() || pMainWnd->IsPlayerTestRun()) {
         // request for data comes from player
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        DWORD dwWaveBufferSize = pDoc->GetWaveDataBufferSize();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+        DWORD dwWaveBufferSize = pModel->GetWaveDataBufferSize();
         // if the request is outside of the documents buffer or
-        if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize)) ||
+        if (((dwPlayPosition + dwDataSize) > (pModel->GetWaveBufferIndex() + dwWaveBufferSize)) ||
                 // the request is greater than the buffer?
                 ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize))) {
-            return pDoc->GetWaveData(dwPlayPosition, TRUE);     // get pointer to data block
+            return pModel->GetWaveData(dwPlayPosition, TRUE);     // get pointer to data block
         } else {
-            HPSTR pData = pDoc->GetWaveData(dwPlayPosition);    // get pointer to data block
+            HPSTR pData = pModel->GetWaveData(dwPlayPosition);    // get pointer to data block
             if (pData == NULL) {
                 // error while reading data
                 return NULL;
             }
-            pData += dwPlayPosition - pDoc->GetWaveBufferIndex();
+            pData += dwPlayPosition - pModel->GetWaveBufferIndex();
             return pData;
         }
     } else {

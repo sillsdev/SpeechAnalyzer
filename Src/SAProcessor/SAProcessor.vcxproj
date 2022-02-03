@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{bae36fb6-b897-4a12-b3a9-17794485cd9d}</ProjectGuid>
+    <RootNamespace>SAProcessor</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>..\fileutils;..\sa_dsp</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>..\fileutils;..\sa_dsp</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="AbstractPitchProcess.h" />
+    <ClInclude Include="AnalyticLpcAnalysis.h" />
+    <ClInclude Include="Butterworth.h" />
+    <ClInclude Include="Context.h" />
+    <ClInclude Include="FormantTracker.h" />
+    <ClInclude Include="Hilbert.h" />
+    <ClInclude Include="IIRFilter.h" />
+    <ClInclude Include="IProcess.h" />
+    <ClInclude Include="Lpc.h" />
+    <ClInclude Include="param.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Process.h" />
+    <ClInclude Include="ProcessAreaData.h" />
+    <ClInclude Include="ProcessDoc.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SaParam.h" />
+    <ClInclude Include="SAProcessor.h" />
+    <ClInclude Include="sa_p_3dPitch.h" />
+    <ClInclude Include="SA_P_CHA.H" />
+    <ClInclude Include="sa_p_custompitch.h" />
+    <ClInclude Include="Sa_p_dur.h" />
+    <ClInclude Include="Sa_p_fmt.h" />
+    <ClInclude Include="sa_p_fra.h" />
+    <ClInclude Include="Sa_p_glo.h" />
+    <ClInclude Include="sa_p_grappl.h" />
+    <ClInclude Include="sa_p_InstantaneousPower.h" />
+    <ClInclude Include="SA_P_LOU.H" />
+    <ClInclude Include="sa_p_melogram.h" />
+    <ClInclude Include="sa_p_pitch.h" />
+    <ClInclude Include="Sa_p_poa.h" />
+    <ClInclude Include="SA_P_RAT.H" />
+    <ClInclude Include="Sa_p_raw.h" />
+    <ClInclude Include="sa_p_sfmt.h" />
+    <ClInclude Include="sa_p_smoothedpitch.h" />
+    <ClInclude Include="Sa_p_spg.h" />
+    <ClInclude Include="Sa_p_spu.h" />
+    <ClInclude Include="Sa_p_twc.h" />
+    <ClInclude Include="sa_p_wavelet.h" />
+    <ClInclude Include="SA_P_ZCR.H" />
+    <ClInclude Include="SA_W_ADJ.H" />
+    <ClInclude Include="SA_W_EQU.H" />
+    <ClInclude Include="SA_W_PAS.H" />
+    <ClInclude Include="SA_W_REV.H" />
+    <ClInclude Include="SpectroParm.h" />
+    <ClInclude Include="StringUtils.h" />
+    <ClInclude Include="TrackState.h" />
+    <ClInclude Include="VowelFormants.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AbstractPitchProcess.cpp" />
+    <ClCompile Include="AnalyticLpcAnalysis.cpp" />
+    <ClCompile Include="Butterworth.cpp" />
+    <ClCompile Include="FormantTracker.cpp" />
+    <ClCompile Include="Hilbert.cpp" />
+    <ClCompile Include="IIRFilter.cpp" />
+    <ClCompile Include="Lpc.cpp" />
+    <ClCompile Include="Param.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Process.cpp" />
+    <ClCompile Include="ProcessAreaData.cpp" />
+    <ClCompile Include="ProcessDoc.cpp" />
+    <ClCompile Include="sa_p_3dPitch.cpp" />
+    <ClCompile Include="SA_P_CHA.CPP" />
+    <ClCompile Include="sa_p_cor.cpp" />
+    <ClCompile Include="sa_p_custompitch.cpp" />
+    <ClCompile Include="SA_P_DUR.CPP" />
+    <ClCompile Include="SA_P_FMT.CPP" />
+    <ClCompile Include="sa_p_fra.cpp" />
+    <ClCompile Include="Sa_p_glo.cpp" />
+    <ClCompile Include="sa_p_grappl.cpp" />
+    <ClCompile Include="sa_p_instantaneouspower.cpp" />
+    <ClCompile Include="Sa_p_lou.cpp" />
+    <ClCompile Include="sa_p_melogram.cpp" />
+    <ClCompile Include="sa_p_pitch.cpp" />
+    <ClCompile Include="sa_p_poa.cpp" />
+    <ClCompile Include="SA_P_RAT.CPP" />
+    <ClCompile Include="Sa_p_raw.cpp" />
+    <ClCompile Include="sa_p_sfmt.cpp" />
+    <ClCompile Include="sa_p_smoothedpitch.cpp" />
+    <ClCompile Include="Sa_p_spg.cpp" />
+    <ClCompile Include="Sa_p_spu.cpp" />
+    <ClCompile Include="SA_P_TWC.CPP" />
+    <ClCompile Include="sa_p_wavelet.cpp" />
+    <ClCompile Include="SA_P_ZCR.CPP" />
+    <ClCompile Include="SA_W_ADJ.CPP" />
+    <ClCompile Include="SA_W_EQU.CPP" />
+    <ClCompile Include="SA_W_PAS.CPP" />
+    <ClCompile Include="SA_W_REV.CPP" />
+    <ClCompile Include="SpectroParm.cpp" />
+    <ClCompile Include="TrackState.cpp" />
+    <ClCompile Include="VowelFormants.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

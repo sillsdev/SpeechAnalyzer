@@ -35,7 +35,7 @@ class CDlgAutoRecorder : public CDialog, public IWaveNotifiable {
 
     // Construction/destruction/creation
 public:
-    CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pParent, CSaView * pTarget, CAlignInfo & alignInfo, int wholeFile); // standard constructor
+    CDlgAutoRecorder(CSaDoc * pModel, CSaView * pParent, CSaView * pTarget, CAlignInfo & alignInfo, int wholeFile); // standard constructor
     virtual ~CDlgAutoRecorder();
 
     void Create(CWnd * pParent);

@@ -6,7 +6,7 @@ CAppContext::CAppContext(CSaView * aView) {
     pApp = (CSaApp*)AfxGetApp();
     pMainFrame = (CMainFrame*)AfxGetMainWnd();
     pView = aView;
-    pDoc = pView->GetDocument();
+    pModel = pView->GetDocument();
 }
 
 CSaApp * CAppContext::getApp() {
@@ -22,5 +22,5 @@ CSaView * CAppContext::getView() {
 }
 
 CSaDoc * CAppContext::getDoc() {
-    return pDoc;
+    return pModel;
 }

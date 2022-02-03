@@ -73,15 +73,15 @@ CFormantChart::~CFormantChart() {
 // CFormantChart::SetStartCursor Position the start cursor
 /***************************************************************************/
 void CFormantChart::SetStartCursor(CSaView * pView) {
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    CProcessFormants * pFormants = pDoc->GetFormants();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+    CProcessFormants * pFormants = pModel->GetFormants();
     pFormants->ResetTracking();  // start over
     CFormantParm * pFormantSource = pFormants->GetFormantParms();
     CPlotWnd::SetStartCursor(pView);
 
     // Finish pitch processing if necessary.
-    CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
-    short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
+    CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
+    short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (nResult == PROCESS_CANCELED) {
             pFormants->CancelProcess();
@@ -95,7 +95,7 @@ void CFormantChart::SetStartCursor(CSaView * pView) {
     }
     m_bVoiced = TRUE;
     for (DWORD dwWave = dwWaveStart; dwWave <= dwWaveStop; dwWave += Grappl_calc_intvl)
-        if (!pAutoPitch->IsVoiced(pDoc, dwWave)) {
+        if (!pAutoPitch->IsVoiced(pModel, dwWave)) {
             m_bVoiced = FALSE;
             break;
         }
@@ -107,11 +107,11 @@ void CFormantChart::SetStartCursor(CSaView * pView) {
 void CFormantChart::SetStopCursor(CSaView * pView) {
     CPlotWnd::SetStopCursor(pView);
     // Finish pitch processing if necessary.
-    CSaDoc * pDoc   = pView->GetDocument();
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); // get pointer to formants object
+    CSaDoc * pModel   = pView->GetDocument();
+    CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants(); // get pointer to formants object
     CFormantParm * pFormantSource = pFormants->GetFormantParms();
-    CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
-    short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
+    CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
+    short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (nResult == PROCESS_CANCELED) {
             pFormants->CancelProcess();
@@ -124,7 +124,7 @@ void CFormantChart::SetStopCursor(CSaView * pView) {
     }
     m_bVoiced = TRUE;
     for (DWORD dwWave = dwWaveStart; dwWave <= dwWaveStop; dwWave += Grappl_calc_intvl)
-        if (!pAutoPitch->IsVoiced(pDoc, dwWave)) {
+        if (!pAutoPitch->IsVoiced(pModel, dwWave)) {
             m_bVoiced = FALSE;
             break;
         }
@@ -145,11 +145,11 @@ void CFormantChart::GenderInfoChanged(int /* nGender */) {
 short int CFormantChart::ProcessFTFormants() {
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc   = pView->GetDocument();
+    CSaDoc * pModel   = pView->GetDocument();
     // Process FormantTracker formants
     // get pointer to FormantTracker object
-    CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); 
-    short int nResult = LOWORD(pFTFormants->Process(pView, pDoc));
+    CProcessFormantTracker * pFTFormants = pModel->GetFormantTracker(); 
+    short int nResult = LOWORD(pFTFormants->Process(pView, pModel));
     // check the process result
     return CheckResult(nResult, pFTFormants); 
 }
@@ -162,17 +162,17 @@ short int CFormantChart::ProcessFormants() {
     // Get pointers to document and main frame.
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc   = pView->GetDocument();
-    DWORD wSmpSize = pDoc->GetSampleSize();  // calculate sample size in bytes
+    CSaDoc * pModel   = pView->GetDocument();
+    DWORD wSmpSize = pModel->GetSampleSize();  // calculate sample size in bytes
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
 
     // Get formant object and formant plot parameters.
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); // get pointer to formants object
+    CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants(); // get pointer to formants object
     CFormantParm * pFormantParms = pFormants->GetFormantParms();   //!!move to formant processing class
 
     // Finish pitch processing if necessary.
-    CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
-    short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
+    CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
+    short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (nResult == PROCESS_CANCELED) {
             pFormants->CancelProcess();
@@ -181,8 +181,8 @@ short int CFormantChart::ProcessFormants() {
     }
 
     // Finish fragmenting if necessary.
-    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
+    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
+    nResult = LOWORD(pFragments->Process(this, pModel)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (nResult == PROCESS_CANCELED) {
             pFormants->CancelProcess();
@@ -223,8 +223,8 @@ short int CFormantChart::ProcessFormants() {
     }
 
     // If frame unvoiced, exit.
-    if (((!bDynamicUpdate) && ((!m_bVoiced) || (!pAutoPitch->IsVoiced(pDoc, dwFrameStart)))) ||
-            ((bDynamicUpdate) && ((!pAutoPitch->IsVoiced(pDoc, dwFrameStart)) || (!pAutoPitch->IsVoiced(pDoc, dwFrameStart+dwFrameSize-wSmpSize))))) {
+    if (((!bDynamicUpdate) && ((!m_bVoiced) || (!pAutoPitch->IsVoiced(pModel, dwFrameStart)))) ||
+            ((bDynamicUpdate) && ((!pAutoPitch->IsVoiced(pModel, dwFrameStart)) || (!pAutoPitch->IsVoiced(pModel, dwFrameStart+dwFrameSize-wSmpSize))))) {
         return PROCESS_UNVOICED;
     }
 
@@ -233,7 +233,7 @@ short int CFormantChart::ProcessFormants() {
     if (pView->GetGraphUpdateMode() == STATIC_UPDATE ||
             ((bDynamicUpdate) && (!pView->IsAnimationRequested())) ||
             (((bDynamicUpdate) || (!pFormantParms->bTrackFormants)) && (pView->IsAnimationRequested()))) {
-        nResult = LOWORD(pFormants->Process(this, pDoc, bTrackFormants, dwFrameStart, dwFrameSize, SpectraSelected));    // process data
+        nResult = LOWORD(pFormants->Process(this, pModel, bTrackFormants, dwFrameStart, dwFrameSize, SpectraSelected));    // process data
     }
     return nResult;
 }
@@ -260,9 +260,9 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
 	// get application colors
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     Colors * pColor = pMainWnd->GetColors();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 	// get pointer to formants object
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
+    CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants();
 	//!!move to formant processing class
 	// process FormantTracker formants
     CFormantParm * pFormantParms = pFormants->GetFormantParms();
@@ -351,7 +351,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     // set the vowel font
     pDC->SetTextColor(pColor->cPlotStopCursor); // set font color
     pDC->SetBkMode(TRANSPARENT); // letters must be transparent
-    CFont * pOldFont = pDC->SelectObject((CFont *)pDoc->GetFont(PHONETIC));
+    CFont * pOldFont = pDC->SelectObject((CFont *)pModel->GetFont(PHONETIC));
     TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
     CFont GridVowelFont;
@@ -368,7 +368,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     POINT p;
 
     // draw the vowels
-    EGender nGender = pDoc->GetGender();
+    EGender nGender = pModel->GetGender();
 
     // Draw Vowel Set Title
     const CSaString & szVowelSetName = GetDefaultVowelSet().GetName();
@@ -415,7 +415,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
 #define NEAREST_SPACING 15
 
         // draw the 'nearest vowel' character
-        CSaString vowelId = pFormants->FindNearestVowel(pDoc);
+        CSaString vowelId = pFormants->FindNearestVowel(pModel);
         vowelId = vowelId.Trim();
         CSize extent = pDC->GetTextExtent(vowelId);
 
@@ -460,7 +460,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     // label the graph
     pFormantChart->zDrawLegend();
 
-    TRACE("sps=%d\n",pDoc->GetSamplesPerSec());
+    TRACE("sps=%d\n",pModel->GetSamplesPerSec());
 
     // check if data is outside graph boundaries
     if ((zG.xdata!=NULL) && (zG.ydata!=NULL) && (bValidData)) {
@@ -556,12 +556,12 @@ void CFormantChart::EndAnimation(void) {
         CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
         pWavePlot->ClearHighLightArea();
     }
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 	// get pointer to formants object
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); 
+    CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants(); 
     CFormantParm * pFormantParms = pFormants->GetFormantParms();
     if (pFormantParms->bSmoothFormants) {
-        pFormants->SmoothMedian(pDoc);
+        pFormants->SmoothMedian(pModel);
     }
     m_dwAnimationFrame = UNDEFINED_OFFSET;
     RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -583,15 +583,15 @@ void CFormantChart::GraphHasFocus(BOOL bFocus) {
             BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
             if (bDynamicUpdate) {
                 CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
-                CSaDoc * pDoc = pView->GetDocument();
-                CProcessFormants * pFormants = pDoc->GetFormants();
+                CSaDoc * pModel = pView->GetDocument();
+                CProcessFormants * pFormants = pModel->GetFormants();
                 BOOL bCluster = (pFormants->GetFormantFrameCount() > 1);
                 if (bFocus && !bCluster) {
                     // Highlight raw data frame for which formants are calculated
 					// calculate sample size in bytes
-                    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());
+                    WORD wSmpSize = (WORD)(pModel->GetSampleSize());
 					// data should be ready -- dynamic mode enabled
-                    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments(); 
+                    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments(); 
                     DWORD dwFrame = m_dwAnimationFrame;
                     if (dwFrame == UNDEFINED_OFFSET) {
                         dwFrame = pFragments->GetFragmentIndex(pView->GetStartCursorPosition()/wSmpSize);
@@ -696,12 +696,12 @@ int CPlot3D::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     // Get pointer to application, document, and formant processing object.
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = pView->GetDocument();
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
-    CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
+    CSaDoc * pModel = pView->GetDocument();
+    CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants();
+    CProcessFormantTracker * pFTFormants = pModel->GetFormantTracker(); // get pointer to FormantTracker object
     CFormantParm * pFormantParms = pFormants->GetFormantParms();
-    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
+    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
+    WORD wSmpSize = (WORD)(pModel->GetSampleSize());  // calculate sample size in bytes
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bDataValid = TRUE;
 
@@ -747,7 +747,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     DWORD stopCursorPos = pView->GetStopCursorPosition();
     DWORD startFrag = pFragments->GetFragmentIndex(startCursorPos / wSmpSize);
     DWORD stopFrag = pFragments->GetFragmentIndex(stopCursorPos / wSmpSize);
-    double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(SFormantFreq) / 2);
+    double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pModel->GetDataSize() / (sizeof(SFormantFreq) / 2);
     double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
     DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
     SFormantFreq * formants = (bDataValid)?pFTFormants->GetFormant(ftIndex):NULL;
@@ -847,7 +847,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     FormantChartParm.item_title_format = zNUMBERS;         // show numbers along axes
     FormantChartParm.line_connect = ON;          ;
 
-    EGender nGender = pDoc->GetGender();
+    EGender nGender = pModel->GetGender();
     SRange FormantScale = GetChartRange(2, nGender);
     FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
@@ -959,12 +959,12 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
 
     // Get pointer to application, document, and formant processing object.
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = pView->GetDocument();
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
-    CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
+    CSaDoc * pModel = pView->GetDocument();
+    CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants();
+    CProcessFormantTracker * pFTFormants = pModel->GetFormantTracker(); // get pointer to FormantTracker object
     CFormantParm * pFormantParms = pFormants->GetFormantParms();
-    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
+    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
+    WORD wSmpSize = (WORD)(pModel->GetSampleSize());  // calculate sample size in bytes
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bDataValid = TRUE;
 
@@ -1008,7 +1008,7 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     DWORD stopCursorPos = pView->GetStopCursorPosition();
     DWORD startFrag = pFragments->GetFragmentIndex(startCursorPos / wSmpSize);
     DWORD stopFrag = pFragments->GetFragmentIndex(stopCursorPos / wSmpSize);
-    double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(SFormantFreq) / 2);
+    double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pModel->GetDataSize() / (sizeof(SFormantFreq) / 2);
     double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
     DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
     SFormantFreq * formants = (bDataValid)?pFTFormants->GetFormant(ftIndex):NULL;
@@ -1093,7 +1093,7 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     FormantChartParm.item_title_format = zNUMBERS;         // no numbers along axes
     FormantChartParm.line_connect = FALSE;
 
-    EGender nGender = pDoc->GetGender();
+    EGender nGender = pModel->GetGender();
     SRange FormantScale = GetChartRange(1, nGender);
     FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
@@ -1210,14 +1210,14 @@ int CPlotF2F1::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     // Get pointer to application, document, and formant processing object.
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = pView->GetDocument();
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
+    CSaDoc * pModel = pView->GetDocument();
+    CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants();
     // get pointer to FormantTracker object
-    CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker();
+    CProcessFormantTracker * pFTFormants = pModel->GetFormantTracker();
     CFormantParm * pFormantParms = pFormants->GetFormantParms();
-    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
+    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
     // calculate sample size in bytes
-    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());
+    WORD wSmpSize = (WORD)(pModel->GetSampleSize());
 
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bDataValid = TRUE;
@@ -1262,7 +1262,7 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     DWORD stopCursorPos = pView->GetStopCursorPosition();
     DWORD startFrag = pFragments->GetFragmentIndex(startCursorPos / wSmpSize);
     DWORD stopFrag = pFragments->GetFragmentIndex(stopCursorPos / wSmpSize);
-    double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(SFormantFreq) / 2);
+    double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pModel->GetDataSize() / (sizeof(SFormantFreq) / 2);
     double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
     DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
     SFormantFreq * formant = (bDataValid)?pFTFormants->GetFormant(ftIndex):NULL;
@@ -1345,7 +1345,7 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     formantChartParm.y_axis_divisions = 6;                 // y-axis divisions
     formantChartParm.item_title_format = zNUMBERS;
 
-    EGender nGender = pDoc->GetGender();
+    EGender nGender = pModel->GetGender();
     SRange FormantScale = GetChartRange(2, nGender);
     formantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     formantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
@@ -1443,14 +1443,14 @@ int CPlotF2F1F1::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView) {
     // Get pointer to application, document, and formant processing object.
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = pView->GetDocument();
-    CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
+    CSaDoc * pModel = pView->GetDocument();
+    CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants();
     // get pointer to spectrogram object
-    CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker();
+    CProcessFormantTracker * pFTFormants = pModel->GetFormantTracker();
     CFormantParm * pFormantParms = pFormants->GetFormantParms();
-    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
+    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
     // calculate sample size in bytes
-    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());
+    WORD wSmpSize = (WORD)(pModel->GetSampleSize());
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bDataValid = TRUE;
 
@@ -1494,7 +1494,7 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     DWORD stopCursorPos = pView->GetStopCursorPosition();
     DWORD startFrag = pFragments->GetFragmentIndex(startCursorPos / wSmpSize);
     DWORD stopFrag = pFragments->GetFragmentIndex(stopCursorPos / wSmpSize);
-    double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(SFormantFreq) / 2);
+    double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pModel->GetDataSize() / (sizeof(SFormantFreq) / 2);
     double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
     DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
     SFormantFreq * formants = (bDataValid)?pFTFormants->GetFormant(ftIndex):NULL;
@@ -1568,7 +1568,7 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     }
 
     // Customize the chart.
-    EGender nGender = pDoc->GetGender();
+    EGender nGender = pModel->GetGender();
     switch (nGender) { // set the frequency ranges
     case male:  // male
         FormantChartParm.xend   = 0  , FormantChartParm.xstart = 2500;
@@ -1676,18 +1676,18 @@ int CPlotInvSDP::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     }
     // get pointer to document
     CSaView * pView = (CSaView *)GetParent()->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     // process workbench if necessary
-    pDoc->WorkbenchProcess();
+    pModel->WorkbenchProcess();
     // get pointer to process class
-    CProcessSDP * pSDP = GetSDP(pDoc); // get pointer to SDP object
+    CProcessSDP * pSDP = GetSDP(pModel); // get pointer to SDP object
     // save process
     m_pAreaProcess = pSDP;
     return 0;
 }
 
-CProcessSDP * CPlotInvSDP::GetSDP(CSaDoc * pDoc) {
-    return pDoc->GetSDP(2); // InvSDP has index == 2
+CProcessSDP * CPlotInvSDP::GetSDP(CSaDoc * pModel) {
+    return pModel->GetSDP(2); // InvSDP has index == 2
 }
 
 /***************************************************************************/
@@ -1705,16 +1705,16 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 #define zMAX_NUMPANES  8
 #define zMAX_NUMPOINTS zNUM_SAMPLES * 2 * zMAX_NUMPANES
 
-    CSaDoc * pDoc = pView->GetDocument();
+    CSaDoc * pModel = pView->GetDocument();
 
     if (IsIconic()) {
         return;    // nothing to draw
     }
     // get pointer to view and document
     // process workbench if necessary
-    pDoc->WorkbenchProcess();
+    pModel->WorkbenchProcess();
     // get the SDP parameters
-    SDPParm * pSDPParm = pDoc->GetSDPParm();
+    SDPParm * pSDPParm = pModel->GetSDPParm();
     long lSteps = (long)pSDPParm->nSteps;
     BOOL bAuto = (pSDPParm->nStepMode == 0);
     BOOL bAverage = pSDPParm->bAverage;
@@ -1777,7 +1777,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
         }
     }
     // get pointer to process class
-    CProcessSDP * pSDP = GetSDP(pDoc); // get pointer to SDP object
+    CProcessSDP * pSDP = GetSDP(pModel); // get pointer to SDP object
     // check if process is idle
     if (pSDP->IsIdle()) {
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_POSCUR, &rClient);
@@ -1810,7 +1810,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
         if (TRUE) {
             // new data has to be processed
             dwStart = pSDP->GetAreaPosition();
-            UINT nBlockAlign = pDoc->GetBlockAlign();
+            UINT nBlockAlign = pModel->GetBlockAlign();
             if (bAuto) {
                 // auto step mode, determine steps
                 lSteps = (long)(pSDP->GetAreaLength() / (zNUM_SAMPLES * (DWORD)nBlockAlign));
@@ -1826,9 +1826,9 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                 return;
             }
             DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
-            DWORD dwRawBufferSize = pDoc->GetWaveDataBufferSize();
+            DWORD dwRawBufferSize = pModel->GetWaveDataBufferSize();
             // fill up data buffers
-            HPSTR pData = pDoc->GetWaveData(dwStart, TRUE); // get pointer to wave data block
+            HPSTR pData = pModel->GetWaveData(dwStart, TRUE); // get pointer to wave data block
             if (pData == NULL) {
                 return;    // error occured while reading data block
             }
@@ -1847,7 +1847,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                     for (DWORD dwLoop2 = 0; dwLoop2 < (DWORD)lSteps; dwLoop2++) {
                         if (dwDataPos >= dwStart) {
                             // reload data
-                            pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+                            pData = pModel->GetWaveData(dwDataPos, TRUE); // get new data block
                             if (pData == NULL) {
                                 return;    // error occured while reading data block
                             }
@@ -1869,7 +1869,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                     // take just one sample
                     if (dwDataPos >= dwStart) {
                         // reload data
-                        pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+                        pData = pModel->GetWaveData(dwDataPos, TRUE); // get new data block
                         if (pData == NULL) {
                             return;    // error occured while reading data block
                         }
@@ -1897,7 +1897,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
             }
             // reset data pointers
             dwStart = pSDP->GetAreaPosition();
-            pData = pDoc->GetWaveData(dwStart, TRUE); // get first wave data block
+            pData = pModel->GetWaveData(dwStart, TRUE); // get first wave data block
             if (pData == NULL) {
                 return;    // error occured while reading data block
             }
@@ -1918,7 +1918,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                     for (DWORD dwLoop2 = 0; dwLoop2 < (DWORD)lSteps; dwLoop2++) {
                         if (dwDataPos >= dwStart) {
                             // reload data
-                            pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+                            pData = pModel->GetWaveData(dwDataPos, TRUE); // get new data block
                             if (pData == NULL) {
                                 return;    // error occured while reading data block
                             }
@@ -1940,7 +1940,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                     // take just one sample
                     if (dwDataPos >= dwStart) {
                         // reload data
-                        pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+                        pData = pModel->GetWaveData(dwDataPos, TRUE); // get new data block
                         if (pData == NULL) {
                             return;    // error occured while reading data block
                         }

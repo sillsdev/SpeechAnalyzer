@@ -24,7 +24,7 @@ private:
     CProcess3dPitch * m_p3dPitch;
 
 private:
-    BOOL CreateSpectroPalette(CDC * pDC, CDocument * pDoc); // creates the palette
+    BOOL CreateSpectroPalette(CDC * pDC, CDocument * pModel); // creates the palette
     void populateBmiColors(RGBQUAD * Quadcolors,CSaView * pView);
     BOOL OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
     BOOL OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);

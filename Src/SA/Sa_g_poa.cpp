@@ -79,8 +79,8 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
 
     // Get waveform and buffer parameters.
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());      //compute sample size in bytes
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+    WORD wSmpSize = (WORD)(pModel->GetSampleSize());      //compute sample size in bytes
 
     // Get pointer to raw waveform plot.
     int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
@@ -92,9 +92,9 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
 
     // Get frame parameters.
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-    CProcessGrappl * pAutoPitch = pDoc->GetGrappl();   // get pitch process object
-    CProcessFragments * pFragments = pDoc->GetFragments(); // get fragmenter object
-    short int nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
+    CProcessGrappl * pAutoPitch = pModel->GetGrappl();   // get pitch process object
+    CProcessFragments * pFragments = pModel->GetFragments(); // get fragmenter object
+    short int nResult = LOWORD(pFragments->Process(this, pModel)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (!bDynamicUpdate) {
             nResult = CheckResult(nResult, pFragments);    // check the process result
@@ -128,8 +128,8 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
     }
 
     // Check for valid frame.
-    CProcessPOA * pPOA = (CProcessPOA *)pDoc->GetPOA(); // get pointer to POA object
-    if (!pAutoPitch->IsVoiced(pDoc, dwFrameStart) || !pAutoPitch->IsVoiced(pDoc, dwFrameStart + dwFrameSize - wSmpSize)) {
+    CProcessPOA * pPOA = (CProcessPOA *)pModel->GetPOA(); // get pointer to POA object
+    if (!pAutoPitch->IsVoiced(pModel, dwFrameStart) || !pAutoPitch->IsVoiced(pModel, dwFrameStart + dwFrameSize - wSmpSize)) {
         // frame is not entirely voiced
 		// get application colors
         Colors * pColor = pMainWnd->GetColors(); 
@@ -161,7 +161,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
         pPOA->SetDataInvalid();   // force recalculation
     }
 
-    nResult = LOWORD(pPOA->Process(this, pDoc, dwFrameStart, dwFrameEnd));  // process data
+    nResult = LOWORD(pPOA->Process(this, pModel, dwFrameStart, dwFrameEnd));  // process data
     nResult = CheckResult(nResult, pPOA); // check the process result
     if (nResult == PROCESS_ERROR) {
         MessageBox(_T("Error occurred in vocal tract analysis"), _T("Vocal Tract"), MB_OK | MB_ICONEXCLAMATION);
@@ -353,10 +353,10 @@ void CPlotPOA::GraphHasFocus(BOOL bFocus) {
     if (pWaveGraph) {
         CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
         if (bFocus) {
-            CSaDoc * pDoc = pView->GetDocument();
-            WORD wSmpSize = (WORD)(pDoc->GetSampleSize());          //compute sample size in bytes
-            CProcessFragments * pFragments = pDoc->GetFragments();  // get fragmenter object
-            pFragments->Process(this, pDoc);                        // process data
+            CSaDoc * pModel = pView->GetDocument();
+            WORD wSmpSize = (WORD)(pModel->GetSampleSize());          //compute sample size in bytes
+            CProcessFragments * pFragments = pModel->GetFragments();  // get fragmenter object
+            pFragments->Process(this, pModel);                        // process data
             if (pFragments->IsDataReady()) {
                 DWORD dwFrameIndex;
                 bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);

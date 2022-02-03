@@ -175,8 +175,8 @@ int CPlotStaff::ExportFile() {
         int i;
 
         CSaView * pView = ((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        CString csWavName = pDoc->GetPathName();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+        CString csWavName = pModel->GetPathName();
         if (csWavName.IsEmpty()) {
             return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP+1,0,0);
         }
@@ -237,10 +237,10 @@ int CPlotStaff::StopPlay(void) {
     //TRE : How to get Save button to display when we need it?
     //      Here's a temporary solution
     if (StaffControl && ::SendMessage(StaffControl,(WPARAM)EM_GETMODIFY,0,0)) {
-        CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument();
-        pDoc->SetModifiedFlag(TRUE);
+        CSaDoc * pModel = (CSaDoc *)m_pView->GetDocument();
+        pModel->SetModifiedFlag(TRUE);
 		// transcription has been modified
-        pDoc->SetTransModifiedFlag(TRUE); 
+        pModel->SetTransModifiedFlag(TRUE); 
     }
 
 	// send message to stop player
@@ -414,9 +414,9 @@ void CPlotStaff::Convert() {
     CString sMelody;
 
     // get melogram data
-    CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument(); // cast pointer
-    CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
-    long lResult = pMelogram->Process(this, pDoc); // process data
+    CSaDoc * pModel = (CSaDoc *)m_pView->GetDocument(); // cast pointer
+    CProcessMelogram * pMelogram = (CProcessMelogram *)pModel->GetMelogram(); // get pointer to melogram object
+    long lResult = pMelogram->Process(this, pModel); // process data
     short int nLevel = LOWORD(lResult);
     if (nLevel < 0) {
         ::SendMessage(StaffControl, WM_SETTEXT, 0, (LPARAM)((LPCTSTR)sMelody));
@@ -426,8 +426,8 @@ void CPlotStaff::Convert() {
     DWORD dwMelDataLength = pMelogram->GetDataSize(); // size of melogram data
 
     // Get Loudness Data
-    CProcessLoudness * pLoudness = (CProcessLoudness *)pDoc->GetLoudness(); // get pointer to loudness object
-    lResult = pLoudness->Process(this, pDoc); // process data
+    CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to loudness object
+    lResult = pLoudness->Process(this, pModel); // process data
     nLevel = LOWORD(lResult);
     if (nLevel < 0) {
         ::SendMessage(StaffControl, WM_SETTEXT, 0, (LPARAM)((LPCTSTR)sMelody));
@@ -435,18 +435,18 @@ void CPlotStaff::Convert() {
     }
 
     // get TWC data
-    const CMusicParm * pParm = pDoc->GetMusicParm();
+    const CMusicParm * pParm = pModel->GetMusicParm();
 
     int nUpperBound = pParm->nUpperBound;
     int nLowerBound = pParm->nLowerBound;
 
     if (pParm->nRangeMode == 0) {
-        CMusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
+        CMusicParm::GetAutoRange(pModel->GetMelogram(), nUpperBound, nLowerBound);
     }
     short nMinSemitone = (short)nLowerBound;
     short nMaxSemitone = (short)nUpperBound;
-    CProcessTonalWeightChart * pTWC = (CProcessTonalWeightChart *)pDoc->GetTonalWeightChart(); // get pointer to TWC object
-    lResult = pTWC->Process(this, pDoc, 0, dwMelDataLength, nMinSemitone, nMaxSemitone); // process data
+    CProcessTonalWeightChart * pTWC = (CProcessTonalWeightChart *)pModel->GetTonalWeightChart(); // get pointer to TWC object
+    lResult = pTWC->Process(this, pModel, 0, dwMelDataLength, nMinSemitone, nMaxSemitone); // process data
     nLevel = LOWORD(lResult);
     nProgress = HIWORD(lResult);
     if (nLevel < 0) {
@@ -474,7 +474,7 @@ void CPlotStaff::Convert() {
     double dSemitoneShift = nCalSemitone - dCalSemitone;
 
     // get sampling rate
-    double dQNotesPerFrame = GetTempo()*pDoc->GetNumSamples()/pMelogram->GetDataSize()/60.0/pDoc->GetSamplesPerSec();
+    double dQNotesPerFrame = GetTempo()*pModel->GetNumSamples()/pMelogram->GetDataSize()/60.0/pModel->GetSamplesPerSec();
     const int nMelogramAverageInterval = int(1./(8*dQNotesPerFrame) + 1.0);  // Average over grace note interval
 
     // parse into notes
@@ -637,8 +637,8 @@ void CPlotStaff::Convert() {
     ::SendMessage(StaffControl, WM_SETTEXT, 0, (LPARAM)((LPCTSTR)sMelody));
 
     // Document has been modified
-    pDoc->SetModifiedFlag(TRUE);
-    pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+    pModel->SetModifiedFlag(TRUE);
+    pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
 
     EndWaitCursor();
 }
@@ -654,8 +654,8 @@ void CPlotStaff::Convert() {
 void CPlotStaff::OnDraw(CDC *, CRect, CRect, CSaView * pView) {
     if (!m_pView && pView) { // first access initialize score
 
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        CString szMusicScore = pDoc->GetMusicScore();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+        CString szMusicScore = pModel->GetMusicScore();
         int nMusicScoreSize = szMusicScore.GetLength();
         if (nMusicScoreSize) {
             TCHAR * pMusicScore = szMusicScore.GetBuffer(nMusicScoreSize);
@@ -695,10 +695,10 @@ void CPlotStaff::SetModifiedFlag(BOOL Modified) {
 void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam) {
     switch (msg) {
     case EM_SETMODIFY: {
-        CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument();
-        pDoc->SetModifiedFlag(TRUE);
+        CSaDoc * pModel = (CSaDoc *)m_pView->GetDocument();
+        pModel->SetModifiedFlag(TRUE);
 		// transcription data has been modified
-        pDoc->SetTransModifiedFlag(TRUE); 
+        pModel->SetTransModifiedFlag(TRUE); 
         break;
     }
     case WM_SETFOCUS: {
@@ -718,8 +718,8 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam) {
                 if (pMelPlot) {
                     SPartSelectionMS * pSel = (SPartSelectionMS *)lParam;
 					// cast pointer
-                    CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument(); 
-                    pMelPlot->SetHighLightArea(pDoc->GetBytesFromTime(pSel->begin), pDoc->GetBytesFromTime(pSel->end), TRUE, TRUE);
+                    CSaDoc * pModel = (CSaDoc *)m_pView->GetDocument(); 
+                    pMelPlot->SetHighLightArea(pModel->GetBytesFromTime(pSel->begin), pModel->GetBytesFromTime(pSel->end), TRUE, TRUE);
                     pMelPlot->UpdateWindow();
                 }
             }

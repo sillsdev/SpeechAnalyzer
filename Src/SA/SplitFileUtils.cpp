@@ -408,9 +408,9 @@ int FindNearestPhraseIndex(CMusicPhraseSegment * seg, DWORD dwStart, DWORD dwSto
 bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGloss, LPCTSTR prefix, LPCTSTR suffix) {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pModel->GetNextView(pos);
 
     CString szGloss;
     szGloss.LoadStringW(IDS_WINDOW_GLOSS);
@@ -468,9 +468,9 @@ bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGlo
 */
 bool ValidatePhraseFilenames(EAnnotation type, EPhraseFilenameConvention convention, LPCTSTR prefix, LPCTSTR suffix) {
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pModel->GetNextView(pos);
 
     CMusicPhraseSegment * s = (CMusicPhraseSegment *)pView->GetAnnotation(type);
 
@@ -507,9 +507,9 @@ bool ExportWordSegments(EWordFilenameConvention convention, LPCTSTR path, BOOL s
         return false;
     }
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pModel->GetNextView(pos);
 
     // loop through the gloss segments
     CGlossSegment * g = (CGlossSegment *)pView->GetAnnotation(GLOSS);
@@ -535,9 +535,9 @@ bool ExportWordSegments(EWordFilenameConvention convention, LPCTSTR path, BOOL s
 */
 int ComposeWordSegmentFilename(CGlossSegment * seg, int index, EWordFilenameConvention convention, LPCTSTR path, wstring & out, LPCTSTR prefix, LPCTSTR suffix) {
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pModel->GetNextView(pos);
 
     // can we piece the name together?
     wstring name = GenerateWordSplitName(seg, pView, convention, index, prefix, suffix);
@@ -563,7 +563,7 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
 
     TRACE("exporting gloss segment\n");
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
     DWORD dwStart = seg->GetOffset(index);
     DWORD dwStop = dwStart + seg->GetDuration(index);
@@ -581,9 +581,9 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
     }
 
     // copy the audio portion
-    WAVETIME start = pDoc->toTime(dwStart, true);
-    WAVETIME stop = pDoc->toTime(dwStop, true);
-    if (!pDoc->CopySectionToNewWavFile(start, stop-start, filename, false)) {
+    WAVETIME start = pModel->toTime(dwStart, true);
+    WAVETIME stop = pModel->toTime(dwStop, true);
+    if (!pModel->CopySectionToNewWavFile(start, stop-start, filename, false)) {
         // be sure to delete the file
         FileUtils::Remove(filename);
         CSaApp * pApp = (CSaApp *)AfxGetApp();
@@ -601,9 +601,9 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
 */
 bool ExportPhraseSegments(EAnnotation type, EPhraseFilenameConvention convention, wstring & path, int & dataCount, int & wavCount, LPCTSTR prefix, LPCTSTR suffix) {
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pModel->GetNextView(pos);
 
     if (!ValidatePhraseFilenames(type, convention, prefix, suffix)) {
         return false;
@@ -633,9 +633,9 @@ bool ExportPhraseSegments(EAnnotation type, EPhraseFilenameConvention convention
 */
 int ComposePhraseSegmentFilename(EAnnotation type, CMusicPhraseSegment * seg, int index, EPhraseFilenameConvention convention, LPCTSTR path, wstring & out, LPCTSTR prefix, LPCTSTR suffix) {
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pModel->GetNextView(pos);
 
     // can we piece the name together?
     wstring name;
@@ -660,15 +660,15 @@ int ExportPhraseSegment(CMusicPhraseSegment * seg, int index, wstring & filename
 
     TRACE("exporting phrase segment\n");
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
     DWORD dwStart = seg->GetOffset(index);
     DWORD dwStop = dwStart + seg->GetDuration(index);
     TRACE("dwStart=%d dwStop=%d\n",dwStart,dwStop);
 
-    WAVETIME start = pDoc->toTime(dwStart, true);
-    WAVETIME stop = pDoc->toTime(dwStop, true);
-    if (!pDoc->CopySectionToNewWavFile(start,stop-start,filename.c_str(),false)) {
+    WAVETIME start = pModel->toTime(dwStart, true);
+    WAVETIME stop = pModel->toTime(dwStop, true);
+    if (!pModel->CopySectionToNewWavFile(start,stop-start,filename.c_str(),false)) {
         // be sure to delete the file
         FileUtils::Remove(filename.c_str());
         CSaApp * pApp = (CSaApp *)AfxGetApp();

@@ -9,7 +9,7 @@ private:
 	CSaApp* pApp;
 	CMainFrame* pMainFrame;
 	CSaView* pView;
-	CSaDoc* pDoc;
+	CSaDoc* pModel;
 public:
 	CAppContext(CSaView* pView);
 	CSaApp * getApp();

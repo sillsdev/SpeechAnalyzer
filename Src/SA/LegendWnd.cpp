@@ -664,7 +664,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
 
     // get pointer view and document
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     // set font colors
 	// get pointer to colors from main frame
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); 
@@ -936,18 +936,18 @@ void CLegendWnd::OnDraw(CDC * pDC,
             rWnd.top += (rWnd.Height() - nHeight) / 2;
 
             // create and write effective sample size text
-            swprintf_s(szText, _T("%u Bit"), pDoc->GetQuantization());
+            swprintf_s(szText, _T("%u Bit"), pModel->GetQuantization());
             pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
             rWnd.top += 5 * tm.tmHeight / 4;
 
             // create and write sample rate text
-            swprintf_s(szText, _T("%ld Hz"), pDoc->GetSamplesPerSec());
+            swprintf_s(szText, _T("%ld Hz"), pModel->GetSamplesPerSec());
             pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
             rWnd.top += 5 * tm.tmHeight / 4;
 
             // create and write length text
 			// get sampled data size in seconds
-            double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());
+            double fDataSec = pModel->GetTimeFromBytes(pModel->GetDataSize());
             swprintf_s(szText, _T("%-5.1f sec"), fDataSec);
             pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
         }

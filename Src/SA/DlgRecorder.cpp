@@ -90,8 +90,8 @@ void CDlgRecorder::DoDataExchange(CDataExchange * pDX) {
 // CDlgRecorder::SetTotalTime Set total time display
 /***************************************************************************/
 void CDlgRecorder::SetTotalTime() {
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    double fDataSec = pDoc->GetTimeFromBytes(m_dwRecordSize); // calculate time
+    CSaDoc * pModel = (CSaDoc *)m_pDoc; // cast pointer to document
+    double fDataSec = pModel->GetTimeFromBytes(m_dwRecordSize); // calculate time
     m_LEDTotalTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
 }
 
@@ -99,12 +99,12 @@ void CDlgRecorder::SetTotalTime() {
 // CDlgRecorder::SetPositionTime Set position time display
 /***************************************************************************/
 void CDlgRecorder::SetPositionTime() {
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
+    CSaDoc * pModel = (CSaDoc *)m_pDoc; // cast pointer to document
     if ((m_nMode == RECORDING) || ((m_nMode == PAUSED) && (m_nOldMode == RECORDING))) {
-        double fDataSec = pDoc->GetTimeFromBytes(m_dwRecordSize); // calculate time
+        double fDataSec = pModel->GetTimeFromBytes(m_dwRecordSize); // calculate time
         m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
     } else {
-        double fDataSec = pDoc->GetTimeFromBytes(m_dwPlayPosition); // calculate time
+        double fDataSec = pModel->GetTimeFromBytes(m_dwPlayPosition); // calculate time
         m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
     }
 }
@@ -113,19 +113,19 @@ void CDlgRecorder::SetPositionTime() {
 // CDlgRecorder::SetSettingsText Set settings text
 /***************************************************************************/
 void CDlgRecorder::SetSettingsText() {
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
+    CSaDoc * pModel = (CSaDoc *)m_pDoc; // cast pointer to document
 
     TCHAR szBuffer[60];
-    swprintf_s(szBuffer, _T("%u Hz"), pDoc->GetSamplesPerSec());
-    if (pDoc->GetNumChannels()==1) {
-        swprintf_s(szBuffer, _T("%s, %u-bit\nMono"), szBuffer, pDoc->GetBitsPerSample());
-    } else if (pDoc->GetNumChannels()==2) {
-        swprintf_s(szBuffer, _T("%s, %u-bit\nStereo"), szBuffer, pDoc->GetBitsPerSample());
+    swprintf_s(szBuffer, _T("%u Hz"), pModel->GetSamplesPerSec());
+    if (pModel->GetNumChannels()==1) {
+        swprintf_s(szBuffer, _T("%s, %u-bit\nMono"), szBuffer, pModel->GetBitsPerSample());
+    } else if (pModel->GetNumChannels()==2) {
+        swprintf_s(szBuffer, _T("%s, %u-bit\nStereo"), szBuffer, pModel->GetBitsPerSample());
     } else {
-        swprintf_s(szBuffer, _T("%s, %u-bit\n%d Channels"), szBuffer, pDoc->GetBitsPerSample(), pDoc->GetNumChannels());
+        swprintf_s(szBuffer, _T("%s, %u-bit\n%d Channels"), szBuffer, pModel->GetBitsPerSample(), pModel->GetNumChannels());
     }
 
-    if (pDoc->IsUsingHighPassFilter()) {
+    if (pModel->IsUsingHighPassFilter()) {
         swprintf_s(szBuffer, _T("%s, Highpass"), szBuffer);
     }
     if (GetStaticSourceInfo().bEnable) {
@@ -146,8 +146,8 @@ void CDlgRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *) {
     if (m_nMode == RECORDING) {
         m_dwRecordSize = dwPosition;
         // update the time
-        CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-        double fDataSec = pDoc->GetTimeFromBytes(m_dwRecordSize); // get sampled data size in seconds
+        CSaDoc * pModel = (CSaDoc *)m_pDoc;
+        double fDataSec = pModel->GetTimeFromBytes(m_dwRecordSize); // get sampled data size in seconds
         m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
     }
 }
@@ -173,8 +173,8 @@ void CDlgRecorder::BlockFinished(UINT nLevel, DWORD dwPosition, UINT) {
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
     // update the time
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-    double fDataSec = pDoc->GetTimeFromBytes(dwPosition); // get sampled data size in seconds
+    CSaDoc * pModel = (CSaDoc *)m_pDoc;
+    double fDataSec = pModel->GetTimeFromBytes(dwPosition); // get sampled data size in seconds
     m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
 }
 
@@ -325,7 +325,7 @@ void CDlgRecorder::SetRecorderMode(EMode mode) {
     }
     SetTotalTime();
     SetPositionTime();
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
+    CSaDoc * pModel = (CSaDoc *)m_pDoc; // cast pointer to document
 
     switch (mode) {
     case RECORDING:
@@ -412,7 +412,7 @@ void CDlgRecorder::SetRecorderMode(EMode mode) {
                 m_pWave->Stop();
             }
             if ((m_nMode == RECORDING) || ((m_nMode == PAUSED) && (m_nOldMode == RECORDING)))
-                if (pDoc->IsUsingHighPassFilter()) {
+                if (pModel->IsUsingHighPassFilter()) {
                     HighPassFilter();
                 }
         }
@@ -604,7 +604,7 @@ BOOL CDlgRecorder::CloseRecorder() {
 /***************************************************************************/
 BOOL CDlgRecorder::Apply(CDocument * pDocument) {
 
-    CSaDoc * pDoc = (CSaDoc *)pDocument;
+    CSaDoc * pModel = (CSaDoc *)pDocument;
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     // set file pointer to end of file (also end of 'data' chunk)
@@ -641,7 +641,7 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
     }
     // write the format parameters into 'fmt ' chunk
     CFmtParm fmtParm;
-    pDoc->GetFmtParm(fmtParm,false);
+    pModel->GetFmtParm(fmtParm,false);
 
     long lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD));
     if (lError != -1) {
@@ -668,15 +668,15 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
 
     // set the sa parameters
 	CTime time = CTime::GetCurrentTime();
-    pDoc->SetRecordTimeStamp(time);
-    pDoc->SetRecordSampleSize((BYTE)fmtParm.wBitsPerSample);
-    pDoc->SetNumberOfSamples(m_dwRecordSize / fmtParm.wBlockAlign);
-    pDoc->SetRecordBandWidth(fmtParm.dwSamplesPerSec / 2);
-    pDoc->SetSignalBandWidth(fmtParm.dwSamplesPerSec / 2);
-    pDoc->SetQuantization((BYTE)fmtParm.wBitsPerSample);
+    pModel->SetRecordTimeStamp(time);
+    pModel->SetRecordSampleSize((BYTE)fmtParm.wBitsPerSample);
+    pModel->SetNumberOfSamples(m_dwRecordSize / fmtParm.wBlockAlign);
+    pModel->SetRecordBandWidth(fmtParm.dwSamplesPerSec / 2);
+    pModel->SetSignalBandWidth(fmtParm.dwSamplesPerSec / 2);
+    pModel->SetQuantization((BYTE)fmtParm.wBitsPerSample);
 
     // tell the document to apply the file
-    pDoc->ApplyWaveFile(m_szFileName, m_dwRecordSize);
+    pModel->ApplyWaveFile(m_szFileName, m_dwRecordSize);
     // if player is visible, disable the speed slider until required processing is completed
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     CDlgPlayer * pPlayer = pMain->GetPlayer();
@@ -974,11 +974,11 @@ void CDlgRecorder::OnCancel() {
 void CDlgRecorder::OnSettings() {
 
     SetRecorderMode(STOPPED);
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc;
+    CSaDoc * pModel = (CSaDoc *)m_pDoc;
 
     // get format parameters
     CFmtParm fmtParm;
-    pDoc->GetFmtParm(fmtParm,false);
+    pModel->GetFmtParm(fmtParm,false);
 
     // create the dialog
     CDlgRecorderOptions dlg(this);
@@ -987,14 +987,14 @@ void CDlgRecorder::OnSettings() {
     dlg.SetSamplingRate(fmtParm.dwSamplesPerSec);
     dlg.SetBitDepth(fmtParm.wBitsPerSample);
     dlg.SetChannels(fmtParm.wChannels);
-    dlg.SetHighpass(pDoc->IsUsingHighPassFilter() ? TRUE : FALSE);
+    dlg.SetHighpass(pModel->IsUsingHighPassFilter() ? TRUE : FALSE);
 
     if (dlg.DoModal() == IDOK) {
         if ((m_bFileReady && m_dwRecordSize) &&
                 ((dlg.GetSamplingRate() != (fmtParm.dwSamplesPerSec)) ||
                  (dlg.GetBitDepth() != fmtParm.wBitsPerSample) ||
                  (dlg.GetChannels() != fmtParm.wChannels) ||
-                 (dlg.GetHighpass() != ((pDoc->IsUsingHighPassFilter()) ? TRUE : FALSE)))) {
+                 (dlg.GetHighpass() != ((pModel->IsUsingHighPassFilter()) ? TRUE : FALSE)))) {
             // ask user to delete recorded file before changing the settings
             int nResponse = AfxMessageBox(IDS_QUESTION_DELRECORD, MB_YESNO | MB_ICONQUESTION, 0);
             if (nResponse == IDYES) {
@@ -1015,19 +1015,19 @@ void CDlgRecorder::OnSettings() {
         fmtParm.wBlockAlign = WORD(fmtParm.wBitsPerSample / 8);
         fmtParm.dwAvgBytesPerSec = fmtParm.dwSamplesPerSec * fmtParm.wBlockAlign;
         if (dlg.GetHighpass()) {
-            pDoc->SetHighPassFilter();
+            pModel->SetHighPassFilter();
         } else {
             CWaveInDevice * pRecorder = m_pWave->GetInDevice();
             if (pRecorder->GetHighPassFilter()) {
                 pRecorder->DetachHighPassFilter();
             }
-            pDoc->ClearHighPassFilter();
+            pModel->ClearHighPassFilter();
         }
         // set format parameters
-        pDoc->SetFmtParm(&fmtParm);
+        pModel->SetFmtParm(&fmtParm);
 
         if (!GetStaticSourceInfo().bEnable) {
-            SourceParm * pSourceParm = pDoc->GetSourceParm();
+            SourceParm * pSourceParm = pModel->GetSourceParm();
 
             pSourceParm->szCountry.Empty();
             pSourceParm->szDialect.Empty();
@@ -1074,8 +1074,8 @@ void CDlgRecorder::OnApply() {
     CloseRecorder(); 
     sourceInfo & m_source = GetStaticSourceInfo();
     if (m_source.bEnable) {
-        CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-        SourceParm * pSourceParm = pDoc->GetSourceParm();
+        CSaDoc * pModel = (CSaDoc *)m_pDoc;
+        SourceParm * pSourceParm = pModel->GetSourceParm();
 
         pSourceParm->szCountry = m_source.source.szCountry;
         pSourceParm->szDialect = m_source.source.szDialect;
@@ -1087,7 +1087,7 @@ void CDlgRecorder::OnApply() {
         pSourceParm->szSpeaker = m_source.source.szSpeaker;
         pSourceParm->szReference = m_source.source.szReference;
         pSourceParm->szTranscriber = m_source.source.szTranscriber;
-        pDoc->SetDescription(m_source.source.szDescription);
+        pModel->SetDescription(m_source.source.szDescription);
         pSourceParm->szFreeTranslation = m_source.source.szFreeTranslation;
     }
     return;

@@ -91,7 +91,7 @@ DWORD CStopCursorWnd::CalculateCursorPosition(CView * pSaView, int nPosition, in
 	// cast pointer
 	CSaView * pView = (CSaView *)pSaView;
 	// get pointer to document
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 	// get pointer to parent plot
     CPlotWnd * pPlot = (CPlotWnd *)GetParent();
 	// get pointer to graph
@@ -111,7 +111,7 @@ DWORD CStopCursorWnd::CalculateCursorPosition(CView * pSaView, int nPosition, in
 		// number of data points to display
         dwDataFrame = pView->CalcDataFrame(nWidth);
     }
-    DWORD nSmpSize = pDoc->GetSampleSize();
+    DWORD nSmpSize = pModel->GetSampleSize();
     // calculate data samples per pixel
     ASSERT(nWidth);
     double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
@@ -124,7 +124,7 @@ DWORD CStopCursorWnd::CalculateCursorPosition(CView * pSaView, int nPosition, in
         dwCursor = (DWORD)nSmpSize;
     }
     // check for maximum position
-    DWORD dwDataSize = pDoc->GetDataSize();
+    DWORD dwDataSize = pModel->GetDataSize();
     if (dwCursor >= dwDataSize) {
         dwCursor = dwDataSize - (DWORD)nSmpSize;
     }
@@ -316,10 +316,10 @@ void CStopCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
         pGraph->UpdateStatusBar(dwStartCursor, dwCursor);
 
         // AKE 07/15/00, for tracking movement of stop cursor as it is dragged
-        CSaDoc * pDoc = pView->GetDocument();
-        CProcessFragments * pFragments = pDoc->GetFragments();
+        CSaDoc * pModel = pView->GetDocument();
+        CProcessFragments * pFragments = pModel->GetFragments();
         if (pFragments && pFragments->IsDataReady()) {
-            DWORD wSmpSize = pDoc->GetSampleSize();
+            DWORD wSmpSize = pModel->GetSampleSize();
             DWORD OldFragmentIndex = pFragments->GetFragmentIndex(m_dwDragPos/wSmpSize);
             DWORD dwFragmentIndex = pFragments->GetFragmentIndex(dwCursor/wSmpSize);
             if (dwFragmentIndex != OldFragmentIndex) {
@@ -422,10 +422,10 @@ void CStopCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     // update the status bar
     pGraph->UpdateStatusBar(dwStartCursor, dwCursor);
     // AKE 07/15/00, for tracking movement of start cursor as it is dragged
-    CSaDoc * pDoc = pView->GetDocument();
-    CProcessFragments * pFragments = pDoc->GetFragments();
+    CSaDoc * pModel = pView->GetDocument();
+    CProcessFragments * pFragments = pModel->GetFragments();
     if (pFragments && pFragments->IsDataReady()) {
-        DWORD wSmpSize = pDoc->GetSampleSize();
+        DWORD wSmpSize = pModel->GetSampleSize();
         DWORD dwFragmentIndex = pFragments->GetFragmentIndex(dwCursor/wSmpSize);
         m_dwDragPos = dwCursor;
         pView->SendMessage(WM_USER_CURSOR_IN_FRAGMENT, STOP_CURSOR, dwFragmentIndex);
@@ -490,16 +490,16 @@ void CStopCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
     if ((m_nEditBoundaries&&(nLoop!=-1) &&
             (pView->GetAnnotation(nLoop)->CheckCursors(pView->GetDocument(),m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE) != -1))) {
         // Only allow update of PHONETIC and GLOSS
-        CSaDoc * pDoc = pView->GetDocument();
+        CSaDoc * pModel = pView->GetDocument();
         // save state for undo ability
-        int nIndex = pDoc->GetSegment(nLoop)->GetSelection();
+        int nIndex = pModel->GetSegment(nLoop)->GetSelection();
 
         // first adjust cursors to old segment boundaries (undo to here)
-        pView->SetStartCursorPosition(pDoc->GetSegment(nLoop)->GetOffset(nIndex), SNAP_LEFT);
-        pView->SetStopCursorPosition(pDoc->GetSegment(nLoop)->GetStop(nIndex), SNAP_RIGHT);
+        pView->SetStartCursorPosition(pModel->GetSegment(nLoop)->GetOffset(nIndex), SNAP_LEFT);
+        pView->SetStopCursorPosition(pModel->GetSegment(nLoop)->GetStop(nIndex), SNAP_RIGHT);
 
 		// Save state
-        pDoc->CheckPoint();
+        pModel->CheckPoint();
 
         // Reload cursor locations to new segment boundaries
         pView->SetStartCursorPosition(dwStartCursor, SNAP_LEFT);
@@ -507,7 +507,7 @@ void CStopCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
 
         // Do update
 		//SDM 1.5Test8.1
-        pDoc->UpdateSegmentBoundaries(m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE);
+        pModel->UpdateSegmentBoundaries(m_nEditBoundaries  == BOUNDARIES_EDIT_SEGMENT_SIZE);
     }
     CWnd::OnLButtonUp(nFlags, point);
 }

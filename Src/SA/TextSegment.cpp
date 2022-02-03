@@ -58,9 +58,9 @@ BOOL CTextSegment::Append(LPCTSTR pszString, bool delimiter, DWORD dwStart, DWOR
 /***************************************************************************/
 // CTextSegment::CaluculateDuration calculate segment duration from master data
 /***************************************************************************/
-DWORD CTextSegment::CalculateDuration(ISaDoc * pDoc, const int nIndex) const {
+DWORD CTextSegment::CalculateDuration(ISaDoc * pModel, const int nIndex) const {
 
-    CSegment * pMaster = (CSegment *)pDoc->GetSegment(m_nMasterType);
+    CSegment * pMaster = (CSegment *)pModel->GetSegment(m_nMasterType);
     int offset_size = GetOffsetSize();
     if ((nIndex < 0) || (nIndex >= offset_size)) {
         return DWORD(-1);
@@ -91,8 +91,8 @@ DWORD CTextSegment::CalculateDuration(ISaDoc * pDoc, const int nIndex) const {
 void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, ELimit) const {
 
     // get pointer to view
-    CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
-    CSegment * pMaster = pDoc->GetSegment(m_nMasterType);
+    CSaDoc * pModel = (CSaDoc *)pSaDoc; // cast pointer
+    CSegment * pMaster = pModel->GetSegment(m_nMasterType);
 
     int nTextIndex = GetSelection();
 
@@ -140,7 +140,7 @@ void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwSto
             dwStop = pMaster->GetStop(pMaster->GetOffsetSize() - 1);
         }
 
-        AdjustPositionToMaster(pDoc, dwStart, dwStop);
+        AdjustPositionToMaster(pModel, dwStart, dwStop);
     }
 }
 
@@ -156,13 +156,13 @@ void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwSto
 int CTextSegment::CheckPosition(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL) const {
 
     // get pointer to view
-    CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
+    CSaDoc * pModel = (CSaDoc *)pSaDoc; // cast pointer
 
     // get the actual aligned position
     DWORD dwAlignedStart = dwStart;
     DWORD dwAlignedStop = dwStop;
 
-    AdjustPositionToMaster(pDoc, dwAlignedStart, dwAlignedStop);
+    AdjustPositionToMaster(pModel, dwAlignedStart, dwAlignedStop);
 
     int nTextIndex = GetSelection();
 
@@ -199,7 +199,7 @@ int CTextSegment::CheckPosition(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
     }
 
 	// Add
-    if (pDoc->GetSegment(m_nMasterType)->IsEmpty()) {
+    if (pModel->GetSegment(m_nMasterType)->IsEmpty()) {
         //TRACE("no segment\n");
         return -1;
     }
@@ -225,7 +225,7 @@ int CTextSegment::CheckPosition(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
 /***************************************************************************/
 // CTextSegment::Add Add text segment
 /***************************************************************************/
-void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
+void CTextSegment::Add(CSaDoc * pModel, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
     
 	int nPos = FindFromPosition(dwStart,TRUE);
     if (nPos==-1) {
@@ -234,7 +234,7 @@ void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString 
         nPos++;
     }
 
-    CSegment * pMaster = pDoc->GetSegment(m_nMasterType);
+    CSegment * pMaster = pModel->GetSegment(m_nMasterType);
     int nMaster = -1;
 
     if ((nPos == -1) || (nPos >= GetOffsetSize()) || dwStart > GetStop(nPos)) {
@@ -249,7 +249,7 @@ void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString 
 
     ASSERT(dwStop > dwStart);
 
-    nPos = CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);  // get the insert position
+    nPos = CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);  // get the insert position
     if (nPos == -1) {
         return;    // return on error
     }
@@ -258,7 +258,7 @@ void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString 
 
     // save state for undo ability
     if (bCheck) {
-        pDoc->CheckPoint();
+        pModel->CheckPoint();
     }
 
     // insert or append the new segment
@@ -268,13 +268,13 @@ void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString 
 
     // move the end of the previous text segment
     if (nPos > 0) {
-        Adjust(pDoc, nPos - 1, GetOffset(nPos - 1), CalculateDuration( pDoc, nPos -1), false);
+        Adjust(pModel, nPos - 1, GetOffset(nPos - 1), CalculateDuration( pModel, nPos -1), false);
     }
 
 	// document has been modified
-    pDoc->SetModifiedFlag(TRUE);
+    pModel->SetModifiedFlag(TRUE);
 	// transcription data has been modified
-    pDoc->SetTransModifiedFlag(TRUE); 
+    pModel->SetTransModifiedFlag(TRUE); 
 	// change the selection
     pView->ChangeAnnotationSelection(this, nPos);
 }

@@ -82,16 +82,16 @@ int CZPlotPolar::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     }
     // get pointer to document
     CView * pView = (CView *)GetParent()->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     // get pointer to process class
-    CProcessSDP * pSDP = GetSDP(pDoc); // get pointer to SDP object
+    CProcessSDP * pSDP = GetSDP(pModel); // get pointer to SDP object
     // save process
     m_pAreaProcess = pSDP;
     return 0;
 }
 
-CProcessSDP * CZPlotPolar::GetSDP(CSaDoc * pDoc) {
-    return pDoc->GetSDP(m_nIndexSDP);
+CProcessSDP * CZPlotPolar::GetSDP(CSaDoc * pModel) {
+    return pModel->GetSDP(m_nIndexSDP);
 }
 
 /***************************************************************************/
@@ -109,16 +109,16 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 #define zMAX_NUMPANES  8
 #define zMAX_NUMPOINTS zNUM_SAMPLES * 2 * zMAX_NUMPANES
 
-    CSaDoc * pDoc = pView->GetDocument();
+    CSaDoc * pModel = pView->GetDocument();
 
     if (IsIconic()) {
         return;    // nothing to draw
     }
     // get pointer to view and document
     // process workbench if necessary
-    pDoc->WorkbenchProcess();
+    pModel->WorkbenchProcess();
     // get the SDP parameters
-    SDPParm * pSDPParm = pDoc->GetSDPParm();
+    SDPParm * pSDPParm = pModel->GetSDPParm();
     int nPanes = pSDPParm->nPanes;
     long lSteps = (long)pSDPParm->nSteps;
     BOOL bAuto = (pSDPParm->nStepMode == 0);
@@ -183,7 +183,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     }
 
     // get pointer to process class
-    CProcessSDP * pSDP = GetSDP(pDoc); // get pointer to SDP object
+    CProcessSDP * pSDP = GetSDP(pModel); // get pointer to SDP object
     // check if process is idle
     if (pSDP->IsIdle()) {
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_POSCUR, &rWnd);
@@ -216,7 +216,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         if (TRUE) {
             // new data has to be processed
             dwStart = pSDP->GetAreaPosition();
-            UINT nBlockAlign = pDoc->GetBlockAlign();
+            UINT nBlockAlign = pModel->GetBlockAlign();
             if (bAuto) {
                 // auto step mode, determine steps
                 lSteps = (long)(pSDP->GetAreaLength() / (zNUM_SAMPLES * (DWORD)nBlockAlign));
@@ -232,9 +232,9 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                 return;
             }
             DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
-            DWORD dwRawBufferSize = pDoc->GetWaveDataBufferSize();
+            DWORD dwRawBufferSize = pModel->GetWaveDataBufferSize();
             // fill up data buffers
-            HPSTR pData = pDoc->GetWaveData(dwStart, TRUE); // get pointer to wave data block
+            HPSTR pData = pModel->GetWaveData(dwStart, TRUE); // get pointer to wave data block
             if (pData == NULL) {
                 return;    // error occured while reading data block
             }
@@ -253,7 +253,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                     for (DWORD dwLoop2 = 0; dwLoop2 < (DWORD)lSteps; dwLoop2++) {
                         if (dwDataPos >= dwStart) {
                             // reload data
-                            pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+                            pData = pModel->GetWaveData(dwDataPos, TRUE); // get new data block
                             if (pData == NULL) {
                                 return;    // error occured while reading data block
                             }
@@ -275,7 +275,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                     // take just one sample
                     if (dwDataPos >= dwStart) {
                         // reload data
-                        pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+                        pData = pModel->GetWaveData(dwDataPos, TRUE); // get new data block
                         if (pData == NULL) {
                             return;    // error occured while reading data block
                         }
@@ -303,7 +303,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             }
             // reset data pointers
             dwStart = pSDP->GetAreaPosition();
-            pData = pDoc->GetWaveData(dwStart, TRUE); // get first wave data block
+            pData = pModel->GetWaveData(dwStart, TRUE); // get first wave data block
             if (pData == NULL) {
                 return;    // error occured while reading data block
             }
@@ -324,7 +324,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                     for (DWORD dwLoop2 = 0; dwLoop2 < (DWORD)lSteps; dwLoop2++) {
                         if (dwDataPos >= dwStart) {
                             // reload data
-                            pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+                            pData = pModel->GetWaveData(dwDataPos, TRUE); // get new data block
                             if (pData == NULL) {
                                 return;    // error occured while reading data block
                             }
@@ -346,7 +346,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                     // take just one sample
                     if (dwDataPos >= dwStart) {
                         // reload data
-                        pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+                        pData = pModel->GetWaveData(dwDataPos, TRUE); // get new data block
                         if (pData == NULL) {
                             return;    // error occured while reading data block
                         }

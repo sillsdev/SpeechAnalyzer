@@ -73,10 +73,10 @@ CPlotZCross::~CPlotZCross() {
 void CPlotZCross::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
     // create zero crossings data
-    CProcessZCross * pZCross = (CProcessZCross *)pDoc->GetZCross(); // get pointer to zero crossings object
-    short int nResult = LOWORD(pZCross->Process(this, pDoc)); // process data
+    CProcessZCross * pZCross = (CProcessZCross *)pModel->GetZCross(); // get pointer to zero crossings object
+    short int nResult = LOWORD(pZCross->Process(this, pModel)); // process data
     nResult = CheckResult(nResult, pZCross); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -85,7 +85,7 @@ void CPlotZCross::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         pGraph->SetLegendScale(SCALE | NUMBERS, -0.5, pZCross->GetMaxValue(), _T("Zero Crossing")); // set legend scale
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);
-        PlotStandardPaint(pDC, rWnd, rClip, pZCross, pDoc); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pZCross, pModel); // do standard data paint
     }
     // do common plot paint jobs
     PlotPaintFinish(pDC, rWnd, rClip);

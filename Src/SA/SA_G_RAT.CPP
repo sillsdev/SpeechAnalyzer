@@ -64,10 +64,10 @@ CPlotRatio::~CPlotRatio() {
 void CPlotRatio::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
     // create ratio data
-    CProcessRatio * pRatio = (CProcessRatio *)pDoc->GetRatio(); // get pointer to ratio object
-    short int nResult = LOWORD(pRatio->Process(this, pDoc)); // process data
+    CProcessRatio * pRatio = (CProcessRatio *)pModel->GetRatio(); // get pointer to ratio object
+    short int nResult = LOWORD(pRatio->Process(this, pModel)); // process data
     nResult = CheckResult(nResult, pRatio); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -77,7 +77,7 @@ void CPlotRatio::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);
         SetProcessMultiplier(PRECISION_MULTIPLIER);
-        PlotStandardPaint(pDC, rWnd, rClip, pRatio, pDoc); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pRatio, pModel); // do standard data paint
     }
     // do common plot paint jobs
     PlotPaintFinish(pDC, rWnd, rClip);

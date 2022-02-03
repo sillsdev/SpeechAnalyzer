@@ -190,10 +190,10 @@ void CProgressStatusBar::SetProgress(int nVal) {
     if (dwThis - dwTickLast > 100) {
         dwTickLast = dwThis;
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-        CSaDoc * pDoc = pMainWnd->GetCurrDoc();
-        BOOL bState = (pDoc) ? pDoc->EnableBackgroundProcessing(FALSE) : 0;
+        CSaDoc * pModel = pMainWnd->GetCurrDoc();
+        BOOL bState = (pModel) ? pModel->EnableBackgroundProcessing(FALSE) : 0;
         MessageLoop(); // do windows message loop
-        pDoc ? pDoc->EnableBackgroundProcessing(bState) : 0;
+        pModel ? pModel->EnableBackgroundProcessing(bState) : 0;
     }
 }
 

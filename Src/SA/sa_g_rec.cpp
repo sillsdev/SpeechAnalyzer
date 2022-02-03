@@ -128,12 +128,12 @@ DWORD CPlotRecording::AdjustDataFrame(int nWidth) {
 		if (pMainFrame==NULL) {
 			return 0L;
 		}
-		CSaDoc * pDoc = pMainFrame->GetCurrDoc();
-		if (pDoc==NULL) {
+		CSaDoc * pModel = pMainFrame->GetCurrDoc();
+		if (pModel==NULL) {
 			return 0L;
 		}
-        DWORD dwDataSize = pDoc->GetDataSize();
-        DWORD nSampleSize = pDoc->GetSampleSize();
+        DWORD dwDataSize = pModel->GetDataSize();
+        DWORD nSampleSize = pModel->GetSampleSize();
 		// more pixels than data
         if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize)) {
 			// extend data frame to number of pixels

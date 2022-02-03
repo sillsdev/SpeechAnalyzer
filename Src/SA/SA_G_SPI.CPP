@@ -71,10 +71,10 @@ CPlotSmoothedPitch::~CPlotSmoothedPitch() {
 void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
     // create smoothed pitch data
-    CProcessSmoothedPitch * pPitch = (CProcessSmoothedPitch *)pDoc->GetSmoothedPitch(); // get pointer to smoothed pitch object
-    short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
+    CProcessSmoothedPitch * pPitch = (CProcessSmoothedPitch *)pModel->GetSmoothedPitch(); // get pointer to smoothed pitch object
+    short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
     nResult = CheckResult(nResult, pPitch); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -84,7 +84,7 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
     } else if (pPitch->IsDataReady()) {
         m_HelperWnd.SetMode(MODE_HIDDEN);
         // get pointer to pitch parameters
-        const CPitchParm * pPitchParm = pDoc->GetPitchParm();
+        const CPitchParm * pPitchParm = pModel->GetPitchParm();
         // set data range
         int nMinData, nMaxData;
         if (pPitchParm->nRangeMode) {
@@ -93,7 +93,7 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
             nMaxData = pPitchParm->nUpperBound;
         } else {
             // auto range mode
-            CPitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
+            CPitchParm::GetAutoRange(pModel->GetGrappl(), nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         if (pPitchParm->nScaleMode == 1) {
@@ -101,7 +101,7 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
             pGraph->SetLegendScale(SCALE | NUMBERS, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
-            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET); // do standard data paint
+            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pModel, SKIP_UNSET); // do standard data paint
         } else  if (pPitchParm->nScaleMode == 2) {
             // semitone display
             static const double dSemitoneScale = 12.0 / log(2.0);
@@ -111,13 +111,13 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
             pGraph->SetLegendScale(SCALE | NUMBERS, dMin, dMax, _T("Semitones")); // set legend scale
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
-            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_SEMITONES); // do standard data paint
+            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pModel, SKIP_UNSET | PAINT_SEMITONES); // do standard data paint
         } else {
             // logarithmic display
             pGraph->SetLegendScale(SCALE | NUMBERS | LOG10, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
-            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_LOG10); // do standard data paint
+            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pModel, SKIP_UNSET | PAINT_LOG10); // do standard data paint
         }
     }
     // do common plot paint jobs

@@ -99,10 +99,10 @@ void CPlotGlottis::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
     // create change data
-    CProcessGlottis * pGlottalWave = (CProcessGlottis *)pDoc->GetGlottalWave(); // get pointer to glottal waveform
-    short int nResult = LOWORD(pGlottalWave->Process(this, pDoc)); // process data
+    CProcessGlottis * pGlottalWave = (CProcessGlottis *)pModel->GetGlottalWave(); // get pointer to glottal waveform
+    short int nResult = LOWORD(pGlottalWave->Process(this, pModel)); // process data
     nResult = CheckResult(nResult, pGlottalWave); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -112,7 +112,7 @@ void CPlotGlottis::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         SetProcessMultiplier(32768./100.);
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);
-        PlotStandardPaint(pDC, rWnd, rClip, pGlottalWave, pDoc, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pGlottalWave, pModel, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
     }
     // do common plot paint jobs
     PlotPaintFinish(pDC, rWnd, rClip);

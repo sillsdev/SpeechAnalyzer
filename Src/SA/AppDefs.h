@@ -64,7 +64,6 @@ enum EUpdateMode {
 #define UNDEFINED_DATA                  -1          // data not yet defined
 #define UNDEFINED_OFFSET                0xFFFFFFFF  // offset not yet defined
 #define CALCULATION_INTERVAL(samplingRate)            (100*22050/samplingRate)         // number of raw data samples taken to build a processed data result
-#define ZCROSS_SAMPLEWINDOWWIDTH(samplingRate)        CALCULATION_INTERVAL(samplingRate)  // number of samples in the calculation window to calculate zero crossing
 #define CALCULATION_DATALENGTH(samplingRate)          (300*22050/samplingRate)         // length of data used for calculation
 #define MAX_CALCULATION_FREQUENCY       500         // permissible parameter range
 #define PRECISION_MULTIPLIER            10          // multiplier to amount precision

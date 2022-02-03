@@ -23,7 +23,7 @@ using namespace XML;
 using namespace xercesc;
 using namespace Lift13;
 
-void toDOM(xercesc::DOMDocument * pDoc, DOMElement * pElement, Element * element) {
+void toDOM(xercesc::DOMDocument * pModel, DOMElement * pElement, Element * element) {
 
     AttributeList::iterator it = element->attributes.begin();
     while (it!=element->attributes.end()) {
@@ -32,15 +32,15 @@ void toDOM(xercesc::DOMDocument * pDoc, DOMElement * pElement, Element * element
         it++;
     }
 
-    DOMText * pText = pDoc->createTextNode(element->value.c_str());
+    DOMText * pText = pModel->createTextNode(element->value.c_str());
     pElement->appendChild(pText);
 
     ElementList::iterator it2 = element->elements.begin();
     while (it2!=element->elements.end()) {
         Element * child = *it2;
 		if (child->localname.length()>0) {
-			DOMElement * pChild = pDoc->createElement(child->localname.c_str());
-			toDOM(pDoc, pChild, child);
+			DOMElement * pChild = pModel->createElement(child->localname.c_str());
+			toDOM(pModel, pChild, child);
 			pElement->appendChild(pChild);
 		}
         it2++;
@@ -56,16 +56,16 @@ xercesc::DOMDocument * toDOM(Document & document) {
     if (document.element==NULL) {
         throw logic_error("document element is empty");
     }
-    xercesc::DOMDocument * pDoc = impl->createDocument(0, document.element->localname.c_str(), 0);
-    DOMElement * pElement = pDoc->getDocumentElement();
-    toDOM(pDoc, pElement, document.element);
-    return pDoc;
+    xercesc::DOMDocument * pModel = impl->createDocument(0, document.element->localname.c_str(), 0);
+    DOMElement * pElement = pModel->getDocumentElement();
+    toDOM(pModel, pElement, document.element);
+    return pModel;
 }
 
 void Lift13::write_document(Document & doc, LPCTSTR filename) {
 
     // convert to xerces DOM
-    xercesc::DOMDocument * pDoc = toDOM(doc);
+    xercesc::DOMDocument * pModel = toDOM(doc);
 
     // checking file existence
     FileUtils::Remove(filename);
@@ -79,9 +79,9 @@ void Lift13::write_document(Document & doc, LPCTSTR filename) {
     LocalFileFormatTarget target(filename);
     DOMLSOutput * pDomLsOutput = ((DOMImplementationLS *)pImplement)->createLSOutput();
     pDomLsOutput->setByteStream(&target);
-    pSerializer->write(pDoc, pDomLsOutput);
+    pSerializer->write(pModel, pDomLsOutput);
     pSerializer->release();
-    pDoc->release();
+    pModel->release();
 }
 
 /**

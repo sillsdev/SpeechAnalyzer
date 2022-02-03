@@ -210,9 +210,9 @@ MMRESULT CWaveInDevice::GetVolume(UINT & uVolume) {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
         CFmtParm fmtParm;
-        pDoc->GetFmtParm(fmtParm,true);     // get pointer to wave format parameters
+        pModel->GetFmtParm(fmtParm,true);     // get pointer to wave format parameters
         WAVEFORMATEX waveFormatEx = fmtParm.GetWaveFormatEX();
         result = waveInOpen(&m_hInDev , WAVE_MAPPER, &waveFormatEx, NULL, 0, CALLBACK_NULL);
         if (result!=MMSYSERR_NOERROR) {
@@ -251,9 +251,9 @@ void CWaveInDevice::SetVolume(UINT nVolume, BOOL * pResult) {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
         CFmtParm fmtParm;
-        pDoc->GetFmtParm(fmtParm,true); // get pointer to wave format parameters
+        pModel->GetFmtParm(fmtParm,true); // get pointer to wave format parameters
         WAVEFORMATEX waveFormatEx = fmtParm.GetWaveFormatEX();
         mmr = waveInOpen(&m_hInDev , WAVE_MAPPER, &waveFormatEx, NULL, 0, CALLBACK_NULL);
     }
@@ -289,9 +289,9 @@ BOOL CWaveInDevice::ShowMixer(BOOL bShow) {
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
         CView * pView = pMDIFrameWnd->GetCurrSaView();
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
         CFmtParm fmtParm;
-        pDoc->GetFmtParm(fmtParm,true); // get pointer to wave format parameters
+        pModel->GetFmtParm(fmtParm,true); // get pointer to wave format parameters
         WAVEFORMATEX waveFormatEx = fmtParm.GetWaveFormatEX();
         mmr = waveInOpen(&m_hInDev , WAVE_MAPPER, &waveFormatEx, NULL, 0, CALLBACK_NULL);
     }
@@ -326,10 +326,10 @@ BOOL CWaveInDevice::ConnectMixer(CWnd * pCallback) {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
         // get pointer to wave format parameters
         CFmtParm fmtParm;
-        pDoc->GetFmtParm(fmtParm,true);
+        pModel->GetFmtParm(fmtParm,true);
         WAVEFORMATEX waveFormatEx = fmtParm.GetWaveFormatEX();
         mmr = waveInOpen(&m_hInDev, WAVE_MAPPER, &waveFormatEx, NULL, 0, CALLBACK_NULL);
         if (mmr!=MMSYSERR_NOERROR) {

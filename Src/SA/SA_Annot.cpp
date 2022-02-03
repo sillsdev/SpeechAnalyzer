@@ -307,20 +307,20 @@ void CXScaleWnd::CalculateScale( CDC * pDC, int nWidth) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     // check if regular time scale expected
     if (m_nScaleMode & TIME_FROM_VIEW) {
         if (pGraph->IsAreaGraph()) {
             // get scale range from area plot
-            m_fScaleMinValue = pDoc->GetTimeFromBytes(pGraph->GetPlot()->GetAreaPosition());
-            m_fScaleMaxValue = m_fScaleMinValue + pDoc->GetTimeFromBytes(pGraph->GetPlot()->GetAreaLength());
+            m_fScaleMinValue = pModel->GetTimeFromBytes(pGraph->GetPlot()->GetAreaPosition());
+            m_fScaleMaxValue = m_fScaleMinValue + pModel->GetTimeFromBytes(pGraph->GetPlot()->GetAreaLength());
         } else {
             // get scale range from view
             // SDM 1.06.6U4 Get value of first pixel
             DWORD dwFrame = pView->CalcDataFrame(nWidth);
             double fPos = pView->GetDataPosition(nWidth);
-            m_fScaleMinValue = fPos*pDoc->GetTimeFromBytes(1);
-            m_fScaleMaxValue = m_fScaleMinValue + pDoc->GetTimeFromBytes(dwFrame);
+            m_fScaleMinValue = fPos*pModel->GetTimeFromBytes(1);
+            m_fScaleMaxValue = m_fScaleMinValue + pModel->GetTimeFromBytes(dwFrame);
         }
         // set scale dimension
         m_szScaleDimension = "t(sec)";
@@ -453,7 +453,7 @@ void CXScaleWnd::OnDraw(CDC * pDC,
         return;
     }
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
     // select x-scale font
     CFont * pOldFont = pDC->SelectObject(&m_font);
@@ -470,7 +470,7 @@ void CXScaleWnd::OnDraw(CDC * pDC,
         pGraph->GetPlot()->GetClientRect(rPlotWnd);
     }
 
-    if ((rPlotWnd.Height() <= 0) || (pDoc->GetDataSize() == 0)) {
+    if ((rPlotWnd.Height() <= 0) || (pModel->GetDataSize() == 0)) {
         pDC->SelectObject(pOldFont); // set back old font
         return; // nothing to draw
     }
@@ -505,7 +505,7 @@ void CXScaleWnd::OnDraw(CDC * pDC,
 	// don't draw over the border
     rWnd.top += 2;
     rWnd.bottom -= 2;
-    if ((m_nScaleMode != NO_SCALE) && (pDoc->GetDataSize() > 0)) {
+    if ((m_nScaleMode != NO_SCALE) && (pModel->GetDataSize() > 0)) {
         if (rWnd.Width() < (5 * tm.tmAveCharWidth)) {
 			// set back old font
             pDC->SelectObject(pOldFont);
@@ -721,8 +721,8 @@ CFont * CAnnotationWnd::GetFont() {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    return pDoc->GetFont(m_nIndex);
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+    return pModel->GetFont(m_nIndex);
 }
 
 /***************************************************************************/
@@ -790,7 +790,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
     // select annotation font
     //SDM 1.06.4
@@ -846,7 +846,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         // check if graph has private cursor
         if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
-            WORD wSmpSize = WORD(pDoc->GetSampleSize());
+            WORD wSmpSize = WORD(pModel->GetSampleSize());
 			// data index of first sample to display
             fDataStart = (double)pView->GetStartCursorPosition(); 
 			// number of data points to display
@@ -869,7 +869,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
     // get pointer to annotation offset and duration arrays
-    CSegment * pSegment = pDoc->GetSegment(m_nIndex);
+    CSegment * pSegment = pModel->GetSegment(m_nIndex);
 
     // get pointer to annotation string
     if (pSegment->GetOffsetSize()>0) {
@@ -1013,12 +1013,12 @@ void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dw
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    CSegment * pSegment = pDoc->GetSegment(m_nIndex);
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+    CSegment * pSegment = pModel->GetSegment(m_nIndex);
 
     if (bHint==TRUE) {
-        pSegment->LimitPosition(pDoc,dwStart, dwStop, (bOverlap)?CSegment::LIMIT_MOVING_BOTH:CSegment::LIMIT_MOVING_BOTH_NO_OVERLAP);
-        if (pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_EDIT, bOverlap)==-1) {
+        pSegment->LimitPosition(pModel,dwStart, dwStop, (bOverlap)?CSegment::LIMIT_MOVING_BOTH:CSegment::LIMIT_MOVING_BOTH_NO_OVERLAP);
+        if (pSegment->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_EDIT, bOverlap)==-1) {
             bHint=FALSE;
         }
     }
@@ -1114,7 +1114,7 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 
     // get pointer to view and to document
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     // find out, which character has been clicked
     CRect rWnd;
     GetClientRect(rWnd);
@@ -1129,7 +1129,7 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         // check if graph has private cursor
         if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
-            WORD wSmpSize = WORD(pDoc->GetSampleSize());
+            WORD wSmpSize = WORD(pModel->GetSampleSize());
 			// data index of first sample to display
             fDataStart = (LONG)pView->GetStartCursorPosition();
 			// number of data points to display
@@ -1177,7 +1177,7 @@ void CAnnotationWnd::OnMouseMove(UINT nFlags, CPoint point) {
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CPlotWnd * pPlot = pGraph->GetPlot();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-	//CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+	//CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
 	// clear mouse position
     pPlot->SetMousePointerPosition(CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET)); 
@@ -1238,8 +1238,8 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
         // check if graph has private cursor
         if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
-            CSaDoc * pDoc = pView->GetDocument();
-            WORD wSmpSize = WORD(pDoc->GetSampleSize());
+            CSaDoc * pModel = pView->GetDocument();
+            WORD wSmpSize = WORD(pModel->GetSampleSize());
 			// data index of first sample to display
             fDataStart = (LONG)pView->GetStartCursorPosition(); 
 			// number of data points to display
@@ -1379,7 +1379,7 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
     //*******************************************************
     // 09/27/2000 - DDO If the graph is the TWC graph
@@ -1405,7 +1405,7 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         // check if graph has private cursor
         if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
-            WORD wSmpSize = WORD(pDoc->GetSampleSize());
+            WORD wSmpSize = WORD(pModel->GetSampleSize());
 			// data index of first sample to display
             fDataStart = pView->GetStartCursorPosition();
 			// number of data points to display
@@ -1426,7 +1426,7 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
     // get pointer to gloss strings
-    CGlossSegment * pGloss = (CGlossSegment *)pDoc->GetSegment(m_nIndex);
+    CGlossSegment * pGloss = (CGlossSegment *)pModel->GetSegment(m_nIndex);
     if (pGloss->GetOffsetSize()==0) {
 		// nothing to process.
 		// restore and quit
@@ -1438,7 +1438,7 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 
     // array is not empty
     // get pointer to gloss offset and duration arrays
-    CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
+    CSegment * pPhonetic = pModel->GetSegment(PHONETIC);
     // position prepare loop. Find first string to display in clipping rect
     int nLoop = 0;
     if ((fDataStart > 0) && (pGloss->GetOffsetSize() > 1)) {

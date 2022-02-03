@@ -168,18 +168,18 @@ void CSegment::Serialize(CArchive & ar) {
 /***************************************************************************/
 // CSegment::Remove Remove dependent annotation segment
 /***************************************************************************/
-void CSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
+void CSegment::Remove(CSaDoc * pModel, int sel, BOOL bCheck) {
 	TRACE("Remove\n");
 	// save state for undo ability
 	if (bCheck) {
-		pDoc->CheckPoint();
+		pModel->CheckPoint();
 	}
 	RemoveAt(sel);
 	// get pointer to view
-	CSaView * pView = pDoc->GetFirstView();
+	CSaView * pView = pModel->GetFirstView();
 	// refresh ui
-	pDoc->SetModifiedFlag(TRUE);                        // document has been modified
-	pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
+	pModel->SetModifiedFlag(TRUE);                        // document has been modified
+	pModel->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
 	pView->ChangeAnnotationSelection(this, sel, 0, 0);	// deselect
 	pView->RedrawGraphs(FALSE);							// refresh the graphs between cursors
 }
@@ -187,7 +187,7 @@ void CSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
 /***************************************************************************/
 // CSegment::Replace
 /***************************************************************************/
-void CSegment::Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace) {
+void CSegment::Replace(CSaDoc * pModel, int index, LPCTSTR find, LPCTSTR replace) {
 	ASSERT(index == -1);
 	if (index == -1) {
 		return;
@@ -208,10 +208,10 @@ void CSegment::Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace) 
 	}
 
 	// get pointer to view
-	CSaView * pView = pDoc->GetFirstView();
+	CSaView * pView = pModel->GetFirstView();
 
-	pDoc->SetModifiedFlag(TRUE);        // document has been modified
-	pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
+	pModel->SetModifiedFlag(TRUE);        // document has been modified
+	pModel->SetTransModifiedFlag(TRUE);   // transcription data has been modified
 	pView->ChangeAnnotationSelection(this, index);		// deselect
 	pView->ChangeAnnotationSelection(this, index);		// select again
 	pView->RedrawGraphs(FALSE);							// refresh the graphs between cursors
@@ -220,20 +220,20 @@ void CSegment::Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace) 
 /***************************************************************************/
 // CSegment::ReplaceSelectedSegment
 /***************************************************************************/
-void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace, bool /*noSnap*/) {
+void CSegment::ReplaceSelectedSegment(CSaDoc * pModel, LPCTSTR replace, bool /*noSnap*/) {
 	if (m_nSelection == -1) {
 		return;
 	}
 
 	m_Text.SetAt(m_nSelection, replace);
 
-	pDoc->SetModifiedFlag(TRUE);        // document has been modified
-	pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
+	pModel->SetModifiedFlag(TRUE);        // document has been modified
+	pModel->SetTransModifiedFlag(TRUE);   // transcription data has been modified
 
 	int nSaveSelection = m_nSelection;  // 1.5Test10.2
 
 	// get pointer to view
-	CSaView * pView = pDoc->GetFirstView();
+	CSaView * pView = pModel->GetFirstView();
 
 	// deselect // 1.5Test10.2
 	pView->ChangeAnnotationSelection(this, m_nSelection);
@@ -587,7 +587,7 @@ void CSegment::Adjust(int nIndex, DWORD newOffset, DWORD newDuration) {
 /***************************************************************************/
 // CSegment::Adjust Adjusts positions of an annotation segment
 /***************************************************************************/
-void CSegment::Adjust(ISaDoc * pDoc, int index, DWORD newOffset, DWORD newDuration, bool segmental) {
+void CSegment::Adjust(ISaDoc * pModel, int index, DWORD newOffset, DWORD newDuration, bool segmental) {
 	// for use later
 	DWORD dwOldOffset = GetOffset(index);
 	DWORD dwOldStop = GetStop(index);
@@ -596,7 +596,7 @@ void CSegment::Adjust(ISaDoc * pDoc, int index, DWORD newOffset, DWORD newDurati
 
 	// adjust all dependent segments
 	for (int nWnd = 0; nWnd < ANNOT_WND_NUMBER; nWnd++) {
-		CSegment * pSegment = pDoc->GetSegment(nWnd);
+		CSegment * pSegment = pModel->GetSegment(nWnd);
 		if ((pSegment != NULL) && (pSegment->IsDependent(*this))) {
 			// for segmental, only adjust segments that match the existing segment
 			if (segmental) {
@@ -604,27 +604,27 @@ void CSegment::Adjust(ISaDoc * pDoc, int index, DWORD newOffset, DWORD newDurati
 				if (nIndex != -1) {
 					DWORD curOffset = pSegment->GetOffset(nIndex);
 					if (curOffset == dwOldOffset) {
-						pSegment->Adjust(pDoc, nIndex, newOffset, pSegment->GetStop(nIndex) - newOffset, false);
+						pSegment->Adjust(pModel, nIndex, newOffset, pSegment->GetStop(nIndex) - newOffset, false);
 					}
 				}
 				nIndex = pSegment->FindStop(dwOldStop);
 				if (nIndex != -1) {
 					DWORD curOffset = pSegment->GetOffset(nIndex);
 					if (curOffset == dwOldOffset) {
-						pSegment->Adjust(pDoc, nIndex, curOffset, newOffset + newDuration - curOffset, false);
+						pSegment->Adjust(pModel, nIndex, curOffset, newOffset + newDuration - curOffset, false);
 					}
 				}
 			} else {
 				// nonsegmental - offset and duration should match
 				int nIndex = pSegment->FindOffset(dwOldOffset);
 				if (nIndex != -1) {
-					pSegment->Adjust(pDoc, nIndex, newOffset, pSegment->GetStop(nIndex) - newOffset, false);
+					pSegment->Adjust(pModel, nIndex, newOffset, pSegment->GetStop(nIndex) - newOffset, false);
 				}
 
 				nIndex = pSegment->FindStop(dwOldStop);
 				if (nIndex != -1) {
 					DWORD curOffset = pSegment->GetOffset(nIndex);
-					pSegment->Adjust(pDoc, nIndex, curOffset, newOffset + newDuration - curOffset, false);
+					pSegment->Adjust(pModel, nIndex, curOffset, newOffset + newDuration - curOffset, false);
 				}
 			}
 		}
@@ -638,11 +638,11 @@ void CSegment::Adjust(ISaDoc * pDoc, int index, DWORD newOffset, DWORD newDurati
 // a new annotation segment it returns the index, where to put it in the
 // annotation array (0 based), otherwise -1.
 /***************************************************************************/
-int CSegment::CheckCursors(CSaDoc * pDoc, BOOL bOverlap) const {
+int CSegment::CheckCursors(CSaDoc * pModel, BOOL bOverlap) const {
 	// get pointer to view
-	POSITION pos = pDoc->GetFirstViewPosition();
-	CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-	return CheckPosition(pDoc, pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), MODE_AUTOMATIC, bOverlap);
+	POSITION pos = pModel->GetFirstViewPosition();
+	CSaView * pView = (CSaView *)pModel->GetNextView(pos);
+	return CheckPosition(pModel, pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), MODE_AUTOMATIC, bOverlap);
 }
 
 BOOL CSegment::NeedToScroll(CSaView & saView, int index) const {
@@ -743,9 +743,9 @@ bool CSegment::Match(int index, LPCTSTR strToFind) {
 void CSegment::AdjustCursorsToSnap(CDocument * pSaDoc) {
 	// get requested cursor alignment
 	// snap the cursors first to appropriate position
-	CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
-	POSITION pos = pDoc->GetFirstViewPosition();
-	CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+	CSaDoc * pModel = (CSaDoc *)pSaDoc; // cast pointer
+	POSITION pos = pModel->GetFirstViewPosition();
+	CSaView * pView = (CSaView *)pModel->GetNextView(pos);
 	DWORD dwNewOffset = pView->GetStartCursorPosition();
 	DWORD dwNewDuration = pView->GetStopCursorPosition();
 	pView->SetStartCursorPosition(dwNewOffset, SNAP_RIGHT);
@@ -868,7 +868,7 @@ int CSegment::GetSelection() const {
 	return m_nSelection;
 }
 
-long CSegment::Process(void * /*pCaller*/, ISaDoc * /*pDoc*/, int /*nProgress*/, int /*nLevel*/) {
+long CSegment::Process(void * /*pCaller*/, ISaDoc * /*pModel*/, int /*nProgress*/, int /*nLevel*/) {
 	return PROCESS_ERROR;
 }
 

@@ -48,8 +48,8 @@ BOOL CSegmentSelection::SelectFromPosition(CSaView * pView, int type, DWORD dwPo
 	DWORD originalStart = m_dwStart;
 
 	// get pointer to segment object
-	CSaDoc * pDoc = pView->GetDocument();
-	CSegment * pSegment = pDoc->GetSegment(type);
+	CSaDoc * pModel = pView->GetDocument();
+	CSegment * pSegment = pModel->GetSegment(type);
 
 	BOOL bWithin = TRUE;
 	if ((type == GLOSS) || (type == PHONETIC)) {
@@ -64,7 +64,7 @@ BOOL CSegmentSelection::SelectFromPosition(CSaView * pView, int type, DWORD dwPo
 	if (nMaster == -1) {
 		nMaster = type;
 	}
-	CSegment * pMaster = pDoc->GetSegment(nMaster);
+	CSegment * pMaster = pModel->GetSegment(nMaster);
 
 	// get pointer to annotation offsets
 	// if there is at least one segment
@@ -150,17 +150,17 @@ BOOL CSegmentSelection::SelectFromPosition(CSaView * pView, int type, DWORD dwPo
 		DWORD dwStart = dwPosition;
 
 		// Snap Start Position
-		dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, dwStart, SNAP_LEFT);
-		DWORD dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+		dwStart = pModel->SnapCursor(START_CURSOR, dwStart, 0, dwStart, SNAP_LEFT);
+		DWORD dwStop = (dwStart + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-		if (pDoc->Is16Bit()) {
+		if (pModel->Is16Bit()) {
 			// Round up
 			dwStop = (dwStop + 1) & ~1;
 		}
 
-		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+		dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 
-		int nInsertAt = pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);
+		int nInsertAt = pSegment->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);
 		if (nInsertAt != -1) {
 			// Deselect Virtual Selection
 			if (m_bVirtual) {
@@ -168,32 +168,32 @@ BOOL CSegmentSelection::SelectFromPosition(CSaView * pView, int type, DWORD dwPo
 			}
 
 			if (nInsertAt > 0) {
-				if ((pSegment->GetStop(nInsertAt - 1) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) > dwStart) {
+				if ((pSegment->GetStop(nInsertAt - 1) + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) > dwStart) {
 					dwStart = pSegment->GetStop(nInsertAt - 1);
 				}
 			}
 
 			if (nInsertAt < pSegment->GetOffsetSize()) {
-				if ((dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pSegment->GetOffset(nInsertAt)) {
-					dwStop = (dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
+				if ((dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pSegment->GetOffset(nInsertAt)) {
+					dwStop = (dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
 				} else {
 					dwStop = pSegment->GetOffset(nInsertAt);
 				}
 			} else {
-				if ((dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetDataSize()) {
-					dwStop = (dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
+				if ((dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pModel->GetDataSize()) {
+					dwStop = (dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
 				} else {
-					dwStop = pDoc->GetDataSize();
+					dwStop = pModel->GetDataSize();
 				}
 			}
 
-			if (pDoc->Is16Bit()) {
+			if (pModel->Is16Bit()) {
 				// Round up
 				dwStop = (dwStop + 1) & ~1;
 			}
 
-			dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetDataSize(), SNAP_RIGHT);
-			dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, dwStop, SNAP_LEFT);
+			dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, pModel->GetDataSize(), SNAP_RIGHT);
+			dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, 0, dwStop, SNAP_LEFT);
 
 			m_bVirtual = true;
 			m_nType = type;
@@ -231,7 +231,7 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
 
 	// get pointer to segment object
 	CSegment * pSegment = pView->GetDocument()->GetSegment(type);
-	CSaDoc * pDoc = pView->GetDocument();
+	CSaDoc * pModel = pView->GetDocument();
 	BOOL bWithin = TRUE;
 	if ((type == GLOSS) || (type == PHONETIC)) {
 		bWithin = FALSE;
@@ -313,24 +313,24 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
 	if ((nMaster == type) && (nMaster != PHONETIC) && (pSegment->GetSelection() == -1)) {
 		DWORD dwStart = 0;
 
-		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+		dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, dwStop, pModel->GetDataSize(), SNAP_RIGHT);
 
 		// Snap Start Position
-		if (dwStop > pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) {
-			dwStart = dwStop - pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
+		if (dwStop > pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) {
+			dwStart = dwStop - pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 		} else {
 			dwStart = 0;
 		}
 
-		if (pDoc->Is16Bit()) {
+		if (pModel->Is16Bit()) {
 			// SDM 1.5Test8.2
 			// Round up
 			dwStart = (dwStart + 1) & ~1;
 		}
 
-		dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, dwStart, SNAP_LEFT);
+		dwStart = pModel->SnapCursor(START_CURSOR, dwStart, 0, dwStart, SNAP_LEFT);
 
-		int nInsertAt = pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);
+		int nInsertAt = pSegment->CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);
 		if (nInsertAt != -1) {
 			// Deselect Virtual Selection
 			if (m_bVirtual) {
@@ -338,31 +338,31 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int type, DWORD 
 			}
 
 			if (nInsertAt < pSegment->GetOffsetSize())
-				if (pSegment->GetOffset(nInsertAt) < (dwStop + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))) {
+				if (pSegment->GetOffset(nInsertAt) < (dwStop + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))) {
 					dwStop = pSegment->GetOffset(nInsertAt);
 				}
 
 			if (nInsertAt > 0) {
-				if ((pSegment->GetStop(nInsertAt - 1) + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < dwStop) {
-					dwStart = (dwStop - pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
+				if ((pSegment->GetStop(nInsertAt - 1) + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < dwStop) {
+					dwStart = (dwStop - pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
 				} else {
 					dwStart = pSegment->GetStop(nInsertAt - 1);
 				}
 			} else {
-				if ((dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetDataSize()) {
-					dwStart = (dwStop - pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
+				if ((dwStart + pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pModel->GetDataSize()) {
+					dwStart = (dwStop - pModel->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
 				} else {
 					dwStart = 0;
 				}
 			}
 
-			if (pDoc->Is16Bit()) {
+			if (pModel->Is16Bit()) {
 				// Round up
 				dwStart = (dwStart + 1) & ~1;
 			}
 
-			dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetDataSize(), SNAP_RIGHT);
-			dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, dwStop, SNAP_LEFT);
+			dwStart = pModel->SnapCursor(START_CURSOR, dwStart, dwStart, pModel->GetDataSize(), SNAP_RIGHT);
+			dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, 0, dwStop, SNAP_LEFT);
 
 			m_bVirtual = true;
 			m_nType = type;
@@ -473,7 +473,7 @@ BOOL CSegmentSelection::SetSelectedAnnotationString(CSaView * pView, CSaString &
 
 	int nType = m_nType;
 	CSegment * pSegment = pView->GetAnnotation(nType);
-	CSaDoc * pDoc = pView->GetDocument();
+	CSaDoc * pModel = pView->GetDocument();
 
 	// include delimiter;
 	if ((!bIncludesDelimiter) && (nType == GLOSS)) {
@@ -504,18 +504,18 @@ BOOL CSegmentSelection::SetSelectedAnnotationString(CSaView * pView, CSaString &
 
 		// 'Add' refreshes graphs, set modified flag, & check point
 		if (pSegment->GetMasterIndex() != -1) {
-			((CDependentSegment *)pSegment)->Add(pDoc, pView, m_dwStart, szString, false, bCheck);
+			((CDependentSegment *)pSegment)->Add(pModel, pView, m_dwStart, szString, false, bCheck);
 			pView->RedrawGraphs(FALSE);
 		} else {
-			int nInsertAt = pSegment->CheckPosition(pDoc, m_dwStart, m_dwStart+m_dwDuration, CSegment::MODE_ADD);
+			int nInsertAt = pSegment->CheckPosition(pModel, m_dwStart, m_dwStart+m_dwDuration, CSegment::MODE_ADD);
 			if (nInsertAt != -1) {
 				if (bCheck) {
-					pDoc->CheckPoint();
+					pModel->CheckPoint();
 				}
 				// document has been modified
-				pDoc->SetModifiedFlag(TRUE);
+				pModel->SetModifiedFlag(TRUE);
 				// transcription has been modified
-				pDoc->SetTransModifiedFlag(TRUE);
+				pModel->SetTransModifiedFlag(TRUE);
 				pSegment->Insert(nInsertAt, szString, true, m_dwStart, m_dwDuration);
 				pView->ChangeAnnotationSelection(pSegment, nInsertAt);
 			}
@@ -531,11 +531,11 @@ BOOL CSegmentSelection::SetSelectedAnnotationString(CSaView * pView, CSaString &
 		SelectFromPosition(pView, nType, dwPosition, true);
 	} else {
 		if (bCheck) {
-			pDoc->CheckPoint();
+			pModel->CheckPoint();
 		}
 		// ReplaceSelectedSegment refreshes graphs, sets modified flag
 		TRACE("replace segment\n");
-		pSegment->ReplaceSelectedSegment(pDoc, szString, true);
+		pSegment->ReplaceSelectedSegment(pModel, szString, true);
 	}
 
 	pView->SetStartCursorPosition(dwStart, SNAP_RIGHT);

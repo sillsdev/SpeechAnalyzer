@@ -29,20 +29,21 @@ class CPlotWavelet : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotWavelet)
 
 private:
-    enum PaletteMode { SYSTEMCOLOR, HALFCOLOR, FULLCOLOR};
+    enum PaletteMode { SYSTEMCOLOR, HALFCOLOR, FULLCOLOR };
+    static BOOL bPaletteInit;                                   // TRUE, if palette initialized
+    static int nPaletteMode;                                    // mode of created palette
+    static CPalette SpectroPalette;                             // color palette
 
-    static BOOL bPaletteInit;                                 // TRUE, if palette initialized
-    static int nPaletteMode;                                  // mode of created palette
-    static CPalette SpectroPalette;                       // color palette
-
-    long drawing_level;                                             // This variable gets updated by the arrow buttons on the legend
+    long drawing_level;                                         // This variable gets updated by the arrow buttons on the legend
     // and tells the red line which level to draw
     long max_drawing_level;
 
-
-private:
-    BOOL CreateSpectroPalette(CDC * pDC, CDocument * pDoc); // creates the palette
-    void populateBmiColors(RGBQUAD * Quadcolors,CSaView * pView);
+    BOOL CreateSpectroPalette(CDC* pDC, CDocument* pModel);     // creates the palette
+    void populateBmiColors(RGBQUAD* Quadcolors, CSaView* pView);
+    // Does a scatter plot of "which_leaf"'s data
+    BOOL ScatterPlotDataTree(CWaveletNode* root,CDC* pDC, CRect* rWnd, COLORREF crColor, long which_leaf, double start, double end);
+    // Does a scatter plot of this leaf's data
+    BOOL ScatterPlotDataNode(CWaveletNode* root,CDC* pDC,CRect* rWnd,COLORREF crColor,double start,double end);
 
 public:
     CPlotWavelet();
@@ -58,7 +59,7 @@ public:
         }
     }
 
-    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw(CDC* pDC, CRect rWnd, CRect rClip, CSaView* pView);
     virtual ~CPlotWavelet();
 
 protected:

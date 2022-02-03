@@ -51,7 +51,7 @@ private:
     void OnDrawSpectrogram(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CSaView * pView, BOOL bSmooth, BOOL * bAliased = NULL);
     void OnDrawFormantTracksFragment(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CAppContext & appContext);
     void OnDrawFormantTracksTime(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CAppContext& appContext);
-    CProcessSpectrogram* GetSpectrogram(CSaDoc* pDoc);
+    CProcessSpectrogram* GetSpectrogram(CSaDoc* pModel);
 
     enum PaletteMode {                      // mode of palette
         SYSTEMCOLOR,

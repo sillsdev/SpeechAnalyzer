@@ -911,13 +911,13 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
     // apply graph fonts
     if (toolSettings.m_bFontChanged) {
         // get pointer to active document
-        CSaDoc * pDoc = (CSaDoc *)GetCurrSaView()->GetDocument();
+        CSaDoc * pModel = (CSaDoc *)GetCurrSaView()->GetDocument();
         toolSettings.m_bFontChanged = FALSE;
         for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             SetFontFace(nLoop, toolSettings.m_GraphFonts.GetAt(nLoop));
             SetFontSize(nLoop, toolSettings.m_GraphFontSizes.GetAt(nLoop));
         }
-        pDoc->CreateFonts();
+        pModel->CreateFonts();
         // tell about the change to all views
         SendMessageToMDIDescendants(WM_USER_GRAPH_FONTCHANGED, 0, 0L);
     }
@@ -1162,9 +1162,9 @@ void CMainFrame::OnEditReplace() {
 // CMainFrame::OnUpdateEditReplace Menu Update
 /***************************************************************************/
 void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI) {
-    CSaDoc * pDoc = GetCurrDoc();
-    if (pDoc!=NULL) {
-        pCmdUI->Enable(pDoc->GetDataSize() != 0); // enable if data is available
+    CSaDoc * pModel = GetCurrDoc();
+    if (pModel!=NULL) {
+        pCmdUI->Enable(pModel->GetDataSize() != 0); // enable if data is available
     } else {
         pCmdUI->Enable(FALSE);
     }
@@ -1398,14 +1398,14 @@ CSaView * CMainFrame::GetCurrSaView(void) {
 // returns the doc for the active view.
 /***************************************************************************/
 CSaDoc * CMainFrame::GetCurrDoc() {
-    CSaDoc * pDoc = NULL;
+    CSaDoc * pModel = NULL;
     CSaView * pView = GetCurrSaView();
 
     if (pView) {
-        pDoc = pView->GetDocument();
+        pModel = pView->GetDocument();
     }
 
-    return pDoc;
+    return pModel;
 }
 
 /***************************************************************************/
@@ -1605,13 +1605,13 @@ void CMainFrame::OnSetDefaultParameters() {
     // Get pointers to the active view and it's document.
     //**********************************************************
     CSaView * pSrcView = (CSaView *)GetCurrSaView();
-    CSaDoc * pDoc = pSrcView->GetDocument();
+    CSaDoc * pModel = pSrcView->GetDocument();
 
     //**********************************************************
     // RLJ 1.5Test11.1A - Copy current pitch parameter values
     // to defaults.
     //**********************************************************
-    const CPitchParm * pPitchParm                    = pDoc->GetPitchParm();  // Get pitch parameter values.
+    const CPitchParm * pPitchParm                    = pModel->GetPitchParm();  // Get pitch parameter values.
     m_pitchParmDefaults.nRangeMode           = pPitchParm->nRangeMode;
     m_pitchParmDefaults.nScaleMode           = pPitchParm->nScaleMode;
     m_pitchParmDefaults.nUpperBound          = pPitchParm->nUpperBound;
@@ -1623,12 +1623,12 @@ void CMainFrame::OnSetDefaultParameters() {
     // Copy current music parameter values
     // to defaults.
     //**********************************************************
-    const CMusicParm * pMusicParm                    = pDoc->GetMusicParm();  // Get pitch parameter values.
+    const CMusicParm * pMusicParm                    = pModel->GetMusicParm();  // Get pitch parameter values.
     m_musicParmDefaults.nRangeMode           = pMusicParm->nRangeMode;
     m_musicParmDefaults.nUpperBound          = pMusicParm->nUpperBound;
     m_musicParmDefaults.nLowerBound          = pMusicParm->nLowerBound;
 
-    m_intensityParmDefaults = pDoc->GetCIntensityParm();
+    m_intensityParmDefaults = pModel->GetCIntensityParm();
 
     //**********************************************************
     // RLJ 1.5Test11.1A - Get pointer to view.
@@ -1668,7 +1668,7 @@ void CMainFrame::OnSetDefaultParameters() {
     // values to defaults.
     //**********************************************************
     if (bFormantGraphUsed) {
-        CProcessFormants * pFormants                 = (CProcessFormants *)pDoc->GetFormants();
+        CProcessFormants * pFormants                 = (CProcessFormants *)pModel->GetFormants();
         CFormantParm * pFormantParm                   = pFormants->GetFormantParms();  // Get formant chart parameter values.
         m_formantParmDefaults.bFromLpcSpectrum      = pFormantParm->bFromLpcSpectrum;
         m_formantParmDefaults.bFromCepstralSpectrum = pFormantParm->bFromCepstralSpectrum;
@@ -1682,7 +1682,7 @@ void CMainFrame::OnSetDefaultParameters() {
     // values to defaults.
     //**********************************************************
     if (bSpectrumGraphUsed) {
-        CProcessSpectrum * pSpectrum            = (CProcessSpectrum *)pDoc->GetSpectrum();
+        CProcessSpectrum * pSpectrum            = (CProcessSpectrum *)pModel->GetSpectrum();
         CSpectrumParm * pSpectrumParm            = pSpectrum->GetSpectrumParms();  // Get spectrum parameter values.
         m_spectrumParmDefaults.nScaleMode      = pSpectrumParm->nScaleMode;
         m_spectrumParmDefaults.nPwrUpperBound  = pSpectrumParm->nPwrUpperBound;
@@ -1719,10 +1719,10 @@ void CMainFrame::OnSetDefaultParameters() {
         // Copy current Spectrogram parameter values to object
         // containing Spectrogram defaults.
         //********************************************************
-        CProcessSpectrogram * pSpectro = (CProcessSpectrogram *)pDoc->GetSpectrogram();
+        CProcessSpectrogram * pSpectro = (CProcessSpectrogram *)pModel->GetSpectrogram();
         m_spectrogramParmDefaults = pSpectro->GetSpectroParm();
 
-        if (m_spectrogramParmDefaults.nFrequency >= int(pDoc->GetSamplesPerSec()*45/100))
+        if (m_spectrogramParmDefaults.nFrequency >= int(pModel->GetSamplesPerSec()*45/100))
             // This spectrogram is set to near nyquist
             // Assume the user wants all spectrograms to be display at nyquist
             // Set frequency above any reasonable sampling nyquist to force clipping to nyquist
@@ -1746,8 +1746,8 @@ void CMainFrame::OnSetDefaultParameters() {
         // Copy current Snapshot parameter values to object
         // containing Snapshot defaults.
         //********************************************************
-        m_snapshotParmDefaults = pDoc->GetSnapshot()->GetSpectroParm();
-        if (m_snapshotParmDefaults.nFrequency >= int(pDoc->GetSamplesPerSec()*45/100))
+        m_snapshotParmDefaults = pModel->GetSnapshot()->GetSpectroParm();
+        if (m_snapshotParmDefaults.nFrequency >= int(pModel->GetSamplesPerSec()*45/100))
             // This spectrogram is set to near nyquist
             // Assume the user wants all spectrograms to be display at nyquist
             // Set frequency above any reasonable sampling nyquist to force clipping to nyquist
@@ -1867,10 +1867,10 @@ int CMainFrame::SetWbFilterID(int nProcess, int nFilter, int nID) {
 /***************************************************************************/
 CDocument * CMainFrame::IsProcessUsed(int nProcess) {
     CDocList doclst; // list of currently open docs
-    for (CSaDoc * pDoc = doclst.pdocFirst(); pDoc; pDoc = doclst.pdocNext()) {
-        if (pDoc != NULL) {
-            if (nProcess == pDoc->GetWbProcess()) {
-                return (CDocument *)pDoc;
+    for (CSaDoc * pModel = doclst.pdocFirst(); pModel; pModel = doclst.pdocNext()) {
+        if (pModel != NULL) {
+            if (nProcess == pModel->GetWbProcess()) {
+                return (CDocument *)pModel;
             }
         }
     }
@@ -1888,9 +1888,9 @@ void CMainFrame::DeleteWbProcesses(BOOL bSwitchBack) {
     for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++) {
         for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++) {
             if (m_apWbProcess[nLoop][nFilterLoop]) {
-                CDocument * pDoc = IsProcessUsed(nLoop);
-                if ((pDoc!=NULL) && (bSwitchBack)) {
-                    ((CSaDoc *)pDoc)->SetWbProcess(0);    // switch back to plain
+                CDocument * pModel = IsProcessUsed(nLoop);
+                if ((pModel!=NULL) && (bSwitchBack)) {
+                    ((CSaDoc *)pModel)->SetWbProcess(0);    // switch back to plain
                 }
                 delete m_apWbProcess[nLoop][nFilterLoop];
                 m_apWbProcess[nLoop][nFilterLoop] = NULL;
@@ -2468,26 +2468,26 @@ void CMainFrame::OnRecordOverlay() {
     }
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = (CSaDoc *)pApp->OpenBlankView(true);
+    CSaDoc * pModel = (CSaDoc *)pApp->OpenBlankView(true);
 
-    if (pDoc!=NULL) {
+    if (pModel!=NULL) {
         //hide the temporary overlay document
         MDIActivate(pSourceView->pwndChildFrame());
 
         // launch recorder in this new view
-        pDoc->SetTempOverlay(); //mark this for reuse.
-        POSITION pos = pDoc->GetFirstViewPosition();
+        pModel->SetTempOverlay(); //mark this for reuse.
+        POSITION pos = pModel->GetFirstViewPosition();
         CSaDoc * pSourceDoc = pSourceView->GetDocument();
 
         CAlignInfo alignInfo;
         pSourceDoc->GetAlignInfo(alignInfo);
 
         if (pos) {
-            CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+            CSaView * pView = (CSaView *)pModel->GetNextView(pos);
             if (pView->IsKindOf(RUNTIME_CLASS(CSaView))) {
                 if (!CDlgAutoRecorder::IsLaunched()) {
                     int wholeFile = (AfxGetApp()->GetProfileInt(L"AutoRecorder",L"WholeFile",0)!=0);
-                    m_pAutoRecorder = new CDlgAutoRecorder(pDoc, pView, pSourceView, alignInfo, wholeFile);
+                    m_pAutoRecorder = new CDlgAutoRecorder(pModel, pView, pSourceView, alignInfo, wholeFile);
                     if (m_pDisplayPlot!=NULL) {
                         m_pDisplayPlot->m_pModal = m_pAutoRecorder;
                     }
@@ -2495,7 +2495,7 @@ void CMainFrame::OnRecordOverlay() {
                 }
             }
         } else {
-            pDoc->OnCloseDocument();
+            pModel->OnCloseDocument();
         }
     }
 }

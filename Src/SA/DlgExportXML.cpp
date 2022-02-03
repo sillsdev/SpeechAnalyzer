@@ -240,7 +240,7 @@ void CDlgExportXML::OnOK() {
     CFile * pFile = new CFile(m_szFileName, CFile::modeCreate|CFile::modeWrite);
     CSaString szString;
 
-    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
     pFile->Write(XML_HEADER1,sizeof(XML_HEADER1)-1);
     pFile->Write(XML_HEADER2,sizeof(XML_HEADER2)-1);
@@ -248,13 +248,13 @@ void CDlgExportXML::OnOK() {
     pFile->Write("<FileInfo>\r\n",12);
 
     if (m_bComments) {
-        OutputXMLField(pFile,_T("Comments"),pDoc->GetDescription());
+        OutputXMLField(pFile,_T("Comments"),pModel->GetDescription());
     }
     if (m_bFileName) {
-        OutputXMLField(pFile,_T("AudioFile"),pDoc->GetPathName());
+        OutputXMLField(pFile,_T("AudioFile"),pModel->GetPathName());
     }
 
-    CFileStatus * pFileStatus = pDoc->GetFileStatus();
+    CFileStatus * pFileStatus = pModel->GetFileStatus();
     if (pFileStatus->m_szFullName[0] != 0) { // file name is defined
         if (m_bOriginalDate) {
             OutputXMLField(pFile,_T("CreationTime"),pFileStatus->m_ctime.Format("%A, %B %d, %Y, %X"));
@@ -268,8 +268,8 @@ void CDlgExportXML::OnOK() {
             OutputXMLField(pFile,_T("FileSize"),szString);
         }
         if (m_bOriginalFormat) {
-            if (pDoc->IsValidRecordFileFormat()) {
-                szString.LoadString((UINT)pDoc->GetRecordFileFormat() + IDS_FILETYPE_UTT);
+            if (pModel->IsValidRecordFileFormat()) {
+                szString.LoadString((UINT)pModel->GetRecordFileFormat() + IDS_FILETYPE_UTT);
                 OutputXMLField(pFile,_T("OrigFormat"),szString);
             }
         }
@@ -278,7 +278,7 @@ void CDlgExportXML::OnOK() {
     pFile->Write("</FileInfo>\r\n",13);
 
     pFile->Write("<LinguisticInfo>\r\n",18);
-    if (!pDoc->GetSegment(PHONETIC)->IsEmpty()) {
+    if (!pModel->GetSegment(PHONETIC)->IsEmpty()) {
 
         CSaString szAnnotation[ANNOT_WND_NUMBER];
         CSaString szPOS;
@@ -289,9 +289,9 @@ void CDlgExportXML::OnOK() {
         while (nNumber != -1) {
             BOOL bBreak = FALSE;
 
-            dwOffset = pDoc->GetSegment(PHONETIC)->GetOffset(nNumber);
+            dwOffset = pModel->GetSegment(PHONETIC)->GetOffset(nNumber);
 
-            int nFind = pDoc->GetSegment(GLOSS)->FindOffset(dwOffset);
+            int nFind = pModel->GetSegment(GLOSS)->FindOffset(dwOffset);
             if ((nNumber > 0) && (nFind != -1)) {
                 bBreak = TRUE;
             }
@@ -311,15 +311,15 @@ void CDlgExportXML::OnOK() {
                 }
             }
 
-            szAnnotation[PHONETIC] += pDoc->GetSegment(PHONETIC)->GetSegmentString(nNumber);
+            szAnnotation[PHONETIC] += pModel->GetSegment(PHONETIC)->GetSegmentString(nNumber);
 
             for (int nLoop = PHONETIC+1; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-                nFind = pDoc->GetSegment(nLoop)->FindOffset(dwOffset);
+                nFind = pModel->GetSegment(nLoop)->FindOffset(dwOffset);
                 if (nFind != -1) {
                     if (nLoop == GLOSS) {
-                        szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
+                        szAnnotation[nLoop] += pModel->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
                     } else {
-                        szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind);
+                        szAnnotation[nLoop] += pModel->GetSegment(nLoop)->GetSegmentString(nFind);
                     }
                 }
                 if (szAnnotation[nLoop].GetLength() > nMaxLength) {
@@ -327,7 +327,7 @@ void CDlgExportXML::OnOK() {
                 }
             }
 
-            nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
+            nNumber = pModel->GetSegment(PHONETIC)->GetNext(nNumber);
         }
         // write out results
         if (m_bPhonetic) {
@@ -356,12 +356,12 @@ void CDlgExportXML::OnOK() {
     for (int nPhrase = MUSIC_PL1; nPhrase <= MUSIC_PL4; nPhrase++) {
         CSaString szPhrase;
         szString.Format(_T("PhraseLevel%d"), nPhrase - MUSIC_PL1 + 1);
-        if ((m_bPhrase) && (!pDoc->GetSegment(nPhrase)->IsEmpty())) {
+        if ((m_bPhrase) && (!pModel->GetSegment(nPhrase)->IsEmpty())) {
             int nNumber = 0;
             while (nNumber != -1) {
-                szPhrase += pDoc->GetSegment(nPhrase)->GetSegmentString(nNumber);
+                szPhrase += pModel->GetSegment(nPhrase)->GetSegmentString(nNumber);
                 szPhrase += L" ";
-                nNumber = pDoc->GetSegment(nPhrase)->GetNext(nNumber);
+                nNumber = pModel->GetSegment(nPhrase)->GetNext(nNumber);
             }
         }
         if (m_bPhrase) {
@@ -371,17 +371,17 @@ void CDlgExportXML::OnOK() {
     }
 
     if (m_bFree) {
-        OutputXMLField(pFile,_T("FreeTranslation"),pDoc->GetSourceParm()->szFreeTranslation);
+        OutputXMLField(pFile,_T("FreeTranslation"),pModel->GetSourceParm()->szFreeTranslation);
     }
     if (m_bPhones) {
         // create and write number of phones text
         int nNumber = 0;
         int nLoop = 0;
-        if (pDoc->GetSegment(PHONETIC)->GetContentLength() > 0) {
+        if (pModel->GetSegment(PHONETIC)->GetContentLength() > 0) {
             // find number of phones
             while (TRUE) {
                 nLoop++;
-                nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
+                nNumber = pModel->GetSegment(PHONETIC)->GetNext(nNumber);
                 if (nNumber < 0) {
                     break;
                 }
@@ -392,7 +392,7 @@ void CDlgExportXML::OnOK() {
         OutputXMLField(pFile,_T("NumPhones"),szString);
     }
     if (m_bWords) {
-        swprintf_s(szString.GetBuffer(25),25,_T("%u"), ((CTextSegment *)pDoc->GetSegment(GLOSS))->CountWords());
+        swprintf_s(szString.GetBuffer(25),25,_T("%u"), ((CTextSegment *)pModel->GetSegment(GLOSS))->CountWords());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("NumWords"),szString);
     }
@@ -400,13 +400,13 @@ void CDlgExportXML::OnOK() {
 
     pFile->Write("<DataInfo>\r\n",12);
     if (m_bNumberSamples) {
-        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetNumSamples());
+        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pModel->GetNumSamples());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("NumSamples"),szString);
     }
     if (m_bLength) {
         // create and write length text
-        double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize()); // get sampled data size in seconds
+        double fDataSec = pModel->GetTimeFromBytes(pModel->GetDataSize()); // get sampled data size in seconds
         int nMinutes = (int)fDataSec / 60;
 
         if (nMinutes == 0) {
@@ -421,26 +421,26 @@ void CDlgExportXML::OnOK() {
         OutputXMLField(pFile,_T("Length"),szString);
     }
     if (m_bSampleRate) {
-        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSamplesPerSec());
+        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pModel->GetSamplesPerSec());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("SamplingFreq"),szString);
     }
     if (m_bBandwidth) {
-        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetRecordBandWidth());
+        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pModel->GetRecordBandWidth());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("Bandwidth"),szString);
     }
     if (m_bHighPass) {
-        szString = pDoc->IsUsingHighPassFilter() ? "Yes":"No";
+        szString = pModel->IsUsingHighPassFilter() ? "Yes":"No";
         OutputXMLField(pFile,_T("HighPassFiltered"),szString);
     }
     if (m_bBits) {
-        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetBitsPerSample());
+        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pModel->GetBitsPerSample());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("StorageFormat"),szString);
     }
     if (m_bQuantization) {
-        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pDoc->GetRecordSampleSize());
+        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pModel->GetRecordSampleSize());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("QuantizSize"),szString);
     }
@@ -448,29 +448,29 @@ void CDlgExportXML::OnOK() {
 
     pFile->Write("<SourceInfo>\r\n",14);
     if (m_bLanguage) {
-        OutputXMLField(pFile,_T("Language"),pDoc->GetSourceParm()->szLanguage);
+        OutputXMLField(pFile,_T("Language"),pModel->GetSourceParm()->szLanguage);
     }
 
     if (m_bDialect) {
-        OutputXMLField(pFile,_T("Dialect"),pDoc->GetSourceParm()->szDialect);
+        OutputXMLField(pFile,_T("Dialect"),pModel->GetSourceParm()->szDialect);
     }
     if (m_bFamily) {
-        OutputXMLField(pFile,_T("Family"),pDoc->GetSourceParm()->szFamily);
+        OutputXMLField(pFile,_T("Family"),pModel->GetSourceParm()->szFamily);
     }
     if (m_bCountry) {
-        OutputXMLField(pFile,_T("Country"),pDoc->GetSourceParm()->szCountry);
+        OutputXMLField(pFile,_T("Country"),pModel->GetSourceParm()->szCountry);
     }
     if (m_bRegion) {
-        OutputXMLField(pFile,_T("Region"),pDoc->GetSourceParm()->szRegion);
+        OutputXMLField(pFile,_T("Region"),pModel->GetSourceParm()->szRegion);
     }
     if (m_bEthnologue) {
-        OutputXMLField(pFile,_T("EthnologueID"),pDoc->GetSourceParm()->szEthnoID);
+        OutputXMLField(pFile,_T("EthnologueID"),pModel->GetSourceParm()->szEthnoID);
     }
     if (m_bSpeaker) {
-        OutputXMLField(pFile,_T("SpeakerName"),pDoc->GetSourceParm()->szSpeaker);
+        OutputXMLField(pFile,_T("SpeakerName"),pModel->GetSourceParm()->szSpeaker);
     }
     if (m_bGender) {
-        switch (pDoc->GetSourceParm()->nGender) {
+        switch (pModel->GetSourceParm()->nGender) {
         case 0:
             szString = "Adult Male";
             break;
@@ -487,10 +487,10 @@ void CDlgExportXML::OnOK() {
         OutputXMLField(pFile,_T("Gender"),szString);
     }
     if (m_bNotebookRef) {
-        OutputXMLField(pFile,_T("NotebookReference"),pDoc->GetSourceParm()->szReference);
+        OutputXMLField(pFile,_T("NotebookReference"),pModel->GetSourceParm()->szReference);
     }
     if (m_bTranscriber) {
-        OutputXMLField(pFile,_T("Transcriber"),pDoc->GetSourceParm()->szTranscriber);
+        OutputXMLField(pFile,_T("Transcriber"),pModel->GetSourceParm()->szTranscriber);
     }
     pFile->Write("</SourceInfo>\r\n",14);
 

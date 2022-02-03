@@ -93,7 +93,7 @@ DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
 			// cast pointer
     CSaView * pView = (CSaView *)pSaView;
 	// get pointer to document
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 	// get pointer to parent plot
     CPlotWnd * pPlot = (CPlotWnd *)GetParent();
 	// get pointer to graph
@@ -113,8 +113,8 @@ DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
 		// number of data points to display
         dwDataFrame = pView->CalcDataFrame(nWidth);
     }
-    DWORD dwDataSize = pDoc->GetDataSize();
-    DWORD nSmpSize = pDoc->GetSampleSize();
+    DWORD dwDataSize = pModel->GetDataSize();
+    DWORD nSmpSize = pModel->GetSampleSize();
     // calculate data samples per pixel
     ASSERT(nWidth);
     double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
@@ -330,10 +330,10 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point) {
         }
 
         // AKE 07/15/00, for tracking movement of start cursor as it is dragged
-        CSaDoc * pDoc = pView->GetDocument();
-        CProcessFragments * pFragments = pDoc->GetFragments();
+        CSaDoc * pModel = pView->GetDocument();
+        CProcessFragments * pFragments = pModel->GetFragments();
         if ((pFragments!=NULL) && (pFragments->IsDataReady())) {
-            WORD wSmpSize = WORD(pDoc->GetSampleSize());
+            WORD wSmpSize = WORD(pModel->GetSampleSize());
             DWORD OldFragmentIndex = pFragments->GetFragmentIndex(m_dwDragPos/wSmpSize);
             DWORD dwFragmentIndex = pFragments->GetFragmentIndex(dwCursor/wSmpSize);
             if (dwFragmentIndex != OldFragmentIndex) {
@@ -449,10 +449,10 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     pWnd->ClientToScreen(&rWnd);
 
     // AKE 07/15/00, for tracking movement of start cursor as it is dragged
-    CSaDoc * pDoc = pView->GetDocument();
-    CProcessFragments * pFragments = pDoc->GetFragments();
+    CSaDoc * pModel = pView->GetDocument();
+    CProcessFragments * pFragments = pModel->GetFragments();
     if (pFragments && pFragments->IsDataReady()) {
-        WORD wSmpSize = WORD(pDoc->GetSampleSize());
+        WORD wSmpSize = WORD(pModel->GetSampleSize());
         DWORD dwFragmentIndex = pFragments->GetFragmentIndex(m_dwStartDragPos/wSmpSize);
         m_dwDragPos = m_dwStartDragPos;
         pView->SendMessage(WM_USER_CURSOR_IN_FRAGMENT, START_CURSOR, dwFragmentIndex);
@@ -544,23 +544,23 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point) {
     if (((m_nEditBoundaries) && (nLoop!=-1)) &&
             (pView->GetAnnotation(nLoop)->CheckCursors(pView->GetDocument(), m_nEditBoundaries==BOUNDARIES_EDIT_SEGMENT_SIZE) != -1)) {
 
-        CSaDoc * pDoc = pView->GetDocument();
+        CSaDoc * pModel = pView->GetDocument();
 
-        int nIndex = pDoc->GetSegment(nLoop)->GetSelection();
+        int nIndex = pModel->GetSegment(nLoop)->GetSelection();
 
         // first adjust cursors to old segment boundaries (undo to here)
-        pView->SetStartCursorPosition(pDoc->GetSegment(nLoop)->GetOffset(nIndex), SNAP_LEFT);
-        pView->SetStopCursorPosition(pDoc->GetSegment(nLoop)->GetStop(nIndex), SNAP_RIGHT);
+        pView->SetStartCursorPosition(pModel->GetSegment(nLoop)->GetOffset(nIndex), SNAP_LEFT);
+        pView->SetStopCursorPosition(pModel->GetSegment(nLoop)->GetStop(nIndex), SNAP_RIGHT);
 
 		// Save state
-        pDoc->CheckPoint();
+        pModel->CheckPoint();
 
         // Reload cursor locations to new segment boundaries
         pView->SetStartCursorPosition(dwStartCursor, SNAP_LEFT);
         pView->SetStopCursorPosition(dwStopCursor, SNAP_RIGHT);
 
         // Do update
-        pDoc->UpdateSegmentBoundaries(m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
+        pModel->UpdateSegmentBoundaries(m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
     }
 
     CWnd::OnLButtonUp(nFlags, point);

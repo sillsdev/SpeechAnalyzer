@@ -25,7 +25,7 @@ class CSaDoc;
 class CDlgAdvancedSegment : public CDialog {
     DECLARE_DYNAMIC(CDlgAdvancedSegment)
 public:
-    CDlgAdvancedSegment(CSaDoc * pDoc); // standard constructor
+    CDlgAdvancedSegment(CSaDoc * pModel); // standard constructor
     virtual ~CDlgAdvancedSegment();
 
     BOOL Create();

@@ -117,7 +117,7 @@
 *          :                                                               *
 *   #include "HPFltr70.h"                                                  *
 *          :                                                               *
-*   uint16 wSmpRate = (uint32)pDoc->GetSamplesPerSec();                    *
+*   uint16 wSmpRate = (uint32)pModel->GetSamplesPerSec();                    *
 *   uint8  SignalBuffer[BUFFER_SIZE];                                      *
 *          :                                                               *
 *   (load uint8 sample data at SignalBuffer);                              *

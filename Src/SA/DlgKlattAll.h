@@ -168,8 +168,8 @@ private:
     void AdjustParallelAVs(double pFormAV[7], double pFormFreq[7]);
     void OnKlattApplyIpaDefaults(CFlexEditGrid & cGrid);
     void OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid);
-    void LabelDocument(CSaDoc * pDoc);
-    void SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pDoc, DWORD dwDuration, WORD wSmpSize);
+    void LabelDocument(CSaDoc * pModel);
+    void SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pModel, DWORD dwDuration, WORD wSmpSize);
     BOOL GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pView,
                      CProcessSpectrum * pSpectrum, CProcessGrappl * pAutoPitch, CProcessZCross * pZCross,
                      DWORD dwStart, DWORD dwLength, double * pFormFreq);

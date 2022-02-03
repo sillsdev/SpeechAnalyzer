@@ -390,9 +390,9 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
 
     m_pNotifyObj = pNotify;         // set pointer to notify object
     m_pView = pView;                // set pointer to view
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    CProcessFragments * pFragmenter = pDoc->GetFragments();
-    pDoc->GetFmtParm(m_FmtParm,true);   // set pointer to wave format parameters
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+    CProcessFragments * pFragmenter = pModel->GetFragments();
+    pModel->GetFmtParm(m_FmtParm,true);   // set pointer to wave format parameters
 
     m_dwStart = dwStart;            // set start index
     m_dwPlayPosition = dwStart;     // set index of first sample to play
@@ -411,14 +411,14 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
     m_bPlayDone = FALSE;
     m_bProcessDone = FALSE;
 
-    m_bBackgroundEnabled = pDoc->IsBackgroundProcessing();
+    m_bBackgroundEnabled = pModel->IsBackgroundProcessing();
     if (m_bBackgroundEnabled) {
-        pDoc->EnableBackgroundProcessing(FALSE);    // disable background processing during playback
+        pModel->EnableBackgroundProcessing(FALSE);    // disable background processing during playback
     }
 
     if ((nSpeed != 100) && !pFragmenter->IsDataReady()) {
         // finish fragmenting
-        short int nResult = LOWORD(pFragmenter->Process(this, pDoc)); // process data
+        short int nResult = LOWORD(pFragmenter->Process(this, pModel)); // process data
         if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_NO_DATA) || (nResult == PROCESS_CANCELED)) {
             pFragmenter->SetDataInvalid();
             m_bBackgroundEnabled = FALSE;
@@ -432,7 +432,7 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
     if (((pMainWnd->IsPlayerPlaying()) || (pMainWnd->IsPlayerTestRun())) &&
             (pFragmenter->IsDataReady())) {
         // create WaveWarp object
-        dspError_t Err = CWaveWarp::CreateObject(&m_pWaveWarp, pDoc, dwStart/m_FmtParm.wBlockAlign, (USHORT)nSpeed, &m_CallbackData);
+        dspError_t Err = CWaveWarp::CreateObject(&m_pWaveWarp, pModel, dwStart/m_FmtParm.wBlockAlign, (USHORT)nSpeed, &m_CallbackData);
         if (Err) {
             CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
             pApp->ErrorMessage(IDS_ERROR_WAVEWARP, _T("initialization")); // send error message
@@ -497,18 +497,18 @@ BOOL CWave::Record(HMMIO hmmioFile,
     m_bRecording = bRecord;
     m_pNotifyObj = pNotify;             // set pointer to notify object
     m_pView = pView;                    // set pointer to view
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
-    pDoc->GetFmtParm(m_FmtParm,true);   // set pointer to wave format parameters
+    pModel->GetFmtParm(m_FmtParm,true);   // set pointer to wave format parameters
     m_nMaxLevel = 0;
     m_dwRecordPointer = dwOffset;
     m_dwEnd = 0;
 
-    if (pDoc->IsUsingHighPassFilter()) {
+    if (pModel->IsUsingHighPassFilter()) {
         if (!m_pInDev->GetHighPassFilter()) {
-            if (!m_pInDev->AttachHighPassFilter(pDoc->GetSamplesPerSec())) {
+            if (!m_pInDev->AttachHighPassFilter(pModel->GetSamplesPerSec())) {
                 // if can't construct highpass filter, reset the flag
-                pDoc->DisableHighPassFilter();
+                pModel->DisableHighPassFilter();
                 CSaApp * pApp = (CSaApp *)AfxGetApp();      // get pointer to application
                 pApp->ErrorMessage(IDS_ERROR_RECHPFILTER);  // send error message
                 return FALSE;
@@ -555,9 +555,9 @@ void CWave::Stop() {
         m_pWaveWarp = NULL;
     }
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
-    CSaDoc * pDoc = (CSaDoc *)pMain->GetCurrDoc();
-    if (pDoc && m_bBackgroundEnabled) {
-        pDoc->EnableBackgroundProcessing(TRUE);
+    CSaDoc * pModel = (CSaDoc *)pMain->GetCurrDoc();
+    if (pModel && m_bBackgroundEnabled) {
+        pModel->EnableBackgroundProcessing(TRUE);
     }
 }
 
@@ -612,9 +612,9 @@ void CWave::NextBlock() {
             m_pWaveWarp = NULL;
         }
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
-        CSaDoc * pDoc = (CSaDoc *)pMain->GetCurrDoc();
+        CSaDoc * pModel = (CSaDoc *)pMain->GetCurrDoc();
         if (m_bBackgroundEnabled) {
-            pDoc->EnableBackgroundProcessing(TRUE);
+            pModel->EnableBackgroundProcessing(TRUE);
         }
     }
 }

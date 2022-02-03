@@ -626,13 +626,13 @@ void CPlotWnd::SetStartCursor(CSaView * pView) {
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     if ((bDynamicUpdate) && (m_bAnimationPlot)) {
         // Finish pitch processing if necessary.
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+        CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
         if (pAutoPitch->IsDataReady()) {
             // Finish fragmenting if necessary.
-            CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
+            CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
             if (pFragments->IsDataReady()) {
-                DWORD nSmpSize = pDoc->GetSampleSize();
+                DWORD nSmpSize = pModel->GetSampleSize();
                 m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/nSmpSize);  // set the animation frame
             }
         }
@@ -1254,14 +1254,14 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
     {
         CSaView * pView = (CSaView *)pGraph->GetParent();
         CSaDoc * pHostDoc = (CSaDoc *)pView->GetDocument();
-        CSaDoc * pDoc = pProcessDoc;
+        CSaDoc * pModel = pProcessDoc;
 
         // calculate size factor between raw data and process data
 
-        double fSizeFactor = (double)pDoc->GetSampleSize() * ceil((double)(pDoc->GetDataSize()/pDoc->GetSampleSize())/(double)(pProcess->GetDataSize()));
+        double fSizeFactor = (double)pModel->GetSampleSize() * ceil((double)(pModel->GetDataSize()/pModel->GetSampleSize())/(double)(pProcess->GetDataSize()));
         //TRACE(L"plot %s -----------\n",(LPCTSTR)m_szPlotName);
-        //TRACE("doc sample size %d\n",pDoc->GetSampleSize());
-        //TRACE("doc data size %d\n",pDoc->GetDataSize());
+        //TRACE("doc sample size %d\n",pModel->GetSampleSize());
+        //TRACE("doc data size %d\n",pModel->GetDataSize());
         //TRACE("proc data size %d\n",pProcess->GetDataSize());
         //TRACE("size factor %f\n",fSizeFactor);
 
@@ -1275,7 +1275,7 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
         }
 
         // calculate raw data samples per pixel
-        double fBytesPerPix = double(dwDataFrame)*pDoc->GetAvgBytesPerSec()/pHostDoc->GetAvgBytesPerSec()/(double)rWnd.Width();
+        double fBytesPerPix = double(dwDataFrame)*pModel->GetAvgBytesPerSec()/pHostDoc->GetAvgBytesPerSec()/(double)rWnd.Width();
         //TRACE("bytes per pix %f\n",fBytesPerPix);
         //TRACE("----\n");
 
@@ -1465,7 +1465,7 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
 	// get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
 	if (m_pParent->HasBoundaries()) {
         // paint boundaries
@@ -1487,11 +1487,11 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
             // calculate the number of data samples per pixel
             double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
             // get pointer to phonetic string
-            CString pPhonetic = pDoc->GetSegment(PHONETIC)->GetContent();
+            CString pPhonetic = pModel->GetSegment(PHONETIC)->GetContent();
             if (!pPhonetic.IsEmpty()) { 
 				// string is not empty
                 // get pointer to phonetic offset and duration arrays
-                CSegment * pOffsets = pDoc->GetSegment(PHONETIC);
+                CSegment * pOffsets = pModel->GetSegment(PHONETIC);
                 // position prepare loop. Find first boundary to display in clipping rect
                 double fStart = fDataStart + ((double)rClip.left) * fBytesPerPix;
                 int nLoop = 0;
@@ -1505,7 +1505,7 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
                 }
                 // first char must be at lower position
                 if (nLoop > 0) {
-                    nLoop = pDoc->GetSegment(PHONETIC)->GetPrevious(nLoop);
+                    nLoop = pModel->GetSegment(PHONETIC)->GetPrevious(nLoop);
                 }
                 // check for overlap and make correction (draw previous character boundaries too)
                 if ((nLoop > 0) && (pOffsets->GetOffset(nLoop) < (pOffsets->GetStop(nLoop - 1)))) {
@@ -1530,7 +1530,7 @@ void CPlotWnd::PlotPaintFinish( CDC * pDC, CRect rWnd, CRect rClip) {
                     // calculate stop boundary
                     int nDurationPos = round2Int((pOffsets->GetStop(nLoop) - fDataStart)/fBytesPerPix);
                     // next string start
-                    nLoop = pDoc->GetSegment(PHONETIC)->GetNext(nLoop);
+                    nLoop = pModel->GetSegment(PHONETIC)->GetNext(nLoop);
                     // draw the lines
                     pDC->MoveTo(nDisplayPos, 0); 
 					// paint start line
@@ -1662,18 +1662,18 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
 	if (!m_bCursors) return;
 
     CSaView * pView = (CSaView *)GetParent()->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    DWORD nSampleSize = pDoc->GetSampleSize();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+    DWORD nSampleSize = pModel->GetSampleSize();
     if (nSampleSize == 2) {
         // positions have to be even for 16 bit
         dwStart &= ~1;
         dwStop &= ~1;
     }
     if (dwStart > 0) {
-        dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, pDoc->GetDataSize() - nSampleSize);
+        dwStart = pModel->SnapCursor(START_CURSOR, dwStart, 0, pModel->GetDataSize() - nSampleSize);
     }
-    if ((dwStop > 0) && (dwStop < (pDoc->GetDataSize() - nSampleSize))) {
-        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, pDoc->GetDataSize() - nSampleSize);
+    if ((dwStop > 0) && (dwStop < (pModel->GetDataSize() - nSampleSize))) {
+        dwStop = pModel->SnapCursor(STOP_CURSOR, dwStop, 0, pModel->GetDataSize() - nSampleSize);
     }
 
     if ((m_dwHighLightPosition == dwStart) &&
@@ -2056,9 +2056,9 @@ void CPlotWnd::StandardAnimateFrame(DWORD dwFrameIndex) {
     // Highlight raw data frame for which process data is calculated
     if (pWaveGraph) {
         // raw waveform graph present
-        CSaDoc * pDoc = pView->GetDocument();
-        DWORD wSmpSize = pDoc->GetSampleSize();
-        CProcessFragments * pFragments = pDoc->GetFragments();
+        CSaDoc * pModel = pView->GetDocument();
+        DWORD wSmpSize = pModel->GetSampleSize();
+        CProcessFragments * pFragments = pModel->GetFragments();
         SFragParms FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
         DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
         DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
@@ -2079,9 +2079,9 @@ void CPlotWnd::StandardEndAnimation() {
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     DWORD dwStartCursor = pView->GetStartCursorPosition();
-    CSaDoc * pDoc = pView->GetDocument();
-    DWORD wSmpSize = pDoc->GetSampleSize();
-    CProcessFragments * pFragments = pDoc->GetFragments();
+    CSaDoc * pModel = pView->GetDocument();
+    DWORD wSmpSize = pModel->GetSampleSize();
+    CProcessFragments * pFragments = pModel->GetFragments();
     m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/wSmpSize);  // reset to start cursor fragment
     int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
     CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
@@ -2111,9 +2111,9 @@ void CPlotWnd::GraphHasFocus(BOOL bFocus) {
                 CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
                 if (bFocus) {
                     // Highlight raw data frame for which formants are calculated
-                    CSaDoc * pDoc   = pView->GetDocument();
-                    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
-                    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments(); // data should be ready -- dynamic mode enabled
+                    CSaDoc * pModel   = pView->GetDocument();
+                    WORD wSmpSize = (WORD)(pModel->GetSampleSize());  // calculate sample size in bytes
+                    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments(); // data should be ready -- dynamic mode enabled
                     DWORD dwFrame = m_dwAnimationFrame;
                     if (dwFrame == UNDEFINED_OFFSET) {
                         dwFrame = pFragments->GetFragmentIndex(pView->GetStartCursorPosition()/wSmpSize);
@@ -2192,8 +2192,8 @@ DWORD CPlotWnd::CalcWaveOffsetAtPixel(CPoint pixel) {
 		// number of data points to display
         dwDataFrame = pView->CalcDataFrame(nWidth); 
     }
-    CSaDoc * pDoc = pView->GetDocument();
-    DWORD nSmpSize = pDoc->GetSampleSize();
+    CSaDoc * pModel = pView->GetDocument();
+    DWORD nSmpSize = pModel->GetSampleSize();
     // calculate data samples per pixel
     double fSamplesPerPix = nWidth ? (double)dwDataFrame / (double)(nWidth*nSmpSize) : 0.;
 

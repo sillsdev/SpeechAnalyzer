@@ -91,7 +91,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
     //*******************************************************
     // 09/27/2000 - DDO If the graph is the TWC graph
@@ -117,7 +117,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
         // check if graph has private cursor
         if (pGraph->HasPrivateCursor()) {
             // get necessary data from between public cursors
-            WORD wSmpSize = WORD(pDoc->GetSampleSize());
+            WORD wSmpSize = WORD(pModel->GetSampleSize());
 			// data index of first sample to display
             fDataStart = pView->GetStartCursorPosition();
 			// number of data points to display
@@ -139,7 +139,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
     // get pointer to gloss strings
-    CReferenceSegment * pReference = (CReferenceSegment *)pDoc->GetSegment(m_nIndex);
+    CReferenceSegment * pReference = (CReferenceSegment *)pModel->GetSegment(m_nIndex);
     if (pReference->GetOffsetSize()>0) {
         // array is not empty
         // position prepare loop. Find first string to display in clipping rect

@@ -22,7 +22,7 @@ class CDlgAdvancedParseWords : public CDialog {
     DECLARE_DYNAMIC(CDlgAdvancedParseWords)
 
 public:
-    CDlgAdvancedParseWords(CSaDoc * pDoc);
+    CDlgAdvancedParseWords(CSaDoc * pModel);
     virtual ~CDlgAdvancedParseWords();
     BOOL Create();
     void Show(LPCTSTR title);

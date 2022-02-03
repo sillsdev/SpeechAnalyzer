@@ -87,8 +87,8 @@ void CDlgPickOver::SetupItemsList() {
             szText.ReleaseBuffer();
 
             CSaView * pView = (CSaView *)m_apGraphs[i]->GetParent();
-            CSaDoc  * pDoc  = pView->GetDocument();
-            CString szDocTitle(pDoc->GetFilenameFromTitle().c_str());    // load file name
+            CSaDoc  * pModel  = pView->GetDocument();
+            CString szDocTitle(pModel->GetFilenameFromTitle().c_str());    // load file name
             szText += " - " + szDocTitle;
 
             int index = m_SelectItems.AddString(szText);
@@ -103,8 +103,8 @@ void CDlgPickOver::SetupItemsList() {
                 CString szText(m_apPlot[i]->GetPlotName());
 
                 CSaApp * pApp = (CSaApp *)AfxGetApp();
-                CDocument  * pDoc  = pApp->IsFileOpened(m_szDoc[i]);
-                CSaDoc * pSaDoc = (CSaDoc *)pDoc;
+                CDocument  * pModel  = pApp->IsFileOpened(m_szDoc[i]);
+                CSaDoc * pSaDoc = (CSaDoc *)pModel;
                 CString szDocTitle(pSaDoc->GetFilenameFromTitle().c_str()); // load file name
                 szText += " - " + szDocTitle;
 

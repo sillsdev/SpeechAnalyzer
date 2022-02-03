@@ -73,21 +73,21 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 
 	// Get pointer to graph, document, and main frame.
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc * pDoc = pView->GetDocument();
+    CSaDoc * pModel = pView->GetDocument();
 	// calculate sample size in bytes
-    WORD wSmpSize = WORD(pDoc->GetSampleSize());
-    double SigBandwidth = (double)pDoc->GetSamplesPerSec() / 2.;
+    WORD wSmpSize = WORD(pModel->GetSampleSize());
+    double SigBandwidth = (double)pModel->GetSamplesPerSec() / 2.;
     // get application colors
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     Colors * pColor = pMainWnd->GetColors();
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
 
     // Finish fragmenting as needed.
-    CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
+    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
 	// Force fragmenter to finish
-    pDoc->EnableBackgroundProcessing(FALSE);
+    pModel->EnableBackgroundProcessing(FALSE);
 	// process data
-    short int nResult = LOWORD(pFragments->Process(this, pDoc));
+    short int nResult = LOWORD(pFragments->Process(this, pModel));
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (!bDynamicUpdate) {
 			// check the process result
@@ -98,7 +98,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 
     // Get spectrum object and spectrum plot parameters.
 	// get pointer to spectrum object
-    CProcessSpectrum * pSpectrum = (CProcessSpectrum *)pDoc->GetSpectrum();
+    CProcessSpectrum * pSpectrum = (CProcessSpectrum *)pModel->GetSpectrum();
     CSpectrumParm * pSpectrumParms = pSpectrum->GetSpectrumParms();
 
     // Get pointer to raw waveform plot.
@@ -155,7 +155,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
     }
 
     // Process data.
-    nResult = LOWORD(pSpectrum->Process(this, pDoc, dwFrameStart, dwFrameSize, SpectraSelected)); // process data
+    nResult = LOWORD(pSpectrum->Process(this, pModel, dwFrameStart, dwFrameSize, SpectraSelected)); // process data
     nResult = CheckResult(nResult, pSpectrum);
     if (nResult == PROCESS_ERROR) {
         return;

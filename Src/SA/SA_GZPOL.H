@@ -31,7 +31,7 @@ private:
 
     // Operations
 private:
-    CProcessSDP * GetSDP(CSaDoc * pDoc);
+    CProcessSDP * GetSDP(CSaDoc * pModel);
 
     // Generated message map functions
 protected:

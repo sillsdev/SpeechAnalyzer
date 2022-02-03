@@ -10,8 +10,8 @@
 
 IMPLEMENT_DYNAMIC(CDlgInsertSilence, CDialog)
 
-CDlgInsertSilence::CDlgInsertSilence(CSaDoc * pDoc, CWnd * pParent /*=NULL*/) :
-    pDocument(pDoc),
+CDlgInsertSilence::CDlgInsertSilence(CSaDoc * pModel, CWnd * pParent /*=NULL*/) :
+    pDocument(pModel),
     CDialog(CDlgInsertSilence::IDD, pParent),
     MIN_NUM_VALUE(0.01),
     MAX_NUM_VALUE(2.00),

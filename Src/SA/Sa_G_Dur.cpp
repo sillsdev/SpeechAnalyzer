@@ -81,10 +81,10 @@ CPlotDurations::~CPlotDurations() {
 /***************************************************************************/
 void CPlotDurations::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 	// get pointer to main frame, graph, and document
-	CSaDoc * pDoc = pView->GetDocument();
+	CSaDoc * pModel = pView->GetDocument();
 	// create loudness data
-	CProcessDurations * pDurations = (CProcessDurations *)pDoc->GetDurations(); // get pointer to loudness object
-	short int nResult = LOWORD(pDurations->Process(this, pDoc)); // process data
+	CProcessDurations * pDurations = (CProcessDurations *)pModel->GetDurations(); // get pointer to loudness object
+	short int nResult = LOWORD(pDurations->Process(this, pModel)); // process data
 	nResult = CheckResult(nResult, pDurations); // check the process result
 	if (nResult == PROCESS_ERROR) {
 		return;
@@ -110,11 +110,11 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
 	// get pointer to graph, view and document
 	CGraphWnd * pGraph = (CGraphWnd *)GetParent();
 	CSaView * pView = (CSaView *)pGraph->GetParent();
-	CSaDoc * pDoc = pView->GetDocument();
-	UINT nSmpSize = pDoc->GetSampleSize();      // number of bytes per sample
+	CSaDoc * pModel = pView->GetDocument();
+	UINT nSmpSize = pModel->GetSampleSize();      // number of bytes per sample
 
 	// get pointer to phonetic string
-	CSegment * pSegment = pDoc->GetSegment(PHONETIC);
+	CSegment * pSegment = pModel->GetSegment(PHONETIC);
 	if (!pSegment->IsEmpty()) { // string is not empty
 		m_HelperWnd.SetMode(MODE_HIDDEN);
 
@@ -157,7 +157,7 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
 		}
 
 		dwMaxDuration /= (DWORD)nSmpSize;   //convert from bytes to samples
-		double fMaxDuration = (double)dwMaxDuration / (double)pDoc->GetSamplesPerSec();  //in seconds
+		double fMaxDuration = (double)dwMaxDuration / (double)pModel->GetSamplesPerSec();  //in seconds
 
 		double fMaxBarTime = (double)ceil(fMaxDuration*100.) / 100.;  // time in seconds, set to
 		// nearest 10 msec interval at or above maximum duration
@@ -172,7 +172,7 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
 		CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
 		Colors * pColor = pMainWnd->GetColors();
 
-		m_fVScale = (double)rWnd.Height() / ((double)fMaxBarTime * (double)pDoc->GetSamplesPerSec() * (double)nSmpSize);
+		m_fVScale = (double)rWnd.Height() / ((double)fMaxBarTime * (double)pModel->GetSamplesPerSec() * (double)nSmpSize);
 
 		int nLineThickness = GetPenThickness();
 		CPen penData(PS_SOLID, nLineThickness, pColor->cPlotData[0]);

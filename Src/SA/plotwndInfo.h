@@ -3,10 +3,10 @@
 
 class CPlotWndInfo {
 public:
-    CPlotWndInfo(CPlotWnd * pPlot, UINT Id, const CSaDoc * pDoc) {
+    CPlotWndInfo(CPlotWnd * pPlot, UINT Id, const CSaDoc * pModel) {
         m_pPlot = pPlot;
         m_uPlotID = Id;
-        m_pDoc = pDoc;
+        m_pDoc = pModel;
     };
     ~CPlotWndInfo() {
         delete m_pPlot;

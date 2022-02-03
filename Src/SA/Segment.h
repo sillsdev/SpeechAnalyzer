@@ -123,7 +123,7 @@ public:
 	// get segment index from position
     int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; 
     virtual bool Match(int index, LPCTSTR find);
-    virtual void Replace(CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
+    virtual void Replace(CSaDoc * pModel, int index, LPCTSTR find, LPCTSTR replace);
     int FindIndex(DWORD offset);
     int FindIndex(DWORD offset,DWORD duration);
 	int FindWithin(DWORD offset);
@@ -135,7 +135,7 @@ public:
     void InsertAt(int index, DWORD offset, DWORD duration);
     void InsertAt(int index, LPCTSTR text, DWORD offset, DWORD duration);
     void AdjustDuration(DWORD offset, DWORD duration);
-    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
+    virtual void Add(CSaDoc * pModel, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
 	// insert a new segment
     virtual BOOL SetText(int nIndex, LPCTSTR pszString);   
 
@@ -149,7 +149,7 @@ public:
     BOOL IsEmpty() const;
 
 	// remove a segment
-    virtual void Remove(CSaDoc * pDoc, int index, BOOL bCheck);
+    virtual void Remove(CSaDoc * pModel, int index, BOOL bCheck);
 	// remove text, offset and duration
     virtual void RemoveAt(int index);
 	// delete all contents of the segment arrays
@@ -161,7 +161,7 @@ public:
 
     // modify internal data
 	// adjust cursors to appropriate snap position
-    void AdjustCursorsToSnap(CDocument * pDoc);
+    void AdjustCursorsToSnap(CDocument * pModel);
 	// set selection
     void SetSelection(int nIndex);
     virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace, bool noSnap);
@@ -177,7 +177,7 @@ public:
     virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);
 	// insert a new segment
     virtual BOOL Append(LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);
-    virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual long Process(void * pCaller, ISaDoc * pModel, int nProgress = 0, int nLevel = 1);
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);
     virtual CSaString GetOverlappingText(DWORD dwStart, DWORD dwStop);
 

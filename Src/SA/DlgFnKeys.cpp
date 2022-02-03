@@ -490,20 +490,20 @@ void CDlgFnKeys::OnTest() {
 		szText.LoadString(IDS_STOP_TEST);
 		pWnd->SetWindowText(szText);            // set the stop Test button caption
 		DWORD dwSize, dwStart = 0;
-		CSaDoc * pDoc = (CSaDoc *)m_pDoc;       // cast pointer to document
-		WORD wSmpSize = (WORD)pDoc->GetSampleSize();
+		CSaDoc * pModel = (CSaDoc *)m_pDoc;       // cast pointer to document
+		WORD wSmpSize = (WORD)pModel->GetSampleSize();
 		BOOL bError = FALSE;
 		TRACE("m_nPlayMode=%d\n", m_nPlayMode);
 		switch (m_nPlayMode) {
 		case 0:
 			//ID_PLAYBACK_STARTCUR_TO_FILEEND
 			dwStart = m_pView->GetStartCursorPosition();
-			dwSize = pDoc->GetDataSize() - dwStart;
+			dwSize = pModel->GetDataSize() - dwStart;
 			break;
 		case 1:
 			//ID_PLAYBACK_ENCCUR_TO_FILEEND
 			dwStart = m_pView->GetStopCursorPosition();
-			dwSize = pDoc->GetDataSize() - dwStart;
+			dwSize = pModel->GetDataSize() - dwStart;
 			break;
 		case 2:
 			//ID_PLAYBACK_CURSORS
@@ -558,7 +558,7 @@ void CDlgFnKeys::OnTest() {
 			break;
 		case 8:
 			//ID_PLAYBACK_FILE
-			dwSize = pDoc->GetDataSize();
+			dwSize = pModel->GetDataSize();
 			break;
 		default:
 			dwStart = dwSize = 0;

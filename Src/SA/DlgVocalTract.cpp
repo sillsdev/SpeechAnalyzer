@@ -492,10 +492,10 @@ void CDlgVocalTract::OnSynthDisplay() {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
 
-            CSaDoc * pDoc = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
+            CSaDoc * pModel = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
             m_szSynthesizedFilename.Empty();
 
-            LabelDocument(pDoc);
+            LabelDocument(pModel);
 
             if (m_bMinimize) {
                 ShowWindow(SW_MINIMIZE);
@@ -516,29 +516,29 @@ void CDlgVocalTract::OnSynthShow() {
         if (status.m_size!=0) {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
-            CSaDoc * pDoc = pApp->IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
-            if ((pDoc!=NULL) && (pDoc->GetFileStatus()->m_szFullName != m_szSynthesizedFilename)) {
-                pDoc = NULL;
+            CSaDoc * pModel = pApp->IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
+            if ((pModel!=NULL) && (pModel->GetFileStatus()->m_szFullName != m_szSynthesizedFilename)) {
+                pModel = NULL;
             }
 
             // Load temporarary file into document
-            if (pDoc!=NULL) {
-                pDoc->ApplyWaveFile(m_szSynthesizedFilename, pDoc->GetRawDataSize(), FALSE);
+            if (pModel!=NULL) {
+                pModel->ApplyWaveFile(m_szSynthesizedFilename, pModel->GetRawDataSize(), FALSE);
             }
 
-            if (pDoc==NULL) {
-                pDoc = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
+            if (pModel==NULL) {
+                pModel = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
             }
             m_szShowFilename = m_szSynthesizedFilename;
 
-            LabelDocument(pDoc);
+            LabelDocument(pModel);
 
             if (m_bMinimize) {
                 ShowWindow(SW_MINIMIZE);
             }
 
             m_szSynthesizedFilename = szSave;
-            m_pShowDoc = pDoc;
+            m_pShowDoc = pModel;
         }
     }
 }
@@ -737,16 +737,16 @@ void CDlgVocalTract::OnGetAll() {
     LabelGrid(kFragment);
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(m_szSourceFilename);
+    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(m_szSourceFilename);
     {
 
         CUttParm myUttParm;
         CUttParm * pUttParm = &myUttParm;
-        pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
+        pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
         CUttParm * pSavedUttParm = new CUttParm;
 
-        CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-        pDoc->GetUttParm(pSavedUttParm); // save current smoothed pitch parameters
+        CProcessSmoothedPitch * pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
+        pModel->GetUttParm(pSavedUttParm); // save current smoothed pitch parameters
         pUttParm->nMinFreq = 40;
         pUttParm->nMaxFreq = 500;
         pUttParm->nCritLoud = 6;
@@ -761,9 +761,9 @@ void CDlgVocalTract::OnGetAll() {
                 || pUttParm->nMaxInterp != pSavedUttParm->nMaxInterp) {
             pPitch->SetDataInvalid();
         }
-        pDoc->SetUttParm(pUttParm);
-        short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
-        pDoc->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
+        pModel->SetUttParm(pUttParm);
+        short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
+        pModel->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
         if (nResult == PROCESS_ERROR || nResult == PROCESS_CANCELED) {
             return;
         }
@@ -780,7 +780,7 @@ void CDlgVocalTract::OnGetAll() {
     {
         // Correct Pitch & Intensity
         // Get rid of smoothed pitch data so it doesn't interfere with an existing graph
-        pDoc->GetSmoothedPitch()->SetDataInvalid();
+        pModel->GetSmoothedPitch()->SetDataInvalid();
     }
 }
 
@@ -793,13 +793,13 @@ void CDlgVocalTract::OnUpdateSourceName() {
         // Populate Source
         CMDIChildWnd * pChild = static_cast<CMainFrame *>(AfxGetMainWnd())->MDIGetActive();
         while (pChild) {
-            CDocument * pDoc = pChild->GetActiveDocument(); // get pointer to document
-            if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
-                m_szSourceFilename = pDoc->GetPathName();
+            CDocument * pModel = pChild->GetActiveDocument(); // get pointer to document
+            if (pModel && pModel->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
+                m_szSourceFilename = pModel->GetPathName();
             }
             if (!m_szSourceFilename.IsEmpty()) {
                 if (m_nRequestedOrder == 0) {
-                    DWORD samplesPerSec = reinterpret_cast<CSaDoc *>(pDoc)->GetSamplesPerSec();
+                    DWORD samplesPerSec = reinterpret_cast<CSaDoc *>(pModel)->GetSamplesPerSec();
                     m_nRequestedOrder = (samplesPerSec + 500)/1000;
                 }
                 break;
@@ -842,7 +842,7 @@ void CDlgVocalTract::OnApplyIpaDefaults(CFlexEditGrid & cGrid) {
 }
 
 
-static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, double dEndWAV, double * offset, double * slope) {
+static void CurveFitPitch(CSaDoc * pModel, double fSizeFactor, double dBeginWAV, double dEndWAV, double * offset, double * slope) {
     DWORD dwIndex;
     DWORD dwBegin = (DWORD)(dBeginWAV/fSizeFactor);
     DWORD dwEnd = (DWORD)(dEndWAV/fSizeFactor);
@@ -857,7 +857,7 @@ static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, d
     BOOL bRes = TRUE;
     for (dwIndex = dwBegin; dwIndex <= dwEnd; dwIndex++) {
         // get data for this pixel
-        int nHere = pDoc->GetSmoothedPitch()->GetProcessedData(dwIndex, &bRes); // SDM 1.5Test11.0
+        int nHere = pModel->GetSmoothedPitch()->GetProcessedData(dwIndex, &bRes); // SDM 1.5Test11.0
         if (nHere > 0) {
             double Y = double(nHere)/PRECISION_MULTIPLIER;
             double X = double(dwIndex-dwBegin)*fSizeFactor;
@@ -929,12 +929,12 @@ struct SAnalyzer {
 
     SAnalyzer(CSaDoc * ipDoc, WORD iwSmpSize, SSigParms & iSignal, const SLPCSettings & iLpcSetting, BOOL ibClosedPhase = FALSE)
         : Signal(iSignal), LpcSetting(iLpcSetting) {
-        pDoc = ipDoc;
+        pModel = ipDoc;
         wSmpSize = iwSmpSize;
         bClosedPhase = ibClosedPhase;
     }
 
-    CSaDoc * pDoc;
+    CSaDoc * pModel;
     WORD wSmpSize;
     BOOL bClosedPhase;
     SSigParms & Signal;
@@ -946,16 +946,16 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
 
     cChar.m_ipa = szIpa;
 
-    cChar.m_duration = a.pDoc->GetTimeFromBytes((dwEnd - dwStart + 2) * 1000);
+    cChar.m_duration = a.pModel->GetTimeFromBytes((dwEnd - dwStart + 2) * 1000);
 
     {
         // Pitch
         double offset;
         double slope;
-        CProcessSmoothedPitch * pPitch = a.pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-        double fSizeFactorPitch = (double)a.pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+        CProcessSmoothedPitch * pPitch = a.pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
+        double fSizeFactorPitch = (double)a.pModel->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
 
-        CurveFitPitch(a.pDoc, fSizeFactorPitch, dwStart, dwEnd, &offset, &slope);
+        CurveFitPitch(a.pModel, fSizeFactorPitch, dwStart, dwEnd, &offset, &slope);
         if (offset > 0) {
             pitch = offset + slope*(dwEnd - dwStart + 1)/2.;
         } else {
@@ -1016,7 +1016,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         // Get waveform and buffer parameters.
         DWORD    dwFrameSize = nNewEnd - nNewStart + 1;
 
-        a.Signal.Start = (void *)a.pDoc->GetWaveData(nNewStart*a.wSmpSize, TRUE); //load sample
+        a.Signal.Start = (void *)a.pModel->GetWaveData(nNewStart*a.wSmpSize, TRUE); //load sample
         a.Signal.Length = dwFrameSize;
 
         SLPCSettings LpcSetting = a.LpcSetting;
@@ -1116,7 +1116,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
     }
 }
 
-void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pDoc, DWORD dwDuration, WORD wSmpSize) {
+void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pModel, DWORD dwDuration, WORD wSmpSize) {
     CString szString;
 
     // clear parameters
@@ -1129,7 +1129,7 @@ void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pD
     cGrid.SetTextMatrix(rowIpa,column,szString);
 
     if (dwDuration) {
-        szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(dwDuration * wSmpSize)*1000.);
+        szString.Format(_T("%.2f"),pModel->GetTimeFromBytes(dwDuration * wSmpSize)*1000.);
         cGrid.SetTextMatrix(rowDuration,column,szString);
     }
 
@@ -1142,11 +1142,11 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     CString szFilename = m_szSourceFilename;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(szFilename);
-    if (!pDoc) {
+    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+    if (!pModel) {
         return;
     }
-    CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
+    CSegment * pPhonetic = pModel->GetSegment(PHONETIC);
 
     if (pPhonetic->IsEmpty()) { // no annotations
         return;
@@ -1156,8 +1156,8 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     double fSizeFactor[CALCULATIONS];
 
     if (m_bPitch) { // formants need pitch info
-        CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-        fSizeFactor[PITCH] = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+        CProcessSmoothedPitch * pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
+        fSizeFactor[PITCH] = (double)pModel->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
     }
 
     // process all flags
@@ -1168,11 +1168,11 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     DWORD dwDuration = 0;
     int nIndex = 0;
     int column = columnFirst;
-    const DWORD dwMinSilence = pDoc->GetBytesFromTime(0.0001);
+    const DWORD dwMinSilence = pModel->GetBytesFromTime(0.0001);
 
     cGrid.SetCols(0, pPhonetic->GetOffsetSize());
 
-    DWORD wSmpSize = pDoc->GetSampleSize();
+    DWORD wSmpSize = pModel->GetSampleSize();
 
     SSigParms Signal;
     if (wSmpSize == 1) {
@@ -1180,7 +1180,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     } else {
         Signal.SmpDataFmt = PCM_2SSHORT;    //samples are 2's complement 16 bit
     }
-    Signal.SmpRate = pDoc->GetSamplesPerSec();  //set sample rate
+    Signal.SmpRate = pModel->GetSamplesPerSec();  //set sample rate
 
     CIpaVTChar cChar;
 
@@ -1196,7 +1196,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     LpcSetting.nOrder = (unsigned short)m_nCurrentOrder;
     LpcSetting.nFrameLen = 0;
 
-    SAnalyzer analyze(pDoc, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
+    SAnalyzer analyze(pModel, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
 
     // construct table entries
     while (nIndex != -1) {
@@ -1204,7 +1204,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
         dwOffset = pPhonetic->GetOffset(nIndex);
         if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
             dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-            SilentColumn(cGrid, column, pDoc, dwDuration, 1);
+            SilentColumn(cGrid, column, pModel, dwDuration, 1);
             column++;
         }
         dwDuration = pPhonetic->GetDuration(nIndex);
@@ -1225,10 +1225,10 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     }
 
     dwPrevOffset = dwOffset;
-    dwOffset = pDoc->GetDataSize();
+    dwOffset = pModel->GetDataSize();
     if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
         dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-        SilentColumn(cGrid, column, pDoc, dwDuration, 1);
+        SilentColumn(cGrid, column, pModel, dwDuration, 1);
         column++;
     }
 
@@ -1240,12 +1240,12 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     CString szFilename = m_szSourceFilename;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(szFilename);
-    if (!pDoc) {
+    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+    if (!pModel) {
         return;
     }
-    CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
-    m_dwSampleRate = pDoc->GetSamplesPerSec();
+    CSegment * pPhonetic = pModel->GetSegment(PHONETIC);
+    m_dwSampleRate = pModel->GetSamplesPerSec();
     if (pPhonetic->IsEmpty()) { // no annotations
         return;
     }
@@ -1257,25 +1257,25 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     BOOL bVocalTract = TRUE;
 
     if (bPitch || bVocalTract) { // formants need pitch info
-        CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-        fSizeFactor[PITCH] = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+        CProcessSmoothedPitch * pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
+        fSizeFactor[PITCH] = (double)pModel->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
     }
 
     // process all flags
     CString szString;
 
-    CProcessFragments * pFragment = pDoc->GetFragments();
-    DWORD wSmpSize = pDoc->GetSampleSize();
+    CProcessFragments * pFragment = pModel->GetFragments();
+    DWORD wSmpSize = pModel->GetSampleSize();
     SSigParms Signal;
     if (bVocalTract) {
         residual.clear();
-        residual.reserve(pDoc->GetDataSize()/wSmpSize);
+        residual.reserve(pModel->GetDataSize()/wSmpSize);
         if (wSmpSize == 1) {
             Signal.SmpDataFmt = PCM_UBYTE;      //samples are unsigned 8 bit
         } else {
             Signal.SmpDataFmt = PCM_2SSHORT;    //samples are 2's complement 16 bit
         }
-        Signal.SmpRate = pDoc->GetSamplesPerSec();  //set sample rate
+        Signal.SmpRate = pModel->GetSamplesPerSec();  //set sample rate
     }
 
     DWORD dwOffset = 0;
@@ -1287,7 +1287,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     DWORD dwFragmentEnd = 0;
     SFragParms stFragment;
 
-    DWORD dwLastFragmentIndex = pFragment->GetFragmentIndex((pDoc->GetDataSize() - 1) / wSmpSize);
+    DWORD dwLastFragmentIndex = pFragment->GetFragmentIndex((pModel->GetDataSize() - 1) / wSmpSize);
 
     // resize grid to number of fragments in file
     m_cGrid[kFragment].SetCols(0,columnFirst + dwLastFragmentIndex);
@@ -1296,7 +1296,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
 
     int nIndex = 0;
     int column = columnFirst;
-    const DWORD dwMinSilence = pDoc->GetBytesFromTime(0.0001);
+    const DWORD dwMinSilence = pModel->GetBytesFromTime(0.0001);
 
     CIpaVTChar cChar;
 
@@ -1312,7 +1312,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     LpcSetting.nOrder = (unsigned short)m_nCurrentOrder;
     LpcSetting.nFrameLen = 0;
 
-    SAnalyzer analyze(pDoc, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
+    SAnalyzer analyze(pModel, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
 
     // construct table entries
     while (nIndex != -1) {
@@ -1320,7 +1320,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
         dwOffset = pPhonetic->GetOffset(nIndex);
         if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
             dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-            SilentColumn(cGrid, column, pDoc, dwDuration, 1);
+            SilentColumn(cGrid, column, pModel, dwDuration, 1);
             // clear parameters
             residual.insert(residual.end(), dwDuration/wSmpSize, 0);
 
@@ -1361,10 +1361,10 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     }
 
     dwPrevOffset = dwOffset;
-    dwOffset = pDoc->GetDataSize();
+    dwOffset = pModel->GetDataSize();
     if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
         dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-        SilentColumn(cGrid, column, pDoc, dwDuration, 1);
+        SilentColumn(cGrid, column, pModel, dwDuration, 1);
 
         column++;
     }
@@ -1374,7 +1374,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
 
     // m_bGetComplete = TRUE;
     if (bVocalTract) {
-        int nDuration = pDoc->GetDataSize()/wSmpSize - residual.size();
+        int nDuration = pModel->GetDataSize()/wSmpSize - residual.size();
         if (nDuration > 0) {
             residual.insert(residual.end(), nDuration, 0);
         }
@@ -1973,12 +1973,12 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
 }
 
 // This function labels the document with the grid parameters
-void CDlgVocalTract::LabelDocument(CSaDoc * pDoc) {
+void CDlgVocalTract::LabelDocument(CSaDoc * pModel) {
     CIpaVTCharVector cChars;
     ParseParameterGrid(m_nSelectedMethod, cChars);
 
-    CMusicPhraseSegment * pIndexSeg = (CMusicPhraseSegment *)pDoc->GetSegment(MUSIC_PL1);
-    CPhoneticSegment * pCharSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
+    CMusicPhraseSegment * pIndexSeg = (CMusicPhraseSegment *)pModel->GetSegment(MUSIC_PL1);
+    CPhoneticSegment * pCharSeg = (CPhoneticSegment *)pModel->GetSegment(PHONETIC);
 
     double SR = pcmWaveFormat().wf.nSamplesPerSec;
     double elapsedTime = 0;
@@ -2014,8 +2014,8 @@ void CDlgVocalTract::LabelDocument(CSaDoc * pDoc) {
 
         elapsedTime += cChars[i].m_duration/1000.;
     }
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *) pDoc->GetNextView(pos);
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *) pModel->GetNextView(pos);
 
     pView->PostMessage(WM_COMMAND, ID_PHRASE_L1_RAWDATA);
 }

@@ -72,9 +72,9 @@ BOOL CDlgInformationFilePage::OnInitDialog() {
     // get pointer to document
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     CSaView * pView = pMDIFrameWnd->GetCurrSaView();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     // get file status document member data
-    CFileStatus * pFileStatus = pDoc->GetFileStatus();
+    CFileStatus * pFileStatus = pModel->GetFileStatus();
 	// file name is defined
     if (pFileStatus->m_szFullName[0] != 0) { 
         // copy full path name
@@ -120,10 +120,10 @@ BOOL CDlgInformationFilePage::OnInitDialog() {
         SetDlgItemText(IDC_FILESIZE, szBuffer);
 
         // get sa parameters document member data
-        if (pDoc->IsValidRecordFileFormat()) {
+        if (pModel->IsValidRecordFileFormat()) {
 			// load and write file type string
 			CString szTemp; 
-            szTemp.LoadString((UINT)pDoc->GetRecordFileFormat() + IDS_FILETYPE_UTT);
+            szTemp.LoadString((UINT)pModel->GetRecordFileFormat() + IDS_FILETYPE_UTT);
             SetDlgItemText(IDC_FILEFORMAT, szTemp);
         }
     }
@@ -173,30 +173,30 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
     // get pointer to document
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     CSaView * pView = pMDIFrameWnd->GetCurrSaView();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
     // get sa parameters document member data
     TCHAR szBuffer[32];
-    if (pDoc->GetNumberOfSamples() > 0L) { 
+    if (pModel->GetNumberOfSamples() > 0L) { 
 		// there is an sa chunk
-        if (pDoc->GetSignalBandWidth() > 0) {
+        if (pModel->GetSignalBandWidth() > 0) {
             // create and write bandwith text
-            swprintf_s(szBuffer, _T("%ld Hz"), pDoc->GetSignalBandWidth());
+            swprintf_s(szBuffer, _T("%ld Hz"), pModel->GetSignalBandWidth());
             SetDlgItemText(IDC_BANDWIDTH, szBuffer);
             // create and write highpass status text
-            swprintf_s(szBuffer, _T("%s"), pDoc->IsUsingHighPassFilter() ? _T("Yes"):_T("No"));
+            swprintf_s(szBuffer, _T("%s"), pModel->IsUsingHighPassFilter() ? _T("Yes"):_T("No"));
             SetDlgItemText(IDC_HPFSTATUS, szBuffer);
         }
-        if (pDoc->GetQuantization()>0) {
+        if (pModel->GetQuantization()>0) {
             // create and write quantization size text
-            swprintf_s(szBuffer, _T("%u Bits"), pDoc->GetQuantization());
+            swprintf_s(szBuffer, _T("%u Bits"), pModel->GetQuantization());
             SetDlgItemText(IDC_SAMPLESIZE, szBuffer);
         }
     }
 
     // create and write length text
 	// get sampled data size in seconds
-    double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());  
+    double fDataSec = pModel->GetTimeFromBytes(pModel->GetDataSize());  
     int nMinutes = (int)fDataSec / 60;
 	// length is less than one minute
     if (nMinutes == 0) { 
@@ -209,33 +209,33 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
     SetDlgItemText(IDC_FILELENGTH, szBuffer);
     // get sa parameters format member data
     // create and write number of samples text
-    swprintf_s(szBuffer, _T("%ld"), pDoc->GetNumSamples());
+    swprintf_s(szBuffer, _T("%ld"), pModel->GetNumSamples());
     SetDlgItemText(IDC_NUMBERSAMPLES, szBuffer);
     // create and write sample rate text
-    swprintf_s(szBuffer, _T("%ld Hz"), pDoc->GetSamplesPerSec());
+    swprintf_s(szBuffer, _T("%ld Hz"), pModel->GetSamplesPerSec());
     SetDlgItemText(IDC_SAMPLERATE, szBuffer);
     // create and write sample format text
     CString szChannels;
-    if (pDoc->GetNumChannels()==1) {
+    if (pModel->GetNumChannels()==1) {
         szChannels = "Mono";
-    } else if (pDoc->GetNumChannels()==2) {
+    } else if (pModel->GetNumChannels()==2) {
         szChannels = "Stereo";
     } else {
         char buffer[256];
-        sprintf_s(buffer,_countof(buffer),"%d Channels",pDoc->GetNumChannels());
+        sprintf_s(buffer,_countof(buffer),"%d Channels",pModel->GetNumChannels());
         szChannels = buffer;
     }
     CString szFormat;
-    szFormat.Format(_T("%u Bits %s"), pDoc->GetBitsPerSample(), szChannels);
+    szFormat.Format(_T("%u Bits %s"), pModel->GetBitsPerSample(), szChannels);
     SetDlgItemText(IDC_SAMPLEFORMAT, szFormat);
     // create and write number of phones text
     int nNumber = 0;
     int nLoop = 0;
-    if (pDoc->GetSegment(PHONETIC)->GetContentLength() > 0) {
+    if (pModel->GetSegment(PHONETIC)->GetContentLength() > 0) {
         // find number of phones
         while (TRUE) {
             nLoop++;
-            nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
+            nNumber = pModel->GetSegment(PHONETIC)->GetNext(nNumber);
             if (nNumber < 0) {
                 break;
             }
@@ -245,7 +245,7 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
     SetDlgItemText(IDC_NUMPHONES, szBuffer);
     // create and write number of words text
     // SDM 1.06.6U2
-    swprintf_s(szBuffer, _T("%u"), ((CTextSegment *)pDoc->GetSegment(GLOSS))->CountWords());
+    swprintf_s(szBuffer, _T("%u"), ((CTextSegment *)pModel->GetSegment(GLOSS))->CountWords());
     SetDlgItemText(IDC_NUMWORDS, szBuffer);
     return TRUE;
 }
@@ -273,9 +273,9 @@ CDlgInformationSourcePage::CDlgInformationSourcePage() : CPropertyPage(CDlgInfor
     // get pointer to document  SDM 1.5Test10.4
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     CSaView * pView = pMDIFrameWnd->GetCurrSaView();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     // get source parameters document member data
-    SourceParm * pSourceParm = pDoc->GetSourceParm();
+    SourceParm * pSourceParm = pModel->GetSourceParm();
     m_szCountry = (pSourceParm->szCountry);
     m_szDialect = pSourceParm->szDialect;
     m_szEthnoID = pSourceParm->szEthnoID;

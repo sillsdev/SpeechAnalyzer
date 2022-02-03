@@ -341,9 +341,9 @@ void CDlgKlattAll::OnKlattDisplay() {
         if (status.m_size) {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
-            CSaDoc * pDoc = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
+            CSaDoc * pModel = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
             m_szSynthesizedFilename.Empty();
-            LabelDocument(pDoc);
+            LabelDocument(pModel);
 
             if (m_bMinimize) {
                 ShowWindow(SW_MINIMIZE);
@@ -365,30 +365,30 @@ void CDlgKlattAll::OnSynthShow() {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
 
-            CSaDoc * pDoc = pApp->IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
+            CSaDoc * pModel = pApp->IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
 
-            if (pDoc && pDoc->GetFileStatus()->m_szFullName != m_szSynthesizedFilename) {
-                pDoc = NULL;
+            if (pModel && pModel->GetFileStatus()->m_szFullName != m_szSynthesizedFilename) {
+                pModel = NULL;
             }
 
             // Load temporarary file into document
-            if (pDoc) {
-                pDoc->ApplyWaveFile(m_szSynthesizedFilename, pDoc->GetRawDataSize(), FALSE);
+            if (pModel) {
+                pModel->ApplyWaveFile(m_szSynthesizedFilename, pModel->GetRawDataSize(), FALSE);
             }
 
-            if (!pDoc) {
-                pDoc = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
+            if (!pModel) {
+                pModel = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
             }
             m_szShowFilename = m_szSynthesizedFilename;
 
-            LabelDocument(pDoc);
+            LabelDocument(pModel);
 
             if (m_bMinimize) {
                 ShowWindow(SW_MINIMIZE);
             }
 
             m_szSynthesizedFilename = szSave;
-            m_pShowDoc = pDoc;
+            m_pShowDoc = pModel;
         }
     }
 }
@@ -641,9 +641,9 @@ void CDlgKlattAll::OnUpdateSourceName() {
         // Populate Source
         CMDIChildWnd * pChild = static_cast<CMainFrame *>(AfxGetMainWnd())->MDIGetActive();
         while (pChild) {
-            CDocument * pDoc = pChild->GetActiveDocument(); // get pointer to document
-            if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
-                m_szSourceFilename = pDoc->GetPathName();
+            CDocument * pModel = pChild->GetActiveDocument(); // get pointer to document
+            if (pModel && pModel->IsKindOf(RUNTIME_CLASS(CSaDoc))) {
+                m_szSourceFilename = pModel->GetPathName();
             }
             if (!m_szSourceFilename.IsEmpty()) {
                 break;
@@ -922,7 +922,7 @@ void CDlgKlattAll::NumberGrid(int nGrid) {
 }
 
 
-static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, double dEndWAV, double * offset, double * slope) {
+static void CurveFitPitch(CSaDoc * pModel, double fSizeFactor, double dBeginWAV, double dEndWAV, double * offset, double * slope) {
     DWORD dwIndex;
     DWORD dwBegin = (DWORD)(dBeginWAV/fSizeFactor);
     DWORD dwEnd = (DWORD)(dEndWAV/fSizeFactor);
@@ -937,7 +937,7 @@ static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, d
     BOOL bRes = TRUE;
     for (dwIndex = dwBegin; dwIndex <= dwEnd; dwIndex++) {
         // get data for this pixel
-        int nHere = pDoc->GetSmoothedPitch()->GetProcessedData(dwIndex, &bRes); // SDM 1.5Test11.0
+        int nHere = pModel->GetSmoothedPitch()->GetProcessedData(dwIndex, &bRes); // SDM 1.5Test11.0
         if (nHere > 0) {
             double Y = double(nHere)/PRECISION_MULTIPLIER;
             double X = double(dwIndex-dwBegin)*fSizeFactor;
@@ -1001,11 +1001,11 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
     CString szFilename = m_szSourceFilename;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(szFilename);
-    if (!pDoc) {
+    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+    if (!pModel) {
         return;
     }
-    CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
+    CSegment * pPhonetic = pModel->GetSegment(PHONETIC);
 
     if (pPhonetic->IsEmpty()) { // no annotations
         return;
@@ -1015,14 +1015,14 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
     double fSizeFactor[CALCULATIONS];
 
     if (m_bPitch) { // formants need pitch info
-        CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-        short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
+        CProcessSmoothedPitch * pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
+        short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
         if (nResult == PROCESS_ERROR) {
             m_bPitch = FALSE;
         } else if (nResult == PROCESS_CANCELED) {
             return;
         } else {
-            fSizeFactor[PITCH] = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+            fSizeFactor[PITCH] = (double)pModel->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
         }
     }
 
@@ -1034,7 +1034,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
     DWORD dwDuration = 0;
     int nIndex = 0;
     int column = columnFirst;
-    const DWORD dwMinSilence = pDoc->GetBytesFromTime(0.0001);
+    const DWORD dwMinSilence = pModel->GetBytesFromTime(0.0001);
 
     // construct table entries
     while (nIndex != -1) {
@@ -1052,7 +1052,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
 
             if (m_bDuration) {
                 dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-                szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(dwDuration)*1000.);
+                szString.Format(_T("%.2f"),pModel->GetTimeFromBytes(dwDuration)*1000.);
                 cGrid.SetTextMatrix(rowDuration,column,szString);
             }
             column++;
@@ -1068,7 +1068,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
         cGrid.SetTextMatrix(rowIpa,column,szString);
 
         if (m_bDuration) {
-            szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(pPhonetic->GetDuration(nIndex))*1000.);
+            szString.Format(_T("%.2f"),pModel->GetTimeFromBytes(pPhonetic->GetDuration(nIndex))*1000.);
             cGrid.SetTextMatrix(rowDuration,column,szString);
         }
 
@@ -1076,7 +1076,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
             double offset;
             double slope;
 
-            CurveFitPitch(pDoc, fSizeFactor[PITCH], dwOffset, pPhonetic->GetStop(nIndex), &offset, &slope);
+            CurveFitPitch(pModel, fSizeFactor[PITCH], dwOffset, pPhonetic->GetStop(nIndex), &offset, &slope);
             if (offset > 0) {
                 szString.Format(_T("%.5g"),offset + slope*pPhonetic->GetDuration(nIndex)/2.);
             } else {
@@ -1096,7 +1096,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
     }
 
     dwPrevOffset = dwOffset;
-    dwOffset = pDoc->GetDataSize();
+    dwOffset = pModel->GetDataSize();
     if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
         // clear column
         szString.Empty();
@@ -1109,7 +1109,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
 
         if (m_bDuration) {
             dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-            szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(dwDuration)*1000.);
+            szString.Format(_T("%.2f"),pModel->GetTimeFromBytes(dwDuration)*1000.);
             cGrid.SetTextMatrix(rowDuration,column,szString);
         }
         column++;
@@ -1124,7 +1124,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
     }
 }
 
-void CDlgKlattAll::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pDoc, DWORD dwDuration, WORD wSmpSize) {
+void CDlgKlattAll::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pModel, DWORD dwDuration, WORD wSmpSize) {
     CString szString;
 
     // clear parameters
@@ -1137,7 +1137,7 @@ void CDlgKlattAll::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pDoc
     cGrid.SetTextMatrix(rowIpa,column,szString);
 
     if (dwDuration) {
-        szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(dwDuration * wSmpSize)*1000.);
+        szString.Format(_T("%.2f"),pModel->GetTimeFromBytes(dwDuration * wSmpSize)*1000.);
         cGrid.SetTextMatrix(rowDuration,column,szString);
     }
 
@@ -1198,9 +1198,9 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
     double pFormEnergy[7] = {0,0,0,0,0,0,0};
     double pFormAV[7] = {0,0,0,0,0,0,0};
 
-    CSaDoc * pDoc = pView->GetDocument();
-    DWORD wSmpSize = pDoc->GetSampleSize();
-    DWORD dwSamplesPerSec = pDoc->GetSamplesPerSec();
+    CSaDoc * pModel = pView->GetDocument();
+    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD dwSamplesPerSec = pModel->GetSamplesPerSec();
     BOOL bRes = TRUE;
     CString szString;
 
@@ -1208,14 +1208,14 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
     SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
     SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
 
-    long nResult = pSpectrum->Process(this,pDoc,dwFrameStart * wSmpSize, dwFrameLength * wSmpSize, SpectraSelected);
+    long nResult = pSpectrum->Process(this,pModel,dwFrameStart * wSmpSize, dwFrameLength * wSmpSize, SpectraSelected);
     if (nResult == PROCESS_ERROR) {
         return FALSE;
     }
 
     // Get voicing/frication information
-    double fPowerLo = pSpectrum->GetSpectralRegionPower(pDoc, 0, 2000);
-    double fPowerHi = (dwSamplesPerSec >= 16000)?pSpectrum->GetSpectralRegionPower(pDoc, 6000, 7999):0;
+    double fPowerLo = pSpectrum->GetSpectralRegionPower(pModel, 0, 2000);
+    double fPowerHi = (dwSamplesPerSec >= 16000)?pSpectrum->GetSpectralRegionPower(pModel, 6000, 7999):0;
     double fPowerAll = 10.0 * log10(pow(10.0, fPowerLo / 10.0) + pow(10.0, fPowerHi / 10.0));
 
     unsigned nAV = 0;
@@ -1236,7 +1236,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
                 nAF = (unsigned)(fBEWt * (fPowerHi + 105.0));
 
                 // Auto-Pitch voicing detector
-                if (pAutoPitch->IsVoiced(pDoc, dwFrameStart * wSmpSize)) {
+                if (pAutoPitch->IsVoiced(pModel, dwFrameStart * wSmpSize)) {
                     nAV += (unsigned)(fAPWt * (fPowerAll +  85.0));
                 } else {
                     nAF += (unsigned)(fAPWt * (fPowerAll + 100.0));
@@ -1261,7 +1261,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
                 fFractionAF = fBEWt * (fPowerHi/(fPowerLo+fPowerHi));
 
                 // Auto-Pitch voicing detector
-                if (pAutoPitch->IsVoiced(pDoc, dwFrameStart * wSmpSize)) {
+                if (pAutoPitch->IsVoiced(pModel, dwFrameStart * wSmpSize)) {
                     fFractionAV += fAPWt;
                 } else {
                     fFractionAF += fAPWt;
@@ -1514,10 +1514,10 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
 BOOL CDlgKlattAll::GetFrame(CFlexEditGrid & cGrid, int & column, CSaView * pView,
                             CProcessSpectrum * pSpectrum, CProcessGrappl * pAutoPitch, CProcessZCross * pZCross,
                             DWORD dwStart, DWORD dwLength, DWORD dwInterval, double * pFormFreq) {
-    CSaDoc * pDoc = pView->GetDocument();
-    CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
-    CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch();
-    DWORD wSmpSize = pDoc->GetSampleSize();
+    CSaDoc * pModel = pView->GetDocument();
+    CSegment * pPhonetic = pModel->GetSegment(PHONETIC);
+    CProcessSmoothedPitch * pPitch = pModel->GetSmoothedPitch();
+    DWORD wSmpSize = pModel->GetSampleSize();
     BOOL bPitch = TRUE;
     BOOL bDuration = TRUE;
     BOOL bFormants = TRUE;
@@ -1539,16 +1539,16 @@ BOOL CDlgKlattAll::GetFrame(CFlexEditGrid & cGrid, int & column, CSaView * pView
     cGrid.SetTextMatrix(rowIpa,column,szString);
 
     if (bDuration) {
-        szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(((DWORD)dwInterval * wSmpSize) * 1000));
+        szString.Format(_T("%.2f"),pModel->GetTimeFromBytes(((DWORD)dwInterval * wSmpSize) * 1000));
         cGrid.SetTextMatrix(rowDuration,column,szString);
     }
 
     if (bPitch) {
         double offset;
         double slope;
-        double fSizeFactor = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+        double fSizeFactor = (double)pModel->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
 
-        CurveFitPitch(pDoc, fSizeFactor, dwStart * wSmpSize,
+        CurveFitPitch(pModel, fSizeFactor, dwStart * wSmpSize,
                       (dwStart + dwLength) * wSmpSize, &offset, &slope);
         if (offset > 0) {
             szString.Format(_T("%.5g"),offset + slope*(dwLength + 1)/2.);
@@ -1585,19 +1585,19 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
     CString szFilename = m_szSourceFilename;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(szFilename);
-    if (!pDoc) {
+    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+    if (!pModel) {
         return;
     }
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos); // get pointer to view
-    CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pModel->GetNextView(pos); // get pointer to view
+    CSegment * pPhonetic = pModel->GetSegment(PHONETIC);
 
     BOOL bTempTranscription = FALSE;
     if (pPhonetic->IsEmpty()) { 
 		// no annotations
         CSaString szTranscription = " ";
-        pPhonetic->Insert(0, szTranscription, false, 0, pDoc->GetDataSize());
+        pPhonetic->Insert(0, szTranscription, false, 0, pModel->GetDataSize());
         bTempTranscription = TRUE;
     }
 
@@ -1620,16 +1620,16 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
     CProcessSpectrum * pSpectrum = NULL;
     CUttParm myUttParm;
     CUttParm * pUttParm = &myUttParm;
-    pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
+    pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
     CUttParm cSavedUttParm;
     CUttParm * pSavedUttParm = &cSavedUttParm;
 
     CProcessSmoothedPitch * pPitch = NULL;
     CProcessGrappl * pAutoPitch = NULL;
     if (bPitch || bFormants) { // formants need pitch info
-        pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-        pAutoPitch = pDoc->GetGrappl();
-        pDoc->GetUttParm(pSavedUttParm); // save current smoothed pitch parameters
+        pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
+        pAutoPitch = pModel->GetGrappl();
+        pModel->GetUttParm(pSavedUttParm); // save current smoothed pitch parameters
         pUttParm->nMinFreq = 40;
         pUttParm->nMaxFreq = 500;
         pUttParm->nCritLoud = 6;
@@ -1644,42 +1644,42 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
                 || pUttParm->nMaxInterp != pSavedUttParm->nMaxInterp) {
             pPitch->SetDataInvalid();
         }
-        pDoc->SetUttParm(pUttParm);
-        short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
-        pDoc->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
+        pModel->SetUttParm(pUttParm);
+        short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
+        pModel->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
         if (nResult == PROCESS_ERROR) {
             bPitch = FALSE;
         } else if (nResult == PROCESS_CANCELED) {
             return;
         }
-        nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
+        nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
         if (nResult == PROCESS_ERROR) {
             bPitch = FALSE;
         } else if (nResult == PROCESS_CANCELED) {
             return;
         } else {
-            fSizeFactor[PITCH] = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+            fSizeFactor[PITCH] = (double)pModel->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
         }
     }
 
     if (bFormants) { // process formants
-        pZCross = pDoc->GetZCross();
-        long nResult = pZCross->Process(this, pDoc);
+        pZCross = pModel->GetZCross();
+        long nResult = pZCross->Process(this, pModel);
         if (nResult == PROCESS_ERROR) {
             bFormants = FALSE;
         } else if (nResult == PROCESS_CANCELED) {
             return;
         }
-        pSpectrum = pDoc->GetSpectrum();
+        pSpectrum = pModel->GetSpectrum();
     }
 
     // process all flags
     CString szString;
 
-    DWORD wSmpSize = pDoc->GetSampleSize();
-    DWORD dwSamplesPerSec = pDoc->GetSamplesPerSec();
+    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD dwSamplesPerSec = pModel->GetSamplesPerSec();
 
-    DWORD dwDataLength = pDoc->GetDataSize() / wSmpSize;
+    DWORD dwDataLength = pModel->GetDataSize() / wSmpSize;
     DWORD dwSamplesPerFrame = (DWORD)(dwSamplesPerSec * nFrameIntervalInMs / 1000.0);
     DWORD dwTotalFrames = dwSamplesPerFrame ? dwDataLength / dwSamplesPerFrame + 1 : dwDataLength/(dwSamplesPerSec / 50) + 1;
 
@@ -1690,9 +1690,9 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
     int column = columnFirst;
     DWORD dwFrameLengthSamples = dwSamplesPerSec * nFrameLengthInMs / 1000; // length in samples
 
-    CProcessFragments * pFragment = pDoc->GetFragments();
-    pFragment->Process(this, pDoc); // process data
-    DWORD dwLastFragmentIndex = pFragment->GetFragmentIndex((pDoc->GetDataSize() - 1) / wSmpSize);
+    CProcessFragments * pFragment = pModel->GetFragments();
+    pFragment->Process(this, pModel); // process data
+    DWORD dwLastFragmentIndex = pFragment->GetFragmentIndex((pModel->GetDataSize() - 1) / wSmpSize);
 
     DWORD dwOffset = 0;
     DWORD dwPrev = 0;
@@ -1762,7 +1762,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
 
     // Get rid of smoothed pitch data so it doesn't interfere with an existing graph
     if (bPitch) {
-        pDoc->GetSmoothedPitch()->SetDataInvalid();
+        pModel->GetSmoothedPitch()->SetDataInvalid();
     }
 
     if (bTempTranscription) {
@@ -2006,8 +2006,8 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid) {
         CString szFilename = m_szSourceFilename;
 
         CSaApp * pApp = (CSaApp *)AfxGetApp();
-        CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(szFilename);
-        if (!pDoc) {
+        CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+        if (!pModel) {
             return;
         }
 
@@ -2020,14 +2020,14 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid) {
         CProcessSmoothedPitch * pPitch = NULL;
         CUttParm myUttParm;
         CUttParm * pUttParm = &myUttParm;
-        pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
+        pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
         CUttParm cSavedUttParm;
         CUttParm * pSavedUttParm = &cSavedUttParm;
 
         if (bPitch) {
-            pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-            // pAutoPitch = pDoc->GetGrappl();
-            pDoc->GetUttParm(pSavedUttParm); // save current smoothed pitch parameters
+            pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
+            // pAutoPitch = pModel->GetGrappl();
+            pModel->GetUttParm(pSavedUttParm); // save current smoothed pitch parameters
             pUttParm->nMinFreq = 40;
             pUttParm->nMaxFreq = 500;
             pUttParm->nCritLoud = 2;
@@ -2042,21 +2042,21 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid) {
                     || pUttParm->nMaxInterp != pSavedUttParm->nMaxInterp) {
                 pPitch->SetDataInvalid();
             }
-            pDoc->SetUttParm(pUttParm);
-            short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
-            pDoc->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
+            pModel->SetUttParm(pUttParm);
+            short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
+            pModel->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
             if (nResult == PROCESS_ERROR) {
                 bPitch = FALSE;
             } else if (nResult == PROCESS_CANCELED) {
                 return;
             } else {
-                fSizeFactor[PITCH] = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+                fSizeFactor[PITCH] = (double)pModel->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
             }
         }
 
         double nTime = 0;
 
-        fSizeFactor[PITCH] /= pDoc->GetBytesFromTime(0.001);
+        fSizeFactor[PITCH] /= pModel->GetBytesFromTime(0.001);
 
         // construct table entries
         for (unsigned int nIndex = 0; nIndex < cInterpolated.size(); nIndex++) {
@@ -2064,7 +2064,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid) {
                 double offset;
                 double slope;
 
-                CurveFitPitch(pDoc, fSizeFactor[PITCH], nTime,
+                CurveFitPitch(pModel, fSizeFactor[PITCH], nTime,
                               (nTime + cInterpolated[nIndex].duration), &offset, &slope);
                 if (offset > 0) {
                     offset += slope*(cInterpolated[nIndex].duration)/2.;
@@ -2075,7 +2075,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid) {
             }
         }
         // Get rid of smoothed pitch data so it doesn't interfere with an existing graph
-        pDoc->GetSmoothedPitch()->SetDataInvalid();
+        pModel->GetSmoothedPitch()->SetDataInvalid();
     }
 
     PopulateParameterGrid(cGrid, cInterpolated, TRUE);
@@ -2241,14 +2241,14 @@ void CDlgKlattAll::OnSmoothe(void) {
 // The function makes assumptons about how the synthesis function.
 // The labels are placed at the start of the time in which they would be commanded to the
 // synthesis engine
-void CDlgKlattAll::LabelDocument(CSaDoc * pDoc) {
+void CDlgKlattAll::LabelDocument(CSaDoc * pModel) {
     CIpaCharVector cChars;
     ParseParameterGrid(m_nSelectedMethod, cChars);
 
-    CMusicPhraseSegment * pIndexSeg = (CMusicPhraseSegment *)pDoc->GetSegment(MUSIC_PL1);
-    CPhoneticSegment * pCharSeg = (CPhoneticSegment *)pDoc->GetSegment(PHONETIC);
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *) pDoc->GetNextView(pos);
+    CMusicPhraseSegment * pIndexSeg = (CMusicPhraseSegment *)pModel->GetSegment(MUSIC_PL1);
+    CPhoneticSegment * pCharSeg = (CPhoneticSegment *)pModel->GetSegment(PHONETIC);
+    POSITION pos = pModel->GetFirstViewPosition();
+    CSaView * pView = (CSaView *) pModel->GetNextView(pos);
 
     // change to cursor alignment to sample mode
     ECursorAlignment nOldCursorAlignment = pView->GetCursorAlignment();

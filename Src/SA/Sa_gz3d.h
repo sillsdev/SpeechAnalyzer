@@ -186,11 +186,11 @@ private:
     HANDLE  m_hDataSym;        // needed to get m_lpDataSym
     HPSTR   m_lpDataSym;       // pointer to Z-graph data
 
-    CProcessSDP * GetSDP(CSaDoc * pDoc);
+    CProcessSDP * GetSDP(CSaDoc * pModel);
 
 protected:
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     DECLARE_MESSAGE_MAP()
 };
 
-#endif //_SA_GZ3D_H
+#endif

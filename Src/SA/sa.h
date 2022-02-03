@@ -121,7 +121,7 @@ public:
     // check is this file already opened
     CDocument * IsFileOpened(LPCTSTR pszFileName);
     // check is this file already opened
-    bool IsDocumentOpened(const CSaDoc * pDoc);
+    bool IsDocumentOpened(const CSaDoc * pModel);
     BOOL CloseWorkbench(CDocument *);                   // close an already opened workbench document
     void WorkbenchClosed();                             // signal, that workbench has been closed
     void SetWorkbenchPath(CSaString * pszPath);         // set the workbenchs document pathname

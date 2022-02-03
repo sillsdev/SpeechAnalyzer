@@ -83,14 +83,14 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
     rClip.top = 0; // drawing the entire vertical plot gets the correct maximum x value
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc  *  pModel   = pView->GetDocument();
 
-    CProcessTonalWeightChart * pTonalWeightChart = (CProcessTonalWeightChart *)pDoc->GetTonalWeightChart(); // get pointer to TWC object
+    CProcessTonalWeightChart * pTonalWeightChart = (CProcessTonalWeightChart *)pModel->GetTonalWeightChart(); // get pointer to TWC object
 
     double dMaxSemitone = 0.0;
     double dMinSemitone = 0.0;
 
-    if (!CPlotMelogram::GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone)) {
+    if (!CPlotMelogram::GetScaleValues(pModel, &dMaxSemitone,&dMinSemitone)) {
         short nMelGraphIndex = (short)pView->GetGraphIndexForIDD(IDD_MELOGRAM);
         CGraphWnd * pMelGraph = pView->GetGraph(nMelGraphIndex);
         pMelGraph->UpdateWindow();
@@ -100,10 +100,10 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
         dMaxSemitone = pMelLegend->GetScaleMaxValue();
     }
 
-    DWORD wSmpSize = pDoc->GetSampleSize();
-    CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
+    DWORD wSmpSize = pModel->GetSampleSize();
+    CProcessMelogram * pMelogram = (CProcessMelogram *)pModel->GetMelogram(); // get pointer to melogram object
     DWORD dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
-    DWORD dwRawDataSize = pDoc->GetDataSize(); // size of raw data
+    DWORD dwRawDataSize = pModel->GetDataSize(); // size of raw data
     double fInvScaleFactor = (double)dwMelDataSize / (double)dwRawDataSize;
     DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() * fInvScaleFactor) & ~1; // must be multiple of two
     DWORD dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() * fInvScaleFactor) & ~1) - dwFrameStart + wSmpSize;
@@ -112,7 +112,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
         dwFrameSize  = dwMelDataSize;
     }
 
-    short nResult = LOWORD(pTonalWeightChart->Process(this, pDoc, dwFrameStart, dwFrameSize, (short) dMinSemitone, (short) dMaxSemitone)); // process data
+    short nResult = LOWORD(pTonalWeightChart->Process(this, pModel, dwFrameStart, dwFrameSize, (short) dMinSemitone, (short) dMaxSemitone)); // process data
     nResult = CheckResult(nResult, pTonalWeightChart); // check the process result
 
     if (nResult == PROCESS_ERROR) {
@@ -165,7 +165,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
 
         PlotPrePaint(pDC, rWnd, rClip, NULL, true, true);
 
-        PaintHelper(pDC, rWnd, rClip, pTonalWeightChart, pDoc, SKIP_UNSET); // do standard data paint
+        PaintHelper(pDC, rWnd, rClip, pTonalWeightChart, pModel, SKIP_UNSET); // do standard data paint
 
     }
 

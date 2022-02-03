@@ -68,7 +68,7 @@ bool CDlgAutoRecorder::bLaunched = false;
 /***************************************************************************/
 // CDlgAutoRecorder::CDlgAutoRecorder Constructor
 /***************************************************************************/
-CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pView, CSaView * pTarget, CAlignInfo & alignInfo, int playWholeFile) :
+CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pModel, CSaView * pView, CSaView * pTarget, CAlignInfo & alignInfo, int playWholeFile) :
     CDialog(IDD) {
     m_hmmioFile = NULL;
     m_szFileName[0] = 0; // no file name
@@ -76,7 +76,7 @@ CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pView, CSaView * pTa
     m_nPlayWholeFile = playWholeFile;
 
     m_bClosePending = false;
-    m_pDoc = pDoc;
+    m_pDoc = pModel;
     m_pView = pView;
     m_pTargetUntested = pTarget;
 
@@ -402,17 +402,17 @@ void CDlgAutoRecorder::EndPlayback() {
 // function just delivers the block requested.
 /***************************************************************************/
 HPSTR CDlgAutoRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize) {
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-    DWORD dwWaveBufferSize = pDoc->GetWaveDataBufferSize();
-    if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize)) ||
+    CSaDoc * pModel = (CSaDoc *)m_pDoc;
+    DWORD dwWaveBufferSize = pModel->GetWaveDataBufferSize();
+    if (((dwPlayPosition + dwDataSize) > (pModel->GetWaveBufferIndex() + dwWaveBufferSize)) ||
             ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize))) {
-        return pDoc->GetWaveData(dwPlayPosition, TRUE); // get pointer to data block
+        return pModel->GetWaveData(dwPlayPosition, TRUE); // get pointer to data block
     } else {
-        HPSTR pData = pDoc->GetWaveData(dwPlayPosition); // get pointer to data block
+        HPSTR pData = pModel->GetWaveData(dwPlayPosition); // get pointer to data block
         if (pData == NULL) {
             return NULL;    // error while reading data
         }
-        pData += dwPlayPosition - pDoc->GetWaveBufferIndex();
+        pData += dwPlayPosition - pModel->GetWaveBufferIndex();
         return pData;
     }
 }
@@ -1005,18 +1005,18 @@ void CDlgAutoRecorder::StartShutdown() {
 
     //Destroy the overlay document
     CDocList docList;
-    CSaDoc * pDoc = docList.pdocFirst();
-    while (pDoc) {
-        if (pDoc->IsTempOverlay()) {
-            POSITION pos = pDoc->GetFirstViewPosition();
-            CView * pView = pDoc->GetNextView(pos);
+    CSaDoc * pModel = docList.pdocFirst();
+    while (pModel) {
+        if (pModel->IsTempOverlay()) {
+            POSITION pos = pModel->GetFirstViewPosition();
+            CView * pView = pModel->GetNextView(pos);
             if (pView) {
-                TRACE(_T("Found overlay document %lp\n"),pDoc);
+                TRACE(_T("Found overlay document %lp\n"),pModel);
                 pView->PostMessage(WM_COMMAND,ID_FILE_CLOSE,0);
                 break;
             }
         }
-        pDoc = docList.pdocNext();
+        pModel = docList.pdocNext();
     }
 
     //EndDialog(IDOK);
@@ -1032,19 +1032,19 @@ void CDlgAutoRecorder::StopWave() {
 
 CSaView * CDlgAutoRecorder::GetTarget() {
     CDocList docList;
-    CSaDoc * pDoc = docList.pdocFirst();
-    while (pDoc!=NULL) {
+    CSaDoc * pModel = docList.pdocFirst();
+    while (pModel!=NULL) {
         if (m_pTargetUntested!=NULL) {
-            POSITION pos = pDoc->GetFirstViewPosition();
+            POSITION pos = pModel->GetFirstViewPosition();
             if (pos) {
-                CView * pView = (CView *)pDoc->GetNextView(pos);
+                CView * pView = (CView *)pModel->GetNextView(pos);
                 if (pView == m_pTargetUntested) {
                     return m_pTargetUntested;
                 }
             }
         }
 
-        pDoc = docList.pdocNext();
+        pModel = docList.pdocNext();
     }
 
     if (m_pTargetUntested!=NULL) {

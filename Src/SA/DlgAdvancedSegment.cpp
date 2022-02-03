@@ -26,12 +26,12 @@ IMPLEMENT_DYNAMIC(CDlgAdvancedSegment, CDialog)
 /***************************************************************************/
 // CDlgAdvancedSegment::CDlgAdvancedSegment Constructor
 /***************************************************************************/
-CDlgAdvancedSegment::CDlgAdvancedSegment(CSaDoc * pDoc) :
+CDlgAdvancedSegment::CDlgAdvancedSegment(CSaDoc * pModel) :
     CDialog(CDlgAdvancedSegment::IDD,NULL) {
     m_nSegmentWidth = 20;
     m_nChMinThreshold = 17;
     m_nZCMinThreshold = 50;
-    m_pDoc = pDoc;
+    m_pDoc = pModel;
 }
 
 BOOL CDlgAdvancedSegment::Create() {

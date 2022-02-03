@@ -32,7 +32,6 @@
 #include "sa_plot.h"
 #include "sa_graph.h"
 #include "sa_g_wavelet.h"
-#include "Process\sa_p_wavelet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -80,6 +79,71 @@ CPlotWavelet::~CPlotWavelet() {
 
 IMPLEMENT_DYNCREATE(CPlotWavelet, CPlotWnd)
 
+// ScatterPlotTree
+//*  Description   : Does not scatter plot the entire graph, but rather does
+//*                                  a scatter plot of the xth leaf determined by "which_leaf"
+//*  Parameters    : CDC *pDC - pointer to the device context to draw on
+//*                                  CRect *rWnd - the rectangle to draw into
+//*                                  COLORREF crColor - What color to draw with
+//*                                  long which_leaf - how many leafs to skip before drawing
+//*                                  double start - where to start in the data
+//*                                  double end - where to end in the data
+//*  Preconditions : Data should be allocated and populated to all leaves
+//*  Postcondtions : ScatterPlotDataNode is called on the correct node
+//*  Returns       : TRUE - on success
+//*                                  FALSE - otherwise
+//**************************************************************************
+BOOL CPlotWavelet::ScatterPlotDataTree(CWaveletNode* root,CDC* pDC, CRect* rWnd, COLORREF crColor, long which_leaf, double start, double end) {
+    CWaveletNode* node_ptr = root->GetNode(which_leaf);
+    if (node_ptr == NULL) {
+        return FALSE;
+    }
+    return node_ptr->ScatterPlotDataNode(root, pDC, rWnd, crColor, start, end);
+}
+
+// ScatterPlotDataNode
+//*  Description   : Draw a simple scatter plot of node data
+//*  Parameters    : CDC *pDC - where to draw the data
+//*                                CRect *rWnd - The rectangle to draw within
+//*                                COLORREF crColor - color to use in plotting
+//*                                  double start - where to start in the data
+//*                                  double end - where to end in the data
+//*  Preconditions : Data should be allocated and populated
+//*  Postcondtions : Data is plotted to the DC
+//*  Returns       : TRUE
+//**************************************************************************
+BOOL CPlotWavelet::ScatterPlotDataNode(CWaveletNode* root, CDC* pDC, CRect* rWnd, COLORREF crColor, double start, double end) {
+
+    // Scaling variables
+    double fHScale;
+    double data_index;
+    long datapoint;
+    // temp
+    struct tagPOINT point_coords;
+    // Get the color
+    CPen penPlot(PS_SOLID, 1, crColor);
+    pDC->SelectObject(&penPlot);
+
+    // Scale the data to fit in our window
+    fHScale = (double)((double)(end - start) / (double)rWnd->Width());
+
+    data_index = start;
+    pDC->MoveTo(0, root->data[0]);
+
+    // Do the drawing
+    for (double x = 0; x < rWnd->Width(); x++) {
+
+        datapoint = root->data[(long)floor(data_index)];                                // Get the data
+        data_index += fHScale;                                                          // Advance the data_index
+        //data_index++;
+        point_coords.x = long(x);
+        point_coords.y = datapoint;
+        point_coords.y = rWnd->Height() - point_coords.y;                               // Need to print it upside down, because bitmaps are funny look'n
+        pDC->LineTo(point_coords);                                                      // for connecting the dots
+    }
+    return TRUE;
+}
+
 // OnDraw
 //*  Description   : This is the main drawing method which windows calls
 //*                  automatically when the graph needs redrawing
@@ -98,11 +162,11 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 
     // Get a handle on the windows
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pDoc = pView->GetDocument();
+    CSaDoc * pModel = pView->GetDocument();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
 
-    CProcessWavelet * pWavelet = (CProcessWavelet *)pDoc->GetWavelet(); // get pointer to wavelet process object
+    CProcessWavelet * pWavelet = (CProcessWavelet *)pModel->GetWavelet(); // get pointer to wavelet process object
 
     // Set legend scale
     pGraph->SetLegendScale(SCALE | NUMBERS, 0, 100, _T("testing"));
@@ -121,7 +185,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     int height = rWnd.Height();
 
     // Set up the color Palette
-    if (!CreateSpectroPalette(&pTempDC, pDoc)) {
+    if (!CreateSpectroPalette(&pTempDC, pModel)) {
         // error creating color palette
         pApp->ErrorMessage(IDS_ERROR_SPECTROPALETTE);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
@@ -168,7 +232,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // Get the raw data from SA
     long * pData = NULL;
     DWORD dwDataSize = 0;
-    if (!pWavelet->Get_Raw_Data(&pData, &dwDataSize, pDoc)) {
+    if (!pWavelet->Get_Raw_Data(&pData, &dwDataSize, pModel)) {
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L);
         return;
@@ -195,7 +259,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CWaveletNode * tempNode = root->GetNode(drawing_level);
 
     tempNode->TransformFitWindowNode(&rWnd);
-    root->ScatterPlotDataTree(&pTempDC, &rWnd, RGB(255,0,0), drawing_level, x, x+y);
+    ScatterPlotDataTree(root,&pTempDC, &rWnd, RGB(255,0,0), drawing_level, x, x+y);
 
     // do common plot paint jobs
     PlotPaintFinish(&pTempDC, rWnd, rClip);

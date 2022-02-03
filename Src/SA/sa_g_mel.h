@@ -33,7 +33,7 @@ public:
     }
     virtual int GetPenThickness() const;
 
-    static bool GetScaleValues(CSaDoc * pDoc, double * dMaxSemitone,double * dMinSemitone);
+    static bool GetScaleValues(CSaDoc * pModel, double * dMaxSemitone,double * dMinSemitone);
 
     // Generated message map functions
 protected:

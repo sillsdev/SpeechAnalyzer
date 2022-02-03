@@ -135,8 +135,8 @@ BOOL CDlgOptionsViewPage::OnInitDialog() {
     // enable cursor alignment fragment option if fragmenter done
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     CView * pView = pMDIFrameWnd->GetCurrSaView();
-    CSaDoc * pDoc = (CSaDoc *) pView->GetDocument();
-    CProcessFragments * pFragmenter = pDoc->GetFragments();
+    CSaDoc * pModel = (CSaDoc *) pView->GetDocument();
+    CProcessFragments * pFragmenter = pModel->GetFragments();
     if (pFragmenter->IsDataReady()) {
         GetDlgItem(IDC_SNAPTOFRAGMENT)->EnableWindow(TRUE);
     } else {

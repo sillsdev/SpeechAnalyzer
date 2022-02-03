@@ -654,7 +654,7 @@ private:
     void PreparePrintingForScreenShot(void);
     void MoveBoundary(bool start, bool left);
     CGraphWnd * GetGraphForAnnotation(int annotation);
-    DWORD GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot);
+    DWORD GetMinimumSeparation(CSaDoc * pModel, CGraphWnd * pGraph, CPlotWnd * pPlot);
 
     BOOL AllowEditAdd(bool story);
     BOOL AllowAddPhrase(EAnnotation annot, bool story);
@@ -669,24 +669,24 @@ private:
 	void ErrorMessage( CSaString & msg);
 
     bool CanMoveDataLeft( CSegment * pSegment, bool discrete);
-    bool CanMoveDataLeftAt(CSaDoc * pDoc, CPhoneticSegment * pSegment, DWORD position, bool discrete);
+    bool CanMoveDataLeftAt(CSaDoc * pModel, CPhoneticSegment * pSegment, DWORD position, bool discrete);
     bool CanMoveDataRight(CSegment * pSegment);
     bool CanMoveDataRightNext(CSegment * pSegment);
     bool CanMoveDataRightSel(CSegment * pSegment, int sel);
     bool CanMoveDataRightAt(CPhoneticSegment * pSegment, DWORD position);
     bool CanMoveDataRightNextAt(CPhoneticSegment * pSegment, DWORD position);
     bool CanSplit(CSegment * pSeg);
-    bool CanSplitAt(CSaDoc * pDoc,CPhoneticSegment * pSeg, DWORD position);
+    bool CanSplitAt(CSaDoc * pModel,CPhoneticSegment * pSeg, DWORD position);
     bool CanMerge(CSegment * pSeg);
     bool CanMergeNext(CSegment * pSeg);
-    bool CanMergeAt(CSaDoc * pDoc,CPhoneticSegment * pSeg, DWORD position);
-    bool CanMergeAtNext(CSaDoc * pDoc,CPhoneticSegment * pSeg, DWORD position);
+    bool CanMergeAt(CSaDoc * pModel,CPhoneticSegment * pSeg, DWORD position);
+    bool CanMergeAtNext(CSaDoc * pModel,CPhoneticSegment * pSeg, DWORD position);
     bool CanMergeSel(CPhoneticSegment * pSeg, int sel);
 
     void EditMoveRight();
     void EditMoveRightNext();
 	void EditMoveLeft();
-    void EditMoveLeftAt(CSaDoc * pDoc,DWORD position);
+    void EditMoveLeftAt(CSaDoc * pModel,DWORD position);
 	void EditSplit();
 	DWORD EditSplitAt(DWORD position);
 	void EditMerge();

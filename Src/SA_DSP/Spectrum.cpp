@@ -95,7 +95,7 @@
 *          :                                                               *
 *   SSigParms stFrameParm;                                                 *
 *   stFrameParm.Length = dwFrameSize / wSmpSize;                           *
-*   stFrameParm.SmpRate = pDoc->GetSamplesPerSec();                        *
+*   stFrameParm.SmpRate = pModel->GetSamplesPerSec();                        *
 *   if (wSmpSize == 1) stFrameParm.SmpDataFmt = PCM_UBYTE;                 *
 *   else stFrameParm.SmpDataFmt = PCM_2SSHORT;                             *
 *   stFrameParm.Start = (void *) new char[dwFrameSize];                    *

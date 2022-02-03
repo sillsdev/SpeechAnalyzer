@@ -101,6 +101,7 @@ inline static int round2Int(double value) {
 #include <zGraphLib.h>
 #include <sa_lang_resource.h>
 #include <custom_menu.h>
+#include <SAProcessor.h>
 #include "AppDefs.h"
 
 #endif

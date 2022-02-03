@@ -432,8 +432,8 @@ void CDlgFind::OnNext() {
         return;
     }
 
-    CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
-    if (pDoc==NULL) {
+    CSaDoc * pModel = m_pMainFrame->GetCurrDoc();
+    if (pModel==NULL) {
         return;
     }
 
@@ -464,13 +464,13 @@ void CDlgFind::OnNext() {
         if (m_beginFind==-1) {
             TRACE("bf:begin\n");
             m_wrapped = false;
-            m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
+            m_beginFind = pAnnot->FirstVisibleIndex(*pModel);
             m_curPos = m_beginFind;
             curSel = m_curPos;
             TRACE("bf:begin2\n");
             if (pAnnot->Match(curSel, findme)) {
                 ScrollIfNeeded();
-                pDoc->SelectSegment(pAnnot,m_curPos);
+                pModel->SelectSegment(pAnnot,m_curPos);
             } else {
                 TRACE("onnext1\n");
                 OnNext();
@@ -496,7 +496,7 @@ void CDlgFind::OnNext() {
         m_beginFind = pAnnot->GetSelection();
         TRACE("bf:test\n");
         if (m_beginFind == -1) {
-            m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
+            m_beginFind = pAnnot->FirstVisibleIndex(*pModel);
             TRACE("bf:first visible %d\n",m_beginFind);
         }
         m_curPos = m_beginFind;
@@ -509,12 +509,12 @@ void CDlgFind::OnNext() {
             AfxMessageBox(IDS_FIND_FINISHED,MB_ICONINFORMATION,0);
             m_curPos = m_beginFind;
             ScrollIfNeeded();
-            pDoc->SelectSegment(pAnnot,m_curPos);
+            pModel->SelectSegment(pAnnot,m_curPos);
             ResetCompletionCheck();
         } else {
             m_curPos = newPos;
             ScrollIfNeeded();
-            pDoc->SelectSegment(pAnnot,m_curPos);
+            pModel->SelectSegment(pAnnot,m_curPos);
         }
     } else {
         if (AfxMessageBox(IDS_FIND_WRAP_PAST_END, MB_YESNO|MB_ICONQUESTION,0)==IDYES) {
@@ -537,8 +537,8 @@ void CDlgFind::OnPrevious() {
 	if (m_pMainFrame==NULL) {
         return;
     }
-    CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
-    if (pDoc==NULL) {
+    CSaDoc * pModel = m_pMainFrame->GetCurrDoc();
+    if (pModel==NULL) {
         return;
     }
 
@@ -558,7 +558,7 @@ void CDlgFind::OnPrevious() {
         m_beginFind = pAnnot->GetSelection();
         TRACE("bf:do\n");
         if (m_beginFind == -1) {
-            m_beginFind = pAnnot->LastVisibleIndex(*pDoc);
+            m_beginFind = pAnnot->LastVisibleIndex(*pModel);
             TRACE("bf:do2\n");
         }
         m_curPos = m_beginFind;
@@ -570,12 +570,12 @@ void CDlgFind::OnPrevious() {
             AfxMessageBox(IDS_FIND_FINISHED,MB_ICONINFORMATION,0);
             m_curPos = m_beginFind;
             ScrollIfNeeded();
-            pDoc->SelectSegment(pAnnot,m_curPos);
+            pModel->SelectSegment(pAnnot,m_curPos);
             ResetCompletionCheck();
         } else {
             m_curPos = newPos;
             ScrollIfNeeded();
-            pDoc->SelectSegment(pAnnot,m_curPos);
+            pModel->SelectSegment(pAnnot,m_curPos);
         }
     } else {
         if (AfxMessageBox(IDS_FIND_WRAP_PAST_START, MB_YESNO|MB_ICONQUESTION,0)==IDYES) {
@@ -583,7 +583,7 @@ void CDlgFind::OnPrevious() {
             m_wrapped = true;
             OnPrevious();
         } else {
-            pDoc->SelectSegment(pAnnot,m_curPos);
+            pModel->SelectSegment(pAnnot,m_curPos);
             ResetCompletionCheck();
         }
     }
@@ -603,8 +603,8 @@ void CDlgFind::Replace() {
         return;
     }
 
-    CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
-    if (pDoc==NULL) {
+    CSaDoc * pModel = m_pMainFrame->GetCurrDoc();
+    if (pModel==NULL) {
         return;
     }
 
@@ -627,8 +627,8 @@ void CDlgFind::Replace() {
 
     int curSel = pAnnot->GetSelection();
     if ((curSel >= 0) && (pAnnot->Match(curSel, findme))) {
-        pDoc->CheckPoint();
-        pAnnot->Replace(pDoc, curSel, findme, replaceme);
+        pModel->CheckPoint();
+        pAnnot->Replace(pModel, curSel, findme, replaceme);
     }
 
     ResetCompletionCheck();
@@ -649,8 +649,8 @@ void CDlgFind::OnReplaceAll() {
         return;
     }
 
-    CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
-    if (pDoc==NULL) {
+    CSaDoc * pModel = m_pMainFrame->GetCurrDoc();
+    if (pModel==NULL) {
         return;
     }
 
@@ -672,12 +672,12 @@ void CDlgFind::OnReplaceAll() {
     }
 
     int newPos = pAnnot->FindNext(-1,findme);
-    pDoc->CheckPoint();
+    pModel->CheckPoint();
     while (newPos >= 0) {
         if (newPos != pAnnot->GetSelection()) {
-            pDoc->SelectSegment(pAnnot,newPos);
+            pModel->SelectSegment(pAnnot,newPos);
         }
-        pAnnot->ReplaceSelectedSegment(pDoc,replaceme,false);
+        pAnnot->ReplaceSelectedSegment(pModel,replaceme,false);
         newPos = pAnnot->FindNext(newPos,findme);
     }
 }

@@ -14,7 +14,7 @@ CMusicPhraseSegment::CMusicPhraseSegment(EAnnotation index, int master) :
 // (0 based), otherwise -1. The function allows an overlap of 50% of
 // existing annotation segments at both ends.
 /***************************************************************************/
-int CMusicPhraseSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL bOverlap) const {
+int CMusicPhraseSegment::CheckPosition(ISaDoc * pModel, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL bOverlap) const {
     int nLength = GetOffsetSize();
     if (nLength == 0) {
 		// no character yet, ok
@@ -23,11 +23,11 @@ int CMusicPhraseSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwSto
 
 	// segment selected (edit)
     if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(m_nSelection != -1)) { 
-        return CIndependentSegment::CheckPosition(pDoc, dwStart, dwStop, nMode, bOverlap);
+        return CIndependentSegment::CheckPosition(pModel, dwStart, dwStop, nMode, bOverlap);
     } else if ((nMode==MODE_ADD)||(nMode==MODE_AUTOMATIC)) {
         // if segment is less than 20 ms, we can't add
         DWORD dwSize = dwStop-dwStart;
-        if ((dwSize)  < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) {
+        if ((dwSize)  < pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) {
 			// segment too small
             return -1;
         }

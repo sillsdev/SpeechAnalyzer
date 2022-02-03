@@ -20,14 +20,14 @@
 
 IMPLEMENT_DYNAMIC(CDlgAdvancedParsePhrases, CDialog)
 
-CDlgAdvancedParsePhrases::CDlgAdvancedParsePhrases(CSaDoc * pDoc) :
+CDlgAdvancedParsePhrases::CDlgAdvancedParsePhrases(CSaDoc * pModel) :
     CDialog(CDlgAdvancedParsePhrases::IDD, NULL) {
     // Set parsing parameters to default values.
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     m_nBreakWidth = (int)(1000.0 * pMainFrame->GetPhraseBreakWidth());
     m_nMaxThreshold = pMainFrame->GetMaxThreshold();
     m_nMinThreshold = pMainFrame->GetMinThreshold();
-    m_pDoc = pDoc;
+    m_pDoc = pModel;
 }
 
 BOOL CDlgAdvancedParsePhrases::Create() {

@@ -188,8 +188,8 @@ void CDlgRecorderOptions::OnSourceAuto() {
 /***************************************************************************/
 void CDlgRecorderOptions::OnSource() {
     UpdateData(TRUE);
-    CSaDoc * pDoc = GetRecorder().GetDocument();
-    SourceParm * pSourceParm = pDoc->GetSourceParm();
+    CSaDoc * pModel = GetRecorder().GetDocument();
+    SourceParm * pSourceParm = pModel->GetSourceParm();
     CDlgRecorder::sourceInfo & m_source = CDlgRecorder::GetStaticSourceInfo();
     if (m_source.bEnable) {
         pSourceParm->szCountry = m_source.source.szCountry;
@@ -213,7 +213,7 @@ void CDlgRecorderOptions::OnSource() {
     dlg.m_dlgUserPage.m_szFreeTranslation = pSourceParm->szFreeTranslation;
     if (dlg.DoModal() == IDOK) {
         // get new file description string
-        pDoc->SetDescription(dlg.m_dlgUserPage.m_szFileDesc);
+        pModel->SetDescription(dlg.m_dlgUserPage.m_szFileDesc);
         pSourceParm->szDescription = dlg.m_dlgUserPage.m_szFileDesc;
         pSourceParm->szFreeTranslation = dlg.m_dlgUserPage.m_szFreeTranslation;
         pSourceParm->szCountry = dlg.m_dlgSourcePage.m_szCountry;

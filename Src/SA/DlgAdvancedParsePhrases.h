@@ -23,7 +23,7 @@ class CDlgAdvancedParsePhrases : public CDialog {
 
     // Construction/destruction/creation
 public:
-    CDlgAdvancedParsePhrases(CSaDoc * pDoc);  // standard constructor
+    CDlgAdvancedParsePhrases(CSaDoc * pModel);  // standard constructor
     virtual ~CDlgAdvancedParsePhrases();
 
     BOOL Create();

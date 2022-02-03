@@ -19,7 +19,6 @@ public:
     void Init(const CSaString & szVowel, double inF1, double inF2, double inF3, double inF4 = UNDEFINED_DATA);
 };
 
-typedef std::vector<CVowelFormants> CVowelFormantsVector;
 
 class CVowelSetVersion {
 public:
@@ -157,9 +156,5 @@ protected:
     virtual void OnCancel();
     DECLARE_MESSAGE_MAP()
 };
-
-const CVowelFormantsVector & GetVowelVector(int nGender);
-const CVowelFormantSet & GetDefaultVowelSet();
-CVowelFormantSets & GetVowelSets();
 
 #endif

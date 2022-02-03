@@ -182,7 +182,7 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD 
 // (0 based), otherwise -1. The function allows an overlap of 50% of
 // existing annotation segments at both ends.
 /***************************************************************************/
-int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop, EMode nMode, BOOL bOverlap) const {
+int CIndependentSegment::CheckPosition(ISaDoc * pModel, DWORD dwStart,DWORD dwStop, EMode nMode, BOOL bOverlap) const {
     if (IsEmpty()) {
         return 0; // no character yet, ok
     }
@@ -222,7 +222,7 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
                 TRACE("stop less than start\n");
                 return -1;
             }
-            if (pDoc->GetTimeFromBytes(dwStop-dwStart) < MIN_EDIT_SEGMENT_TIME) {
+            if (pModel->GetTimeFromBytes(dwStop-dwStart) < MIN_EDIT_SEGMENT_TIME) {
                 //TRACE("min edit segment reached %d\n",__LINE__);
                 return -1;
             }
@@ -259,7 +259,7 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
                 TRACE("stop less than start\n");
                 return -1;
             }
-            if (pDoc->GetTimeFromBytes(dwStop-dwStart) < MIN_EDIT_SEGMENT_TIME) {
+            if (pModel->GetTimeFromBytes(dwStop-dwStart) < MIN_EDIT_SEGMENT_TIME) {
                 //TRACE("min edit segment reached %d\n",__LINE__);
                 return -1;
             }
@@ -268,7 +268,7 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
     } else if ((nMode==MODE_ADD)||(nMode==MODE_AUTOMATIC)) {
         //SDM 1.06.5 add will make room by shifting adjacent segments
         // check the positions
-        if ((dwStop - dwStart) < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) {
+        if ((dwStop - dwStart) < pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) {
             return -1;    // segment too small
         }
 
@@ -278,7 +278,7 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
             DWORD dwOffset = GetOffset(nLoop);
             if (dwStart <= dwOffset) { // this offset
                 // Check if insertion will leave at least minimum segment length
-                DWORD dwTime = pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
+                DWORD dwTime = pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
                 DWORD dwDur = GetDuration(nLoop);
                 //kg: this statement is always true.  i don't know why it's here.
                 if ((dwStop + dwTime) > (dwOffset + dwDur)) {
@@ -286,7 +286,7 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
                     return -1;
                 }
                 if ((nLoop > 0)&&
-                        ((dwStart-pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < GetOffset(nLoop - 1))) {
+                        ((dwStart-pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < GetOffset(nLoop - 1))) {
                     //TRACE("min edit segment reached %d\n",__LINE__);
                     return -1;
                 }
@@ -310,7 +310,7 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
             }
         }
         if ((nLoop >0) &&
-                ((dwStart - GetOffset(nLoop-1)) < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))) {
+                ((dwStart - GetOffset(nLoop-1)) < pModel->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))) {
             TRACE("min edit segment reached %d\n",__LINE__);
             return -1;
         }
@@ -331,7 +331,7 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
 /***************************************************************************/
 // CTextSegment::CaluculateDuration calculate segment duration from master data
 /***************************************************************************/
-DWORD CIndependentSegment::CalculateDuration(ISaDoc * /*pDoc*/, const int nIndex) const {
+DWORD CIndependentSegment::CalculateDuration(ISaDoc * /*pModel*/, const int nIndex) const {
 
     DWORD offset_size = GetOffsetSize();
     if ((nIndex < 0) || (nIndex >= offset_size)) {
@@ -355,7 +355,7 @@ DWORD CIndependentSegment::CalculateDuration(ISaDoc * /*pDoc*/, const int nIndex
 /***************************************************************************/
 // CIndependentSegment::Add Add text segment
 /***************************************************************************/
-void CIndependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
+void CIndependentSegment::Add(CSaDoc * pModel, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
 
 	int nPos = FindFromPosition(dwStart,TRUE);
     if (nPos==-1) {
@@ -368,7 +368,7 @@ void CIndependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSa
 
     ASSERT(dwStop > dwStart);
 
-    nPos = CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);   // get the insert position
+    nPos = CheckPosition(pModel, dwStart, dwStop, CSegment::MODE_ADD);   // get the insert position
     if (nPos == -1) {
         return;    // return on error
     }
@@ -377,7 +377,7 @@ void CIndependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSa
 
     // save state for undo ability
     if (bCheck) {
-        pDoc->CheckPoint();
+        pModel->CheckPoint();
     }
 
     // insert or append the new segment
@@ -387,12 +387,12 @@ void CIndependentSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSa
 
     // move the end of the previous text segment
     if (nPos > 0) {
-        Adjust(pDoc, nPos - 1, GetOffset(nPos - 1), CalculateDuration(pDoc, nPos -1), false);
+        Adjust(pModel, nPos - 1, GetOffset(nPos - 1), CalculateDuration(pModel, nPos -1), false);
     }
 	// document has been modified
-    pDoc->SetModifiedFlag(TRUE);
+    pModel->SetModifiedFlag(TRUE);
 	// transcription data has been modified
-    pDoc->SetTransModifiedFlag(TRUE);
+    pModel->SetTransModifiedFlag(TRUE);
 	// change the selection
     pView->ChangeAnnotationSelection(this, nPos); 
 }

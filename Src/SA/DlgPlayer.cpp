@@ -125,8 +125,8 @@ void CDlgPlayer::DoDataExchange(CDataExchange * pDX) {
 // CDlgPlayer::SetTotalTime Set total time display
 /***************************************************************************/
 void CDlgPlayer::SetTotalTime() {
-	CSaDoc * pDoc = (CSaDoc *)m_pDoc;       // cast pointer to document
-	DWORD dwEnd = pDoc->GetDataSize();      // data end
+	CSaDoc * pModel = (CSaDoc *)m_pDoc;       // cast pointer to document
+	DWORD dwEnd = pModel->GetDataSize();      // data end
 	if (dwEnd > 0) {
 		// display depends on the submode
 		switch (m_nSubMode) {
@@ -158,8 +158,8 @@ void CDlgPlayer::SetTotalTime() {
 // CDlgPlayer::SetPositionTime Set position time display
 /***************************************************************************/
 void CDlgPlayer::SetPositionTime() {
-	CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-	if (pDoc->GetDataSize() > 0) {
+	CSaDoc * pModel = (CSaDoc *)m_pDoc; // cast pointer to document
+	if (pModel->GetDataSize() > 0) {
 		DWORD dwPosition = m_dwPlayPosition; // data position
 		if (m_dwPlayPosition == 0) {
 			// display depends on the submode
@@ -185,7 +185,7 @@ void CDlgPlayer::SetPositionTime() {
 				break;
 			}
 		}
-		double fDataSec = pDoc->GetTimeFromBytes(dwPosition); // calculate time
+		double fDataSec = pModel->GetTimeFromBytes(dwPosition); // calculate time
 		m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
 		SetDlgItemText(IDC_TIMERTEXT, _T("Start Time"));
 	}
@@ -401,7 +401,7 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
 	SetPositionTime();
 	DWORD dwSize, dwStart = 0;
 	CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-	CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
+	CSaDoc * pModel = (CSaDoc *)m_pDoc; // cast pointer to document
 	switch (mode) {
 	case PLAYING:
 		if (m_nMode != PAUSED) {
@@ -420,14 +420,14 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
 			switch (m_nSubMode) {
 			case ID_PLAYBACK_STARTCUR_TO_FILEEND:
 				dwStart = m_pView->GetStartCursorPosition();
-				dwSize = pDoc->GetDataSize() - dwStart;
+				dwSize = pModel->GetDataSize() - dwStart;
 				break;
 			case ID_PLAYBACK_ENCCUR_TO_FILEEND:
 				dwStart = m_pView->GetStopCursorPosition();
-				dwSize = pDoc->GetDataSize() - dwStart;
+				dwSize = pModel->GetDataSize() - dwStart;
 				break;
 			case ID_PLAYBACK_FILE:
-				dwSize = pDoc->GetDataSize();
+				dwSize = pModel->GetDataSize();
 				break;
 			case ID_PLAYBACK_WINDOW:
 				dwStart = DWORD(m_pView->GetDataPosition(0));
@@ -474,10 +474,10 @@ bool CDlgPlayer::SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL b
 				}
 				break;
 			case ID_PLAYBACK_SPECIFIC:
-				dwSize = pDoc->GetDataSize();
+				dwSize = pModel->GetDataSize();
 				if (pSpecific) {
-					DWORD dwSpecificSize = pDoc->GetBytesFromTime(pSpecific->end);
-					DWORD dwSpecificStart = pDoc->GetBytesFromTime(pSpecific->begin);
+					DWORD dwSpecificSize = pModel->GetBytesFromTime(pSpecific->end);
+					DWORD dwSpecificStart = pModel->GetBytesFromTime(pSpecific->begin);
 
 					if (dwSpecificStart < dwSize) {
 						dwStart = dwSpecificStart;
@@ -610,9 +610,9 @@ void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed) {
 	// update the time
 	m_dwPlayPosition = dwPosition;
 
-	CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-	DWORD dwBlockEnd = m_dwPlayPosition - pDoc->GetSampleSize();
-	double fDataSec = pDoc->GetTimeFromBytes(dwBlockEnd);
+	CSaDoc * pModel = (CSaDoc *)m_pDoc;
+	DWORD dwBlockEnd = m_dwPlayPosition - pModel->GetSampleSize();
+	double fDataSec = pModel->GetTimeFromBytes(dwBlockEnd);
 	m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
 
 
@@ -644,8 +644,8 @@ void CDlgPlayer::ChangeView(CSaView * pView) {
 	// set file name in players caption
 	m_pView = pView;                                // set the new pointer to the active view
 	m_pDoc = pView->GetDocument();                  // get the pointer to the attached document
-	CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-	CString szTitle = pDoc->GetFilenameFromTitle().c_str(); // load the document title
+	CSaDoc * pModel = (CSaDoc *)m_pDoc;
+	CString szTitle = pModel->GetFilenameFromTitle().c_str(); // load the document title
 	CString szCaption;
 	GetWindowText(szCaption);       // get the current caption string
 	int nFind = szCaption.Find(' ');
@@ -654,7 +654,7 @@ void CDlgPlayer::ChangeView(CSaView * pView) {
 	}
 	szCaption += " - " + szTitle;   // add new document title
 	SetWindowText(szCaption);       // write the new caption string
-	if (pDoc->GetDataSize() == 0) { // no data to play
+	if (pModel->GetDataSize() == 0) { // no data to play
 		SetPlayerMode(IDLE, m_nSubMode, m_bFullSize);
 	} else {
 		// update the time displays

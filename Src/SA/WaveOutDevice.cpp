@@ -221,9 +221,9 @@ UINT CWaveOutDevice::GetVolume(BOOL & bResult) {
     // device has to be opened first
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     CView * pView = pMDIFrameWnd->GetCurrSaView();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     CFmtParm fmtParm;
-    pDoc->GetFmtParm(fmtParm,true);
+    pModel->GetFmtParm(fmtParm,true);
     WAVEFORMATEX formatEx = fmtParm.GetWaveFormatEX();
     MMRESULT mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, &formatEx, NULL, 0, CALLBACK_NULL);
     if (mmr!=MMSYSERR_NOERROR) {
@@ -272,10 +272,10 @@ void CWaveOutDevice::SetVolume(UINT nVolume, BOOL & bResult) {
     // device has to be opened first
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     CView * pView = pMDIFrameWnd->GetCurrSaView();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
     CFmtParm fmtParm;
-    pDoc->GetFmtParm(fmtParm,true); // get pointer to wave format parameters
+    pModel->GetFmtParm(fmtParm,true); // get pointer to wave format parameters
     WAVEFORMATEX formatEx = fmtParm.GetWaveFormatEX();
     MMRESULT mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, &formatEx, NULL, 0, CALLBACK_NULL);
     if (mmr!=MMSYSERR_NOERROR) {
@@ -315,9 +315,9 @@ BOOL CWaveOutDevice::ShowMixer(BOOL bShow) {
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
 
-        CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+        CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
         CFmtParm fmtParm;
-        pDoc->GetFmtParm(fmtParm,true); // get pointer to wave format parameters
+        pModel->GetFmtParm(fmtParm,true); // get pointer to wave format parameters
         WAVEFORMATEX formatEx = fmtParm.GetWaveFormatEX();
         mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, &formatEx, NULL, 0, CALLBACK_NULL);
     }
@@ -360,9 +360,9 @@ BOOL CWaveOutDevice::ConnectMixer(CWnd * pCallback) {
     // device has to be opened first
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     CView * pView = pMDIFrameWnd->GetCurrSaView();
-    CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+    CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
     CFmtParm fmtParm;
-    pDoc->GetFmtParm(fmtParm,true);
+    pModel->GetFmtParm(fmtParm,true);
     WAVEFORMATEX formatEx = fmtParm.GetWaveFormatEX();
     MMRESULT mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, &formatEx, NULL, 0, CALLBACK_NULL);
     if (mmr!=MMSYSERR_NOERROR) {
