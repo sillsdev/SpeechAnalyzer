@@ -146,6 +146,7 @@
     <ClCompile Include="AutoSegmentation.cpp" />
     <ClCompile Include="ChildFrame.cpp" />
     <ClCompile Include="ClipboardHelper.cpp" />
+    <ClCompile Include="WbProcessDlgFactory.cpp" />
     <ClCompile Include="Process\AbstractPitchProcess.cpp" />
     <ClCompile Include="Process\PitchProcess.cpp" />
     <ClCompile Include="Process\ProcessAreaData.cpp" />
@@ -365,6 +366,7 @@
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="AutoSegmentation.h" />
+    <ClInclude Include="WbProcessDlgFactory.h" />
     <ClInclude Include="Process\AbstractPitchProcess.h" />
     <ClInclude Include="Process\PitchProcess.h" />
     <ClInclude Include="Process\ProcessAreaData.h" />

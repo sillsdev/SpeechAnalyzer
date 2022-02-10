@@ -2772,7 +2772,7 @@ void CMainFrame::ClearPreviewFlag() {
     m_bPrintPreviewInProgress = FALSE;
 };
 
-CProcess * CMainFrame::GetWbProcess(int nProcess, int nFilter) {
+CWbProcess * CMainFrame::GetWbProcess(int nProcess, int nFilter) {
     return m_apWbProcess[nProcess][nFilter];   // return pointer to workbench process
 }
 

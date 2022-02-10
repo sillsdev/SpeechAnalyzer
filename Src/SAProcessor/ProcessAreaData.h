@@ -14,23 +14,17 @@ class CProcessAreaData : public CProcess {
 
 public:
     CProcessAreaData();
-    virtual ~CProcessAreaData();
-
-    // Attributes
-private:
-    DWORD  m_dwAreaPos;      // array of graph area positions
-    DWORD  m_dwAreaLength;   // array of graph area lengths
-
-    // Operations
-public:
     virtual void UpdateArea();
-    BOOL SetArea(View * pView);
-
+    BOOL SetArea(View* pView);
     DWORD GetAreaPosition();
     DWORD GetAreaLength();
 
 protected:
     BOOL SetArea(DWORD dwAreaPos, DWORD dwAreaLength);
+
+private:
+    DWORD  m_dwAreaPos;      // array of graph area positions
+    DWORD  m_dwAreaLength;   // array of graph area lengths
 };
 
 class CProcessSDP : public CProcessAreaData {};

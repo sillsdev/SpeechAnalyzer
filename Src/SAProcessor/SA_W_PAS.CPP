@@ -20,26 +20,11 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessWbHighpass
 // Workbench process class to calculate new raw data with a highpass function.
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcessWbHighpass construction/destruction/creation
-
-/***************************************************************************/
-// CProcessWbHighpass::CProcessWbHighpass Constructor
-/***************************************************************************/
-CProcessWbHighpass::CProcessWbHighpass() {
+CProcessWbHighpass::CProcessWbHighpass(Context & context) : CProcessButterworth(context,WbHiPass) {
     m_nCutoff = 150;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
 }
-
-/***************************************************************************/
-// CProcessWbHighpass::~CProcessWbHighpass Destructor
-/***************************************************************************/
-CProcessWbHighpass::~CProcessWbHighpass() {
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessWbHighpass helper functions
 
 /***************************************************************************/
 // CProcessWbHighpass::Process Processing new raw data with a highpass function
@@ -55,7 +40,7 @@ CProcessWbHighpass::~CProcessWbHighpass() {
 /***************************************************************************/
 long CProcessWbHighpass::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
     // check if nested workbench processes
-    CProcess * pLowerProcess = NULL;
+    CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
         pLowerProcess = ((CProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
     }
@@ -63,26 +48,6 @@ long CProcessWbHighpass::Process(void * pCaller, Model * pModel, int nProgress, 
     SetFilterFilter(m_bFilterFilter!=FALSE);
     HighPass(m_nOrder, m_nCutoff);
     return CProcessButterworth::Process(pCaller, pModel, nProgress, nLevel);
-}
-
-/***************************************************************************/
-// CProcessWbHighpass::PropertiesDialog Calls the properties dialog for this process
-/***************************************************************************/
-int CProcessWbHighpass::PropertiesDialog() {
-    CWbDlgFilterPass dlgPass;
-    dlgPass.m_bBandPass = FALSE;
-    dlgPass.m_bLoPass = FALSE;
-    dlgPass.m_nLowerFreq = m_nCutoff;
-    dlgPass.m_nOrder = m_nOrder;
-    dlgPass.m_bFilterFilter = m_bFilterFilter;
-    if (dlgPass.DoModal() == IDOK) {
-        m_nCutoff = dlgPass.m_nLowerFreq;
-        m_nOrder = dlgPass.m_nOrder;
-        m_bFilterFilter = dlgPass.m_bFilterFilter;
-        SetDataInvalid();
-        return IDOK;
-    }
-    return IDCANCEL;
 }
 
 static LPCSTR psz_highpass = "highpass";
@@ -133,26 +98,11 @@ BOOL CProcessWbHighpass::ReadProperties(ObjectIStream & obs) {
 // CProcessWbLowpass
 // Workbench process class to calculate new raw data with a lowpass function.
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcessWbLowpass construction/destruction/creation
-
-/***************************************************************************/
-// CProcessWbLowpass::CProcessWbLowpass Constructor
-/***************************************************************************/
-CProcessWbLowpass::CProcessWbLowpass() {
+CProcessWbLowpass::CProcessWbLowpass(Context & context) : CProcessButterworth(context,WbLoPass) {
     m_nCutoff = 3000;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
 }
-
-/***************************************************************************/
-// CProcessWbLowpass::~CProcessWbLowpass Destructor
-/***************************************************************************/
-CProcessWbLowpass::~CProcessWbLowpass() {
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessWbLowpass helper functions
 
 /***************************************************************************/
 // CProcessWbLowpass::Process Processing new raw data with a lowpass function
@@ -170,31 +120,12 @@ long CProcessWbLowpass::Process(void * pCaller, Model * pModel, int nProgress, i
     // check if nested workbench processes
     CProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
+        pLowerProcess = ((CWbProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
     LowPass(m_nOrder, m_nCutoff);
     return CProcessButterworth::Process(pCaller, pModel, nProgress, nLevel);
-}
-
-/***************************************************************************/
-// CProcessWbLowpass::PropertiesDialog Calls the properties dialog for this process
-/***************************************************************************/
-int CProcessWbLowpass::PropertiesDialog() {
-    CWbDlgFilterPass dlgPass;
-    dlgPass.m_bBandPass = FALSE;
-    dlgPass.m_nUpperFreq = m_nCutoff;
-    dlgPass.m_nOrder = m_nOrder;
-    dlgPass.m_bFilterFilter = m_bFilterFilter;
-    if (dlgPass.DoModal() == IDOK) {
-        m_nCutoff = dlgPass.m_nUpperFreq;
-        m_nOrder = dlgPass.m_nOrder;
-        m_bFilterFilter = dlgPass.m_bFilterFilter;
-        SetDataInvalid();
-        return IDOK;
-    }
-    return IDCANCEL;
 }
 
 /***************************************************************************/
@@ -240,7 +171,7 @@ BOOL CProcessWbLowpass::ReadProperties(ObjectIStream & obs) {
 /***************************************************************************/
 // CProcessWbBandpass::CProcessWbBandpass Constructor
 /***************************************************************************/
-CProcessWbBandpass::CProcessWbBandpass(Context & context) : CProcess(context) {
+CProcessWbBandpass::CProcessWbBandpass(Context & context) : CProcessButterworth(context,WbBandPass) {
     m_nUpperCutoff = 3000;
     m_nLowerCutoff = 150;
     m_nOrder = 3;
@@ -261,34 +192,14 @@ CProcessWbBandpass::CProcessWbBandpass(Context & context) : CProcess(context) {
 /***************************************************************************/
 long CProcessWbBandpass::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
     // check if nested workbench processes
-    CProcess * pLowerProcess = NULL;
+    CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
+        pLowerProcess = pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
     BandPass(m_nOrder, (m_nUpperCutoff + m_nLowerCutoff)/2,m_nUpperCutoff - m_nLowerCutoff);
     return CProcessButterworth::Process(pCaller, pModel, nProgress, nLevel);
-}
-
-/***************************************************************************/
-// CProcessWbBandpass::PropertiesDialog Calls the properties dialog for this process
-/***************************************************************************/
-int CProcessWbBandpass::PropertiesDialog() {
-    CWbDlgFilterPass dlgPass;
-    dlgPass.m_nUpperFreq = m_nUpperCutoff;
-    dlgPass.m_nLowerFreq = m_nLowerCutoff;
-    dlgPass.m_nOrder = m_nOrder;
-    dlgPass.m_bFilterFilter = m_bFilterFilter;
-    if (dlgPass.DoModal() == IDOK) {
-        m_nUpperCutoff = dlgPass.m_nUpperFreq;
-        m_nLowerCutoff = dlgPass.m_nLowerFreq;
-        m_nOrder = dlgPass.m_nOrder;
-        m_bFilterFilter = dlgPass.m_bFilterFilter;
-        SetDataInvalid();
-        return IDOK;
-    }
-    return IDCANCEL;
 }
 
 /***************************************************************************/

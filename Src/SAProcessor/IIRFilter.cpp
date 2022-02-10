@@ -7,6 +7,7 @@
 #include "StringUtils.h"
 #include "Butterworth.h"
 #include "Hilbert.h"
+#include "WbProcess.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -16,7 +17,7 @@ static char THIS_FILE[]=__FILE__;
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-CProcessIIRFilter::CProcessIIRFilter(Context & context, BOOL bDstWBench) : CProcess(context) {
+CProcessIIRFilter::CProcessIIRFilter(Context & context, WbDialogType type, BOOL bDstWBench) : CWbProcess(context, type) {
     m_pSourceProcess = NULL;
     m_bSrcWBenchProcess = TRUE;
     m_bDstWBenchProcess = bDstWBench;

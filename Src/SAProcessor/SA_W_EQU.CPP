@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "Process.h"
 #include "sa_w_equ.h"
+#include "WbProcess.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -18,30 +19,15 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // Workbench process class to calculate new raw data after an equation given
 // by the user.
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcessWbEquation construction/destruction/creation
-
-/***************************************************************************/
-// CProcessWbEquation::CProcessWbEquation Constructor
-/***************************************************************************/
-CProcessWbEquation::CProcessWbEquation() {
-    m_szEquation.Empty();
+CProcessWbEquation::CProcessWbEquation(Context & context) : CWbProcess( context, WbEquation) {
+    m_szEquation.clear();
 }
-
-/***************************************************************************/
-// CProcessWbEquation::~CProcessWbEquation Destructor
-/***************************************************************************/
-CProcessWbEquation::~CProcessWbEquation() {
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessWbEquation helper functions
 
 /***************************************************************************/
 // CProcessWbEquation::CheckFunction Check validity of equation
 /***************************************************************************/
 BOOL CProcessWbEquation::CheckFunction(string* pszFunction) {
-    if (pszFunction && !pszFunction->IsEmpty()) {
+    if (pszFunction && pszFunction->length()!=0) {
         int nType = 0;
         ParseUtf8(*pszFunction, &nType, 1.0);
         if (nType) {
@@ -70,9 +56,9 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     }
     // check if nested workbench processes
     int nOldLevel = nLevel; // save original level
-    CProcess * pLowerProcess = NULL;
+    CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
+        pLowerProcess = pMain->GetWbProcess( pModel->GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
             long lResult = pLowerProcess->Process(pCaller, pModel, nProgress, ++nLevel);
@@ -157,7 +143,7 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
             }
             dwDataPos++;
             // process this data point with the function parser from Z-Graph
-            if (!m_szEquation.IsEmpty() && (dwDataPos >= dwRangeStart) && (dwDataPos <= dwRangeEnd)) {
+            if (m_szEquation.length()!=0 && (dwDataPos >= dwRangeStart) && (dwDataPos <= dwRangeEnd)) {
                 int nType = 0;
                 double dData = (double)nData;
                 if (!nData) {
@@ -222,20 +208,6 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     return MAKELONG(nLevel, nProgress);
 }
 
-/***************************************************************************/
-// CProcessWbEquation::PropertiesDialog Calls the properties dialog for this process
-/***************************************************************************/
-int CProcessWbEquation::PropertiesDialog() {
-    CWbDlgFilterEquation dlg;
-    dlg.m_szEquation = m_szEquation;
-    if (dlg.DoModal() == IDOK) {
-        m_szEquation = dlg.m_szEquation;
-        SetDataInvalid();
-        return IDOK;
-    }
-    return IDCANCEL;
-}
-
 static LPCSTR psz_equation = "equation";
 static LPCSTR psz_text = "text";
 
@@ -244,7 +216,7 @@ static LPCSTR psz_text = "text";
 /***************************************************************************/
 void CProcessWbEquation::WriteProperties(ObjectOStream & obs) {
     obs.WriteBeginMarker(psz_equation);
-    obs.WriteString(psz_text, m_szEquation.utf8().c_str());
+    obs.WriteString(psz_text, m_szEquation.c_str());
     obs.WriteEndMarker(psz_equation);
 }
 
@@ -252,7 +224,7 @@ void CProcessWbEquation::WriteProperties(ObjectOStream & obs) {
 // CProcessWbEquation::ReadProperties Read equation properties
 /***************************************************************************/
 BOOL CProcessWbEquation::ReadProperties(ObjectIStream & obs) {
-    CString szSafe = m_szEquation;
+    string szSafe = m_szEquation;
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_equation)) {
         return FALSE;
     }
@@ -268,3 +240,8 @@ BOOL CProcessWbEquation::ReadProperties(ObjectIStream & obs) {
     }
     return TRUE;
 }
+
+double CProcessWbEquation::ParseUtf8(const string & sz, INT* att, double X, double Y) {
+    return parse(sz.c_str(), att, X, Y);
+}
+

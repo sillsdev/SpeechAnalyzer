@@ -19,7 +19,6 @@ public:
 	virtual void setUtf8(LPCSTR pUtf8); 
 };
 
-double ParseUtf8(const CSaString &, INT * att, double X, double Y = 0.0);
 bool ReadStreamString(CObjectIStream & stream, CSaString pszMarker, CSaString & szResult);
 bool ReadStreamString(CObjectIStream & stream, LPCSTR pszMarker, CSaString & szResult);
 

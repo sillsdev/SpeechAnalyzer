@@ -5,16 +5,13 @@
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "Process\Process.h"
 #include "sa_wbch.h"
 #include "sa_w_dlg.h"
 #include "mainfrm.h"
-#include "Process\sa_w_pas.h"
-#include "Process\sa_w_rev.h"
-#include "Process\sa_w_equ.h"
 #include "sa_w_doc.h"
 #include "sa.h"
 #include "objectostream.h"
+#include "WbProcessDlgFactory.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -84,7 +81,7 @@ void CSaWorkbenchView::DoDataExchange(CDataExchange * pDX) {
 // CSaWorkbenchView::CreateWbProcess Creates a workbench process
 // The function returns NULL if the process could not create.
 //***************************************************************************/
-CProcess * CSaWorkbenchView::CreateWbProcess(int nFilterNumber) {
+CWbProcess * CSaWorkbenchView::CreateWbProcess(int nFilterNumber) {
     switch (nFilterNumber) {
     case 1: // highpass
         return new CProcessWbHighpass;
@@ -283,10 +280,11 @@ void CSaWorkbenchView::CallPropertiesDialog(int nProcess, int nFilter) {
             nFilter = 0;
         }
     }
-    CProcess * pProcess = pMain->GetWbProcess(nProcess, nFilter);
+    CWbProcess * pProcess = pMain->GetWbProcess(nProcess, nFilter);
     // if process ready call process properties dialog
-    if (pProcess) {
-        if (pProcess->PropertiesDialog() == IDOK) {
+    if (pProcess!=nullptr) {
+        CWbProcessDlgFactory factory;
+        if (factory.showDialog(pProcess) == IDOK) {
 			// documents data has been modified
             GetDocument()->SetModifiedFlag();    
         }

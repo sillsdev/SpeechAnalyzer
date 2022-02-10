@@ -3745,7 +3745,7 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart) {
 		// get pointer to view
 		POSITION pos = GetFirstViewPosition();
 		CSaView * pView = (CSaView *)GetNextView(pos);
-		CProcess * pProcess = pMain->GetWbProcess(m_nWbProcess - 1, 0);
+		CWbProcess * pProcess = pMain->GetWbProcess(m_nWbProcess - 1, 0);
 		if (pProcess != NULL) {
 			// in case of cancelled process, restart it
 			pProcess->RestartProcess();
@@ -4499,7 +4499,7 @@ DWORD CSaDoc::GetRawDataSize() const {
 /***************************************************************************/
 HPSTR CSaDoc::GetWaveData(DWORD dwOffset, BOOL bBlockBegin) {
 	if (m_nWbProcess > 0) {
-		CProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
+		CWbProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
 		if (pWbProcess != NULL) {
 			return pWbProcess->GetProcessedWaveData(dwOffset, bBlockBegin);
 		}
@@ -4516,7 +4516,7 @@ HPSTR CSaDoc::GetWaveData(DWORD dwOffset, BOOL bBlockBegin) {
 DWORD CSaDoc::GetWaveDataBufferSize() {
 
 	if (m_nWbProcess > 0) {
-		CProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
+		CWbProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
 		if (pWbProcess != NULL) {
 			return pWbProcess->GetProcessedWaveDataBufferSize();
 		}
@@ -4575,7 +4575,7 @@ HPSTR CSaDoc::GetAdjustedUnprocessedWaveData(DWORD dwOffset) {
 /***************************************************************************/
 DWORD CSaDoc::GetWaveBufferIndex() {
 	if (m_nWbProcess > 0) {
-		CProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
+		CWbProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
 		if (pWbProcess != NULL) {
 			return pWbProcess->GetProcessBufferIndex();
 		}
@@ -5064,7 +5064,7 @@ void CSaDoc::CopyProcessTempFile() {
 	BOOL bAdjust = (pszAdjustTempPath[0] != 0) && (pszAdjustTempPath != NULL);
 
 	// check for Workbench process
-	CProcess * pWbProcess = NULL;
+	CWbProcess * pWbProcess = NULL;
 	// fallback to adjust temp file
 	LPCTSTR pszWBTempPath = pszAdjustTempPath;
 	if (m_nWbProcess > 0) {

@@ -7,15 +7,18 @@
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_W_REV_H
 #define _SA_W_REV_H
+#include "WbProcess.h"
 
-class CProcessWbEcho : public CProcess {
+class CProcessWbEcho : public CWbProcess {
 public:
     CProcessWbEcho(Context & context);
-
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
-    virtual int PropertiesDialog(); // calls the properties dialog for this process
     virtual void WriteProperties(ObjectOStream & obs);
     virtual BOOL ReadProperties(ObjectIStream & obs);
+    void SetDelay(UINT val) { m_nDelay = val; };
+    void SetGain(int val) { m_nGain = val; };
+    UINT GetDelay() { return m_nDelay; };
+    int GetGain() { return m_nGain; };
 
 private:
     UINT m_nDelay; // delay in ms
@@ -25,15 +28,16 @@ private:
 //###########################################################################
 // CProcessWbReverb data processing
 
-class CProcessWbReverb : public CProcess {
+class CProcessWbReverb : public CWbProcess {
 public:
-    CProcessWbReverb();
-    virtual ~CProcessWbReverb();
-
+    CProcessWbReverb(Context & context);
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
-    virtual int PropertiesDialog(); // calls the properties dialog for this process
     virtual void WriteProperties(ObjectOStream & obs);
     virtual BOOL ReadProperties(ObjectIStream & obs);
+    void SetDelay(UINT val) { m_nDelay = val; };
+    void SetGain(int val) { m_nGain = val; };
+    UINT GetDelay() { return m_nDelay; };
+    int GetGain() { return m_nGain; };
 
 private:
     UINT m_nDelay; // delay in ms

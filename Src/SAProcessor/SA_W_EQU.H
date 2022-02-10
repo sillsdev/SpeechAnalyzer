@@ -10,23 +10,23 @@
 //###########################################################################
 // CProcessWbEquation data processing
 
-class CProcessWbEquation : public CProcess {
+class CProcessWbEquation : public CWbProcess {
 // Construction/destruction/creation
 public:
-    CProcessWbEquation();
-    virtual ~CProcessWbEquation();
-
-    // Attributes
+    CProcessWbEquation(Context & context);
+    BOOL CheckFunction(string*); // check the function string
+    long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
+    virtual void WriteProperties(ObjectOStream& obs);
+    virtual BOOL ReadProperties(ObjectIStream& obs);
+    const char* GetEquation() {
+        return m_szEquation.c_str();
+    }
+    void SetEquation(const char* value) {
+        m_szEquation = value;
+    }
 private:
     string m_szEquation; // equation string
-
-    // Operations
-public:
-    BOOL CheckFunction(string *); // check the function string
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
-    virtual int PropertiesDialog(); // calls the properties dialog for this process
-    virtual void WriteProperties(ObjectOStream & obs);
-    virtual BOOL ReadProperties(ObjectIStream & obs);
+    double ParseUtf8(const string &, INT* att, double X, double Y = 0.0);
 };
 
 #endif //_SA_W_EQU_H

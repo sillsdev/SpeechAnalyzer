@@ -9,6 +9,7 @@
 #include "Process.h"
 #include "sa_w_rev.h"
 #include "math.h"
+#include "WbProcess.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -19,7 +20,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessWbEcho
 // Workbench process class to calculate new raw data with a echo function.
 
-CProcessWbEcho::CProcessWbEcho(Context & context) : CProcess(context) {
+CProcessWbEcho::CProcessWbEcho(Context & context) : CWbProcess(context, WbEcho) {
     m_nDelay = 100;
     m_nGain = -20;
 }
@@ -42,9 +43,9 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
     }
     // check if nested workbench processes
     int nOldLevel = nLevel; // save original level
-    CProcess * pLowerProcess = NULL;
+    CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
+        pLowerProcess = pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
             long lResult = pLowerProcess->Process(pCaller, pModel, nProgress, ++nLevel);
@@ -223,22 +224,6 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
     return MAKELONG(nLevel, nProgress);
 }
 
-/***************************************************************************/
-// CProcessWbEcho::PropertiesDialog Calls the properties dialog for this process
-/***************************************************************************/
-int CProcessWbEcho::PropertiesDialog() {
-    CWbDlgFilterReverb dlgReverb;
-    dlgReverb.m_nDelay = m_nDelay;
-    dlgReverb.m_nGain = m_nGain;
-    if (dlgReverb.DoModal() == IDOK) {
-        m_nDelay = dlgReverb.m_nDelay;
-        m_nGain = dlgReverb.m_nGain;
-        SetDataInvalid();
-        return IDOK;
-    }
-    return IDCANCEL;
-}
-
 static LPCSTR psz_echo = "echo";
 static LPCSTR psz_reverb = "reverb";
 static LPCSTR psz_delay = "delay";
@@ -281,25 +266,10 @@ BOOL CProcessWbEcho::ReadProperties(ObjectIStream & obs) {
 // CProcessWbReverb
 // Workbench process class to calculate new raw data with a reverb function.
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcessWbReverb construction/destruction/creation
-
-/***************************************************************************/
-// CProcessWbReverb::CProcessWbReverb Constructor
-/***************************************************************************/
-CProcessWbReverb::CProcessWbReverb() {
+CProcessWbReverb::CProcessWbReverb(Context & context) : CWbProcess(context, WbReverb) {
     m_nDelay = 100;
     m_nGain = -20;
 }
-
-/***************************************************************************/
-// CProcessWbReverb::~CProcessWbReverb Destructor
-/***************************************************************************/
-CProcessWbReverb::~CProcessWbReverb() {
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessWbReverb helper functions
 
 /***************************************************************************/
 // CProcessWbReverb::Process Processing new raw data with a reverb function
@@ -320,9 +290,9 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
     }
     // check if nested workbench processes
     int nOldLevel = nLevel; // save original level
-    CProcess * pLowerProcess = NULL;
+    CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
+        pLowerProcess = pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
             long lResult = pLowerProcess->Process(pCaller, pModel, nProgress, ++nLevel);
@@ -526,23 +496,6 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
     target.EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
-}
-
-/***************************************************************************/
-// CProcessWbReverb::PropertiesDialog Calls the properties dialog for this process
-/***************************************************************************/
-int CProcessWbReverb::PropertiesDialog() {
-    CWbDlgFilterReverb dlgReverb;
-    dlgReverb.m_nDelay = m_nDelay;
-    dlgReverb.m_nGain = m_nGain;
-    dlgReverb.m_bEcho = FALSE;
-    if (dlgReverb.DoModal() == IDOK) {
-        m_nDelay = dlgReverb.m_nDelay;
-        m_nGain = dlgReverb.m_nGain;
-        SetDataInvalid();
-        return IDOK;
-    }
-    return IDCANCEL;
 }
 
 /***************************************************************************/

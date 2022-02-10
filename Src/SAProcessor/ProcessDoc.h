@@ -19,7 +19,6 @@ class CProcessDoc : public CCmdTarget, public IProcess {
 public:
     CProcessDoc(Context & context);
     virtual ~CProcessDoc();
-
     void SetDataInvalid();
     // return pointer to block of processed wave source
     HPSTR GetProcessedWaveData(App * pApp, LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin = FALSE);

@@ -22,11 +22,6 @@ void CSaString::setUtf8(LPCSTR pUtf8) {
 }
 
 
-double ParseUtf8(const CSaString & sz, INT * att, double X, double Y) {
-    std::string szUtf8 = sz.utf8();
-    return parse(szUtf8.c_str(), att, X, Y);
-}
-
 bool ReadStreamString(CObjectIStream & stream, CSaString pszMarker, CSaString & szResult) {
     return ReadStreamString(stream, pszMarker.utf8().c_str(), szResult);
 }

@@ -6,10 +6,11 @@
 
 #include "IProcess.h"
 #include "Process.h"
+#include "wbprocess.h"
 
-class CProcessIIRFilter : public CProcess {
+class CProcessIIRFilter : public CWbProcess {
 public:
-    CProcessIIRFilter(Context & context, BOOL bDstWBench = TRUE);
+    CProcessIIRFilter(Context & context, WbDialogType type, BOOL bDstWBench = TRUE);
     virtual ~CProcessIIRFilter();
 
     void SetSourceProcess(IProcess * pSourceProcess, BOOL bWBenchProcess = TRUE);

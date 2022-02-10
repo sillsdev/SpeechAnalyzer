@@ -6,7 +6,7 @@
 
 class CProcessButterworth : public CProcessIIRFilter {
 public:
-    CProcessButterworth(Context & context, BOOL bWorkBenchOutput = TRUE);
+    CProcessButterworth(Context & context, WbDialogType type, BOOL bWorkBenchOutput = TRUE);
 
     void LowPass(int nOrder, double dFrequency, double dScale=1.);
     void HighPass(int nOrder, double dFrequency, double dScale=1.);

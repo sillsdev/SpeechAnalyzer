@@ -16,8 +16,7 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessAdjust::CProcessAdjust(Model * pModel) {
-    m_pDoc = pModel;
+CProcessAdjust::CProcessAdjust(Context & context) : CProcessButterworth(context) {
     m_bInvert = FALSE;
     m_bZero = FALSE;
     m_bNormalize = FALSE;
@@ -74,7 +73,7 @@ long CProcessAdjust::Process(void * pCaller, Model * pModel, int nProgress, int 
         CProcessDoc * pLowerProcess = pModel->GetUnprocessed();
         double dScale = m_bInvert ? -1 : 1;
         if (m_bNormalize) {
-            CProcessButterworth butterworth;
+            CProcessButterworth butterworth(context);
             butterworth.SetSourceProcess(pLowerProcess);
             butterworth.SetFilterFilter(TRUE);
             butterworth.HighPass(m_bZero ? 3 : 0, 40., 1.);
@@ -97,18 +96,17 @@ long CProcessAdjust::Process(void * pCaller, Model * pModel, int nProgress, int 
 }
 
 HPSTR CProcessAdjust::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
-    //TRACE("GetProcessedWaveData %d %d\n", dwOffset, bBlockBegin);
     if (NeedsAdjustment()) {
         return CProcess::GetProcessedWaveData(dwOffset, bBlockBegin);
     }
-    return m_pDoc->GetUnprocessedWaveData(dwOffset, bBlockBegin);
+    return pModel->GetUnprocessedWaveData(dwOffset, bBlockBegin);
 }
 
 void * CProcessAdjust::GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse) {
     if (NeedsAdjustment()) {
         return CProcess::GetProcessedDataBlock(dwOffset, sObjectSize, bReverse);
     }
-    return m_pDoc->GetUnprocessedDataBlock(dwOffset, sObjectSize, bReverse);
+    return pModel->GetUnprocessedDataBlock(dwOffset, sObjectSize, bReverse);
 }
 
 DWORD CProcessAdjust::GetProcessBufferIndex(size_t nSize) {
@@ -116,7 +114,7 @@ DWORD CProcessAdjust::GetProcessBufferIndex(size_t nSize) {
     if (NeedsAdjustment()) {
         return CProcessButterworth::GetProcessBufferIndex(nSize);
     }
-    return m_pDoc->GetUnprocessedBufferIndex(nSize);
+    return pModel->GetUnprocessedBufferIndex(nSize);
 }
 
 BOOL CProcessAdjust::GetInvert() const {

@@ -1,0 +1,692 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CAbstractPitchProcess" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>AbstractPitchProcess.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CAnalyticLpcAnalysis" Collapsed="true">
+    <Position X="75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAEwAAAAIgABgAAAAAAAAAABAAAAgkAIAAAAQAAQA=</HashCode>
+      <FileName>AnalyticLpcAnalysis.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessButterworth" Collapsed="true">
+    <Position X="24.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAEAQACAACABAoAitAAACAAAIAAACgAABAAAAAwQA=</HashCode>
+      <FileName>Butterworth.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessFormantTracker" Collapsed="true">
+    <Position X="65.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAACAAAAAAAAABgAAACAAAAAAAAAACIAAAIAAAEA=</HashCode>
+      <FileName>FormantTracker.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessHilbert" Collapsed="true">
+    <Position X="18.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIQAgAAAEAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Hilbert.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessIIRFilter" Collapsed="true">
+    <Position X="23" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAREQIAEFAAQIAgBAIAAAEQAAAAAAAAhAAQAAAQA=</HashCode>
+      <FileName>IIRFilter.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CLinPredCoding" Collapsed="true">
+    <Position X="82" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAASEEBAgEAAEAoAACCAYAAAEAAAgACAAEhAgAARAQ=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CParseParm" Collapsed="true">
+    <Position X="76.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAABAwAAAAAACAAAQAAAAAAAAEACAAAAAAA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSegmentParm" Collapsed="true">
+    <Position X="80.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAQAAAAAAAAAAAAAAAAAQAAAAAAACEBCEAAAAAA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CPitchParm" Collapsed="true">
+    <Position X="78.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAACAEAIAAAAAAAAAAgQIAAIAAABEACAAAIAAA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUttParm" Collapsed="true">
+    <Position X="76.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAQAAAAAAEAAAAgAAAAAQABAAAIAAACAAAAAAA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMusicParm" Collapsed="true">
+    <Position X="75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAQAAAkAAAAAAAEAAAAgQAAAJAAABEACAAAAAAA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CIntensityParm" Collapsed="true">
+    <Position X="80.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAQAAAAAAAAEACAAAIAAA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWaveletParm" Collapsed="true">
+    <Position X="78.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AhAAAAAAAAAAAgAAAAAACAAAUAAAAABAAEACAAAAAAA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSpectrumParm" Collapsed="true">
+    <Position X="75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAACAAQBAAAAAgIgAAAQAAEAAAAAEAuAAIIABA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CFormantParm" Collapsed="true">
+    <Position X="76.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAACCAAAAAACAACABAAQAAAAAAAAEACAAAAAAA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CRecordingParm" Collapsed="true">
+    <Position X="75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAQCIAAAAAAEACAAAAAQA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CResearchSettings" Collapsed="true">
+    <Position X="76.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAGCAEAAAAAAAAAAAAIAAgAAACACEIAAAAg=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CFormantTrackerOptions" Collapsed="true">
+    <Position X="78.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAACAAAEAAAAAAQAAAIAQAAAICAACBAAAIhA=</HashCode>
+      <FileName>param.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcess" Collapsed="true">
+    <Position X="36.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ZDBiAAAIAIBAIAAAIiAiwwAERQZQNBQQrGALAIGmCRo=</HashCode>
+      <FileName>Process.h</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CProcessIterator&lt;_Ty&gt;" Collapsed="true">
+    <Position X="82" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAIAAEABAKQgEAIAAAAAAAAAAAAAAgAAAAAAQ=</HashCode>
+      <FileName>Process.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessAreaData" Collapsed="true">
+    <Position X="69.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAgAAAAAUABAAAAAAAAAAAAACAAAAAAAAAAQA=</HashCode>
+      <FileName>ProcessAreaData.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessSDP" Collapsed="true">
+    <Position X="68" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ProcessAreaData.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessDoc" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="80.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BDAIAAYAAgAAAAAAAiAAAAAABAAQAAQACCAAAAAACAI=</HashCode>
+      <FileName>ProcessDoc.h</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CProcess3dPitch" Collapsed="true">
+    <Position X="36.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAQAEAAAAAgAAAAAAAAAEgAAAAAAAAAAAAgA=</HashCode>
+      <FileName>sa_p_3dPitch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessChange" Collapsed="true">
+    <Position X="41" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAACAQAAAEAAEAwAAEoAEQAAAgAAQIAAAAAAAAEA=</HashCode>
+      <FileName>SA_P_CHA.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessCustomPitch" Collapsed="true">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>sa_p_custompitch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessDurations" Collapsed="true">
+    <Position X="43.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAgBACACAAgAAAAAAAQAAAAAAAAAAIAIAAAA=</HashCode>
+      <FileName>Sa_p_dur.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessFormants" Collapsed="true">
+    <Position X="47.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAARIAAIUCBCACAkAAAAAAaABgABQRIgAgAAEAhAY=</HashCode>
+      <FileName>Sa_p_fmt.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessFragments" Collapsed="true">
+    <Position X="52.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAQABAAAFgAAAAAABAAAAAAAQBAAAAAAIBg=</HashCode>
+      <FileName>sa_p_fra.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessGlottis" Collapsed="true">
+    <Position X="59" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Sa_p_glo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessGrappl" Collapsed="true">
+    <Position X="7.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAGAAAAAAAAgAAgAAAAAABAAAAIAAAABEAAAA=</HashCode>
+      <FileName>sa_p_grappl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessInstantaneousPower" Collapsed="true">
+    <Position X="11.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAgAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>sa_p_InstantaneousPower.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessLoudness" Collapsed="true">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACACAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>SA_P_LOU.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessSmoothLoudness" Collapsed="true">
+    <Position X="38.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACgAAEAAAAAAACAAAkAAAAAgAASBAAAgIAAAEAAAAEA=</HashCode>
+      <FileName>SA_P_LOU.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessMelogram" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACCAAAAAAAAgAAEAAAAAAAAAAAAAAAAAEAAIA=</HashCode>
+      <FileName>sa_p_melogram.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessPitch" Collapsed="true">
+    <Position X="5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>sa_p_pitch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessPOA" Collapsed="true">
+    <Position X="45.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAgAAAAAAAQAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Sa_p_poa.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessRatio" Collapsed="true">
+    <Position X="50" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAgAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>SA_P_RAT.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessRaw" Collapsed="true">
+    <Position X="54.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAgAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sa_p_raw.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessSpectroFormants" Collapsed="true">
+    <Position X="61.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEBAAAgAAAAAAAQAAAAAACQIAAAAAAAA=</HashCode>
+      <FileName>sa_p_sfmt.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessSmoothedPitch" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>sa_p_smoothedpitch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessSpectrogram" Collapsed="true">
+    <Position X="70.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAACCAgJAAAIAQAAAAISAIhgpAQAIMAE=</HashCode>
+      <FileName>Sa_p_spg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessSpectrum" Collapsed="true">
+    <Position X="56.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAIAgAABQAAAEEgIAAAAACQQAQBABKAAAAQUAhAE=</HashCode>
+      <FileName>Sa_p_spu.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessTonalWeightChart" Collapsed="true">
+    <Position X="63.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAQAAAAAgAAEAAAiAAQEBABAgAAAAEAEAA=</HashCode>
+      <FileName>Sa_p_twc.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessWavelet" Collapsed="true">
+    <Position X="72.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAEAAEBAAA=</HashCode>
+      <FileName>sa_p_wavelet.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWaveletNode" Collapsed="true">
+    <Position X="76.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAEkAQEEAwIACAACBAETIqEQApGgAgACORAAAGAwI=</HashCode>
+      <FileName>sa_p_wavelet.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessZCross" Collapsed="true">
+    <Position X="16.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAgAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SA_P_ZCR.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessAdjust" Collapsed="true">
+    <Position X="23" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BQAAEAAAAQIAAAAAAhAAAAAAFAAAAABFQBEAAAAACAA=</HashCode>
+      <FileName>SA_W_ADJ.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessWbEquation" Collapsed="true">
+    <Position X="34.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAIAAAAAgBAAAEAQAAAgAAAAEAAAAAQAAA=</HashCode>
+      <FileName>SA_W_EQU.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessWbHighpass" Collapsed="true">
+    <Position X="20.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAEQAQAAAAAAAAAxAAAAAAQAAAgAAAAEBAAIAACAA=</HashCode>
+      <FileName>SA_W_PAS.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessWbLowpass" Collapsed="true">
+    <Position X="25.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAEQAAAAAAAAAAAxAAAAAARAAAgAAAAEBAAIAACAA=</HashCode>
+      <FileName>SA_W_PAS.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessWbBandpass" Collapsed="true">
+    <Position X="27.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACESAAAAAAAAAIgxAAAAgAQAAAAIAACEBAAAAAAAA=</HashCode>
+      <FileName>SA_W_PAS.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessWbEcho" Collapsed="true">
+    <Position X="32" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AigBAAAAAAAAAAAAAgAAAAAAQAAAAAAAAEAAAAABABg=</HashCode>
+      <FileName>SA_W_REV.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessWbReverb" Collapsed="true">
+    <Position X="29.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AigBBAAAAAAAAAAAAgAAAAAAQAAAAAAAAEAAAAABABA=</HashCode>
+      <FileName>SA_W_REV.H</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSaParam" Collapsed="true">
+    <Position X="78.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAIDAAAABCCABAAAAAAgAogAAAA=</HashCode>
+      <FileName>SaParam.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSpectroParm" Collapsed="true">
+    <Position X="82" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AhAAwAMYAAAAEgAAAAAECCI0UAAAAgDAQEgCAAAAAEA=</HashCode>
+      <FileName>SpectroParm.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="STrackState" Collapsed="true">
+    <Position X="80.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAAAAAAFAwAAAAAoAAAQAAAAAAA=</HashCode>
+      <FileName>TrackState.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVowelFormants" Collapsed="true">
+    <Position X="78.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAgAAAAAAAAAAAAERAAAAAACAEACAAABAAA=</HashCode>
+      <FileName>VowelFormants.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVowelSetVersion" Collapsed="true">
+    <Position X="75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQIAAAAAAAQAAAAAAAAEAAEAAAAAI=</HashCode>
+      <FileName>VowelFormants.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVowelFormantSet" Collapsed="true">
+    <Position X="80.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAIAAAAAAAACAAAAAAAAgAAQAAAgAAAAEAAQBAAFAA=</HashCode>
+      <FileName>VowelFormants.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVowelFormantSets" Collapsed="true">
+    <Position X="82" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAAAIBAABRAgAEIAAAAAABAAB0AAAU=</HashCode>
+      <FileName>VowelFormants.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWbProcess" Collapsed="true">
+    <Position X="26.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAABAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>WbProcess.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="SFormantAssessment" Collapsed="true">
+    <Position X="76.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAQAAAAAAIAAAAAAAAABAAgAAAABAAA=</HashCode>
+      <FileName>Lpc.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SLPCParmSets" Collapsed="true">
+    <Position X="75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAMAAQQQAAAAAAAAAAGAAABAAAQAAAgAAACIAAIgAA=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SLPCSettings" Collapsed="true">
+    <Position X="76.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAQAAAAACgEABAAAAAAIAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SLPCModel" Collapsed="true">
+    <Position X="80.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>KIAcACCEAAAkAAEACSQBFAQAIAAAQBAQIIIEBgAAoAI=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SVocalTractModel" Collapsed="true">
+    <Position X="75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAABAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SLPCParms" Collapsed="true">
+    <Position X="82" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQQAAAAAAgEAAAAAAAAIAAAAAAgBAAAAAAA=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SSpectProcSelect" Collapsed="true">
+    <Position X="80.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAEABEAAqAEggAAAAAAAAAAAgAAAAAoAAAAAAAAAAA=</HashCode>
+      <FileName>Sa_p_spu.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SSpectValue" Collapsed="true">
+    <Position X="82" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Sa_p_spu.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SSpectPowerRange" Collapsed="true">
+    <Position X="78.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAEAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sa_p_spu.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SFormant" Collapsed="true">
+    <Position X="75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAABAA=</HashCode>
+      <FileName>Sa_p_spu.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SFormantFrame" Collapsed="true">
+    <Position X="78.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sa_p_spu.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="CDBL" Collapsed="true">
+    <Position X="75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FormantTracker.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="VECTOR_CDBL" Collapsed="true">
+    <Position X="76.75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FormantTracker.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DEQUE_CDBL" Collapsed="true">
+    <Position X="80.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FormantTracker.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DBL" Collapsed="true">
+    <Position X="78.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FormantTracker.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="VECTOR_DBL" Collapsed="true">
+    <Position X="78.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FormantTracker.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="LPC_PROC_REQ" Collapsed="true">
+    <Position X="75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="HPSTR" Collapsed="true">
+    <Position X="82" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\mmiscapi.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="CVowelFormantsVector" Collapsed="true">
+    <Position X="76.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>VowelFormants.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Interface Name="Model" Collapsed="true">
+    <Position X="75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ApAAEAAJAACAIAAAIECggAAQAQAAAAiAAAEAAKQgAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ProgressStatusBar" Collapsed="true">
+    <Position X="80.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAgAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MainFrame" Collapsed="true">
+    <Position X="82" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgIAEAAAAAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="App" Collapsed="true">
+    <Position X="75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmdTarget" Collapsed="true">
+    <Position X="76.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="View" Collapsed="true">
+    <Position X="82" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAgAAAAgAAAAAAAAQAAAAAgIAAAAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Context" Collapsed="true">
+    <Position X="78.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ObjectIStream" Collapsed="true">
+    <Position X="76.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAIgRAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAEAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ObjectOStream" Collapsed="true">
+    <Position X="78.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAhAAAAAAgAAAAQQAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="IProcess" Collapsed="true">
+    <Position X="80.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>IProcess.h</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="EGender" Collapsed="true">
+    <Position X="80.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WbDialogType" Collapsed="true">
+    <Position X="75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAUAAAAAQAAEAAAAAAAAAAAAgAAAQAAAAA=</HashCode>
+      <FileName>Context.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EAnalysisParametersSets" Collapsed="true">
+    <Position X="76.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAoYAAAAAAAAAAUAQAAABBAABAAAAAAUAAAABAAA=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EFormantMethod" Collapsed="true">
+    <Position X="78.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EAnalysisMethods" Collapsed="true">
+    <Position X="75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAABAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Lpc.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ESpectrum" Collapsed="true">
+    <Position X="82" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Sa_p_spu.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

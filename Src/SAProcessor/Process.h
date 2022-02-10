@@ -30,7 +30,6 @@
 #define MAX_RESOLUTION      0x0100  // spectrogram at max resolution
 #define KEEP_AREA           0x4000  // keep the area boundaries
 
-
 __interface ISaDoc;
 class View;
 class ObjectOStream;
@@ -64,7 +63,6 @@ public:
     virtual DWORD GetProcessBufferIndex(size_t nSize = 1);
     virtual LPCTSTR GetProcessFileName();
     // Workbench Operations
-    virtual int PropertiesDialog();                                                 // calls the properties dialog for this process
     virtual void WriteProperties(ObjectOStream & obs);
     virtual BOOL ReadProperties(ObjectIStream & obs);
     // special workbench helper functions
@@ -108,8 +106,6 @@ protected:
     DWORD m_dwBufferOffset;     // actual buffer offset
     int m_nMaxValue;            // maximum value of processed data
     int m_nMinValue;            // minimum value of processed data
-
-protected:
     Context& context;
     CmdTarget& target;
     App& app;

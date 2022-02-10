@@ -38,7 +38,7 @@ public:
 
 public:
 	// creates a workbench process
-    CProcess * CreateWbProcess(int nFilterNumber);	
+    CWbProcess * CreateWbProcess(int nFilterNumber);	
 	// returns a pointer to a filter resource
     UINT GetFilterResource(int nFilterNumber);
 	// sets up workbench filter processes

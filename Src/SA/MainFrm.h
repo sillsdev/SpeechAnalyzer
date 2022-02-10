@@ -189,8 +189,8 @@ public:
     void CreateFindOrReplaceDlg();
     void MaybeCreateFindOrReplaceDlg(bool bWantFindOnly);
     // workbench helper functions
-    CProcess * GetWbProcess(int nProcess, int nFilter);
-    CProcess * SetWbProcess(int nProcess, int nFilter, CProcess * pProcess); // set new workbench process pointer and return old one
+    CWbProcess * GetWbProcess(int nProcess, int nFilter);
+    CWbProcess * SetWbProcess(int nProcess, int nFilter, CWbProcess * pProcess); // set new workbench process pointer and return old one
     int GetWbFilterID(int nProcess, int nFilter);
     int SetWbFilterID(int nProcess, int nFilter, int nID); // set new workbench filter ID
     CDocument * IsProcessUsed(int nProcess); // return pointer to document, if process used by it, else NULL

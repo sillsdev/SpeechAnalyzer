@@ -41,7 +41,6 @@
 #include "FmtParm.h"
 #include "SaParam.h"
 #include "TranscriptionData.h"
-#include "Process\ProcessDoc.h"
 #include "SegmentOps.h"
 #include "AutoSave.h"
 #include "ThreadManager.h"

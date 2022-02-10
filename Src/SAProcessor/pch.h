@@ -70,6 +70,8 @@ inline static int round2Int(double value) {
 
 #define ZCROSS_SAMPLEWINDOWWIDTH(samplingRate)  CALCULATION_INTERVAL(samplingRate)  // number of samples in the calculation window to calculate zero crossing
 
+#define MAX_FILTER_NUMBER               3           // number of filters in workbench processes
+
 #include "resource.h"
 
 #include "context.h"

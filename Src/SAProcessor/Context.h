@@ -6,14 +6,21 @@ class CMusicParm;
 class CUttParm;
 class CProcessZCross;
 class CProcessFragments;
+class CWbProcess;
 
 enum EGender {
     male, female, child
 };
 
+enum WbDialogType {
+    Plain,WbEquation,WbEcho,WbReverb,WbLoPass,WbHiPass,WbBandPass
+};
+
 __interface Model {
+    BOOL IsBackgroundProcessing();
     DWORD GetSampleSize();
     DWORD GetSamplesPerSec();
+    DWORD GetNumChannels() const;
     DWORD GetNumSamples();
     HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
     DWORD GetWaveBufferIndex();
@@ -29,17 +36,24 @@ __interface Model {
     CProcessZCross* GetZCross();
     CProcessFragments* GetFragments();
     bool Is16Bit();
+    void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
+    HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
+    DWORD GetUnprocessedBufferIndex(size_t nSize);
+    int GetWbProcess();
+    LPCTSTR GetProcessFilename();
+    DWORD GetSelectedChannel();
 };
 
 __interface ProgressStatusBar {
     void* GetProcessOwner();
     void SetProgress(int percent);
-    void SetProcessOwner(void*, void*);
+    void SetProcessOwner(void*, void*, int processID = -1);
 };
 
 __interface MainFrame {
     ProgressStatusBar* GetProgressStatusBar();
     void ShowDataStatusBar(BOOL);
+    CWbProcess* GetWbProcess(int nProcess, int nFilter);
 };
 
 __interface App {
@@ -85,7 +99,7 @@ __interface ObjectIStream {
     bool bReadBool(LPCSTR pszMarker, BOOL& b);
     //bool bReadCOLORREF(LPCSTR pszMarker, COLORREF& rgb);
     bool bReadInteger(LPCSTR pszMarker, int& i);
-    //bool bReadDouble(LPCSTR pszMarker, double& i);
+    bool bReadDouble(LPCSTR pszMarker, double& i);
     bool bReadUInt(LPCSTR pszMarker, UINT& ui);
     //bool bReadNumberOf(LPCSTR pszMarker, unsigned long& num);
     //bool bReadDWord(LPCSTR pszMarker, DWORD& dw);
@@ -105,7 +119,7 @@ __interface ObjectOStream {
     void WriteBool(LPCSTR pszMarker, BOOL b);
     //void WriteCOLORREF(LPCSTR pszMarker, COLORREF rgb);
     void WriteInteger(LPCSTR pszMarker, int i, LPCSTR pszComment = NULL);
-    //void WriteDouble(LPCSTR pszMarker, double i);
+    void WriteDouble(LPCSTR pszMarker, double i);
     void WriteUInt(LPCSTR pszMarker, UINT u, LPCSTR pszComment = NULL);
     //void WriteNewline();
 };

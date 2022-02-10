@@ -15,7 +15,7 @@
 
 class CProcessAdjust : public CProcessButterworth {
 public:
-    CProcessAdjust(Model * pModel);
+    CProcessAdjust(Context & context);
     virtual ~CProcessAdjust();
 
     BOOL GetInvert() const;
@@ -31,7 +31,6 @@ public:
     bool NeedsAdjustment() const;
 
 private:
-    Model * m_pDoc;
     BOOL m_bInvert;
     BOOL m_bZero;
     BOOL m_bNormalize;

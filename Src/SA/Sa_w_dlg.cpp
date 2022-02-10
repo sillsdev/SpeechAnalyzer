@@ -9,11 +9,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Process\Process.h"
 #include "sa_wbch.h"
 #include "sa_w_dlg.h"
 #include "mainfrm.h"
-#include "Process\sa_w_equ.h"
+#include "WbProcessDlgFactory.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -124,8 +123,10 @@ void CWbDlgProcesses::OnProperties1() {
     }
     if (nLoop < MAX_FILTER_NUMBER) {
         // filter exists
-        if (pMain->GetWbProcess(m_nProcess, nLoop)) {
-            pMain->GetWbProcess(m_nProcess, nLoop)->PropertiesDialog();
+        CWbProcess* process = pMain->GetWbProcess(m_nProcess, nLoop);
+        if (process!=nullptr) {
+            CWbProcessDlgFactory factory;
+            factory.showDialog(process);
         }
     } else {
         if (m_nLocalFilter1 != m_nFilter1) {
@@ -166,8 +167,10 @@ void CWbDlgProcesses::OnProperties2() {
     }
     if (nLoop < MAX_FILTER_NUMBER) {
         // filter exists
-        if (pMain->GetWbProcess(m_nProcess, nLoop)) {
-            pMain->GetWbProcess(m_nProcess, nLoop)->PropertiesDialog();
+        CWbProcess* process = pMain->GetWbProcess(m_nProcess, nLoop);
+        if (process!=nullptr) {
+            CWbProcessDlgFactory factory;
+            factory.showDialog(process);
         }
     } else {
         if (m_nLocalFilter2 != m_nFilter2) {
@@ -208,8 +211,10 @@ void CWbDlgProcesses::OnProperties3() {
     }
     if (nLoop < MAX_FILTER_NUMBER) {
         // filter exists
-        if (pMain->GetWbProcess(m_nProcess, nLoop)) {
-            pMain->GetWbProcess(m_nProcess, nLoop)->PropertiesDialog();
+        CWbProcess* process = pMain->GetWbProcess(m_nProcess, nLoop);
+        if (process != nullptr) {
+            CWbProcessDlgFactory factory;
+            factory.showDialog(process);
         }
     } else {
         if (m_nLocalFilter3 != m_nFilter3) {

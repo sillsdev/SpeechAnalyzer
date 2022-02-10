@@ -17,8 +17,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcess
 // Base class for all data processing classes. Does all jobs, common to all
 // data processing derived classes.
-CProcess::CProcess(Context & context) {
-    CProcess::context = context;
+CProcess::CProcess(Context& _context) {
+    context = _context;
     app = context.GetApp();
     pView = context.GetView();
     target = pView->GetTarget();
@@ -435,13 +435,6 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
         // return the new data pointer
         return m_lpBuffer + (dwByteOffset - m_dwBufferOffset); 
     }
-}
-
-/***************************************************************************/
-// CProcess::PropertiesDialog Calls the properties dialog for this process
-/***************************************************************************/
-int CProcess::PropertiesDialog() {
-    return app.AfxMessageBox(IDS_DEFAULTPROPERTIES, MB_OK, 0);
 }
 
 /***************************************************************************/
