@@ -20,7 +20,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessWbEcho
 // Workbench process class to calculate new raw data with a echo function.
 
-CProcessWbEcho::CProcessWbEcho(Context & context) : CWbProcess(context, WbEcho) {
+CProcessWbEcho::CProcessWbEcho(Context * pContext) : CWbProcess(pContext, WbEcho) {
     m_nDelay = 100;
     m_nGain = -20;
 }
@@ -68,18 +68,18 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
 
     // start process
     // wait cursor
-    target.BeginWaitCursor();
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBECHO)) {
+    pTarget->BeginWaitCursor();
+    if (!StartProcess(pCaller, PROCESSWBECHO)) {
         // memory allocation failed
         // end data processing
         EndProcess();
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
     if (!CreateTempFile(_T("ECH"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -104,13 +104,13 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
     HANDLE hFifo = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwFifoSize * 2); // fifo is 16 bit
     if (!hFifo) {
         // memory allocation error
-        app.ErrorMessage(IDS_ERROR_MEMALLOC);
+        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         return Exit(PROCESS_ERROR); // error, memory allocation
     }
     HPSTR lpFifo = (HPSTR)::GlobalLock(hFifo); // lock memory
     if (!lpFifo) {
         // memory lock error
-        app.ErrorMessage(IDS_ERROR_MEMLOCK);
+        pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
         ::GlobalFree(hFifo);
         return Exit(PROCESS_ERROR); // error, memory allocation
     }
@@ -205,7 +205,7 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
                 // error writing file
                 ::GlobalUnlock(hFifo);
                 ::GlobalFree(hFifo);
-                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -219,7 +219,7 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }
@@ -266,7 +266,7 @@ BOOL CProcessWbEcho::ReadProperties(ObjectIStream & obs) {
 // CProcessWbReverb
 // Workbench process class to calculate new raw data with a reverb function.
 
-CProcessWbReverb::CProcessWbReverb(Context & context) : CWbProcess(context, WbReverb) {
+CProcessWbReverb::CProcessWbReverb(Context * pContext) : CWbProcess(pContext, WbReverb) {
     m_nDelay = 100;
     m_nGain = -20;
 }
@@ -322,12 +322,12 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
 
     // start process
 	// wait cursor
-    target.BeginWaitCursor(); 
+    pTarget->BeginWaitCursor(); 
 	// memory allocation failed
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBREV)) { 
+    if (!StartProcess(pCaller, PROCESSWBREV)) { 
 		// end data processing
         EndProcess(); 
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
@@ -335,7 +335,7 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
     if (!CreateTempFile(_T("REV"))) { 
 		// end data processing
         EndProcess(); 
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -365,7 +365,7 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
     HANDLE hFifo = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwFifoSize * 2); 
     if (!hFifo) {
         // memory allocation error
-        app.ErrorMessage(IDS_ERROR_MEMALLOC);
+        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
 		// error, memory allocation
         return Exit(PROCESS_ERROR); 
     }
@@ -373,7 +373,7 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
     HPSTR lpFifo = (HPSTR)::GlobalLock(hFifo); 
     if (!lpFifo) {
         // memory lock error
-        app.ErrorMessage(IDS_ERROR_MEMLOCK);
+        pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
         ::GlobalFree(hFifo);
 		// error, memory allocation
         return Exit(PROCESS_ERROR); 
@@ -476,7 +476,7 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
                 // error writing file
                 ::GlobalUnlock(hFifo);
                 ::GlobalFree(hFifo);
-                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
                 return Exit(PROCESS_ERROR); 
@@ -493,7 +493,7 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
     CloseTempFile();
 	// end data processing
     EndProcess((nProgress >= 95)); 
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

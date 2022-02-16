@@ -33,7 +33,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessMelogram::CProcessMelogram Constructor
 /***************************************************************************/
-CProcessMelogram::CProcessMelogram() {
+CProcessMelogram::CProcessMelogram(Context * pContext) : CAbstractPitchProcess(pContext) {
     m_nMinValidSemitone100 = 0;
     m_nMaxValidSemitone100 = 0;
 }
@@ -114,12 +114,12 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
 
     // start grappl process
     if (!bBackground) {
-        target.BeginWaitCursor();    // wait cursor
+        pTarget->BeginWaitCursor();    // wait cursor
     }
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSMEL)) { // memory allocation failed or previous processing error
+    if (!StartProcess(pCaller, PROCESSMEL)) { // memory allocation failed or previous processing error
         EndProcess(); // end data processing
         if (!bBackground) {
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
         }
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -129,7 +129,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         if (!CreateTempFile(_T("MEL"))) { // creating error
             EndProcess(); // end data processing
             if (!bBackground) {
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
             }
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
@@ -161,7 +161,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
-            app.ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
+            pApp->ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
@@ -173,7 +173,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         if (!OpenFileToAppend()) {
             EndProcess(); // end data processing
             if (!bBackground) {
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
             }
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
@@ -240,7 +240,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
                     Write((HPSTR)&nSemitone100, sizeof(int16));
                 } catch (CFileException * e) {
                     // error writing file
-                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					// error, writing failed
 					e->Delete();
 					return Exit(PROCESS_ERROR);
@@ -272,7 +272,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
     }
     EndProcess((nProgress >= 95));          // end data processing
     if (!bBackground) {
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
     }
     if (nomore || alldone) {
         SetDataReady();

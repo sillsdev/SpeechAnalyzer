@@ -16,5 +16,6 @@
 #include "FormantTracker.h"
 #include "VowelFormants.h"
 #include "sa_w_equ.h"
+#include "sa_p_custompitch.h"
 
 #endif

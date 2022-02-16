@@ -12,9 +12,6 @@
 
 class CProcessRaw : public CProcess {
 public:
-    CProcessRaw();
-    virtual ~CProcessRaw();
-
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
 };
 

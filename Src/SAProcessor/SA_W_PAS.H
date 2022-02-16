@@ -14,7 +14,7 @@
 
 class CProcessWbHighpass : public CProcessButterworth {
 public:
-    CProcessWbHighpass(Context & context);
+    CProcessWbHighpass(Context * pContext);
     long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(ObjectOStream& obs);
     virtual BOOL ReadProperties(ObjectIStream& obs);
@@ -36,7 +36,7 @@ private:
 
 class CProcessWbLowpass : public CProcessButterworth {
 public:
-    CProcessWbLowpass(Context & context);
+    CProcessWbLowpass(Context * pContext);
     long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(ObjectOStream& obs);
     virtual BOOL ReadProperties(ObjectIStream& obs);
@@ -54,7 +54,7 @@ private:
 
 class CProcessWbBandpass : public CProcessButterworth {
 public:
-    CProcessWbBandpass(Context & context);
+    CProcessWbBandpass(Context * pContext);
     long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(ObjectOStream& obs);
     virtual BOOL ReadProperties(ObjectIStream& obs);

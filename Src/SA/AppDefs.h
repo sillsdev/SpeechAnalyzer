@@ -67,7 +67,6 @@ enum EUpdateMode {
 #define CALCULATION_DATALENGTH(samplingRate)          (300*22050/samplingRate)         // length of data used for calculation
 #define MAX_CALCULATION_FREQUENCY       500         // permissible parameter range
 #define PRECISION_MULTIPLIER            10          // multiplier to amount precision
-#define MEL_MULT                        100         // multiplier for melogram data
 #define MEL_ACCURACY                    5           // accuracy of melogram data in cents
 #define MAX_ECHO_DELAY                  1000        // maximal echo delay in milliseconds
 #define MAX_ANIMATION_RATE              60          // animation rate limited only by processor speed
@@ -223,13 +222,6 @@ enum EGender {
 // SA parameter flag mask
 #define SA_FLAG_HIGHPASS                0x0020
 
-// CECIL pitch default settings
-#define CECIL_PITCH_MAXFREQ             500
-#define CECIL_PITCH_MINFREQ             40
-#define CECIL_PITCH_VOICING             32
-#define CECIL_PITCH_CHANGE              10
-#define CECIL_PITCH_GROUP               6
-#define CECIL_PITCH_INTERPOL            7
 // workbench defines
 #define MAX_PROCESS_NUMBER              4           // number of workbench processes
 #define MAX_FILTER_NUMBER               3           // number of filters in workbench processes

@@ -328,7 +328,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog() {
     m_nPitchRange = pPitchParm->nRangeMode;
     m_nPitchScaling = pPitchParm->nScaleMode;
     if (!m_nPitchRange) {
-        CPitchParm::GetAutoRange(pModel->GetGrappl(), m_nUpperBound, m_nLowerBound);
+        CPitchParm::GetAutoRange(pModel,pModel->GetGrappl(), m_nUpperBound, m_nLowerBound);
 
         // auto range, disable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
@@ -896,7 +896,7 @@ void CDlgParametersPitchPage::OnRange() {
         CSaView * pView = (CSaView *)(pMDIFrameWnd->GetCurrSaView());
         CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
-        CPitchParm::GetAutoRange(pModel->GetGrappl(), m_nUpperBound, m_nLowerBound);
+        CPitchParm::GetAutoRange(pModel, pModel->GetGrappl(), m_nUpperBound, m_nLowerBound);
 
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);
@@ -2200,7 +2200,7 @@ void CDlgParametersFormantsPage::Apply() {
         pFormantParms->bMelScale = m_bMelScale;
         pFormantParms->bSmoothFormants = m_bSmoothFormants;
 
-        GetVowelSets().SetDefaultSet(m_cVowelSet.GetCurSel());
+        pApp->GetVowelSets().SetDefaultSet(m_cVowelSet.GetCurSel());
 
         // invalidate processed data
         pModel->GetFormants()->SetDataInvalid();
@@ -2272,9 +2272,9 @@ void CDlgParametersFormantsPage::OnEditChangeFormantVowels() {
 
 void CDlgParametersFormantsPage::OnFormantVowelsEdit() {
 
-    GetVowelSets().SetDefaultSet(m_cVowelSet.GetCurSel());
+    pApp->GetVowelSets().SetDefaultSet(m_cVowelSet.GetCurSel());
 
-    CDlgVowelFormants cEdit(GetVowelSets()[m_cVowelSet.GetCurSel()], this);
+    CDlgVowelFormants cEdit(pApp->GetVowelSets()[m_cVowelSet.GetCurSel()], this);
 
     if (cEdit.DoModal() == IDOK) { // Edited
         PopulateVowelSetCombo(m_cVowelSet);
@@ -2292,7 +2292,7 @@ void CDlgParametersFormantsPage::OnFormantVowelsEdit() {
 void CDlgParametersFormantsPage::PopulateVowelSetCombo(CComboBox & cBox) {
 
     cBox.ResetContent();
-    CVowelFormantSets & cSets = GetVowelSets();
+    CVowelFormantSets & cSets = pApp->GetVowelSets();
 
     for (unsigned int i=0; i < cSets.size(); i++) {
         cBox.AddString(cSets[i].GetName());
@@ -2683,7 +2683,7 @@ BOOL CDlgParametersMusicPage::OnInitDialog() {
 
     m_nRange = pParm->nRangeMode;
     if (!m_nRange) {
-        CMusicParm::GetAutoRange(pModel->GetMelogram(), m_nUpperBound, m_nLowerBound);
+        CMusicParm::GetAutoRange(pModel, pModel->GetMelogram(), m_nUpperBound, m_nLowerBound);
         // auto range, disable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);
@@ -2885,7 +2885,7 @@ void CDlgParametersMusicPage::OnRange() {
         CSaView * pView = (CSaView *)(pMDIFrameWnd->GetCurrSaView());
         CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
-        CMusicParm::GetAutoRange(pModel->GetMelogram(), m_nUpperBound, m_nLowerBound);
+        CMusicParm::GetAutoRange(pModel, pModel->GetMelogram(), m_nUpperBound, m_nLowerBound);
 
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);

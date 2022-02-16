@@ -371,7 +371,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     EGender nGender = pModel->GetGender();
 
     // Draw Vowel Set Title
-    const CSaString & szVowelSetName = GetDefaultVowelSet().GetName();
+    const CSaString & szVowelSetName = pApp->GetDefaultVowelSet().GetName();
     if ((!szVowelSetName.IsEmpty()) && (szVowelSetName != "(None)")) {
         CFont vowelTitleFont;
         const _TCHAR VowelTitleTypeface[] = _T("Arial");

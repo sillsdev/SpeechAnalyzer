@@ -13,7 +13,7 @@
 class CProcessAreaData : public CProcess {
 
 public:
-    CProcessAreaData();
+    CProcessAreaData(Context * pContext);
     virtual void UpdateArea();
     BOOL SetArea(View* pView);
     DWORD GetAreaPosition();

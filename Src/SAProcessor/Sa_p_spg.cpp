@@ -127,16 +127,16 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
         }
     }
 
-    target.BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPG)) { // memory allocation failed
+    pTarget->BeginWaitCursor(); // wait cursor
+    if (!StartProcess(pCaller, PROCESSSPG)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     if (!CreateTempFile(_T("SPG"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -271,7 +271,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
             }
         } catch (CFileException * e) {
             // error writing file
-            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 			// delete the spectrogram object
 			delete pSpectrogram;
 			// error, writing failed
@@ -287,7 +287,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
 
     nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     m_nWindowWidth = nWidth;   // save window width

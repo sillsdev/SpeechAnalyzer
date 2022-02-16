@@ -15,7 +15,7 @@
 class CProcessChange : public CProcess {
 // Construction/destruction/creation
 public:
-    CProcessChange(Context & context);
+    CProcessChange(Context * pContext);
     virtual ~CProcessChange();
 
 // Attributes

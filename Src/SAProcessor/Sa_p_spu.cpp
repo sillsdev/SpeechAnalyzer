@@ -26,24 +26,13 @@ extern CResearchSettings researchSettings;
 // class to calculate spectrum for wave data. The class creates an object
 // of the class Spectrum that does the calculation.
 
-/***************************************************************************/
-// CProcessSpectrum::CProcessSpectrum Constructor
-/***************************************************************************/
-CProcessSpectrum::CProcessSpectrum() {
+CProcessSpectrum::CProcessSpectrum(Context * pContext) : CProcess(pContext) {
     m_nSpectralBands = 0;
     m_stBandPower.Max.Raw = m_stBandPower.Min.Raw = (float)UNDEFINED_DATA;
     m_stBandPower.Max.Smooth = m_stBandPower.Min.Smooth = (float)UNDEFINED_DATA;
     m_stBandPower.Max.Lpc = m_stBandPower.Min.Lpc = (float)UNDEFINED_DATA;
     m_dwFrameStart = UNDEFINED_OFFSET;   // to force processing first time
 }
-/***************************************************************************/
-// CProcessSpectrum::~CProcessSpectrum Destructor
-/***************************************************************************/
-CProcessSpectrum::~CProcessSpectrum() {
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessSpectrum helper functions
 
 /***************************************************************************/
 // CProcessSpectrum::Exit Exit on Error
@@ -55,7 +44,7 @@ long CProcessSpectrum::Exit(int nError, void * mem) {
         delete [] mem;
     }
     SetDataInvalid();
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     return MAKELONG(nError, 100);
 }
 
@@ -191,14 +180,14 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     }
 
     // Start the process, allocating a buffer for the processed data.
-    target.BeginWaitCursor(); // wait cursor
+    pTarget->BeginWaitCursor(); // wait cursor
     m_nSpectralBands = MAX_FFT_LENGTH / 2;   // should be high enough to ensure FFT resolution is greater than screen resolution
     //!!frame size must be less than FFT length (2 x nSpectralBands)
     m_nFormants = MAX_NUM_FORMANTS + 1;  // includes F[0], the fundamental frequency
     SetDataSize((DWORD)m_nSpectralBands * sizeof(SSpectValue) + sizeof(SFormantFrame));
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPU, (DWORD)GetDataSize(sizeof(char)))) {
+    if (!StartProcess(pCaller, PROCESSSPU, (DWORD)GetDataSize(sizeof(char)))) {
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -266,9 +255,9 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     stFrameParm.Start = (void *) new char[nWindowSize*wSmpSize];
     if (!stFrameParm.Start) {
         // memory lock error
-        app.ErrorMessage(IDS_ERROR_MEMLOCK);
+        pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
         EndProcess();
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return Exit(PROCESS_ERROR, NULL); // error, memory allocation
     }
 
@@ -282,7 +271,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
         if (!pBlockData) {
             pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
             EndProcess();
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
             return Exit(PROCESS_ERROR, stFrameParm.Start); // error, reading failed
         }
         // copy this block
@@ -529,7 +518,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     SetProgress(nProgress);
     EndProcess(nProgress >= 100);
     SetDataReady();
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
 
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);

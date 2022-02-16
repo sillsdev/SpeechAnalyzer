@@ -21,21 +21,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 //###########################################################################
 // CProcessInstantaneousPower
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcessInstantaneousPower construction/destruction/creation
-
-/***************************************************************************/
-// CProcessInstantaneousPower::CProcessInstantaneousPower Constructor
-/***************************************************************************/
-CProcessInstantaneousPower::CProcessInstantaneousPower() {
-}
-
-/***************************************************************************/
-// CProcessInstantaneousPower::~CProcessInstantaneousPower Destructor
-/***************************************************************************/
-CProcessInstantaneousPower::~CProcessInstantaneousPower() {
-}
-
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
 // Cascade a zero/pole of the form (s-a)/(s+a) or (s+a)/(s-a) which has a A(w) response = 1
@@ -66,10 +51,10 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
     }
     //TRACE(_T("Process: CProcessInstantaneousPower\n"));
 
-    target.BeginWaitCursor(); // wait cursor
+    pTarget->BeginWaitCursor(); // wait cursor
     if (!StartProcess(pCaller)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -99,7 +84,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
     // create the temporary file
     if (!CreateTempFile(_T("TEA"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -124,7 +109,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
         short * pDataPhased = (short *)phaseFilter->GetProcessedDataBlock((dwWaveOffset-1)*sizeof(short),3*sizeof(short));
         if (!pData || !pDataPhased) { // reading failed
             EndProcess(); // end data processing
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
             SetDataInvalid();
             return MAKELONG(-1, nProgress);
         }
@@ -156,10 +141,10 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
                 Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
             } catch (CFileException * e) {
 				// display message
-                app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+                pApp->AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 				// end data processing
 				EndProcess();
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 e->Delete();
 				return MAKELONG(-1, nProgress);
@@ -170,7 +155,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
             SetProgress(nProgress + (int)(100 * dwWaveOffset / dwWaveSize / (DWORD)nLevel));
             if (IsCanceled()) {
                 EndProcess(); // end data processing
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(PROCESS_CANCELED, nProgress);
             }
@@ -186,10 +171,10 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
             Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
         } catch (CFileException * e) {
 			// display message
-			app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+			pApp->AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 			// end data processing
 			EndProcess();
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
             SetDataInvalid();
             e->Delete();
 			return MAKELONG(-1, nProgress);
@@ -201,7 +186,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

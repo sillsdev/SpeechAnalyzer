@@ -95,7 +95,7 @@ bool CPlotMelogram::GetScaleValues(CSaDoc * pModel, double * dMaxSemitone,double
     int nLowerBound = pParm->nLowerBound;
 
     if (pParm->nRangeMode == 0) {
-        CMusicParm::GetAutoRange(pModel->GetMelogram(), nUpperBound, nLowerBound);
+        CMusicParm::GetAutoRange(pModel, pModel->GetMelogram(), nUpperBound, nLowerBound);
     }
 
     if (dMaxSemitone) {

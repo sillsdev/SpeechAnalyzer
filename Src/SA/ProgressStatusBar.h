@@ -23,7 +23,7 @@ public:
     virtual ~CProgressStatusBar();
 
     void Init(); // initialisation
-    void SetProcessOwner(void * pProcess, void * pCaller, int nProcessID = -1); // save the process owner
+    void SetProcessOwner(void * pProcess, void * pCaller, ProcessorType processorType = PROCESSDFLT); // save the process owner
     CProcess * GetProcessOwner();   // return the process owner
     void * GetProcessCaller();      // return the process caller
     void InitProgress();            // initialisation of progress bar

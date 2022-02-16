@@ -13,11 +13,13 @@
 using std::wstring;
 
 __interface ISaDoc;
+class CCmdTarget;
 
 class CProcessDoc : public CCmdTarget, public IProcess {
 
 public:
-    CProcessDoc(Context & context);
+    CProcessDoc(Context * pContext);
+    CProcessDoc() = delete;
     virtual ~CProcessDoc();
     void SetDataInvalid();
     // return pointer to block of processed wave source
@@ -39,7 +41,7 @@ public:
 private:
     void LoadBuffer(char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead);
 
-    App& app;
+    App * pApp;
     Model* pModel;
     char m_Buffer[0x10000];     // processed data buffer
     DWORD m_dwBufferOffset;     // actual buffer offset in bytes

@@ -20,7 +20,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessGrappl
 // class to calculate grappl pitch for wave data.
 
-CProcessGrappl::CProcessGrappl(Context& context) : CProcess(context) {
+CProcessGrappl::CProcessGrappl(Context * pContext) : CAbstractPitchProcess(pContext) {
     // initialize algorithm parameters
     m_dAvgPitch = 0.;
 }
@@ -65,14 +65,14 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
 
     // start grappl process
     if (!bBackground) {
-        target.BeginWaitCursor();    // wait cursor
+        pTarget->BeginWaitCursor();    // wait cursor
     }
     if (!(bBackground ?
-            StartProcess(pCaller, IDS_STATTXT_BACKGNDGRA) :
-            StartProcess(pCaller, IDS_STATTXT_PROCESSGRA))) { // memory allocation failed
+            StartProcess(pCaller, BACKGNDGRA) :
+            StartProcess(pCaller, PROCESSGRA))) { // memory allocation failed
         EndProcess(); // end data processing
         if (!bBackground) {
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
         }
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -85,7 +85,7 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
             // end data processing
             EndProcess();
             if (!bBackground) {
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
             }
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
@@ -112,7 +112,7 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _countof(szText), _T("%u"), nWorkSpace);
-            app.ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
+            pApp->ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
             return Exit(PROCESS_ERROR);                 // error, buffer too small
         }
         // init grappl
@@ -124,7 +124,7 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
         if (!OpenFileToAppend()) {
             EndProcess(); // end data processing
             if (!bBackground) {
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
             }
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
@@ -205,7 +205,7 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
                     Write((HPSTR)&pResults->fsmooth16, sizeof(int16));
                 } catch (CFileException * e) {
                     // error writing file
-                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					// error, writing failed
 					e->Delete();
 					return Exit(PROCESS_ERROR);
@@ -240,7 +240,7 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
     }
     EndProcess((nProgress >= 95)); // end data processing
     if (!bBackground) {
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
     }
     if (nomore || alldone) {
         SetDataReady();

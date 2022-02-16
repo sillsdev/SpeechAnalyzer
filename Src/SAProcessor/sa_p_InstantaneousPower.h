@@ -11,15 +11,6 @@
 // CProcessInstantaneousPower data processing
 
 class CProcessInstantaneousPower : public CProcess {
-// Construction/destruction/creation
-public:
-    CProcessInstantaneousPower();
-    virtual ~CProcessInstantaneousPower();
-
-// Attributes
-private:
-
-// Operations
 public:
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
 };

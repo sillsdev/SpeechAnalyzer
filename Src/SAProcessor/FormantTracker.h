@@ -11,7 +11,7 @@ typedef std::vector<DBL> VECTOR_DBL;
 
 class CProcessFormantTracker : public CProcess {
 public:
-    CProcessFormantTracker(Context & context, CProcess & Real, CProcess & Imag, CProcess & Pitch);
+    CProcessFormantTracker(Context * pContext, CProcess & Real, CProcess & Imag, CProcess & Pitch);
 
     virtual long Process(void * pCaller, Model *, int nProgress = 0, int nLevel = 1);
     SFormantFreq * GetFormant(DWORD dwIndex);

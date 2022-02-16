@@ -9,6 +9,7 @@
 #define PROCESS_H
 
 #include "IProcess.h"
+#include "context.h"
 
 // CProcess completion codes
 #define PROCESS_DONE            1  // data processed successfully
@@ -39,7 +40,8 @@ class CProgressStatusBar;
 class CProcess : public IProcess {
 
 public:
-    CProcess(Context & context);
+    CProcess(Context * pContext);
+    CProcess() = delete;
     virtual ~CProcess();
 
     virtual void CancelProcess();
@@ -82,8 +84,8 @@ public:
 
 protected:
     virtual long GetStatus() const;
-    virtual bool StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize);          // start processing data
-    virtual bool StartProcess(void * pCaller, int nProcessID = -1, BOOL bBuffer = TRUE);
+    virtual bool StartProcess(void * pCaller, ProcessorType nProcessID, DWORD dwBufferSize);          // start processing data
+    virtual bool StartProcess(void * pCaller, ProcessorType nProcessID = PROCESSDFLT, BOOL bBuffer = TRUE);
     virtual void SetProgress(int nPercentProgress);
     virtual long Exit(int nError);                                                          // exit processing on error
     virtual BOOL WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength, size_t nElementSize = 2); // write a block into the temporary file
@@ -106,9 +108,9 @@ protected:
     DWORD m_dwBufferOffset;     // actual buffer offset
     int m_nMaxValue;            // maximum value of processed data
     int m_nMinValue;            // minimum value of processed data
-    Context& context;
-    CmdTarget& target;
-    App& app;
+    Context* pContext;
+    CmdTarget* pTarget;
+    App * pApp;
     View* pView;
     Model* pModel;
     MainFrame* pMain;

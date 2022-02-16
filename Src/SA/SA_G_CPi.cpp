@@ -7,8 +7,6 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_cpi.h"
-#include "Process\Process.h"
-#include "Process\sa_p_custompitch.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "sa_doc.h"
@@ -93,7 +91,7 @@ void CPlotCustomPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVie
             nMaxData = pPitchParm->nUpperBound;
         } else {
             // auto range mode
-            CPitchParm::GetAutoRange(pModel, nMaxData, nMinData);
+            CPitchParm::GetAutoRange(pModel, pModel->GetGrappl(), nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         if (pPitchParm->nScaleMode == 1) {

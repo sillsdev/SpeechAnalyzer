@@ -11,15 +11,6 @@
 // CProcessRatio data processing
 
 class CProcessRatio : public CProcess {
-// Construction/destruction/creation
-public:
-    CProcessRatio();
-    virtual ~CProcessRatio();
-
-// Attributes
-private:
-
-// Operations
 public:
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
 };

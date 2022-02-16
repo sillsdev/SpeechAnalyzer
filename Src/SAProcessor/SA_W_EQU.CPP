@@ -19,7 +19,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // Workbench process class to calculate new raw data after an equation given
 // by the user.
 
-CProcessWbEquation::CProcessWbEquation(Context & context) : CWbProcess( context, WbEquation) {
+CProcessWbEquation::CProcessWbEquation(Context * pContext) : CWbProcess( pContext, WbEquation) {
     m_szEquation.clear();
 }
 
@@ -83,16 +83,16 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     }
 
     // start process
-    target.BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBEQU)) { // memory allocation failed
+    pTarget->BeginWaitCursor(); // wait cursor
+    if (!StartProcess(pCaller, PROCESSWBEQU)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
     if (!CreateTempFile(_T("EQU"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -192,7 +192,7 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
                 Write(m_lpBuffer, dwBufferSize);
             } catch (CFileException * e) {
                 // error writing file
-                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -203,7 +203,7 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

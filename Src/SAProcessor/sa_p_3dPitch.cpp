@@ -12,7 +12,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CProcess3dPitch::CProcess3dPitch(Context & context) : CProcess(context) {
+CProcess3dPitch::CProcess3dPitch(Context * pContext) : CProcess(pContext) {
     m_dFilterUpperFrequency = 1000.;
     m_dFilterLowerFrequency = 70.;
     m_nFilterOrder = 5;
@@ -48,17 +48,17 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
     }
 
     // start process
-    target.BeginWaitCursor(); // wait cursor
+    pTarget->BeginWaitCursor(); // wait cursor
     // memory allocation failed or previous processing error
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) {
+    if (!StartProcess(pCaller, PROCESSWBLP)) {
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
     if (!CreateTempFile(_T("PCC"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -66,7 +66,7 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
     DWORD dwDataSize = pModel->GetDataSize();    // size of raw data
     DWORD wSmpSize = pModel->GetSampleSize();
 
-    CProcessButterworth butterworth(context);
+    CProcessButterworth butterworth(pContext, Plain);
     butterworth.SetSourceProcess(NULL);
     butterworth.SetFilterFilter(TRUE);
     butterworth.LowPass(m_nFilterOrder, m_dFilterUpperFrequency);
@@ -131,7 +131,7 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
     // close the temporary file and read the status
     CloseTempFile();                    // close the file
     EndProcess((nProgress >= 95));      // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

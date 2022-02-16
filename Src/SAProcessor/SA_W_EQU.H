@@ -6,14 +6,12 @@
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_W_EQU_H
 #define _SA_W_EQU_H
-
-//###########################################################################
-// CProcessWbEquation data processing
+#include "WbProcess.h"
 
 class CProcessWbEquation : public CWbProcess {
-// Construction/destruction/creation
 public:
-    CProcessWbEquation(Context & context);
+    CProcessWbEquation(Context * pContext);
+
     BOOL CheckFunction(string*); // check the function string
     long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(ObjectOStream& obs);

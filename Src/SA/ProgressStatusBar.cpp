@@ -139,17 +139,17 @@ void CProgressStatusBar::Init() {
 /***************************************************************************/
 // CProgressStatusBar::SetProcessOwner Set the owner of the process
 /***************************************************************************/
-void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, int nProcessID) {
+void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, ProcessorType processorType) {
 
     m_pProcessOwner = (CProcess *)pProcess;
     m_pProcessCaller = pCaller;
 
     if (GetSafeHwnd()) {
         CString szText;
-
-        if (nProcessID >= 0) {
+        int nID = pModel->GetProcessorText(processorType);
+        if (nID >= 0) {
             // display the given text
-            szText.LoadString(nProcessID);
+            szText.LoadString(nID);
             SetPaneText(ID_PROGRESSPANE_LEFTTEXT, szText);
         } else {
             // display standard text

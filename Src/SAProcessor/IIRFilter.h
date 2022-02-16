@@ -10,8 +10,7 @@
 
 class CProcessIIRFilter : public CWbProcess {
 public:
-    CProcessIIRFilter(Context & context, WbDialogType type, BOOL bDstWBench = TRUE);
-    virtual ~CProcessIIRFilter();
+    CProcessIIRFilter(Context * pContext, WbDialogType type, BOOL bDstWBench = TRUE);
 
     void SetSourceProcess(IProcess * pSourceProcess, BOOL bWBenchProcess = TRUE);
     void SetOutputType(BOOL bWBenchProcess = TRUE);

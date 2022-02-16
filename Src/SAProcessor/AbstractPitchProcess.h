@@ -4,6 +4,7 @@
 class CAbstractPitchProcess : public CProcess {
 
 protected:
+    CAbstractPitchProcess(Context* pContext);
     SGrapplParms m_CalcParm;
 
 public:

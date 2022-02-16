@@ -77,17 +77,17 @@ long CProcessWavelet::Process(void * pCaller, Model * , int nWidth, int /*nHeigh
     //**************************************************************************
 
     // wait cursor
-    target.BeginWaitCursor();
+    pTarget->BeginWaitCursor();
 
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWVL)) { // memory allocation failed
+    if (!StartProcess(pCaller, PROCESSWVL)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
 
     // close the temporary file and read the status
 

@@ -14,15 +14,6 @@
 // CProcessLoudness data processing
 
 class CProcessLoudness : public CProcess {
-// Construction/destruction/creation
-public:
-    CProcessLoudness();
-    virtual ~CProcessLoudness();
-
-// Attributes
-private:
-
-// Operations
 public:
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
     virtual void SetDataInvalid() {
@@ -36,7 +27,7 @@ public:
 class CProcessSmoothLoudness : public CProcess {
 // Construction/destruction/creation
 public:
-    CProcessSmoothLoudness();
+    CProcessSmoothLoudness(Context * pContext);
     virtual ~CProcessSmoothLoudness();
 
 // Attributes

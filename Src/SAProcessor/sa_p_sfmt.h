@@ -20,9 +20,6 @@
 class CProcessSpectroFormants : public CProcess {
 
 public:
-    CProcessSpectroFormants();
-    virtual ~CProcessSpectroFormants();
-
     virtual DWORD GetDataSize();
     // return processed data size in LPC data structures
     virtual DWORD GetDataSize(size_t nElements);

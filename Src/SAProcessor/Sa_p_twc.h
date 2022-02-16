@@ -17,7 +17,7 @@ class CProcessMelogram;
 class CProcessTonalWeightChart : public CProcess {
 // Construction/destruction/creation
 public:
-    CProcessTonalWeightChart(Context & context);
+    CProcessTonalWeightChart(Context * pContext);
     double GetMinSemitone() {
         return m_dMinSemitone;   // return Min Semitone
     }

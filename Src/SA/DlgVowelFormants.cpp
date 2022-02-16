@@ -22,7 +22,6 @@ CDlgVowelFormants::CDlgVowelFormants(CVowelFormantSet & cVowelSet, CWnd * pParen
     CDialog(CDlgVowelFormants::IDD, pParent),
     m_cVowelSetOK(cVowelSet),
     m_cSet(cVowelSet) {
-
     m_szSetName = m_cSet.GetName();
     m_nGender = 0;
 }
@@ -76,13 +75,11 @@ BOOL CDlgVowelFormants::OnInitDialog() {
 }
 
 void CDlgVowelFormants::OnOK() {
-
     UpdateData();
     if (OnValidateGenderChange()) {
         m_cSet.SetName(m_szSetName);
         m_cVowelSetOK = m_cSet;
-
-        GetVowelSets().Save();
+        pApp->GetVowelSets().Save();
         CDialog::OnOK();
     }
 }

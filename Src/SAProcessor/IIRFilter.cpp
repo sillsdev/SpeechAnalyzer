@@ -17,15 +17,12 @@ static char THIS_FILE[]=__FILE__;
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-CProcessIIRFilter::CProcessIIRFilter(Context & context, WbDialogType type, BOOL bDstWBench) : CWbProcess(context, type) {
+CProcessIIRFilter::CProcessIIRFilter(Context * pContext, WbDialogType type, BOOL bDstWBench) : CWbProcess(pContext, type) {
     m_pSourceProcess = NULL;
     m_bSrcWBenchProcess = TRUE;
     m_bDstWBenchProcess = bDstWBench;
     m_bFilterFilter = false;
     m_nFilterFilterSilence = DEFAULT_FILTER_FILTER_SILENCE_SAMPLES;
-}
-
-CProcessIIRFilter::~CProcessIIRFilter() {
 }
 
 static void StoreWaveData(int nData, int wSmpSize, void * pTargetData) {
@@ -92,12 +89,12 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
     TRACE("start process\n");
     // start process
 	// wait cursor
-    target.BeginWaitCursor(); 
+    pTarget->BeginWaitCursor(); 
 	// start data processing
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) {  
+    if (!StartProcess(pCaller, PROCESSWBLP)) {
 		// end data processing
         EndProcess(); 
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -105,7 +102,7 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
     if (!CreateTempFile(L"IIR")) {
         // creation error - end processing
         EndProcess();
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataReady(FALSE);
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -126,7 +123,7 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
     CloseTempFile();
 	// end data processing
     EndProcess((nProgress >= 95)); 
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
 
     //Dump("iirfilter end process");
@@ -244,7 +241,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, Model * pModel, int & nPr
 
     // process in reverse
     // first do forward pass
-    CProcessIIRFilter forwardPass(m_bDstWBenchProcess);
+    CProcessIIRFilter forwardPass(pContext,type,m_bDstWBenchProcess);
     forwardPass.SetSourceProcess(m_pSourceProcess, m_bSrcWBenchProcess);
     forwardPass.m_zForwardTransform *= m_zForwardTransform;
     forwardPass.SetFilterFilter(true);

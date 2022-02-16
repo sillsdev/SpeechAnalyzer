@@ -17,11 +17,11 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcess
 // Base class for all data processing classes. Does all jobs, common to all
 // data processing derived classes.
-CProcess::CProcess(Context& _context) {
-    context = _context;
-    app = context.GetApp();
-    pView = context.GetView();
-    target = pView->GetTarget();
+CProcess::CProcess(Context * pContext) {
+    pContext = pContext;
+    pApp = pContext->GetApp();
+    pView = pContext->GetView();
+    pTarget = pView->GetTarget();
     pModel = pView->GetDocument();
     pMain = pView->GetMainWnd();
     m_fileStatus.m_size = 0;
@@ -76,7 +76,7 @@ ProgressStatusBar * CProcess::GetStatusBar() {
 // ID is -1, a default text is displayed. A buffer of dwBufferSize bytes is
 // allocated.
 /***************************************************************************/
-bool CProcess::StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize) {
+bool CProcess::StartProcess(void * pCaller, ProcessorType processorType, DWORD dwBufferSize) {
     
     // get pointer to status bar
     ProgressStatusBar * pStatusBar = GetStatusBar();
@@ -95,7 +95,7 @@ bool CProcess::StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize) 
     }
 
 	// set the process owner
-    pStatusBar->SetProcessOwner(this, pCaller, nProcessID); 
+    pStatusBar->SetProcessOwner(this, pCaller, processorType);
     if (dwBufferSize) {
         // allocate global buffer for the processed data
 		// not yet allocated
@@ -103,7 +103,7 @@ bool CProcess::StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize) 
             m_lpBuffer = new char[dwBufferSize];
             if (!m_lpBuffer) {
                 // memory lock error
-                app.ErrorMessage(IDS_ERROR_MEMALLOC,NULL,NULL);
+                pApp->ErrorMessage(IDS_ERROR_MEMALLOC,NULL,NULL);
                 return false;
             }
         }
@@ -111,9 +111,9 @@ bool CProcess::StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize) 
     return true;
 }
 
-bool CProcess::StartProcess(void * pCaller, int nProcessID, BOOL bBuffer) {
+bool CProcess::StartProcess(void * pCaller, ProcessorType processorType, BOOL bBuffer) {
     DWORD dwBufferSize = bBuffer ? GetBufferSize():0;
-    return StartProcess(pCaller, nProcessID, dwBufferSize);
+    return StartProcess(pCaller, processorType, dwBufferSize);
 }
 
 /***************************************************************************/
@@ -173,7 +173,7 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin) {
         // open the temporary file
         if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive)) {
             // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
             return NULL;
         }
         // find the right position in the data
@@ -182,7 +182,7 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin) {
                 m_pFile->Seek(m_dwBufferOffset, CFile::begin);
             } catch (CFileException * e) {
                 // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
 				// close the temporary file
 				SetDataInvalid();
                 e->Delete();
@@ -194,7 +194,7 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin) {
             m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
         } catch (CFileException * e) {
             // error reading file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
 			// close the temporary file
 			SetDataInvalid();
             e->Delete();
@@ -233,7 +233,7 @@ int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes) {
         // open the temporary file
         if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive)) {
             // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
             *pbRes = FALSE; // set operation result
             m_dwBufferOffset = UNDEFINED_OFFSET;
             return 0;
@@ -244,7 +244,7 @@ int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes) {
                 m_pFile->Seek(m_dwBufferOffset, CFile::begin);
             } catch (CFileException * e) {
                 // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
 				// set operation result
 				*pbRes = FALSE;
                 m_dwBufferOffset = UNDEFINED_OFFSET;
@@ -258,7 +258,7 @@ int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes) {
             m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
         } catch (CFileException * e) {
             // error reading file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
 			// close the temporary file
 			SetDataInvalid();
 			// set operation result
@@ -311,7 +311,7 @@ HPSTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
         // open the temporary file
         if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive)) {
             // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
             return NULL;
         }
         // find the right position in the data
@@ -320,7 +320,7 @@ HPSTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
                 m_pFile->Seek(m_dwBufferOffset, CFile::begin);
             } catch (CFileException * e) {
                 // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
 				// close the temporary file
 				SetDataInvalid();
                 e->Delete();
@@ -332,7 +332,7 @@ HPSTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
             m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
         } catch (CFileException * e) {
             // error reading file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
 			// close the temporary file
 			SetDataInvalid();
             e->Delete();
@@ -405,7 +405,7 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
         wstring name = GetProcessFileName();
         if (!Open(name.c_str(), CFile::modeRead | CFile::shareExclusive)) {
             // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
             return NULL;
         }
         // find the right position in the data
@@ -414,7 +414,7 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
                 m_pFile->Seek(m_dwBufferOffset, CFile::begin);
             } catch (...) {
                 // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
                 // close the temporary file
                 SetDataInvalid();
                 return NULL;
@@ -425,7 +425,7 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
             m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
         } catch (...) {
             // error reading file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
             // close the temporary file
             SetDataInvalid();
             return NULL;
@@ -463,14 +463,14 @@ BOOL CProcess::CreateTempFile(const wchar_t* szName, CFileStatus * pFileStatus) 
     // create and open the file
     if (!Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
         return FALSE;
     }
 
     // read file status
     if (!CFile::GetStatus(szTempPath, *pFileStatus)) {
         // error reading file status
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
         return FALSE;
     }
 
@@ -507,13 +507,13 @@ BOOL CProcess::CreateAuxTempFile(const wchar_t * szName, CFile * pFile, CFileSta
     // create and open the file
     if (!pFile->Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
         return Exit(PROCESS_ERROR);
     }
     // read file status
     if (!CFile::GetStatus(szTempPath, fileStatus)) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
         return Exit(PROCESS_ERROR);
     }
 
@@ -526,7 +526,7 @@ BOOL CProcess::CreateAuxTempFile(const wchar_t * szName, CFile * pFile, CFileSta
 BOOL CProcess::OpenFileToAppend() {
     if (!Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive)) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
         return FALSE;
     }
 
@@ -534,7 +534,7 @@ BOOL CProcess::OpenFileToAppend() {
         m_pFile->SeekToEnd();
     } catch (CFileException * e) {
         // error writing file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
 		// close the temporary file
 		SetDataInvalid();
         e->Delete();
@@ -576,7 +576,7 @@ void CProcess::DeleteTempFile() {
 long CProcess::Exit(int nError) {
     SetDataInvalid();
     EndProcess(); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     return MAKELONG(nError, 100);
 }
 
@@ -593,7 +593,7 @@ BOOL CProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength
     BOOL bClose = (m_pFile == NULL);
     if ((m_pFile==NULL) && (!Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive))) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
         return FALSE;
     }
     // find the right position in the data
@@ -601,7 +601,7 @@ BOOL CProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength
         m_pFile->Seek(dwPosition * nElementSize, CFile::begin);
     } catch (CFileException * e) {
         // error seeking file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+        pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
 		// close the temporary file
 		SetDataInvalid();
         e->Delete();
@@ -612,7 +612,7 @@ BOOL CProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength
         Write((HPSTR)lpData, dwDataLength * nElementSize);
     } catch (CFileException * e) {
         // error writing file
-        app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 		// close the temporary file
 		SetDataInvalid();
         e->Delete();
@@ -644,13 +644,13 @@ BOOL CProcess::SmoothData(int nTimes) {
     HANDLE hSmoothData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize()); // allocate memory
     if (!hSmoothData) {
         // memory allocation error
-        app.ErrorMessage(IDS_ERROR_MEMALLOC);
+        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         return FALSE;
     }
     HPSTR lpSmoothData = (HPSTR)::GlobalLock(hSmoothData); // lock memory
     if (!lpSmoothData) {
         // memory lock error
-        app.ErrorMessage(IDS_ERROR_MEMLOCK);
+        pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
         ::GlobalFree(hSmoothData);
         return FALSE;
     }

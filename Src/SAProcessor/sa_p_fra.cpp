@@ -19,7 +19,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessFragments::CProcessFragments Constructor
 /***************************************************************************/
-CProcessFragments::CProcessFragments() {
+CProcessFragments::CProcessFragments(Context * pContext) : CProcess(pContext) {
     m_pFragmenter = NULL;
     m_dwFragmentIndex = 0;
     m_dwFragmentCount = 0;
@@ -63,7 +63,7 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
 
     BOOL bBackground = pModel->IsBackgroundProcessing();
     if (!bBackground) {
-        target.BeginWaitCursor();    // wait cursor
+        pTarget->BeginWaitCursor();    // wait cursor
     }
 
     // generate pitch contour
@@ -74,7 +74,7 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
             CancelProcess();    // set your own cancel flag
         }
         if (!bBackground) {
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
         }
         return MAKELONG(nResult, nProgress);
     }
@@ -82,12 +82,12 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
     DWORD dwOldPitchBlock = pAutoPitch->GetProcessBufferIndex();  // save current pitch buffer block offset
 
     // start processing fragments
-    if (!(bBackground ? StartProcess(pCaller, IDS_STATTXT_BACKGNDFRA) : StartProcess(pCaller, IDS_STATTXT_PROCESSFRA))) {
+    if (!(bBackground ? StartProcess(pCaller, BACKGNDFRA) : StartProcess(pCaller, PROCESSFRA))) {
         // memory allocation failed
         // end data processing
         EndProcess();
         if (!bBackground) {
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
         }
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -109,7 +109,7 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
             EndProcess(); // end data processing
             SetDataInvalid();
             if (!bBackground) {
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
             }
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
@@ -156,7 +156,7 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
             EndProcess(); // end data processing
             SetDataInvalid();
             if (!bBackground) {
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
             }
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
@@ -166,7 +166,7 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
         if (!OpenFileToAppend()) {
             EndProcess(); // end data processing
             if (!bBackground) {
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
             }
             if (m_pFragmenter!=NULL) {
                 delete m_pFragmenter;
@@ -206,7 +206,7 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
                 Write(m_lpBuffer, m_pFragmenter->GetFragmentBlockLength() * sizeof(SFragParms));
             } catch (CFileException * e) {
                 // error writing file
-                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -249,7 +249,7 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
 
     // if foreground processing and data is not ready, return a process error
     if (!bBackground) {
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         if (!IsDataReady()) {
             SetDataInvalid(); // delete the temporary file
             return MAKELONG(PROCESS_ERROR, 100);

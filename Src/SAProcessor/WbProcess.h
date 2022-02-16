@@ -7,7 +7,7 @@
 
 class CWbProcess : public CProcess {
 public:
-    CWbProcess(Context & context, WbDialogType _type) : CProcess(context) {
+    CWbProcess(Context * pContext, WbDialogType _type) : CProcess(pContext) {
         type = _type;
     }
     WbDialogType GetDialogType() {

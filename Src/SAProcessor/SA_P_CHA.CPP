@@ -29,7 +29,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessChange::CProcessChange Constructor
 /***************************************************************************/
-CProcessChange::CProcessChange(Context & context) : CProcess(context) {
+CProcessChange::CProcessChange(Context * pContext) : CProcess(pContext) {
     m_pQualityFile = new CFile;
     m_qualityFileStatus.m_szFullName[0] = 0; // no file name
     m_hQualityData = NULL;
@@ -241,12 +241,12 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
     // allocate global buffer for the processed quality data
     // start pitch process
     // wait cursor
-    target.BeginWaitCursor();
+    pTarget->BeginWaitCursor();
     // start data processing
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT, FALSE)) {
+    if (!StartProcess(pCaller, PROCESSPIT, FALSE)) {
         // end data processing
         EndProcess();
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // allocate global buffer for the processed quality data
@@ -256,20 +256,20 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
         m_hQualityData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize());
         if (!m_hQualityData) {
             // memory allocation error
-            app.ErrorMessage(IDS_ERROR_MEMALLOC);
+            pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
             // end data processing
             EndProcess();
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
         m_lpQualityData = (HPSTR)::GlobalLock(m_hQualityData); // lock memory
         if (!m_lpQualityData) {
             // memory lock error
-            app.ErrorMessage(IDS_ERROR_MEMLOCK);
+            pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
             ::GlobalFree(m_hQualityData);
             m_hQualityData = NULL;
             EndProcess(); // end data processing
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
     }
@@ -484,7 +484,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
                 m_pQualityFile->Write((HPSTR)m_lpQualityData, dwPitchCount * 2);
             } catch (CFileException * e) {
                 // error writing file
-                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_qualityFileStatus.m_szFullName);
+                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_qualityFileStatus.m_szFullName);
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -514,7 +514,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
 	if (nLevel < 0) {
 		// end data processing
 		EndProcess();
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         if ((nLevel == PROCESS_CANCELED)) {
 			// set your own cancel flag
 			CancelProcess();
@@ -523,14 +523,14 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
     }
 
     // start change process
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSCHA)) { // start data processing
+    if (!StartProcess(pCaller, PROCESSCHA)) { // start data processing
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     if (!pLoudness->SmoothData(2)) { // smooth smoothed loudness two times
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -543,7 +543,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
     // create the temporary change file
     if (!CreateTempFile(_T("CHA"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -585,7 +585,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
                 Write(m_lpBuffer, dwChangeCount * 2);
             } catch (CFileException * e) {
                 // error writing file
-                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -621,7 +621,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
     } else {
         EndProcess();
     }
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady(bRes);
     if (bRes) {
         return MAKELONG(nLevel, nProgress);
@@ -656,7 +656,7 @@ void * CProcessChange::GetQualityData( DWORD dwOffset, BOOL bBlockBegin) {
         // open the temporary file
         if (!m_pQualityFile->Open(m_qualityFileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive)) {
             // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_qualityFileStatus.m_szFullName);
+            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
             return NULL;
         }
@@ -666,7 +666,7 @@ void * CProcessChange::GetQualityData( DWORD dwOffset, BOOL bBlockBegin) {
                 m_pQualityFile->Seek(m_dwQualityBufferOffset * 2, CFile::begin);
             } catch (CFileException * e) {
                 // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
+                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
                 m_pQualityFile->Abort();
 				e->Delete();
                 return NULL;
@@ -677,7 +677,7 @@ void * CProcessChange::GetQualityData( DWORD dwOffset, BOOL bBlockBegin) {
             m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
         } catch (CFileException * e) {
             // error reading file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
+            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
 			e->Delete();
             return NULL;
@@ -713,7 +713,7 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
         // open the temporary file
         if (!m_pQualityFile->Open(m_qualityFileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive)) {
             // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_qualityFileStatus.m_szFullName);
+            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
             *bRes = FALSE; // set operation result
             return 0;
@@ -724,7 +724,7 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
                 m_pQualityFile->Seek(m_dwQualityBufferOffset * 2, CFile::begin);
             } catch (CFileException * e) {
                 // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
+                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
                 m_pQualityFile->Abort();
 				// set operation result
 				*bRes = FALSE;
@@ -737,7 +737,7 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
             m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
         } catch (CFileException * e) {
             // error reading file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
+            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
 			// set operation result
 			*bRes = FALSE;

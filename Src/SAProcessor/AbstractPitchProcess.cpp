@@ -2,6 +2,10 @@
 #include "AbstractPitchProcess.h"
 #include "Process.h"
 
+CAbstractPitchProcess::CAbstractPitchProcess(Context* pContext) : CProcess(pContext) {
+
+}
+
 /**
 * Returns uncertainty at a specific pitch
 */

@@ -20,10 +20,6 @@
 
 #include "math.h"
 
-#ifdef DUMP_FORMANT_TRACKS
-#include "Segment.h"
-#endif
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
@@ -37,25 +33,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // raw data to calculate in memory, so the class CProcessSpectroFormants creates
 // a temporary second buffer, into which it copies all the raw data needed
 // for the calculation.
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessSpectroFormants construction/destruction/creation
-
-/***************************************************************************/
-// CProcessSpectroFormants::CProcessSpectroFormants Constructor
-/***************************************************************************/
-CProcessSpectroFormants::CProcessSpectroFormants() {
-}
-
-/***************************************************************************/
-// CProcessSpectroFormants::~CProcessSpectroFormants Destructor
-/***************************************************************************/
-CProcessSpectroFormants::~CProcessSpectroFormants() {
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessSpectroFormants helper functions
 
 /***************************************************************************/
 // CProcessSpectroFormants::Process Processing spectrogram data
@@ -107,7 +84,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
     }
 
     DWORD nSmpSize = pModel->GetSampleSize();
-    if (!StartProcess(this, IDS_STATTXT_PROCESSFMT)) {
+    if (!StartProcess(this, PROCESSFMT)) {
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -145,18 +122,10 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                 // open the temporary file
                 if (!CreateTempFile(_T("SFM"))) {
                     // error opening file
-                    app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+                    pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
                     SetDataInvalid();
                     return MAKELONG(PROCESS_ERROR, nProgress);
                 }
-
-#ifdef DUMP_FORMANT_TRACKS
-                char DumpFile[MAX_PATH];
-                strcpy(DumpFile, pModel->GetFileStatus()->m_szFullName);
-                strcpy(&DumpFile[strlen(DumpFile)-4], "_Formant.tbl");
-                FILE * hDump = fopen(DumpFile, "w");
-                fprintf(hDump, "Frag\tSmp\tLen\tID\tF0\tF1\tBW1\tE1\tF2\tBW2\tE2\tF3\tBW3\tE3\t%% Err\tNV\n");
-#endif
 
                 // Extract formants for each fragment.
                 SFormantFreq FormantFreq;
@@ -242,22 +211,8 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                                         MaxPowerInDecibels = pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels;
                                     }
                                 }
-#ifdef DUMP_FORMANT_TRACKS
-                                SFragParms FragmentParm = pFragments->GetFragmentParms(dwFormantIndex);
-                                fprintf(hDump, "%lu\t%lu\t%u", dwFormantIndex, FragmentParm.dwOffset, FragmentParm.wLength);
-                                CSegment * pSegments = pModel->GetSegment(PHONETIC);
-                                const bWithin = TRUE;
-                                int nSegment = pSegments->FindFromPosition(FragmentParm.dwOffset*nSmpSize, bWithin);
-                                CString Annot = pSegments->GetSegmentString(nSegment);
-                                fprintf(hDump, "\t%s", nSegment < 0 ? " " : (LPCTSTR)Annot);
-#endif
                                 for (USHORT nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++) {
                                     FormantFreq.F[nFormant] = pFormantFrame->Formant[nFormant].Lpc.FrequencyInHertz;
-#ifdef DUMP_FORMANT_TRACKS
-                                    if (nFormant <= 3) {
-                                        fprintf(hDump, "\t%4.0f", pFormantFrame->Formant[nFormant].Lpc.FrequencyInHertz);
-                                    }
-#endif
                                     if (nFormant >= 1) {
                                         if (FormantFreq.F[nFormant] != (float)NA && MaxPowerInDecibels != FLT_MAX_NEG) {
                                             // suppress formants with relatively low power compared to that of highest energy formant
@@ -271,38 +226,15 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                                             FormantFreq.F[nFormant] = (float)NA;
                                         }
                                         FormantPwr.F[nFormant] = pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels;
-#ifdef DUMP_FORMANT_TRACKS
-                                        if (nFormant <= 3) {
-                                            if (pFormantFrame->Formant[nFormant].Lpc.BandwidthInHertz == (float)NA) {
-                                                fprintf(hDump, "\tN/A\tN/A");
-                                            } else fprintf(hDump, "\t%3.0f\t%3.0f",
-                                                               pFormantFrame->Formant[nFormant].Lpc.BandwidthInHertz, pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels);
-                                        }
-#endif
                                     }
                                 }
-#ifdef DUMP_FORMANT_TRACKS
-                                if (pFormantFrame->LpcErrorInPercent == (double)NA) {
-                                    fprintf(hDump, "\tN/A");
-                                } else {
-                                    fprintf(hDump, "\t%4.1f", pFormantFrame->LpcErrorInPercent);
-                                }
-
-                                CString NearestVowel = pFormants->FindNearestVowel(FormantFreq);
-                                BOOL bDifferent = strcmp((LPCTSTR)Annot, (LPCTSTR)NearestVowel);
-                                if (bDifferent) {
-                                    fprintf(hDump, "\t%s*\n", (LPCTSTR)NearestVowel);
-                                } else {
-                                    fprintf(hDump, "\t%s\n", (LPCTSTR)NearestVowel);
-                                }
-#endif
                                 try {
                                     // write the formant frequenciess
                                     Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
                                 } catch (CFileException * e) {
                                     // error writing file
                                     pFormants->ResetTracking();
-                                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 									// error, writing failed
 									e->Delete();
 									return Exit(PROCESS_ERROR);
@@ -325,7 +257,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                         } catch (CFileException * e) {
                             // error writing file
                             pFormants->ResetTracking();
-                            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 							// error, writing failed
 							e->Delete();
 							return Exit(PROCESS_ERROR);
@@ -351,21 +283,8 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                                         MaxPowerInDecibels > pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels) {
                                     MaxPowerInDecibels = pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels;    // find max power
                                 }
-#ifdef DUMP_FORMANT_TRACKS
-                            SFragParms FragmentParm = pFragments->GetFragmentParms(dwFormantIndex);
-                            fprintf(hDump, "%lu\t%lu\t%u", dwFormantIndex, FragmentParm.dwOffset, FragmentParm.wLength);
-                            CSegment * pSegments = pModel->GetSegment(PHONETIC);
-                            const bWithin = TRUE;
-                            int nSegment = pSegments->FindFromPosition(FragmentParm.dwOffset*nSmpSize, bWithin);
-                            fprintf(hDump, "\t%s", nSegment < 0 ? " " : (LPCTSTR)pSegments->GetSegmentString(nSegment));
-#endif
                             for (USHORT nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++) {
                                 FormantFreq.F[nFormant] = pFormantFrame->Formant[nFormant].Lpc.FrequencyInHertz;
-#ifdef DUMP_FORMANT_TRACKS
-                                if (nFormant <= 3) {
-                                    fprintf(hDump, "\t%4.0f", pFormantFrame->Formant[nFormant].Lpc.FrequencyInHertz);
-                                }
-#endif
                                 if (nFormant >= 1) {
                                     if (FormantFreq.F[nFormant] != (float)NA && MaxPowerInDecibels != FLT_MAX_NEG) {
                                         // suppress formants with relatively low energy compared to that of highest energy formant
@@ -379,26 +298,15 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                                         FormantFreq.F[nFormant] = (float)NA;
                                     }
                                     FormantPwr.F[nFormant] = pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels;
-#ifdef DUMP_FORMANT_TRACKS
-                                    if (nFormant <= 3) {
-                                        if (pFormantFrame->Formant[nFormant].Lpc.BandwidthInHertz == (float)NA) {
-                                            fprintf(hDump, "\tN/A\tN/A");
-                                        } else fprintf(hDump, "\t%3.0f\t%3.0f",
-                                                           pFormantFrame->Formant[nFormant].Lpc.BandwidthInHertz, pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels);
-                                    }
-#endif
                                 }
                             }
-#ifdef DUMP_FORMANT_TRACKS
-                            fprintf(hDump, "\t%s\n", (LPCTSTR)pFormants->FindNearestVowel());
-#endif
                             try {
                                 // write the formants
                                 Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
                             } catch (CFileException * e) {
                                 // error writing file
                                 pFormants->ResetTracking();
-                                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 								e->Delete();
 								// error, writing failed
 								return Exit(PROCESS_ERROR);
@@ -407,9 +315,6 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                         pFormants->ResetTracking();
                     }
                 }
-#ifdef DUMP_FORMANT_TRACKS
-                fclose(hDump);
-#endif
             }
         }
     }
@@ -426,7 +331,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
     nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
     SetProgress(nProgress);
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     SetDataReady();

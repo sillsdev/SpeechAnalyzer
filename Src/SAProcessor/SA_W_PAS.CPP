@@ -20,7 +20,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessWbHighpass
 // Workbench process class to calculate new raw data with a highpass function.
 
-CProcessWbHighpass::CProcessWbHighpass(Context & context) : CProcessButterworth(context,WbHiPass) {
+CProcessWbHighpass::CProcessWbHighpass(Context * pContext) : CProcessButterworth(pContext,WbHiPass) {
     m_nCutoff = 150;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -98,7 +98,7 @@ BOOL CProcessWbHighpass::ReadProperties(ObjectIStream & obs) {
 // CProcessWbLowpass
 // Workbench process class to calculate new raw data with a lowpass function.
 
-CProcessWbLowpass::CProcessWbLowpass(Context & context) : CProcessButterworth(context,WbLoPass) {
+CProcessWbLowpass::CProcessWbLowpass(Context * pContext) : CProcessButterworth(pContext,WbLoPass) {
     m_nCutoff = 3000;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -171,7 +171,7 @@ BOOL CProcessWbLowpass::ReadProperties(ObjectIStream & obs) {
 /***************************************************************************/
 // CProcessWbBandpass::CProcessWbBandpass Constructor
 /***************************************************************************/
-CProcessWbBandpass::CProcessWbBandpass(Context & context) : CProcessButterworth(context,WbBandPass) {
+CProcessWbBandpass::CProcessWbBandpass(Context * pContext) : CProcessButterworth(pContext,WbBandPass) {
     m_nUpperCutoff = 3000;
     m_nLowerCutoff = 150;
     m_nOrder = 3;

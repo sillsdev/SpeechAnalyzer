@@ -441,7 +441,7 @@ void CPlotStaff::Convert() {
     int nLowerBound = pParm->nLowerBound;
 
     if (pParm->nRangeMode == 0) {
-        CMusicParm::GetAutoRange(pModel->GetMelogram(), nUpperBound, nLowerBound);
+        CMusicParm::GetAutoRange(pModel, pModel->GetMelogram(), nUpperBound, nLowerBound);
     }
     short nMinSemitone = (short)nLowerBound;
     short nMaxSemitone = (short)nUpperBound;

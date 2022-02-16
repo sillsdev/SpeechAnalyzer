@@ -141,11 +141,13 @@
   <ItemGroup>
     <ClCompile Include="AlignInfo.cpp" />
     <ClCompile Include="AppContext.cpp" />
+    <ClCompile Include="AppImpl.cpp" />
     <ClCompile Include="ArchiveTransfer.cpp" />
     <ClCompile Include="AutoSave.cpp" />
     <ClCompile Include="AutoSegmentation.cpp" />
     <ClCompile Include="ChildFrame.cpp" />
     <ClCompile Include="ClipboardHelper.cpp" />
+    <ClCompile Include="ModelImpl.cpp" />
     <ClCompile Include="WbProcessDlgFactory.cpp" />
     <ClCompile Include="Process\AbstractPitchProcess.cpp" />
     <ClCompile Include="Process\PitchProcess.cpp" />
@@ -364,8 +366,10 @@
     <ClInclude Include="AlignInfo.h" />
     <ClInclude Include="AppContext.h" />
     <ClInclude Include="AppDefs.h" />
+    <ClInclude Include="AppImpl.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="AutoSegmentation.h" />
+    <ClInclude Include="ModelImpl.h" />
     <ClInclude Include="WbProcessDlgFactory.h" />
     <ClInclude Include="Process\AbstractPitchProcess.h" />
     <ClInclude Include="Process\PitchProcess.h" />

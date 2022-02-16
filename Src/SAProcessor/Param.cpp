@@ -184,7 +184,7 @@ void CPitchParm::Init() {
     nManualPitchLower = nLowerBound;
 }
 
-void CPitchParm::GetAutoRange(CProcessGrappl* pGrappl, int & nUpperBound, int & nLowerBound) {
+void CPitchParm::GetAutoRange(Model * pModel, CProcessGrappl* pGrappl, int & nUpperBound, int & nLowerBound) {
 
     CPitchParm temp;
     temp.Init();
@@ -333,7 +333,7 @@ void CMusicParm::Init() {
     nManualCalcLower = nCalcLowerBound;
 }
 
-void CMusicParm::GetAutoRange(CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound) {
+void CMusicParm::GetAutoRange(Model* pModel, CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound) {
 
 	CMusicParm temp;
     temp.Init();

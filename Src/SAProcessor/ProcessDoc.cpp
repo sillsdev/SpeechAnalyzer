@@ -14,13 +14,10 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessDoc::CProcessDoc(Context & context) {
-    app = context.GetApp();
-    pModel = context.GetView()->GetDocument();
+CProcessDoc::CProcessDoc(Context * pContext) {
+    pApp = pContext->GetApp();
+    pModel = pContext->GetView()->GetDocument();
     m_dwBufferOffset = UNDEFINED_OFFSET;    // buffer undefined, force buffer reload
-}
-
-CProcessDoc::~CProcessDoc() {
 }
 
 long CProcessDoc::Process(void * /*pCaller*/, Model * /*pModel*/, int /*nProgress*/, int nLevel) {
@@ -67,7 +64,7 @@ HPSTR CProcessDoc::GetProcessedWaveData(App * pApp, LPCTSTR szName, int selected
     // open the temporary file
     if (!file.Open(szName, CFile::modeRead | CFile::shareExclusive, NULL)) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
         return NULL;
     }
 
@@ -79,7 +76,7 @@ HPSTR CProcessDoc::GetProcessedWaveData(App * pApp, LPCTSTR szName, int selected
             file.Seek(index, CFile::begin);
         } catch (CFileException * e) {
             // error seeking file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
+            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
             e->Delete();
 			return NULL;
@@ -98,7 +95,7 @@ HPSTR CProcessDoc::GetProcessedWaveData(App * pApp, LPCTSTR szName, int selected
     } catch (CFileException * e) {
         delete [] buffer;
         // error reading file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
+        pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
         m_dwBufferOffset = UNDEFINED_OFFSET;
         e->Delete();
 		return NULL;
@@ -165,7 +162,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     CFile file;
     if (!file.Open(szName, CFile::modeRead | CFile::shareExclusive, NULL)) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
+        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
         return NULL;
     }
 
@@ -176,7 +173,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
             file.Seek(seek, CFile::begin);
         } catch (...) {
             // error seeking file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
+            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
             return NULL;
         }
@@ -195,7 +192,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     } catch (...) {
         delete [] buffer;
         // error reading file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
+        pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
         m_dwBufferOffset = UNDEFINED_OFFSET;
         return NULL;
     }

@@ -63,8 +63,8 @@ struct SFormantFrame {
 class CProcessSpectrum : public CProcess {
 
 public:
-    CProcessSpectrum();
-    virtual ~CProcessSpectrum();
+    CProcessSpectrum(Context * pContext);
+
     void SetSpectrumParms(CSpectrumParm * pParmSpec);
     CSpectrumParm * GetSpectrumParms(void);
     virtual long Process(void * pCaller, Model * pModel, DWORD dwFrameStart, DWORD dwFrameSize,

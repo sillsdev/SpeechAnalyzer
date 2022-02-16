@@ -22,17 +22,13 @@ const double pi = 3.14159265358979323846264338327950288419716939937511;
 
 extern CFormantTrackerOptions formantTrackerOptions;
 
-CProcessFormantTracker::CProcessFormantTracker(Context & context, CProcess & Real, CProcess & Imag, CProcess & Pitch) : CProcess(context) {
+CProcessFormantTracker::CProcessFormantTracker(Context * pContext, CProcess & Real, CProcess & Imag, CProcess & Pitch) : CProcess(pContext) {
     // real is the raw audio data
     m_pReal = &Real;
     // imaginary is the hilbert data
     m_pImag = &Imag;
     // pitch is the grappl process data
     m_pPitch = &Pitch;
-}
-
-CProcessFormantTracker::~CProcessFormantTracker() {
-
 }
 
 long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
@@ -89,17 +85,17 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
     }
 
     // start process
-    target.BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSFMT)) { // start data processing
+    pTarget->BeginWaitCursor(); // wait cursor
+    if (!StartProcess(pCaller, FormantTracker)) { // start data processing
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
     if (!CreateTempFile(_T("FT"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataReady(FALSE);
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -165,7 +161,7 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

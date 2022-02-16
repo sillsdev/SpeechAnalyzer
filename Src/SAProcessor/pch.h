@@ -72,6 +72,16 @@ inline static int round2Int(double value) {
 
 #define MAX_FILTER_NUMBER               3           // number of filters in workbench processes
 
+#define MEL_MULT                        100         // multiplier for melogram data
+
+// CECIL pitch default settings
+#define CECIL_PITCH_MAXFREQ             500
+#define CECIL_PITCH_MINFREQ             40
+#define CECIL_PITCH_VOICING             32
+#define CECIL_PITCH_CHANGE              10
+#define CECIL_PITCH_GROUP               6
+#define CECIL_PITCH_INTERPOL            7
+
 #include "resource.h"
 
 #include "context.h"

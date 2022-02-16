@@ -48,7 +48,7 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
 
     if (nLevel < 0) { // previous processing error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
@@ -56,10 +56,10 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
     }
 
     // start pitch process
-    target.BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPI)) { // memory allocation failed
+    pTarget->BeginWaitCursor(); // wait cursor
+    if (!StartProcess(pCaller, PROCESSSPI)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // if file has not been created
@@ -94,7 +94,7 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
-            app.ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
+            pApp->ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
@@ -164,7 +164,7 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
                     Write((HPSTR)&pResults->fsmooth16, sizeof(int16));
                 } catch (CFileException * e) {
                     // error writing file
-                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					// error, writing failed
 					e->Delete();
 					return Exit(PROCESS_ERROR);

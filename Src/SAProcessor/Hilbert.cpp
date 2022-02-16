@@ -34,7 +34,7 @@ const double CProcessHilbert::Pole1000x96dB[] = {
     0 // Real Pole
 };
 
-CProcessHilbert::CProcessHilbert(Context & context, CProcess * pSourceProcess, BOOL bWBenchProcess) : CProcessIIRFilter( context, Plain) {
+CProcessHilbert::CProcessHilbert(Context * pContext, CProcess * pSourceProcess, BOOL bWBenchProcess) : CProcessIIRFilter( pContext, Plain) {
     const double * poles = Pole1000x96dB;
     double fTauSq=0;
     double rTauSq=0;

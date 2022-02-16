@@ -5,7 +5,7 @@
 
 class CProcess3dPitch : public CProcess {
 public:
-    CProcess3dPitch(Context & context);           // protected constructor used by dynamic creation
+    CProcess3dPitch(Context * pContext);           // protected constructor used by dynamic creation
     virtual ~CProcess3dPitch();
 
     void SetSourceProcess(IProcess * pSourceProcess);

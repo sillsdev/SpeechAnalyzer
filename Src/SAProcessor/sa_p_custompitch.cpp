@@ -56,10 +56,10 @@ long CProcessCustomPitch::Process(void* pCaller, Model* pModel, int nProgress, i
     }
 
     // start pitch process
-    target.BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSCPI)) { // memory allocation failed
+    pTarget->BeginWaitCursor(); // wait cursor
+    if (!StartProcess(pCaller, PROCESSCPI)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // if file has not been created
@@ -94,7 +94,7 @@ long CProcessCustomPitch::Process(void* pCaller, Model* pModel, int nProgress, i
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
-            app.ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText,NULL);
+            pApp->ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText,NULL);
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
@@ -160,7 +160,7 @@ long CProcessCustomPitch::Process(void* pCaller, Model* pModel, int nProgress, i
                     Write((HPSTR)&pResults->fselect16, sizeof(int16));
                 } catch (CFileException* e) {
                     // error writing file
-                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName(),NULL);
+                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName(),NULL);
                     // error, writing failed
                     e->Delete();
                     return Exit(PROCESS_ERROR);

@@ -56,10 +56,10 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
     }
 
     // start pitch process
-    target.BeginWaitCursor();
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT)) { // previous processing error
+    pTarget->BeginWaitCursor();
+    if (!StartProcess(pCaller, PROCESSPIT)) { // previous processing error
         EndProcess();                                   // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -96,7 +96,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
-            app.ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
+            pApp->ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
@@ -163,7 +163,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
                     Write((HPSTR)&pResults->fcalc16, sizeof(int16));
                 } catch (CFileException * e) {
                     // error writing file
-                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					// error, writing failed
 					e->Delete();
 					return Exit(PROCESS_ERROR);

@@ -21,22 +21,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // class to calculate glottal waveform for speech data. The class creates an
 // object of the class CGlottis that does the calculation.
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcessGlottis construction/destruction/creation
-
-/***************************************************************************/
-// CProcessGlottis::CProcessGlottis Constructor
-/***************************************************************************/
-CProcessGlottis::CProcessGlottis() {
-}
-
-/***************************************************************************/
-// CProcessGlottis::~CProcessGlottis Destructor
-/***************************************************************************/
-CProcessGlottis::~CProcessGlottis() {
-}
-
-
 /***************************************************************************/
 // CProcessGlottis::Process Processing glottal waveform data
 // The processed glottal waveform is stored in the process data buffer. There is
@@ -61,17 +45,17 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
     }
 
 
-    target.BeginWaitCursor(); // wait cursor
+    pTarget->BeginWaitCursor(); // wait cursor
     if (!StartProcess(pCaller)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
     if (!CreateTempFile(_T("GLO"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -128,7 +112,7 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
             pBlockStart = pModel->GetWaveData(dwBlockStart, TRUE); // get pointer to data block
             if (!pBlockStart) { // reading failed
                 EndProcess(); // end data processing
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(-1, nProgress);
             }
@@ -141,7 +125,7 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
 
             if (!pBlockStart) { // reading failed
                 EndProcess(); // end data processing
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(-1, nProgress);
             }
@@ -162,7 +146,7 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
             SetProgress(nProgress + (int)(100 * dwWaveOffset / dwWaveSize / (DWORD)nLevel));
             if (IsCanceled()) {
                 EndProcess(); // end data processing
-                target.EndWaitCursor();
+                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(PROCESS_CANCELED, nProgress);
             }
@@ -173,10 +157,10 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
                     Write(m_lpBuffer, (UINT)dwProcDataCount * 2);
                 } catch (CFileException * e) {
 					// display message
-                    app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+                    pApp->AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 					// end data processing
 					EndProcess();
-                    target.EndWaitCursor();
+                    pTarget->EndWaitCursor();
                     SetDataInvalid();
                     e->Delete();
 					return MAKELONG(-1, nProgress);
@@ -202,10 +186,10 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
             Write(m_lpBuffer, (UINT)dwProcDataCount * 2);
         } catch (CFileException * e) {
 			// display message
-            app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+            pApp->AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 			// end data processing
 			EndProcess();
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
             SetDataInvalid();
             e->Delete();
 			return MAKELONG(-1, nProgress);
@@ -217,7 +201,7 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

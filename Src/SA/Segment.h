@@ -62,7 +62,6 @@
 #define SEGMENT_H
 
 #include "SaString.h"
-#include "process\Process.h"
 
 class CSaDoc;
 class CSaView;

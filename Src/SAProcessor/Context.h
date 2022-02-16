@@ -8,12 +8,68 @@ class CProcessZCross;
 class CProcessFragments;
 class CWbProcess;
 
+class CProcessDoc;
+class CProcessAdjust;
+class CProcessFragments;
+class CProcessLoudness;
+class CProcessSmoothLoudness;
+class CProcessZCross;
+class CProcessPitch;
+class CProcessCustomPitch;
+class CProcessSmoothedPitch;
+class CProcessChange;
+class CProcessRaw;
+class CProcessHilbert;
+class CProcessSpectrogram;
+class CProcessSpectrogram;
+class CProcessWavelet;
+class CProcessSpectrum;
+class CProcessGrappl;
+class CProcessMelogram;
+class CProcessFormants;
+class CProcessFormantTracker;
+class CProcessDurations;
+class CProcessSDP;
+class CProcessRatio;
+class CProcessPOA;
+class CProcessGlottis;
+class CProcessTonalWeightChart;
+
 enum EGender {
     male, female, child
 };
 
 enum WbDialogType {
     Plain,WbEquation,WbEcho,WbReverb,WbLoPass,WbHiPass,WbBandPass
+};
+
+enum ProcessorType {
+    PROCESSDFLT = -1,
+    BACKGNDFRA,
+    BACKGNDGRA,
+    PROCESSCHA,
+    PROCESSCPI,
+    PROCESSDUR,
+    PROCESSFMT,
+    PROCESSFRA,
+    PROCESSGRA,
+    PROCESSLOU,
+    PROCESSMEL,
+    PROCESSPIT,
+    PROCESSPOA,
+    PROCESSRAT,
+    PROCESSRAW,
+    PROCESSSLO,
+    PROCESSSPG,
+    PROCESSSPI,
+    PROCESSSPU,
+    PROCESSTWC,
+    PROCESSWBECHO,
+    PROCESSWBEQU,
+    PROCESSWBLP,
+    PROCESSWBREV,
+    PROCESSWVL,
+    PROCESSZCR,
 };
 
 __interface Model {
@@ -26,15 +82,12 @@ __interface Model {
     DWORD GetWaveBufferIndex();
     uint32 GetDataSize();
     DWORD GetSignalBandWidth();
-    CProcessGrappl* GetGrappl();
-    CProcessSpectrum* GetSpectrum();
     EGender GetGender();
     UINT GetBlockAlign(bool singleChannel = false);
     WORD GetBitsPerSample();
     CMusicParm* GetMusicParm();
     CUttParm* GetUttParm();
-    CProcessZCross* GetZCross();
-    CProcessFragments* GetFragments();
+    void GetUttParm(CUttParm*, BOOL bOriginal = FALSE);
     bool Is16Bit();
     void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
     HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
@@ -42,12 +95,42 @@ __interface Model {
     int GetWbProcess();
     LPCTSTR GetProcessFilename();
     DWORD GetSelectedChannel();
+    // should return GetSegment(index)->GetContext();
+    string GetSegmentContext(int index);
+    CProcessAdjust* GetAdjust();
+    CProcessChange* GetChange();
+    CProcessCustomPitch* GetCustomPitch();
+    CProcessDoc* GetUnprocessed();
+    CProcessDurations* GetDurations();
+    CProcessFormantTracker* GetFormantTracker();
+    CProcessFormants* GetFormants();
+    CProcessFragments* GetFragments() = 0;
+    CProcessGlottis* GetGlottalWave();
+    CProcessGrappl* GetGrappl();
+    CProcessHilbert* GetHilbert();
+    CProcessLoudness* GetLoudness();
+    CProcessMelogram* GetMelogram();
+    CProcessPOA* GetPOA();
+    CProcessPitch* GetPitch();
+    CProcessRatio* GetRatio();
+    CProcessRaw* GetRaw();
+    CProcessSDP* GetSDP(int nIndex);
+    CProcessSmoothLoudness* GetSmoothLoudness();
+    CProcessSmoothedPitch* GetSmoothedPitch();
+    CProcessSpectrogram* GetSnapshot();
+    CProcessSpectrogram* GetSpectrogram();
+    CProcessSpectrum* GetSpectrum();
+    CProcessTonalWeightChart* GetTonalWeightChart();
+    CProcessWavelet* GetWavelet();
+    CProcessZCross* GetZCross();
+
+    int GetProcessorText(ProcessorType processorType);
 };
 
 __interface ProgressStatusBar {
     void* GetProcessOwner();
     void SetProgress(int percent);
-    void SetProcessOwner(void*, void*, int processID = -1);
+    void SetProcessOwner(void*, void*, ProcessorType processorType = PROCESSDFLT);
 };
 
 __interface MainFrame {
@@ -56,29 +139,18 @@ __interface MainFrame {
     CWbProcess* GetWbProcess(int nProcess, int nFilter);
 };
 
-__interface App {
-    void ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
-    int AfxMessageBox(UINT nIDPrompt, UINT nType = MB_OK, UINT nIDHelp = (UINT)-1);
+__interface VowelFormantSets {
+
 };
 
-// interface for CCmdTarget
-__interface CmdTarget {
-    void BeginWaitCursor();
-    void EndWaitCursor();
+
+__interface VowelFormantSet {
+
 };
 
-__interface View {
-    DWORD GetStartCursorPosition();
-    DWORD GetStopCursorPosition();
-    Model* GetDocument();
-    MainFrame* GetMainWnd();
-    App* GetApp();
-    CmdTarget& GetTarget();
-};
 
-__interface Context {
-    App & GetApp();
-    View* GetView();
+__interface VowelFormants {
+
 };
 
 __interface ObjectIStream {
@@ -90,7 +162,7 @@ __interface ObjectIStream {
     //bool bAtEndMarker(LPCSTR pszMarker);
     //bool bFail();
     bool bReadBeginMarker(LPCSTR pszMarker, LPSTR psName, size_t size);
-    bool bReadBeginMarker(LPCSTR pszMarker); 
+    bool bReadBeginMarker(LPCSTR pszMarker);
     //bool bReadEndMarker(LPCSTR pszMarker);
     //void SkipToEndMarker(LPCSTR pszMarker);
     //bool bReadBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier);
@@ -109,6 +181,11 @@ __interface ObjectIStream {
     //void PeekMarkedString(LPCSTR* ppszMarker, LPSTR pszString, size_t len, BOOL bTrimWhiteSpace = TRUE);
 };
 
+__interface ObjectIStreamFactory {
+    // call constructor on CObjectIStream
+    ObjectIStream * factory(LPCSTR name);
+};
+
 __interface ObjectOStream {
     void WriteBeginMarker(LPCSTR pszMarker, LPCSTR pszName = "");
     void WriteEndMarker(LPCSTR pszMarker);
@@ -124,4 +201,39 @@ __interface ObjectOStream {
     //void WriteNewline();
 };
 
+__interface ObjectOStreamFactory {
+    // call constructor on CObjectIStream
+    ObjectOStream * factory(LPCSTR name);
+};
 
+__interface App {
+    VowelFormantSets & GetVowelSets();
+    const VowelFormantSet& GetDefaultVowelSet();
+    const std::vector<VowelFormants>& GetVowelVector(int nGender);
+    ObjectOStreamFactory & getObjectOStreamFactory();
+    ObjectIStreamFactory & getObjectIStreamFactory();
+    
+    void ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
+    int AfxMessageBox(UINT nIDPrompt, UINT nType = MB_OK, UINT nIDHelp = (UINT)-1);
+};
+
+// interface for CCmdTarget
+__interface CmdTarget {
+    void BeginWaitCursor();
+    void EndWaitCursor();
+};
+
+__interface View {
+    DWORD GetStartCursorPosition();
+    DWORD GetStopCursorPosition();
+    Model* GetDocument();
+    MainFrame* GetMainWnd();
+    App* GetApp();
+    CmdTarget * GetTarget();
+    double GetDataPosition(int nWndWidth);
+};
+
+__interface Context {
+    App * GetApp();
+    View * GetView();
+};

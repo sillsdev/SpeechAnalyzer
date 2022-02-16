@@ -34,7 +34,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessTonalWeightChart::CProcessTonalWeightChart Constructor
 /***************************************************************************/
-CProcessTonalWeightChart::CProcessTonalWeightChart(Context & context) : CProcess(context) {
+CProcessTonalWeightChart::CProcessTonalWeightChart(Context * pContext) : CProcess(pContext) {
     m_dwFrameSize = 0;
 }
 
@@ -93,18 +93,18 @@ long CProcessTonalWeightChart::Process(void * pCaller, Model * pModel, DWORD dwF
     }
 
     // start tonal weighting chart process
-    target.BeginWaitCursor(); // wait cursor
+    pTarget->BeginWaitCursor(); // wait cursor
     // to do: need new status bar text for TWC
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSTWC)) { // memory allocation failed
+    if (!StartProcess(pCaller, PROCESSTWC)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
     if (!CreateTempFile(_T("TWC"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -158,7 +158,7 @@ long CProcessTonalWeightChart::Process(void * pCaller, Model * pModel, DWORD dwF
         Write(m_lpBuffer, ppoHist->GetHistogramParms().nBins * 2);
     } catch (CFileException * e) {
         // error writing file
-        app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
         if (ppoHist) {
  delete ppoHist; 
                 ppoHist = NULL;
@@ -176,7 +176,7 @@ long CProcessTonalWeightChart::Process(void * pCaller, Model * pModel, DWORD dwF
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

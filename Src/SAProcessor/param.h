@@ -51,7 +51,7 @@ public:
     void WriteProperties(ObjectOStream & obs);
     BOOL ReadProperties(ObjectIStream & obs);
     void Init();
-    static void GetAutoRange(CProcessGrappl* pGrappl, int & nUpperBound, int & nLowerBound);
+    static void GetAutoRange(Model* pModel, CProcessGrappl* pGrappl, int & nUpperBound, int & nLowerBound);
 
     int nRangeMode;                 // frequency range display mode
     int nScaleMode;                 // scale display mode
@@ -100,7 +100,7 @@ public:
     BOOL ReadProperties(ObjectIStream & obs);
 
     void Init();
-    static void GetAutoRange(CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound);
+    static void GetAutoRange(Model* pModel, CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound);
 };
 
 class CIntensityParm {          // pitch parameters

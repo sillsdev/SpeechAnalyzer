@@ -9,7 +9,7 @@ public:
     CSaParam operator=(const CSaParam & right);
     void Serialize(CArchive & ar);
 
-    CSaString   szDescription;      // file description
+    string      szDescription;      // file description
     WORD        wFlags;             // 16 bits of flags for chunks
     BYTE        byRecordFileFormat; // wav, utt, mac, etc
     CTime       RecordTimeStamp;    // recording time stamp of wave file

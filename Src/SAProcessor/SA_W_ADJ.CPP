@@ -16,7 +16,7 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessAdjust::CProcessAdjust(Context & context) : CProcessButterworth(context) {
+CProcessAdjust::CProcessAdjust(Context * pContext) : CProcessButterworth(pContext, Plain) {
     m_bInvert = FALSE;
     m_bZero = FALSE;
     m_bNormalize = FALSE;
@@ -73,7 +73,7 @@ long CProcessAdjust::Process(void * pCaller, Model * pModel, int nProgress, int 
         CProcessDoc * pLowerProcess = pModel->GetUnprocessed();
         double dScale = m_bInvert ? -1 : 1;
         if (m_bNormalize) {
-            CProcessButterworth butterworth(context);
+            CProcessButterworth butterworth(pContext, Plain);
             butterworth.SetSourceProcess(pLowerProcess);
             butterworth.SetFilterFilter(TRUE);
             butterworth.HighPass(m_bZero ? 3 : 0, 40., 1.);

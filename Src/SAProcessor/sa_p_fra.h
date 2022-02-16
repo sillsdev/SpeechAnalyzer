@@ -15,7 +15,7 @@
 class CProcessFragments : public CProcess {
 // Construction/destruction/creation
 public:
-    CProcessFragments();
+    CProcessFragments(Context * pContext);
     virtual ~CProcessFragments();
 
 // Attributes

@@ -29,7 +29,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 long CProcessPOA::Exit(int nError, HANDLE) {
     // free the raw data buffer
     SetDataInvalid();
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     return MAKELONG(nError, 100);
 }
 
@@ -85,12 +85,12 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
         return MAKELONG(nLevel, nProgress);
     }
 
-    target.BeginWaitCursor();
+    pTarget->BeginWaitCursor();
     // memory allocation failed
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPOA, FALSE)) {
+    if (!StartProcess(pCaller, PROCESSPOA, FALSE)) {
         // end data processing
         EndProcess();
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -151,11 +151,11 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
     if (!m_lpBuffer) { // not yet allocated
         m_lpBuffer = new char[GetDataSize(sizeof(char))];
         if (!m_lpBuffer) {
-            app.ErrorMessage(IDS_ERROR_MEMALLOC);
+            pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
             SetDataSize(0);
             delete pLpcObject; // delete the Lpc object
             pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
-            target.EndWaitCursor();
+            pTarget->EndWaitCursor();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
     }
@@ -182,7 +182,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
     SetProgress(nProgress);
     EndProcess();
     SetDataReady();
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
 
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);

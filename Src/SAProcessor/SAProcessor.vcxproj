@@ -202,6 +202,8 @@
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="TrackState.h" />
     <ClInclude Include="VowelFormants.h" />
+    <ClInclude Include="VowelFormantSets.h" />
+    <ClInclude Include="VowelSetVersion.h" />
     <ClInclude Include="WbProcess.h" />
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +254,8 @@
     <ClCompile Include="SpectroParm.cpp" />
     <ClCompile Include="TrackState.cpp" />
     <ClCompile Include="VowelFormants.cpp" />
+    <ClCompile Include="VowelFormantSets.cpp" />
+    <ClCompile Include="VowelSetVersion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SAProcessor.cd" />

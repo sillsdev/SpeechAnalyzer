@@ -35,14 +35,13 @@ static char THIS_FILE[]=__FILE__;
 
 namespace XML {
 
-ScopedXMLUtils::ScopedXMLUtils() {
-    XMLPlatformUtils::Initialize();
-}
+    ScopedXMLUtils::ScopedXMLUtils() {
+        XMLPlatformUtils::Initialize();
+    }
 
-ScopedXMLUtils::~ScopedXMLUtils() {
-    XMLPlatformUtils::Terminate();
-}
-
+    ScopedXMLUtils::~ScopedXMLUtils() {
+        XMLPlatformUtils::Terminate();
+    }
 }
 
 Attribute factory(int index, const Attributes & attributes) {

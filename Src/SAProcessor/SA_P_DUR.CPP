@@ -38,16 +38,16 @@ long CProcessDurations::Process(void * pCaller, Model * pModel, int nProgress, i
     if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
-    target.BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSDUR)) { // memory allocation failed
+    pTarget->BeginWaitCursor(); // wait cursor
+    if (!StartProcess(pCaller, pModel->GetProcessorText(PROCESSDUR))) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // set pointer to segment durations
     CSegment * pSegment = pModel->GetSegment(PHONETIC);
-    CString pPhonetic = pSegment->GetContent();
+    string pPhonetic = pSegment->GetContent();
     m_Durations.RemoveAll();
     for (int i=0; i<pSegment->GetDurationSize(); i++) {
         m_Durations.Add(pSegment->GetDuration(i));
@@ -56,14 +56,14 @@ long CProcessDurations::Process(void * pCaller, Model * pModel, int nProgress, i
     // find min and max durations
     m_dwMaxValue = 0;
     m_dwMinValue = ULONG_MAX;
-    for (int i = 0; i < pPhonetic.GetLength(); i++) {
+    for (int i = 0; i < pPhonetic.length(); i++) {
         m_dwMaxValue = max(m_dwMaxValue, pSegment->GetDurationAt(i));
         m_dwMinValue = min(m_dwMinValue, pSegment->GetDurationAt(i));
     }
 
     SetDataReady();
     EndProcess();
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     return MAKELONG(nLevel, 100);
 }
 

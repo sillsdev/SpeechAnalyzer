@@ -56,7 +56,7 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
 
     if (nLevel < 0) { // previous processing error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
@@ -64,16 +64,16 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
     }
 
     // start zero crossing process
-    target.BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSZCR)) { // memory allocation failed
+    pTarget->BeginWaitCursor(); // wait cursor
+    if (!StartProcess(pCaller, PROCESSZCR)) { // memory allocation failed
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
     if (!CreateTempFile(_T("ZCR"))) { // creating error
         EndProcess(); // end data processing
-        target.EndWaitCursor();
+        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -213,7 +213,7 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
                 Write(m_lpBuffer, dwZCrossCount * 2);
             } catch (CFileException * e) {
                 // error writing file
-                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -229,7 +229,7 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    target.EndWaitCursor();
+    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }
