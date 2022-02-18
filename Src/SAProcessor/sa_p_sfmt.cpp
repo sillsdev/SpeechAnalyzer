@@ -48,6 +48,9 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // function needs a pointer to the view instead the pointer to the document
 // like other process calls. It calculates spectrogram data.
 /***************************************************************************/
+CProcessSpectroFormants::CProcessSpectroFormants(Context * pContext) : CProcess(pContext) {
+}
+
 long CProcessSpectroFormants::Process(void * /*pCaller*/, CView * /*pSaView*/, int /*nWidth*/, int /*nHeight*/, int nProgress, int /*nLevel*/) {
     return MAKELONG(PROCESS_ERROR, nProgress);
 }

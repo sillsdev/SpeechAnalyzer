@@ -113,7 +113,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 
         PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pModel, bPercent ? 0 : PAINT_DB); // do standard data paint
     }
-    if (researchSettings.m_bShowInstantaneousPower) {
+    if (pApp->getResearchSettings().m_bShowInstantaneousPower) {
         // create raw data
         CProcessInstantaneousPower power;
         CProcessInstantaneousPower * pPower = &power;

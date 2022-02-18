@@ -134,7 +134,7 @@ long CProcessFormants::Process(void * pCaller, Model * pModel, BOOL bTrack,
 
     // Start formant processing, allocating a process buffer for formant frame data.
     pTarget->BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, pModel->GetProcessorText(ProcessFormants))) { // memory allocation failed
+    if (!StartProcess(pCaller, PROCESSFMT)) { // memory allocation failed
         SetDataReady(FALSE);
         EndProcess(); // end data processing
         pTarget->EndWaitCursor();
@@ -502,17 +502,14 @@ SFormantFrame * CProcessFormants::LoadBuffer(DWORD dwFormantBlockStart) {
 /***************************************************************************/
 SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bMelScale) const {
     
-    const std::vector<CVowelFormants> & vowelVector = pApp->GetVowelVector(nGender);
-
     // get frequency range
     SFormantFreq formants;
 
-    if (nIndex >= 0 && nIndex < (int)vowelVector.size()) {
-        const CVowelFormants & vowel = vowelVector[nIndex];
-        formants.F[1] = (float)vowel.F1;
-        formants.F[2] = (float)vowel.F2;
-        formants.F[3] = (float)vowel.F3;
-        formants.F[4] = (float)vowel.F4;
+    if (nIndex >= 0 && nIndex < (int)pApp->GetVowelVector(nGender).size()) {
+        formants.F[1] = (float)pApp->GetVowelVector(nGender)[nIndex].F1;
+        formants.F[2] = (float)pApp->GetVowelVector(nGender)[nIndex].F2;
+        formants.F[3] = (float)pApp->GetVowelVector(nGender)[nIndex].F3;
+        formants.F[4] = (float)pApp->GetVowelVector(nGender)[nIndex].F4;
     } else {
         formants.F[1] = (float)UNDEFINED_DATA;
         formants.F[2] = (float)UNDEFINED_DATA;
@@ -549,11 +546,8 @@ SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bM
 // CProcessFormants::GetVowel Returns vowel
 /***************************************************************************/
 wstring CProcessFormants::GetVowel(int nIndex, EGender nGender) const {
-    const std::vector<CVowelFormants> & vowelVector = pApp->GetVowelVector(nGender);
-
-    if (nIndex >= 0 && nIndex < (int)vowelVector.size()) {
-        const CVowelFormants & vowel = vowelVector[nIndex];
-        return vowel.m_szVowel;
+    if (nIndex >= 0 && nIndex < (int)pApp->GetVowelVector(nGender).size()) {
+        return pApp->GetVowelVector(nGender)[nIndex].m_szVowel;
     } else {
         return wstring(_T(""));
     }
@@ -578,7 +572,7 @@ wstring CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, Model * pMo
     SRange FormantScale[4];
 
     for (int nFormant = 1; nFormant <= 3; nFormant++) {
-        FormantScale[nFormant] = CPlot3D::GetChartRange(nFormant, nGender);
+        FormantScale[nFormant] = pApp->Get3DChartRange(nFormant, nGender);
         if (m_FormantParms.bMelScale) {
             FormantScale[nFormant].High = (float)Scale::ToMels((double)FormantScale[nFormant].High);
             FormantScale[nFormant].Low = (float)Scale::ToMels((double)FormantScale[nFormant].Low);
@@ -616,7 +610,7 @@ wstring CProcessFormants::FindNearestVowel(Model * pModel) const {
                         m_F[2].Mean != (float)UNDEFINED_DATA &&
                         m_F[3].Mean != (float)UNDEFINED_DATA);
     if (!bValidMeans) {
-        return 0x20;    // return a blank in the IPA font if no valid means
+        return _T(" ");    // return a blank in the IPA font if no valid means
     }
     SFormantFreq FormantFreq;
     FormantFreq.F[1] = (float)m_F[1].Mean;

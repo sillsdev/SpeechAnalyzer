@@ -14,6 +14,8 @@ class CProcessAreaData : public CProcess {
 
 public:
     CProcessAreaData(Context * pContext);
+    CProcessAreaData() = delete;
+
     virtual void UpdateArea();
     BOOL SetArea(View* pView);
     DWORD GetAreaPosition();

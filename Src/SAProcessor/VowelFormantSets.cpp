@@ -1,8 +1,10 @@
 #include "pch.h"
+#include "VowelFormantSet.h"
 #include "VowelFormantSets.h"
 #include "VowelSetVersion.h"
+#include "VowelFormantsVector.h"
 
-using std::vector;
+static LPCSTR psz_DefaultSet = "DefaultSet";
 
 CVowelFormantSets::CVowelFormantSets(App* pApp) {
     CVowelFormantSets::pApp = pApp;
@@ -11,9 +13,6 @@ CVowelFormantSets::CVowelFormantSets(App* pApp) {
 
 CVowelFormantSets::CVowelFormantSets(const string& szFilename) : m_szFilename(szFilename) {
     Load(szFilename);
-}
-
-CVowelFormantSets::~CVowelFormantSets() {
 }
 
 BOOL CVowelFormantSets::Load() {
@@ -34,11 +33,11 @@ int CVowelFormantSets::GetDefaultSet() const {
     return m_nDefaultSet;
 }
 
-const CVowelFormantSet& CVowelFormantSets::operator[](std::vector<CVowelFormantSet>::size_type _P) const {
+const CVowelFormantSet& CVowelFormantSets::operator[](size_type _P) const {
     return static_cast<const std::vector<CVowelFormantSet>*>(this)->operator[](_P);
 }
 
-CVowelFormantSet& CVowelFormantSets::operator[](std::vector<CVowelFormantSet>::size_type _P) {
+CVowelFormantSet& CVowelFormantSets::operator[](size_type _P) {
     return static_cast<std::vector<CVowelFormantSet>*>(this)->operator[](_P);
 }
 
@@ -65,7 +64,7 @@ BOOL CVowelFormantSets::Load(const string& szFilename) {
     }
 
     try {
-        unique_ptr<ObjectIStream> obs = pApp->getObjectIStreamFactory().factory(szFilename.c_str());
+        unique_ptr<ObjectIStream> obs = std::make_unique<ObjectIStream>(pApp->getObjectIStreamFactory()->factory(szFilename.c_str()));
         CVowelSetVersion version;
         if (!version.ReadProperties(*obs)) {
             version.SetVersion(_T("2.9"));
@@ -104,22 +103,22 @@ BOOL CVowelFormantSets::Load(const string& szFilename) {
 }
 
 int CVowelFormantSets::Save(const string& szFilename) const {
+    
     if (szFilename.length()==0) {
         return FALSE;
     }
     try {
-        ObjectOStream obs = pApp->getObjectOStreamFactory().factory(szFilename);
+        unique_ptr<ObjectOStream> obs = std::make_unique<ObjectOStream>(pApp->getObjectOStreamFactory()->factory(szFilename.c_str()));
         CVowelSetVersion version;
-        version.WriteProperties(obs);
+        version.WriteProperties(*obs);
 
         for (const_iterator index = begin(); index != end(); index++) {
-            index->WriteProperties(obs);
+            index->WriteProperties(*obs);
         }
-        obs.WriteInteger(psz_DefaultSet, m_nDefaultSet);
+        obs->WriteInteger(psz_DefaultSet, m_nDefaultSet);
     } catch (...) {
         return FALSE;
     }
-
     return TRUE;
 }
 
@@ -191,7 +190,7 @@ CVowelFormantSet CVowelFormantSets::None() {
         // no female or child data from this data set
     }
 
-    return CVowelFormantSet("(None)", vowels, FALSE);
+    return CVowelFormantSet(_T("(None)"), vowels, FALSE);
 }
 
 // Hillenbrand, Getty, Clark, Wheeler (1995)
@@ -287,7 +286,7 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95() {
             Children[nIndex][3]));
     }
 
-    return CVowelFormantSet("Am. English - Hillenbrand et. al (1995)", vowels, FALSE);
+    return CVowelFormantSet(_T("Am. English - Hillenbrand et. al (1995)"), vowels, FALSE);
 }
 
 // Peterson and Barney(1952)
@@ -371,7 +370,7 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52() {
             UNDEFINED_DATA));
     }
 
-    return CVowelFormantSet("Am. English - Peterson & Barney (1952)", vowels, FALSE);
+    return CVowelFormantSet(_T("Am. English - Peterson & Barney (1952)"), vowels, FALSE);
 }
 
 // Ladefoged(1993)
@@ -415,7 +414,7 @@ CVowelFormantSet CVowelFormantSets::Ladefoged93() {
         // no female or child data from this data set
     }
 
-    return CVowelFormantSet("Am. English - Ladefoged (1993)", vowels, FALSE);
+    return CVowelFormantSet(_T("Am. English - Ladefoged (1993)"), vowels, FALSE);
 }
 
 CVowelFormantSet CVowelFormantSets::DanielJones() {
@@ -459,7 +458,7 @@ CVowelFormantSet CVowelFormantSets::DanielJones() {
         // no female or child data from this data set
     }
 
-    return CVowelFormantSet("IPA - Daniel Jones (1956)", vowels, FALSE);
+    return CVowelFormantSet(_T("IPA - Daniel Jones (1956)"), vowels, FALSE);
 }
 
 CVowelFormantSet CVowelFormantSets::Whitley() {
@@ -503,7 +502,7 @@ CVowelFormantSet CVowelFormantSets::Whitley() {
         // no female or child data from this data set
     }
 
-    return CVowelFormantSet("IPA - Whitley (2001)", vowels, FALSE);
+    return CVowelFormantSet(_T("IPA - Whitley (2001)"), vowels, FALSE);
 }
 
 CVowelFormantSet CVowelFormantSets::SynthesisLadefoged() {
@@ -546,7 +545,5 @@ CVowelFormantSet CVowelFormantSets::SynthesisLadefoged() {
         // no female or child data from this data set
     }
 
-    return CVowelFormantSet("Synthesis - Ladefoged (2001)", vowels, FALSE);
+    return CVowelFormantSet(_T("Synthesis - Ladefoged (2001)"), vowels, FALSE);
 }
-
-

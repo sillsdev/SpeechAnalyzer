@@ -117,7 +117,7 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
                 return MAKELONG(-1, nProgress);
             }
             Signal.Start = pBlockStart;
-            Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, Signal);
+            Err = CLinPredCoding::CreateObject(&pLpcObject, pApp, LpcSetting, Signal);
             pFrame = pBlockStart;
         } else if (dwWaveOffset + dwFrameSize + wSmpSize > dwBlockStart + dwBufferSize) {
             dwBlockStart = dwWaveOffset - wSmpSize;

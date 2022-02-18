@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AppImpl.h"
 
-VowelFormantSets & CAppImpl::GetVowelSets() {
+CVowelFormantSets & CAppImpl::GetVowelSets() {
     string szPath(GetProfileString(_T(""), _T("DataLocation")));
     if (szPath.Right(1) != _T("\\")) {
         szPath += "\\";
@@ -11,11 +11,11 @@ VowelFormantSets & CAppImpl::GetVowelSets() {
     return theVowelSets;
 }
 
-const VowelFormantSet& CAppImpl::GetDefaultVowelSet() {
+const CVowelFormantSet& CAppImpl::GetDefaultVowelSet() {
     CVowelFormantSets& cSets = GetVowelSets();
     return cSets[cSets.GetDefaultSet()];
 }
 
-const std::vector<CVowelFormants>& CAppImpl::GetVowelVector(int nGender) {
+const CVowelFormantsVector& CAppImpl::GetVowelVector(int nGender) {
     return GetDefaultVowelSet().GetVowelFormants(nGender);
 }

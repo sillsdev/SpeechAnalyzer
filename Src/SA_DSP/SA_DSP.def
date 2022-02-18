@@ -55,6 +55,5 @@ rfft2f
 ?Length@CDspWin@@QBEHXZ
 ?WindowDouble@CDspWin@@QAEPBNXZ
 ?FromBandwidth@CDspWin@@SA?AV1@NIH@Z
-?FromLength@CDspWin@@SA?AV1@HIH@Z
 ?CalcLength@CDspWin@@SAHNIH@Z
 ?CalcEquivalentLength@CDspWin@@SAHHHH@Z

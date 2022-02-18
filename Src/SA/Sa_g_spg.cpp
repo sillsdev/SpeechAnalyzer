@@ -402,7 +402,7 @@ void CPlotSpectrogram::OnDrawSpectrogram(std::unique_ptr<CDC>& memDC, CRect rWnd
 	// get pointer to graph, view, document, application and mainframe
 	CSaDoc * pModel = pView->GetDocument();
 	DWORD nSmpSize = pModel->GetSampleSize();
-	BOOL bEnhanceFormants = researchSettings.m_bSpectrogramContrastEnhance;
+	BOOL bEnhanceFormants = pApp->getResearchSettings().m_bSpectrogramContrastEnhance;
 
 	// get pointer to process class
 	CProcessSpectrogram * pSpectrogram = GetSpectrogram(pModel); // get pointer to spectrogram object
@@ -810,7 +810,7 @@ void CPlotSpectrogram::OnDrawFormantTracksFragment(unique_ptr<CDC>& memDC, CRect
 				if (y >= rWnd.top) {
 					bOnScreen = TRUE;
 				}
-				bSkip = bSkip || !researchSettings.m_bSpectrogramConnectFormants;  // Research Setting
+				bSkip = bSkip || !pApp->getResearchSettings().m_bSpectrogramConnectFormants;  // Research Setting
 				SFragParms FragmentParm = pFragments->GetFragmentParms(dwFragment);
 				int x = max((int)(((double)FragmentParm.dwOffset - (double)fDataStart) / fSamplesPerPix + 0.5), rClip.left);
 				if (bSkip) {
@@ -971,7 +971,7 @@ void CPlotSpectrogram::OnDrawFormantTracksTime(std::unique_ptr<CDC>& memDC, CRec
 				if (y >= rWnd.top) {
 					bOnScreen = TRUE;
 				}
-				bSkip = bSkip || !researchSettings.m_bSpectrogramConnectFormants;  // Research Setting
+				bSkip = bSkip || !pApp->getResearchSettings().m_bSpectrogramConnectFormants;  // Research Setting
 				int x = max((int)((dSamplesPerSlice*dwSlice - (double)fDataStart) / fSamplesPerPix + 0.5), rClip.left);
 				if (bSkip) {
 					memDC->MoveTo(x, y);

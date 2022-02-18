@@ -260,7 +260,7 @@ public:
         return TheFontHeight;
     }
 
-    INT zGetStringWidth(PWCHAR string) {
+    INT zGetStringWidth(PCWCH string) {
         // Returns a String's Width
         INT width;
 
@@ -271,7 +271,7 @@ public:
         return (width);
     }
 
-    INT zGetStringHeight(PWCHAR string) {
+    INT zGetStringHeight(PCWCH string) {
         // Returns a String's Height
         INT ht;
 

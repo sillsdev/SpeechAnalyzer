@@ -16,7 +16,7 @@
 
 #include "SA_DSP.h"
 
-class ObjectIStream;
+__interface ObjectIStream;
 class CProcessMelogram;
 
 class CParseParm {              // parsing parameters
@@ -46,26 +46,6 @@ public:
 };
 
 class CSaDoc;
-class CPitchParm {                  // pitch parameters
-public:
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
-    void Init();
-    static void GetAutoRange(Model* pModel, CProcessGrappl* pGrappl, int & nUpperBound, int & nLowerBound);
-
-    int nRangeMode;                 // frequency range display mode
-    int nScaleMode;                 // scale display mode
-    int nUpperBound;                // upper frequency display boundary
-    int nLowerBound;                // lower frequency display boundary
-    BOOL bUseCepMedianFilter;       // TRUE if the CepstralPitch graph..
-    // ..should use the Median Filter.
-    BYTE nCepMedianFilterSize;      // number of points to do the..
-    // ..median filter over
-
-    // RLJ 09/26/2000: Bug GPI-01
-    int nManualPitchUpper;          // temporary location to save manual pitch upper boundary
-    int nManualPitchLower;          // temporary location to save manual pitch lower boundary
-};
 
 class CUttParm {
 public:
@@ -128,30 +108,6 @@ public:
     BOOL bSmoothSpectra;    // TRUE = smooth spectra
 };
 
-
-class CSpectrumParm { // spectrum parameters
-public:
-    int nScaleMode;             // scale display mode
-    int nPwrUpperBound;         // upper power display boundary
-    int nPwrLowerBound;         // lower power display boundary
-    int nFreqUpperBound;        // upper frequency display boundary
-    int nFreqLowerBound;        // lower frequency display boundary
-    int nFreqScaleRange;        // frequency range: 0 = full scale, 1 = half scale, 2 = third scale, 3 = quarter scale
-    int nSmoothLevel;           // level to control spectral smoothing
-    int nPeakSharpFac;          // factor to control sharpening of formant peaks
-    CWindowSettings cWindow;    // DSP Window settings
-    BOOL bShowLpcSpectrum;      // TRUE = show LPC-smoothed spectrum
-    BOOL bShowCepSpectrum;      // TRUE = show cepstrally-smoothed spectrum
-    BOOL bShowFormantFreq;      // TRUE = show formant frequencies
-    BOOL bShowFormantBandwidth;  // TRUE = show formant bandwidths
-    BOOL bShowFormantPower;     // TRUE = show formant powers
-
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
-
-    void Init();
-};
-
 class CFormantParm { // formant chart parameters
 public:
     CFormantParm() {
@@ -180,29 +136,6 @@ public:
     BOOL ReadProperties(ObjectIStream & obs);
 
     void Init();
-};
-
-
-// Graph Parameter.cpp for implementation
-class CResearchSettings {
-public:
-    CResearchSettings() {
-        Init();
-    }
-
-    void Init();
-
-    BOOL m_bSpectrogramConnectFormants;
-    BOOL m_bSpectrogramContrastEnhance;
-    BOOL m_bShowHilbertTransform;
-    BOOL m_bShowInstantaneousPower;
-    int m_nSpectrumLpcMethod;
-    int m_nSpectrumLpcOrderFsMult;
-    int m_nSpectrumLpcOrderExtra;
-    int m_nSpectrumLpcOrderAuxMax;
-    int m_nLpcCepstralSmooth;
-    int m_nLpcCepstralSharp;
-    CWindowSettings m_cWindow;
 };
 
 // Graph Parameter.cpp for implementation

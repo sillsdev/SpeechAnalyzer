@@ -38,20 +38,13 @@ bool CWindowSettings::operator!=(const CWindowSettings & a) const {
 
 CDspWin::CWindowParms RectParms() {
     double bandwidthProduct = 2.416228*0.576000; // 1.39
-    static const double coefficients[] = {
-        1.
-    };
-
+    static const double coefficients[] = { 1. };
     return CDspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
 CDspWin::CWindowParms HannParms() { // Also known as Hanning
     double bandwidthProduct = 1.414790*1.599393; // 2.26
-    static const double coefficients[] = {
-        0.5,
-        0.5
-    };
-
+    static const double coefficients[] = { 0.5, 0.5};
     return CDspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
@@ -363,10 +356,6 @@ CDspWin & CDspWin::operator=(const CDspWin & from) {
     m_smpRate = from.m_smpRate;
     m_nLength = from.m_nLength;
     return *this;
-}
-
-CDspWin CDspWin::FromLength(int32 nLength, uint32 smpRate, int32 windowType) {
-    return CDspWin(nLength, smpRate, windowType);
 }
 
 CDspWin CDspWin::FromBandwidth(double bandwidth, uint32 smpRate, int32 windowType) {

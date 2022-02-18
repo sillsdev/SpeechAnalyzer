@@ -44,6 +44,7 @@
 #include "SegmentOps.h"
 #include "AutoSave.h"
 #include "ThreadManager.h"
+#include "PitchParm.h"
 
 #import "SAUtils.tlb" no_namespace named_guids
 

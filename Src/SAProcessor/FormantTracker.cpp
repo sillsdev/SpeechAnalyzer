@@ -86,7 +86,7 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
 
     // start process
     pTarget->BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, FormantTracker)) { // start data processing
+    if (!StartProcess(pCaller, PROCESSFMT)) { // start data processing
         EndProcess(); // end data processing
         pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);

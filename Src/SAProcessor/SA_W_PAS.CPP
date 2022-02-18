@@ -42,7 +42,7 @@ long CProcessWbHighpass::Process(void * pCaller, Model * pModel, int nProgress, 
     // check if nested workbench processes
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
+        pLowerProcess = pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter!=FALSE);

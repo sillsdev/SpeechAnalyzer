@@ -14,11 +14,6 @@
 #include "MusicPhraseSegment.h"
 #include "PhoneticSegment.h"
 #include "SFMHelper.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_smoothedpitch.h"
-#include "Process\sa_p_poa.h"
-#include "Process\sa_p_fra.h"
-#include "Process\Butterworth.h"
 #include <iterator>
 #include "Lpc.h"
 
@@ -1029,7 +1024,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
             CLinPredCoding * pLpcObject = NULL;
             dspError_t Err;
 
-            Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, a.Signal);
+            Err = CLinPredCoding::CreateObject(&pLpcObject, pApp, LpcSetting, a.Signal);
 
             // Perform LPC analysis.
             SLPCModel * pLpc;
@@ -1057,7 +1052,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         CLinPredCoding * pLpcObject = NULL;
         dspError_t Err;
 
-        Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, a.Signal);
+        Err = CLinPredCoding::CreateObject(&pLpcObject, pApp, LpcSetting, a.Signal);
 
         // Perform LPC analysis.
         SLPCModel * pLpc;

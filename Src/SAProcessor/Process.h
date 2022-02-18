@@ -32,10 +32,10 @@
 #define KEEP_AREA           0x4000  // keep the area boundaries
 
 __interface ISaDoc;
-class View;
-class ObjectOStream;
-class ObjectIStream;
-class CProgressStatusBar;
+__interface View;
+__interface ObjectOStream;
+__interface ObjectIStream;
+__interface CProgressStatusBar;
 
 class CProcess : public IProcess {
 

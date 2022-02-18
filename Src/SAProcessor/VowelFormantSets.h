@@ -1,11 +1,13 @@
 #pragma once
-#include "VowelFormants.h"
+#ifndef _VOWELFORMANTSETS_H
+#define _VOWELFORMANTSETS_H
 
-class CVowelFormantSets : private std::vector<CVowelFormantSet>, public VowelFormantSets {
+#include "VowelFormantSet.h"
+
+class CVowelFormantSets : private std::vector<CVowelFormantSet> {
 public:
     CVowelFormantSets(App * pApp);
     CVowelFormantSets(const string& szFilename);
-    virtual ~CVowelFormantSets();
 
     BOOL Load(const string& szFilename);
     BOOL Save(const string& szFilename) const;
@@ -22,9 +24,9 @@ public:
     static CVowelFormantSet DanielJones();
     static CVowelFormantSet SynthesisLadefoged();
 
-    const CVowelFormantSet& operator[](std::vector<CVowelFormantSet>::size_type _P) const;
-    CVowelFormantSet& operator[](std::vector<CVowelFormantSet>::size_type _P);
-    std::vector<CVowelFormantSet>::size_type size() const;
+    const CVowelFormantSet& operator[](size_type _P) const;
+    CVowelFormantSet& operator[](size_type _P);
+    size_type size() const;
 
 private:
     App* pApp;
@@ -32,3 +34,4 @@ private:
     int m_nDefaultSet;
 };
 
+#endif

@@ -234,7 +234,7 @@ dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum, SSpectrumSettings &
         return(Code(OUT_OF_MEMORY));
     }
 
-// Allocate memory to contain FFT values.
+    // Allocate memory to contain FFT values.
     float * pfFFTBuffer = new float[wFFTLength];
     if (!pfFFTBuffer) {
         delete [] pfRawSpectrum;
@@ -242,10 +242,10 @@ dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum, SSpectrumSettings &
         return(Code(OUT_OF_MEMORY));
     }
 
-// Calculate window for frame data.
-    CDspWin oDSPWindow = CDspWin::FromLength((uint16)stFrameParm.Length, stFrameParm.SmpRate, stSpectSetting.nWindowType);
+    // Calculate window for frame data.
+    CDspWin oDSPWindow((uint16)stFrameParm.Length, stFrameParm.SmpRate, stSpectSetting.nWindowType);
 
-// Construct spectrum object.
+    // Construct spectrum object.
     CSpectrum * poSpectrum = new CSpectrum(stSpectSetting, stFrameParm, oDSPWindow,
                                            wFFTLength, pfFFTBuffer, pfRawSpectrum, pfSmoothSpectrum);
     if (!poSpectrum) {

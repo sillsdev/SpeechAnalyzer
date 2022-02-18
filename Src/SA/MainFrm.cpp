@@ -1692,7 +1692,7 @@ void CMainFrame::OnSetDefaultParameters() {
         m_spectrumParmDefaults.nFreqScaleRange = pSpectrumParm->nFreqScaleRange;
         m_spectrumParmDefaults.nSmoothLevel    = pSpectrumParm->nSmoothLevel;
         m_spectrumParmDefaults.nPeakSharpFac   = pSpectrumParm->nPeakSharpFac;
-        m_spectrumParmDefaults.cWindow      = pSpectrumParm->cWindow;
+        m_spectrumParmDefaults.cWindow          = pSpectrumParm->cWindow;
         m_spectrumParmDefaults.bShowLpcSpectrum  = pSpectrumParm->bShowLpcSpectrum;
         m_spectrumParmDefaults.bShowCepSpectrum  = pSpectrumParm->bShowCepSpectrum;
         m_spectrumParmDefaults.bShowFormantFreq  = pSpectrumParm->bShowFormantFreq;

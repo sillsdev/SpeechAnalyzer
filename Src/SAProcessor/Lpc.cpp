@@ -297,11 +297,6 @@
 
 static float fDbPowerRef[3] = {0.F, LPC_8BIT_DB_PWR_REF, LPC_16BIT_DB_PWR_REF};
 
-extern CResearchSettings researchSettings;
-
-////////////////////////////////////////////////////////////////////////////////////////
-// Class function to return copyright notice.                                         //
-////////////////////////////////////////////////////////////////////////////////////////
 char * CLinPredCoding::Copyright(void) {
     static char Notice[] = {"Linear Predictive Coding Model, Version " VERSION_NUMBER "\n"
                             "Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. "
@@ -310,25 +305,13 @@ char * CLinPredCoding::Copyright(void) {
     return(Notice);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-// Class function to return version of class.                                         //
-////////////////////////////////////////////////////////////////////////////////////////
 float CLinPredCoding::Version(void) {
     return((float)atof(VERSION_NUMBER));
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////
-// Macro definitions.                                                                 //
-////////////////////////////////////////////////////////////////////////////////////////
 #define RetMemErr  { FreeLpcMem(LpcParm); return(Code(OUT_OF_MEMORY)); }
 
-
-////////////////////////////////////////////////////////////////////////////////////////
-// Class function to validate LPC settings and construct object.                      //
-////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, SLPCSettings & LpcSetting,
-                                        SSigParms & Signal, USHORT wFFTLength) {
+dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, App * pApp, SLPCSettings & LpcSetting, SSigParms & Signal, USHORT wFFTLength) {
     if (!ppLpcObject) {
         return(Code(INVALID_PARM_PTR));
     }
@@ -526,30 +509,24 @@ dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, SLPCSetti
         }
     }
 
-    *ppLpcObject = new CLinPredCoding(LpcParm, Signal, wFFTLength);
+    *ppLpcObject = new CLinPredCoding( pApp, LpcParm, Signal, wFFTLength);
     if (!*ppLpcObject) {
         RetMemErr;
     }
     return(DONE);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-// LPC object constructor.                                                            //
-////////////////////////////////////////////////////////////////////////////////////////
-CLinPredCoding::CLinPredCoding(SLPCParms & LpcParm, SSigParms & Signal, USHORT wFFTLength) {
+CLinPredCoding::CLinPredCoding(App * pApp, SLPCParms & LpcParm, SSigParms & Signal, USHORT wFFTLength) {
+    CLinPredCoding::pApp = pApp;
     //Copy LPC and signal parameters into object member variables.
     m_Signal = Signal;
     m_LpcParm = LpcParm;
     m_wFFTLength = wFFTLength;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-// LPC object destructor.                                                             //
-////////////////////////////////////////////////////////////////////////////////////////
 CLinPredCoding::~CLinPredCoding() {
     FreeLpcMem(m_LpcParm);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to free memory allocated for LPC parameters.                        //
@@ -820,7 +797,7 @@ void CLinPredCoding::Transfer(short * pFrame) {
 void CLinPredCoding::ApplyWindow() {
     double dTotalInput = 0;
     double dTotalWindow = 0.25;
-    CDspWin cWindow = CDspWin::FromLength(m_LpcParm.Model.nFrameLen, m_Signal.SmpRate, researchSettings.m_cWindow.m_nType);
+    CDspWin cWindow(m_LpcParm.Model.nFrameLen, m_Signal.SmpRate, pApp->getResearchSettings().getWindow().getType());
     const double * Window = cWindow.WindowDouble();
 
     for (USHORT i = 0; i < m_LpcParm.Model.nFrameLen; i++) {
@@ -1069,12 +1046,12 @@ void CLinPredCoding::CalcCovarMatrix(USHORT nMethod) {
         float * pfCepstralCoeff  = &buffer[0];
 
         // Remove excitation characteristic from high time portion
-        double d2Pitch = researchSettings.m_nLpcCepstralSmooth != -1 ? 2*researchSettings.m_nLpcCepstralSmooth : 0.5*m_Signal.SmpRate/m_LpcParm.Model.nOrder;
+        double d2Pitch = pApp->getResearchSettings().getLpcCepstralSmooth() != -1 ? 2* pApp->getResearchSettings().getLpcCepstralSmooth() : 0.5*m_Signal.SmpRate/m_LpcParm.Model.nOrder;
         int nSmoothPeriod = (int)(m_Signal.SmpRate/d2Pitch + 0.5);
 
         // Multiply low time cesptral coefficients by growing exponential to sharpen formant
         // peaks.
-        double fSpectSharpRadius = 1/(1 - researchSettings.m_nLpcCepstralSharp/200.);
+        double fSpectSharpRadius = 1/(1 - pApp->getResearchSettings().getLpcCepstralSharp()/200.);
         double r = fSpectSharpRadius;
         for (i = 1; i < nSmoothPeriod*2; i++, r*=fSpectSharpRadius) {
             pfCepstralCoeff[i] = pfCepstralCoeff[nFFTLength-i] = float(pfCepstralCoeff[i]*r);
@@ -1363,8 +1340,8 @@ dspError_t CLinPredCoding::CalcPoles(void) {
 
 struct SFormantAssessment {
     int index;  // link to unsorted data
-    BOOL bValidFrequency;
-    BOOL bShadow;
+    bool bValidFrequency;
+    bool bShadow;
     double dSecondDerivative;
     double dLocalAvgSecondDerivative;
     double dLocalizedSecondDerivative;

@@ -26,6 +26,8 @@
 
 #include <sa_dsp.h>
 #include <fileutils.h>
+#include <waveutils.h>
+#include <zgraph.h>
 
 using std::unique_ptr;
 using std::char_traits;
@@ -54,6 +56,21 @@ typedef char* HPSTR;
 
 inline static int round2Int(double value) {
     return (int)floor(value + 0.5);
+}
+
+#include <codecvt>
+#include <string>
+
+// convert UTF-8 string to wstring
+static std::wstring _to_wstring(const std::string& str) {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+    return myconv.from_bytes(str);
+}
+
+// convert wstring to UTF-8 string
+static std::string _to_utf8(const std::wstring& str) {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+    return myconv.to_bytes(str);
 }
 
 #define EXPERIMENTAL_ACCESS true

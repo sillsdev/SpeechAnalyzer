@@ -131,7 +131,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
     CLinPredCoding * pLpcObject;
     dspError_t Err;
 
-    Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, Signal);
+    Err = CLinPredCoding::CreateObject(&pLpcObject, pApp, LpcSetting, Signal);
     if (Err) {
         pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
         return Exit(PROCESS_ERROR, NULL);

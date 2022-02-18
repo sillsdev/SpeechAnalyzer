@@ -34,6 +34,9 @@ class CProcessRatio;
 class CProcessPOA;
 class CProcessGlottis;
 class CProcessTonalWeightChart;
+class CVowelFormantSet;
+class CVowelFormantsVector;
+class CVowelFormantSets;
 
 enum EGender {
     male, female, child
@@ -72,6 +75,14 @@ enum ProcessorType {
     PROCESSZCR,
 };
 
+__interface PhoneticSegment {
+    // will have problem with CString
+    LPCTSTR GetContent();
+    DWORD GetDurationAt(int index) const;
+    DWORD GetDuration(const int nIndex) const;
+    int GetDurationSize() const;
+};
+
 __interface Model {
     BOOL IsBackgroundProcessing();
     DWORD GetSampleSize();
@@ -91,6 +102,7 @@ __interface Model {
     bool Is16Bit();
     void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
     HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
+    HPSTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
     DWORD GetUnprocessedBufferIndex(size_t nSize);
     int GetWbProcess();
     LPCTSTR GetProcessFilename();
@@ -123,8 +135,11 @@ __interface Model {
     CProcessTonalWeightChart* GetTonalWeightChart();
     CProcessWavelet* GetWavelet();
     CProcessZCross* GetZCross();
-
+    void NotifyFragmentDone(void* pCaller);
     int GetProcessorText(ProcessorType processorType);
+
+    // returns GetSegment(PHONETIC)
+    PhoneticSegment * GetPhoneticSegment();
 };
 
 __interface ProgressStatusBar {
@@ -137,20 +152,6 @@ __interface MainFrame {
     ProgressStatusBar* GetProgressStatusBar();
     void ShowDataStatusBar(BOOL);
     CWbProcess* GetWbProcess(int nProcess, int nFilter);
-};
-
-__interface VowelFormantSets {
-
-};
-
-
-__interface VowelFormantSet {
-
-};
-
-
-__interface VowelFormants {
-
 };
 
 __interface ObjectIStream {
@@ -167,7 +168,7 @@ __interface ObjectIStream {
     //void SkipToEndMarker(LPCSTR pszMarker);
     //bool bReadBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier);
     //bool bReadEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier);
-    //bool bReadString(LPCSTR pszMarker, LPSTR szResult, size_t len);
+    bool bReadString(LPCSTR pszMarker, LPSTR szResult, size_t len);
     bool bReadBool(LPCSTR pszMarker, BOOL& b);
     //bool bReadCOLORREF(LPCSTR pszMarker, COLORREF& rgb);
     bool bReadInteger(LPCSTR pszMarker, int& i);
@@ -179,6 +180,7 @@ __interface ObjectIStream {
     //bool bEndWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier);
     //void ReadMarkedString();
     //void PeekMarkedString(LPCSTR* ppszMarker, LPSTR pszString, size_t len, BOOL bTrimWhiteSpace = TRUE);
+    size_t GetBufferSize() const;
 };
 
 __interface ObjectIStreamFactory {
@@ -206,14 +208,31 @@ __interface ObjectOStreamFactory {
     ObjectOStream * factory(LPCSTR name);
 };
 
+__interface ResearchSettings {
+    int getLpcCepstralSmooth();
+    int getLpcCepstralSharp();
+    int getSpectrumLpcOrderFsMult();
+    int getSpectrumLpcOrderAuxMax();
+    int getSpectrumLpcMethod();
+    int getSpectrumLpcOrderExtra();
+    CWindowSettings getWindow();
+    void setWindow(CWindowSettings);
+};
+
 __interface App {
-    VowelFormantSets & GetVowelSets();
-    const VowelFormantSet& GetDefaultVowelSet();
-    const std::vector<VowelFormants>& GetVowelVector(int nGender);
-    ObjectOStreamFactory & getObjectOStreamFactory();
-    ObjectIStreamFactory & getObjectIStreamFactory();
-    
+    CVowelFormantSets & GetVowelSets();
+    const CVowelFormantSet& GetDefaultVowelSet();
+    const CVowelFormantsVector& GetVowelVector(int nGender);
+    ObjectOStreamFactory * getObjectOStreamFactory();
+    ObjectIStreamFactory * getObjectIStreamFactory();
+    ResearchSettings& getResearchSettings();
+
+    // return CPlot3D::GetChartRange(nFormant, nGender);
+    SRange Get3DChartRange(int nFormant, int nGender);
+
     void ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
+    // uses IDS_ERROR_GRAPPLSPACE
+    void GrapplErrorMessage( LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
     int AfxMessageBox(UINT nIDPrompt, UINT nType = MB_OK, UINT nIDHelp = (UINT)-1);
 };
 
@@ -224,6 +243,7 @@ __interface CmdTarget {
 };
 
 __interface View {
+    DWORD GetDataFrame();
     DWORD GetStartCursorPosition();
     DWORD GetStopCursorPosition();
     Model* GetDocument();

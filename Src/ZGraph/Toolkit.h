@@ -437,7 +437,7 @@ INT zPrintGraph(HWND hwnd, HINSTANCE ghInstance, void (FAR * GraphFunctionPtr)(S
 // Functions in MISC.CPP
 //
 void zDisplayMessage(PWCHAR title, PWCHAR message);
-void zDisplayError(PWCHAR message);
+void zDisplayError(PCWCH message);
 void HOURGLASS(INT);
 double parse(LPCSTR s, INT * att, double X, double Y = 0.0);
 zRGB RGB_color(INT color);

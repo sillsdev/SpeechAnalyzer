@@ -212,7 +212,7 @@ void zDisplayMessage(PWCHAR title, PWCHAR message) {
 
 //////////////////////////// zDisplayError() /////////////////////////////
 
-void zDisplayError(PWCHAR message) {
+void zDisplayError(PCWCH message) {
     //
     // Displays error message [message] in a Message Box onscreen;
     //

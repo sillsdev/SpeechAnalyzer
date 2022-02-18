@@ -223,6 +223,16 @@ void CProcessWbEquation::WriteProperties(ObjectOStream & obs) {
 /***************************************************************************/
 // CProcessWbEquation::ReadProperties Read equation properties
 /***************************************************************************/
+bool CProcessWbEquation::ReadStreamString(ObjectIStream& stream, LPCSTR pszMarker, string& szResult) {
+    size_t size = stream.GetBufferSize() + 1;
+    array_ptr<char> buffer(size);
+    bool result = stream.bReadString(pszMarker, buffer.get(), buffer.size());
+    if (result) {
+        szResult = buffer.get();
+    }
+    return result;
+}
+
 BOOL CProcessWbEquation::ReadProperties(ObjectIStream & obs) {
     string szSafe = m_szEquation;
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_equation)) {
@@ -241,7 +251,7 @@ BOOL CProcessWbEquation::ReadProperties(ObjectIStream & obs) {
     return TRUE;
 }
 
-double CProcessWbEquation::ParseUtf8(const string & sz, INT* att, double X, double Y) {
-    return parse(sz.c_str(), att, X, Y);
+double CProcessWbEquation::ParseUtf8( const string & in, INT* att, double X, double Y) {
+    return parse(in.c_str(), att, X, Y);
 }
 

@@ -96,7 +96,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
-            pApp->ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
+            pApp->GrapplErrorMessage( szText);
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl

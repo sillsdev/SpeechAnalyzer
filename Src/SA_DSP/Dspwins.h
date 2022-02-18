@@ -3,6 +3,7 @@
 
 #include "dspTypes.h"
 #include <vector>
+#include "WindowSettings.h"
 
 using std::vector;
 
@@ -19,8 +20,10 @@ public:
     bool operator!=(const CWindowSettings & a) const;
 
     void Init();
+    int32 getType() {
+        return m_nType;
+    }
 
-    int32 m_nType;
     int32 m_nLengthMode;
     double m_dTime;
     double m_dBandwidth;
@@ -28,13 +31,17 @@ public:
     bool  m_bEquivalentLength;
     bool  m_bCenter;
     int32 m_nReplication;
+
+private:
+    int32 m_nType;
 };
 
 class CDspWin {
 public:
+    CDspWin(int32 nLength, uint32 smpRate, int32 windowType);
     CDspWin(const CDspWin & from);
+    CDspWin()=delete;
     CDspWin & operator=(const CDspWin & from);
-    static CDspWin FromLength(int32 nLength, uint32 smpRate, int32 windowType);
     static CDspWin FromBandwidth(double bandwidth, uint32 smpRate, int32 windowType);
     const double * WindowDouble();
     const float * WindowFloat();
@@ -62,7 +69,6 @@ public:
     };
 
 private:
-    CDspWin(int32 nLength, uint32 smpRate, int32 windowType);
 
     int32 m_windowType;
     uint32 m_smpRate;

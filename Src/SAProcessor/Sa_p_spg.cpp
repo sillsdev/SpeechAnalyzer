@@ -25,8 +25,6 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-extern CResearchSettings researchSettings;
-
 //###########################################################################
 // CProcessSpectrogram
 // class to calculate spectrogram for wave data. The class creates an object
@@ -36,29 +34,20 @@ extern CResearchSettings researchSettings;
 // a temporary second buffer, into which it copies all the raw data needed
 // for the calculation.
 
-/***************************************************************************/
-// CProcessSpectrogram::CProcessSpectrogram Constructor
-/***************************************************************************/
-CProcessSpectrogram::CProcessSpectrogram(const CSpectroParm & defaults, Model * pModel, BOOL bRealTime) :
+CProcessSpectrogram::CProcessSpectrogram(Context * pContext, const CSpectroParm & defaults, Model * pModel, BOOL bRealTime) : CProcessAreaData(pContext),
     m_bRealTime(bRealTime), m_pDoc(pModel) {
     // create the spectrogram parameter arrays
     m_nWindowWidth = 0;
     m_nWindowHeight = 0;
-    m_pSpectroFormants = new CProcessSpectroFormants;
+    m_pSpectroFormants = new CProcessSpectroFormants(pContext);
     SetSpectroParm(defaults);
 }
 
-/***************************************************************************/
-// CProcessSpectrogram::~CProcessSpectrogram Destructor
-/***************************************************************************/
 CProcessSpectrogram::~CProcessSpectrogram() {
     if (m_pSpectroFormants) {
         delete m_pSpectroFormants;
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessSpectrogram helper functions
 
 /***************************************************************************/
 // CProcessSpectrogram::SetSpectroParm Set spectrogram parameters
@@ -152,7 +141,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     SpgmSetting.preEmphSw = true;
     SpgmSetting.Bandwidth = pSpectroParm->Bandwidth();
     Signal.SmpRate = pModel->GetSamplesPerSec();
-    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(CDspWin::CalcLength(SpgmSetting.Bandwidth, Signal.SmpRate, researchSettings.m_cWindow.m_nType))/log(2.0) + 0.0))));
+    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(CDspWin::CalcLength(SpgmSetting.Bandwidth, Signal.SmpRate, pApp->getResearchSettings().getWindow().getType()))/log(2.0) + 0.0))));
 
     {
         int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(pModel->GetSamplesPerSec())/2 + 1);
@@ -189,7 +178,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     // wide band results, if there is enough data to calculate (spectrogram doesn't
     // do that).
 
-    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, pModel->GetSamplesPerSec(), researchSettings.m_cWindow.m_nType) / 2));
+    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, pModel->GetSamplesPerSec(), pApp->getResearchSettings().getWindow().getType()) / 2));
 
     double fSpectraInterval = (dwDataLength/wSmpSize)/double(nWidth);
 

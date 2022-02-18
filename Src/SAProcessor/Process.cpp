@@ -554,8 +554,7 @@ void CProcess::CloseTempFile(BOOL bUpdateStatus) {
         m_pFile = NULL;
     }
     if (bUpdateStatus) {
-        string path = GetProcessFileName();
-        CFile::GetStatus(path, m_fileStatus); // read the status
+        CFile::GetStatus( GetProcessFileName(), m_fileStatus); // read the status
     }
 }
 

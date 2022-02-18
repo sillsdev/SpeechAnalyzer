@@ -8,6 +8,8 @@
 #define _SA_W_EQU_H
 #include "WbProcess.h"
 
+__interface ObjectIStream;
+
 class CProcessWbEquation : public CWbProcess {
 public:
     CProcessWbEquation(Context * pContext);
@@ -22,6 +24,8 @@ public:
     void SetEquation(const char* value) {
         m_szEquation = value;
     }
+    bool ReadStreamString(ObjectIStream& stream, LPCSTR pszMarker, string& szResult);
+
 private:
     string m_szEquation; // equation string
     double ParseUtf8(const string &, INT* att, double X, double Y = 0.0);

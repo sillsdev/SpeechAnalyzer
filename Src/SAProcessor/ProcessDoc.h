@@ -13,9 +13,9 @@
 using std::wstring;
 
 __interface ISaDoc;
-class CCmdTarget;
+__interface CmdTarget;
 
-class CProcessDoc : public CCmdTarget, public IProcess {
+class CProcessDoc : public CmdTarget, public IProcess {
 
 public:
     CProcessDoc(Context * pContext);
