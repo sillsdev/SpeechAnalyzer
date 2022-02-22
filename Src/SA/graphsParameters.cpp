@@ -846,7 +846,7 @@ void CDlgParametersPitchPage::OnKillfocusLowerBound() {
     int nData = GetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, NULL, TRUE);
     // RLJ 09/21/2000: Bug GPI-03CECIL_PITCH_MAXFREQ
     //    if (nData > (m_nFreqLimit - 1)) nData = m_nFreqLimit - 1;
-    if (nData > (CECIL_PITCH_MAXFREQ - 1)) {
+    if (nData > (v - 1)) {
         nData = CECIL_PITCH_MAXFREQ - 1;
     }
     if (nData < 10) {
@@ -3241,8 +3241,8 @@ void CDlgParametersResearchPage::Apply() {
 
         int nSmoothIndex = m_cSmooth.GetCurSel();
         m_workingSettings.m_nLpcCepstralSmooth = researchSmoothSettings[nSmoothIndex];
-        m_workingSettings.m_cWindow.m_nType = m_cWindowType.GetCurSel();
-        m_workingSettings.m_cWindow.m_nReplication = m_cWindowReplication.GetCurSel();
+        m_workingSettings.getWindow().m_nType = m_cWindowType.GetCurSel();
+        m_workingSettings.getWindow().m_nReplication = m_cWindowReplication.GetCurSel();
 
         BOOL bSpectrumSettingsChanged =
             pApp->getResearchSettings().getSpectrumLpcMethod() != m_workingSettings.getSpectrumLpcMethod() ||
@@ -3285,18 +3285,18 @@ void CDlgParametersResearchPage::DoDataExchange(CDataExchange * pDX) {
     DDX_Text(pDX, IDC_RESEARCH_LPC_ORDER_AUX_MAX_EDIT, m_workingSettings.m_nSpectrumLpcOrderAuxMax);
     DDX_CBIndex(pDX, IDC_RESEARCH_LPC_SHARP, m_workingSettings.m_nLpcCepstralSharp);
 
-    int temp = m_workingSettings.m_cWindow.m_bEquivalentLength;
+    int temp = m_workingSettings.GetWindow().m_bEquivalentLength;
     DDX_Check(pDX, IDC_RESEARCH_EXTENDED, temp);
-    m_workingSettings.m_cWindow.m_bEquivalentLength = (temp == TRUE);
+    m_workingSettings.GetWindow().m_bEquivalentLength = (temp == TRUE);
 
-    temp = m_workingSettings.m_cWindow.m_bCenter;
+    temp = m_workingSettings.GetWindow().m_bCenter;
     DDX_Check(pDX, IDC_RESEARCH_WINDOW_CENTER, temp);
-    m_workingSettings.m_cWindow.m_bCenter = (temp == TRUE);
+    m_workingSettings.GetWindow().m_bCenter = (temp == TRUE);
 
-    DDX_Text(pDX, IDC_RESEARCH_WINDOW_FRAGMENT_EDIT, m_workingSettings.m_cWindow.m_nFragments);
-    DDX_Text(pDX, IDC_RESEARCH_WINDOW_TIME_EDIT, m_workingSettings.m_cWindow.m_dTime);
-    DDX_Text(pDX, IDC_RESEARCH_WINDOW_BANDWIDTH_EDIT, m_workingSettings.m_cWindow.m_dBandwidth);
-    DDX_Radio(pDX, IDC_RESEARCH_WINDOW_BETWEEN_CURSORS, m_workingSettings.m_cWindow.m_nLengthMode);
+    DDX_Text(pDX, IDC_RESEARCH_WINDOW_FRAGMENT_EDIT, m_workingSettings.GetWindow().m_nFragments);
+    DDX_Text(pDX, IDC_RESEARCH_WINDOW_TIME_EDIT, m_workingSettings.GetWindow().m_dTime);
+    DDX_Text(pDX, IDC_RESEARCH_WINDOW_BANDWIDTH_EDIT, m_workingSettings.GetWindow().m_dBandwidth);
+    DDX_Radio(pDX, IDC_RESEARCH_WINDOW_BETWEEN_CURSORS, m_workingSettings.GetWindow().m_nLengthMode);
     DDX_Control(pDX, IDC_RESEARCH_WINDOW_REPLICATION, m_cWindowReplication);
     DDX_Control(pDX, IDC_RESEARCH_WINDOW_TYPE, m_cWindowType);
     DDX_Control(pDX, IDC_RESEARCH_LPC_SMOOTH, m_cSmooth);

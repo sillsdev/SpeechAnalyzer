@@ -8,8 +8,7 @@
 
 class CTextSegment : public CDependentSegment {
 public:
-    CTextSegment(EAnnotation index, int master = -1);
-    virtual ~CTextSegment();
+    CTextSegment() = delete;
 
 	// insert a new segment
     virtual BOOL Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration);

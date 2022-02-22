@@ -62,7 +62,7 @@ CWaveformGeneratorSettings::CWaveformGeneratorSettings() {
 /***************************************************************************/
 // CDlgWaveformGenerator::process::Process Generate wav file
 /***************************************************************************/
-void CWaveformGeneratorSettings::SynthesizeSamples(HPSTR pTargetData, DWORD dwDataPos, DWORD dwBufferSize) {
+void CWaveformGeneratorSettings::SynthesizeSamples(BPTR pTargetData, DWORD dwDataPos, DWORD dwBufferSize) {
 
     WORD wSmpSize = WORD(pcm.wf.nBlockAlign / pcm.wf.nChannels);
 

@@ -1,11 +1,14 @@
 #pragma once
 
+class CObjectOStream;
+class CObjectIStream;
+
 class CVowelSetVersion {
 public:
     CVowelSetVersion(const wstring szVersion = _T("3.0"));
 
-    void WriteProperties(ObjectOStream& obs) const;
-    BOOL ReadProperties(ObjectIStream& obs);
+    void WriteProperties(CObjectOStream& obs) const;
+    BOOL ReadProperties(CObjectIStream& obs);
 
     wstring GetVersion();
     void SetVersion(const wstring& szVersion);

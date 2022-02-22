@@ -1,11 +1,13 @@
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_pitch.h"
 #include "sa_p_grappl.h"
 #include "sa_p_melogram.h"
 #include "sa_p_custompitch.h"
 #include "sa_p_smoothedpitch.h"
 #include "pitchparm.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
 
 static LPCSTR psz_parse            = "parse";
 static LPCSTR psz_breakWidth       = "break_ms";
@@ -23,7 +25,7 @@ static LPCSTR psz_pitchCepMedianFilterSize = "CepMedianFilterSize";
 static LPCSTR psz_pitchManualUpper   = "ManualUpper";
 static LPCSTR psz_pitchManualLower   = "ManualLower";
 
-void CPitchParm::WriteProperties(ObjectOStream & obs) {
+void CPitchParm::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_pitch);
 
     // write out properties
@@ -41,7 +43,7 @@ void CPitchParm::WriteProperties(ObjectOStream & obs) {
     obs.WriteEndMarker(psz_pitch);
 }
 
-BOOL CPitchParm::ReadProperties(ObjectIStream & obs) {
+BOOL CPitchParm::ReadProperties(CObjectIStream & obs) {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_pitch)) {
         return FALSE;
     }

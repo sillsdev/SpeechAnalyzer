@@ -22,7 +22,7 @@ CDlgVowelFormants::CDlgVowelFormants(CVowelFormantSet & cVowelSet, CWnd * pParen
     CDialog(CDlgVowelFormants::IDD, pParent),
     m_cVowelSetOK(cVowelSet),
     m_cSet(cVowelSet) {
-    m_szSetName = m_cSet.GetName();
+    m_szSetName = m_cSet.GetName().c_str();
     m_nGender = 0;
 }
 
@@ -77,8 +77,9 @@ BOOL CDlgVowelFormants::OnInitDialog() {
 void CDlgVowelFormants::OnOK() {
     UpdateData();
     if (OnValidateGenderChange()) {
-        m_cSet.SetName(m_szSetName);
+        m_cSet.SetName(m_szSetName.GetString());
         m_cVowelSetOK = m_cSet;
+        CSaApp * pApp = (CSaApp*)AfxGetApp();
         pApp->GetVowelSets().Save();
         CDialog::OnOK();
     }
@@ -101,12 +102,12 @@ static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVo
     cGrid.SetTextMatrix(nRow, columnF3, _T("F3"));
     cGrid.SetTextMatrix(nRow, columnF4, _T("F4"));
 
-    for (CVowelFormantsVector::const_iterator pVowel=cVowels.begin(); pVowel!=cVowels.end(); pVowel++) {
-        const CVowelFormants & rVowel = *pVowel;
+    for (size_t i = 0; i < cVowels.size(); i++) {
+        CVowelFormants rVowel = cVowels.get(i);
 
         nRow++;
 
-        cGrid.SetTextMatrix(nRow, columnIpa, rVowel.m_szVowel);
+        cGrid.SetTextMatrix(nRow, columnIpa, rVowel.m_szVowel.c_str());
 
         CSaString szFormant;
 
@@ -148,7 +149,7 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid & cGrid, BOOL & bSucces
         cVowel.Init(_T(""),-1,-1,-1,-1);
         BOOL bRowValid = TRUE;
         cVowel.m_szVowel = cGrid.GetTextMatrix(row,columnIpa);
-        if (cVowel.m_szVowel.IsEmpty()) {
+        if (cVowel.m_szVowel.empty()) {
             if (!(cGrid.GetTextMatrix(row,columnF1).IsEmpty()
                     && cGrid.GetTextMatrix(row,columnF2).IsEmpty()
                     && cGrid.GetTextMatrix(row,columnF3).IsEmpty()

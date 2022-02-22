@@ -619,10 +619,10 @@ CWaveResampler::ECONVERT CWaveResampler::Resample( LPCTSTR src, const TCHAR  * d
         for (int ch=0; ch<nChannels; ch++) {
 			// data is already in float
             // convert to even number of samples (why?)
-            size_t numSamples = dataa.size()/nChannels;
-            if ((numSamples-((numSamples/2)*2))>0)
+            size_t numChSamples = dataa.size()/nChannels;
+            if ((numChSamples -((numChSamples /2)*2))>0)
             {
-                numSamples--;
+                numChSamples--;
             }
 
             DWORD inSampleRate = nSamplesPerSec;
@@ -634,7 +634,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample( LPCTSTR src, const TCHAR  * d
             size_t dwnSmpFactor = (smpRateLCM/(ULONG)outSampleRate);
 
             // calculate the new work buffer size;
-            size_t workLen = numSamples*upSmpFactor;
+            size_t workLen = numChSamples*upSmpFactor;
 
             // create the output buffer
             size_t bufferLen = workLen/dwnSmpFactor;
@@ -673,10 +673,10 @@ CWaveResampler::ECONVERT CWaveResampler::Resample( LPCTSTR src, const TCHAR  * d
     // convert the data to 16-bit for all channels
     {
         vector<char> buffer;
-		size_t numSamples = datab.size()/nChannels;
-        for (size_t i=0; i<numSamples; i++) {
+		size_t numChSamples = datab.size()/nChannels;
+        for (size_t i=0; i< numChSamples; i++) {
             for (size_t ch=0; ch<nChannels; ch++) {
-                double dval = datab[(ch*numSamples)+i];
+                double dval = datab[(ch* numChSamples)+i];
                 dval = Limit(dval);
                 long lval = (long)(dval*(double)0x7fffffff);
                 lval /= 0x10000;

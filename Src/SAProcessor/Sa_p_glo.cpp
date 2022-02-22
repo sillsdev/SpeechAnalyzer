@@ -6,10 +6,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_glo.h"
-
 #include "lpc.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -44,27 +44,24 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
     if (!CreateTempFile(_T("GLO"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     DWORD wSmpSize = pModel->GetSampleSize();   //compute sample size in bytes
     DWORD dwWaveSize = pModel->GetDataSize();
-    HPSTR pBlockStart;
+    BPTR pBlockStart;
     DWORD dwBlockStart = 0;
-    HPSTR pFrame = NULL;
+    BPTR pFrame = NULL;
     short * pProcData = (short *)m_lpBuffer;
     DWORD dwProcDataCount = 0;
 
@@ -112,12 +109,11 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
             pBlockStart = pModel->GetWaveData(dwBlockStart, TRUE); // get pointer to data block
             if (!pBlockStart) { // reading failed
                 EndProcess(); // end data processing
-                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(-1, nProgress);
             }
             Signal.Start = pBlockStart;
-            Err = CLinPredCoding::CreateObject(&pLpcObject, pApp, LpcSetting, Signal);
+            Err = CLinPredCoding::CreateObject(&pLpcObject, app, LpcSetting, Signal);
             pFrame = pBlockStart;
         } else if (dwWaveOffset + dwFrameSize + wSmpSize > dwBlockStart + dwBufferSize) {
             dwBlockStart = dwWaveOffset - wSmpSize;
@@ -125,7 +121,6 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
 
             if (!pBlockStart) { // reading failed
                 EndProcess(); // end data processing
-                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(-1, nProgress);
             }
@@ -146,7 +141,6 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
             SetProgress(nProgress + (int)(100 * dwWaveOffset / dwWaveSize / (DWORD)nLevel));
             if (IsCanceled()) {
                 EndProcess(); // end data processing
-                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(PROCESS_CANCELED, nProgress);
             }
@@ -157,10 +151,9 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
                     Write(m_lpBuffer, (UINT)dwProcDataCount * 2);
                 } catch (CFileException * e) {
 					// display message
-                    pApp->AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+                    app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 					// end data processing
 					EndProcess();
-                    pTarget->EndWaitCursor();
                     SetDataInvalid();
                     e->Delete();
 					return MAKELONG(-1, nProgress);
@@ -186,10 +179,9 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
             Write(m_lpBuffer, (UINT)dwProcDataCount * 2);
         } catch (CFileException * e) {
 			// display message
-            pApp->AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+            app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 			// end data processing
 			EndProcess();
-            pTarget->EndWaitCursor();
             SetDataInvalid();
             e->Delete();
 			return MAKELONG(-1, nProgress);
@@ -201,7 +193,6 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

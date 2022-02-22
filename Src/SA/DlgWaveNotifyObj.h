@@ -19,7 +19,7 @@ public:
     virtual void BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride = NULL);
     virtual void StoreFailed();
     virtual void EndPlayback();
-    virtual HPSTR GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize);
+    virtual BPTR GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize);
 
 private:
     IWaveNotifiable * m_pClient;

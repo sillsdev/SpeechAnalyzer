@@ -19,10 +19,8 @@
 
 #include "stdafx.h"
 #include "SegmentSelection.h"
-#include "Process\Process.h"
 #include "Segment.h"
 #include "sa_graph.h"
-
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_view.h"

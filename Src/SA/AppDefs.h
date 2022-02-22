@@ -48,6 +48,8 @@
 // maximum width of screen in pixels
 #define MAX_SCREEN_WIDTH 2048
 
+typedef char* BPTR;
+
 // data processing defines
 enum ESearchOptions {
     // search options
@@ -165,12 +167,6 @@ enum EFileFormat {
     formatMono = 0,
     formatStereo = 1,
     formatRight = 2
-};
-
-enum EGender {
-    male = 0,
-    female = 1,
-    child = 2
 };
 
 // RIFF header definitions
@@ -315,6 +311,4 @@ typedef double WAVETIME;    // location in seconds
 typedef DWORD WAVESAMP;     // location in samples
 typedef DWORD CURSORPOS;    // location in bytes
 
-#include "grid.h"
-#include "param.h"
-#endif  //_APPDEFS_H
+#endif

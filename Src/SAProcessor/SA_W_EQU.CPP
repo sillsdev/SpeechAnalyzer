@@ -5,10 +5,10 @@
 // copyright 1997 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_w_equ.h"
 #include "WbProcess.h"
-
+#include "ScopedCursor.h"
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
@@ -19,7 +19,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // Workbench process class to calculate new raw data after an equation given
 // by the user.
 
-CProcessWbEquation::CProcessWbEquation(Context * pContext) : CWbProcess( pContext, WbEquation) {
+CProcessWbEquation::CProcessWbEquation(Context & context) : CWbProcess( context, WbEquation) {
     m_szEquation.clear();
 }
 
@@ -58,7 +58,7 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     int nOldLevel = nLevel; // save original level
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = pMain->GetWbProcess( pModel->GetWbProcess() - 1, nLevel);
+        pLowerProcess = main.GetWbProcess( pModel->GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
             long lResult = pLowerProcess->Process(pCaller, pModel, nProgress, ++nLevel);
@@ -83,16 +83,14 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     }
 
     // start process
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSWBEQU)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
     if (!CreateTempFile(_T("EQU"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -105,8 +103,8 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     }
     DWORD dwBufferSize = GetBufferSize();
     DWORD wSmpSize = pModel->GetSampleSize();
-    HPSTR pSourceData, pBlockStart;                 // pointers to source data
-    HPSTR pTargetData;                              // pointers to target data
+    BPTR pSourceData, pBlockStart;                 // pointers to source data
+    BPTR pTargetData;                              // pointers to target data
     DWORD dwDataPos = 0;                            // data position pointer
     DWORD dwRangeStart = 0;
     DWORD dwRangeEnd = dwDataSize - wSmpSize;
@@ -192,7 +190,7 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
                 Write(m_lpBuffer, dwBufferSize);
             } catch (CFileException * e) {
                 // error writing file
-                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -203,7 +201,6 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }
@@ -214,7 +211,7 @@ static LPCSTR psz_text = "text";
 /***************************************************************************/
 // CProcessWbEquation::WriteProperties Write equation properties
 /***************************************************************************/
-void CProcessWbEquation::WriteProperties(ObjectOStream & obs) {
+void CProcessWbEquation::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_equation);
     obs.WriteString(psz_text, m_szEquation.c_str());
     obs.WriteEndMarker(psz_equation);
@@ -223,7 +220,7 @@ void CProcessWbEquation::WriteProperties(ObjectOStream & obs) {
 /***************************************************************************/
 // CProcessWbEquation::ReadProperties Read equation properties
 /***************************************************************************/
-bool CProcessWbEquation::ReadStreamString(ObjectIStream& stream, LPCSTR pszMarker, string& szResult) {
+bool CProcessWbEquation::ReadStreamString(CObjectIStream& stream, LPCSTR pszMarker, string& szResult) {
     size_t size = stream.GetBufferSize() + 1;
     array_ptr<char> buffer(size);
     bool result = stream.bReadString(pszMarker, buffer.get(), buffer.size());
@@ -233,7 +230,7 @@ bool CProcessWbEquation::ReadStreamString(ObjectIStream& stream, LPCSTR pszMarke
     return result;
 }
 
-BOOL CProcessWbEquation::ReadProperties(ObjectIStream & obs) {
+BOOL CProcessWbEquation::ReadProperties(CObjectIStream & obs) {
     string szSafe = m_szEquation;
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_equation)) {
         return FALSE;

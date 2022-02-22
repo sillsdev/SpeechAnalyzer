@@ -8,12 +8,8 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_rat.h"
-#include "Process\Process.h"
-#include "Process\sa_p_rat.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
-
-
 #include "sa_doc.h"
 #include "sa_view.h"
 

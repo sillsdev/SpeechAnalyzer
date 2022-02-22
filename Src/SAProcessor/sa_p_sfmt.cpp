@@ -11,14 +11,14 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_sfmt.h"
 #include "sa_p_zcr.h"
 #include "sa_p_grappl.h"
 #include "sa_p_fra.h"
 #include "sa_p_fmt.h"
-
 #include "math.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -48,8 +48,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // function needs a pointer to the view instead the pointer to the document
 // like other process calls. It calculates spectrogram data.
 /***************************************************************************/
-CProcessSpectroFormants::CProcessSpectroFormants(Context * pContext) : CProcess(pContext) {
-}
 
 long CProcessSpectroFormants::Process(void * /*pCaller*/, CView * /*pSaView*/, int /*nWidth*/, int /*nHeight*/, int nProgress, int /*nLevel*/) {
     return MAKELONG(PROCESS_ERROR, nProgress);
@@ -86,35 +84,36 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
         return MAKELONG(--nLevel, nProgress);
     }
 
-    DWORD nSmpSize = pModel->GetSampleSize();
+    DWORD nSmpSize = model.GetSampleSize();
+    CScopedCursor cursor(view);
     if (!StartProcess(this, PROCESSFMT)) {
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     DWORD dwDataStart = 0;
-    DWORD dwDataLength = pModel->GetDataSize();
+    DWORD dwDataLength = model.GetDataSize();
 
     UNUSED_ALWAYS(dwDataStart);
     UNUSED_ALWAYS(dwDataLength);
 
-    CProcessZCross * pZeroCrossCount = pModel->GetZCross();
-    short int nResult = LOWORD(pZeroCrossCount->Process(this, pModel, nProgress, nLevel+1000)); // process data
+    CProcessZCross * pZeroCrossCount = model.GetZCross();
+    short int nResult = LOWORD(pZeroCrossCount->Process(this, &model, nProgress, nLevel+1000)); // process data
     if (pZeroCrossCount->IsDataReady()) {
         // Finish pitch processing if necessary.
-        CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
-        nResult = LOWORD(pAutoPitch->Process(this, pModel, nProgress, nLevel+1000)); // process data
+        CProcessGrappl * pAutoPitch = (CProcessGrappl *)model.GetGrappl();
+        nResult = LOWORD(pAutoPitch->Process(this, &model, nProgress, nLevel+1000)); // process data
         if (pAutoPitch->IsDataReady()) {
             // Finish fragmenting if necessary.
-            CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
-            nResult = LOWORD(pFragments->Process(this, pModel, nProgress, nLevel+1000)); // process data
+            CProcessFragments * pFragments = (CProcessFragments *)model.GetFragments();
+            nResult = LOWORD(pFragments->Process(this, &model, nProgress, nLevel+1000)); // process data
 
             // If waveform fragmented successfully, generate formant data.
             if (pFragments->IsDataReady() && pZeroCrossCount->IsDataReady()) {
                 DWORD dwFirstFragment = pFragments->GetFragmentIndex(dwWaveDataStart/nSmpSize);
                 DWORD dwLastFragment = pFragments->GetFragmentIndex((dwWaveDataStart+dwWaveDataLength-nSmpSize)/nSmpSize);
 
-                CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants();
+                CProcessFormants * pFormants = (CProcessFormants *)model.GetFormants();
                 SSpectProcSelect SpectraSelected;
                 SpectraSelected.bCepstralSpectrum = FALSE;      // turn off to reduce processing time
                 SpectraSelected.bLpcSpectrum = -1;              // use Lpc method for estimating formants
@@ -125,7 +124,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                 // open the temporary file
                 if (!CreateTempFile(_T("SFM"))) {
                     // error opening file
-                    pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+                    app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
                     SetDataInvalid();
                     return MAKELONG(PROCESS_ERROR, nProgress);
                 }
@@ -147,7 +146,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                     SFragParms FragmentParmInfo = pFragments->GetFragmentParms(dwFragmentIndex);  // get fragment parameters
                     DWORD dwFrameStartIndex, dwFrameEndIndex;
 
-                    dwFrameStartIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.-0.005*pModel->GetSamplesPerSec());
+                    dwFrameStartIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.-0.005 * model.GetSamplesPerSec());
                     if (dwFrameStartIndex == UNDEFINED_OFFSET || dwFrameStartIndex > FragmentParmInfo.dwOffset + FragmentParmInfo.wLength) {
                         dwFrameStartIndex = 0;
                     }
@@ -155,21 +154,21 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                         dwFrameStartIndex = FragmentParmInfo.dwOffset;
                     }
 
-                    dwFrameEndIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.+0.005*pModel->GetSamplesPerSec());
+                    dwFrameEndIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.+0.005*model.GetSamplesPerSec());
                     if (dwFrameEndIndex == UNDEFINED_OFFSET || dwFrameEndIndex < FragmentParmInfo.dwOffset) {
-                        dwFrameEndIndex = pModel->GetDataSize()/nSmpSize;
+                        dwFrameEndIndex = model.GetDataSize()/nSmpSize;
                     }
                     if (dwFrameEndIndex < FragmentParmInfo.dwOffset+FragmentParmInfo.wLength) {
                         dwFrameEndIndex = FragmentParmInfo.dwOffset+FragmentParmInfo.wLength;
                     }
 
                     BOOL bValidCount;
-                    short nZeroCrossCount = (short)(pZeroCrossCount->GetProcessedData(dwFrameStartIndex/CALCULATION_INTERVAL(pModel->GetSamplesPerSec()), &bValidCount));
+                    short nZeroCrossCount = (short)(pZeroCrossCount->GetProcessedData(dwFrameStartIndex/CALCULATION_INTERVAL(model.GetSamplesPerSec()), &bValidCount));
                     double fZeroCrossRate;
                     if (bValidCount) {
                         // calculate zero crossing rate
-                        UINT nCalcDataLength = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) * pModel->GetSamplesPerSec()/22050;  //!!based on min pitch?
-                        fZeroCrossRate = (double)nZeroCrossCount * (double)pModel->GetSamplesPerSec() / (double)nCalcDataLength;
+                        UINT nCalcDataLength = CALCULATION_DATALENGTH(model.GetSamplesPerSec()) * model.GetSamplesPerSec()/22050;  //!!based on min pitch?
+                        fZeroCrossRate = (double)nZeroCrossCount * (double)model.GetSamplesPerSec() / (double)nCalcDataLength;
                         bFricative = (fZeroCrossRate >= FRICTION_THRESHOLD);  // is a fricative if at or above threshold
                         //    bFricative = FALSE;  //!! REMOVE THIS ONCE FRICATIVE THRESHOLD IS ACCURATELY DETERMINED
                     } else {
@@ -179,8 +178,8 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                     DWORD dwFrameStart = dwFrameStartIndex * (DWORD)nSmpSize;  // byte offset for beginning of fragment
                     DWORD dwFrameSize = (dwFrameEndIndex) * (DWORD)nSmpSize - dwFrameStart;  // size of frame in bytes
 
-                    bVoiced = pAutoPitch->IsVoiced(pModel, dwFrameStart) &&    // beginning of fragment is voiced
-                              pAutoPitch->IsVoiced(pModel, dwFrameStart+dwFrameSize-nSmpSize);  // end of fragment is voiced
+                    bVoiced = pAutoPitch->IsVoiced(&model, dwFrameStart) &&    // beginning of fragment is voiced
+                              pAutoPitch->IsVoiced(&model, dwFrameStart+dwFrameSize-nSmpSize);  // end of fragment is voiced
 
                     // Accumulate formants across a voiced, non-fricative contour.
                     if (TRUE || (bVoiced && !bFricative)) {
@@ -188,7 +187,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                         if (dwVoicedFragStart == (DWORD)UNDEFINED_DATA) {
                             dwVoicedFragStart = dwFragmentIndex;    // save index to first voiced spectrum
                         }
-                        nResult = LOWORD(pFormants->Process(this, pModel, bFormantTracking,
+                        nResult = LOWORD(pFormants->Process(this, &model, bFormantTracking,
                                                             dwFrameStart, dwFrameSize, SpectraSelected, nMyProgress, nLevel+1000)); // compute formant frequencies
                         if (!pFormants->IsDataReady()) {
                             break;
@@ -200,7 +199,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                         // unvoiced -- end of voiced run
                         if (pFormants->IsDataReady()) {
                             if (bSmooth) {
-                                pFormants->SmoothMedian(pModel);    // apply median smoother to formant data if formant frames are contiguous
+                                pFormants->SmoothMedian(&model);    // apply median smoother to formant data if formant frames are contiguous
                             }
                             DWORD dwFormantFrame = 0;
                             for (DWORD dwFormantIndex = dwVoicedFragStart; dwFormantIndex < dwFragmentIndex; dwFormantIndex++) {
@@ -233,11 +232,11 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                                 }
                                 try {
                                     // write the formant frequenciess
-                                    Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
+                                    Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq));
                                 } catch (CFileException * e) {
                                     // error writing file
                                     pFormants->ResetTracking();
-                                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 									// error, writing failed
 									e->Delete();
 									return Exit(PROCESS_ERROR);
@@ -256,11 +255,11 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                         }
                         try {
                             // write unvoiced formant frame
-                            Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
+                            Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq));
                         } catch (CFileException * e) {
                             // error writing file
                             pFormants->ResetTracking();
-                            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 							// error, writing failed
 							e->Delete();
 							return Exit(PROCESS_ERROR);
@@ -273,7 +272,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                 if (pFormants->IsDataReady() && !IsCanceled()) { // && bVoiced && !bFricative)
                     if (pFormants->IsDataReady()) {
                         if (bSmooth) {
-                            pFormants->SmoothMedian(pModel);    // apply median smoother to formant data if frames are continguous
+                            pFormants->SmoothMedian(&model);    // apply median smoother to formant data if frames are continguous
                         }
                         DWORD dwFormantFrame = 0;
                         for (DWORD dwFormantIndex = dwVoicedFragStart; dwFormantIndex < dwFragmentIndex; dwFormantIndex++) {
@@ -305,11 +304,11 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                             }
                             try {
                                 // write the formants
-                                Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
+                                Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq));
                             } catch (CFileException * e) {
                                 // error writing file
                                 pFormants->ResetTracking();
-                                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 								e->Delete();
 								// error, writing failed
 								return Exit(PROCESS_ERROR);
@@ -334,7 +333,6 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
     nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
     SetProgress(nProgress);
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     SetDataReady();

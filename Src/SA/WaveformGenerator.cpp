@@ -1,18 +1,11 @@
 #include "stdafx.h"
 #include "WaveformGenerator.h"
-#include "Process\Process.h"
 #include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
-
-CProcessWaveformGenerator::CProcessWaveformGenerator() {
-}
-
-CProcessWaveformGenerator::~CProcessWaveformGenerator() {
-}
 
 /***************************************************************************/
 // CDlgWaveformGenerator::process::Process Generate wav file
@@ -38,8 +31,8 @@ long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void
     }
 
     // start process
-    CScopedCursor waitCursor(this);
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBGENERATOR)) { // memory allocation failed or previous processing error
+    CScopedCursor waitCursor(view);
+    if (!StartProcess(pCaller, PROCESSWBGENERATOR)) { // memory allocation failed or previous processing error
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -75,7 +68,7 @@ long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void
             } catch (CFileException * e) {
                 // error writing file
 				e->Delete();
-                ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                 return Exit(PROCESS_ERROR); // error, writing failed
             }
         }

@@ -30,10 +30,7 @@
 #include "sa_cursr.h"
 #include "sa_plot.h"
 #include "sa_graph.h"
-#include "Process\Process.h"
 #include "Segment.h"
-#include "Process\sa_p_fra.h"
-
 #include "math.h"
 #include "sa_doc.h"
 #include "sa_view.h"

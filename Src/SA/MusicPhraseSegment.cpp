@@ -3,10 +3,6 @@
 #include "Sa_Doc.h"
 #include "sa_ipa.h"
 
-CMusicPhraseSegment::CMusicPhraseSegment(EAnnotation index, int master) :
-    CIndependentSegment(index,master) {
-}
-
 /***************************************************************************/
 // CMusicPhraseSegment::CheckPosition Check positions for annotation window
 // Checks the positions for validation. If they are ok for a new annotation

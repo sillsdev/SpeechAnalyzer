@@ -2,9 +2,9 @@
 //
 
 #include "pch.h"
-
 #include "sa_p_3dPitch.h"
 #include "Butterworth.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -12,13 +12,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CProcess3dPitch::CProcess3dPitch(Context * pContext) : CProcess(pContext) {
+CProcess3dPitch::CProcess3dPitch(Context & context) : CProcess(context) {
     m_dFilterUpperFrequency = 1000.;
     m_dFilterLowerFrequency = 70.;
     m_nFilterOrder = 5;
-}
-
-CProcess3dPitch::~CProcess3dPitch() {
 }
 
 static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize);
@@ -48,17 +45,15 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
     }
 
     // start process
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     // memory allocation failed or previous processing error
     if (!StartProcess(pCaller, PROCESSWBLP)) {
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
     if (!CreateTempFile(_T("PCC"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -66,7 +61,7 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
     DWORD dwDataSize = pModel->GetDataSize();    // size of raw data
     DWORD wSmpSize = pModel->GetSampleSize();
 
-    CProcessButterworth butterworth(pContext, Plain);
+    CProcessButterworth butterworth(context, Plain);
     butterworth.SetSourceProcess(NULL);
     butterworth.SetFilterFilter(TRUE);
     butterworth.LowPass(m_nFilterOrder, m_dFilterUpperFrequency);
@@ -131,7 +126,6 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
     // close the temporary file and read the status
     CloseTempFile();                    // close the file
     EndProcess((nProgress >= 95));      // end data processing
-    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

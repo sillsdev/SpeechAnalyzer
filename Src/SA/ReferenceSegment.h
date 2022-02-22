@@ -5,7 +5,8 @@
 
 class CReferenceSegment : public CTextSegment {
 public:
-    CReferenceSegment(EAnnotation index, int master = -1);
+    CReferenceSegment() = delete;
+
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
 	// insert a new segment with text
     virtual BOOL Append(LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration);     

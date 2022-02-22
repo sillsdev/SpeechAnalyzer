@@ -13,12 +13,13 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_melogram.h"
 #include <limits.h>
 #include "param.h"
 #include "math.h"
 #include "AbstractPitchProcess.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -30,10 +31,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // class to calculate melogram for wave data. parameters used in this
 // object give better results for music.
 
-/***************************************************************************/
-// CProcessMelogram::CProcessMelogram Constructor
-/***************************************************************************/
-CProcessMelogram::CProcessMelogram(Context * pContext) : CAbstractPitchProcess(pContext) {
+CProcessMelogram::CProcessMelogram(Context & context) : CAbstractPitchProcess(context) {
     m_nMinValidSemitone100 = 0;
     m_nMaxValidSemitone100 = 0;
 }
@@ -51,6 +49,7 @@ CProcessMelogram::CProcessMelogram(Context * pContext) : CAbstractPitchProcess(p
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+    
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -101,10 +100,6 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         return MAKELONG(--nLevel, nProgress); // data is already ready
     }
 
-    //TRACE(_T("Process: CProcessMelogram\n"));
-
-    BOOL bBackground = false;
-
     if (nLevel < 0) { // memory allocation failed or previous processing error
         if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
@@ -113,14 +108,9 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
     }
 
     // start grappl process
-    if (!bBackground) {
-        pTarget->BeginWaitCursor();    // wait cursor
-    }
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSMEL)) { // memory allocation failed or previous processing error
         EndProcess(); // end data processing
-        if (!bBackground) {
-            pTarget->EndWaitCursor();
-        }
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // if file has not been created
@@ -128,9 +118,6 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         // create the temporary melogram file
         if (!CreateTempFile(_T("MEL"))) { // creating error
             EndProcess(); // end data processing
-            if (!bBackground) {
-                pTarget->EndWaitCursor();
-            }
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
@@ -161,7 +148,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
-            pApp->GrapplErrorMessage( szText);
+            app.GrapplErrorMessage( szText);
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
@@ -172,9 +159,6 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         // open file to append data
         if (!OpenFileToAppend()) {
             EndProcess(); // end data processing
-            if (!bBackground) {
-                pTarget->EndWaitCursor();
-            }
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
@@ -189,7 +173,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         dwBlockSize = GetBufferSize();
     }
 
-    HPSTR pBlockStart;
+    BPTR pBlockStart;
     // start processing
     while (m_dwDataPos < dwDataSize) {
         // get raw data block
@@ -237,10 +221,10 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
                 }
                 // write one result of the processed melogram data
                 try {
-                    Write((HPSTR)&nSemitone100, sizeof(int16));
+                    Write((BPTR)&nSemitone100, sizeof(int16));
                 } catch (CFileException * e) {
                     // error writing file
-                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					// error, writing failed
 					e->Delete();
 					return Exit(PROCESS_ERROR);
@@ -254,7 +238,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         if (IsCanceled()) {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if (bBackground || alldone) {
+        if (alldone) {
             break;
         }
     }
@@ -271,9 +255,6 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         SetStatusFlag(PROCESS_NO_PITCH, m_nMinValue == SHRT_MAX);
     }
     EndProcess((nProgress >= 95));          // end data processing
-    if (!bBackground) {
-        pTarget->EndWaitCursor();
-    }
     if (nomore || alldone) {
         SetDataReady();
     }

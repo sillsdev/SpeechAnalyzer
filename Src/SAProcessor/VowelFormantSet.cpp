@@ -2,6 +2,9 @@
 #include "VowelFormantSet.h"
 #include "VowelSetVersion.h"
 #include "VowelFormantsVector.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
+#include "funcs.h"
 
 static LPCSTR psz_VowelSet = "VowelSet";
 static LPCSTR psz_Gender = "Gender";
@@ -39,7 +42,7 @@ BOOL CVowelFormantSet::IsUser() const {
 }
 
 // Write spectrumParm properties to stream
-void CVowelFormantSet::WriteProperties(ObjectOStream& obs) const {
+void CVowelFormantSet::WriteProperties(CObjectOStream& obs) const {
 
     obs.WriteBeginMarker(psz_VowelSet, _to_utf8(m_szSetName).c_str());
     obs.WriteBool(psz_User, m_bUser);
@@ -54,7 +57,7 @@ void CVowelFormantSet::WriteProperties(ObjectOStream& obs) const {
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CVowelFormantSet::ReadProperties(ObjectIStream& obs) {
+BOOL CVowelFormantSet::ReadProperties(CObjectIStream& obs) {
     char buffer[1024];
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_VowelSet, buffer, _countof(buffer))) {
         return FALSE;

@@ -16,7 +16,6 @@ public:
     CAutoSave();
     void Save(CSaDoc & document);
     bool IsSaving();
-    bool IsUpdating();
 
     // global methods
     static void Check(CSaApp * pApp);

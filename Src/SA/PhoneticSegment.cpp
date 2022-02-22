@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "PhoneticSegment.h"
-#include "Process\sa_p_fra.h"
-#include "Process\SA_P_ZCR.H"
-#include "Process\SA_P_CHA.H"
 #include "Sa_Doc.h"
 #include "MainFrm.h"
 #include "SA_View.h"
@@ -16,20 +13,9 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-//###########################################################################
-// CPhoneticSegment
-// class to do all the handling for the phonetic annotation segments.
-
-CPhoneticSegment::CPhoneticSegment(EAnnotation index, int master) :
-    CIndependentSegment(index,master) {
-}
-
 CFontTable * CPhoneticSegment::NewFontTable() const {
     return new CFontTableIPA;
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CPhoneticSegment helper functions
 
 /***************************************************************************/
 // CPhoneticSegment::Exit Exit segmenting on error
@@ -37,7 +23,6 @@ CFontTable * CPhoneticSegment::NewFontTable() const {
 /***************************************************************************/
 long CPhoneticSegment::Exit(int nError) {
     EndProcess(); // end data processing
-    EndWaitCursor();
     SetDataReady(FALSE);
     return MAKELONG(nError, 100);
 }
@@ -89,7 +74,7 @@ void CPhoneticSegment::ReplaceSelectedSegment(CSaDoc * pModel, LPCTSTR replace, 
         if (pSegment!=NULL) {
             int nIndex = pSegment->FindOffset(dwOldOffset);
             if (nIndex != -1) {
-				TRACE("adjust %s %d %d %d %d\n",pSegment->GetRuntimeClass()->m_lpszClassName,nLoop,nIndex,dwStart,(dwStop-dwStart));
+				//TRACE("adjust %s %d %d %d %d\n",pSegment->GetRuntimeClass()->m_lpszClassName,nLoop,nIndex,dwStart,(dwStop-dwStart));
                 pSegment->Adjust( pModel, nIndex, dwStart, dwStop - dwStart, false);
             }
         }
@@ -214,7 +199,6 @@ void CPhoneticSegment::Remove(CSaDoc * pModel, int sel, BOOL bCheck) {
 /***************************************************************************/
 long CPhoneticSegment::Process( void * pCaller, CSaDoc * pModel, int nProgress, int nLevel) {
 
-    //TRACE(_T("Process: CPhoneticSegment\n"));
     if (IsCanceled()) {
 		// process canceled
         return MAKELONG(PROCESS_CANCELED, nProgress);
@@ -256,12 +240,11 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pModel, int nProgress, 
 
     // start segmenting
 	// wait cursor
-    BeginWaitCursor(); 
+    CScopedCursor cursor(view);
 	// memory allocation failed
-    if (!StartProcess(pCaller, IDS_STATTXT_SEGMENTING, FALSE)) { 
+    if (!StartProcess( pCaller, SEGMENTING, FALSE)) { 
 		// end data processing
         EndProcess(); 
-        EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -585,7 +568,6 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pModel, int nProgress, 
     nProgress = nProgress + (int)(100 / nLevel);
 	// end data processing
     EndProcess((nProgress >= 95)); 
-    EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

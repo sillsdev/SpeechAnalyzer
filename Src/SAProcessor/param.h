@@ -16,13 +16,14 @@
 
 #include "SA_DSP.h"
 
-__interface ObjectIStream;
+class CObjectOStream;
+class CObjectIStream;
 class CProcessMelogram;
 
 class CParseParm {              // parsing parameters
 public:
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
     void Init();
     float fBreakWidth;          // minimum width of break (ms) for words
     float fPhraseBreakWidth;    // minimum width of break (ms) for phrases
@@ -39,8 +40,8 @@ public:
     int nSegmentMode;           // segmenting mode
     BOOL bKeepSegments;         // TRUE if existing segments to keep
 
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
 
     void Init();
 };
@@ -76,8 +77,8 @@ public:
     int nManualCalcUpper;       // temporary location to save manual upper boundary
     int nManualCalcLower;       // temporary location to save manual lower boundary
 
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
 
     void Init();
     static void GetAutoRange(Model* pModel, CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound);
@@ -86,8 +87,8 @@ public:
 class CIntensityParm {          // pitch parameters
 public:
     CIntensityParm();
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
     void Init();
 
     int nScaleMode;             // 0 - dB, 1 - Percent
@@ -96,8 +97,8 @@ public:
 // ARH 8/1/01 - Added for wavelet scalogram graph
 class CWaveletParm {                 // Wavelet parameters
 public:
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
     void Init();
 
     int nResolution;       // resolution of display
@@ -119,8 +120,8 @@ public:
     BOOL bSmoothFormants;        // TRUE = smooth formants after animation
     BOOL bMelScale;              // TRUE = use mel-scale for grids
 
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
 
     void Init();
 };
@@ -132,8 +133,8 @@ public:
     BOOL bHighpass;     // User 70KHz highpass filter (0=FALSE, 1=TRUE)
     int nMode;          // Recording mode (0=mono, 1=stereo)
 
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
 
     void Init();
 };

@@ -6,10 +6,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "process.h"
+#include "sa_process.h"
 #include "sa_p_poa.h"
-
 #include "lpc.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -29,7 +29,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 long CProcessPOA::Exit(int nError, HANDLE) {
     // free the raw data buffer
     SetDataInvalid();
-    pTarget->EndWaitCursor();
     return MAKELONG(nError, 100);
 }
 
@@ -85,12 +84,11 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
         return MAKELONG(nLevel, nProgress);
     }
 
-    pTarget->BeginWaitCursor();
+    CScopedCursor cursor(view);
     // memory allocation failed
     if (!StartProcess(pCaller, PROCESSPOA, FALSE)) {
         // end data processing
         EndProcess();
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -131,7 +129,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
     CLinPredCoding * pLpcObject;
     dspError_t Err;
 
-    Err = CLinPredCoding::CreateObject(&pLpcObject, pApp, LpcSetting, Signal);
+    Err = CLinPredCoding::CreateObject(&pLpcObject, app, LpcSetting, Signal);
     if (Err) {
         pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
         return Exit(PROCESS_ERROR, NULL);
@@ -151,11 +149,10 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
     if (!m_lpBuffer) { // not yet allocated
         m_lpBuffer = new char[GetDataSize(sizeof(char))];
         if (!m_lpBuffer) {
-            pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+            app.ErrorMessage(IDS_ERROR_MEMALLOC);
             SetDataSize(0);
             delete pLpcObject; // delete the Lpc object
             pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
-            pTarget->EndWaitCursor();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
     }
@@ -182,12 +179,10 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
     SetProgress(nProgress);
     EndProcess();
     SetDataReady();
-    pTarget->EndWaitCursor();
 
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);
     }
-
     return MAKELONG(nLevel, nProgress);
 }
 

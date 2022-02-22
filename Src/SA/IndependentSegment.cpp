@@ -8,14 +8,6 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-//###########################################################################
-// CIndependentSegment
-// class to do all the handling for the master annotation segments.
-
-CIndependentSegment::CIndependentSegment(EAnnotation index, int master) :
-    CSegment(index,master) {
-}
-
 /***************************************************************************/
 // CIndependentSegment::LimitsPosition Limits positions for annotation window
 // Adjusts the position to acceptable position to adjust boundaries

@@ -11,13 +11,16 @@
 //      RLJ Added CRecordingParm class
 /////////////////////////////////////////////////////////////////////////////
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_pitch.h"
 #include "sa_p_grappl.h"
 #include "sa_p_melogram.h"
 #include "sa_p_custompitch.h"
 #include "sa_p_smoothedpitch.h"
 #include "spectrumparm.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
+#include "ResearchSettings.h"
 
 static LPCSTR psz_spectrum       = "spectrum";
 static LPCSTR psz_ScaleMode      = "nScaleMode";
@@ -37,7 +40,7 @@ static LPCSTR psz_ShowFormantPower = "bShowFormantPower";
 static const char* psz_MinThreshold = "nMinThreshold";
 
 // Write spectrumParm properties to *.psa file.
-void CSpectrumParm::WriteProperties(ObjectOStream & obs) {
+void CSpectrumParm::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_spectrum);
 
     // write out properties
@@ -59,7 +62,7 @@ void CSpectrumParm::WriteProperties(ObjectOStream & obs) {
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CSpectrumParm::ReadProperties(ObjectIStream & obs) {
+BOOL CSpectrumParm::ReadProperties(CObjectIStream & obs) {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum)) {
         return FALSE;
     }
@@ -88,7 +91,7 @@ BOOL CSpectrumParm::ReadProperties(ObjectIStream & obs) {
     return TRUE;
 }
 
-void CSpectrumParm::Init() {
+void CSpectrumParm::Init(App & app) {
     const int SamplesPerSec = 22050;
     nScaleMode = 0;
     nPwrUpperBound = 10;
@@ -103,5 +106,5 @@ void CSpectrumParm::Init() {
     bShowFormantFreq = TRUE;
     bShowFormantBandwidth = FALSE;
     bShowFormantPower = FALSE;
-    window = pApp->getResearchSettings().getWindow();
+    window = app.GetResearchSettings().GetWindow();
 }

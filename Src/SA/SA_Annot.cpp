@@ -103,7 +103,6 @@
 #include "GlossSegment.h"
 #include "GlossNatSegment.h"
 #include "ReferenceSegment.h"
-#include "Process\Process.h"
 #include "sa_ipa.h"
 #include "PhoneticSegment.h"
 #include "LegendWnd.h"
@@ -348,14 +347,14 @@ void CXScaleWnd::CalculateScale( CDC * pDC, int nWidth) {
         } else {
             // get pDC to get textmetrics
 			// get device context
-            CDC * pDC = GetDC();
+            CDC * pDC2 = GetDC();
 			// select legend font
-            CFont * pOldFont = pDC->SelectObject(&m_font);
+            CFont * pOldFont = pDC2->SelectObject(&m_font);
 			// get text metrics
-            pDC->GetTextMetrics(&tm);
+            pDC2->GetTextMetrics(&tm);
 			// set back old font
-            pDC->SelectObject(pOldFont);
-            ReleaseDC(pDC);
+            pDC2->SelectObject(pOldFont);
+            ReleaseDC(pDC2);
         }
         // find minimum scale distance in measures
         DWORD dwMinScale = (DWORD)(m_fNumbPerPix * (double)(tm.tmAveCharWidth * 10));

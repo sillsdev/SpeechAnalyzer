@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "VowelSetVersion.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
+#include "funcs.h"
 
 static LPCSTR psz_Version = "Version";
 
@@ -15,12 +18,12 @@ void CVowelSetVersion::SetVersion(const wstring& szVersion) {
     m_szVersion = szVersion;
 }
 
-void CVowelSetVersion::WriteProperties(ObjectOStream& obs) const {
+void CVowelSetVersion::WriteProperties(CObjectOStream& obs) const {
     obs.WriteBeginMarker(psz_Version, _to_utf8(m_szVersion).c_str());
     obs.WriteEndMarker(psz_Version);
 }
 
-BOOL CVowelSetVersion::ReadProperties(ObjectIStream& obs) {
+BOOL CVowelSetVersion::ReadProperties(CObjectIStream& obs) {
     char buffer[1024];
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Version, buffer, _countof(buffer))) {
         return FALSE;

@@ -6,12 +6,12 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_InstantaneousPower.h"
 #include "sa_p_raw.h"
 #include "sa_p_glo.h"
-
 #include "Butterworth.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -49,18 +49,14 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
     if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
-    //TRACE(_T("Process: CProcessInstantaneousPower\n"));
 
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
-
     CProcessRaw * pRaw = pModel->GetRaw();
-
     short nResult = LOWORD(pRaw->Process(this, pModel, nLevel));
     // Exit if error has occurred or the spectrum process has been canceled.
     if (nResult < 0) {
@@ -84,7 +80,6 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
     // create the temporary file
     if (!CreateTempFile(_T("TEA"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -109,7 +104,6 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
         short * pDataPhased = (short *)phaseFilter->GetProcessedDataBlock((dwWaveOffset-1)*sizeof(short),3*sizeof(short));
         if (!pData || !pDataPhased) { // reading failed
             EndProcess(); // end data processing
-            pTarget->EndWaitCursor();
             SetDataInvalid();
             return MAKELONG(-1, nProgress);
         }
@@ -141,10 +135,9 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
                 Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
             } catch (CFileException * e) {
 				// display message
-                pApp->AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+                app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 				// end data processing
 				EndProcess();
-                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 e->Delete();
 				return MAKELONG(-1, nProgress);
@@ -155,7 +148,6 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
             SetProgress(nProgress + (int)(100 * dwWaveOffset / dwWaveSize / (DWORD)nLevel));
             if (IsCanceled()) {
                 EndProcess(); // end data processing
-                pTarget->EndWaitCursor();
                 SetDataInvalid();
                 return MAKELONG(PROCESS_CANCELED, nProgress);
             }
@@ -171,10 +163,9 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
             Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
         } catch (CFileException * e) {
 			// display message
-			pApp->AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
+			app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 			// end data processing
 			EndProcess();
-            pTarget->EndWaitCursor();
             SetDataInvalid();
             e->Delete();
 			return MAKELONG(-1, nProgress);
@@ -186,7 +177,6 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

@@ -5,11 +5,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-//#include "sa_doc.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "FormantTracker.h"
-//#include "FileUtils.h"
-//#include "StringUtils.h"
 
 #include "TrackState.h"
 #include "AnalyticLpcAnalysis.h"

@@ -6,12 +6,12 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
-#include "sa_p_pitch.h"
 #include <limits.h>
-
+#include "sa_process.h"
+#include "sa_p_pitch.h"
 #include "AbstractPitchProcess.h"
 #include "param.h"
+#include "scopedcursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -56,10 +56,9 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
     }
 
     // start pitch process
-    pTarget->BeginWaitCursor();
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSPIT)) { // previous processing error
         EndProcess();                                   // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -96,7 +95,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
-            pApp->GrapplErrorMessage( szText);
+            app.GrapplErrorMessage( szText);
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
@@ -119,7 +118,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
     if (GetBufferSize() < dwBlockSize) {
         dwBlockSize = GetBufferSize();
     }
-    HPSTR pBlockStart;
+    BPTR pBlockStart;
     // start processing
     while (m_dwDataPos < dwDataSize) {
         // get raw data block
@@ -160,10 +159,10 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
                 }
                 // write one result of the processed grappl pitch data
                 try {
-                    Write((HPSTR)&pResults->fcalc16, sizeof(int16));
+                    Write((BPTR)&pResults->fcalc16, sizeof(int16));
                 } catch (CFileException * e) {
                     // error writing file
-                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					// error, writing failed
 					e->Delete();
 					return Exit(PROCESS_ERROR);

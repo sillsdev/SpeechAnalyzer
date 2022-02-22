@@ -8,7 +8,7 @@
 
 class CProcessHilbert : public CProcessIIRFilter {
 public:
-    CProcessHilbert(Context * pContext, CProcess * pSourceProcess = NULL, BOOL bWBenchProcess = FALSE);
+    CProcessHilbert(Context & context, CProcess * pSourceProcess = NULL, BOOL bWBenchProcess = FALSE);
     void Dump(LPCSTR ofilename);
 
 private:

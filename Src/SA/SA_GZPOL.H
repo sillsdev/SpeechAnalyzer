@@ -7,8 +7,6 @@
 #ifndef _SA_GZPOL_H
 #define _SA_GZPOL_H
 
-#include "Process/ProcessAreaData.h"
-
 //###########################################################################
 // CZPlotPolar plot window
 
@@ -22,11 +20,11 @@ public:
     // Attributes
 private:
     HANDLE  m_hDataX;          // needed to get m_lpDataX
-    HPSTR   m_lpDataX;         // pointer to Z-graph data
+    BPTR   m_lpDataX;         // pointer to Z-graph data
     HANDLE  m_hDataY;          // needed to get m_lpDataY
-    HPSTR   m_lpDataY;         // pointer to Z-graph data
+    BPTR   m_lpDataY;         // pointer to Z-graph data
     HANDLE  m_hDataSym;        // needed to get m_lpDataSym
-    HPSTR   m_lpDataSym;       // pointer to Z-graph data
+    BPTR   m_lpDataSym;       // pointer to Z-graph data
     const int m_nIndexSDP;
 
     // Operations

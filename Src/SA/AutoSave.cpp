@@ -131,7 +131,6 @@ void CAutoSave::Check(CSaApp * pApp) {
 		}
 
 		if (isTempFile) {
-
 			{
 				CString msg;
 				msg.FormatMessage(IDS_AUTOSAVE_RESTORE_TEMP, restorewave.c_str(), (LPCTSTR)time);

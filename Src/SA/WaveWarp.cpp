@@ -158,8 +158,6 @@
 
 #include "WaveWarp.h"
 #include "isa_doc.h"
-#include "Process\Process.h"
-#include "Process\sa_p_fra.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //

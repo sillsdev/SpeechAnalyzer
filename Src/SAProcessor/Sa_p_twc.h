@@ -15,9 +15,10 @@ class CHistogram;
 class CProcessMelogram;
 
 class CProcessTonalWeightChart : public CProcess {
-// Construction/destruction/creation
 public:
-    CProcessTonalWeightChart(Context * pContext);
+    CProcessTonalWeightChart(Context & context);
+    CProcessTonalWeightChart() = delete;
+
     double GetMinSemitone() {
         return m_dMinSemitone;   // return Min Semitone
     }
@@ -29,7 +30,6 @@ public:
     }
     CHistogram * MakeTwcHistogram(CProcessMelogram * pMelogram, int nBinsPerSemitone, double nMinSemitone, double nMaxSemitone, DWORD dwFrameStart, DWORD dwFrameSize);
 
-// Attributes
 private:
     DWORD m_dwFrameStart;
     DWORD m_dwFrameSize;

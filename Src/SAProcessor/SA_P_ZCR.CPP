@@ -10,9 +10,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_zcr.h"
 #include "sa_p_lou.h"
+#include "ScopedCursor.h"
 
 
 #ifdef _DEBUG
@@ -56,7 +57,6 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
 
     if (nLevel < 0) { // previous processing error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
@@ -64,23 +64,21 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
     }
 
     // start zero crossing process
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSZCR)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
     if (!CreateTempFile(_T("ZCR"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // process raw data into zero crossing data
     DWORD dwDataSize = pModel->GetDataSize(); // size of raw data
     DWORD nSmpSize = pModel->GetSampleSize();
-    HPSTR pRawData = NULL, pBlockStart; // pointers to raw data
+    BPTR pRawData = NULL, pBlockStart; // pointers to raw data
     short int * pZCrossData = (short int *)m_lpBuffer; // pointer to zero crossing data
     // set critical loudness range (10% of max loudness)
     int nMaxCriticalLoud = nMaxLoud / (10);
@@ -213,7 +211,7 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
                 Write(m_lpBuffer, dwZCrossCount * 2);
             } catch (CFileException * e) {
                 // error writing file
-                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -229,7 +227,6 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }

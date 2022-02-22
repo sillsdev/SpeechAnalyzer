@@ -15,12 +15,12 @@
 class CProcessFormants : public CProcess {
 
 public:
-    CProcessFormants(Context * pContext);
+    CProcessFormants(Context & context);
     virtual ~CProcessFormants();
     void SmoothMedian(Model * pModel);
     SFormantFrame * LoadBuffer(DWORD dwFormantBlockStart);
     BOOL StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * pFormant, BOOL bWriteThru);
-    BOOL WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend);
+    BOOL WriteData(BPTR pData, UINT nDataSize, BOOL bAppend);
     BOOL SaveBuffer(UINT nDataSize);
     virtual long Exit(int nError); // exit processing on error
     void SetFormantParms(CFormantParm * pFormantParms);

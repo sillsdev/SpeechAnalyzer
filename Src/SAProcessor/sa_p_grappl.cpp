@@ -6,10 +6,11 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_grappl.h"
-#include "StringUtils.h"
+#include "funcs.h"
 #include "AbstractPitchProcess.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -20,7 +21,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessGrappl
 // class to calculate grappl pitch for wave data.
 
-CProcessGrappl::CProcessGrappl(Context * pContext) : CAbstractPitchProcess(pContext) {
+CProcessGrappl::CProcessGrappl(Context & context) : CAbstractPitchProcess(context) {
     // initialize algorithm parameters
     m_dAvgPitch = 0.;
 }
@@ -39,7 +40,7 @@ CProcessGrappl::CProcessGrappl(Context * pContext) : CAbstractPitchProcess(pCont
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessGrappl::Process(void* pCaller, Model* pModel, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);   // process canceled
     }
@@ -48,12 +49,9 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
     }
     //TRACE(_T("Process: CProcessGrappl --------\n"));
     DWORD dwDataSize = pModel->GetDataSize();             // raw data size for all channels
-    if (dwDataSize==0) {
+    if (dwDataSize == 0) {
         return Exit(PROCESS_NO_DATA);                   // error, no valid data
     }
-
-    // determine if process to be run in background
-    BOOL bBackground = FALSE;                           //pModel->IsBackgroundProcessing();
 
     if (nLevel < 0) {                                   // previous processing error
         if ((nLevel == PROCESS_CANCELED)) {
@@ -64,16 +62,10 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
     }
 
     // start grappl process
-    if (!bBackground) {
-        pTarget->BeginWaitCursor();    // wait cursor
-    }
-    if (!(bBackground ?
-            StartProcess(pCaller, BACKGNDGRA) :
-            StartProcess(pCaller, PROCESSGRA))) { // memory allocation failed
-        EndProcess(); // end data processing
-        if (!bBackground) {
-            pTarget->EndWaitCursor();
-        }
+    CScopedCursor cursor(view);
+    if (!StartProcess(pCaller, PROCESSGRA)) { 
+        // memory allocation failed
+        EndProcess();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -84,9 +76,6 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
         if (!CreateTempFile(_T("GRA"))) {
             // end data processing
             EndProcess();
-            if (!bBackground) {
-                pTarget->EndWaitCursor();
-            }
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
@@ -112,7 +101,7 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _countof(szText), _T("%u"), nWorkSpace);
-            pApp->GrapplErrorMessage( szText);
+            app.GrapplErrorMessage( szText);
             return Exit(PROCESS_ERROR);                 // error, buffer too small
         }
         // init grappl
@@ -123,9 +112,6 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
         // open file to append data
         if (!OpenFileToAppend()) {
             EndProcess(); // end data processing
-            if (!bBackground) {
-                pTarget->EndWaitCursor();
-            }
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
@@ -141,12 +127,12 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
     }
 
     TRACE("dwBlockSize=%d\n",dwBlockSize);
-    TRACE("dwDataSize=%d\n",dwDataSize);
+    TRACE("dwDataSize=%d\n", dwDataSize);
     TRACE("block align=%d\n",pModel->GetBlockAlign(true));
 
     int iterations = 0;
 
-    HPSTR pBlockStart;
+    BPTR pBlockStart;
     // start processing
     while (m_dwDataPos < dwDataSize) {
         //TRACE("m_dwDataPos=%d\n",m_dwDataPos);
@@ -202,10 +188,10 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
                 }
                 // write one result of the processed grappl pitch data
                 try {
-                    Write((HPSTR)&pResults->fsmooth16, sizeof(int16));
+                    Write((BPTR)&pResults->fsmooth16, sizeof(int16));
                 } catch (CFileException * e) {
                     // error writing file
-                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					// error, writing failed
 					e->Delete();
 					return Exit(PROCESS_ERROR);
@@ -219,14 +205,12 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
         if (IsCanceled()) {
             return Exit(PROCESS_CANCELED);      // process canceled
         }
-        if (bBackground || alldone) {
+        if (alldone) {
             break;
         }
 
         iterations++;
     }
-
-    //TRACE("iterations=%d\n",iterations);
 
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
@@ -239,9 +223,6 @@ long CProcessGrappl::Process(void * pCaller, Model * pModel, int nProgress, int 
         SetStatusFlag(PROCESS_NO_PITCH, m_nMinValue == SHRT_MAX);
     }
     EndProcess((nProgress >= 95)); // end data processing
-    if (!bBackground) {
-        pTarget->EndWaitCursor();
-    }
     if (nomore || alldone) {
         SetDataReady();
     }

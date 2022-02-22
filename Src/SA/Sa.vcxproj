@@ -114,6 +114,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <PrecompiledHeaderOutputFile>$(IntDir)stdafx.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -141,7 +142,6 @@
   <ItemGroup>
     <ClCompile Include="AlignInfo.cpp" />
     <ClCompile Include="AppContext.cpp" />
-    <ClCompile Include="AppImpl.cpp" />
     <ClCompile Include="ArchiveTransfer.cpp" />
     <ClCompile Include="AutoSave.cpp" />
     <ClCompile Include="AutoSegmentation.cpp" />
@@ -149,9 +149,6 @@
     <ClCompile Include="ClipboardHelper.cpp" />
     <ClCompile Include="ModelImpl.cpp" />
     <ClCompile Include="WbProcessDlgFactory.cpp" />
-    <ClCompile Include="Process\AbstractPitchProcess.cpp" />
-    <ClCompile Include="Process\PitchProcess.cpp" />
-    <ClCompile Include="Process\ProcessAreaData.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="DataStatusBar.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
@@ -193,24 +190,11 @@
     <ClCompile Include="LegendWnd.cpp" />
     <ClCompile Include="MCIPlayer.cpp" />
     <ClCompile Include="MusicPhraseSegment.cpp" />
-    <ClCompile Include="ObjectIStream.cpp" />
-    <ClCompile Include="ObjectOStream.cpp" />
     <ClCompile Include="OrthoSegment.cpp" />
     <ClCompile Include="PhonemicSegment.cpp" />
     <ClCompile Include="PhoneticSegment.cpp" />
     <ClCompile Include="PlayMixer.cpp" />
     <ClCompile Include="PrivateCursorWnd.cpp" />
-    <ClCompile Include="Process\AnalyticLpcAnalysis.cpp" />
-    <ClCompile Include="Process\Butterworth.cpp" />
-    <ClCompile Include="Process\FormantTracker.cpp" />
-    <ClCompile Include="Process\Hilbert.cpp" />
-    <ClCompile Include="Process\IIRFilter.cpp" />
-    <ClCompile Include="Process\TrackState.cpp" />
-    <ClCompile Include="Process\ProcessDoc.cpp" />
-    <ClCompile Include="Process\Process.cpp" />
-    <ClCompile Include="Process\SA_W_EQU.CPP" />
-    <ClCompile Include="Process\SA_W_PAS.CPP" />
-    <ClCompile Include="Process\SA_W_REV.CPP" />
     <ClCompile Include="Clip.cpp" />
     <ClCompile Include="Partiture.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -274,7 +258,6 @@
     <ClCompile Include="DlgAlignTranscriptionDataSheet.cpp" />
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
-    <ClCompile Include="ScopedCursor.cpp" />
     <ClCompile Include="ScopedFileProtection.cpp" />
     <ClCompile Include="ScopedStatusBar.cpp" />
     <ClCompile Include="SegmentOps.cpp" />
@@ -285,7 +268,6 @@
     <ClCompile Include="StopCursorWnd.cpp" />
     <ClCompile Include="StopWatch.cpp" />
     <ClCompile Include="StringStream.cpp" />
-    <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="DlgKlattAll.cpp" />
     <ClCompile Include="DlgMultiChannel.cpp" />
     <ClCompile Include="DlgSplitFile.cpp" />
@@ -366,14 +348,10 @@
     <ClInclude Include="AlignInfo.h" />
     <ClInclude Include="AppContext.h" />
     <ClInclude Include="AppDefs.h" />
-    <ClInclude Include="AppImpl.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="AutoSegmentation.h" />
     <ClInclude Include="ModelImpl.h" />
     <ClInclude Include="WbProcessDlgFactory.h" />
-    <ClInclude Include="Process\AbstractPitchProcess.h" />
-    <ClInclude Include="Process\PitchProcess.h" />
-    <ClInclude Include="Process\ProcessAreaData.h" />
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="DataStatusBar.h" />
     <ClInclude Include="DlgAnnotationEdit.h" />
@@ -426,8 +404,6 @@
     <ClInclude Include="MCIPlayer.h" />
     <ClInclude Include="mshflexgrid.h" />
     <ClInclude Include="MusicPhraseSegment.h" />
-    <ClInclude Include="ObjectIStream.h" />
-    <ClInclude Include="ObjectOStream.h" />
     <ClInclude Include="OrthoSegment.h" />
     <ClInclude Include="PhonemicSegment.h" />
     <ClInclude Include="PhoneticSegment.h" />
@@ -436,14 +412,7 @@
     <ClInclude Include="PrivateCursorWnd.h" />
     <ClInclude Include="Clip.hpp" />
     <ClInclude Include="Colors.h" />
-    <ClInclude Include="Process\AnalyticLpcAnalysis.h" />
-    <ClInclude Include="process\Butterworth.h" />
-    <ClInclude Include="process\FormantTracker.h" />
-    <ClInclude Include="Process\IIRFilter.h" />
     <ClInclude Include="Process\IProcess.h" />
-    <ClInclude Include="process\Process.h" />
-    <ClInclude Include="process\ProcessDoc.h" />
-    <ClInclude Include="Process\Hilbert.h" />
     <ClInclude Include="RecMixer.h" />
     <ClInclude Include="ReferenceWnd.h" />
     <ClInclude Include="SaString.h" />
@@ -459,10 +428,6 @@
     <ClInclude Include="Partiture.hpp" />
     <ClInclude Include="plotwndInfo.h" />
     <ClInclude Include="PrintDim.h" />
-    <ClInclude Include="process\sa_w_equ.h" />
-    <ClInclude Include="process\SA_W_PAS.h" />
-    <ClInclude Include="process\sa_w_rev.h" />
-    <ClInclude Include="Process\TrackState.h" />
     <ClInclude Include="RecordSet.h" />
     <ClInclude Include="ReferenceSegment.h" />
     <ClInclude Include="Riff.h" />
@@ -470,7 +435,6 @@
     <ClInclude Include="SAXMLUtils.h" />
     <ClInclude Include="SA_Annot.h" />
     <ClInclude Include="sa_resource.h" />
-    <ClInclude Include="ScopedCursor.h" />
     <ClInclude Include="ScopedFileProtection.h" />
     <ClInclude Include="ScopedStatusBar.h" />
     <ClInclude Include="SegmentOps.h" />

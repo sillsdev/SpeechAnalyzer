@@ -19,8 +19,6 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_glo.h"
-#include "Process\Process.h"
-#include "Process\sa_p_glo.h"
 #include "sa_graph.h"
 
 #include "sa_doc.h"

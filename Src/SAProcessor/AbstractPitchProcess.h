@@ -1,13 +1,15 @@
 #pragma once
-#include "Process.h"
+#include "sa_process.h"
 
 class CAbstractPitchProcess : public CProcess {
 
-protected:
-    CAbstractPitchProcess(Context* pContext);
-    SGrapplParms m_CalcParm;
-
 public:
+    CAbstractPitchProcess(Context& context) : CProcess(context) {};
+    CAbstractPitchProcess() = delete;
+
     double GetUncertainty(double fPitch);
+
+protected:
+    SGrapplParms m_CalcParm;
 };
 

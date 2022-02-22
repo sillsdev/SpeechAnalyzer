@@ -7,7 +7,6 @@
 #include "Sa_plot.h"
 #include "Sa_graph.h"
 #include "MainFrm.h"
-#include "Process\sa_p_fra.h"
 #include "sa.h"
 
 #ifdef _DEBUG

@@ -41,7 +41,7 @@ public:
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT = 100);
     virtual void StoreFailed();
     virtual void EndPlayback();
-    virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
+    virtual BPTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
     void SetRecorderMode(EMode mode); // set recorder mode (record, play, stop...)
     HMMIO GetFileHandle();
     BOOL Apply(CDocument *);    // apply wave file to document
@@ -79,7 +79,7 @@ protected:
 private:
     void EnableRecVolume(BOOL bEnable);
     HANDLE m_hData;                 // needed to get m_lpPlayData
-    HPSTR m_lpPlayData;             // pointer to wave data
+    BPTR m_lpPlayData;             // pointer to wave data
     HMMIO m_hmmioFile;              // mmio file handle
     TCHAR m_szFileName[_MAX_PATH];  // file name of the temporary wave file
     MMCKINFO m_mmckinfoSubchunk;    // 'data' subchunk information

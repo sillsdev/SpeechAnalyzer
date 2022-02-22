@@ -2,11 +2,11 @@
 #define BUTTERWORTH_H
 
 #include "IIRFilter.h"
-#include "Process.h"
+#include "sa_process.h"
 
 class CProcessButterworth : public CProcessIIRFilter {
 public:
-    CProcessButterworth(Context * pContext, WbDialogType type, BOOL bWorkBenchOutput = TRUE);
+    CProcessButterworth(Context & context, WbDialogType type, BOOL bWorkBenchOutput = TRUE);
 
     void LowPass(int nOrder, double dFrequency, double dScale=1.);
     void HighPass(int nOrder, double dFrequency, double dScale=1.);

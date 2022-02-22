@@ -10,8 +10,8 @@ public:
     CVowelFormantSet(const wstring& szSetName, const CVowelFormantsVector vowels[3], BOOL bUser = TRUE);
     CVowelFormantSet(const wstring& szSetName = _T(""), BOOL bUser = TRUE);
 
-    void WriteProperties(ObjectOStream& obs) const;
-    BOOL ReadProperties(ObjectIStream& obs);
+    void WriteProperties(CObjectOStream& obs) const;
+    BOOL ReadProperties(CObjectIStream& obs);
 
     const wstring& GetName() const;
     void SetName(const wstring& szName);

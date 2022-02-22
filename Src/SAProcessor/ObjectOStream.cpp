@@ -7,7 +7,7 @@
 // 1.5Test8.2
 //        SDM Added WriteWindowPlacement(const char*,WINDOWPLACEMENT&)
 /////////////////////////////////////////////////////////////////////////////
-#include "Stdafx.h"
+#include "pch.h"
 #include <windows.h>
 #include <fstream>
 #include "objectostream.h"
@@ -135,7 +135,7 @@ void CObjectOStream::WriteNewline() {
 }
 
 void CObjectOStream::WriteWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wpl) {
-    char * pszState = "max";
+    const char * pszState = "max";
     switch (wpl.showCmd) {
     case SW_SHOWNORMAL:
         pszState = "normal";
@@ -159,5 +159,3 @@ void CObjectOStream::WriteWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wp
               wpl.rcNormalPosition.right, wpl.rcNormalPosition.bottom);
     WriteString(pszMarker, pszPlacement);
 }
-
-

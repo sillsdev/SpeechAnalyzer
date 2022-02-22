@@ -16,7 +16,7 @@ void ExtractChannel(WORD channel, WORD numChannels, WORD blockAlign, vector<char
     WORD remainder = blockAlign-newBlockAlign;
     // calculate starting index
     DWORD i = channel*newBlockAlign;
-    for (int s=0; s<numSamples; s++) {
+    for (DWORD s=0; s<numSamples; s++) {
         for (int a=0; a<newBlockAlign; a++) {
             out.push_back(in[i++]);
         }

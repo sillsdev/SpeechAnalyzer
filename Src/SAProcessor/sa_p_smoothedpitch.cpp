@@ -5,11 +5,11 @@
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_smoothedpitch.h"
-
 #include "AbstractPitchProcess.h"
 #include "param.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -33,7 +33,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
-    //TRACE(_T("Process: CProcessSmoothedPitch\n"));
+
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -48,7 +48,6 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
 
     if (nLevel < 0) { // previous processing error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
@@ -56,10 +55,9 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
     }
 
     // start pitch process
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSSPI)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // if file has not been created
@@ -94,7 +92,7 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
-            pApp->GrapplErrorMessage( szText);
+            app.GrapplErrorMessage( szText);
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
@@ -118,7 +116,7 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
     if (GetBufferSize() < dwBlockSize) {
         dwBlockSize = GetBufferSize();
     }
-    HPSTR pBlockStart = NULL;
+    BPTR pBlockStart = NULL;
 
     // start processing
     while (m_dwDataPos < dwDataSize) {
@@ -161,10 +159,10 @@ long CProcessSmoothedPitch::Process(void * pCaller, Model * pModel, int nProgres
                 }
                 // write one result of the processed grappl pitch data
                 try {
-                    Write((HPSTR)&pResults->fsmooth16, sizeof(int16));
+                    Write((BPTR)&pResults->fsmooth16, sizeof(int16));
                 } catch (CFileException * e) {
                     // error writing file
-                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					// error, writing failed
 					e->Delete();
 					return Exit(PROCESS_ERROR);

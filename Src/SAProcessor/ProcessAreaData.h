@@ -8,12 +8,12 @@
 #ifndef CPROCESSAREADATA_H
 #define CPROCESSAREADATA_H
 
-#include "Process.h"
+#include "sa_process.h"
 
 class CProcessAreaData : public CProcess {
 
 public:
-    CProcessAreaData(Context * pContext);
+    CProcessAreaData(Context & context);
     CProcessAreaData() = delete;
 
     virtual void UpdateArea();

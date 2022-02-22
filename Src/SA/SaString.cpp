@@ -12,7 +12,6 @@
 #include "UnicodeString.h"
 
 std::string CSaString::utf8() const {
-
     CUtf8String result(CUtf16String(*this));
     return result.getUtf8();
 }
@@ -20,7 +19,6 @@ std::string CSaString::utf8() const {
 void CSaString::setUtf8(LPCSTR pUtf8) {
     *this = CUtf16String(CUtf8String(pUtf8)).getUtf16().c_str();
 }
-
 
 bool ReadStreamString(CObjectIStream & stream, CSaString pszMarker, CSaString & szResult) {
     return ReadStreamString(stream, pszMarker.utf8().c_str(), szResult);
@@ -34,25 +32,4 @@ bool ReadStreamString(CObjectIStream & stream, LPCSTR pszMarker, CSaString & szR
         szResult.setUtf8(buffer.get());
     }
     return result;
-}
-
-CSaString::CSaString() : CString() {
-}
-
-CSaString::CSaString(TCHAR ch, int nRepeat) : CString(ch, nRepeat) {
-}
-
-CSaString::CSaString(const CSaString & stringSrc) : CString(stringSrc) {
-}
-
-CSaString::CSaString(const CString & stringSrc) : CString(stringSrc) {
-}
-
-CSaString::CSaString(LPCSTR psz) : CString(psz) {
-}
-
-CSaString::CSaString(LPCWSTR psz) : CString(psz) {
-}
-
-CSaString::CSaString(const unsigned char * psz) : CString(psz) {
 }

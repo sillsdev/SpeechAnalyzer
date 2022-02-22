@@ -20,15 +20,11 @@
 class CSpectrumParm { 
 
 public:
-    CSpectrumParm(App* pApp) {
-        CSpectrumParm::pApp = pApp;
-    }
-    CSpectrumParm() = delete;
-    void Init();
-    void WriteProperties(ObjectOStream& obs);
-    BOOL ReadProperties(ObjectIStream& obs);
+    void Init(App & app);
+    void WriteProperties(CObjectOStream& obs);
+    BOOL ReadProperties(CObjectIStream& obs);
     CWindowSettings getWindow() { return window; }
-    void setWindow(CWindowSettings window) { CSpectrumParm::window = window; }
+    void setWindow(CWindowSettings val) { window = val; }
 
     int nScaleMode;             // scale display mode
     int nPwrUpperBound;         // upper power display boundary
@@ -45,7 +41,6 @@ public:
     BOOL bShowFormantPower;     // TRUE = show formant powers
 
 private:
-    App* pApp;
     CWindowSettings window;     // DSP Window settings
 };
 

@@ -7,10 +7,11 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_dur.h"
 #include "Segment.h"
 #include <limits.h>
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -38,10 +39,10 @@ long CProcessDurations::Process(void * pCaller, Model * pModel, int nProgress, i
     if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
-    pTarget->BeginWaitCursor(); // wait cursor
+
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSDUR)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -56,14 +57,13 @@ long CProcessDurations::Process(void * pCaller, Model * pModel, int nProgress, i
     // find min and max durations
     m_dwMaxValue = 0;
     m_dwMinValue = ULONG_MAX;
-    for (int i = 0; i < _tcslen(pPhonetic); i++) {
+    for (size_t i = 0; i < _tcslen(pPhonetic); i++) {
         m_dwMaxValue = max(m_dwMaxValue, pSegment->GetDurationAt(i));
         m_dwMinValue = min(m_dwMinValue, pSegment->GetDurationAt(i));
     }
 
     SetDataReady();
     EndProcess();
-    pTarget->EndWaitCursor();
     return MAKELONG(nLevel, 100);
 }
 

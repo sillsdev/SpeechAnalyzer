@@ -8,10 +8,6 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_poa.h"
-#include "Process\Process.h"
-#include "Process\sa_p_poa.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_grappl.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include <math.h>
@@ -20,7 +16,6 @@
 #include "sa_view.h"
 #include "StopWatch.h"
 #include "FaceDiag.h"
-#include "Process\sa_p_poa.h"
 #include "Lpc.h"
 
 #ifdef _DEBUG

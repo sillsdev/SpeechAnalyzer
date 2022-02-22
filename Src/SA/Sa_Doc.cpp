@@ -115,31 +115,6 @@
 #include "OrthoSegment.h"
 #include "PhonemicSegment.h"
 #include "PhoneticSegment.h"
-#include "Process\FormantTracker.h"
-#include "Process\Hilbert.h"
-#include "Process\Process.h"
-#include "Process\ProcessDoc.h"
-#include "Process\sa_p_cha.h"
-#include "Process\sa_p_custompitch.h"
-#include "Process\sa_p_dur.h"
-#include "Process\sa_p_fmt.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_glo.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_melogram.h"
-#include "Process\sa_p_poa.h"
-#include "Process\sa_p_pitch.h"
-#include "Process\sa_p_rat.h"
-#include "Process\sa_p_raw.h"
-#include "Process\sa_p_sfmt.h"
-#include "Process\sa_p_spg.h"
-#include "Process\sa_p_smoothedpitch.h"
-#include "Process\sa_p_spu.h"
-#include "Process\sa_p_twc.h"
-#include "Process\sa_p_zcr.h"
-#include "Process\sa_w_adj.h"
 #include "ReferenceSegment.h"
 #include "sa.h"
 #include "SaParam.h"
@@ -157,7 +132,6 @@
 #include "Shlobj.h"
 #include "sourceParm.h"
 #include "SplitFileUtils.h"
-#include "StringUtils.h"
 #include "TextHelper.h"
 #include "ToneSegment.h"
 #include "TranscriptionData.h"
@@ -864,7 +838,7 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
 */
 struct SChannel {
 public:
-	HPSTR pData;
+	BPTR pData;
 	CFile * pFile;
 };
 
@@ -1067,7 +1041,7 @@ bool CSaDoc::ReadRiff(LPCTSTR pszPathName) {
 	}
 
 	// fmt chunk found
-	LONG lError = mmioRead(hmmioFile, (HPSTR)&m_FmtParm.wTag, sizeof(WORD)); // read format tag
+	LONG lError = mmioRead(hmmioFile, (BPTR)&m_FmtParm.wTag, sizeof(WORD)); // read format tag
 	if (m_FmtParm.wTag != WAVE_FORMAT_PCM) { // check if PCM format
 		// error testing pcm format
 		ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
@@ -1076,23 +1050,23 @@ bool CSaDoc::ReadRiff(LPCTSTR pszPathName) {
 	}
 	if (lError != -1) {
 		// read channel number
-		lError = mmioRead(hmmioFile, (HPSTR)&m_FmtParm.wChannels, sizeof(WORD));
+		lError = mmioRead(hmmioFile, (BPTR)&m_FmtParm.wChannels, sizeof(WORD));
 	}
 	if (lError != -1) {
 		// read sampling rate
-		lError = mmioRead(hmmioFile, (HPSTR)&m_FmtParm.dwSamplesPerSec, sizeof(DWORD));
+		lError = mmioRead(hmmioFile, (BPTR)&m_FmtParm.dwSamplesPerSec, sizeof(DWORD));
 	}
 	if (lError != -1) {
 		// read throughput
-		lError = mmioRead(hmmioFile, (HPSTR)&m_FmtParm.dwAvgBytesPerSec, sizeof(DWORD));
+		lError = mmioRead(hmmioFile, (BPTR)&m_FmtParm.dwAvgBytesPerSec, sizeof(DWORD));
 	}
 	if (lError != -1) {
 		// read sampling rate for all channels
-		lError = mmioRead(hmmioFile, (HPSTR)&m_FmtParm.wBlockAlign, sizeof(WORD));
+		lError = mmioRead(hmmioFile, (BPTR)&m_FmtParm.wBlockAlign, sizeof(WORD));
 	}
 	if (lError != -1) {
 		// read sample word size
-		lError = mmioRead(hmmioFile, (HPSTR)&m_FmtParm.wBitsPerSample, sizeof(WORD));
+		lError = mmioRead(hmmioFile, (BPTR)&m_FmtParm.wBitsPerSample, sizeof(WORD));
 	}
 
 	// get out of 'fmt ' chunk
@@ -1488,7 +1462,7 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
 	LONG lError;
 	if (!mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
 		// fmt chunk found
-		lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD)); // read format tag
+		lError = mmioRead(hmmioFile, (BPTR)&fmtParm.wTag, sizeof(WORD)); // read format tag
 		if (fmtParm.wTag != WAVE_FORMAT_PCM) { // check if PCM format
 			mmioClose(hmmioFile, 0);
 			// error testing pcm format
@@ -1497,23 +1471,23 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
 		}
 		if (lError != -1) {
 			// read channel number
-			lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD));
+			lError = mmioRead(hmmioFile, (BPTR)&fmtParm.wChannels, sizeof(WORD));
 		}
 		if (lError != -1) {
 			// read sampling rate
-			lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD));
+			lError = mmioRead(hmmioFile, (BPTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD));
 		}
 		if (lError != -1) {
 			// read throughput
-			lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD));
+			lError = mmioRead(hmmioFile, (BPTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD));
 		}
 		if (lError != -1) {
 			// read sampling rate for all channels
-			lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wBlockAlign, sizeof(WORD));
+			lError = mmioRead(hmmioFile, (BPTR)&fmtParm.wBlockAlign, sizeof(WORD));
 		}
 		if (lError != -1) {
 			// read sample word size
-			lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wBitsPerSample, sizeof(WORD));
+			lError = mmioRead(hmmioFile, (BPTR)&fmtParm.wBitsPerSample, sizeof(WORD));
 		}
 
 		// get out of 'fmt ' chunk
@@ -1589,7 +1563,7 @@ bool CSaDoc::IsMultiChannelWave(LPCTSTR pszPathName, int & channels) {
 	}
 
 	// fmt chunk found
-	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD)); // read format tag
+	lError = mmioRead(hmmioFile, (BPTR)&fmtParm.wTag, sizeof(WORD)); // read format tag
 	if (lError == -1) {
 		mmioClose(hmmioFile, 0);
 		return false;
@@ -1600,7 +1574,7 @@ bool CSaDoc::IsMultiChannelWave(LPCTSTR pszPathName, int & channels) {
 		return false;
 	}
 
-	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD)); // read channel number
+	lError = mmioRead(hmmioFile, (BPTR)&fmtParm.wChannels, sizeof(WORD)); // read channel number
 	if (lError == -1) {
 		mmioClose(hmmioFile, 0);
 		return false;
@@ -2775,7 +2749,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
 	VirtualLock(buffer, _countof(buffer));
 	while (dwSizeLeft) {
 		// read the waveform data block
-		long lSizeRead = mmioRead(hmmioFile, (HPSTR)buffer, _countof(buffer));
+		long lSizeRead = mmioRead(hmmioFile, (BPTR)buffer, _countof(buffer));
 		if (lSizeRead == -1) {
 			// error reading from data chunk
 			ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
@@ -3829,7 +3803,7 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
 	}
 
 	// lock memory
-	HPSTR lpData = (HPSTR)::GlobalLock(hGlobal);
+	BPTR lpData = (BPTR)::GlobalLock(hGlobal);
 	if (!lpData) {
 		// memory lock error
 		ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -3840,7 +3814,7 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
 
 	// Copy temporary wave file to buffer then delete
 	try {
-		file.Read((HPSTR)lpData, dwLength);
+		file.Read((BPTR)lpData, dwLength);
 		file.Abort();
 		::GlobalUnlock(hGlobal);
 	} catch (const CException &) {
@@ -4497,7 +4471,7 @@ DWORD CSaDoc::GetRawDataSize() const {
 // from the wave file, otherwise from the workbench process.
 // dwOffset is the sample index
 /***************************************************************************/
-HPSTR CSaDoc::GetWaveData(DWORD dwOffset, BOOL bBlockBegin) {
+BPTR CSaDoc::GetWaveData(DWORD dwOffset, BOOL bBlockBegin) {
 	if (m_nWbProcess > 0) {
 		CWbProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
 		if (pWbProcess != NULL) {
@@ -4533,7 +4507,7 @@ DWORD CSaDoc::GetWaveDataBufferSize() {
 // is FALSE after the operation, an error occured.
 /***************************************************************************/
 int CSaDoc::GetWaveData(DWORD dwOffset, BOOL * pbRes) {
-	HPSTR pData = GetWaveData(dwOffset); // read from file into buffer if necessary
+	BPTR pData = GetWaveData(dwOffset); // read from file into buffer if necessary
 	if (pData == NULL) {
 		// error reading wave file
 		*pbRes = FALSE; // set operation result
@@ -4563,7 +4537,7 @@ int CSaDoc::GetWaveData(DWORD dwOffset, BOOL * pbRes) {
 // in the buffer, and only the actual pointer to the data block will be
 // returned. In case of error NULL will be returned.
 /***************************************************************************/
-HPSTR CSaDoc::GetAdjustedUnprocessedWaveData(DWORD dwOffset) {
+BPTR CSaDoc::GetAdjustedUnprocessedWaveData(DWORD dwOffset) {
 	TRACE("GetunprocessedWaveData1 %d\n", dwOffset);
 	return m_pProcessAdjust->GetProcessedWaveData(dwOffset, FALSE);
 }
@@ -5586,7 +5560,7 @@ void CSaDoc::GetAlignInfo(CAlignInfo & info) {
 		while (dwDataPos < dwDataSize) {
 			// load source data
 			// get pointer to raw data block
-			HPSTR pSource = m_pProcessAdjust->GetProcessedWaveData(dwDataPos, FALSE);
+			BPTR pSource = m_pProcessAdjust->GetProcessedWaveData(dwDataPos, FALSE);
 			DWORD dwBlockEnd = dwDataPos + dwBufferSize;
 			if (dwBlockEnd > dwDataSize) {
 				dwBlockEnd = dwDataSize;
@@ -7866,7 +7840,7 @@ BOOL CSaDoc::IsWaveToUndo() {
 	return m_bWaveUndoNow;
 }
 
-HPSTR CSaDoc::GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
+BPTR CSaDoc::GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
 	//TRACE("GetUnprocessedWaveData %d %d\n", dwOffset, bBlockBegin);
 	return m_ProcessDoc.GetProcessedWaveData(GetProcessFilename(), GetSelectedChannel(), GetNumChannels(), GetSampleSize(), dwOffset, bBlockBegin);
 }

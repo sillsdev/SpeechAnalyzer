@@ -18,8 +18,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "DlgToolsOptions.h"
-#include "Process\Process.h"
-#include "Process\sa_p_fra.h"
 #include "mainfrm.h"
 #include "sa_doc.h"
 #include "sa.h"

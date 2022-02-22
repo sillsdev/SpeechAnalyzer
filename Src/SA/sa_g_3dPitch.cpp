@@ -9,7 +9,6 @@
 #include "sa_plot.h"
 #include "sa_graph.h"
 #include "SA_G_3dPitch.h"
-#include "Process\sa_p_3dPitch.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,14 +22,13 @@ typedef unsigned char UBYTE;
 // CPlot3dPitch
 
 CPlot3dPitch::CPlot3dPitch() {
-    m_p3dPitch = new CProcess3dPitch;
+    m_p3dPitch = new CProcess3dPitch();
     m_pLastProcess = m_p3dPitch;
 }
 
 CPlot3dPitch::~CPlot3dPitch() {
     delete m_p3dPitch;
 }
-
 
 IMPLEMENT_DYNCREATE(CPlot3dPitch, CPlotWnd)
 

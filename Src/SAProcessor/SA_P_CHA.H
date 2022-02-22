@@ -7,7 +7,7 @@
 #ifndef _SA_P_CHA_H
 #define _SA_P_CHA_H
 
-#include "Process.h"
+#include "sa_process.h"
 
 //###########################################################################
 // CProcessChange data processing
@@ -15,7 +15,7 @@
 class CProcessChange : public CProcess {
 // Construction/destruction/creation
 public:
-    CProcessChange(Context * pContext);
+    CProcessChange(Context & context);
     virtual ~CProcessChange();
 
 // Attributes
@@ -23,7 +23,7 @@ private:
     CFile * m_pQualityFile;             // quality data file object
     CFileStatus m_qualityFileStatus;    // quality data file status
     HANDLE m_hQualityData;              // needed to get m_lpQualityData
-    HPSTR m_lpQualityData;              // pointer to processed quality data
+    BPTR m_lpQualityData;              // pointer to processed quality data
     DWORD m_dwQualityBufferOffset;      // actual quality data buffer offset
     BOOL m_bQualityBlockBegin;          // actual quality block begin flag
     int m_nQualityMaxValue;             // maximum value of processed quality data

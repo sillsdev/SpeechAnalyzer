@@ -93,7 +93,7 @@ class TranscriptionData;
 class CUndoRedoDoc;
 interface ISaDoc;
 
-class CSaDoc : public CUndoRedoDoc, public ISaDoc {
+class CSaDoc : public CUndoRedoDoc, public ISaDoc, public Model {
     
 	DECLARE_DYNCREATE(CSaDoc)
 
@@ -145,7 +145,7 @@ public:
 	// return wave source data size in bytes for all channels
     DWORD GetRawDataSize() const;
 	// return wave source data pointer on given position (offset)
-    HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
+    BPTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
 	// return wave source (one sample) on given position (offset)
     int GetWaveData(DWORD dwOffset, BOOL *);
 	// return index for wave source data buffer
@@ -292,8 +292,8 @@ public:
     void GetFmtParm(CFmtParm & format, bool processed);
 
 	// return wave data pointer on given position (offset)
-    HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
-    HPSTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
+    BPTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
+    BPTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
     void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
     DWORD GetUnprocessedBufferIndex(size_t nSize);
     DWORD GetUnprocessedWaveDataBufferSize();
@@ -534,7 +534,7 @@ private:
 	// TRUE = enable background processing when idle
     BOOL m_bProcessBackground;
 	// process the raw data
-    CProcessDoc m_ProcessDoc;
+    CProcessDoc & m_ProcessDoc;
     
 	// data processing objects
 	CProcessAdjust * m_pProcessAdjust;

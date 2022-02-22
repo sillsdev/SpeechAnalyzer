@@ -5,11 +5,12 @@
 // Author: Urs Ruchti
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-#ifndef PROCESS_H
-#define PROCESS_H
+#ifndef SA_PROCESS_H
+#define SA_PROCESS_H
 
-#include "IProcess.h"
 #include "context.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
 
 // CProcess completion codes
 #define PROCESS_DONE            1  // data processed successfully
@@ -33,14 +34,12 @@
 
 __interface ISaDoc;
 __interface View;
-__interface ObjectOStream;
-__interface ObjectIStream;
-__interface CProgressStatusBar;
+__interface IProcess;
 
 class CProcess : public IProcess {
 
 public:
-    CProcess(Context * pContext);
+    CProcess(Context & context);
     CProcess() = delete;
     virtual ~CProcess();
 
@@ -65,10 +64,10 @@ public:
     virtual DWORD GetProcessBufferIndex(size_t nSize = 1);
     virtual LPCTSTR GetProcessFileName();
     // Workbench Operations
-    virtual void WriteProperties(ObjectOStream & obs);
-    virtual BOOL ReadProperties(ObjectIStream & obs);
+    virtual void WriteProperties(CObjectOStream & obs);
+    virtual BOOL ReadProperties(CObjectIStream & obs);
     // special workbench helper functions
-    virtual HPSTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);   // return pointer to block of processed wave source
+    virtual BPTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);   // return pointer to block of processed wave source
     virtual DWORD GetProcessedWaveDataSize();                                       // return the sample size in bytes for a single channel
     virtual DWORD GetProcessedModelWaveDataSize();                                  // return the sample size in bytes for a single channel
     virtual DWORD GetNumSamples(Model * pModel) const;                              // return number of samples for single channel
@@ -88,7 +87,7 @@ protected:
     virtual bool StartProcess(void * pCaller, ProcessorType nProcessID = PROCESSDFLT, BOOL bBuffer = TRUE);
     virtual void SetProgress(int nPercentProgress);
     virtual long Exit(int nError);                                                          // exit processing on error
-    virtual BOOL WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength, size_t nElementSize = 2); // write a block into the temporary file
+    virtual BOOL WriteDataBlock(DWORD dwPosition, BPTR lpData, DWORD dwDataLength, size_t nElementSize = 2); // write a block into the temporary file
     virtual void SetDataReady(BOOL bReady = TRUE);
     virtual void Write(const void * lpBuf, UINT nCount);
     // Special case used to bypass file
@@ -103,17 +102,16 @@ protected:
     BOOL OpenFileToAppend();                                                                // open temporary file to append data
     void CloseTempFile(BOOL bUpdateStatus = TRUE);                                          // close the temporary file
 
-    HPSTR m_lpBuffer;           // pointer to processed data
+    BPTR m_lpBuffer;     // pointer to processed data
     DWORD m_dwBufferSize;       // data buffer size
     DWORD m_dwBufferOffset;     // actual buffer offset
     int m_nMaxValue;            // maximum value of processed data
     int m_nMinValue;            // minimum value of processed data
-    Context* pContext;
-    CmdTarget* pTarget;
-    App * pApp;
-    View* pView;
-    Model* pModel;
-    MainFrame* pMain;
+    Context & context;
+    App & app;
+    View & view;
+    Model & model;
+    MainFrame& main;
 
 private:
     ProgressStatusBar * GetStatusBar();

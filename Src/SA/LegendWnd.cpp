@@ -105,7 +105,6 @@
 #include "GlossSegment.h"
 #include "GlossNatSegment.h"
 #include "ReferenceSegment.h"
-#include "Process\Process.h"
 #include "sa_ipa.h"
 #include "PhoneticSegment.h"
 #include "LegendWnd.h"

@@ -1901,7 +1901,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
     /* Write the PCMWAVEFORMAT structure to the 'fmt ' chunk.
     */
     PCMWAVEFORMAT pcm = pcmWaveFormat();
-    if (mmioWrite(hmmioFile, (HPSTR) &pcm, sizeof(PCMWAVEFORMAT))
+    if (mmioWrite(hmmioFile, (BPTR) &pcm, sizeof(PCMWAVEFORMAT))
             != sizeof(PCMWAVEFORMAT)) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);

@@ -44,6 +44,7 @@
 #include <vector>
 
 #include <locale.h>
+#include <process.h>
 
 using std::unique_ptr;
 using std::char_traits;
@@ -67,10 +68,6 @@ using std::wistringstream;
 using std::wofstream;
 using std::wstring;
 using std::wstringstream;
-
-inline static int round2Int(double value) {
-    return (int)floor(value + 0.5);
-}
 
 #pragma warning(pop)
 
@@ -96,12 +93,12 @@ inline static int round2Int(double value) {
 
 #define PROGRAMMER_ACCESS ((GetKeyState(VK_CONTROL) & GetKeyState(VK_SHIFT)) < 0)
 
+#include "AppDefs.h"
 #include <SA_DSP.h>
 #include <SA_KLATT.h>
 #include <zGraphLib.h>
 #include <sa_lang_resource.h>
 #include <custom_menu.h>
 #include <SAProcessor.h>
-#include "AppDefs.h"
 
 #endif

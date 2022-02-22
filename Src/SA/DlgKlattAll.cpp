@@ -13,12 +13,6 @@
 #include "MusicPhraseSegment.h"
 #include "PhoneticSegment.h"
 #include "SFMHelper.h"
-#include "Process\Process.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_smoothedpitch.h"
-#include "Process\sa_p_spu.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_zcr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -528,7 +522,7 @@ BOOL CDlgKlattAll::SynthesizeWave(LPCTSTR pszPathName, CIpaCharVector & cChars) 
     /* Write the PCMWAVEFORMAT structure to the 'fmt ' chunk.
     */
     PCMWAVEFORMAT pcm = pcmWaveFormat();
-    if (mmioWrite(hmmioFile, (HPSTR) &pcm, sizeof(PCMWAVEFORMAT))
+    if (mmioWrite(hmmioFile, (BPTR) &pcm, sizeof(PCMWAVEFORMAT))
             != sizeof(PCMWAVEFORMAT)) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);

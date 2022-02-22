@@ -18,8 +18,8 @@
 
 class CPitchParm {                  // pitch parameters
 public:
-    void WriteProperties(ObjectOStream & obs);
-    BOOL ReadProperties(ObjectIStream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
     void Init();
     static void GetAutoRange(Model* pModel, CProcess * pGrappl, int & nUpperBound, int & nLowerBound);
 

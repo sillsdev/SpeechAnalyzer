@@ -7,7 +7,7 @@
 #ifndef _SA_P_ZCR_H
 #define _SA_P_ZCR_H
 
-#include "Process.h"
+#include "sa_process.h"
 
 //###########################################################################
 // CProcessZCross data processing

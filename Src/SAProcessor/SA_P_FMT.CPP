@@ -20,11 +20,13 @@
 //           formant sets
 /////////////////////////////////////////////////////////////////////////////
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_spu.h"
 #include "sa_p_fmt.h"
 #include "math.h"
 #include "VowelFormants.h"
+#include "VowelFormantsVector.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -49,7 +51,7 @@ static const SRange ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700
 /***************************************************************************/
 // CProcessFormants::CProcessFormants Constructor
 /***************************************************************************/
-CProcessFormants::CProcessFormants(Context * pContext) : CProcess(pContext) {
+CProcessFormants::CProcessFormants(Context & context) : CProcess(context) {
     m_bTrack = FALSE;
     m_dwValidFrameCount = 0;
     m_dwFormantFrameCount = 0;
@@ -133,11 +135,10 @@ long CProcessFormants::Process(void * pCaller, Model * pModel, BOOL bTrack,
     //       return MAKELONG(--nLevel, nProgress); // data is already ready
 
     // Start formant processing, allocating a process buffer for formant frame data.
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSFMT)) { // memory allocation failed
         SetDataReady(FALSE);
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -189,7 +190,6 @@ long CProcessFormants::Process(void * pCaller, Model * pModel, BOOL bTrack,
         if (!StoreFormantFrame(m_dwFormantFrame, pFormantFrame, bWriteThru)) {
             SetDataReady(FALSE);
             EndProcess();
-            pTarget->EndWaitCursor();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
         // track processed frame boundaries
@@ -218,7 +218,6 @@ long CProcessFormants::Process(void * pCaller, Model * pModel, BOOL bTrack,
     // set progress bar
     SetProgress(nProgress);
     EndProcess((nProgress >= 100)); // end data processing
-    pTarget->EndWaitCursor();
 
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);
@@ -410,8 +409,8 @@ BOOL CProcessFormants::StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * p
     }
 
     // Copy the frame data to the buffer.
-    HPSTR pFormantFrame = m_lpBuffer + dwFormantFrameStart - m_dwBufferOffset;
-    memcpy(pFormantFrame, (HPSTR)pFormant, m_nFormantFrameSize);  // copy frame into buffer
+    BPTR pFormantFrame = m_lpBuffer + dwFormantFrameStart - m_dwBufferOffset;
+    memcpy(pFormantFrame, (BPTR)pFormant, m_nFormantFrameSize);  // copy frame into buffer
 
     // If requested, write the frame data to disk.
     if (bWriteThru) {
@@ -429,7 +428,7 @@ BOOL CProcessFormants::StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * p
 // If the append flag is true, the data is appended to the file; otherwise,
 // a new file is created.
 /***************************************************************************/
-BOOL CProcessFormants::WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend) {
+BOOL CProcessFormants::WriteData(BPTR pData, UINT nDataSize, BOOL bAppend) {
     // If not appending, delete the current file and create a new one.
     if (!bAppend) {
         DWORD dwBufferOffset = m_dwBufferOffset;   // save buffer offset (destroyed by CreateTempFile)
@@ -442,7 +441,7 @@ BOOL CProcessFormants::WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend) {
     // Otherwise, open the existing file containing formant frame data.
     else if (!OpenFileToAppend()) {
         // error opening file
-        pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName(),NULL);
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName(),NULL);
         return FALSE;
     }
 
@@ -451,7 +450,7 @@ BOOL CProcessFormants::WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend) {
         Write(pData, nDataSize);
     } catch (CFileException * e) {
         // error writing file
-        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName(),NULL);
+        app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName(),NULL);
 		// error, writing failed
 		e->Delete();
 		return FALSE;
@@ -505,11 +504,11 @@ SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bM
     // get frequency range
     SFormantFreq formants;
 
-    if (nIndex >= 0 && nIndex < (int)pApp->GetVowelVector(nGender).size()) {
-        formants.F[1] = (float)pApp->GetVowelVector(nGender)[nIndex].F1;
-        formants.F[2] = (float)pApp->GetVowelVector(nGender)[nIndex].F2;
-        formants.F[3] = (float)pApp->GetVowelVector(nGender)[nIndex].F3;
-        formants.F[4] = (float)pApp->GetVowelVector(nGender)[nIndex].F4;
+    if (nIndex >= 0 && nIndex < (int)app.GetVowelVector(nGender).size()) {
+        formants.F[1] = (float)app.GetVowelVector(nGender).get(nIndex).F1;
+        formants.F[2] = (float)app.GetVowelVector(nGender).get(nIndex).F2;
+        formants.F[3] = (float)app.GetVowelVector(nGender).get(nIndex).F3;
+        formants.F[4] = (float)app.GetVowelVector(nGender).get(nIndex).F4;
     } else {
         formants.F[1] = (float)UNDEFINED_DATA;
         formants.F[2] = (float)UNDEFINED_DATA;
@@ -546,8 +545,8 @@ SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bM
 // CProcessFormants::GetVowel Returns vowel
 /***************************************************************************/
 wstring CProcessFormants::GetVowel(int nIndex, EGender nGender) const {
-    if (nIndex >= 0 && nIndex < (int)pApp->GetVowelVector(nGender).size()) {
-        return pApp->GetVowelVector(nGender)[nIndex].m_szVowel;
+    if (nIndex >= 0 && nIndex < (int)app.GetVowelVector(nGender).size()) {
+        return app.GetVowelVector(nGender).get(nIndex).m_szVowel;
     } else {
         return wstring(_T(""));
     }
@@ -557,8 +556,7 @@ wstring CProcessFormants::GetVowel(int nIndex, EGender nGender) const {
 // CProcessFormants::GetVowelCount Returns number of vowels for gender
 /***************************************************************************/
 int CProcessFormants::GetVowelCount(EGender nGender) const {
-    const std::vector<CVowelFormants> & vowelVector = pApp->GetVowelVector(nGender);
-    return vowelVector.size();
+    return app.GetVowelVector(nGender).size();
 }
 
 /***************************************************************************/
@@ -572,7 +570,7 @@ wstring CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, Model * pMo
     SRange FormantScale[4];
 
     for (int nFormant = 1; nFormant <= 3; nFormant++) {
-        FormantScale[nFormant] = pApp->Get3DChartRange(nFormant, nGender);
+        FormantScale[nFormant] = app.Get3DChartRange(nFormant, nGender);
         if (m_FormantParms.bMelScale) {
             FormantScale[nFormant].High = (float)Scale::ToMels((double)FormantScale[nFormant].High);
             FormantScale[nFormant].Low = (float)Scale::ToMels((double)FormantScale[nFormant].Low);

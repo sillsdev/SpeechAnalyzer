@@ -10,10 +10,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_raw.h"
 #include "sa_w_adj.h"
-
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -33,12 +33,11 @@ long CProcessRaw::Process(void * pCaller, Model * pModel, int nProgress, int nLe
         return MAKELONG(--nLevel, nProgress);    
     }
     //TRACE(_T("Process: CProcessRaw\n"));
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSRAW)) { 
 		// memory allocation failed
 		// end data processing
         EndProcess(); 
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
@@ -46,7 +45,6 @@ long CProcessRaw::Process(void * pCaller, Model * pModel, int nProgress, int nLe
 		// creating error
 		// end data processing
         EndProcess(); 
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -65,7 +63,7 @@ long CProcessRaw::Process(void * pCaller, Model * pModel, int nProgress, int nLe
 
     DWORD dwDocWaveBufferSize = GetBufferSize();
 	// get pointer to data block
-    HPSTR pDocData = (dwDataSize!=0) ? pModel->GetWaveData(dwDataPos,FALSE) : 0;   
+    BPTR pDocData = (dwDataSize!=0) ? pModel->GetWaveData(dwDataPos,FALSE) : 0;   
     DWORD dwDocWavBufferPosition = pModel->GetWaveBufferIndex();
 
     int nScale = pModel->GetBitsPerSample() == 8 ? 256 : 1;
@@ -107,7 +105,7 @@ long CProcessRaw::Process(void * pCaller, Model * pModel, int nProgress, int nLe
                 Write(m_lpBuffer, dwProcessCount * sizeof(short));
             } catch (CFileException * e) {
                 // error writing file
-                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -122,7 +120,6 @@ long CProcessRaw::Process(void * pCaller, Model * pModel, int nProgress, int nLe
     // close the temporary file and read the status
     CloseTempFile();                // close the file
     EndProcess(nProgress >= 95);    // end data processing
-    pTarget->EndWaitCursor();
     SetDataReady(TRUE);
     return MAKELONG(nLevel, nProgress);
 }

@@ -21,7 +21,7 @@ bool CClipboardHelper::LoadFileFromData(HGLOBAL hData, LPTSTR szFilename, size_t
         return false;
     }
 
-    HPSTR lpData = (HPSTR)::GlobalLock(hData); // lock memory
+    BPTR lpData = (BPTR)::GlobalLock(hData); // lock memory
     DWORD dwSize = ::GlobalSize(hData);
 
     {

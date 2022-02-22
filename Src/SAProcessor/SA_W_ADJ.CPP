@@ -6,7 +6,7 @@
 // copyright 2002 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 
 #include "ProcessDoc.h"
 #include "sa_w_adj.h"
@@ -16,13 +16,10 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessAdjust::CProcessAdjust(Context * pContext) : CProcessButterworth(pContext, Plain) {
+CProcessAdjust::CProcessAdjust(Context & context) : CProcessButterworth(context, Plain) {
     m_bInvert = FALSE;
     m_bZero = FALSE;
     m_bNormalize = FALSE;
-}
-
-CProcessAdjust::~CProcessAdjust() {
 }
 
 /***************************************************************************/
@@ -73,7 +70,7 @@ long CProcessAdjust::Process(void * pCaller, Model * pModel, int nProgress, int 
         CProcessDoc * pLowerProcess = pModel->GetUnprocessed();
         double dScale = m_bInvert ? -1 : 1;
         if (m_bNormalize) {
-            CProcessButterworth butterworth(pContext, Plain);
+            CProcessButterworth butterworth(context, Plain);
             butterworth.SetSourceProcess(pLowerProcess);
             butterworth.SetFilterFilter(TRUE);
             butterworth.HighPass(m_bZero ? 3 : 0, 40., 1.);
@@ -95,18 +92,18 @@ long CProcessAdjust::Process(void * pCaller, Model * pModel, int nProgress, int 
     }
 }
 
-HPSTR CProcessAdjust::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
+BPTR CProcessAdjust::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
     if (NeedsAdjustment()) {
         return CProcess::GetProcessedWaveData(dwOffset, bBlockBegin);
     }
-    return pModel->GetUnprocessedWaveData(dwOffset, bBlockBegin);
+    return model.GetUnprocessedWaveData(dwOffset, bBlockBegin);
 }
 
 void * CProcessAdjust::GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse) {
     if (NeedsAdjustment()) {
         return CProcess::GetProcessedDataBlock(dwOffset, sObjectSize, bReverse);
     }
-    return pModel->GetUnprocessedDataBlock(dwOffset, sObjectSize, bReverse);
+    return model.GetUnprocessedDataBlock(dwOffset, sObjectSize, bReverse);
 }
 
 DWORD CProcessAdjust::GetProcessBufferIndex(size_t nSize) {
@@ -114,7 +111,7 @@ DWORD CProcessAdjust::GetProcessBufferIndex(size_t nSize) {
     if (NeedsAdjustment()) {
         return CProcessButterworth::GetProcessBufferIndex(nSize);
     }
-    return pModel->GetUnprocessedBufferIndex(nSize);
+    return model.GetUnprocessedBufferIndex(nSize);
 }
 
 BOOL CProcessAdjust::GetInvert() const {

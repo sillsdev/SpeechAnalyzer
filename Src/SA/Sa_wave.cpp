@@ -17,11 +17,6 @@
 #include "WaveOutDevice.h"
 #include "WaveInDevice.h"
 #include "FmtParm.h"
-#include "Process\Process.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_dur.h"
-#include "Process\sa_p_fra.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -145,7 +140,7 @@ DWORD CWave::CalculateBufferSize() {
 /***************************************************************************/
 BOOL CWave::ProcessData(int nBuffer) {
     // Set playback buffer pointer and buffer size.
-    HPSTR pTarget = GetBufferPointer(nBuffer); // pointer to target buffer
+    BPTR pTarget = GetBufferPointer(nBuffer); // pointer to target buffer
     DWORD dwBufferSize = CalculateBufferSize();
     UINT wSmpSize = m_FmtParm.GetSampleSize();
     int nMaxValue = 0, nMinValue = 0;
@@ -154,7 +149,7 @@ BOOL CWave::ProcessData(int nBuffer) {
     if (m_pWaveWarp==NULL) {
         DWORD dwDataSize = min(m_dwEnd - m_dwPlayPosition, dwBufferSize);
         if (dwDataSize > 0) {
-            HPSTR pData = m_pNotifyObj->GetWaveData(m_pView, m_dwPlayPosition, dwDataSize);
+            BPTR pData = m_pNotifyObj->GetWaveData(m_pView, m_dwPlayPosition, dwDataSize);
             if (pData==NULL) {
                 return FALSE;
             }
@@ -184,7 +179,7 @@ BOOL CWave::ProcessData(int nBuffer) {
             dwProcess = m_CallbackData.dwOffset * wSmpSize;                                 // convert to byte offset
             DWORD dwProcessEnd = max(dwProcess + m_CallbackData.wLength*wSmpSize, m_dwEnd); // get endpoint of last fragment
             dwDataSize = min(dwProcessEnd - dwProcess, dwBufferSize);                       // resize block to buffer size or to end of last fragment
-            HPSTR pData = m_pNotifyObj->GetWaveData(m_pView, dwProcess, dwDataSize);        // retrieve sample data
+            BPTR pData = m_pNotifyObj->GetWaveData(m_pView, dwProcess, dwDataSize);        // retrieve sample data
             if (m_pWaveWarp->SetWaveBuffer((void *)pData) != DONE) {
                 return FALSE;                                                               // pass waveform buffer pointer
             }
@@ -222,7 +217,7 @@ BOOL CWave::ProcessData(int nBuffer) {
         SetBufferSize(nBuffer, dwDataSize, dwPlaySize);
 
         // Set find min and max values.
-        FindMinMax((HPSTR)pTarget, dwPlaySize, (wSmpSize == 1),  &nMaxValue, &nMinValue);
+        FindMinMax((BPTR)pTarget, dwPlaySize, (wSmpSize == 1),  &nMaxValue, &nMinValue);
     }
 
     // Set peak level for VU meter.
@@ -238,7 +233,7 @@ BOOL CWave::ProcessData(int nBuffer) {
 /***************************************************************************/
 // CWave::CopyBuffer Copy source into target buffer and find min/max values
 /***************************************************************************/
-void CWave::CopyBuffer(HPSTR pSource, HPSTR pTarget, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin) {
+void CWave::CopyBuffer(BPTR pSource, BPTR pTarget, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin) {
 
     int nData;
     do {
@@ -266,7 +261,7 @@ void CWave::CopyBuffer(HPSTR pSource, HPSTR pTarget, DWORD dwLength, BOOL bIs8Bi
 /***************************************************************************/
 // CWave::FindMinMax Find min/max values
 /***************************************************************************/
-void CWave::FindMinMax(HPSTR pSource, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin) {
+void CWave::FindMinMax(BPTR pSource, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin) {
 
     int nData=0;
     BYTE bData=0;
@@ -629,7 +624,7 @@ void CWave::NextBlock() {
 /***************************************************************************/
 void CWave::StoreBlock() {
     // find the maximum level in the recorded data
-    HPSTR pSource = GetBufferPointer(m_nActiveBlock); // pointer to source buffer
+    BPTR pSource = GetBufferPointer(m_nActiveBlock); // pointer to source buffer
     int nMaxValue = 0;
     int nData, nMinValue = 0;
     BYTE bData;

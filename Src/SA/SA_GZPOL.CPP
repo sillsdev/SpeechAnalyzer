@@ -7,8 +7,6 @@
 
 #include "stdafx.h"
 #include "sa_plot.h"
-#include "Process\Process.h"
-#include "Process/ProcessAreaData.h"
 #include "sa_gZpol.h"
 #include "sa_doc.h"
 #include "sa.h"
@@ -135,7 +133,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
-        m_lpDataX = (HPSTR)::GlobalLock(m_hDataX); // lock memory
+        m_lpDataX = (BPTR)::GlobalLock(m_hDataX); // lock memory
         if (!m_lpDataX) {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -153,7 +151,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
-        m_lpDataY = (HPSTR)::GlobalLock(m_hDataY); // lock memory
+        m_lpDataY = (BPTR)::GlobalLock(m_hDataY); // lock memory
         if (!m_lpDataY) {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -171,7 +169,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
-        m_lpDataSym = (HPSTR)::GlobalLock(m_hDataSym); // lock memory
+        m_lpDataSym = (BPTR)::GlobalLock(m_hDataSym); // lock memory
         if (!m_lpDataSym) {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -234,7 +232,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
             DWORD dwRawBufferSize = pModel->GetWaveDataBufferSize();
             // fill up data buffers
-            HPSTR pData = pModel->GetWaveData(dwStart, TRUE); // get pointer to wave data block
+            BPTR pData = pModel->GetWaveData(dwStart, TRUE); // get pointer to wave data block
             if (pData == NULL) {
                 return;    // error occured while reading data block
             }

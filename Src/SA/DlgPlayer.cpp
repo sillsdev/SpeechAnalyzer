@@ -25,8 +25,6 @@
 #include "WaveInDevice.h"
 #include "DlgFnKeys.h"
 #include "DlgRecorderOptions.h"
-#include "Process\sa_p_fra.h"
-#include "Process\Process.h"
 #include "objectostream.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
@@ -1170,7 +1168,7 @@ void CDlgPlayer::StoreFailed() {
 	ASSERT(FALSE);
 }
 
-HPSTR CDlgPlayer::GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/) {
+BPTR CDlgPlayer::GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/) {
 	return NULL;
 }
 

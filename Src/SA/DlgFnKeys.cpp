@@ -9,8 +9,6 @@
 #include "FileUtils.h"
 #include "WaveOutDevice.h"
 #include "WaveInDevice.h"
-#include "Process\sa_p_fra.h"
-#include "Process\Process.h"
 #include "objectostream.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
@@ -600,7 +598,7 @@ void CDlgFnKeys::StoreFailed() {
 	ASSERT(FALSE);
 }
 
-HPSTR CDlgFnKeys::GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/) {
+BPTR CDlgFnKeys::GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/) {
 	ASSERT(FALSE);
 	return NULL;
 }

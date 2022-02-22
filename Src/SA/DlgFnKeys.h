@@ -18,7 +18,7 @@ public:
     virtual void BlockStored(UINT /*nLevel*/, DWORD /*dwPosition*/, BOOL * /*bSaveOverride*/ = NULL);
     virtual void StoreFailed();
     virtual void EndPlayback();
-    virtual HPSTR GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/);
+    virtual BPTR GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/);
 
     CSliderVertical m_SliderSpeed;
     CSliderVertical m_SliderVolume;

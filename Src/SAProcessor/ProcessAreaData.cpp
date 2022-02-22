@@ -21,7 +21,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // For each area, determined by an index number, there will be a temporary
 // file, where the processed data is stored in.
 
-CProcessAreaData::CProcessAreaData(Context * pContext) : CProcess(pContext) {
+CProcessAreaData::CProcessAreaData(Context & context) : CProcess(context) {
     // create the area arrays
     m_dwAreaPos = 0;
     m_dwAreaLength = 0;
@@ -36,8 +36,7 @@ BOOL CProcessAreaData::SetArea(View * pView) {
     // get new area boundaries
     m_dwAreaPos = pView->GetStartCursorPosition();
 
-    Model * pModel = pView->GetDocument();
-    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD wSmpSize = model.GetSampleSize();
     m_dwAreaLength = pView->GetStopCursorPosition() - m_dwAreaPos + wSmpSize;
 
     SetStatusFlag(KEEP_AREA,TRUE);

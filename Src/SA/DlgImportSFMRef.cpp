@@ -27,7 +27,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Process\Process.h"
 #include "Segment.h"
 #include "sa_wbch.h"
 #include "sa.h"
@@ -39,16 +38,6 @@
 #include "TranscriptionDataSettings.h"
 #include "doclist.h"
 #include "objectostream.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_custompitch.h"
-#include "Process\sa_p_smoothedpitch.h"
-#include "Process\sa_p_melogram.h"
-#include "Process\sa_p_zcr.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_spu.h"
-#include "Process\sa_p_spg.h"
-#include "Process\FormantTracker.h"
 
 using std::ifstream;
 using std::ios;

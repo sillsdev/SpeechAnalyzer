@@ -5,9 +5,6 @@
 //############################################################################
 // CPhonemicSegment data processing
 
-CPhonemicSegment::CPhonemicSegment(EAnnotation index, int master) : CDependentSegment(index,master) {
-}
-
 CFontTable * CPhonemicSegment::NewFontTable() const {
     return new CFontTableIPA;
 };

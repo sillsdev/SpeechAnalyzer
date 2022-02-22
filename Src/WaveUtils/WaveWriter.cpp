@@ -136,7 +136,7 @@ void CWaveWriter::Write(LPCTSTR afilename, DWORD /*dwFlags*/, WORD bitsPerSample
         throw wave_error(cant_create_data_chunk);
     }
 
-    LONG wrote = mmioWrite(hmmio, &buffer[0], buffer.size());
+    ULONG wrote = mmioWrite(hmmio, &buffer[0], buffer.size());
     if (wrote!=buffer.size()) {
         throw wave_error(cant_write_data_chunk);
     }

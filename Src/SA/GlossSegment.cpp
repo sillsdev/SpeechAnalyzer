@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "GlossSegment.h"
 #include "Sa_Doc.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_fra.h"
 #include "mainfrm.h"
 #include "sa_asert.h"
 #include "PhoneticSegment.h"
@@ -16,17 +14,6 @@
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
-
-//###########################################################################
-// CGlossSegment
-// class to do all the handling for the gloss annotation segments.
-
-CGlossSegment::CGlossSegment(EAnnotation index, int master) :
-    CTextSegment(index,master) {
-}
-
-CGlossSegment::~CGlossSegment() {
-}
 
 CFontTable * CGlossSegment::NewFontTable() const {
     return new CFontTableANSI();
@@ -130,11 +117,10 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
         return MAKELONG(nLevel, nProgress);
     }
 
-    CScopedCursor waitCursor(this);
-
+    CScopedCursor waitCursor(view);
     // start parsing
 	// memory allocation failed or previous processing error
-    if (!StartProcess(pCaller, IDS_STATTXT_PARSING, FALSE)) {   
+    if (!StartProcess(pCaller, PARSING, FALSE)) {   
 		// end data processing
         EndProcess();
         return MAKELONG(PROCESS_ERROR, nProgress);

@@ -3,6 +3,9 @@
 
 #include <dspWins.h>
 
+class CObjectOStream;
+class CObjectIStream;
+
 class CSpectroParm {                 // spectrogram parameters
 public:
     int  nResolution;       // resolution of display
@@ -20,10 +23,10 @@ public:
     BOOL bFormantColor;
     BOOL bShowPitch;
 
-    void WritePropertiesA(ObjectOStream & obs);
-    void WritePropertiesB(ObjectOStream & obs);
-    BOOL ReadPropertiesA(ObjectIStream & obs);
-    BOOL ReadPropertiesB(ObjectIStream & obs);
+    void WritePropertiesA(CObjectOStream & obs);
+    void WritePropertiesB(CObjectOStream & obs);
+    BOOL ReadPropertiesA(CObjectIStream & obs);
+    BOOL ReadPropertiesB(CObjectIStream & obs);
 
     void Init();
     static const float DspWinBandwidth[3];
@@ -47,8 +50,8 @@ public:
     }
 
 private:
-    void WriteProperties(LPCSTR pszMarker, ObjectOStream & obs);
-    BOOL ReadProperties(LPCSTR pszMarker, ObjectIStream & obs);
+    void WriteProperties(LPCSTR pszMarker, CObjectOStream & obs);
+    BOOL ReadProperties(LPCSTR pszMarker, CObjectIStream & obs);
 
     bool bShowFormants;     // true if picture or any of the formants should be displayed
     int  nColor;            // color of display

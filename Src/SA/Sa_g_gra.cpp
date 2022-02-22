@@ -7,8 +7,6 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_gra.h"
-#include "Process\Process.h"
-#include "Process\sa_p_grappl.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "sa_doc.h"

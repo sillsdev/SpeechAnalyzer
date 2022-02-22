@@ -12,8 +12,6 @@
 #include "DlgFnKeys.h"
 #include "DlgRecorderOptions.h"
 #include "DlgPlayer.h"
-#include "Process\sa_p_fra.h"
-#include "Process\Process.h"
 #include "objectostream.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
@@ -68,7 +66,7 @@ CDlgRecorder::CDlgRecorder(CWnd * pParent) : CDialog(CDlgRecorder::IDD, pParent)
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         return;
     }
-    m_lpPlayData = (HPSTR)::GlobalLock(m_hData); // lock memory
+    m_lpPlayData = (BPTR)::GlobalLock(m_hData); // lock memory
     if (m_lpPlayData==NULL) {
         // memory lock error
         pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -195,13 +193,13 @@ void CDlgRecorder::EndPlayback() {
 // always open, the file pointer is already in the data subchunk and the
 // function just delivers the block requested.
 /***************************************************************************/
-HPSTR CDlgRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize) {
+BPTR CDlgRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize) {
     // find the right position in the data
     if (mmioSeek(m_hmmioFile, dwPlayPosition + 40, SEEK_SET) == -1) {
         return NULL;
     }
     // read the waveform data block
-    if (mmioRead(m_hmmioFile, (HPSTR)m_lpPlayData, dwDataSize) == -1) {
+    if (mmioRead(m_hmmioFile, (BPTR)m_lpPlayData, dwDataSize) == -1) {
         return NULL;
     }
     return m_lpPlayData;
@@ -501,7 +499,7 @@ BOOL CDlgRecorder::CreateTempFile() {
         return FALSE;
     }
     // write data into 'fmt ' chunk
-    if (mmioWrite(m_hmmioFile, (HPSTR)m_szFileName, 16) == -1) { // fill up fmt chunk
+    if (mmioWrite(m_hmmioFile, (BPTR)m_szFileName, 16) == -1) { // fill up fmt chunk
         // error writing format chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEFORMATCHUNK, m_szFileName);
         return FALSE;
@@ -643,21 +641,21 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
     CFmtParm fmtParm;
     pModel->GetFmtParm(fmtParm,false);
 
-    long lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD));
+    long lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.wTag, sizeof(WORD));
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.wChannels, sizeof(WORD));
     }
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD));
     }
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD));
     }
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wBlockAlign, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.wBlockAlign, sizeof(WORD));
     }
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wBitsPerSample, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.wBitsPerSample, sizeof(WORD));
     }
     if (lError == -1) {
         // error writing format chunk

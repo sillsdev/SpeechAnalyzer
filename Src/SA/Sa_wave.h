@@ -34,7 +34,7 @@ public:
     virtual void BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride = NULL) = 0;
     virtual void StoreFailed() = 0;
     virtual void EndPlayback() = 0;
-    virtual HPSTR GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize) = 0;
+    virtual BPTR GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize) = 0;
 };
 
 class CWave : public CObject {
@@ -68,12 +68,12 @@ public:
 private:
     BOOL AllocateBuffers();                 // allocate wave buffers
     BOOL ProcessData(int nBuffer);          // process sample data
-    void CopyBuffer(HPSTR pSource, HPSTR pTarget, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin);
-    void FindMinMax(HPSTR pSource, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin);
+    void CopyBuffer(BPTR pSource, BPTR pTarget, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin);
+    void FindMinMax(BPTR pSource, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin);
 
     CWaveOutDevice * m_pOutDev;
     enum { m_kBuffers = 16, m_kPlayBuffers = 4, m_kRecordBuffers = m_kBuffers };
-    HPSTR m_lpWaveData[m_kBuffers];             // pointer to wave data
+    BPTR m_lpWaveData[m_kBuffers];             // pointer to wave data
     DWORD m_dwBufferSizes[m_kBuffers];          // size of data buffer
     DWORD m_dwProcessedSize[m_kBuffers];        // size of processed data for buffer
     DWORD m_dwPosition[m_kBuffers];

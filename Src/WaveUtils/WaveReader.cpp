@@ -150,7 +150,7 @@ void CWaveReader::Read(LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WOR
 
     buffer.resize(length);
 
-    LONG read = mmioRead(hmmio, &buffer[0], length);
+    ULONG read = mmioRead(hmmio, &buffer[0], length);
     if (read!=length) {
         throw wave_error(data_read_failure);
     }

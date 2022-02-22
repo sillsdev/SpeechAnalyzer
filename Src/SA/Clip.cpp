@@ -20,14 +20,12 @@ CClipboard::~CClipboard() {
     close();
 }
 
-CClipboard & CClipboard::operator<<(LPCSTR string) {
+CClipboard & CClipboard::operator<<(LPCSTR val) {
     // clear out old contents of clipboard
     EmptyClipboard();
 
     // allocate memory for the copy operation
-    HANDLE hMemory =
-        GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT,
-                    strlen(string) + 1);
+    HANDLE hMemory = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, strlen(val) + 1);
 
     if (!hMemory) {
         reportError();
@@ -36,8 +34,8 @@ CClipboard & CClipboard::operator<<(LPCSTR string) {
 
     // copy the data into the clipboard
     LPSTR lpMemory = (LPSTR) GlobalLock(hMemory);
-    while (*string) {
-        *lpMemory++ = *string++;
+    while (*val) {
+        *lpMemory++ = *val++;
     }
     *lpMemory = '\0';
     GlobalUnlock(hMemory);

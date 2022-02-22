@@ -14,11 +14,11 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_lou.h"
 #include "sa_p_grappl.h"
-
 #include "param.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -68,18 +68,15 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
     }
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
     short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
-    //TRACE(_T("Process: CProcessLoudness\n"));
 
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSLOU)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
     if (!CreateTempFile(_T("LOU"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -94,7 +91,7 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
     UINT nCalcInterval = nCalcDataLength / 3;   // more than 2 x bandwidth
     nCalcDataLength = nCalcInterval * 3;
 
-    HPSTR pRawData = NULL, pBlockStart; // pointers to raw data
+    BPTR pRawData = NULL, pBlockStart; // pointers to raw data
     short int * pLoudData = (short int *)m_lpBuffer; // pointer to loudness data
     // calculate current processing position
     DWORD dwDataPos, dwLoudStart;
@@ -168,7 +165,7 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
                         }
                     } catch (CFileException * e) {
                         // error writing file
-                        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                        app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 						// error, writing failed
 						e->Delete();
 						return Exit(PROCESS_ERROR);
@@ -189,7 +186,6 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
     }
     BOOL bResult = SmoothData(2); // smooth data two times
     EndProcess(((bResult) && (nProgress >= 95))); // end data processing
-    pTarget->EndWaitCursor();
     SetDataReady(bResult);
     if (bResult) {
         return MAKELONG(nLevel, nProgress);
@@ -223,7 +219,7 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
 /***************************************************************************/
 // CProcessSmoothLoudness::CProcessSmoothLoudness Constructor
 /***************************************************************************/
-CProcessSmoothLoudness::CProcessSmoothLoudness(Context * pContext) : CProcess(pContext) {
+CProcessSmoothLoudness::CProcessSmoothLoudness(Context & context) : CProcess(context) {
     m_pSRDfile = new CFile();
     m_SRDfileStatus.m_szFullName[0] = 0; // no file name
     m_hSRDdata = NULL;
@@ -291,7 +287,7 @@ long CProcessSmoothLoudness::Exit(int nError, HANDLE hSmoothBlock) {
 // that is needed from the old data to calculate the new data block. If an
 // error occurs, NULL is returned.
 /***************************************************************************/
-HPSTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, HPSTR pTarget, UINT nSmpSize,
+BPTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, BPTR pTarget, UINT nSmpSize,
         int nOldBlock, int nBlock, int * pnLastDone,
         DWORD dwSmplPerSec, DWORD dwStart, UINT * nAverage, long * lAverage) {
     if (nOldBlock > nBlock) {
@@ -357,7 +353,7 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, HPSTR pTarget, UINT 
         return pTarget + GetProcessBufferSize();    // end of data
     }
     // load new raw data block
-    HPSTR pBlockStart = pModel->GetWaveData(dwDataPos, TRUE); // get data
+    BPTR pBlockStart = pModel->GetWaveData(dwDataPos, TRUE); // get data
     if (!pBlockStart) {
         return NULL;    // reading failed
     }
@@ -447,10 +443,10 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, HPSTR pTarget, UINT 
         dwAmount = pModel->GetDataSize() - ((DWORD)nBlock * GetProcessBufferSize());
     }
     try {
-        m_pSRDfile->Write((HPSTR)(pTarget + GetProcessBufferSize()), dwAmount);
+        m_pSRDfile->Write((BPTR)(pTarget + GetProcessBufferSize()), dwAmount);
     } catch (CFileException * e) {
         // error writing file
-        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_SRDfileStatus.m_szFullName);
+        app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, m_SRDfileStatus.m_szFullName);
 		// writing failed
 		e->Delete();
 		return NULL;
@@ -489,34 +485,31 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
     if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
-    pTarget->BeginWaitCursor(); // wait cursor
+
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSSLO)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // alocate the temporary global buffer for the smoothed raw data
     HANDLE hSmoothBlock = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, 2 * GetProcessBufferSize());
     if (!hSmoothBlock) {
         // memory allocation error
-        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+        app.ErrorMessage(IDS_ERROR_MEMALLOC);
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
-    HPSTR lpSmoothBlock = (HPSTR)::GlobalLock(hSmoothBlock); // lock memory
+    BPTR lpSmoothBlock = (BPTR)::GlobalLock(hSmoothBlock); // lock memory
     if (!lpSmoothBlock) {
         // memory lock error
-        pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
+        app.ErrorMessage(IDS_ERROR_MEMLOCK);
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         ::GlobalFree(hSmoothBlock);
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file for smoothed loudness
     if (!CreateTempFile(_T("SLO"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         // free the smoothed data buffer
         ::GlobalUnlock(hSmoothBlock);
@@ -541,7 +534,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
     UINT nCalcDataLength = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec());  //!!this should be based on sampling frequency
     UINT nCalcInterval = CALCULATION_INTERVAL(pModel->GetSamplesPerSec());   // more than 2 x bandwidth
 
-    HPSTR pSmoothData = NULL, pBlockStart; // pointers to raw data
+    BPTR pSmoothData = NULL, pBlockStart; // pointers to raw data
     short int * pLoudData = (short int *)m_lpBuffer; // pointer to loudness data
     // calculate current processing position (copied but not understood from WINCECIL)
     DWORD dwDataPos, dwLoudStart;
@@ -630,7 +623,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
                     Write(m_lpBuffer, dwLoudCount * 2);
                 } catch (CFileException * e) {
                     // error writing file
-                    pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                    app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 					e->Delete();
 					// error, writing failed
 					return Exit(PROCESS_ERROR, hSmoothBlock);
@@ -655,7 +648,6 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
         return Exit(PROCESS_ERROR, hSmoothBlock);    // error, not enough data
     }
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
     // free the temporary smoothed data buffer
     ::GlobalUnlock(hSmoothBlock);
     ::GlobalFree(hSmoothBlock);
@@ -664,16 +656,16 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
         m_hSRDdata = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize()); // allocate memory
         if (!m_hSRDdata) {
             // memory allocation error
-            pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+            app.ErrorMessage(IDS_ERROR_MEMALLOC);
             FileUtils::Remove(m_SRDfileStatus.m_szFullName);
             m_SRDfileStatus.m_szFullName[0] = 0;
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, 100);
         }
-        m_lpSRDdata = (HPSTR)::GlobalLock(m_hSRDdata); // lock memory
+        m_lpSRDdata = (BPTR)::GlobalLock(m_hSRDdata); // lock memory
         if (!m_lpSRDdata) {
             // memory lock error
-            pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
+            app.ErrorMessage(IDS_ERROR_MEMLOCK);
             ::GlobalFree(m_hSRDdata);
             m_hSRDdata = NULL;
             FileUtils::Remove(m_SRDfileStatus.m_szFullName);
@@ -698,7 +690,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
 // pointer to the data block will be returned. This smooth raw data is either
 // 8 or 16bit data, like its source the raw data.
 /***************************************************************************/
-HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin) {
+BPTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin) {
 
     if (((!bBlockBegin && !m_bSRDBlockBegin) && ((dwOffset >= m_dwSRDBufferOffset) && (dwOffset < m_dwSRDBufferOffset + GetProcessBufferSize())))
             || ((bBlockBegin) && (m_dwSRDBufferOffset == dwOffset))) {
@@ -714,7 +706,7 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
         // open the temporary file
         if (!m_pSRDfile->Open(m_SRDfileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive)) {
             // error opening file
-            pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_SRDfileStatus.m_szFullName);
+            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_SRDfileStatus.m_szFullName);
             m_pSRDfile->Abort();
             return NULL;
         }
@@ -724,7 +716,7 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
                 m_pSRDfile->Seek(m_dwSRDBufferOffset, CFile::begin);
             } catch (CFileException * e) {
                 // error seeking file
-                pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, m_SRDfileStatus.m_szFullName);
+                app.ErrorMessage(IDS_ERROR_READTEMPFILE, m_SRDfileStatus.m_szFullName);
                 m_pSRDfile->Abort();
 				e->Delete();
                 return NULL;
@@ -732,10 +724,10 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
         }
         // read the processed data block
         try {
-            m_pSRDfile->Read((HPSTR)m_lpSRDdata, GetProcessBufferSize());
+            m_pSRDfile->Read((BPTR)m_lpSRDdata, GetProcessBufferSize());
         } catch (CFileException * e) {
             // error reading file
-            pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, m_SRDfileStatus.m_szFullName);
+            app.ErrorMessage(IDS_ERROR_READTEMPFILE, m_SRDfileStatus.m_szFullName);
             m_pSRDfile->Abort();
 			e->Delete();
             return NULL;

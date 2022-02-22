@@ -21,7 +21,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Process\Process.h"
 #include "Segment.h"
 #include "sa_doc.h"
 #include "sa_view.h"

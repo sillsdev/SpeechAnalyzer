@@ -3,15 +3,16 @@
 #include "VowelFormantSets.h"
 #include "VowelSetVersion.h"
 #include "VowelFormantsVector.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
 
 static LPCSTR psz_DefaultSet = "DefaultSet";
 
-CVowelFormantSets::CVowelFormantSets(App* pApp) {
-    CVowelFormantSets::pApp = pApp;
+CVowelFormantSets::CVowelFormantSets(App & app) : app(app) {
     Load();
 }
 
-CVowelFormantSets::CVowelFormantSets(const string& szFilename) : m_szFilename(szFilename) {
+CVowelFormantSets::CVowelFormantSets(App & app, const string& szFilename) : m_szFilename(szFilename), app(app) {
     Load(szFilename);
 }
 
@@ -59,12 +60,12 @@ BOOL CVowelFormantSets::Load(const string& szFilename) {
 
     const size_type nPredefined = size();
 
-    if (szFilename.length()==0) {
+    if (szFilename.empty()) {
         return TRUE;
     }
 
     try {
-        unique_ptr<ObjectIStream> obs = std::make_unique<ObjectIStream>(pApp->getObjectIStreamFactory()->factory(szFilename.c_str()));
+        unique_ptr<CObjectIStream> obs = std::make_unique<CObjectIStream>(szFilename.c_str());
         CVowelSetVersion version;
         if (!version.ReadProperties(*obs)) {
             version.SetVersion(_T("2.9"));
@@ -104,14 +105,13 @@ BOOL CVowelFormantSets::Load(const string& szFilename) {
 
 int CVowelFormantSets::Save(const string& szFilename) const {
     
-    if (szFilename.length()==0) {
+    if (szFilename.empty()) {
         return FALSE;
     }
     try {
-        unique_ptr<ObjectOStream> obs = std::make_unique<ObjectOStream>(pApp->getObjectOStreamFactory()->factory(szFilename.c_str()));
+        unique_ptr<CObjectOStream> obs = std::make_unique<CObjectOStream>(szFilename.c_str());
         CVowelSetVersion version;
         version.WriteProperties(*obs);
-
         for (const_iterator index = begin(); index != end(); index++) {
             index->WriteProperties(*obs);
         }

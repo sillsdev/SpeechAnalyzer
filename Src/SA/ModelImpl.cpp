@@ -29,6 +29,9 @@ int CModelImpl::GetProcessText(ProcessorType processorType) {
     case PROCESSSPU: return IDS_STATTXT_PROCESSSPU;
     case PROCESSMEL: return IDS_STATTXT_PROCESSMEL;
     case PROCESSRAW: return IDS_STATTXT_PROCESSRAW;
+    case SEGMENTING: return IDS_STATTXT_SEGMENTING;
+    case PARSING: return IDS_STATTXT_PARSING;
+    case PROCESSWBGENERATOR: return IDS_STATTXT_PROCESSWBGENERATOR;
     }
 }
 

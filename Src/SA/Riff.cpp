@@ -63,7 +63,7 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
 
     /* Write the PCMWAVEFORMAT structure to the 'fmt ' chunk.
     */
-    if (mmioWrite(hmmioFile, (HPSTR) &pcm, sizeof(PCMWAVEFORMAT)) != sizeof(PCMWAVEFORMAT)) {
+    if (mmioWrite(hmmioFile, (BPTR) &pcm, sizeof(PCMWAVEFORMAT)) != sizeof(PCMWAVEFORMAT)) {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);

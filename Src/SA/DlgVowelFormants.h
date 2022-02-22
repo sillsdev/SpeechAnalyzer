@@ -14,10 +14,10 @@ public:
     // Dialog Data
     CVowelFormantSet & m_cVowelSetOK;
     CVowelFormantSet m_cSet;
-    CFlexEditGrid   m_cGrid;
+    CFlexEditGrid m_cGrid;
     enum { IDD = IDD_VOWEL_FORMANTS };
-    int     m_nGender;
-    CSaString   m_szSetName;
+    int m_nGender;
+    CSaString m_szSetName;
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support

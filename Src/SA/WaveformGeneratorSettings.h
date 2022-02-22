@@ -11,7 +11,7 @@ public:
     virtual void WriteProperties(CObjectOStream & obs);
     virtual BOOL ReadProperties(CObjectIStream & obs);
     BOOL Synthesize(LPCTSTR szFileName);
-    void SynthesizeSamples(HPSTR pTargetData, DWORD dwDataPos, DWORD dwBufferSize);
+    void SynthesizeSamples(BPTR pTargetData, DWORD dwDataPos, DWORD dwBufferSize);
 
     // enables for seven signal generators in order
     BOOL m_bSinusoid1;

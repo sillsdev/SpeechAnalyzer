@@ -2,14 +2,16 @@
 #ifndef WBPROCESS_H
 #define WBPROCESS_H
 
-#include "Process.h"
+#include "sa_process.h"
 #include "Context.h"
 
 class CWbProcess : public CProcess {
 public:
-    CWbProcess(Context * pContext, WbDialogType _type) : CProcess(pContext) {
+    CWbProcess(Context & context, WbDialogType _type) : CProcess(context) {
         type = _type;
     }
+    CWbProcess() = delete;
+
     WbDialogType GetDialogType() {
         return type;
     }

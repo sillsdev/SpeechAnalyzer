@@ -34,11 +34,6 @@
 /***************************************************************************/
 #include "stdafx.h"
 #include "sa_plot.h"
-#include "Process\Process.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_fra.h"
-#include "Process/ProcessAreaData.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "Segment.h"

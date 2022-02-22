@@ -8,7 +8,6 @@
 
 #include "stdafx.h"
 #include "sa.h"
-#include "Process\Process.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "printopt.h"

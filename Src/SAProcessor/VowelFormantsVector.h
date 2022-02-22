@@ -5,12 +5,11 @@ using std::vector;
 
 class CVowelFormantsVector {
 public:
-    void WriteProperties(ObjectOStream& obs) const {
+    void WriteProperties(CObjectOStream& obs) const {
         for (auto & element : data) {
             element.WriteProperties(obs);
         }
     }
-
     void clear() {
         data.clear();
     }
@@ -19,6 +18,12 @@ public:
     }
     void push_back(CVowelFormants value) {
         data.push_back(value);
+    }
+    size_t size() const {
+        return data.size();
+    }
+    CVowelFormants get(size_t val) const {
+        return data[val];
     }
 
 private:

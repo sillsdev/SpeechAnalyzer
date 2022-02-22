@@ -13,17 +13,6 @@
 #include "doclist.h"
 #include "DlgResult.h"
 #include <math.h>
-#include "Process\Process.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_custompitch.h"
-#include "Process\sa_p_smoothedpitch.h"
-#include "Process\sa_p_melogram.h"
-#include "Process\sa_p_zcr.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_spu.h"
-#include "Process\sa_p_spg.h"
-#include "Process\FormantTracker.h"
 #include "objectostream.h"
 
 using std::ifstream;
@@ -185,7 +174,7 @@ void CDlgExportXML::OutputXMLField(CFile * pFile, LPCTSTR szFieldName, const CSa
     szString = "\t<";
     szString += szFieldName;
     szString += ">";
-    for (register int i=0; i<szContents.GetLength(); ++i) {
+    for (int i=0; i<szContents.GetLength(); ++i) {
         if (szContents[i]=='<') {
             szString += "&#60;";
         } else if (szContents[i]=='>') {

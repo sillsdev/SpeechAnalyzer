@@ -7,7 +7,6 @@
 #ifndef DLGWAVEFORM_GENERATOR_H
 #define DLGWAVEFORM_GENERATOR_H
 
-#include "process\Process.h"
 #include "WaveformGeneratorSettings.h"
 
 //###########################################################################

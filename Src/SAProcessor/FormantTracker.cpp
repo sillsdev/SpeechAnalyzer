@@ -5,10 +5,9 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "FormantTracker.h"
 #include "TrackState.h"
-#include "StringUtils.h"
 #include "AnalyticLpcAnalysis.h"
 #include "param.h"
 
@@ -22,7 +21,7 @@ const double pi = 3.14159265358979323846264338327950288419716939937511;
 
 extern CFormantTrackerOptions formantTrackerOptions;
 
-CProcessFormantTracker::CProcessFormantTracker(Context * pContext, CProcess & Real, CProcess & Imag, CProcess & Pitch) : CProcess(pContext) {
+CProcessFormantTracker::CProcessFormantTracker(Context & context, CProcess & Real, CProcess & Imag, CProcess & Pitch) : CProcess(context) {
     // real is the raw audio data
     m_pReal = &Real;
     // imaginary is the hilbert data
@@ -85,17 +84,17 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
     }
 
     // start process
-    pTarget->BeginWaitCursor(); // wait cursor
+    view.BeginWaitCursor(); // wait cursor
     if (!StartProcess(pCaller, PROCESSFMT)) { // start data processing
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
+        view.EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
     if (!CreateTempFile(_T("FT"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
+        view.EndWaitCursor();
         SetDataReady(FALSE);
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -161,7 +160,7 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
+    view.EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }
@@ -188,7 +187,7 @@ void CProcessFormantTracker::AdvanceData(STrackState & state, DWORD dwDataPos, i
     //TRACE("advance %d %d\n",dwDataPos, nSamples);
 
     DWORD dwSize = m_pReal->GetDataSize();
-    double fSizeFactor = dwSize / m_pImag->GetDataSize();
+    double fSizeFactor = (double)dwSize / m_pImag->GetDataSize();
     DWORD dwImagPos = (DWORD)((double)dwDataPos / fSizeFactor);             // imaginary data position
     unsigned int nImagSmpSize = sizeof(short) / (unsigned int)fSizeFactor;  // imaginary data sample size
 
@@ -364,7 +363,7 @@ bool CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate
 * @param[in] pitch the pitch value to be written in the first array entry.
 */
 void CProcessFormantTracker::WriteTrack(STrackState & state, double samplingRate, int pitch) {
-    SFormantFreq formant;
+    SFormantFreq formant = {};
     BOOL bIsDataValid = state.trackOut.size() && (pitch > 0);
 
     formant.F[0] = float(bIsDataValid ? atan2(state.trackOut[0].imag(), state.trackOut[0].real())*samplingRate/2/pi : UNDEFINED_DATA);
@@ -374,7 +373,7 @@ void CProcessFormantTracker::WriteTrack(STrackState & state, double samplingRate
     }
 
     // write unvoiced formant frame
-    Write((HPSTR)&formant, (UINT)sizeof(SFormantFreq));
+    Write((BPTR)&formant, (UINT)sizeof(SFormantFreq));
 }
 
 /**

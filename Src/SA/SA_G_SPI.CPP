@@ -7,8 +7,6 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_spi.h"
-#include "Process\Process.h"
-#include "Process\sa_p_smoothedpitch.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "sa_doc.h"

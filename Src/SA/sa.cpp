@@ -97,9 +97,6 @@
 #include "FileUtils.h"
 #include "AutoSave.h"
 #include "DlgRecorder.h"
-#include "Process\Process.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_fra.h"
 #include "objectostream.h"
 #include "objectistream.h"
 #include "DlgPlayer.h"
@@ -109,6 +106,7 @@
 #include "DlgHelpSFMMarkers.h"
 #include "Utils.h"
 #include "ScopedCursor.h"
+#include "Sa_gz3d.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -151,12 +149,6 @@ typedef HMODULE(__stdcall * SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
 #define CSIDL_PERSONAL                  0x0005        // My Documents
 #define CSIDL_FLAG_CREATE               0x8000        // combine with CSIDL_ value to force folder creation in SHGetFolderPath()
 
-//###########################################################################
-// CSaApp
-
-/////////////////////////////////////////////////////////////////////////////
-// CSaApp message map
-
 BEGIN_MESSAGE_MAP(CSaApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW, OnFileCreate)
@@ -194,16 +186,11 @@ BEGIN_MESSAGE_MAP(CSaApp, CWinApp)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_MRU_FIRST, ID_FILE_MRU_LAST, OnUpdateRecentFileMenu)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CSaApp construction/destruction/creation
-
-/***************************************************************************/
-// CSaApp::CSaApp Constructor
-/***************************************************************************/
 CSaApp::CSaApp() :
 	m_hEnglishResources(NULL),
 	m_hGermanResources(NULL),
-	m_hLocalizedResources(NULL) {
+	m_hLocalizedResources(NULL),
+	researchSettings() {
 
 	// no batch mode
 	m_nBatchMode = 0;
@@ -340,7 +327,7 @@ BOOL CSaApp::InitInstance() {
 	if ((m_hEnglishResources == NULL) &&
 		(m_hGermanResources == NULL) &&
 		(m_hLocalizedResources == NULL)) {
-		AfxMessageBox(L"Speech Analyzer was unable to locate or use SA_ENU.DLL, SA_DEU.DLL or SA_LOC.DLL.\nIt will now exit.");
+		::AfxMessageBox(L"Speech Analyzer was unable to locate or use SA_ENU.DLL, SA_DEU.DLL or SA_LOC.DLL.\nIt will now exit.");
 		return FALSE;
 	}
 
@@ -407,7 +394,7 @@ BOOL CSaApp::InitInstance() {
 			szCreateResult.Format(_T("%x"), createResult);
 			CSaString szText;
 			AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE, _T("SplashScreen.CreateInstance()"), szCreateResult);
-			AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
+			::AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
 		}
 		else {
 			splash->ShowWithoutFade();
@@ -521,7 +508,7 @@ BOOL CSaApp::InitInstance() {
 
 		CSaString msg = GetStartupMessage(m_szLastVersion);
 		if (msg.GetLength()) {
-			AfxMessageBox(msg);
+			::AfxMessageBox(msg);
 		}
 
 		CAutoSave::Check(this);
@@ -539,7 +526,7 @@ BOOL CSaApp::InitInstance() {
 	// we are in batch mode
 	// in batch mode, messages will be dislayed, but we don't want
 	// to show the window yet.
-	BOOL bResult = ReadSettings(true);
+	ReadSettings(true);
 
 	// SDM 1.06.8 window size in this function needs to take precedence over save settings
 	// examine command line
@@ -611,7 +598,7 @@ int CSaApp::CheckForBatchMode(LPTSTR pCmdLine) {
 }
 
 CSaString CSaApp::GetBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpDefault) {
-	TCHAR lpBuffer[_MAX_PATH];
+	TCHAR lpBuffer[_MAX_PATH] = {};
 	lpBuffer[0] = 0;
 	GetPrivateProfileString(lpSection, lpKey, lpDefault, lpBuffer, _MAX_PATH, m_szCmdFileName);
 	return CSaString(lpBuffer);
@@ -679,7 +666,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
 		// if IPA Help is used to launch SA, it must be run using compatibility mode for Windows XP SP3.
 		CString msg;
 		msg.FormatMessage(L"The file:\n'%1'\nwas specified on the command line, but it does not exist.\nIf you are using IPA Help on Windows 7 or later, please use the compatibility mode for Windows XP.\nSpeech Analyzer will now exit.", (LPCTSTR)m_szCmdFileName);
-		AfxMessageBox(msg, MB_ICONEXCLAMATION);
+		::AfxMessageBox(msg, MB_ICONEXCLAMATION);
 		ExitProcess(0);
 		return;
 	}
@@ -696,15 +683,15 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
 	int iresult = swscanf_s(szString, _T("%16[^(](%20[^)]"), param1, _countof(param1), param2, _countof(param2));
 	TRACE(L"scanned %d parameters", iresult);
 
-	CSaString szReturn = (iresult == 0) ? szString : param1;
-	CSaString szParam = param2;
+	CString szReturn = (iresult == 0) ? szString : param1;
+	CString szParam = param2;
 
 	szReturn.MakeUpper(); // convert the whole string to upper case letters
 	szReturn = szReturn.Mid(szReturn.SpanIncluding(_T(" ")).GetLength());  // Remove leading spaces
 	szReturn += "        ";  // Pad with spaces
 	szReturn = szReturn.Left(8);  //Take exactly 8 characters
 
-	TRACE(_T("Settings:ShowWindow=%s\n"), szReturn);
+	TRACE(_T("Settings:ShowWindow=%s\n"), szReturn.GetString());
 	if (szReturn == "HIDE    ") {
 		m_pMainWnd->ShowWindow(SW_HIDE);
 		m_nCmdShow = SW_HIDE; // to prevent MFC to restore on startup
@@ -875,7 +862,7 @@ void CSaApp::OnProcessBatchCommands() {
 		return;
 	}
 
-	TRACE(_T("Batch Command:%s(%s)\n"), szReturn, szParameterList);
+	TRACE(_T("Batch Command:%s(%s)\n"), szReturn.GetString(), szParameterList.GetString());
 	if (szReturn.Left(6) == "IMPORT") {
 		CSaString szPath = extractCommaField(szParameterList, 0);
 
@@ -1011,7 +998,7 @@ void CSaApp::OnProcessBatchCommands() {
 		// Get Type
 		CSaString szType = extractCommaField(szParameterList, 0);
 
-		TRACE(_T("DisplayPlot(%s)\n"), szType);
+		TRACE(_T("DisplayPlot(%s)\n"), szType.GetString());
 		((CMainFrame *)AfxGetMainWnd())->DisplayPlot(new CDisplayPlot(szType));
 
 		m_nCommand++;
@@ -1316,7 +1303,7 @@ void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath) {
 			ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
 		}
 	}
-	catch (_com_error & e) {
+	catch (_com_error & ) {
 		CString msg;
 		msg.Format(_T("%x"), hr);
 		ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
@@ -1802,13 +1789,13 @@ void CSaApp::DisplayMessages() {
 		CSaString error = m_pszErrors.GetAt(0);
 		// remove message (before we lose process thread)
 		m_pszErrors.RemoveAt(0, 1);
-		AfxMessageBox(error, MB_OK | MB_ICONEXCLAMATION, 0);
+		::AfxMessageBox(error, MB_OK | MB_ICONEXCLAMATION, 0);
 	}
 	if (m_pszMessages.GetSize() > 0) {
 		CSaString error = m_pszMessages.GetAt(0);
 		// remove message (before we lose process thread)
 		m_pszMessages.RemoveAt(0, 1);
-		AfxMessageBox(error, MB_OK | MB_ICONINFORMATION, 0);
+		::AfxMessageBox(error, MB_OK | MB_ICONINFORMATION, 0);
 	}
 }
 
@@ -1951,7 +1938,7 @@ void CSaApp::OnAudioCon() {
 
 	CSaString szMessage;
 	szMessage.Format(CSaString((LPCTSTR)IDS_AUDIOCON_SAXML_NOTICE), (LPCTSTR)szAudioConFolder);
-	AfxMessageBox(szMessage);
+	::AfxMessageBox(szMessage);
 
 	PROCESS_INFORMATION piAudioCon;
 	STARTUPINFO siAudioCon;
@@ -2370,7 +2357,7 @@ BOOL CSaApp::ReadSettings(bool batchMode) {
 			CString error = FormatGetLastError(GetLastError());
 			CString msg;
 			AfxFormatString2(msg, IDS_ERROR_NO_SETTING_DIR, szPath, error);
-			AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, 0);
+			::AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, 0);
 			return FALSE;
 		}
 	}
@@ -2888,3 +2875,38 @@ CString CSaApp::GetVersionString() {
 	return result;
 }
 
+CVowelFormantSets& CSaApp::GetVowelSets() {
+	CString szPath(AfxGetApp()->GetProfileString(_T(""), _T("DataLocation")));
+	if (szPath.Right(1) != _T("\\")) {
+		szPath += "\\";
+	}
+	szPath = szPath + "vowelsUtf8.psa";
+	static CVowelFormantSets theVowelSets(*this, _to_utf8(szPath.GetString()));
+	return theVowelSets;
+}
+
+const CVowelFormantSet& CSaApp::GetDefaultVowelSet() {
+	CVowelFormantSets& cSets = GetVowelSets();
+	return cSets[cSets.GetDefaultSet()];
+}
+
+const CVowelFormantsVector& CSaApp::GetVowelVector(int nGender) {
+	return GetDefaultVowelSet().GetVowelFormants(nGender);
+}
+
+CResearchSettings& CSaApp::GetResearchSettings() {
+	return researchSettings;
+}
+
+SRange CSaApp::Get3DChartRange(int nFormant, int nGender) {
+	return CPlot3D::GetChartRange(nFormant, nGender);
+}
+
+// uses IDS_ERROR_GRAPPLSPACE
+void CSaApp::GrapplErrorMessage(LPCTSTR pszText1, LPCTSTR pszText2) {
+	ErrorMessage(IDS_ERROR_GRAPPLSPACE, pszText1, pszText2);
+}
+
+int CSaApp::AfxMessageBox(UINT nIDPrompt, UINT nType, UINT nIDHelp) {
+	return ::AfxMessageBox(nIDPrompt, nType, nIDHelp);
+}

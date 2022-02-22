@@ -11,6 +11,7 @@
 #define _SA_W_DLG_H
 
 #include "SaString.h"
+#include "SA_DlWnd.h"
 
 class CWbDlgProcesses : public CDialog {
 

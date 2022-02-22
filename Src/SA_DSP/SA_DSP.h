@@ -16,3 +16,4 @@
 #include "FFT.h"
 #include "AcousticTube.h"
 #include "Roots.h"
+#include "windowsettings.h"

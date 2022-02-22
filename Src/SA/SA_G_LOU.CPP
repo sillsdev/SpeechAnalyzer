@@ -8,12 +8,8 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_lou.h"
-#include "Process\Process.h"
-#include "Process\sa_p_lou.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
-#include "Process\sa_p_InstantaneousPower.h"
-
 #include "math.h"
 #include "sa_doc.h"
 #include "sa_view.h"
@@ -113,7 +109,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 
         PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pModel, bPercent ? 0 : PAINT_DB); // do standard data paint
     }
-    if (pApp->getResearchSettings().m_bShowInstantaneousPower) {
+    if (app.getResearchSettings().m_bShowInstantaneousPower) {
         // create raw data
         CProcessInstantaneousPower power;
         CProcessInstantaneousPower * pPower = &power;

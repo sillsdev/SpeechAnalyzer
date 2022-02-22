@@ -49,7 +49,7 @@ public:
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT = 100);
     virtual void StoreFailed();
     virtual void EndPlayback();
-    virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
+    virtual BPTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
     HMMIO GetFileHandle();
     void OnHelpAutoRecorder();
     afx_msg void OnRadioBetweenCursors();
@@ -110,7 +110,7 @@ private:
     double m_dRecordLength;                 // the amount data we will be recording.
 
     HANDLE m_hData;                         // needed to get m_lpRecData
-    HPSTR m_lpRecData;                      // pointer to wave data
+    BPTR m_lpRecData;                      // pointer to wave data
     HMMIO m_hmmioFile;                      // mmio file handle
     TCHAR m_szFileName[_MAX_PATH];          // file name of the temporary wave file
     MMCKINFO m_mmckinfoSubchunk;            // 'data' subchunk information

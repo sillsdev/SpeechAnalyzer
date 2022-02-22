@@ -82,12 +82,8 @@ using std::wstring;
 //  };
 //};
 
-//###########################################################################
-// CSaApp window
+class CSaApp : public CWinApp, public App{
 
-class CSaApp : public CWinApp {
-
-    // Construction/destruction/creation
 public:
     CSaApp();
     ~CSaApp();
@@ -173,6 +169,18 @@ public:
 
 	CString GetVersionString();
 
+    // App implementations
+    CVowelFormantSets& GetVowelSets();
+    const CVowelFormantSet& GetDefaultVowelSet();
+    const CVowelFormantsVector& GetVowelVector(int nGender);
+
+    CResearchSettings& GetResearchSettings();
+    // return CPlot3D::GetChartRange(nFormant, nGender);
+    SRange Get3DChartRange(int nFormant, int nGender);
+    // uses IDS_ERROR_GRAPPLSPACE
+    void GrapplErrorMessage(LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
+    int AfxMessageBox(UINT nIDPrompt, UINT nType = MB_OK, UINT nIDHelp = (UINT)-1);
+
 protected:
     void ShowStartupDialog(BOOL bAppIsStartingUp);
     afx_msg void OnAppAbout();
@@ -229,6 +237,7 @@ protected:
     CEvent * mEvent;
     CEvent * mSignal;
     class CSingleInstanceData * mData;
+    CResearchSettings researchSettings;
 
 private:
     int CheckForBatchMode(LPTSTR);      // check if SA runs in batch mode

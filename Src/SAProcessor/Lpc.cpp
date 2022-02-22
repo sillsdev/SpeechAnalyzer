@@ -294,6 +294,7 @@
 #include <math.h>
 #include "Lpc.h"
 #include "param.h"
+#include "ResearchSettings.h"
 
 static float fDbPowerRef[3] = {0.F, LPC_8BIT_DB_PWR_REF, LPC_16BIT_DB_PWR_REF};
 
@@ -311,7 +312,7 @@ float CLinPredCoding::Version(void) {
 
 #define RetMemErr  { FreeLpcMem(LpcParm); return(Code(OUT_OF_MEMORY)); }
 
-dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, App * pApp, SLPCSettings & LpcSetting, SSigParms & Signal, USHORT wFFTLength) {
+dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, App & app, SLPCSettings & LpcSetting, SSigParms & Signal, USHORT wFFTLength) {
     if (!ppLpcObject) {
         return(Code(INVALID_PARM_PTR));
     }
@@ -509,15 +510,14 @@ dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, App * pAp
         }
     }
 
-    *ppLpcObject = new CLinPredCoding( pApp, LpcParm, Signal, wFFTLength);
+    *ppLpcObject = new CLinPredCoding( app, LpcParm, Signal, wFFTLength);
     if (!*ppLpcObject) {
         RetMemErr;
     }
     return(DONE);
 }
 
-CLinPredCoding::CLinPredCoding(App * pApp, SLPCParms & LpcParm, SSigParms & Signal, USHORT wFFTLength) {
-    CLinPredCoding::pApp = pApp;
+CLinPredCoding::CLinPredCoding(App & app, SLPCParms & LpcParm, SSigParms & Signal, USHORT wFFTLength) : app(app) {
     //Copy LPC and signal parameters into object member variables.
     m_Signal = Signal;
     m_LpcParm = LpcParm;
@@ -797,7 +797,7 @@ void CLinPredCoding::Transfer(short * pFrame) {
 void CLinPredCoding::ApplyWindow() {
     double dTotalInput = 0;
     double dTotalWindow = 0.25;
-    CDspWin cWindow(m_LpcParm.Model.nFrameLen, m_Signal.SmpRate, pApp->getResearchSettings().getWindow().getType());
+    CDspWin cWindow(m_LpcParm.Model.nFrameLen, m_Signal.SmpRate, app.GetResearchSettings().GetWindow().getType());
     const double * Window = cWindow.WindowDouble();
 
     for (USHORT i = 0; i < m_LpcParm.Model.nFrameLen; i++) {
@@ -1046,12 +1046,12 @@ void CLinPredCoding::CalcCovarMatrix(USHORT nMethod) {
         float * pfCepstralCoeff  = &buffer[0];
 
         // Remove excitation characteristic from high time portion
-        double d2Pitch = pApp->getResearchSettings().getLpcCepstralSmooth() != -1 ? 2* pApp->getResearchSettings().getLpcCepstralSmooth() : 0.5*m_Signal.SmpRate/m_LpcParm.Model.nOrder;
+        double d2Pitch = app.GetResearchSettings().GetLpcCepstralSmooth() != -1 ? 2* app.GetResearchSettings().GetLpcCepstralSmooth() : 0.5*m_Signal.SmpRate/m_LpcParm.Model.nOrder;
         int nSmoothPeriod = (int)(m_Signal.SmpRate/d2Pitch + 0.5);
 
         // Multiply low time cesptral coefficients by growing exponential to sharpen formant
         // peaks.
-        double fSpectSharpRadius = 1/(1 - pApp->getResearchSettings().getLpcCepstralSharp()/200.);
+        double fSpectSharpRadius = 1/(1 - app.GetResearchSettings().GetLpcCepstralSharp()/200.);
         double r = fSpectSharpRadius;
         for (i = 1; i < nSmoothPeriod*2; i++, r*=fSpectSharpRadius) {
             pfCepstralCoeff[i] = pfCepstralCoeff[nFFTLength-i] = float(pfCepstralCoeff[i]*r);

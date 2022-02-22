@@ -11,10 +11,10 @@
 
 class CProcessWbEcho : public CWbProcess {
 public:
-    CProcessWbEcho(Context * pContext);
+    CProcessWbEcho(Context & context);
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
-    virtual void WriteProperties(ObjectOStream & obs);
-    virtual BOOL ReadProperties(ObjectIStream & obs);
+    virtual void WriteProperties(CObjectOStream & obs);
+    virtual BOOL ReadProperties(CObjectIStream & obs);
     void SetDelay(UINT val) { m_nDelay = val; };
     void SetGain(int val) { m_nGain = val; };
     UINT GetDelay() { return m_nDelay; };
@@ -30,10 +30,10 @@ private:
 
 class CProcessWbReverb : public CWbProcess {
 public:
-    CProcessWbReverb(Context * pContext);
+    CProcessWbReverb(Context & context);
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
-    virtual void WriteProperties(ObjectOStream & obs);
-    virtual BOOL ReadProperties(ObjectIStream & obs);
+    virtual void WriteProperties(CObjectOStream & obs);
+    virtual BOOL ReadProperties(CObjectIStream & obs);
     void SetDelay(UINT val) { m_nDelay = val; };
     void SetGain(int val) { m_nGain = val; };
     UINT GetDelay() { return m_nDelay; };

@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "fileInformation.h"
-#include "Process\Process.h"
 #include "Segment.h"
 #include "sa_doc.h"
 #include "sa_view.h"
@@ -226,7 +225,7 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
         szChannels = buffer;
     }
     CString szFormat;
-    szFormat.Format(_T("%u Bits %s"), pModel->GetBitsPerSample(), szChannels);
+    szFormat.Format(_T("%u Bits %s"), pModel->GetBitsPerSample(), szChannels.GetString());
     SetDlgItemText(IDC_SAMPLEFORMAT, szFormat);
     // create and write number of phones text
     int nNumber = 0;

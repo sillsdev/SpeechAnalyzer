@@ -6,25 +6,26 @@
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_W_EQU_H
 #define _SA_W_EQU_H
-#include "WbProcess.h"
 
-__interface ObjectIStream;
+#include "WbProcess.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
 
 class CProcessWbEquation : public CWbProcess {
 public:
-    CProcessWbEquation(Context * pContext);
+    CProcessWbEquation(Context & context);
 
     BOOL CheckFunction(string*); // check the function string
     long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
-    virtual void WriteProperties(ObjectOStream& obs);
-    virtual BOOL ReadProperties(ObjectIStream& obs);
+    virtual void WriteProperties(CObjectOStream& obs);
+    virtual BOOL ReadProperties(CObjectIStream& obs);
     const char* GetEquation() {
         return m_szEquation.c_str();
     }
     void SetEquation(const char* value) {
         m_szEquation = value;
     }
-    bool ReadStreamString(ObjectIStream& stream, LPCSTR pszMarker, string& szResult);
+    bool ReadStreamString(CObjectIStream& stream, LPCSTR pszMarker, string& szResult);
 
 private:
     string m_szEquation; // equation string

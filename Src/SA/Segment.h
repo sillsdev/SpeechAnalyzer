@@ -72,8 +72,8 @@ class CFontTable;
 class CSegment : public CProcess {
 
 public:
-    CSegment(EAnnotation index, int master = -1);
-    virtual ~CSegment();
+    CSegment(Context & context, EAnnotation index, int master = -1);
+    CSegment() = delete;
 
     virtual void Serialize(CArchive & ar);
 

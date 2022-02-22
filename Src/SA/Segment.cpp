@@ -96,27 +96,12 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // class to do all the handling with annotation segments. The class owns the
 // annotation data structures from the wave file.
 
-/////////////////////////////////////////////////////////////////////////////
-// CSegment construction/destruction/creation
-
-/***************************************************************************/
-// CSegment::CSegment Constructor
-/***************************************************************************/
-CSegment::CSegment(EAnnotation type, int masterType) {
+CSegment::CSegment(Context & context, EAnnotation type, int masterType) : CProcess(context) {
 	m_nAnnotationType = type;
 	m_nMasterType = masterType;
 	// no segment selected
 	m_nSelection = -1;
 }
-
-/***************************************************************************/
-// CSegment::~CSegment Destructor
-/***************************************************************************/
-CSegment::~CSegment() {
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CSegment helper functions
 
 /***************************************************************************/
 // CSegment::DeleteContents Delete all contents of the segment arrays

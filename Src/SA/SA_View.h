@@ -79,7 +79,7 @@ class CDlgAdvancedParseWords;
 class CDlgAdvancedSegment;
 class CDlgAdvancedParsePhrases;
 
-class CSaView : public CView {
+class CSaView : public CView, public View {
     
 	DECLARE_DYNCREATE(CSaView)
 

@@ -1,4 +1,9 @@
 #pragma once
+#ifndef _CONTEXT_H
+#define _CONTEXT_H
+
+#include "Formants.h"
+#include "windowsettings.h"
 
 class CProcessGrappl;
 class CProcessSpectrum;
@@ -7,7 +12,6 @@ class CUttParm;
 class CProcessZCross;
 class CProcessFragments;
 class CWbProcess;
-
 class CProcessDoc;
 class CProcessAdjust;
 class CProcessFragments;
@@ -37,9 +41,14 @@ class CProcessTonalWeightChart;
 class CVowelFormantSet;
 class CVowelFormantsVector;
 class CVowelFormantSets;
+class CResearchSettings;
+
+typedef char* BPTR;
 
 enum EGender {
-    male, female, child
+    male = 0,
+    female = 1,
+    child = 2
 };
 
 enum WbDialogType {
@@ -73,6 +82,9 @@ enum ProcessorType {
     PROCESSWBREV,
     PROCESSWVL,
     PROCESSZCR,
+    SEGMENTING,
+    PARSING,
+    PROCESSWBGENERATOR,
 };
 
 __interface PhoneticSegment {
@@ -89,20 +101,20 @@ __interface Model {
     DWORD GetSamplesPerSec();
     DWORD GetNumChannels() const;
     DWORD GetNumSamples();
-    HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
+    BPTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
     DWORD GetWaveBufferIndex();
     uint32 GetDataSize();
     DWORD GetSignalBandWidth();
     EGender GetGender();
-    UINT GetBlockAlign(bool singleChannel = false);
+    WORD GetBlockAlign(bool singleChannel = false);
     WORD GetBitsPerSample();
     CMusicParm* GetMusicParm();
-    CUttParm* GetUttParm();
+    const CUttParm* GetUttParm();
     void GetUttParm(CUttParm*, BOOL bOriginal = FALSE);
     bool Is16Bit();
     void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
-    HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
-    HPSTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
+    BPTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
+    BPTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
     DWORD GetUnprocessedBufferIndex(size_t nSize);
     int GetWbProcess();
     LPCTSTR GetProcessFilename();
@@ -142,6 +154,16 @@ __interface Model {
     PhoneticSegment * GetPhoneticSegment();
 };
 
+__interface IProcess {
+    long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
+    // return processed data pointer to object staring at dwOffset
+    void* GetProcessedObject(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwIndex, size_t sObjectSize, BOOL bReverse = FALSE);
+    // return the size of the data in bytes for a single channel
+    DWORD GetProcessedModelWaveDataSize();
+    //  return the number of samples for a single channel
+    DWORD GetNumSamples(Model* pModel) const;
+};
+
 __interface ProgressStatusBar {
     void* GetProcessOwner();
     void SetProgress(int percent);
@@ -154,78 +176,11 @@ __interface MainFrame {
     CWbProcess* GetWbProcess(int nProcess, int nFilter);
 };
 
-__interface ObjectIStream {
-    bool bAtEnd();
-    bool bAtBackslash();
-    //bool bAtBeginMarker();
-    //bool bAtBeginOrEndMarker();
-    //bool bAtBeginMarker(LPCSTR pszMarker, LPCSTR pszName = NULL); // True if at the desired begin marker followed by the requested name
-    //bool bAtEndMarker(LPCSTR pszMarker);
-    //bool bFail();
-    bool bReadBeginMarker(LPCSTR pszMarker, LPSTR psName, size_t size);
-    bool bReadBeginMarker(LPCSTR pszMarker);
-    //bool bReadEndMarker(LPCSTR pszMarker);
-    //void SkipToEndMarker(LPCSTR pszMarker);
-    //bool bReadBeginMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier);
-    //bool bReadEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier);
-    bool bReadString(LPCSTR pszMarker, LPSTR szResult, size_t len);
-    bool bReadBool(LPCSTR pszMarker, BOOL& b);
-    //bool bReadCOLORREF(LPCSTR pszMarker, COLORREF& rgb);
-    bool bReadInteger(LPCSTR pszMarker, int& i);
-    bool bReadDouble(LPCSTR pszMarker, double& i);
-    bool bReadUInt(LPCSTR pszMarker, UINT& ui);
-    //bool bReadNumberOf(LPCSTR pszMarker, unsigned long& num);
-    //bool bReadDWord(LPCSTR pszMarker, DWORD& dw);
-    bool bEnd(LPCSTR pszMarker);
-    //bool bEndWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier);
-    //void ReadMarkedString();
-    //void PeekMarkedString(LPCSTR* ppszMarker, LPSTR pszString, size_t len, BOOL bTrimWhiteSpace = TRUE);
-    size_t GetBufferSize() const;
-};
-
-__interface ObjectIStreamFactory {
-    // call constructor on CObjectIStream
-    ObjectIStream * factory(LPCSTR name);
-};
-
-__interface ObjectOStream {
-    void WriteBeginMarker(LPCSTR pszMarker, LPCSTR pszName = "");
-    void WriteEndMarker(LPCSTR pszMarker);
-    //void WriteBeginMarkerWithQualifier(LPCSTR pszMarker,LPCSTR pszQualifier,LPCSTR pszName = "");
-    //void WriteEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQualifier);
-    void WriteString(LPCSTR pszMarker, LPCSTR psz);
-    void WriteString(LPCSTR pszMarker, LPCSTR pszQualifier, LPCSTR psz);
-    void WriteBool(LPCSTR pszMarker, BOOL b);
-    //void WriteCOLORREF(LPCSTR pszMarker, COLORREF rgb);
-    void WriteInteger(LPCSTR pszMarker, int i, LPCSTR pszComment = NULL);
-    void WriteDouble(LPCSTR pszMarker, double i);
-    void WriteUInt(LPCSTR pszMarker, UINT u, LPCSTR pszComment = NULL);
-    //void WriteNewline();
-};
-
-__interface ObjectOStreamFactory {
-    // call constructor on CObjectIStream
-    ObjectOStream * factory(LPCSTR name);
-};
-
-__interface ResearchSettings {
-    int getLpcCepstralSmooth();
-    int getLpcCepstralSharp();
-    int getSpectrumLpcOrderFsMult();
-    int getSpectrumLpcOrderAuxMax();
-    int getSpectrumLpcMethod();
-    int getSpectrumLpcOrderExtra();
-    CWindowSettings getWindow();
-    void setWindow(CWindowSettings);
-};
-
 __interface App {
     CVowelFormantSets & GetVowelSets();
     const CVowelFormantSet& GetDefaultVowelSet();
     const CVowelFormantsVector& GetVowelVector(int nGender);
-    ObjectOStreamFactory * getObjectOStreamFactory();
-    ObjectIStreamFactory * getObjectIStreamFactory();
-    ResearchSettings& getResearchSettings();
+    CResearchSettings& GetResearchSettings();
 
     // return CPlot3D::GetChartRange(nFormant, nGender);
     SRange Get3DChartRange(int nFormant, int nGender);
@@ -236,24 +191,21 @@ __interface App {
     int AfxMessageBox(UINT nIDPrompt, UINT nType = MB_OK, UINT nIDHelp = (UINT)-1);
 };
 
-// interface for CCmdTarget
-__interface CmdTarget {
-    void BeginWaitCursor();
-    void EndWaitCursor();
-};
-
 __interface View {
     DWORD GetDataFrame();
     DWORD GetStartCursorPosition();
     DWORD GetStopCursorPosition();
-    Model* GetDocument();
-    MainFrame* GetMainWnd();
-    App* GetApp();
-    CmdTarget * GetTarget();
     double GetDataPosition(int nWndWidth);
+    // use CCmdTarget
+    void BeginWaitCursor();
+    void EndWaitCursor();
 };
 
 __interface Context {
-    App * GetApp();
-    View * GetView();
+    App& GetApp();
+    View& GetView();
+    Model& GetModel();
+    MainFrame& GetMainWnd();
 };
+
+#endif

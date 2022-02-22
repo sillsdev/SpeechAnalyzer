@@ -16,7 +16,6 @@
 #include "mainfrm.h"
 #include "sa_doc.h"
 #include "ProgressStatusBar.h"
-#include "Process\process.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

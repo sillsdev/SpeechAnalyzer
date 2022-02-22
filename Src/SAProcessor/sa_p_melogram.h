@@ -12,7 +12,7 @@
 class CProcessMelogram : public CAbstractPitchProcess {
 
 public:
-    CProcessMelogram(Context* pContext);
+    CProcessMelogram(Context & context);
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
     BOOL IsVoiced(Model * pModel, DWORD dwWaveOffset);
 

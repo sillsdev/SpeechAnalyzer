@@ -4,7 +4,6 @@
 
 #include "pch.h"
 #include "sa_w_adj.h"
-#include "StringUtils.h"
 #include "Butterworth.h"
 #include "Hilbert.h"
 #include "WbProcess.h"
@@ -17,7 +16,7 @@ static char THIS_FILE[]=__FILE__;
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-CProcessIIRFilter::CProcessIIRFilter(Context * pContext, WbDialogType type, BOOL bDstWBench) : CWbProcess(pContext, type) {
+CProcessIIRFilter::CProcessIIRFilter(Context & context, WbDialogType type, BOOL bDstWBench) : CWbProcess(context, type) {
     m_pSourceProcess = NULL;
     m_bSrcWBenchProcess = TRUE;
     m_bDstWBenchProcess = bDstWBench;
@@ -89,12 +88,12 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
     TRACE("start process\n");
     // start process
 	// wait cursor
-    pTarget->BeginWaitCursor(); 
+    view.BeginWaitCursor();
 	// start data processing
     if (!StartProcess(pCaller, PROCESSWBLP)) {
 		// end data processing
         EndProcess(); 
-        pTarget->EndWaitCursor();
+        view.EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -102,7 +101,7 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
     if (!CreateTempFile(L"IIR")) {
         // creation error - end processing
         EndProcess();
-        pTarget->EndWaitCursor();
+        view.EndWaitCursor();
         SetDataReady(FALSE);
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -123,7 +122,7 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
     CloseTempFile();
 	// end data processing
     EndProcess((nProgress >= 95)); 
-    pTarget->EndWaitCursor();
+    view.EndWaitCursor();
     SetDataReady();
 
     //Dump("iirfilter end process");
@@ -161,7 +160,7 @@ long CProcessIIRFilter::ProcessForward(Model * pModel, IProcess * pLowerProcess,
 
     int count = 0;
 	// pointers to target data
-    HPSTR pTargetData = NULL;
+    BPTR pTargetData = NULL;
     m_nMinValue = INT_MAX;
     m_nMaxValue = INT_MIN;
 
@@ -241,7 +240,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, Model * pModel, int & nPr
 
     // process in reverse
     // first do forward pass
-    CProcessIIRFilter forwardPass(pContext,type,m_bDstWBenchProcess);
+    CProcessIIRFilter forwardPass(context,type,m_bDstWBenchProcess);
     forwardPass.SetSourceProcess(m_pSourceProcess, m_bSrcWBenchProcess);
     forwardPass.m_zForwardTransform *= m_zForwardTransform;
     forwardPass.SetFilterFilter(true);
@@ -279,7 +278,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, Model * pModel, int & nPr
         nData = round2Int(m_zReverseTransform.Tick(double(nData)));
     }
 
-    HPSTR pTargetData = NULL;       // pointers to target data
+    BPTR pTargetData = NULL;       // pointers to target data
     m_nMinValue = INT_MAX;
     m_nMaxValue = INT_MIN;
 

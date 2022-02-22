@@ -20,7 +20,8 @@
 class CProcessSpectroFormants : public CProcess {
 
 public:
-    CProcessSpectroFormants(Context* pContext);
+    CProcessSpectroFormants(Context& context) : CProcess(context) {};
+    CProcessSpectroFormants() = delete;
 
     virtual DWORD GetDataSize();
     // return processed data size in LPC data structures

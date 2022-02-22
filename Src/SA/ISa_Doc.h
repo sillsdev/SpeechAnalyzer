@@ -36,8 +36,6 @@ class CSaParam;
 enum EGender;
 
 __interface ISaDoc {
-
-public:
     EGender GetGender();
     int GetWbProcess();
     const CMusicParm * GetMusicParm() const;
@@ -47,13 +45,13 @@ public:
 
     DWORD GetDataSize() const;
     DWORD GetRawDataSize() const;
-    HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
+    BPTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
     int GetWaveData(DWORD dwOffset, BOOL *);
     void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
     DWORD GetUnprocessedBufferIndex(size_t nSize);
 
-    HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
-    HPSTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
+    BPTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
+    BPTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
     DWORD GetUnprocessedWaveDataBufferSize();
     DWORD GetWaveBufferIndex();
     DWORD GetWaveDataBufferSize();

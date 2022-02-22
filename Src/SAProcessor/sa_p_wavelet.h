@@ -13,7 +13,7 @@
 #ifndef _SA_P_WAVELET_H
 #define _SA_P_WAVELET_H
 
-#include "Process.h"
+#include "sa_process.h"
 #include "param.h"
 
 #define DEBAUCHES4      4

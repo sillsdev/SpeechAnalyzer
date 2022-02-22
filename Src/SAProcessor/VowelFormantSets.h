@@ -6,8 +6,8 @@
 
 class CVowelFormantSets : private std::vector<CVowelFormantSet> {
 public:
-    CVowelFormantSets(App * pApp);
-    CVowelFormantSets(const string& szFilename);
+    CVowelFormantSets(App & app);
+    CVowelFormantSets(App & app, const string& szFilename);
 
     BOOL Load(const string& szFilename);
     BOOL Save(const string& szFilename) const;
@@ -29,7 +29,7 @@ public:
     size_type size() const;
 
 private:
-    App* pApp;
+    App & app;
     string m_szFilename;
     int m_nDefaultSet;
 };

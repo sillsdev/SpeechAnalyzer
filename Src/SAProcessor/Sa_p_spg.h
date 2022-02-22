@@ -20,7 +20,7 @@ class CProcessSpectroFormants;
 
 class CProcessSpectrogram : public CProcessAreaData {
 public:
-    CProcessSpectrogram(Context * pContext, const CSpectroParm & cParm, Model * pModel, BOOL bRealTime = TRUE);
+    CProcessSpectrogram(Context & context, const CSpectroParm & cParm, Model * pModel, BOOL bRealTime = TRUE);
     virtual ~CProcessSpectrogram();
 
     long Process(void * pCaller, Model * pModel, View * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);

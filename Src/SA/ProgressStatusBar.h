@@ -10,12 +10,6 @@
 
 #include "sa_dlWnd.h"
 
-//###########################################################################
-// CProgressStatusBar window
-
-/////////////////////////////////////////////////////////////////////////////
-// CProgressStatusBar defines
-
 class CProgressStatusBar : public CStatusBar {
 
 public:

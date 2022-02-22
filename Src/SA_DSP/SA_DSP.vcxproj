@@ -139,6 +139,7 @@
     <ClCompile Include="Spectgrm.cpp" />
     <ClCompile Include="Spectrum.cpp" />
     <ClCompile Include="template.cpp" />
+    <ClCompile Include="windowsettings.cpp" />
     <ClCompile Include="ZTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +177,7 @@
     <ClInclude Include="tpq.hpp" />
     <ClInclude Include="tvector.h" />
     <ClInclude Include="tvector.hpp" />
+    <ClInclude Include="windowsettings.h" />
     <ClInclude Include="zroots.h" />
     <ClInclude Include="ZTransform.h" />
   </ItemGroup>

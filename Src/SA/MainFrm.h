@@ -48,6 +48,7 @@
 #include "SaParam.h"
 #include "DataStatusBar.h"
 #include "DlgEditor.h"
+#include "Grid.h"
 
 class CDlgFind;
 class CSegment;

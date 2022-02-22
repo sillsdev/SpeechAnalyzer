@@ -25,10 +25,6 @@
 #include "sa_view.h"
 #include "mainfrm.h"
 #include "sa_mplot.h"
-#include "Process\Process.h"
-#include "Process\sa_p_raw.h"
-#include "Process\Butterworth.h"
-#include "Process\Hilbert.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -122,7 +118,7 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         PlotStandardPaint(pDC, rWnd, rClip, pRaw, pModel, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
     }
 
-    if (pApp->getResearchSettings().m_bShowHilbertTransform) {
+    if (app.getResearchSettings().m_bShowHilbertTransform) {
         // create raw data
         CProcessHilbert * pHilbert = pModel->GetHilbert();    // get pointer to change object
         nResult = LOWORD(pHilbert->Process(this, pModel));    // process data

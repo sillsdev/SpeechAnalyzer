@@ -14,35 +14,11 @@
 #include "sa_g_spg.h"
 #include "sa_plot.h"
 #include "SpectroParm.h"
-#include "Process\Process.h"
-#include "Process\sa_p_zcr.h"
-#include "Process/sa_p_pitch.h"
-#include "Process\sa_p_custompitch.h"
-#include "Process\sa_p_smoothedpitch.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_melogram.h"
-#include "Process\sa_p_cha.h"
-#include "Process\sa_p_raw.h"
-#include "Process\sa_p_spg.h"
-#include "Process\sa_p_spu.h"
-#include "Process\sa_p_fmt.h"
-#include "Process\sa_p_dur.h"
-#include "Process\sa_p_glo.h"
-#include "Process\sa_p_poa.h"
-#include "Process\sa_p_rat.h"
-#include "Process\sa_p_twc.h"
-#include "Process\Butterworth.h"
-#include "Process\formanttracker.h"
 #include "sa_doc.h"
 #include "sa_view.h"
 #include <FileUtils.h>
-#include "StringUtils.h"
-#include "Process\Hilbert.h"
 #include "Lpc.h"
 
-//
 // file location of messages that get updated regularly
 #define STATUS_MESSAGE 0x3A
 #define N_TESTS_PASSED 0x95

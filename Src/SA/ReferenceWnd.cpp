@@ -26,7 +26,6 @@
 #include "GlossSegment.h"
 #include "GlossNatSegment.h"
 #include "ReferenceSegment.h"
-#include "Process\Process.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

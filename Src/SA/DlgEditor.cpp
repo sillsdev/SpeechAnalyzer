@@ -30,9 +30,7 @@
 
 #include "stdafx.h"
 #include "DlgEditor.h"
-#include "Process\Process.h"
 #include "Segment.h"
-
 #include "ch_dlg.h"
 #include "sa_doc.h"
 #include "sa.h"

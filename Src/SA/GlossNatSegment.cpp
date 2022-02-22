@@ -4,9 +4,6 @@
 #include "SA_View.h"
 #include "sa_ipa.h"
 
-CGlossNatSegment::CGlossNatSegment(EAnnotation index, int master) : CTextSegment(index, master) {
-}
-
 void CGlossNatSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, ELimit /*nMode*/) const {
     dwStart=GetOffset(GetSelection());
     dwStop=GetStop(GetSelection());

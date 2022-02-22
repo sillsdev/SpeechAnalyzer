@@ -1,13 +1,20 @@
 #include "pch.h"
 #include "VowelFormants.h"
 #include "VowelSetVersion.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
+#include "funcs.h"
 
 CVowelFormants::CVowelFormants(const string& szVowel, double inF1, double inF2, double inF3, double inF4) {
+    Init(_to_wstring(szVowel), inF1, inF2, inF3, inF4);
+}
+
+CVowelFormants::CVowelFormants(const wstring& szVowel, double inF1, double inF2, double inF3, double inF4) {
     Init(szVowel, inF1, inF2, inF3, inF4);
 }
 
-void CVowelFormants::Init(const string& szVowel, double inF1, double inF2, double inF3, double inF4) {
-    m_szVowel = _to_wstring(szVowel);
+void CVowelFormants::Init(const wstring& szVowel, double inF1, double inF2, double inF3, double inF4) {
+    m_szVowel = szVowel;
     F1 = inF1;
     F2 = inF2;
     F3 = inF3;
@@ -21,7 +28,7 @@ static LPCSTR psz_F3 = "F3";
 static LPCSTR psz_F4 = "F4";
 
 // Write spectrumParm properties to stream
-void CVowelFormants::WriteProperties(ObjectOStream& obs) const {
+void CVowelFormants::WriteProperties(CObjectOStream& obs) const {
     obs.WriteBeginMarker(psz_Vowel, _to_utf8(m_szVowel).c_str());
 
     // write out properties
@@ -34,14 +41,14 @@ void CVowelFormants::WriteProperties(ObjectOStream& obs) const {
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CVowelFormants::ReadProperties(ObjectIStream& obs) {
+BOOL CVowelFormants::ReadProperties(CObjectIStream& obs) {
 
     char buffer[1024];
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Vowel, buffer, _countof(buffer))) {
         return FALSE;
     }
 
-    Init(buffer, -1, -1, -1);
+    Init(_to_wstring(buffer), -1, -1, -1);
 
     while (!obs.bAtEnd()) {
         if (obs.bReadDouble(psz_F1, F1));

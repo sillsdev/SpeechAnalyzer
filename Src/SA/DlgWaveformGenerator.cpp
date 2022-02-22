@@ -9,7 +9,6 @@
 
 #include "stdafx.h"
 #include "DlgWaveformGenerator.h"
-#include "Process\Process.h"
 #include "math.h"
 #include "mainfrm.h"
 #include "sa_doc.h"

@@ -5,10 +5,9 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "FormantTracker.h"
 #include "TrackState.h"
-#include "StringUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

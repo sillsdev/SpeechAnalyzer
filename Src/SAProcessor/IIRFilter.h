@@ -4,13 +4,13 @@
 #ifndef IIRFILTER_H
 #define IIRFILTER_H
 
-#include "IProcess.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "wbprocess.h"
 
 class CProcessIIRFilter : public CWbProcess {
 public:
-    CProcessIIRFilter(Context * pContext, WbDialogType type, BOOL bDstWBench = TRUE);
+    CProcessIIRFilter(Context & context, WbDialogType type, BOOL bDstWBench = TRUE);
+    CProcessIIRFilter() = delete;
 
     void SetSourceProcess(IProcess * pSourceProcess, BOOL bWBenchProcess = TRUE);
     void SetOutputType(BOOL bWBenchProcess = TRUE);

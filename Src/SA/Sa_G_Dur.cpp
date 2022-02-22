@@ -8,8 +8,6 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_dur.h"
-#include "Process\Process.h"
-#include "Process\sa_p_dur.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "Segment.h"

@@ -5,7 +5,7 @@
 
 class COrthographicSegment : public CDependentSegment {
 public:
-    COrthographicSegment(EAnnotation index, int master = -1);
+    COrthographicSegment() = delete;
 
 private:
     virtual CFontTable * NewFontTable() const;

@@ -1,12 +1,6 @@
 #include "stdafx.h"
 #include "TextSegment.h"
-#include "Process\Process.h"
 #include "Segment.h"
-#include "Process\sa_p_cha.h"
-#include "Process\sa_p_zcr.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_fra.h"
-
 #include "sa_asert.h"
 #include "sa_doc.h"
 #include "sa_view.h"
@@ -18,12 +12,6 @@
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
-
-CTextSegment::CTextSegment(EAnnotation index, int master) : CDependentSegment(index,master) {
-}
-
-CTextSegment::~CTextSegment() {
-}
 
 /***************************************************************************/
 // CTextSegment::Insert Insert a text segment

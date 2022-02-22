@@ -6,12 +6,12 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_rat.h"
 #include "sa_p_cha.h"
 #include "sa_p_lou.h"
-
 #include "param.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -58,19 +58,17 @@ long CProcessRatio::Process(void * pCaller, Model * pModel, int nProgress,
     }
 
     // start change process
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSRAT)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     if (!pLoudness->SmoothData(2)) { // smooth smoothed loudness two times
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     const CUttParm * pUttParm = pModel->GetUttParm(); // get sa parameters utterance member data
-    UINT nBlockAlign = pModel->GetBlockAlign();
+    WORD nBlockAlign = pModel->GetBlockAlign();
     // calculate current processing position (copied but not understood from WINCECIL)
     DWORD dwLoopStart = ((pModel->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
                           + pModel->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
@@ -80,7 +78,6 @@ long CProcessRatio::Process(void * pCaller, Model * pModel, int nProgress,
     // create the temporary change file
     if (!CreateTempFile(_T("RAT"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -121,7 +118,7 @@ long CProcessRatio::Process(void * pCaller, Model * pModel, int nProgress,
                 Write(m_lpBuffer, dwChangeCount * 2);
             } catch (CFileException * e) {
                 // error writing file
-                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
@@ -148,7 +145,6 @@ long CProcessRatio::Process(void * pCaller, Model * pModel, int nProgress,
     } else {
         EndProcess();
     }
-    pTarget->EndWaitCursor();
     SetDataReady(bRes);
     if (bRes) {
         return MAKELONG(nLevel, nProgress);

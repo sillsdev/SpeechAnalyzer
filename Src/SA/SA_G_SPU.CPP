@@ -7,12 +7,8 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_spu.h"
-#include "Process\Process.h"
-#include "Process\sa_p_smoothedpitch.h"
-#include "Process\sa_p_fra.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
-
 #include <windows.h>
 #include <math.h>
 #include "sa_doc.h"
@@ -20,8 +16,6 @@
 #include "sa_wbch.h"
 #include "mainfrm.h"
 #include "StopWatch.h"
-#include "Process\sa_p_fmt.h"
-#include "Process\sa_p_spu.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

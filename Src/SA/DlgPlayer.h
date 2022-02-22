@@ -45,7 +45,7 @@ public:
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed = 100);
     virtual void StoreFailed();
     virtual void EndPlayback();
-    virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
+    virtual BPTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
     bool SetPlayerMode(EMode mode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey = FALSE, SSpecific * pSpecific = NULL);
     void ChangeView(CSaView * pView);                   // set new view
     bool IsPlaying();

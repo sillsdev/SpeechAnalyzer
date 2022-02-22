@@ -13,12 +13,15 @@
 //            hard-coded values (as previously).
 /////////////////////////////////////////////////////////////////////////////
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_spg.h"
 #include "sa_p_sfmt.h"
 #include "math.h"
 #include "SpectroParm.h"
 #include "param.h"
+#include "funcs.h"
+#include "ScopedCursor.h"
+#include "ResearchSettings.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -34,12 +37,12 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // a temporary second buffer, into which it copies all the raw data needed
 // for the calculation.
 
-CProcessSpectrogram::CProcessSpectrogram(Context * pContext, const CSpectroParm & defaults, Model * pModel, BOOL bRealTime) : CProcessAreaData(pContext),
+CProcessSpectrogram::CProcessSpectrogram(Context & context, const CSpectroParm & defaults, Model * pModel, BOOL bRealTime) : CProcessAreaData(context),
     m_bRealTime(bRealTime), m_pDoc(pModel) {
     // create the spectrogram parameter arrays
     m_nWindowWidth = 0;
     m_nWindowHeight = 0;
-    m_pSpectroFormants = new CProcessSpectroFormants(pContext);
+    m_pSpectroFormants = new CProcessSpectroFormants(context);
     SetSpectroParm(defaults);
 }
 
@@ -116,23 +119,21 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
         }
     }
 
-    pTarget->BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSSPG)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     if (!CreateTempFile(_T("SPG"))) { // creating error
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // set up spectrogram parameters
     const CSpectroParm * pSpectroParm = & GetSpectroParm(); // get pointer to spectrogram parameters
 
-    UINT nBlockAlign = pModel->GetBlockAlign(true);
+    WORD nBlockAlign = pModel->GetBlockAlign(true);
     SSpectrogramSettings SpgmSetting;
     SSigParms Signal;
     dspError_t Err;
@@ -141,7 +142,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     SpgmSetting.preEmphSw = true;
     SpgmSetting.Bandwidth = pSpectroParm->Bandwidth();
     Signal.SmpRate = pModel->GetSamplesPerSec();
-    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(CDspWin::CalcLength(SpgmSetting.Bandwidth, Signal.SmpRate, pApp->getResearchSettings().getWindow().getType()))/log(2.0) + 0.0))));
+    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(CDspWin::CalcLength(SpgmSetting.Bandwidth, Signal.SmpRate, app.GetResearchSettings().GetWindow().getType()))/log(2.0) + 0.0))));
 
     {
         int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(pModel->GetSamplesPerSec())/2 + 1);
@@ -178,7 +179,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     // wide band results, if there is enough data to calculate (spectrogram doesn't
     // do that).
 
-    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, pModel->GetSamplesPerSec(), pApp->getResearchSettings().getWindow().getType()) / 2));
+    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, pModel->GetSamplesPerSec(), app.GetResearchSettings().GetWindow().getType()) / 2));
 
     double fSpectraInterval = (dwDataLength/wSmpSize)/double(nWidth);
 
@@ -260,7 +261,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
             }
         } catch (CFileException * e) {
             // error writing file
-            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 			// delete the spectrogram object
 			delete pSpectrogram;
 			// error, writing failed
@@ -276,7 +277,6 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
 
     nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     m_nWindowWidth = nWidth;   // save window width

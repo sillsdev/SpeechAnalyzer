@@ -12,11 +12,6 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_gZ3D.h"
-#include "Process\Process.h"
-#include "Process\sa_p_spu.h"
-#include "Process\sa_p_fmt.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_grappl.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "DlgVowelFormants.h"
@@ -26,9 +21,7 @@
 #include "sa_view.h"
 #include "sa_wbch.h"
 #include "mainfrm.h"
-#include "Process\FormantTracker.h"
 #include "LegendWnd.h"
-#include "Process/ProcessAreaData.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -371,8 +364,9 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     EGender nGender = pModel->GetGender();
 
     // Draw Vowel Set Title
-    const CSaString & szVowelSetName = pApp->GetDefaultVowelSet().GetName();
-    if ((!szVowelSetName.IsEmpty()) && (szVowelSetName != "(None)")) {
+    CSaApp* pApp = (CSaApp*)AfxGetApp();
+    const wstring & szVowelSetName = pApp->GetDefaultVowelSet().GetName();
+    if ((!szVowelSetName.empty()) && (szVowelSetName.compare(_T("(None)"))!=0)) {
         CFont vowelTitleFont;
         const _TCHAR VowelTitleTypeface[] = _T("Arial");
         vowelTitleFont.CreateFont(int(0.6*VOWEL_FONT_HEIGHT), 0, 0, 0, FW_NORMAL, 0, 0, 0,
@@ -386,7 +380,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
         int nTop = nBottom - TitleSize.cy;
         CRect rect(nLeft, nTop, nRight, nBottom);
         COLORREF oldColor = pDC->SetTextColor(pColor->cPlotData[0]); // set font color
-        pDC->DrawText(szVowelSetName, rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP | DT_NOPREFIX);
+        pDC->DrawText(szVowelSetName.c_str(), rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP | DT_NOPREFIX);
 
         if (pFormants->GetVowelCount(nGender) == 0) {
             int nTop2 = pFormantChart->Y_TOP + (pFormantChart->Y_BOTTOM - pFormantChart->Y_TOP)/3;
@@ -400,24 +394,24 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     }
 
     for (int nVowel = 0; nVowel < pFormants->GetVowelCount(nGender); nVowel++) {
-        CSaString vowel = pFormants->GetVowel(nVowel, nGender);
+        wstring vowel = pFormants->GetVowel(nVowel, nGender);
         SFormantFreq Formant = pFormants->GetVowelFreq(nVowel, nGender, pFormantParms->bMelScale);
-        CSize extent = pDC->GetTextExtent(vowel);
+        CSize extent = pDC->GetTextExtent(vowel.c_str());
         p = MapVowelsToChart(pDC, Formant, extent.cy, pFormantChart, zG, bFlipChart);
         // display the vowel symbol
         CRect rect(p.x - extent.cx/2, p.y - extent.cy/2, p.x + extent.cx/2, p.y + extent.cy/2);
-        pDC->DrawText(vowel, rect, DT_SINGLELINE | DT_VCENTER | DT_CENTER | DT_NOCLIP);
+        pDC->DrawText(vowel.c_str(), rect, DT_SINGLELINE | DT_VCENTER | DT_CENTER | DT_NOCLIP);
     }
 
     // draw the nearest vowel
-    if ((bDynamicUpdate) && (bValidData) && (szVowelSetName != "(None)") && (pFormants->GetVowelCount(nGender))) {
+    if ((bDynamicUpdate) && (bValidData) && (szVowelSetName.compare(_T("(None)"))!=0) && (pFormants->GetVowelCount(nGender))) {
 
 #define NEAREST_SPACING 15
 
         // draw the 'nearest vowel' character
-        CSaString vowelId = pFormants->FindNearestVowel(pModel);
-        vowelId = vowelId.Trim();
-        CSize extent = pDC->GetTextExtent(vowelId);
+        wstring vowelId = pFormants->FindNearestVowel(pModel);
+        vowelId = trim_copy(vowelId);
+        CSize extent = pDC->GetTextExtent(vowelId.c_str());
 
         TEXTMETRIC tm;
         pDC->GetTextMetrics(&tm);
@@ -427,7 +421,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
         int nRight = pFormantChart->X_RIGHT - NEAREST_SPACING;
         int nLeft = nRight - extent.cx;
         CRect rect(nLeft, nTop, nRight, nBottom);
-        pDC->DrawText(vowelId, rect, DT_SINGLELINE | DT_BOTTOM | DT_CENTER | DT_NOCLIP);
+        pDC->DrawText(vowelId.c_str(), rect, DT_SINGLELINE | DT_BOTTOM | DT_CENTER | DT_NOCLIP);
 
         pDC->SetTextColor(pColor->cPlotData[0]); // set font color
 
@@ -1730,7 +1724,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
-        m_lpDataX = (HPSTR)::GlobalLock(m_hDataX); // lock memory
+        m_lpDataX = (BPTR)::GlobalLock(m_hDataX); // lock memory
         if (!m_lpDataX) {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -1748,7 +1742,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
-        m_lpDataY = (HPSTR)::GlobalLock(m_hDataY); // lock memory
+        m_lpDataY = (BPTR)::GlobalLock(m_hDataY); // lock memory
         if (!m_lpDataY) {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -1766,7 +1760,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
-        m_lpDataSym = (HPSTR)::GlobalLock(m_hDataSym); // lock memory
+        m_lpDataSym = (BPTR)::GlobalLock(m_hDataSym); // lock memory
         if (!m_lpDataSym) {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -1828,7 +1822,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
             DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
             DWORD dwRawBufferSize = pModel->GetWaveDataBufferSize();
             // fill up data buffers
-            HPSTR pData = pModel->GetWaveData(dwStart, TRUE); // get pointer to wave data block
+            BPTR pData = pModel->GetWaveData(dwStart, TRUE); // get pointer to wave data block
             if (pData == NULL) {
                 return;    // error occured while reading data block
             }

@@ -6,10 +6,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_fra.h"
 #include "sa_p_grappl.h"
-
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -19,7 +19,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessFragments::CProcessFragments Constructor
 /***************************************************************************/
-CProcessFragments::CProcessFragments(Context * pContext) : CProcess(pContext) {
+CProcessFragments::CProcessFragments(Context & context) : CProcess(context) {
     m_pFragmenter = NULL;
     m_dwFragmentIndex = 0;
     m_dwFragmentCount = 0;
@@ -52,7 +52,7 @@ CProcessFragments::~CProcessFragments() {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessFragments::Process(void* pCaller, Model* pModel, int nProgress, int nLevel) {
     TRACE(_T("Process: CProcessFragments\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -61,10 +61,16 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    BOOL bBackground = pModel->IsBackgroundProcessing();
-    if (!bBackground) {
-        pTarget->BeginWaitCursor();    // wait cursor
+    bool background = pModel->IsBackgroundProcessing();
+    if (!background) {
+        CScopedCursor cursor(view);
+        return SubProcess(background, pCaller, pModel, nProgress, nLevel);
+    } else {
+        return SubProcess(background, pCaller, pModel, nProgress, nLevel);
     }
+}
+
+long CProcessFragments::SubProcess(bool background, void* pCaller, Model * pModel, int nProgress, int nLevel) {
 
     // generate pitch contour
     CProcessGrappl * pAutoPitch = pModel->GetGrappl();
@@ -73,22 +79,16 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
         if ((nResult == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
-        if (!bBackground) {
-            pTarget->EndWaitCursor();
-        }
         return MAKELONG(nResult, nProgress);
     }
 
     DWORD dwOldPitchBlock = pAutoPitch->GetProcessBufferIndex();  // save current pitch buffer block offset
 
     // start processing fragments
-    if (!(bBackground ? StartProcess(pCaller, BACKGNDFRA) : StartProcess(pCaller, PROCESSFRA))) {
+    if (!(background ? StartProcess(pCaller, BACKGNDFRA) : StartProcess(pCaller, PROCESSFRA))) {
         // memory allocation failed
         // end data processing
         EndProcess();
-        if (!bBackground) {
-            pTarget->EndWaitCursor();
-        }
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -108,9 +108,6 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
         if (!CreateTempFile(_T("FRA"))) { // creating error
             EndProcess(); // end data processing
             SetDataInvalid();
-            if (!bBackground) {
-                pTarget->EndWaitCursor();
-            }
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
         m_dwWaveIndex = 0;
@@ -155,9 +152,6 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
         if (Err) {
             EndProcess(); // end data processing
             SetDataInvalid();
-            if (!bBackground) {
-                pTarget->EndWaitCursor();
-            }
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
 
@@ -165,9 +159,6 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
         // open file to append data
         if (!OpenFileToAppend()) {
             EndProcess(); // end data processing
-            if (!bBackground) {
-                pTarget->EndWaitCursor();
-            }
             if (m_pFragmenter!=NULL) {
                 delete m_pFragmenter;
                 m_pFragmenter = NULL;
@@ -188,14 +179,14 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
         case WAVE_BUFFER_CALLBACK:
             // reload waveform buffer
             m_dwWaveIndex = m_pFragmenter->GetWaveBlockIndex();
-            if (!bBackground) {
+            if (!background) {
                 pModel->GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
             }
             break;
         case PITCH_BUFFER_CALLBACK:
             // reload pitch buffer
             m_dwPitchIndex = m_pFragmenter->GetPitchBlockIndex();
-            if (!bBackground) {
+            if (!background) {
                 pAutoPitch->GetProcessedData( m_dwPitchIndex, TRUE);    //!!check byte offset
             }
             break;
@@ -206,14 +197,14 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
                 Write(m_lpBuffer, m_pFragmenter->GetFragmentBlockLength() * sizeof(SFragParms));
             } catch (CFileException * e) {
                 // error writing file
-                pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 				// error, writing failed
 				e->Delete();
 				return Exit(PROCESS_ERROR);
             }
             break;
         }
-        if (bBackground) {
+        if (background) {
             break;
         }
     } while (lStatus != DONE);
@@ -248,8 +239,7 @@ long CProcessFragments::Process(void * pCaller, Model * pModel, int nProgress, i
     }
 
     // if foreground processing and data is not ready, return a process error
-    if (!bBackground) {
-        pTarget->EndWaitCursor();
+    if (!background) {
         if (!IsDataReady()) {
             SetDataInvalid(); // delete the temporary file
             return MAKELONG(PROCESS_ERROR, 100);

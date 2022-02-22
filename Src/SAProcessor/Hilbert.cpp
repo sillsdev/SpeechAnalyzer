@@ -3,9 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 #include "pch.h"
 #include "Hilbert.h"
-
 #include "sa_w_adj.h"
-#include "StringUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -34,7 +32,7 @@ const double CProcessHilbert::Pole1000x96dB[] = {
     0 // Real Pole
 };
 
-CProcessHilbert::CProcessHilbert(Context * pContext, CProcess * pSourceProcess, BOOL bWBenchProcess) : CProcessIIRFilter( pContext, Plain) {
+CProcessHilbert::CProcessHilbert(Context & context, CProcess * pSourceProcess, BOOL bWBenchProcess) : CProcessIIRFilter( context, Plain) {
     const double * poles = Pole1000x96dB;
     double fTauSq=0;
     double rTauSq=0;

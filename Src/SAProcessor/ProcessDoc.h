@@ -8,22 +8,21 @@
 #ifndef _SA_P_DOC_H
 #define _SA_P_DOC_H
 
-#include "IProcess.h"
-
 using std::wstring;
 
 __interface ISaDoc;
 __interface CmdTarget;
 
-class CProcessDoc : public CmdTarget, public IProcess {
+class CProcessDoc : public IProcess {
 
 public:
-    CProcessDoc(Context * pContext);
+    CProcessDoc(Context & context);
     CProcessDoc() = delete;
     virtual ~CProcessDoc();
+
     void SetDataInvalid();
     // return pointer to block of processed wave source
-    HPSTR GetProcessedWaveData(App * pApp, LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin = FALSE);
+    BPTR GetProcessedWaveData(App * pApp, LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin = FALSE);
     // return processed data pointer to object staring at dwOffset
     void * GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE);
     DWORD GetProcessBufferIndex(size_t nSize = 1);
@@ -41,8 +40,8 @@ public:
 private:
     void LoadBuffer(char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead);
 
-    App * pApp;
-    Model* pModel;
+    App & app;
+    Model& model;
     char m_Buffer[0x10000];     // processed data buffer
     DWORD m_dwBufferOffset;     // actual buffer offset in bytes
 };

@@ -1,14 +1,15 @@
 #ifndef SA_P_3DPITCH_H
 #define SA_P_3DPITCH_H
 
-#include "Process.h"
+#include "sa_process.h"
+
+__interface Process;
 
 class CProcess3dPitch : public CProcess {
 public:
-    CProcess3dPitch(Context * pContext);           // protected constructor used by dynamic creation
-    virtual ~CProcess3dPitch();
+    CProcess3dPitch(Context & context);
+    CProcess3dPitch() = delete;
 
-    void SetSourceProcess(IProcess * pSourceProcess);
     virtual long Process(void * pCaller, Model *, int nProgress = 0, int nLevel = 1);
 
 private:

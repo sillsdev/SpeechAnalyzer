@@ -7,11 +7,6 @@
 #include "mainfrm.h"
 #include "FmtParm.h"
 #include "PlayMixer.h"
-#include "Process\Process.h"
-#include "Process\sa_p_lou.h"
-#include "Process\sa_p_grappl.h"
-#include "Process\sa_p_dur.h"
-#include "Process\sa_p_fra.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

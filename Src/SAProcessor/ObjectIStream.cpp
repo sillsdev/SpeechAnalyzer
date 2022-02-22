@@ -7,7 +7,7 @@
 // 1.5Test8.2
 //        SDM Added WriteWindowPlacement(const char*,WINDOWPLACEMENT&)
 /////////////////////////////////////////////////////////////////////////////
-#include "Stdafx.h"
+#include "pch.h"
 #include <windows.h>
 #include <fstream>
 #include "objectistream.h"
@@ -436,7 +436,7 @@ bool CObjectIStream::bReadUInt(LPCSTR pszMarker, UINT & ui) { // Read an unsigne
         return false;
     }
 
-    if (sscanf_s(s, "%hu", &ui) == 0) {
+    if (sscanf_s(s, "%u", &ui) == 0) {
         return false;
     }
 

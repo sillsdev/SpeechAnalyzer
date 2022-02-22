@@ -11,8 +11,6 @@
 #include "WaveInDevice.h"
 #include "DlgFnKeys.h"
 #include "DlgRecorderOptions.h"
-#include "Process\sa_p_fra.h"
-#include "Process\Process.h"
 #include "objectostream.h"
 #include "Sa_Doc.h"
 
@@ -107,7 +105,7 @@ void CDlgWaveNotifyObj::EndPlayback() {
 // the document. If the request is coming from the recorder, the recorder will
 // deliver the data.
 /***************************************************************************/
-HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize) {
+BPTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize) {
 
     //TRACE("GetWaveData %d %d\n",dwPlayPosition, dwDataSize);
     ASSERT(m_pClient!=NULL);
@@ -123,7 +121,7 @@ HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD 
                 ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize))) {
             return pModel->GetWaveData(dwPlayPosition, TRUE);     // get pointer to data block
         } else {
-            HPSTR pData = pModel->GetWaveData(dwPlayPosition);    // get pointer to data block
+            BPTR pData = pModel->GetWaveData(dwPlayPosition);    // get pointer to data block
             if (pData == NULL) {
                 // error while reading data
                 return NULL;

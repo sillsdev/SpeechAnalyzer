@@ -8,7 +8,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_w_pas.h"
 
 #ifdef _DEBUG
@@ -20,7 +20,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessWbHighpass
 // Workbench process class to calculate new raw data with a highpass function.
 
-CProcessWbHighpass::CProcessWbHighpass(Context * pContext) : CProcessButterworth(pContext,WbHiPass) {
+CProcessWbHighpass::CProcessWbHighpass(Context & context) : CProcessButterworth(context,WbHiPass) {
     m_nCutoff = 150;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -42,7 +42,7 @@ long CProcessWbHighpass::Process(void * pCaller, Model * pModel, int nProgress, 
     // check if nested workbench processes
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
+        pLowerProcess = main.GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter!=FALSE);
@@ -61,7 +61,7 @@ static LPCSTR psz_filter = "filterfilter";
 /***************************************************************************/
 // CProcessWbHighpass::WriteProperties Write highpass properties
 /***************************************************************************/
-void CProcessWbHighpass::WriteProperties(ObjectOStream & obs) {
+void CProcessWbHighpass::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_highpass);
     obs.WriteUInt(psz_lower, m_nCutoff);
     obs.WriteUInt(psz_order, m_nOrder);
@@ -72,7 +72,7 @@ void CProcessWbHighpass::WriteProperties(ObjectOStream & obs) {
 /***************************************************************************/
 // CProcessWbHighpass::ReadProperties Read highpass properties
 /***************************************************************************/
-BOOL CProcessWbHighpass::ReadProperties(ObjectIStream & obs) {
+BOOL CProcessWbHighpass::ReadProperties(CObjectIStream & obs) {
     UINT nCutoff = m_nCutoff;
     UINT nOrder = m_nOrder;
     BOOL bFilter = m_bFilterFilter;
@@ -98,7 +98,7 @@ BOOL CProcessWbHighpass::ReadProperties(ObjectIStream & obs) {
 // CProcessWbLowpass
 // Workbench process class to calculate new raw data with a lowpass function.
 
-CProcessWbLowpass::CProcessWbLowpass(Context * pContext) : CProcessButterworth(pContext,WbLoPass) {
+CProcessWbLowpass::CProcessWbLowpass(Context & context) : CProcessButterworth(context,WbLoPass) {
     m_nCutoff = 3000;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -120,7 +120,7 @@ long CProcessWbLowpass::Process(void * pCaller, Model * pModel, int nProgress, i
     // check if nested workbench processes
     CProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CWbProcess *)pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
+        pLowerProcess = ((CWbProcess *)main.GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
@@ -131,7 +131,7 @@ long CProcessWbLowpass::Process(void * pCaller, Model * pModel, int nProgress, i
 /***************************************************************************/
 // CProcessWbLowpass::WriteProperties Write lowpass properties
 /***************************************************************************/
-void CProcessWbLowpass::WriteProperties(ObjectOStream & obs) {
+void CProcessWbLowpass::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_lowpass);
     obs.WriteUInt(psz_upper, m_nCutoff);
     obs.WriteUInt(psz_order, m_nOrder);
@@ -142,7 +142,7 @@ void CProcessWbLowpass::WriteProperties(ObjectOStream & obs) {
 /***************************************************************************/
 // CProcessWbLowpass::ReadProperties Read lowpass properties
 /***************************************************************************/
-BOOL CProcessWbLowpass::ReadProperties(ObjectIStream & obs) {
+BOOL CProcessWbLowpass::ReadProperties(CObjectIStream & obs) {
     UINT nCutoff = m_nCutoff;
     UINT nOrder = m_nOrder;
     BOOL bFilter = m_bFilterFilter;
@@ -171,7 +171,7 @@ BOOL CProcessWbLowpass::ReadProperties(ObjectIStream & obs) {
 /***************************************************************************/
 // CProcessWbBandpass::CProcessWbBandpass Constructor
 /***************************************************************************/
-CProcessWbBandpass::CProcessWbBandpass(Context * pContext) : CProcessButterworth(pContext,WbBandPass) {
+CProcessWbBandpass::CProcessWbBandpass(Context & context) : CProcessButterworth(context,WbBandPass) {
     m_nUpperCutoff = 3000;
     m_nLowerCutoff = 150;
     m_nOrder = 3;
@@ -194,7 +194,7 @@ long CProcessWbBandpass::Process(void * pCaller, Model * pModel, int nProgress, 
     // check if nested workbench processes
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = pMain->GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
+        pLowerProcess = main.GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
@@ -205,7 +205,7 @@ long CProcessWbBandpass::Process(void * pCaller, Model * pModel, int nProgress, 
 /***************************************************************************/
 // CProcessWbBandpass::WriteProperties Write bandpass properties
 /***************************************************************************/
-void CProcessWbBandpass::WriteProperties(ObjectOStream & obs) {
+void CProcessWbBandpass::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_bandpass);
     obs.WriteUInt(psz_upper, m_nUpperCutoff);
     obs.WriteUInt(psz_lower, m_nLowerCutoff);
@@ -217,7 +217,7 @@ void CProcessWbBandpass::WriteProperties(ObjectOStream & obs) {
 /***************************************************************************/
 // CProcessWbBandpass::ReadProperties Read bandpass properties
 /***************************************************************************/
-BOOL CProcessWbBandpass::ReadProperties(ObjectIStream & obs) {
+BOOL CProcessWbBandpass::ReadProperties(CObjectIStream & obs) {
     UINT nUpperCutoff = m_nUpperCutoff;
     UINT nLowerCutoff = m_nLowerCutoff;
     UINT nOrder = m_nOrder;

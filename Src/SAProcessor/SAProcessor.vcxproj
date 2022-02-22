@@ -162,12 +162,14 @@
     <ClInclude Include="FormantTracker.h" />
     <ClInclude Include="Hilbert.h" />
     <ClInclude Include="IIRFilter.h" />
-    <ClInclude Include="IProcess.h" />
     <ClInclude Include="Lpc.h" />
+    <ClInclude Include="ObjectIStream.h" />
+    <ClInclude Include="ObjectOStream.h" />
     <ClInclude Include="param.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PitchParm.h" />
-    <ClInclude Include="Process.h" />
+    <ClInclude Include="sap_defs.h" />
+    <ClInclude Include="sa_process.h" />
     <ClInclude Include="ProcessAreaData.h" />
     <ClInclude Include="ProcessDoc.h" />
     <ClInclude Include="ResearchSettings.h" />
@@ -200,9 +202,10 @@
     <ClInclude Include="SA_W_EQU.H" />
     <ClInclude Include="SA_W_PAS.H" />
     <ClInclude Include="SA_W_REV.H" />
+    <ClInclude Include="ScopedCursor.h" />
     <ClInclude Include="SpectroParm.h" />
     <ClInclude Include="SpectrumParm.h" />
-    <ClInclude Include="StringUtils.h" />
+    <ClInclude Include="funcs.h" />
     <ClInclude Include="TrackState.h" />
     <ClInclude Include="VowelFormants.h" />
     <ClInclude Include="VowelFormantSet.h" />
@@ -216,9 +219,12 @@
     <ClCompile Include="AnalyticLpcAnalysis.cpp" />
     <ClCompile Include="Butterworth.cpp" />
     <ClCompile Include="FormantTracker.cpp" />
+    <ClCompile Include="funcs.cpp" />
     <ClCompile Include="Hilbert.cpp" />
     <ClCompile Include="IIRFilter.cpp" />
     <ClCompile Include="Lpc.cpp" />
+    <ClCompile Include="ObjectIStream.cpp" />
+    <ClCompile Include="ObjectOStream.cpp" />
     <ClCompile Include="Param.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -258,6 +264,7 @@
     <ClCompile Include="SA_W_EQU.CPP" />
     <ClCompile Include="SA_W_PAS.CPP" />
     <ClCompile Include="SA_W_REV.CPP" />
+    <ClCompile Include="ScopedCursor.cpp" />
     <ClCompile Include="SpectroParm.cpp" />
     <ClCompile Include="SpectrumParm.cpp" />
     <ClCompile Include="TrackState.cpp" />

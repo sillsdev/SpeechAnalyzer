@@ -12,7 +12,6 @@
 
 #include "stdafx.h"
 #include "DlgFind.h"
-#include "Process\Process.h"
 #include "Segment.h"
 #include "sa_ipa.h"
 

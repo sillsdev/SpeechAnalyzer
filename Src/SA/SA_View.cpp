@@ -181,12 +181,6 @@
 #include "DlgPlayer.h"
 #include "DlgExportLift.h"
 
-#include "Process\Process.h"
-#include "Process\Process.h"
-#include "Process\sa_p_fra.h"
-#include "Process\sa_p_spg.h"
-#include "Process\sa_p_sfmt.h"
-
 #include "DlgPlayer.h"
 #include "DlgSelectTranscriptionBars.h"
 #include "DlgInsertSilence.h"

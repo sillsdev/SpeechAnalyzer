@@ -11,7 +11,8 @@
 
 class CProcessGrappl : public CAbstractPitchProcess {
 public:
-    CProcessGrappl(Context * pContext);
+    CProcessGrappl(Context & context);
+
     SGrapplParms & GetCalcParms();
     long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
     BOOL IsVoiced(Model * pModel, DWORD dwWaveOffset);

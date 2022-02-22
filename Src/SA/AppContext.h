@@ -4,7 +4,7 @@ class CMainFrame;
 class CSaView;
 class CSaDoc;
 
-class CAppContext {
+class CAppContext : public App {
 private:
 	CSaApp* pApp;
 	CMainFrame* pMainFrame;

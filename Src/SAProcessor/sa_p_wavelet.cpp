@@ -11,10 +11,10 @@
 //*                                  v2.0 project                           *
 //***************************************************************************
 #include "pch.h"
-#include "Process.h"
-
+#include "sa_process.h"
 #include "sa_p_wavelet.h"
 #include "math.h"
+#include "ScopedCursor.h"
 
 #pragma warning(push, 3)
 #pragma warning(disable : 4284)
@@ -72,25 +72,17 @@ long CProcessWavelet::Process(void * pCaller, Model * , int nWidth, int /*nHeigh
         return MAKELONG(--nLevel, nProgress);
     }
 
-    //**************************************************************************
-    // Compute
-    //**************************************************************************
-
     // wait cursor
-    pTarget->BeginWaitCursor();
-
+    CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSWVL)) { // memory allocation failed
         EndProcess(); // end data processing
-        pTarget->EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
     EndProcess((nProgress >= 95)); // end data processing
-    pTarget->EndWaitCursor();
 
     // close the temporary file and read the status
-
     data_status = TRUE;
     return MAKELONG(nLevel, nProgress);
 }
@@ -1006,7 +998,7 @@ double CWaveletNode::_GetMaxTreeBounds(double max, long start, long end) {
 //*                                  FALSE otherwise
 //**************************************************************************
 BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, Model * pModel) {
-    HPSTR pData;                                // actual data pointer
+    BPTR pData;                                // actual data pointer
 
 
     DWORD dwBufferSizeBytes;

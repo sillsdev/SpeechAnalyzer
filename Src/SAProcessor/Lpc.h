@@ -135,7 +135,7 @@ class CLinPredCoding {
 public:
     static char * Copyright(void);
     static float Version(void);
-    static dspError_t CreateObject(CLinPredCoding ** ppLpcObject, App * pApp, SLPCSettings & LpcSetting, SSigParms & Signal, USHORT wFFTLength = MAX_FFT_LENGTH);
+    static dspError_t CreateObject(CLinPredCoding ** ppLpcObject, App & app, SLPCSettings & LpcSetting, SSigParms & Signal, USHORT wFFTLength = MAX_FFT_LENGTH);
     dspError_t GetLpcModel(SLPCModel ** ppLpcModel, uint8 * pFrame);
     dspError_t GetLpcModel(SLPCModel ** ppLpcModel, short * pFrame);
     dspError_t GetLpcModel(SLPCModel ** ppLpcModel, void * pFrame);
@@ -144,7 +144,7 @@ public:
     ~CLinPredCoding();
 
 private:
-    CLinPredCoding(App * pApp, SLPCParms & LpcParm, SSigParms & Signal, uint16 wFFTLength);
+    CLinPredCoding(App & app, SLPCParms & LpcParm, SSigParms & Signal, uint16 wFFTLength);
     CLinPredCoding() = delete;
     static void FreeLpcMem(SLPCParms & LpcParm);
     void PreEmphasize(uint8 * pFrame);
@@ -164,7 +164,7 @@ private:
     void CalcMeanSqError(void);
     void CalcPowerSpectrum(void);
 
-    App* pApp;
+    App & app;
     SSigParms  m_Signal;
     SLPCParms  m_LpcParm;
     uint16 m_wFFTLength;

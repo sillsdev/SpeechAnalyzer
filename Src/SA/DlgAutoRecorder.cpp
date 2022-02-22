@@ -25,8 +25,6 @@
 #include "WaveOutDevice.h"
 #include "WaveInDevice.h"
 #include "FmtParm.h"
-#include "Process\Process.h"
-#include "Process\sa_p_fra.h"
 #include "objectostream.h"
 #include "DlgPlayer.h"
 #include "SaParam.h"
@@ -106,7 +104,7 @@ CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pModel, CSaView * pView, CSaView * p
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         return;
     }
-    m_lpRecData = (HPSTR)::GlobalLock(m_hData); // lock memory
+    m_lpRecData = (BPTR)::GlobalLock(m_hData); // lock memory
     if (m_lpRecData==NULL) {
         // memory lock error
         pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -401,14 +399,14 @@ void CDlgAutoRecorder::EndPlayback() {
 // always open, the file pointer is already in the data subchunk and the
 // function just delivers the block requested.
 /***************************************************************************/
-HPSTR CDlgAutoRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize) {
+BPTR CDlgAutoRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize) {
     CSaDoc * pModel = (CSaDoc *)m_pDoc;
     DWORD dwWaveBufferSize = pModel->GetWaveDataBufferSize();
     if (((dwPlayPosition + dwDataSize) > (pModel->GetWaveBufferIndex() + dwWaveBufferSize)) ||
             ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize))) {
         return pModel->GetWaveData(dwPlayPosition, TRUE); // get pointer to data block
     } else {
-        HPSTR pData = pModel->GetWaveData(dwPlayPosition); // get pointer to data block
+        BPTR pData = pModel->GetWaveData(dwPlayPosition); // get pointer to data block
         if (pData == NULL) {
             return NULL;    // error while reading data
         }
@@ -659,7 +657,7 @@ BOOL CDlgAutoRecorder::CreateTempFile() {
         return FALSE;
     }
     // write data into 'fmt ' chunk
-    if (mmioWrite(m_hmmioFile, (HPSTR)m_szFileName, 16) == -1) { // fill up fmt chunk
+    if (mmioWrite(m_hmmioFile, (BPTR)m_szFileName, 16) == -1) { // fill up fmt chunk
         // error writing format chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEFORMATCHUNK, m_szFileName);
         return FALSE;
@@ -725,9 +723,9 @@ void CDlgAutoRecorder::CleanUp() {
 /***************************************************************************/
 BOOL CDlgAutoRecorder::Apply() {
 
-    ASSERT(m_hmmioFile!=NULL);
+    ASSERT(m_hmmioFile != NULL);
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
+    CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
     // set file pointer to end of file (also end of 'data' chunk)
     mmioSeek(m_hmmioFile, 0, SEEK_END);
 
@@ -754,7 +752,7 @@ BOOL CDlgAutoRecorder::Apply() {
         return FALSE;
     }
     // descend into 'fmt ' chunk
-    MMCKINFO mmckinfoSubchunk;
+    MMCKINFO mmckinfoSubchunk = {};
     mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
     if (mmioDescend(m_hmmioFile, &mmckinfoSubchunk, &m_mmckinfoParent, MMIO_FINDCHUNK)) {
         // error descending into format chunk
@@ -767,21 +765,21 @@ BOOL CDlgAutoRecorder::Apply() {
     CFmtParm fmtParm;
     m_pDoc->GetFmtParm(fmtParm,false);
 
-    long lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD));
+    long lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.wTag, sizeof(WORD));
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.wChannels, sizeof(WORD));
     }
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD));
     }
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD));
     }
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wBlockAlign, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.wBlockAlign, sizeof(WORD));
     }
     if (lError != -1) {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wBitsPerSample, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (BPTR)&fmtParm.wBitsPerSample, sizeof(WORD));
     }
     if (lError == -1) {
         // error writing format chunk
@@ -1209,7 +1207,7 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView * pSourceView) {
     CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
     CSaView * pView = pFrame->GetCurrSaView();
 
-    UINT graphIDs[MAX_GRAPHS_NUMBER];
+    UINT graphIDs[MAX_GRAPHS_NUMBER] = {};
     for (int i=0; i<MAX_GRAPHS_NUMBER; i++) {
         CGraphWnd * pGraph = pView->GetGraph(i);
 

@@ -6,7 +6,7 @@ __interface IWaveNotifiable {
     void BlockFinished(UINT nLevel, DWORD dwPosition, UINT = 100);
     void StoreFailed();
     void EndPlayback();
-    HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
+    BPTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
 };
 
 #endif

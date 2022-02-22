@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "SpectroParm.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
 
 static LPCSTR psz_spectroA             = "spectrogramA";
 static LPCSTR psz_spectroB             = "spectrogramB";
@@ -20,16 +22,16 @@ static LPCSTR psz_MaxThreshold         = "nMaxThreshold";
 static LPCSTR psz_MinThreshold         = "nMinThreshold";
 static LPCSTR psz_Overlay              = "nOverlay";
 
-void CSpectroParm::WritePropertiesA(ObjectOStream & obs) {
+void CSpectroParm::WritePropertiesA(CObjectOStream & obs) {
     WriteProperties(psz_spectroA, obs);
 }
 
-void CSpectroParm::WritePropertiesB(ObjectOStream & obs) {
+void CSpectroParm::WritePropertiesB(CObjectOStream & obs) {
     WriteProperties(psz_spectroB, obs);
 }
 
 // Write spectroParm properties to *.psa file.
-void CSpectroParm::WriteProperties(LPCSTR pszMarker, ObjectOStream & obs) {
+void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs) {
     obs.WriteBeginMarker(pszMarker);
 
     // write out properties
@@ -52,16 +54,16 @@ void CSpectroParm::WriteProperties(LPCSTR pszMarker, ObjectOStream & obs) {
     obs.WriteEndMarker(pszMarker);
 }
 
-BOOL CSpectroParm::ReadPropertiesA(ObjectIStream & obs) {
+BOOL CSpectroParm::ReadPropertiesA(CObjectIStream & obs) {
     return ReadProperties(psz_spectroA, obs);
 }
 
-BOOL CSpectroParm::ReadPropertiesB(ObjectIStream & obs) {
+BOOL CSpectroParm::ReadPropertiesB(CObjectIStream & obs) {
     return ReadProperties(psz_spectroB, obs);
 }
 
 // Read spectroParm properties from *.psa file.
-BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, ObjectIStream & obs) {
+BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs) {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(pszMarker)) {
         return FALSE;
     }

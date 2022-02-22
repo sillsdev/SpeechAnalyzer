@@ -11,13 +11,15 @@
 //      RLJ Added CRecordingParm class
 /////////////////////////////////////////////////////////////////////////////
 #include "pch.h"
-#include "Process.h"
+#include "sa_process.h"
 #include "sa_p_pitch.h"
 #include "sa_p_grappl.h"
 #include "sa_p_melogram.h"
 #include "sa_p_custompitch.h"
 #include "sa_p_smoothedpitch.h"
 #include "param.h"
+#include "ObjectIStream.h"
+#include "ObjectOStream.h"
 
 static LPCSTR psz_parse            = "parse";
 static LPCSTR psz_breakWidth       = "break_ms";
@@ -27,7 +29,7 @@ static LPCSTR psz_maxThreshold     = "maxThreshold";
 
 CFormantTrackerOptions formantTrackerOptions;
 
-void CParseParm::WriteProperties(ObjectOStream & obs) {
+void CParseParm::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_parse);
 
     // write out properties
@@ -39,7 +41,7 @@ void CParseParm::WriteProperties(ObjectOStream & obs) {
     obs.WriteEndMarker(psz_parse);
 }
 
-BOOL CParseParm::ReadProperties(ObjectIStream & obs) {
+BOOL CParseParm::ReadProperties(CObjectIStream & obs) {
     if ((!obs.bAtBackslash()) || (!obs.bReadBeginMarker(psz_parse))) {
         return FALSE;
     }
@@ -72,7 +74,7 @@ static LPCSTR psz_segmentWidth   = "segment_ms";
 static LPCSTR psz_minChange   = "minChange";
 static LPCSTR psz_minZeroCrossing   = "minZeroCrossing";
 
-void CSegmentParm::WriteProperties(ObjectOStream & obs) {
+void CSegmentParm::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_segment);
 
     // write out properties
@@ -83,7 +85,7 @@ void CSegmentParm::WriteProperties(ObjectOStream & obs) {
     obs.WriteEndMarker(psz_segment);
 }
 
-BOOL CSegmentParm::ReadProperties(ObjectIStream & obs) {
+BOOL CSegmentParm::ReadProperties(CObjectIStream & obs) {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_segment)) {
         return FALSE;
     }
@@ -159,7 +161,7 @@ static LPCSTR psz_pitchCepMedianFilterSize = "CepMedianFilterSize";
 static LPCSTR psz_pitchManualUpper = "ManualUpper";
 static LPCSTR psz_pitchManualLower = "ManualLower";
 
-void CMusicParm::WriteProperties(ObjectOStream & obs) {
+void CMusicParm::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_music);
 
     // write out properties
@@ -180,7 +182,7 @@ void CMusicParm::WriteProperties(ObjectOStream & obs) {
     obs.WriteEndMarker(psz_music);
 }
 
-BOOL CMusicParm::ReadProperties(ObjectIStream & obs) {
+BOOL CMusicParm::ReadProperties(CObjectIStream & obs) {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_music)) {
         return FALSE;
     }
@@ -253,14 +255,14 @@ CIntensityParm::CIntensityParm() {
     Init();
 }
 
-void CIntensityParm::WriteProperties(ObjectOStream & obs) {
+void CIntensityParm::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_intensity);
     // write out properties
     obs.WriteInteger(psz_intensityScaleMode,  nScaleMode);
     obs.WriteEndMarker(psz_intensity);
 }
 
-BOOL CIntensityParm::ReadProperties(ObjectIStream & obs) {
+BOOL CIntensityParm::ReadProperties(CObjectIStream & obs) {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_intensity)) {
         return FALSE;
     }
@@ -288,7 +290,7 @@ static const char * psz_Frequency            = "nFrequency";
 
 
 // ARH 8/1/01 Added for wavelet scalogram graph
-void CWaveletParm::WriteProperties(ObjectOStream & obs)
+void CWaveletParm::WriteProperties(CObjectOStream & obs)
 // Write waveletParm(0) properties to *.psa file.
 {
     obs.WriteBeginMarker(psz_wavelet);
@@ -305,7 +307,7 @@ void CWaveletParm::WriteProperties(ObjectOStream & obs)
 
 
 // ARH 8/1/01 Added for wavelet scalogram graph
-BOOL CWaveletParm::ReadProperties(ObjectIStream & obs)
+BOOL CWaveletParm::ReadProperties(CObjectIStream & obs)
 // Read waveletParm properties from *.psa file.
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_wavelet)) {
@@ -344,7 +346,7 @@ static LPCSTR psz_MelScale             = "bMelScale";
 static LPCSTR psz_spectrum = "spectrum";
 
 // Write CFormantParm properties to *.psa file.
-void CFormantParm::WriteProperties(ObjectOStream & obs) {
+void CFormantParm::WriteProperties(CObjectOStream & obs) {
     obs.WriteBeginMarker(psz_formantcharts);
 
     // write out properties
@@ -357,7 +359,7 @@ void CFormantParm::WriteProperties(ObjectOStream & obs) {
 }
 
 // Read CFormantParm properties from *.psa file.
-BOOL CFormantParm::ReadProperties(ObjectIStream & obs) {
+BOOL CFormantParm::ReadProperties(CObjectIStream & obs) {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum)) {
         return FALSE;
     }
@@ -393,7 +395,7 @@ static LPCSTR psz_Bits      = "Bits";
 static LPCSTR psz_Highpass  = "Highpass";
 static LPCSTR psz_Mode      = "Mode";
 
-void CRecordingParm::WriteProperties(ObjectOStream & obs)
+void CRecordingParm::WriteProperties(CObjectOStream & obs)
 // Write spectrumParm properties to *.psa file.
 {
     obs.WriteBeginMarker(psz_Recording);
@@ -407,7 +409,7 @@ void CRecordingParm::WriteProperties(ObjectOStream & obs)
     obs.WriteEndMarker(psz_Recording);
 }
 
-BOOL CRecordingParm::ReadProperties(ObjectIStream & obs)
+BOOL CRecordingParm::ReadProperties(CObjectIStream & obs)
 // Read spectrumParm properties from *.psa file.
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Recording)) {

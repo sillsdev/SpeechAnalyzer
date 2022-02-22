@@ -14,10 +14,10 @@
 
 class CProcessWbHighpass : public CProcessButterworth {
 public:
-    CProcessWbHighpass(Context * pContext);
+    CProcessWbHighpass(Context & context);
     long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
-    virtual void WriteProperties(ObjectOStream& obs);
-    virtual BOOL ReadProperties(ObjectIStream& obs);
+    virtual void WriteProperties(CObjectOStream& obs);
+    virtual BOOL ReadProperties(CObjectIStream& obs);
     UINT GetCutoff() {return m_nCutoff; };
     UINT GetOrder() { return m_nOrder; };
     BOOL GetFilter() { return m_bFilterFilter; };
@@ -36,10 +36,10 @@ private:
 
 class CProcessWbLowpass : public CProcessButterworth {
 public:
-    CProcessWbLowpass(Context * pContext);
+    CProcessWbLowpass(Context & context);
     long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
-    virtual void WriteProperties(ObjectOStream& obs);
-    virtual BOOL ReadProperties(ObjectIStream& obs);
+    virtual void WriteProperties(CObjectOStream& obs);
+    virtual BOOL ReadProperties(CObjectIStream& obs);
     UINT GetCutoff() { return m_nCutoff; };
     UINT GetOrder() { return m_nOrder; };
     BOOL GetFilter() { return m_bFilterFilter; };
@@ -54,10 +54,10 @@ private:
 
 class CProcessWbBandpass : public CProcessButterworth {
 public:
-    CProcessWbBandpass(Context * pContext);
+    CProcessWbBandpass(Context & context);
     long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
-    virtual void WriteProperties(ObjectOStream& obs);
-    virtual BOOL ReadProperties(ObjectIStream& obs);
+    virtual void WriteProperties(CObjectOStream& obs);
+    virtual BOOL ReadProperties(CObjectIStream& obs);
     UINT GetUpperCutoff() { return m_nUpperCutoff; };
     UINT GetLowerCutoff() { return m_nLowerCutoff; };
     UINT GetOrder() { return m_nOrder; };
