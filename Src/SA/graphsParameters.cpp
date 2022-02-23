@@ -686,9 +686,6 @@ void CDlgParametersPitchPage::OnKillfocusMinfreq() {
     SetDlgItemInt(IDC_PITCH_MINFREQ, m_nMinFreq, TRUE);
 }
 
-
-
-
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusMedianFilter
 /***************************************************************************/
@@ -710,8 +707,6 @@ void CDlgParametersPitchPage::OnKillfocusMedianFilter() {
     }
     SetDlgItemInt(IDC_MEDIANFILTERSIZE, m_nCepMedianFilterSize, TRUE);
 }
-
-
 
 /***************************************************************************/
 // CDlgParametersPitchPage::OnUpperBoundScroll Upper boundary spin control hit
@@ -846,7 +841,7 @@ void CDlgParametersPitchPage::OnKillfocusLowerBound() {
     int nData = GetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, NULL, TRUE);
     // RLJ 09/21/2000: Bug GPI-03CECIL_PITCH_MAXFREQ
     //    if (nData > (m_nFreqLimit - 1)) nData = m_nFreqLimit - 1;
-    if (nData > (v - 1)) {
+    if (nData > (CECIL_PITCH_MAXFREQ - 1)) {
         nData = CECIL_PITCH_MAXFREQ - 1;
     }
     if (nData < 10) {
@@ -2161,6 +2156,7 @@ void CDlgParametersFormantsPage::Apply() {
 
     if (m_bModified) { // retrieve data
         // get pointer to document
+        CSaApp* pApp = (CSaApp*)AfxGetApp();
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
         CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
@@ -2168,18 +2164,6 @@ void CDlgParametersFormantsPage::Apply() {
         CProcessFormants * pFormants = pModel->GetFormants();
         // save member data
         CFormantParm * pFormantParms = pFormants->GetFormantParms();
-        /*
-        if (m_nDataSource)
-        {
-        pFormantParms->bFromLpcSpectrum = FALSE;
-        pFormantParms->bFromCepstralSpectrum = TRUE;
-        }
-        else
-        {
-        pFormantParms->bFromLpcSpectrum = TRUE;
-        pFormantParms->bFromCepstralSpectrum = FALSE;
-        }
-        */
         pFormantParms->bFromCepstralSpectrum = m_bCepstralFormants;
         pFormantParms->bTrackFormants = m_bTrackFormants;
         if (pFormantParms->bMelScale != m_bMelScale ||
@@ -2261,6 +2245,7 @@ void CDlgParametersFormantsPage::OnEditChangeFormantVowels() {
 
 void CDlgParametersFormantsPage::OnFormantVowelsEdit() {
 
+    CSaApp* pApp = (CSaApp*)AfxGetApp();
     pApp->GetVowelSets().SetDefaultSet(m_cVowelSet.GetCurSel());
 
     CDlgVowelFormants cEdit(pApp->GetVowelSets()[m_cVowelSet.GetCurSel()], this);
@@ -2281,10 +2266,11 @@ void CDlgParametersFormantsPage::OnFormantVowelsEdit() {
 void CDlgParametersFormantsPage::PopulateVowelSetCombo(CComboBox & cBox) {
 
     cBox.ResetContent();
+    CSaApp* pApp = (CSaApp*)AfxGetApp();
     CVowelFormantSets & cSets = pApp->GetVowelSets();
 
     for (unsigned int i=0; i < cSets.size(); i++) {
-        cBox.AddString(cSets[i].GetName());
+        cBox.AddString(cSets[i].GetName().c_str());
     }
 
     cBox.SetCurSel(cSets.GetDefaultSet());
@@ -3200,7 +3186,8 @@ void CDlgParametersIntensityPage::Apply() {
 IMPLEMENT_DYNCREATE(CDlgParametersResearchPage, CPropertyPage)
 
 CDlgParametersResearchPage::CDlgParametersResearchPage() : CPropertyPage(CDlgParametersResearchPage::IDD) {
-    m_workingSettings = pApp->getResearchSettings();
+    CSaApp* pApp = (CSaApp*)AfxGetApp();
+    settings = pApp->GetResearchSettings();
 }
 
 int researchSmoothSettings[] = { -1, 40, 50, 60, 70, 85, 100, 120, 140, 170, 200, 240, 280, 340, 400, 480, 560, 680, 800, 960 };
@@ -3208,7 +3195,7 @@ int researchSmoothSettings[] = { -1, 40, 50, 60, 70, 85, 100, 120, 140, 170, 200
 BOOL CDlgParametersResearchPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
-
+    CSaApp* pApp = (CSaApp*)AfxGetApp();
 
     m_cSmooth.AddString(_T("Def."));
     int nSelect = 0;
@@ -3217,13 +3204,13 @@ BOOL CDlgParametersResearchPage::OnInitDialog() {
         szString.Format(_T("%d"), researchSmoothSettings[i]);
         m_cSmooth.AddString(szString);
 
-        if (researchSmoothSettings[i] == pApp->getResearchSettings().m_nLpcCepstralSmooth) {
+        if (researchSmoothSettings[i] == pApp->GetResearchSettings().lpcCepstralSmooth) {
             nSelect = i;
         }
     }
     m_cSmooth.SetCurSel(nSelect);
-    m_cWindowType.SetCurSel(pApp->getResearchSettings().m_cWindow.m_nType);
-    m_cWindowReplication.SetCurSel(pApp->getResearchSettings().m_cWindow.m_nReplication);
+    m_cWindowType.SetCurSel(pApp->GetResearchSettings().window.type);
+    m_cWindowReplication.SetCurSel(pApp->GetResearchSettings().window.replication);
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
@@ -3238,35 +3225,24 @@ void CDlgParametersResearchPage::Apply() {
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
         CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
         CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
+        CSaApp* pApp = (CSaApp*)AfxGetApp();
 
         int nSmoothIndex = m_cSmooth.GetCurSel();
-        m_workingSettings.m_nLpcCepstralSmooth = researchSmoothSettings[nSmoothIndex];
-        m_workingSettings.getWindow().m_nType = m_cWindowType.GetCurSel();
-        m_workingSettings.getWindow().m_nReplication = m_cWindowReplication.GetCurSel();
+        settings.lpcCepstralSmooth = researchSmoothSettings[nSmoothIndex];
+        settings.window.type = static_cast<WindowType>(m_cWindowType.GetCurSel());
+        settings.window.replication = static_cast<Replication>(m_cWindowReplication.GetCurSel());
 
-        BOOL bSpectrumSettingsChanged =
-            pApp->getResearchSettings().getSpectrumLpcMethod() != m_workingSettings.getSpectrumLpcMethod() ||
-            pApp->getResearchSettings().m_nSpectrumLpcOrderFsMult != m_workingSettings.m_nSpectrumLpcOrderFsMult ||
-            pApp->getResearchSettings().getSpectrumLpcOrderExtra() != m_workingSettings.getSpectrumLpcOrderExtra() ||
-            pApp->getResearchSettings().m_nSpectrumLpcOrderAuxMax != m_workingSettings.m_nSpectrumLpcOrderAuxMax ||
-            pApp->getResearchSettings().m_cWindow != m_workingSettings.m_cWindow ||
-            ((m_workingSettings.getSpectrumLpcMethod() == LPC_CEPSTRAL) &&
-             (pApp->getResearchSettings().m_nLpcCepstralSharp != m_workingSettings.m_nLpcCepstralSharp ||
-                 pApp->getResearchSettings().m_nLpcCepstralSmooth != m_workingSettings.m_nLpcCepstralSmooth));
-
-        if (bSpectrumSettingsChanged) {
+        if (pApp->GetResearchSettings().hasSpectrumSettingsChanged(settings)) {
             pModel->GetSpectrogram()->SetProcessDataInvalid();
-            CProcessSpectrum * pSpectrum = pModel->GetSpectrum();
-            // invalidate processed data
-            pSpectrum->SetDataInvalid();
+            pModel->GetSpectrum()->SetDataInvalid();
         }
 
-        if (pApp->getResearchSettings().m_cWindow.m_nType != m_workingSettings.m_cWindow.m_nType) {
+        if (pApp->GetResearchSettings().window.type != settings.window.type) {
             // processed data is invalid
             pModel->GetSpectrogram()->SetDataInvalid();
         }
 
-        pApp->getResearchSettings() = m_workingSettings;
+        pApp->SetResearchSettings(settings);
         pView->RedrawGraphs(TRUE, TRUE);
         SetModified(FALSE);
     }
@@ -3275,35 +3251,51 @@ void CDlgParametersResearchPage::Apply() {
 void CDlgParametersResearchPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
-    DDX_Check(pDX, IDC_RESEARCH_HILBERT, m_workingSettings.m_bShowHilbertTransform);
-    DDX_Check(pDX, IDC_RESEARCH_INSTANTANEOUS_POWER, m_workingSettings.m_bShowInstantaneousPower);
-    DDX_Check(pDX, IDC_RESEARCH_SPECTROGRAM_CONNECT_FORMANTS, m_workingSettings.m_bSpectrogramConnectFormants);
-    DDX_Check(pDX, IDC_RESEARCH_SPECTROGRAM_CONTRAST, m_workingSettings.m_bSpectrogramContrastEnhance);
-    DDX_Radio(pDX, IDC_RESEARCH_SPECTRUM_LPC_METHOD, m_workingSettings.getSpectrumLpcMethod());
-    DDX_Text(pDX, IDC_RESEARCH_LPC_ORDER_FS_MULT_EDIT, m_workingSettings.m_nSpectrumLpcOrderFsMult);
-    DDX_Text(pDX, IDC_RESEARCH_LPC_ORDER_EXTRA_EDIT, m_workingSettings.getSpectrumLpcOrderExtra());
-    DDX_Text(pDX, IDC_RESEARCH_LPC_ORDER_AUX_MAX_EDIT, m_workingSettings.m_nSpectrumLpcOrderAuxMax);
-    DDX_CBIndex(pDX, IDC_RESEARCH_LPC_SHARP, m_workingSettings.m_nLpcCepstralSharp);
 
-    int temp = m_workingSettings.GetWindow().m_bEquivalentLength;
+    BOOL showHilbertTransform = settings.showHilbertTransform;
+    DDX_Check(pDX, IDC_RESEARCH_HILBERT, showHilbertTransform);
+    settings.showHilbertTransform = showHilbertTransform;
+
+    BOOL showInstantaneousPower = settings.showInstantaneousPower;
+    DDX_Check(pDX, IDC_RESEARCH_INSTANTANEOUS_POWER, showInstantaneousPower);
+    settings.showInstantaneousPower = showInstantaneousPower;
+
+    BOOL spectrogramConnectFormants = settings.spectrogramConnectFormants;
+    DDX_Check(pDX, IDC_RESEARCH_SPECTROGRAM_CONNECT_FORMANTS, spectrogramConnectFormants);
+    settings.spectrogramConnectFormants = spectrogramConnectFormants;
+
+    BOOL spectrogramContrastEnhance = settings.spectrogramContrastEnhance;
+    DDX_Check(pDX, IDC_RESEARCH_SPECTROGRAM_CONTRAST, spectrogramContrastEnhance);
+    settings.spectrogramContrastEnhance = spectrogramContrastEnhance;
+
+    DDX_Radio(pDX, IDC_RESEARCH_SPECTRUM_LPC_METHOD, settings.spectrumLpcMethod);
+    DDX_Text(pDX, IDC_RESEARCH_LPC_ORDER_FS_MULT_EDIT, settings.spectrumLpcOrderFsMult);
+    DDX_Text(pDX, IDC_RESEARCH_LPC_ORDER_EXTRA_EDIT, settings.spectrumLpcOrderExtra);
+    DDX_Text(pDX, IDC_RESEARCH_LPC_ORDER_AUX_MAX_EDIT, settings.spectrumLpcOrderAuxMax);
+    DDX_CBIndex(pDX, IDC_RESEARCH_LPC_SHARP, settings.lpcCepstralSharp);
+
+    int temp = settings.window.equivalentLength;
     DDX_Check(pDX, IDC_RESEARCH_EXTENDED, temp);
-    m_workingSettings.GetWindow().m_bEquivalentLength = (temp == TRUE);
+    settings.window.equivalentLength = (temp == TRUE);
 
-    temp = m_workingSettings.GetWindow().m_bCenter;
+    temp = settings.window.center;
     DDX_Check(pDX, IDC_RESEARCH_WINDOW_CENTER, temp);
-    m_workingSettings.GetWindow().m_bCenter = (temp == TRUE);
+    settings.window.center = (temp == TRUE);
 
-    DDX_Text(pDX, IDC_RESEARCH_WINDOW_FRAGMENT_EDIT, m_workingSettings.GetWindow().m_nFragments);
-    DDX_Text(pDX, IDC_RESEARCH_WINDOW_TIME_EDIT, m_workingSettings.GetWindow().m_dTime);
-    DDX_Text(pDX, IDC_RESEARCH_WINDOW_BANDWIDTH_EDIT, m_workingSettings.GetWindow().m_dBandwidth);
-    DDX_Radio(pDX, IDC_RESEARCH_WINDOW_BETWEEN_CURSORS, m_workingSettings.GetWindow().m_nLengthMode);
+    DDX_Text(pDX, IDC_RESEARCH_WINDOW_FRAGMENT_EDIT, settings.window.fragments);
+    DDX_Text(pDX, IDC_RESEARCH_WINDOW_TIME_EDIT, settings.window.time);
+    DDX_Text(pDX, IDC_RESEARCH_WINDOW_BANDWIDTH_EDIT, settings.window.bandwidth);
+
+    int lengthMode = settings.window.lengthMode;
+    DDX_Radio(pDX, IDC_RESEARCH_WINDOW_BETWEEN_CURSORS, lengthMode);
+    settings.window.lengthMode = static_cast<LengthMode>(lengthMode);
+
     DDX_Control(pDX, IDC_RESEARCH_WINDOW_REPLICATION, m_cWindowReplication);
     DDX_Control(pDX, IDC_RESEARCH_WINDOW_TYPE, m_cWindowType);
     DDX_Control(pDX, IDC_RESEARCH_LPC_SMOOTH, m_cSmooth);
 }
 
 void CDlgParametersResearchPage::OnModified() {
-
     SetModified(TRUE);
     Apply();
 }

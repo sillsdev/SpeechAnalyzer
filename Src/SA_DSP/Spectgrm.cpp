@@ -1366,7 +1366,7 @@ dspError_t CSpectrogram::GetFormants(SFormantFreq * fmnt) {
     return(DONE);
 }
 
-dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float DspWinBandwidth, CWindowSettings::Type windowType, SSigParms Signal, bool bPreEmphasis, float DbRef) {
+dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float DspWinBandwidth, WindowType windowType, SSigParms Signal, bool bPreEmphasis, float DbRef) {
     // Calculate window for frame data from specified bandwidth.
     CDspWin Window = CDspWin::FromBandwidth(DspWinBandwidth,Signal.SmpRate, windowType);
     const float * WData = Window.WindowFloat();
@@ -1408,7 +1408,7 @@ dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float Dsp
     return(DONE);
 }
 
-dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, int32 BandwidthSelect, CWindowSettings::Type windowType, SSigParms Signal, bool bPreEmphasis) {
+dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, int32 BandwidthSelect, WindowType windowType, SSigParms Signal, bool bPreEmphasis) {
     // dB reference values determined empirically from 215.332 Hz sine wave (20th harmonic of 2048 FFT at 22050 Hz sampling rate)
     // at 70.7% full scale using waveform generator.
     static const double DbRef[2][3][3] = { // pre-emphasis off

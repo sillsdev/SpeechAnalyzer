@@ -30,7 +30,7 @@ enum ESPECTROGRAM_STATE {SPGM_NOT_READY=0, SPGM_PENDING=1, SPGM_CALC=2, FORMANTS
 
 struct SSpectrogramSettings {
     SSpectrogramSettings() {
-        windowType = CWindowSettings::kGaussian;
+        windowType = kGaussian;
     }
     float LwrFreq;              //lowest frequency to calculate in Hz
     float UprFreq;              //highest frequency to calculate in Hz
@@ -43,7 +43,7 @@ struct SSpectrogramSettings {
     uint32 SigBlkOffset;        //number of samples offset into speech data
     uint32 SigBlkLength;        //number of speech samples over which spectra will be calculated
     uint16 SpectBatchLength;    //number of spectra to be calculated at one time
-    CWindowSettings::Type windowType;
+    WindowType windowType;
 };
 
 
@@ -58,8 +58,8 @@ public:
                           uint8 * MaxPwr);
     dspError_t Generate(void);
     dspError_t ReadPower(short * Power, uint16 SpgmX, uint16 SpgmY);
-    static dspError_t CalcPower(float * PowerInDb, float fFrequency, float fDspWinBandwidth, CWindowSettings::Type, SSigParms Signal, bool bPreEmphasis, float DbRef = 0.F);
-    static dspError_t CalcPower(float * PowerInDb, float Frequency, int32 nBandwidthSelect, CWindowSettings::Type, SSigParms Signal, bool bPreEmphasis);
+    static dspError_t CalcPower(float * PowerInDb, float fFrequency, float fDspWinBandwidth, WindowType, SSigParms Signal, bool bPreEmphasis, float DbRef = 0.F);
+    static dspError_t CalcPower(float * PowerInDb, float Frequency, int32 nBandwidthSelect, WindowType, SSigParms Signal, bool bPreEmphasis);
     uint8 * ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX);
     dspError_t ReadFormants(SFormantFreq * Freq, uint16 SpgmX);
     CDspWin & GetWidebandWindow();

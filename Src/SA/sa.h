@@ -174,7 +174,8 @@ public:
     const CVowelFormantSet& GetDefaultVowelSet();
     const CVowelFormantsVector& GetVowelVector(int nGender);
 
-    CResearchSettings& GetResearchSettings();
+    SResearchSettings GetResearchSettings() { return researchSettings; };
+    void SetResearchSettings(SResearchSettings value) { researchSettings = value;};
     // return CPlot3D::GetChartRange(nFormant, nGender);
     SRange Get3DChartRange(int nFormant, int nGender);
     // uses IDS_ERROR_GRAPPLSPACE
@@ -237,7 +238,7 @@ protected:
     CEvent * mEvent;
     CEvent * mSignal;
     class CSingleInstanceData * mData;
-    CResearchSettings researchSettings;
+    SResearchSettings researchSettings;
 
 private:
     int CheckForBatchMode(LPTSTR);      // check if SA runs in batch mode

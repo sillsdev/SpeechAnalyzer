@@ -157,7 +157,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
             dwFrameSize != m_dwFrameSize ||
             m_stParmSpec.nSmoothLevel != m_stParmProc.nSmoothLevel ||
             m_stParmSpec.nPeakSharpFac != m_stParmProc.nPeakSharpFac ||
-            app.GetResearchSettings().GetWindow() != m_stParmProc.getWindow() ||
+            app.GetResearchSettings().window != m_stParmProc.GetWindow() ||
             SpectraSelected.bCepstralSpectrum != m_stSpectraProc.bCepstralSpectrum  ||
             SpectraSelected.bLpcSpectrum != m_stSpectraProc.bLpcSpectrum) {
         // must reprocess
@@ -166,7 +166,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
         m_dwFrameSize = dwFrameSize;
         m_stParmProc.nSmoothLevel = m_stParmSpec.nSmoothLevel;
         m_stParmProc.nPeakSharpFac = m_stParmSpec.nPeakSharpFac;
-        m_stParmProc.setWindow(app.GetResearchSettings().GetWindow());   // DSP window applied only for
+        m_stParmProc.SetWindow(app.GetResearchSettings().window);   // DSP window applied only for
 
         // cursors aligned to samples
         m_stSpectraProc.bCepstralSpectrum = SpectraSelected.bCepstralSpectrum;
@@ -197,22 +197,22 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     int nWindowSize = dwFrameSize / wSmpSize;
     int nWindowStart = dwFrameStart / wSmpSize;
 
-    switch (m_stParmProc.getWindow().m_nLengthMode) {
-    case CWindowSettings::kBandwidth:
-        nWindowSize = CDspWin::CalcLength(m_stParmProc.getWindow().m_dBandwidth, pModel->GetSamplesPerSec(), m_stParmProc.getWindow().getType());
+    switch (m_stParmProc.GetWindow().lengthMode) {
+    case kBandwidth:
+        nWindowSize = CDspWin::CalcLength(m_stParmProc.GetWindow().bandwidth, pModel->GetSamplesPerSec(), m_stParmProc.GetWindow().type);
         break;
-    case CWindowSettings::kTime:
-        nWindowSize = (int)(0.001* m_stParmProc.getWindow().m_dTime*pModel->GetSamplesPerSec() + 0.5);
-    case CWindowSettings::kBetweenCursors:
+    case kTime:
+        nWindowSize = (int)(0.001* m_stParmProc.GetWindow().time*pModel->GetSamplesPerSec() + 0.5);
+    case kBetweenCursors:
     default:
-        if (m_stParmProc.getWindow().m_bEquivalentLength) {
-            nWindowSize = CDspWin::CalcEquivalentLength(nWindowSize, m_stParmProc.getWindow().getType());
+        if (m_stParmProc.GetWindow().equivalentLength) {
+            nWindowSize = CDspWin::CalcEquivalentLength(nWindowSize, m_stParmProc.GetWindow().type);
         }
         break;
     }
 
     nWindowStart -= nWindowSize/2;
-    if (m_stParmProc.getWindow().m_bCenter) {
+    if (m_stParmProc.GetWindow().center) {
         nWindowStart += dwFrameSize / wSmpSize;
     }
 
@@ -241,7 +241,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     stSpectSetting.fSmoothFreq = (float)(m_stParmProc.nSmoothLevel+1.F)*100.F;
     stSpectSetting.fFFTRadius= 1.F - (float)m_stParmProc.nPeakSharpFac/200.F;
 
-    stSpectSetting.nWindowType = (char)m_stParmProc.getWindow().getType();
+    stSpectSetting.nWindowType = (char)m_stParmProc.GetWindow().type;
 
     // Allocate a temporary global buffer for the waveform frame data.  Large frames may consume a vast
     // amount of memory, and therefore, the frame size should be limited.  This is not much of a restriction,
@@ -328,7 +328,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
         // stLpcSetting.nMethod = LPC_AUTOCOR;        //use autocorrelation LPC analysis
         // stLpcSetting.nMethod = LPC_CEPSTRAL;       //use cepstral LPC analysis
         // stLpcSetting.nMethod = LPC_COVAR_LATTICE;  //use covariance LPC analysis
-        stLpcSetting.nMethod = uint8(app.GetResearchSettings().GetSpectrumLpcMethod());
+        stLpcSetting.nMethod = uint8(app.GetResearchSettings().spectrumLpcMethod);
 
         //if (bRemoveDcBias)
         //    stLpcSetting.Process.Flags |= NO_DC_BIAS;
@@ -337,11 +337,11 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
             stLpcSetting.Process.Flags |= PRE_EMPHASIS;  // turn pre-emphasis on to remove effects of glottis and lip radiation
             DWORD dwBandwidth = (pModel->GetSignalBandWidth()==0)?pModel->GetSamplesPerSec()/2:pModel->GetSignalBandWidth();
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
-            stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * app.GetResearchSettings().GetSpectrumLpcOrderFsMult() + app.GetResearchSettings().GetSpectrumLpcOrderExtra());
+            stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * app.GetResearchSettings().spectrumLpcOrderFsMult + app.GetResearchSettings().spectrumLpcOrderExtra);
         } else {
             DWORD dwBandwidth = (pModel->GetSignalBandWidth()==0)?pModel->GetSamplesPerSec()/2:pModel->GetSignalBandWidth();
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
-            stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * app.GetResearchSettings().GetSpectrumLpcOrderFsMult() + app.GetResearchSettings().GetSpectrumLpcOrderExtra());
+            stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * app.GetResearchSettings().spectrumLpcOrderFsMult + app.GetResearchSettings().spectrumLpcOrderExtra);
         }
         stLpcSetting.nFrameLen = (unsigned short)stFrameParm.Length;
         stLpcSetting.fFFTRadius = stSpectSetting.fFFTRadius;
@@ -361,7 +361,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
             Err = poLpcObject->GetLpcModel(&pstLpcModel, stFrameParm.Start);
         }
         if (bVoiced)
-            for (int i = 0; i < app.GetResearchSettings().GetSpectrumLpcOrderAuxMax(); i+=2) {
+            for (int i = 0; i < app.GetResearchSettings().spectrumLpcOrderAuxMax; i+=2) {
                 // try a few times until error drops below threshold
                 if (Err) {
                     break;

@@ -106,5 +106,5 @@ void CSpectrumParm::Init(App & app) {
     bShowFormantFreq = TRUE;
     bShowFormantBandwidth = FALSE;
     bShowFormantPower = FALSE;
-    window = app.GetResearchSettings().GetWindow();
+    window = app.GetResearchSettings().window;
 }

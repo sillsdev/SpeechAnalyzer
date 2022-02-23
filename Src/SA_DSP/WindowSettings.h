@@ -6,33 +6,49 @@
 
 using std::vector;
 
-// Graph Parameter.cpp for implementation
-class CWindowSettings {
-public:
-    CWindowSettings();
+enum WindowType { kRect = 0, kHanning = 1, kHann = 1, kHamming = 2, kBlackman = 3, kBlackmanHarris = 4, kGaussian = 5 };
+enum LengthMode { kBetweenCursors = 0, kFragments = 1, kTime = 2, kBandwidth = 3 };
+enum Replication { kNone = 0 };
 
-    enum Type { kRect=0, kHanning=1, kHann=1, kHamming=2, kBlackman=3, kBlackmanHarris=4, kGaussian=5 };
-    enum { kBetweenCursors=0, kFragments=1, kTime=2, kBandwidth=3 };
-    enum { kNone = 0 };
+struct SWindowSettings {
+    LengthMode lengthMode;
+    double time;
+    double bandwidth;
+    bool  equivalentLength;
+    bool  center;
+    int32 fragments;
+    Replication replication;
+    WindowType type;
 
-    bool operator==(const CWindowSettings & a) const;
-    bool operator!=(const CWindowSettings & a) const;
+    void Init() {
+        type = kGaussian;
+        lengthMode = kBetweenCursors;
+        time = 20;
+        bandwidth = 300;
+        fragments = 3;
+        equivalentLength = true;
+        center = true;
+        replication = kNone;
+    };
 
-    void Init();
-    int32 getType() {
-        return m_nType;
+    bool operator==(const SWindowSettings& right) const {
+        bool sameLength = (lengthMode == kBetweenCursors) ||
+            (lengthMode == kTime) && (time == right.time) ||
+            (lengthMode == kBandwidth) && (bandwidth == right.bandwidth) ||
+            (lengthMode == kFragments) && (fragments == right.fragments);
+
+        bool result = (type == right.type) &&
+            (lengthMode == right.lengthMode) &&
+            (sameLength) &&
+            (equivalentLength == right.equivalentLength) &&
+            (center == right.center) &&
+            (replication == right.replication);
+        return result;
     }
 
-    int32 m_nLengthMode;
-    double m_dTime;
-    double m_dBandwidth;
-    int32  m_nFragments;
-    bool  m_bEquivalentLength;
-    bool  m_bCenter;
-    int32 m_nReplication;
-
-private:
-    int32 m_nType;
+    bool operator!=(const SWindowSettings& right) const {
+        return !operator==(right);
+    }
 };
 
 #endif

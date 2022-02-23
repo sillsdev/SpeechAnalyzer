@@ -41,7 +41,7 @@ class CProcessTonalWeightChart;
 class CVowelFormantSet;
 class CVowelFormantsVector;
 class CVowelFormantSets;
-class CResearchSettings;
+struct SResearchSettings;
 
 typedef char* BPTR;
 
@@ -180,7 +180,7 @@ __interface App {
     CVowelFormantSets & GetVowelSets();
     const CVowelFormantSet& GetDefaultVowelSet();
     const CVowelFormantsVector& GetVowelVector(int nGender);
-    CResearchSettings& GetResearchSettings();
+    SResearchSettings GetResearchSettings();
 
     // return CPlot3D::GetChartRange(nFormant, nGender);
     SRange Get3DChartRange(int nFormant, int nGender);

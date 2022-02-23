@@ -797,7 +797,7 @@ void CLinPredCoding::Transfer(short * pFrame) {
 void CLinPredCoding::ApplyWindow() {
     double dTotalInput = 0;
     double dTotalWindow = 0.25;
-    CDspWin cWindow(m_LpcParm.Model.nFrameLen, m_Signal.SmpRate, app.GetResearchSettings().GetWindow().getType());
+    CDspWin cWindow(m_LpcParm.Model.nFrameLen, m_Signal.SmpRate, app.GetResearchSettings().window.type);
     const double * Window = cWindow.WindowDouble();
 
     for (USHORT i = 0; i < m_LpcParm.Model.nFrameLen; i++) {
@@ -1046,12 +1046,12 @@ void CLinPredCoding::CalcCovarMatrix(USHORT nMethod) {
         float * pfCepstralCoeff  = &buffer[0];
 
         // Remove excitation characteristic from high time portion
-        double d2Pitch = app.GetResearchSettings().GetLpcCepstralSmooth() != -1 ? 2* app.GetResearchSettings().GetLpcCepstralSmooth() : 0.5*m_Signal.SmpRate/m_LpcParm.Model.nOrder;
+        double d2Pitch = app.GetResearchSettings().lpcCepstralSmooth != -1 ? 2* app.GetResearchSettings().lpcCepstralSmooth : 0.5*m_Signal.SmpRate/m_LpcParm.Model.nOrder;
         int nSmoothPeriod = (int)(m_Signal.SmpRate/d2Pitch + 0.5);
 
         // Multiply low time cesptral coefficients by growing exponential to sharpen formant
         // peaks.
-        double fSpectSharpRadius = 1/(1 - app.GetResearchSettings().GetLpcCepstralSharp()/200.);
+        double fSpectSharpRadius = 1/(1 - app.GetResearchSettings().lpcCepstralSharp/200.);
         double r = fSpectSharpRadius;
         for (i = 1; i < nSmoothPeriod*2; i++, r*=fSpectSharpRadius) {
             pfCepstralCoeff[i] = pfCepstralCoeff[nFFTLength-i] = float(pfCepstralCoeff[i]*r);

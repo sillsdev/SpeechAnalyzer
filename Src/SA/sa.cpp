@@ -189,9 +189,9 @@ END_MESSAGE_MAP()
 CSaApp::CSaApp() :
 	m_hEnglishResources(NULL),
 	m_hGermanResources(NULL),
-	m_hLocalizedResources(NULL),
-	researchSettings() {
+	m_hLocalizedResources(NULL) {
 
+	researchSettings.init();
 	// no batch mode
 	m_nBatchMode = 0;
 	m_bModified = FALSE;
@@ -2892,10 +2892,6 @@ const CVowelFormantSet& CSaApp::GetDefaultVowelSet() {
 
 const CVowelFormantsVector& CSaApp::GetVowelVector(int nGender) {
 	return GetDefaultVowelSet().GetVowelFormants(nGender);
-}
-
-CResearchSettings& CSaApp::GetResearchSettings() {
-	return researchSettings;
 }
 
 SRange CSaApp::Get3DChartRange(int nFormant, int nGender) {

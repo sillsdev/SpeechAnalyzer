@@ -30,11 +30,9 @@
 
 class CDlgParametersRawdataPage : public CPropertyPage {
 
-    // Construction/destruction/creation
 public:
-    CDlgParametersRawdataPage(); // standard constructor
+    CDlgParametersRawdataPage();
 
-    // Attributes
 public:
     // Dialog Data
     //{{AFX_DATA(CDlgParametersRawdataPage)
@@ -42,13 +40,8 @@ public:
     int     m_nProcess;
     //}}AFX_DATA
 
-    // Operations
 protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-public:
-
-    // Generated message map functions
-protected:
     virtual BOOL OnInitDialog();
     afx_msg void OnProcess();
     DECLARE_MESSAGE_MAP()
@@ -57,7 +50,7 @@ protected:
 class CDlgParametersPitchPage : public CPropertyPage {
 
 public:
-    CDlgParametersPitchPage(); // standard constructor
+    CDlgParametersPitchPage();
 
 private:
     CSpinControl    m_SpinMinFreq;
@@ -137,12 +130,27 @@ public:
     CDlgParametersSpectroPage(UINT dialogID, UINT graphId, const CSpectroParm * defaults);
 
     void Apply();
+    int SetMaxThreshold(int nData);
+    int SetMinThreshold(int nData);
+    int SetFrequency(int nData);
 
 protected:
+    virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
+    afx_msg void OnModifiedSmoothFormantTracks();
+    afx_msg void OnModifiedColor();
+    afx_msg void OnModifiedResolution();
+    afx_msg void OnModifiedOverlay();
+    virtual BOOL OnInitDialog();
+    afx_msg void OnChange();
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnModifiedFormants();
+    afx_msg void OnMoreInfo();
+    afx_msg void OnModifiedFormants(BOOL bMessage);
+
+    DECLARE_MESSAGE_MAP()
 
     // Which graph to work on
     UINT m_GraphId;
-
     CSpinControl    m_SpinFrequency;
     int             m_nFreqLimit;
     int     m_nFrequency;
@@ -168,28 +176,6 @@ protected:
     BOOL    m_bFormantColor;
     BOOL    m_bShowPitch;
     BOOL    m_bShowFormants;
-
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-
-public:
-    int SetMaxThreshold(int nData);
-    int SetMinThreshold(int nData);
-    int SetFrequency(int nData);
-
-protected:
-    afx_msg void OnModifiedSmoothFormantTracks();
-    afx_msg void OnModifiedColor();
-    afx_msg void OnModifiedResolution();
-    afx_msg void OnModifiedOverlay();
-    virtual BOOL OnInitDialog();
-    afx_msg void OnChange();
-    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar);
-    afx_msg void OnModifiedFormants();
-    afx_msg void OnMoreInfo();
-    afx_msg void OnModifiedFormants(BOOL bMessage);
-
-    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
@@ -197,11 +183,37 @@ protected:
 
 class CDlgParametersSpectrumPage : public CPropertyPage {
 
-    // Construction/destruction/creation
 public:
-    CDlgParametersSpectrumPage(); // standard constructor
+    CDlgParametersSpectrumPage();
 
-    // Attributes
+    void Apply();
+
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
+    // Generated message map functions
+    virtual BOOL OnInitDialog();
+    afx_msg void OnPwrUpperScroll();
+    afx_msg void OnKillfocusPwrUpper();
+    afx_msg void OnPwrLowerScroll();
+    afx_msg void OnKillfocusPwrLower();
+    afx_msg void OnFreqUpperScroll();
+    afx_msg void OnKillfocusFreqUpper();
+    afx_msg void OnFreqLowerScroll();
+    afx_msg void OnKillfocusFreqLower();
+    afx_msg void OnModifiedFreqRange();
+    afx_msg void OnSmoothScroll();
+    afx_msg void OnKillfocusSmooth();
+    afx_msg void OnPeakScroll();
+    afx_msg void OnKillfocusPeak();
+    afx_msg void OnScaling();
+    afx_msg void OnChange();
+    afx_msg void OnModifiedShowSmoothedPlots();
+    afx_msg void OnModifiedShowFormantFreq();
+    afx_msg void OnModifiedShowFormantBandwidth();
+    afx_msg void OnModifiedShowFormantPower();
+
+    DECLARE_MESSAGE_MAP()
+
 private:
     CSpinControl    m_SpinSmoothLevel;
     CSpinControl    m_SpinSharpening;
@@ -228,36 +240,6 @@ private:
     BOOL    m_bShowFormantBandwidth;
     BOOL    m_bShowFormantPower;
     //}}AFX_DATA
-
-    // Operations
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-public:
-    void Apply();
-
-    // Generated message map functions
-protected:
-    virtual BOOL OnInitDialog();
-    afx_msg void OnPwrUpperScroll();
-    afx_msg void OnKillfocusPwrUpper();
-    afx_msg void OnPwrLowerScroll();
-    afx_msg void OnKillfocusPwrLower();
-    afx_msg void OnFreqUpperScroll();
-    afx_msg void OnKillfocusFreqUpper();
-    afx_msg void OnFreqLowerScroll();
-    afx_msg void OnKillfocusFreqLower();
-    afx_msg void OnModifiedFreqRange();
-    afx_msg void OnSmoothScroll();
-    afx_msg void OnKillfocusSmooth();
-    afx_msg void OnPeakScroll();
-    afx_msg void OnKillfocusPeak();
-    afx_msg void OnScaling();
-    afx_msg void OnChange();
-    afx_msg void OnModifiedShowSmoothedPlots();
-    afx_msg void OnModifiedShowFormantFreq();
-    afx_msg void OnModifiedShowFormantBandwidth();
-    afx_msg void OnModifiedShowFormantPower();
-    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
@@ -265,12 +247,27 @@ protected:
 
 class CDlgParametersFormantsPage : public CPropertyPage {
 
-    // Construction/destruction/creation
 public:
-    CDlgParametersFormantsPage();   // standard constructor
+    CDlgParametersFormantsPage();
+
+    void Apply();
+    static void PopulateVowelSetCombo(CComboBox& cBox);
+
     BOOL        m_bAccess;
 
-    // Attributes
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
+
+    // Generated message map functions
+    virtual BOOL OnInitDialog();
+    afx_msg void OnModifiedSource();
+    afx_msg void OnModifiedTrack();
+    afx_msg void OnModifiedSmooth();
+    afx_msg void OnModifiedScale();
+    afx_msg void OnEditChangeFormantVowels();
+    afx_msg void OnFormantVowelsEdit();
+    DECLARE_MESSAGE_MAP()
+
 private:
     BOOL m_bModified; // TRUE if page member data modified
     // Dialog Data
@@ -284,23 +281,6 @@ private:
     BOOL    m_bMelScale;
     //}}AFX_DATA
 
-    // Operations
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-public:
-    void Apply();
-    static void PopulateVowelSetCombo(CComboBox & cBox);
-
-    // Generated message map functions
-protected:
-    virtual BOOL OnInitDialog();
-    afx_msg void OnModifiedSource();
-    afx_msg void OnModifiedTrack();
-    afx_msg void OnModifiedSmooth();
-    afx_msg void OnModifiedScale();
-    afx_msg void OnEditChangeFormantVowels();
-    afx_msg void OnFormantVowelsEdit();
-    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
@@ -308,11 +288,26 @@ protected:
 
 class CDlgParametersSDPPage : public CPropertyPage {
 
-    // Construction/destruction/creation
 public:
-    CDlgParametersSDPPage();    // standard constructor
+    CDlgParametersSDPPage();
 
-    // Attributes
+    void Apply();
+
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
+    // Generated message map functions
+    virtual BOOL OnInitDialog();
+    afx_msg void OnPanesScroll();
+    afx_msg void OnKillfocusPanes();
+    afx_msg void OnStepsScroll();
+    afx_msg void OnKillfocusSteps();
+    afx_msg void OnUpperScroll();
+    afx_msg void OnKillfocusUpper();
+    afx_msg void OnStepMode();
+    afx_msg void OnModified();
+    afx_msg void OnChange();
+    DECLARE_MESSAGE_MAP()
+
 private:
     CSpinControl    m_SpinPanes;
     CSpinControl    m_SpinSteps;
@@ -327,37 +322,36 @@ private:
     BOOL    m_bAverage;
     int     m_nStepMode;
     //}}AFX_DATA
-
-    // Operations
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-public:
-    void Apply();
-
-    // Generated message map functions
-protected:
-    virtual BOOL OnInitDialog();
-    afx_msg void OnPanesScroll();
-    afx_msg void OnKillfocusPanes();
-    afx_msg void OnStepsScroll();
-    afx_msg void OnKillfocusSteps();
-    afx_msg void OnUpperScroll();
-    afx_msg void OnKillfocusUpper();
-    afx_msg void OnStepMode();
-    afx_msg void OnModified();
-    afx_msg void OnChange();
-    DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersMusicPage dialog
 
 class CDlgParametersMusicPage : public CPropertyPage {
-    // Construction
 public:
-    CDlgParametersMusicPage();  // standard constructor
+    CDlgParametersMusicPage();
 
     void Apply();
+
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
+    // Generated message map functions
+    virtual BOOL OnInitDialog();
+    afx_msg void OnClickWeighted();
+    afx_msg void OnClickDynamic();
+    afx_msg void OnUpperBoundScroll();
+    afx_msg void OnKillfocusUpperBound();
+    afx_msg void OnLowerBoundScroll();
+    afx_msg void OnKillfocusLowerBound();
+    afx_msg void OnRange();
+    afx_msg void OnCalcUpperBoundScroll();
+    afx_msg void OnKillfocusCalcUpperBound();
+    afx_msg void OnCalcLowerBoundScroll();
+    afx_msg void OnKillfocusCalcLowerBound();
+    afx_msg void OnCalcRange();
+    afx_msg void OnChange();
+
+    DECLARE_MESSAGE_MAP()
 
 private:
     CSpinControl    m_SpinUpperBound;
@@ -365,7 +359,6 @@ private:
     CSpinControl    m_SpinCalcUpperBound;
     CSpinControl    m_SpinCalcLowerBound;
     BOOL m_bModified; // TRUE if page member data modified
-
 
     // Dialog Data
     int     m_nManualLowerBound;
@@ -384,27 +377,6 @@ private:
     int     m_nCalcUpperBound;
     int     m_nCalcRange;
     //}}AFX_DATA
-
-    // Implementation
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-
-    // Generated message map functions
-    virtual BOOL OnInitDialog();
-    afx_msg void OnClickWeighted();
-    afx_msg void OnClickDynamic();
-    afx_msg void OnUpperBoundScroll();
-    afx_msg void OnKillfocusUpperBound();
-    afx_msg void OnLowerBoundScroll();
-    afx_msg void OnKillfocusLowerBound();
-    afx_msg void OnRange();
-    afx_msg void OnCalcUpperBoundScroll();
-    afx_msg void OnKillfocusCalcUpperBound();
-    afx_msg void OnCalcLowerBoundScroll();
-    afx_msg void OnKillfocusCalcLowerBound();
-    afx_msg void OnCalcRange();
-    afx_msg void OnChange();
-    DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -418,6 +390,17 @@ public:
 
     void Apply();
 
+protected:
+    //{{AFX_VIRTUAL(CDlgParametersIntensityPage)
+    virtual void DoDataExchange(CDataExchange* pDX);   // DDX/DDV support
+    //}}AFX_VIRTUAL
+
+    // Generated message map functions
+    afx_msg void OnChange();
+    virtual BOOL OnInitDialog();
+
+    DECLARE_MESSAGE_MAP()
+
 private:
     BOOL m_bModified; // TRUE if page member data modified
     // Dialog Data
@@ -426,37 +409,26 @@ private:
     CComboBox   m_cDisplayScaleMode;
     int     m_nScaleMode;
     //}}AFX_DATA
-
-
-    // Overrides
-    // ClassWizard generate virtual function overrides
-    //{{AFX_VIRTUAL(CDlgParametersIntensityPage)
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
-    //}}AFX_VIRTUAL
-
-    // Implementation
-protected:
-    // Generated message map functions
-    afx_msg void OnChange();
-    virtual BOOL OnInitDialog();
-    DECLARE_MESSAGE_MAP()
-
 };
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersResearchPage dialog
-
 class CDlgParametersResearchPage : public CPropertyPage {
-    DECLARE_DYNCREATE(CDlgParametersResearchPage)
 
-    // Construction
+    DECLARE_DYNCREATE(CDlgParametersResearchPage)
 public:
     CDlgParametersResearchPage();
-    ~CDlgParametersResearchPage();
-
 
     void Apply();
+
+protected:
+    //{{AFX_VIRTUAL(CDlgParametersResearchPage)
+    virtual void DoDataExchange(CDataExchange* pDX);   // DDX/DDV support
+    //}}AFX_VIRTUAL
+
+    // Generated message map functions
+    afx_msg void OnModified();
+    virtual BOOL OnInitDialog();
+
+    DECLARE_MESSAGE_MAP()
 
 private:
     BOOL m_bModified; // TRUE if page member data modified
@@ -468,22 +440,7 @@ private:
     CComboBox   m_cSmooth;
     //}}AFX_DATA
 
-    CResearchSettings m_workingSettings;
-
-    // Overrides
-    // ClassWizard generate virtual function overrides
-    //{{AFX_VIRTUAL(CDlgParametersResearchPage)
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
-    //}}AFX_VIRTUAL
-
-    // Implementation
-protected:
-    // Generated message map functions
-    afx_msg void OnModified();
-    virtual BOOL OnInitDialog();
-    DECLARE_MESSAGE_MAP()
-
+    SResearchSettings settings;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -492,12 +449,21 @@ protected:
 class CDlgParametersFormantTracker : public CPropertyPage {
     DECLARE_DYNCREATE(CDlgParametersFormantTracker)
 
-    // Construction
 public:
     CDlgParametersFormantTracker();
     ~CDlgParametersFormantTracker();
 
     void Apply();
+
+protected:
+    //{{AFX_VIRTUAL(CDlgParametersFormantTracker)
+    virtual void DoDataExchange(CDataExchange* pDX);   // DDX/DDV support
+    //}}AFX_VIRTUAL
+
+    // Generated message map functions
+    afx_msg void OnModified();
+    DECLARE_MESSAGE_MAP()
+
 
 private:
     BOOL m_bModified; // TRUE if page member data modified
@@ -507,20 +473,6 @@ private:
     //}}AFX_DATA
 
     CFormantTrackerOptions m_workingSettings;
-
-    // Overrides
-    // ClassWizard generate virtual function overrides
-    //{{AFX_VIRTUAL(CDlgParametersFormantTracker)
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
-    //}}AFX_VIRTUAL
-
-    // Implementation
-protected:
-    // Generated message map functions
-    afx_msg void OnModified();
-    DECLARE_MESSAGE_MAP()
-
 };
 
 //###########################################################################
@@ -529,13 +481,12 @@ protected:
 class CDlgGraphsParameters : public CPropertySheet {
     DECLARE_DYNAMIC(CDlgGraphsParameters)
 
-// Construction/destruction/creation
 public:
     CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent);
-    ~CDlgGraphsParameters();// SDM 1.5Test10.3
+    ~CDlgGraphsParameters();
 
-    // Attributes
-public:
+    void OnHelpParameters();
+
     CDlgParametersRawdataPage m_dlgRawdataPage;
     CDlgParametersPitchPage m_dlgPitchPage;
     CDlgParametersSpectroPage * m_pDlgSpectrogramPage;
@@ -548,16 +499,12 @@ public:
     CDlgParametersResearchPage * m_pDlgResearchPage;
     CDlgParametersFormantTracker * m_pDlgFTrackerPage;
 
-    // Operations
 protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
     void ChangeButtons(); // delete Apply button, move other buttons
     CButton m_cHelp;
-public:
-    void OnHelpParameters();
 
     // Generated message map functions
-protected:
     virtual BOOL OnInitDialog();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnApply();

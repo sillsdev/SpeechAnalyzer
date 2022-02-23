@@ -1,7 +1,6 @@
 LIBRARY   SA_DSP
 EXPORTS
 ??0CAcousticTube@@QAE@ABV?$vector@NV?$allocator@N@std@@@std@@0@Z
-??0CWindowSettings@@QAE@XZ
 ??1CAcousticTube@@UAE@XZ
 ??1CFormantPicker@@QAE@XZ
 ??1CFragment@@QAE@XZ
@@ -9,13 +8,9 @@ EXPORTS
 ??1CHistogram@@QAE@XZ
 ??1CSpectrum@@QAE@XZ
 ??1CSpectrogram@@QAE@XZ
-??8CWindowSettings@@QBE_NABV0@@Z
-??9CWindowSettings@@QBE_NABV0@@Z
 ?BackwardPass@CHighPassFilter70@@QAEHPAEI@Z
 ?BackwardPass@CHighPassFilter70@@QAEHPAFI@Z
 ?BandwidthInRange@CFormantPicker@@SA_NHGM@Z
-?CalcPower@CSpectrogram@@SAHPAMMHW4Type@CWindowSettings@@USSigParms@@_N@Z
-?CalcPower@CSpectrogram@@SAHPAMMMW4Type@CWindowSettings@@USSigParms@@_NM@Z
 ?CreateObject@CFormantPicker@@SAHPAPAV1@GF@Z
 ?CreateObject@CFragment@@SAHPAPAV1@PAUSFragParms@@IAAUSSigParms@@PAXIAAUSPitchParms@@PAFI@Z
 ?CreateObject@CHighPassFilter70@@SAHPAPAV1@I@Z
@@ -43,7 +38,6 @@ EXPORTS
 ?grapplInit@@YA_NPAXPAUSGrapplParms@@@Z
 ?grapplSetInbuff@@YA_NPAX0G_N@Z
 ?grapplWorkspace@@YAIXZ
-?Init@CWindowSettings@@QAEXXZ
 ?IsAliased@CSpectrogram@@QAE_NXZ
 ?IsSingleBitOn@@YA_NG@Z
 ?ReadPowerSlice@CSpectrogram@@QAEPAEPAHG@Z

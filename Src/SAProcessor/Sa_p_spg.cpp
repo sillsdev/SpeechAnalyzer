@@ -142,7 +142,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     SpgmSetting.preEmphSw = true;
     SpgmSetting.Bandwidth = pSpectroParm->Bandwidth();
     Signal.SmpRate = pModel->GetSamplesPerSec();
-    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(CDspWin::CalcLength(SpgmSetting.Bandwidth, Signal.SmpRate, app.GetResearchSettings().GetWindow().getType()))/log(2.0) + 0.0))));
+    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(CDspWin::CalcLength(SpgmSetting.Bandwidth, Signal.SmpRate, app.GetResearchSettings().window.type))/log(2.0) + 0.0))));
 
     {
         int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(pModel->GetSamplesPerSec())/2 + 1);
@@ -179,7 +179,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     // wide band results, if there is enough data to calculate (spectrogram doesn't
     // do that).
 
-    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, pModel->GetSamplesPerSec(), app.GetResearchSettings().GetWindow().getType()) / 2));
+    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, pModel->GetSamplesPerSec(), app.GetResearchSettings().window.type) / 2));
 
     double fSpectraInterval = (dwDataLength/wSmpSize)/double(nWidth);
 
