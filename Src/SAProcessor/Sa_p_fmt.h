@@ -15,7 +15,7 @@
 class CProcessFormants : public CProcess {
 
 public:
-    CProcessFormants(Context & context);
+    CProcessFormants(Context context);
     virtual ~CProcessFormants();
     void SmoothMedian(Model * pModel);
     SFormantFrame * LoadBuffer(DWORD dwFormantBlockStart);
@@ -31,7 +31,7 @@ public:
     SFormantFrame * GetFormantFrame(DWORD dwFrame);
     SStatistic GetFormantStats(int nFormant);
     void ResetTracking();
-    long Process(void * pCaller, Model * pModel, BOOL bTrack, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, BOOL bTrack, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress = 0, int nLevel = 1);
     int GetVowelCount(EGender nGender) const;
     SFormantFreq GetVowelFreq(int nIndex, EGender nGender, BOOL bMelScale = FALSE) const; // get vowel frequencies
     wstring GetVowel(int nIndex, EGender nGender) const; // returns the vowel for the graph

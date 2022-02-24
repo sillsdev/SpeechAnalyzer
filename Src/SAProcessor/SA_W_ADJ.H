@@ -15,7 +15,7 @@
 
 class CProcessAdjust : public CProcessButterworth {
 public:
-    CProcessAdjust(Context & context);
+    CProcessAdjust(Context context);
     CProcessAdjust() = delete;
 
     BOOL GetInvert() const;
@@ -24,7 +24,7 @@ public:
     void SetZero(BOOL bNew);
     BOOL GetNormalize() const;
     void SetNormalize(BOOL bNew);
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     virtual void * GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE);  // return processed data pointer to object staring at dwOffset
     virtual BPTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);                   // return pointer to block of processed wave source
     virtual DWORD GetProcessBufferIndex(size_t nSize = 1);

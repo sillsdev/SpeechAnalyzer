@@ -31,7 +31,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // class to calculate melogram for wave data. parameters used in this
 // object give better results for music.
 
-CProcessMelogram::CProcessMelogram(Context & context) : CAbstractPitchProcess(context) {
+CProcessMelogram::CProcessMelogram(Context context) : CAbstractPitchProcess(context) {
     m_nMinValidSemitone100 = 0;
     m_nMaxValidSemitone100 = 0;
 }
@@ -48,7 +48,7 @@ CProcessMelogram::CProcessMelogram(Context & context) : CAbstractPitchProcess(co
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessMelogram::Process(void * pCaller,  int nProgress, int nLevel) {
     
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -57,11 +57,11 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
     {
         int nMinValidSemitone100;
         int nMaxValidSemitone100;
-        if (pModel->GetMusicParm()->nCalcRangeMode) {
-            nMinValidSemitone100 = pModel->GetMusicParm()->nCalcLowerBound*100;
-            nMaxValidSemitone100 = pModel->GetMusicParm()->nCalcUpperBound*100;
+        if (model.GetMusicParm()->nCalcRangeMode) {
+            nMinValidSemitone100 = model.GetMusicParm()->nCalcLowerBound*100;
+            nMaxValidSemitone100 = model.GetMusicParm()->nCalcUpperBound*100;
         } else {
-            EGender nGender = pModel->GetGender(); // use guessing
+            EGender nGender = model.GetGender(); // use guessing
             switch (nGender) {
             case male: // adult male
                 nMinValidSemitone100 = 2750; // ~40Hz
@@ -126,8 +126,8 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
         m_nMaxValue = 0;
         // process raw data into grappl pitch data
         // initialise user parameters
-        m_CalcParm.sampfreq = (int32)pModel->GetSamplesPerSec();
-        m_CalcParm.eightbit = (int16)(!pModel->Is16Bit());
+        m_CalcParm.sampfreq = (int32)model.GetSamplesPerSec();
+        m_CalcParm.eightbit = (int16)(!model.Is16Bit());
         m_CalcParm.mode = Grappl_fullpitch;
         // convert from semitones to Hz
         int16 nMaxFreqInHz = (int16)(220. * pow(2., ((double)m_nMaxValidSemitone100 / 100. - 57.) / 12.) + 0.5);
@@ -167,8 +167,8 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
     bool alldone = false;
     bool nomore = false;
     // get block size
-    DWORD dwDataSize = pModel->GetDataSize();                     // raw data size
-    DWORD dwBlockSize = 0x10000 - pModel->GetBlockAlign(true);    // 64k - 1
+    DWORD dwDataSize = model.GetDataSize();                     // raw data size
+    DWORD dwBlockSize = 0x10000 - model.GetBlockAlign(true);    // 64k - 1
     if (GetBufferSize() < dwBlockSize) {
         dwBlockSize = GetBufferSize();
     }
@@ -177,7 +177,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
     // start processing
     while (m_dwDataPos < dwDataSize) {
         // get raw data block
-        pBlockStart = pModel->GetWaveData(m_dwDataPos, TRUE); // get pointer to data block
+        pBlockStart = model.GetWaveData(m_dwDataPos, TRUE); // get pointer to data block
         if (!pBlockStart) {
             return Exit(PROCESS_ERROR);    // error, reading failed
         }
@@ -187,7 +187,7 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
             nomore = TRUE;
         }
         // set grappl input buffer
-        uint16 length = (WORD)(dwBlockSize / pModel->GetBlockAlign(true));
+        uint16 length = (WORD)(dwBlockSize / model.GetBlockAlign(true));
         //TRACE("grappl length %d\n",length);
         if (!grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, length, nomore)) {
             return Exit(PROCESS_ERROR);
@@ -264,12 +264,12 @@ long CProcessMelogram::Process(void * pCaller, Model * pModel, int nProgress, in
 /***************************************************************************/
 // CProcessMelogram::IsVoiced  Checks if waveform section at offset is voiced.
 /***************************************************************************/
-BOOL CProcessMelogram::IsVoiced(Model * pModel, DWORD dwWaveOffset) {
-    UINT nSmpSize = pModel->GetSampleSize();
+BOOL CProcessMelogram::IsVoiced( DWORD dwWaveOffset) {
+    UINT nSmpSize = model.GetSampleSize();
     DWORD dwSmpOffset = dwWaveOffset / nSmpSize;
     DWORD dwPitchBlock = m_dwBufferOffset;
     BOOL bDone;
-    Process(this, (Model *)pModel);
+    Process(this);
     BOOL bVoiced = (GetProcessedData( dwSmpOffset / Grappl_calc_intvl, &bDone) > 0);
     if (!bDone) {
         return FALSE;

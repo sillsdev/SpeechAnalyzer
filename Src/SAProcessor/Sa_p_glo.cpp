@@ -34,7 +34,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // pointer to the view instead the pointer to the document like other process
 // calls. It calculates glottal waveform data.
 /***************************************************************************/
-long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessGlottis::Process(void * pCaller,  int nProgress, int nLevel) {
 
     //TRACE(_T("Process: CProcessGlottis\n"));
     if (IsCanceled()) {
@@ -57,8 +57,8 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
-    DWORD wSmpSize = pModel->GetSampleSize();   //compute sample size in bytes
-    DWORD dwWaveSize = pModel->GetDataSize();
+    DWORD wSmpSize = model.GetSampleSize();   //compute sample size in bytes
+    DWORD dwWaveSize = model.GetDataSize();
     BPTR pBlockStart;
     DWORD dwBlockStart = 0;
     BPTR pFrame = NULL;
@@ -77,7 +77,7 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
     } else if (wSmpSize == 2) {
         Signal.SmpDataFmt = PCM_2SSHORT;        //2's complement 16 bit
     }
-    Signal.SmpRate = pModel->GetSamplesPerSec();  //set sample rate
+    Signal.SmpRate = model.GetSamplesPerSec();  //set sample rate
     DWORD dwBufferSize = GetBufferSize();       // data buffer size
     Signal.Length = dwBufferSize / wSmpSize;
     LpcSetting.Process.Flags = PRE_EMPHASIS | REFL_COEFF | PRED_COEFF | MEAN_SQ_ERR | RESIDUAL ;
@@ -106,7 +106,7 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
     for (DWORD dwWaveOffset = 0; dwWaveOffset <= dwLastOffset; dwWaveOffset += dwFrameInterval) {
         if (dwWaveOffset == 0) {
             dwBlockStart = dwWaveOffset;
-            pBlockStart = pModel->GetWaveData(dwBlockStart, TRUE); // get pointer to data block
+            pBlockStart = model.GetWaveData(dwBlockStart, TRUE); // get pointer to data block
             if (!pBlockStart) { // reading failed
                 EndProcess(); // end data processing
                 SetDataInvalid();
@@ -117,7 +117,7 @@ long CProcessGlottis::Process(void * pCaller, Model * pModel, int nProgress, int
             pFrame = pBlockStart;
         } else if (dwWaveOffset + dwFrameSize + wSmpSize > dwBlockStart + dwBufferSize) {
             dwBlockStart = dwWaveOffset - wSmpSize;
-            pBlockStart = pModel->GetWaveData(dwBlockStart, TRUE); // get pointer to data block
+            pBlockStart = model.GetWaveData(dwBlockStart, TRUE); // get pointer to data block
 
             if (!pBlockStart) { // reading failed
                 EndProcess(); // end data processing

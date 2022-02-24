@@ -41,8 +41,7 @@ void CascadeAllPass(CZTransform & zTransform, double dCenterFrequency, double dS
 /***************************************************************************/
 // CProcessInstantaneousPower::Process
 /***************************************************************************/
-long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
-        int nProgress, int nLevel) {
+long CProcessInstantaneousPower::Process(void * pCaller, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -56,8 +55,8 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
-    CProcessRaw * pRaw = pModel->GetRaw();
-    short nResult = LOWORD(pRaw->Process(this, pModel, nLevel));
+    CProcessRaw * pRaw = model.GetRaw();
+    short nResult = LOWORD(pRaw->Process( this, nLevel));
     // Exit if error has occurred or the spectrum process has been canceled.
     if (nResult < 0) {
         SetDataReady(FALSE);
@@ -67,9 +66,9 @@ long CProcessInstantaneousPower::Process(void * pCaller, Model * pModel,
         return Exit(nResult);
     }
 
-    CProcessIIRFilter * phaseFilter = (CProcessIIRFilter *)pModel->GetHilbert();
+    CProcessIIRFilter * phaseFilter = (CProcessIIRFilter *)model.GetHilbert();
 
-    long lResult = phaseFilter->Process(pCaller, pModel, nProgress, ++nLevel);
+    long lResult = phaseFilter->Process(pCaller, nProgress, ++nLevel);
     nLevel = (short int)LOWORD(lResult);
     if ((nLevel == PROCESS_CANCELED)) {
         nProgress = HIWORD(lResult);

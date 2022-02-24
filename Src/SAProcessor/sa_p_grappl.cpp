@@ -21,7 +21,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessGrappl
 // class to calculate grappl pitch for wave data.
 
-CProcessGrappl::CProcessGrappl(Context & context) : CAbstractPitchProcess(context) {
+CProcessGrappl::CProcessGrappl(Context context) : CAbstractPitchProcess(context) {
     // initialize algorithm parameters
     m_dAvgPitch = 0.;
 }
@@ -40,7 +40,7 @@ CProcessGrappl::CProcessGrappl(Context & context) : CAbstractPitchProcess(contex
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessGrappl::Process(void* pCaller, Model* pModel, int nProgress, int nLevel) {
+long CProcessGrappl::Process(void* pCaller, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);   // process canceled
     }
@@ -48,7 +48,7 @@ long CProcessGrappl::Process(void* pCaller, Model* pModel, int nProgress, int nL
         return MAKELONG(--nLevel, nProgress);           // data is already ready
     }
     //TRACE(_T("Process: CProcessGrappl --------\n"));
-    DWORD dwDataSize = pModel->GetDataSize();             // raw data size for all channels
+    DWORD dwDataSize = model.GetDataSize();             // raw data size for all channels
     if (dwDataSize == 0) {
         return Exit(PROCESS_NO_DATA);                   // error, no valid data
     }
@@ -82,8 +82,8 @@ long CProcessGrappl::Process(void* pCaller, Model* pModel, int nProgress, int nL
         // initialize parameters
         m_dwDataPos = 0;
         m_nMinValue = SHRT_MAX;
-        m_CalcParm.sampfreq = (int32)pModel->GetSamplesPerSec();
-        m_CalcParm.eightbit = (int16)(!pModel->Is16Bit());
+        m_CalcParm.sampfreq = (int32)model.GetSamplesPerSec();
+        m_CalcParm.eightbit = (int16)(!model.Is16Bit());
         m_CalcParm.mode = Grappl_fullpitch;
         m_CalcParm.smoothfreq = 1000;
         m_CalcParm.minpitch = 40;
@@ -121,14 +121,14 @@ long CProcessGrappl::Process(void* pCaller, Model* pModel, int nProgress, int nL
     bool nomore = false;
 
     // get block size
-    DWORD dwBlockSize = 0x10000 - pModel->GetBlockAlign(true); // 64k - 1
+    DWORD dwBlockSize = 0x10000 - model.GetBlockAlign(true); // 64k - 1
     if (GetBufferSize() < dwBlockSize) {
         dwBlockSize = GetBufferSize();
     }
 
     TRACE("dwBlockSize=%d\n",dwBlockSize);
     TRACE("dwDataSize=%d\n", dwDataSize);
-    TRACE("block align=%d\n",pModel->GetBlockAlign(true));
+    TRACE("block align=%d\n",model.GetBlockAlign(true));
 
     int iterations = 0;
 
@@ -139,7 +139,7 @@ long CProcessGrappl::Process(void* pCaller, Model* pModel, int nProgress, int nL
 
         // get raw data block
         // this should be single channel data
-        pBlockStart = pModel->GetWaveData(m_dwDataPos, TRUE);  // get pointer to data block
+        pBlockStart = model.GetWaveData(m_dwDataPos, TRUE);  // get pointer to data block
         if (pBlockStart==NULL) {
             return Exit(PROCESS_ERROR);                         // error, reading failed
         }
@@ -154,7 +154,7 @@ long CProcessGrappl::Process(void* pCaller, Model* pModel, int nProgress, int nL
         }
 
         // set grappl input buffer
-        uint16 length = (WORD)(dwBlockSize / pModel->GetBlockAlign(true));
+        uint16 length = (WORD)(dwBlockSize / model.GetBlockAlign(true));
         //TRACE("grappl length %d\n",length);
         if (!grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, length, nomore)) {
             return Exit(PROCESS_ERROR);             // error, processing failed
@@ -232,12 +232,12 @@ long CProcessGrappl::Process(void* pCaller, Model* pModel, int nProgress, int nL
 /***************************************************************************/
 // CProcessGrappl::IsVoiced  Checks if waveform section at offset is voiced.
 /***************************************************************************/
-BOOL CProcessGrappl::IsVoiced(Model * pModel, DWORD dwWaveOffset) {
-    DWORD nSmpSize = pModel->GetSampleSize();
+BOOL CProcessGrappl::IsVoiced( DWORD dwWaveOffset) {
+    DWORD nSmpSize = model.GetSampleSize();
     DWORD dwSmpOffset = dwWaveOffset / nSmpSize;
     DWORD dwPitchBlock = m_dwBufferOffset;
     BOOL bDone;
-    Process(this, (Model *)pModel);
+    Process(this );
     BOOL bVoiced = (GetProcessedData( dwSmpOffset / Grappl_calc_intvl, &bDone) > 0);
     if (!bDone) {
         return FALSE;

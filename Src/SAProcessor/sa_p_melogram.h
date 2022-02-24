@@ -12,9 +12,9 @@
 class CProcessMelogram : public CAbstractPitchProcess {
 
 public:
-    CProcessMelogram(Context & context);
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
-    BOOL IsVoiced(Model * pModel, DWORD dwWaveOffset);
+    CProcessMelogram(Context context);
+    long Process(void * pCaller,  int nProgress = 0, int nLevel = 1);
+    BOOL IsVoiced( DWORD dwWaveOffset);
 
 private:
     DWORD m_dwDataPos;  // byte offset into waveform data

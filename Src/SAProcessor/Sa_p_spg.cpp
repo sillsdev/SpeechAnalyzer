@@ -37,8 +37,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // a temporary second buffer, into which it copies all the raw data needed
 // for the calculation.
 
-CProcessSpectrogram::CProcessSpectrogram(Context & context, const CSpectroParm & defaults, Model * pModel, BOOL bRealTime) : CProcessAreaData(context),
-    m_bRealTime(bRealTime), m_pDoc(pModel) {
+CProcessSpectrogram::CProcessSpectrogram(Context context, const CSpectroParm & defaults, BOOL bRealTime) : CProcessAreaData(context),
+    m_bRealTime(bRealTime) {
     // create the spectrogram parameter arrays
     m_nWindowWidth = 0;
     m_nWindowHeight = 0;
@@ -58,8 +58,8 @@ CProcessSpectrogram::~CProcessSpectrogram() {
 void CProcessSpectrogram::SetSpectroParm(const CSpectroParm & parameters) {
     m_SpectroParm = parameters;
     // Clip frequency limit to Nyquist limit
-    if (m_SpectroParm.nFrequency >= int(m_pDoc->GetSamplesPerSec()/2)) {
-        m_SpectroParm.nFrequency = m_pDoc->GetSamplesPerSec()/2 - 1;
+    if (m_SpectroParm.nFrequency >= int(model.GetSamplesPerSec()/2)) {
+        m_SpectroParm.nFrequency = model.GetSamplesPerSec()/2 - 1;
     }
 }
 
@@ -85,9 +85,9 @@ long CProcessSpectrogram::Exit(int nError) {
 // function needs a pointer to the view instead the pointer to the document
 // like other process calls. It calculates spectrogram data.
 /***************************************************************************/
-long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, int nWidth, int /*nHeight*/, int nProgress, int nLevel) {
+long CProcessSpectrogram::Process(void * pCaller, View * pView, int nWidth, int /*nHeight*/, int nProgress, int nLevel) {
 
-    DWORD wSmpSize = (DWORD)(pModel->GetSampleSize());
+    DWORD wSmpSize = (DWORD)(model.GetSampleSize());
     // check canceled
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -133,19 +133,19 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     // set up spectrogram parameters
     const CSpectroParm * pSpectroParm = & GetSpectroParm(); // get pointer to spectrogram parameters
 
-    WORD nBlockAlign = pModel->GetBlockAlign(true);
+    WORD nBlockAlign = model.GetBlockAlign(true);
     SSpectrogramSettings SpgmSetting;
     SSigParms Signal;
     dspError_t Err;
     SpgmSetting.LwrFreq = (float)0;
-    SpgmSetting.UprFreq = (float)(pModel->GetSamplesPerSec()/2.0);
+    SpgmSetting.UprFreq = (float)(model.GetSamplesPerSec()/2.0);
     SpgmSetting.preEmphSw = true;
     SpgmSetting.Bandwidth = pSpectroParm->Bandwidth();
-    Signal.SmpRate = pModel->GetSamplesPerSec();
+    Signal.SmpRate = model.GetSamplesPerSec();
     SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(CDspWin::CalcLength(SpgmSetting.Bandwidth, Signal.SmpRate, app.GetResearchSettings().window.type))/log(2.0) + 0.0))));
 
     {
-        int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(pModel->GetSamplesPerSec())/2 + 1);
+        int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(model.GetSamplesPerSec())/2 + 1);
         if (!m_bRealTime) {
             // Increase Resolution for high quality snapshot
             int maxWidth = (dwDataLength / minSpectraInterval + 1)*4;
@@ -154,7 +154,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
         } else {
             // Just do the whole file
             dwDataStart = 0;
-            dwDataLength = pModel->GetDataSize();
+            dwDataLength = model.GetDataSize();
             nWidth = dwDataLength / minSpectraInterval + 1;
         }
         SetStatusFlag(MAX_RESOLUTION,TRUE);
@@ -179,7 +179,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     // wide band results, if there is enough data to calculate (spectrogram doesn't
     // do that).
 
-    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, pModel->GetSamplesPerSec(), app.GetResearchSettings().window.type) / 2));
+    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, model.GetSamplesPerSec(), app.GetResearchSettings().window.type) / 2));
 
     double fSpectraInterval = (dwDataLength/wSmpSize)/double(nWidth);
 
@@ -195,7 +195,7 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
     CSpectrogram * pSpectrogram = NULL;
     BOOL bAliased = TRUE;
 
-    Signal.SmpDataFmt = char((!pModel->Is16Bit()) ? PCM_UBYTE: PCM_2SSHORT);
+    Signal.SmpDataFmt = char((!model.Is16Bit()) ? PCM_UBYTE: PCM_2SSHORT);
     SetStatusFlag(~MAX_RESOLUTION, FALSE);                  // reset status
 
     UINT nSpectSize = sizeof(uint8) * (UINT)nHeight;
@@ -211,12 +211,12 @@ long CProcessSpectrogram::Process(void * pCaller, Model * pModel, View * pView, 
         }
 
         SpgmSetting.SigBlkOffset = (dwDataPos - dwBufferStart) / nBlockAlign;
-        Signal.Start = pModel->GetWaveData(dwBufferStart, TRUE);
+        Signal.Start = model.GetWaveData(dwBufferStart, TRUE);
 
         DWORD dwBufferLength = (DWORD) ceil((SpgmSetting.SpectBatchLength)*wSmpSize*fSpectraInterval) + (DWORD)2*wHalfCalcWindow + wSmpSize;
 
-        if ((dwBufferStart + dwBufferLength) > pModel->GetDataSize()) {
-            dwBufferLength = pModel->GetDataSize() - dwBufferStart;
+        if ((dwBufferStart + dwBufferLength) > model.GetDataSize()) {
+            dwBufferLength = model.GetDataSize() - dwBufferStart;
             SpgmSetting.SpectBatchLength = USHORT(nWidth - wLoop);
         }
 

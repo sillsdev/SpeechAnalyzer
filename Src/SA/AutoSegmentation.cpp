@@ -111,7 +111,7 @@ vector<Phonetic> CAutoSegmentation::GetPhones( CSaDoc & doc, wofstream & ofs ) {
 	// SDM 1.5 Test 11.0
     CProcessGrappl * pPitch = doc. GetGrappl(); 
 	// process data
-    nResult = LOWORD(pPitch->Process( &doc, &doc)); 
+    nResult = LOWORD(pPitch->Process( &doc)); 
     if (nResult == PROCESS_ERROR) {
 		doc.ErrorMessage(IDS_ERROR_GENERATE_CV_NOPITCH);
 		return result;
@@ -192,7 +192,7 @@ vector<Word> CAutoSegmentation::GetWords( CSaDoc & doc, wofstream & ofs ) {
 	// SDM 1.5 Test 11.0
     CProcessGrappl * pPitch = doc. GetGrappl(); 
 	// process data
-    nResult = LOWORD(pPitch->Process( &doc, &doc)); 
+    nResult = LOWORD(pPitch->Process( &doc)); 
     if (nResult == PROCESS_ERROR) {
 		doc.ErrorMessage(IDS_ERROR_GENERATE_CV_NOPITCH);
 		return result;

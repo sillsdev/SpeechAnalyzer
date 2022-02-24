@@ -17,7 +17,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcess
 // Base class for all data processing classes. Does all jobs, common to all
 // data processing derived classes.
-CProcess::CProcess(Context & context) : context(context), app(context.GetApp()), view(context.GetView()), model(context.GetModel()), main(context.GetMainWnd()) {
+CProcess::CProcess(Context context) : context(context), app(context.app), view(context.view), model(context.model), main(context.frame) {
     m_fileStatus.m_size = 0;
     m_fileStatus.m_attribute = 0;
     wmemset(m_fileStatus.m_szFullName,0,_countof(m_fileStatus.m_szFullName));
@@ -772,7 +772,7 @@ BOOL CProcess::SmoothData(int nTimes) {
 // status to processed. It does not create a temporary file and it does not
 // process any data.
 /***************************************************************************/
-long CProcess::Process(void * pCaller, Model *, int nProgress, int nLevel) {
+long CProcess::Process(void * pCaller, int nProgress, int nLevel) {
     UNUSED_ALWAYS(pCaller);
     if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
@@ -840,7 +840,7 @@ DWORD CProcess::GetDataSize() const {
 }
 
 // return processed data size in words (16 bit)
-DWORD CProcess::GetNumSamples(Model * /*pModel*/) const {
+DWORD CProcess::GetNumSamples() const {
     return GetDataSize(2);
 }
 

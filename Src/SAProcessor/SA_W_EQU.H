@@ -13,10 +13,10 @@
 
 class CProcessWbEquation : public CWbProcess {
 public:
-    CProcessWbEquation(Context & context);
+    CProcessWbEquation(Context context);
 
     BOOL CheckFunction(string*); // check the function string
-    long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
+    long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(CObjectOStream& obs);
     virtual BOOL ReadProperties(CObjectIStream& obs);
     const char* GetEquation() {

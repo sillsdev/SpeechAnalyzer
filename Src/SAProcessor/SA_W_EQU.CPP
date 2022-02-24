@@ -19,7 +19,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // Workbench process class to calculate new raw data after an equation given
 // by the user.
 
-CProcessWbEquation::CProcessWbEquation(Context & context) : CWbProcess( context, WbEquation) {
+CProcessWbEquation::CProcessWbEquation(Context context) : CWbProcess( context, WbEquation) {
     m_szEquation.clear();
 }
 
@@ -49,7 +49,7 @@ BOOL CProcessWbEquation::CheckFunction(string* pszFunction) {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessWbEquation::Process(void * pCaller, int nProgress, int nLevel) {
     //  TRACE(_T("Process: CProcessWbEquation\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -58,10 +58,10 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     int nOldLevel = nLevel; // save original level
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess( pModel->GetWbProcess() - 1, nLevel);
+        pLowerProcess = main.GetWbProcess( model.GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
-            long lResult = pLowerProcess->Process(pCaller, pModel, nProgress, ++nLevel);
+            long lResult = pLowerProcess->Process(pCaller, nProgress, ++nLevel);
             nLevel = (short int)LOWORD(lResult);
             nProgress = HIWORD(lResult);
         }
@@ -99,10 +99,10 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
     if (pLowerProcess) {
         dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
     } else {
-        dwDataSize = pModel->GetDataSize();// size of raw data
+        dwDataSize = model.GetDataSize();// size of raw data
     }
     DWORD dwBufferSize = GetBufferSize();
-    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD wSmpSize = model.GetSampleSize();
     BPTR pSourceData, pBlockStart;                 // pointers to source data
     BPTR pTargetData;                              // pointers to target data
     DWORD dwDataPos = 0;                            // data position pointer
@@ -115,7 +115,7 @@ long CProcessWbEquation::Process(void * pCaller, Model * pModel, int nProgress, 
         if (pLowerProcess) {
             pBlockStart = pLowerProcess->GetProcessedWaveData(dwDataPos);
         } else {
-            pBlockStart = pModel->GetAdjustedUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
+            pBlockStart = model.GetAdjustedUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
         }
         if (!pBlockStart) {
             return Exit(PROCESS_ERROR);    // error, reading failed

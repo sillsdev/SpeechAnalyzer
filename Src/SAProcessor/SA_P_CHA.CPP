@@ -29,7 +29,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessChange::CProcessChange Constructor
 /***************************************************************************/
-CProcessChange::CProcessChange(Context & context) : CProcess(context) {
+CProcessChange::CProcessChange(Context context) : CProcess(context) {
     m_pQualityFile = new CFile;
     m_qualityFileStatus.m_szFullName[0] = 0; // no file name
     m_hQualityData = NULL;
@@ -216,9 +216,8 @@ void CProcessChange::SetDataInvalid() {
 // In the future, this code should be replaced with a correlation metric based
 // on fragments.
 /***************************************************************************/
-long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
-                             int nLevel) {
-    //TRACE(_T("Process: CProcessChange\n"));
+long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
+
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -226,8 +225,8 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     // create raw pitch data, its quality and smoothed loudness output is needed to calculate change
-    CProcessSmoothLoudness * pLoudness = (CProcessSmoothLoudness *)pModel->GetSmoothLoudness(); // get pointer to loudness object
-    long lResult = pLoudness->Process(pCaller, pModel, nProgress, ++nLevel); // process data
+    CProcessSmoothLoudness * pLoudness = (CProcessSmoothLoudness *)model.GetSmoothLoudness(); // get pointer to loudness object
+    long lResult = pLoudness->Process(pCaller, nProgress, ++nLevel); // process data
     nLevel = (short int)LOWORD(lResult);
     nProgress = HIWORD(lResult);
 
@@ -275,8 +274,8 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
     }
     CUttParm myUttParm;
     CUttParm * pUttParm = &myUttParm;
-    pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
-    WORD nBlockAlign = pModel->GetBlockAlign();
+    model.GetUttParm(pUttParm); // get sa parameters utterance member data
+    WORD nBlockAlign = model.GetBlockAlign();
     // calculate current processing position (copied but not understood from WINCECIL)
     DWORD dwLoopPos, dwLoopStart;
     if (pUttParm->nMinFreq == 0) {
@@ -285,11 +284,11 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
     if (pUttParm->nMaxFreq == 0) {
         pUttParm->nMaxFreq = 500;    // to prevent 0 divisions
     }
-    dwLoopStart = ((pModel->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
-                    + pModel->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
-                   + CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(pModel->GetSamplesPerSec()) + 1;
+    dwLoopStart = ((model.GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
+                    + model.GetSamplesPerSec() / pUttParm->nMinFreq) / 2
+                   + CALCULATION_DATALENGTH(model.GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(model.GetSamplesPerSec()) + 1;
     dwLoopPos = 0;
-    DWORD dwDataPos = dwLoopStart * CALCULATION_INTERVAL(pModel->GetSamplesPerSec()) - CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) / 2;
+    DWORD dwDataPos = dwLoopStart * CALCULATION_INTERVAL(model.GetSamplesPerSec()) - CALCULATION_DATALENGTH(model.GetSamplesPerSec()) / 2;
     if (nBlockAlign > 1) {
         dwDataPos *= 2;    // 16 bit data
     }
@@ -300,8 +299,8 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
     }
 
     // calculate lags at which to look for smallest autocorrelation coefficient
-    int nMinLag = (int)(pModel->GetSamplesPerSec() / (DWORD)pUttParm->nMaxFreq);
-    int nMaxLag = (int)(pModel->GetSamplesPerSec() / (DWORD)pUttParm->nMinFreq);
+    int nMinLag = (int)(model.GetSamplesPerSec() / (DWORD)pUttParm->nMaxFreq);
+    int nMaxLag = (int)(model.GetSamplesPerSec() / (DWORD)pUttParm->nMinFreq);
     int naACFlags[80]; // to be filled with lags at 5% intervals between nMinLag and nMaxLag
     // fill up the lag array
     naACFlags[0] = nMinLag - 1; // extra value to constrain fine tuning at limit
@@ -356,7 +355,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
             for (int nLoop = 0; nLoop < nNumLags; nLoop++) {
                 // try each lag
                 nLagData = (unsigned int)naACFlags[nLoop + 1]; // first entry is dummy
-                int nInnerLoop = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) / nACFinterval + 1;
+                int nInnerLoop = CALCULATION_DATALENGTH(model.GetSamplesPerSec()) / nACFinterval + 1;
                 if (nBlockAlign > 1) // 16 bit data
                     dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                               nMaxLag, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -382,7 +381,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
             int nLagHigh = naACFlags[nFoundLag + 1] - 1;
             for (nLagData = (unsigned int)nLagLow; nLagData <= (unsigned int)nLagHigh; nLagData++) {
                 // scan around best fit
-                int nInnerLoop = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) / nACFinterval;
+                int nInnerLoop = CALCULATION_DATALENGTH(model.GetSamplesPerSec()) / nACFinterval;
                 if (nBlockAlign > 1) // 16 bit data
                     dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                               nLagHigh, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -418,7 +417,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
             if (nFoundLag >= (nMinLag * 2)) {
                 // check frequency / 2
                 nLagData = nFoundLag / 2;
-                int nInnerLoop = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) / nACFinterval;
+                int nInnerLoop = CALCULATION_DATALENGTH(model.GetSamplesPerSec()) / nACFinterval;
                 if (nBlockAlign > 1) // 16 bit data
                     dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                               nLagData, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -432,7 +431,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
                     // ...else check for 3x fundamental
                     if ((nFoundLag >= (nMinLag * 3)) && bRes) {
                         nLagData = nFoundLag / 3;
-                        int nInnerLoop = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) / nACFinterval;
+                        int nInnerLoop = CALCULATION_DATALENGTH(model.GetSamplesPerSec()) / nACFinterval;
                         if (nBlockAlign > 1) // 16 bit data
                             dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                                       nLagData, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -452,7 +451,7 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
             // discard points which haven't converged and lie on upper frequency bound
             int nPitchResult = -1;
             if ((nFoundLag != nMinLag) && (nFoundLag != nMaxLag)) {
-                nPitchResult = (short)((PRECISION_MULTIPLIER * (unsigned long)(pModel->GetSamplesPerSec())) / (unsigned long)nFoundLag);
+                nPitchResult = (short)((PRECISION_MULTIPLIER * (unsigned long)(model.GetSamplesPerSec())) / (unsigned long)nFoundLag);
             }
             // pitch result is ready, store it
             if (nPitchResult >= 0) {
@@ -465,9 +464,9 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
             }
             // set new calculation window start
             if (nBlockAlign > 1) {
-                dwDataPos += CALCULATION_INTERVAL(pModel->GetSamplesPerSec()) * 2;    // 16 bit data
+                dwDataPos += CALCULATION_INTERVAL(model.GetSamplesPerSec()) * 2;    // 16 bit data
             } else {
-                dwDataPos += CALCULATION_INTERVAL(pModel->GetSamplesPerSec());    // 8 bit data
+                dwDataPos += CALCULATION_INTERVAL(model.GetSamplesPerSec());    // 8 bit data
             }
         } else { // proplogue and epilogue
             *pQualityData++ = 0;    // reset quality
@@ -535,9 +534,9 @@ long CProcessChange::Process(void * pCaller, Model * pModel, int nProgress,
     }
 
     // calculate current processing position (copied but not understood from WINCECIL)
-    dwLoopStart = ((pModel->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
-                    + pModel->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
-                   + CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(pModel->GetSamplesPerSec()) + 1;
+    dwLoopStart = ((model.GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
+                    + model.GetSamplesPerSec() / pUttParm->nMinFreq) / 2
+                   + CALCULATION_DATALENGTH(model.GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(model.GetSamplesPerSec()) + 1;
     dwDataSize = pLoudness->GetDataSize();
     dwLoopEnd = dwDataSize - dwLoopStart; // end of loop
     // create the temporary change file

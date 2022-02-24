@@ -14,12 +14,12 @@
 
 #include "Sa_plot.h"
 #include "ProgressStatusBar.h"
-#include "AppContext.h"
 
 class CProcessSpectrogram;
 class CProcessSpectroFormants;
 class CSaDoc;
 class CMainFrame;
+struct SaContext;
 
 class CPlotSpectrogram : public CPlotWnd {
 
@@ -46,12 +46,12 @@ protected:
 
 private:
     BOOL CreateSpectroPalette(CDC * pDC); // creates the palette
-    void PopulateBmiColors(RGBQUAD * Quadcolors,CSaView * pView);
-    bool OnDraw2(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CAppContext& appContext);
-    void OnDrawSpectrogram(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, CSaView * pView, BOOL bSmooth, BOOL * bAliased = NULL);
-    void OnDrawFormantTracksFragment(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CAppContext & appContext);
-    void OnDrawFormantTracksTime(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, CAppContext& appContext);
-    CProcessSpectrogram* GetSpectrogram(CSaDoc* pModel);
+    void PopulateBmiColors(RGBQUAD * Quadcolors, SaContext& context);
+    bool OnDraw2(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, SaContext & context);
+    void OnDrawSpectrogram(std::unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip, BOOL bSmooth, BOOL * bAliased, SaContext& context);
+    void OnDrawFormantTracksFragment(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, SaContext& context);
+    void OnDrawFormantTracksTime(std::unique_ptr<CDC>& memDC, CRect rWnd, CRect rClip, SaContext& context);
+    CProcessSpectrogram* GetSpectrogram(CSaDoc& model);
 
     enum PaletteMode {                      // mode of palette
         SYSTEMCOLOR,

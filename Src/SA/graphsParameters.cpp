@@ -317,7 +317,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog() {
     m_nPitchRange = pPitchParm->nRangeMode;
     m_nPitchScaling = pPitchParm->nScaleMode;
     if (!m_nPitchRange) {
-        CPitchParm::GetAutoRange(pModel,pModel->GetGrappl(), m_nUpperBound, m_nLowerBound);
+        CPitchParm::GetAutoRange(pModel->GetGrappl(), m_nUpperBound, m_nLowerBound);
 
         // auto range, disable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
@@ -880,7 +880,7 @@ void CDlgParametersPitchPage::OnRange() {
         CSaView * pView = (CSaView *)(pMDIFrameWnd->GetCurrSaView());
         CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
-        CPitchParm::GetAutoRange(pModel, pModel->GetGrappl(), m_nUpperBound, m_nLowerBound);
+        CPitchParm::GetAutoRange( pModel->GetGrappl(), m_nUpperBound, m_nLowerBound);
 
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);
@@ -2658,7 +2658,7 @@ BOOL CDlgParametersMusicPage::OnInitDialog() {
 
     m_nRange = pParm->nRangeMode;
     if (!m_nRange) {
-        CMusicParm::GetAutoRange(pModel, pModel->GetMelogram(), m_nUpperBound, m_nLowerBound);
+        CMusicParm::GetAutoRange( pModel->GetMelogram(), m_nUpperBound, m_nLowerBound);
         // auto range, disable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);
@@ -2860,7 +2860,7 @@ void CDlgParametersMusicPage::OnRange() {
         CSaView * pView = (CSaView *)(pMDIFrameWnd->GetCurrSaView());
         CSaDoc * pModel = (CSaDoc *)pView->GetDocument();
 
-        CMusicParm::GetAutoRange(pModel, pModel->GetMelogram(), m_nUpperBound, m_nLowerBound);
+        CMusicParm::GetAutoRange(pModel->GetMelogram(), m_nUpperBound, m_nLowerBound);
 
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);

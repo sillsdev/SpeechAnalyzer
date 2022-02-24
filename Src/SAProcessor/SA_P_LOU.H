@@ -15,7 +15,7 @@
 
 class CProcessLoudness : public CProcess {
 public:
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     virtual void SetDataInvalid() {
         CProcess::SetDataInvalid();
     }
@@ -27,7 +27,7 @@ public:
 class CProcessSmoothLoudness : public CProcess {
 // Construction/destruction/creation
 public:
-    CProcessSmoothLoudness(Context & context);
+    CProcessSmoothLoudness(Context context);
     virtual ~CProcessSmoothLoudness();
 
 // Attributes
@@ -42,11 +42,11 @@ private:
 // Operations
 protected:
     virtual long Exit(int nError, HANDLE hSmoothBlock); // exit processing on error
-    BPTR SmoothRawData(Model * pModel, BPTR pTarget, UINT nBlockAlign, int nOldBlock,
+    BPTR SmoothRawData( BPTR pTarget, UINT nBlockAlign, int nOldBlock,
                         int nBlock, int * pnLastDone, DWORD dwSmplPerSec, DWORD dwStart, UINT * nAverage, long * lAverage);
 public:
     void SetDataInvalid();
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     BPTR GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return smooth raw data pointer on given position (offset)
     DWORD GetSmoothRawDataSize();
 };

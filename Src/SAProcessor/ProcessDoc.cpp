@@ -14,11 +14,11 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessDoc::CProcessDoc(Context & context) : app(context.GetApp()), model(context.GetModel()) {
+CProcessDoc::CProcessDoc(Context context) : app(context.app), model(context.model) {
     m_dwBufferOffset = UNDEFINED_OFFSET;    // buffer undefined, force buffer reload
 }
 
-long CProcessDoc::Process(void * /*pCaller*/, Model * /*pModel*/, int /*nProgress*/, int nLevel) {
+long CProcessDoc::Process(void * /*pCaller*/, int /*nProgress*/, int nLevel) {
     return MAKELONG(nLevel, 100);
 }
 
@@ -33,7 +33,7 @@ long CProcessDoc::Process(void * /*pCaller*/, Model * /*pModel*/, int /*nProgres
 // buffer, and only the actual pointer to the data block will be returned.
 // The data offset contains a byte index.
 /***************************************************************************/
-BPTR CProcessDoc::GetProcessedWaveData(App * pApp, LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin) {
+BPTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin) {
 
     if (wcslen(szName)==0) {
         return NULL;
@@ -231,8 +231,8 @@ void CProcessDoc::LoadBuffer(char * buffer, size_t /*size*/, int sampleSize, int
     }
 }
 
-DWORD CProcessDoc::GetNumSamples(Model * pModel) const {
-    return pModel->GetNumSamples();
+DWORD CProcessDoc::GetNumSamples() const {
+    return model.GetNumSamples();
 }
 
 DWORD CProcessDoc::GetProcessedModelWaveDataSize() {

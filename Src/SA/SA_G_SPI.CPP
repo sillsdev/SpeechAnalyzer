@@ -72,7 +72,7 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
     CSaDoc  *  pModel   = pView->GetDocument();
     // create smoothed pitch data
     CProcessSmoothedPitch * pPitch = (CProcessSmoothedPitch *)pModel->GetSmoothedPitch(); // get pointer to smoothed pitch object
-    short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pPitch->Process(this)); // process data
     nResult = CheckResult(nResult, pPitch); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -91,7 +91,7 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
             nMaxData = pPitchParm->nUpperBound;
         } else {
             // auto range mode
-            CPitchParm::GetAutoRange(pModel, pModel->GetGrappl(), nMaxData, nMinData);
+            CPitchParm::GetAutoRange(pModel->GetGrappl(), nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         if (pPitchParm->nScaleMode == 1) {

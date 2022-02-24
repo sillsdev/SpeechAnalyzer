@@ -21,7 +21,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // For each area, determined by an index number, there will be a temporary
 // file, where the processed data is stored in.
 
-CProcessAreaData::CProcessAreaData(Context & context) : CProcess(context) {
+CProcessAreaData::CProcessAreaData(Context context) : CProcess(context) {
     // create the area arrays
     m_dwAreaPos = 0;
     m_dwAreaLength = 0;

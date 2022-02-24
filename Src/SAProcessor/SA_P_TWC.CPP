@@ -35,7 +35,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessTonalWeightChart::CProcessTonalWeightChart Constructor
 /***************************************************************************/
-CProcessTonalWeightChart::CProcessTonalWeightChart(Context & context) : CProcess(context) {
+CProcessTonalWeightChart::CProcessTonalWeightChart(Context context) : CProcess(context) {
     m_dwFrameSize = 0;
 }
 
@@ -51,14 +51,14 @@ CProcessTonalWeightChart::CProcessTonalWeightChart(Context & context) : CProcess
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessTonalWeightChart::Process(void* pCaller, Model* pModel, DWORD dwFrameStart, DWORD dwFrameSize, short nMinSemitone, short nMaxSemitone, int nProgress, int nLevel) {
+long CProcessTonalWeightChart::Process(void* pCaller, DWORD dwFrameStart, DWORD dwFrameSize, short nMinSemitone, short nMaxSemitone, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
 
     // create melogram data (need this to determine cursor position in melogram data)
-    CProcessMelogram* pMelogram = (CProcessMelogram*)pModel->GetMelogram(); // get pointer to melogram object
-    long lResult = pMelogram->Process(pCaller, pModel, nProgress, ++nLevel); // process data
+    CProcessMelogram* pMelogram = (CProcessMelogram*)model.GetMelogram(); // get pointer to melogram object
+    long lResult = pMelogram->Process(pCaller, nProgress, ++nLevel); // process data
     nLevel = (short int)LOWORD(lResult);
     if (nLevel == PROCESS_CANCELED) {
         return Exit(PROCESS_CANCELED);

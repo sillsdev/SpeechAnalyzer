@@ -28,8 +28,8 @@ private:
 
 public:
     // Function to get data from SA
-    BOOL Get_Raw_Data(long** pDataOut, DWORD* dwDataSize, Model* pModel);
-    long Process(void* pCaller, Model* pModel, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
+    BOOL Get_Raw_Data(long** pDataOut, DWORD* dwDataSize);
+    long Process(void* pCaller, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
 };
 
 //**************************************************************************
@@ -77,8 +77,8 @@ private:
             double end);
 
     // Private helper functions
-    double               _GetMaxTree(double max);                                                           // recursive routine
-    double               _GetMaxTreeBounds(double max, long start, long end);   // recursive routine
+    double _GetMaxTree(double max);                                                           // recursive routine
+    double _GetMaxTreeBounds(double max, long start, long end);   // recursive routine
     CWaveletNode* _GetNode(long level, bool reset);                                      // recursive routine
 
 public:
@@ -86,50 +86,50 @@ public:
     ~CWaveletNode();
 
     // Main functions
-    BOOL  DoMRAAnalysisTree();    // wraps _DoMRAAnalysisTree
-    BOOL  DrawColorBandTree(unsigned char* pBits,                  // wraps _DrawColorBandTree
+    BOOL DoMRAAnalysisTree();    // wraps _DoMRAAnalysisTree
+    BOOL DrawColorBandTree(unsigned char* pBits,                  // wraps _DrawColorBandTree
             CRect* rWnd,
             double high,
             double start,
             double end);
 
     // Transform Functions - these are used for post processing after the wavelet has been generated
-    BOOL  TransformEnergyNode();
-    BOOL  TransformLogScalingNode(double high);
-    BOOL  TransformSmoothingNode();
-    BOOL  TransformEnergyTree();
-    BOOL  TransformLogScalingTree(double high);
-    BOOL  TransformSmoothingTree();
-    BOOL  TransformFitWindowNode(CRect* rWnd);
+    BOOL TransformEnergyNode();
+    BOOL TransformLogScalingNode(double high);
+    BOOL TransformSmoothingNode();
+    BOOL TransformEnergyTree();
+    BOOL TransformLogScalingTree(double high);
+    BOOL TransformSmoothingTree();
+    BOOL TransformFitWindowNode(CRect* rWnd);
 
     // Accessor methods
-    BOOL  SetDataNode(long* data, DWORD dwDataSize, double _lower_freq, double _upper_freq);
-    BOOL  SetLeftNode(CWaveletNode* node) {
+    BOOL SetDataNode(long* data, DWORD dwDataSize, double _lower_freq, double _upper_freq);
+    BOOL SetLeftNode(CWaveletNode* node) {
         right_node = node;
         return TRUE;
     }
-    BOOL  SetRightNode(CWaveletNode* node) {
+    BOOL SetRightNode(CWaveletNode* node) {
         left_node = node;
         return TRUE;
     }
-    BOOL  SetParentNode(CWaveletNode* node) {
+    BOOL SetParentNode(CWaveletNode* node) {
         parent_node = node;
         return TRUE;
     }
 
-    BOOL  SetUpperFrequencyBound(double freq) {
+    BOOL SetUpperFrequencyBound(double freq) {
         upper_freq = freq;
         return TRUE;
     }
-    BOOL  SetLowerFrequencyBound(double freq) {
+    BOOL SetLowerFrequencyBound(double freq) {
         lower_freq = freq;
         return TRUE;
     }
 
-    double              GetUpperFrequencyBound() {
+    double GetUpperFrequencyBound() {
         return upper_freq;
     }
-    double              GetLowerFrequencyBound() {
+    double GetLowerFrequencyBound() {
         return lower_freq;
     }
 
@@ -165,4 +165,4 @@ public:
 
 BOOL CreateTree(char* tree_definition, CWaveletNode** root_node);
 
-#endif //_SA_P_WAVELET_H
+#endif

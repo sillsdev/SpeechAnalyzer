@@ -26,7 +26,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // class to calculate spectrum for wave data. The class creates an object
 // of the class Spectrum that does the calculation.
 
-CProcessSpectrum::CProcessSpectrum(Context & context) : CProcess(context) {
+CProcessSpectrum::CProcessSpectrum(Context context) : CProcess(context) {
     m_nSpectralBands = 0;
     m_stBandPower.Max.Raw = m_stBandPower.Min.Raw = (float)UNDEFINED_DATA;
     m_stBandPower.Max.Smooth = m_stBandPower.Min.Smooth = (float)UNDEFINED_DATA;
@@ -106,14 +106,14 @@ SFormant & CProcessSpectrum::GetFormant(unsigned short wIndex) {
 // CProcessSpectrum::GetSpectralRegionPower  Computes average power in
 // specified region of spectrum, between wFreqLo and wFreqHi.
 /***************************************************************************/
-float CProcessSpectrum::GetSpectralRegionPower(Model * pModel, unsigned short wFreqLo, unsigned short wFreqHi) {
+float CProcessSpectrum::GetSpectralRegionPower(unsigned short wFreqLo, unsigned short wFreqHi) {
 
     if (m_lpBuffer==NULL) {
         return 0;
     }
 
     // get indexes to start and end frequencies
-    DWORD dwSamplesPerSec = pModel->GetSamplesPerSec();
+    DWORD dwSamplesPerSec = model.GetSamplesPerSec();
     uint32 nIndexLo = uint32((wFreqLo * MAX_FFT_LENGTH + (dwSamplesPerSec/2)) / dwSamplesPerSec);
     uint32 nIndexHi = uint32((wFreqHi * MAX_FFT_LENGTH + (dwSamplesPerSec/2)) / dwSamplesPerSec);
     double dfSumOfSpectra = 0;
@@ -147,7 +147,7 @@ float CProcessSpectrum::GetSpectralRegionPower(Model * pModel, unsigned short wF
 // calls. It calculates spectrum data.
 /***************************************************************************/
 
-long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress, int nLevel) {
+long CProcessSpectrum::Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return Exit(PROCESS_CANCELED, NULL);    // process canceled
     }
@@ -189,20 +189,20 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     }
 
     // Get signal and frame parameters.
-    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD wSmpSize = model.GetSampleSize();
 
     // Get fragments.  Processing should have been completed in the spectrum plot class at the very latest.
-    CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
+    CProcessFragments * pFragments = (CProcessFragments *)model.GetFragments();
 
     int nWindowSize = dwFrameSize / wSmpSize;
     int nWindowStart = dwFrameStart / wSmpSize;
 
     switch (m_stParmProc.GetWindow().lengthMode) {
     case kBandwidth:
-        nWindowSize = CDspWin::CalcLength(m_stParmProc.GetWindow().bandwidth, pModel->GetSamplesPerSec(), m_stParmProc.GetWindow().type);
+        nWindowSize = CDspWin::CalcLength(m_stParmProc.GetWindow().bandwidth, model.GetSamplesPerSec(), m_stParmProc.GetWindow().type);
         break;
     case kTime:
-        nWindowSize = (int)(0.001* m_stParmProc.GetWindow().time*pModel->GetSamplesPerSec() + 0.5);
+        nWindowSize = (int)(0.001* m_stParmProc.GetWindow().time*model.GetSamplesPerSec() + 0.5);
     case kBetweenCursors:
     default:
         if (m_stParmProc.GetWindow().equivalentLength) {
@@ -219,20 +219,20 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     if (nWindowStart < 0) { // shift start of window
         nWindowStart = 0;
     }
-    if ((nWindowStart+nWindowSize + 1) > int(pModel->GetDataSize()/wSmpSize)) {
-        nWindowSize = (pModel->GetDataSize()/wSmpSize) - 1 - nWindowStart;
+    if ((nWindowStart+nWindowSize + 1) > int(model.GetDataSize()/wSmpSize)) {
+        nWindowSize = (model.GetDataSize()/wSmpSize) - 1 - nWindowStart;
     }
 
     // Initialize frame structure.
     SSigParms stFrameParm;
     stFrameParm.Length = nWindowSize;
-    stFrameParm.SmpRate = pModel->GetSamplesPerSec();
+    stFrameParm.SmpRate = model.GetSamplesPerSec();
     if (wSmpSize == 1) {
         stFrameParm.SmpDataFmt = PCM_UBYTE;
     } else {
         stFrameParm.SmpDataFmt = PCM_2SSHORT;
     }
-    stFrameParm.Source = (ESIG_SOURCE)pModel->GetGender();
+    stFrameParm.Source = (ESIG_SOURCE)model.GetGender();
 
     // Initialize spectrum settings.
     SSpectrumSettings stSpectSetting;
@@ -256,14 +256,14 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     }
 
     // Get frame data and fill up frame data buffer.
-    DWORD dwOldWaveBufferIndex = pModel->GetWaveBufferIndex();  // save current buffer offset into waveform
+    DWORD dwOldWaveBufferIndex = model.GetWaveBufferIndex();  // save current buffer offset into waveform
     DWORD dwDataPos = nWindowStart*wSmpSize;
     DWORD dwFrameEnd = (nWindowStart + nWindowSize)*wSmpSize;
     BPTR pFrameData = (BPTR)stFrameParm.Start; // pointer to special raw data buffer
     while (dwDataPos < dwFrameEnd) { // processing loop
-        BPTR pBlockData = pModel->GetWaveData(dwDataPos, TRUE); // get pointer to data block
+        BPTR pBlockData = model.GetWaveData(dwDataPos, TRUE); // get pointer to data block
         if (!pBlockData) {
-            pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
+            model.GetWaveData(dwOldWaveBufferIndex, TRUE);
             EndProcess();
             return Exit(PROCESS_ERROR, stFrameParm.Start); // error, reading failed
         }
@@ -305,8 +305,8 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     SFragParms stFragment = pFragments->GetFragmentParms(dwFragmentIndex);
     UNUSED_ALWAYS(stFragment);
 
-    CProcessGrappl * pAutoPitch = pModel->GetGrappl();
-    BOOL bVoiced = pAutoPitch->IsVoiced(pModel, nWindowStart*wSmpSize);
+    CProcessGrappl * pAutoPitch = model.GetGrappl();
+    BOOL bVoiced = pAutoPitch->IsVoiced( nWindowStart*wSmpSize);
 
     CLinPredCoding * poLpcObject = NULL;
     SLPCModel * pstLpcModel = NULL;
@@ -335,11 +335,11 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
 
         if (bVoiced) {
             stLpcSetting.Process.Flags |= PRE_EMPHASIS;  // turn pre-emphasis on to remove effects of glottis and lip radiation
-            DWORD dwBandwidth = (pModel->GetSignalBandWidth()==0)?pModel->GetSamplesPerSec()/2:pModel->GetSignalBandWidth();
+            DWORD dwBandwidth = (model.GetSignalBandWidth()==0)?model.GetSamplesPerSec()/2:model.GetSignalBandWidth();
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
             stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * app.GetResearchSettings().spectrumLpcOrderFsMult + app.GetResearchSettings().spectrumLpcOrderExtra);
         } else {
-            DWORD dwBandwidth = (pModel->GetSignalBandWidth()==0)?pModel->GetSamplesPerSec()/2:pModel->GetSignalBandWidth();
+            DWORD dwBandwidth = (model.GetSignalBandWidth()==0)?model.GetSamplesPerSec()/2:model.GetSignalBandWidth();
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
             stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * app.GetResearchSettings().spectrumLpcOrderFsMult + app.GetResearchSettings().spectrumLpcOrderExtra);
         }
@@ -389,7 +389,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
 
     // If neither object could be constructed, quit.
     if (!poSpectrum && !poLpcObject) {
-        pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);       // restore waveform buffer
+        model.GetWaveData(dwOldWaveBufferIndex, TRUE);       // restore waveform buffer
         EndProcess();
         return Exit(PROCESS_ERROR, stFrameParm.Start); // exit
     }
@@ -494,7 +494,7 @@ long CProcessSpectrum::Process(void * pCaller, Model * pModel, DWORD dwFrameStar
     // free the temporary frame buffer
     delete [] stFrameParm.Start;
 	// restore wave buffer
-    pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
+    model.GetWaveData(dwOldWaveBufferIndex, TRUE);
 	// calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
 	// update status bar with the progress and allow cancel (ESC key)

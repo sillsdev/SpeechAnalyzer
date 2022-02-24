@@ -16,24 +16,24 @@ __interface CmdTarget;
 class CProcessDoc : public IProcess {
 
 public:
-    CProcessDoc(Context & context);
+    CProcessDoc(Context context);
     CProcessDoc() = delete;
     virtual ~CProcessDoc();
 
     void SetDataInvalid();
     // return pointer to block of processed wave source
-    BPTR GetProcessedWaveData(App * pApp, LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin = FALSE);
+    BPTR GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin = FALSE);
     // return processed data pointer to object staring at dwOffset
     void * GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE);
     DWORD GetProcessBufferIndex(size_t nSize = 1);
     DWORD GetBufferSize();
 
     // interface methods
-    virtual long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
+    virtual long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     // return processed data pointer to object staring at dwOffset
     virtual void * GetProcessedObject(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwIndex, size_t sObjectSize, BOOL bReverse=FALSE);
     // return the total number of samples in the data for a single channel
-    virtual DWORD GetNumSamples(Model * pModel) const;                                // return number of samples for single channel
+    virtual DWORD GetNumSamples() const;                                
     // return the byte count of the data for a single channel
     virtual DWORD GetProcessedModelWaveDataSize();
 

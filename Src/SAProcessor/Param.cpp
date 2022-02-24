@@ -225,7 +225,7 @@ void CMusicParm::Init() {
     nManualCalcLower = nCalcLowerBound;
 }
 
-void CMusicParm::GetAutoRange(Model* pModel, CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound) {
+void CMusicParm::GetAutoRange(CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound) {
 
 	CMusicParm temp;
     temp.Init();

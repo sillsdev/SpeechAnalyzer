@@ -82,7 +82,7 @@ void CPlotDurations::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 	CSaDoc * pModel = pView->GetDocument();
 	// create loudness data
 	CProcessDurations * pDurations = (CProcessDurations *)pModel->GetDurations(); // get pointer to loudness object
-	short int nResult = LOWORD(pDurations->Process(this, pModel)); // process data
+	short int nResult = LOWORD(pDurations->Process(this)); // process data
 	nResult = CheckResult(nResult, pDurations); // check the process result
 	if (nResult == PROCESS_ERROR) {
 		return;

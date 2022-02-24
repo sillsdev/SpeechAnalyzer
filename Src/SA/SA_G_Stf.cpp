@@ -412,7 +412,7 @@ void CPlotStaff::Convert() {
     // get melogram data
     CSaDoc * pModel = (CSaDoc *)m_pView->GetDocument(); // cast pointer
     CProcessMelogram * pMelogram = (CProcessMelogram *)pModel->GetMelogram(); // get pointer to melogram object
-    long lResult = pMelogram->Process(this, pModel); // process data
+    long lResult = pMelogram->Process(this); // process data
     short int nLevel = LOWORD(lResult);
     if (nLevel < 0) {
         ::SendMessage(StaffControl, WM_SETTEXT, 0, (LPARAM)((LPCTSTR)sMelody));
@@ -423,7 +423,7 @@ void CPlotStaff::Convert() {
 
     // Get Loudness Data
     CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to loudness object
-    lResult = pLoudness->Process(this, pModel); // process data
+    lResult = pLoudness->Process(this); // process data
     nLevel = LOWORD(lResult);
     if (nLevel < 0) {
         ::SendMessage(StaffControl, WM_SETTEXT, 0, (LPARAM)((LPCTSTR)sMelody));
@@ -437,12 +437,12 @@ void CPlotStaff::Convert() {
     int nLowerBound = pParm->nLowerBound;
 
     if (pParm->nRangeMode == 0) {
-        CMusicParm::GetAutoRange(pModel, pModel->GetMelogram(), nUpperBound, nLowerBound);
+        CMusicParm::GetAutoRange( pModel->GetMelogram(), nUpperBound, nLowerBound);
     }
     short nMinSemitone = (short)nLowerBound;
     short nMaxSemitone = (short)nUpperBound;
     CProcessTonalWeightChart * pTWC = (CProcessTonalWeightChart *)pModel->GetTonalWeightChart(); // get pointer to TWC object
-    lResult = pTWC->Process(this, pModel, 0, dwMelDataLength, nMinSemitone, nMaxSemitone); // process data
+    lResult = pTWC->Process(this, 0, dwMelDataLength, nMinSemitone, nMaxSemitone); // process data
     nLevel = LOWORD(lResult);
     nProgress = HIWORD(lResult);
     if (nLevel < 0) {

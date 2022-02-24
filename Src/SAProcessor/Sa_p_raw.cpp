@@ -23,7 +23,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessRaw::Process Processing raw data (convert raw data to 16-bit)
 /***************************************************************************/
-long CProcessRaw::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessRaw::Process(void * pCaller, int nProgress, int nLevel) {
 
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -50,11 +50,11 @@ long CProcessRaw::Process(void * pCaller, Model * pModel, int nProgress, int nLe
     }
 
     // process adjust data
-    pModel->GetAdjust()->Process(pCaller, pModel, nProgress, nLevel);
+    model.GetAdjust()->Process(pCaller, nProgress, nLevel);
 
     // process raw data
-    DWORD dwDataSize = pModel->GetDataSize();										// size of raw data
-    DWORD nSmpSize = pModel->GetSampleSize();
+    DWORD dwDataSize = model.GetDataSize();										// size of raw data
+    DWORD nSmpSize = model.GetSampleSize();
 
     short int * pProcessedData = (short int *)m_lpBuffer;						// pointer to process data
     // calculate current processing position
@@ -63,18 +63,18 @@ long CProcessRaw::Process(void * pCaller, Model * pModel, int nProgress, int nLe
 
     DWORD dwDocWaveBufferSize = GetBufferSize();
 	// get pointer to data block
-    BPTR pDocData = (dwDataSize!=0) ? pModel->GetWaveData(dwDataPos,FALSE) : 0;   
-    DWORD dwDocWavBufferPosition = pModel->GetWaveBufferIndex();
+    BPTR pDocData = (dwDataSize!=0) ? model.GetWaveData(dwDataPos,FALSE) : 0;   
+    DWORD dwDocWavBufferPosition = model.GetWaveBufferIndex();
 
-    int nScale = pModel->GetBitsPerSample() == 8 ? 256 : 1;
+    int nScale = model.GetBitsPerSample() == 8 ? 256 : 1;
 
     // processing loop
     while (dwDataPos < dwDataSize) {
         // do we need more data?
         if (dwDataPos >= dwDocWavBufferPosition + dwDocWaveBufferSize) {
             // get pointer to data block
-            pDocData = pModel->GetWaveData(dwDataPos,TRUE);
-            dwDocWavBufferPosition = pModel->GetWaveBufferIndex();
+            pDocData = model.GetWaveData(dwDataPos,TRUE);
+            dwDocWavBufferPosition = model.GetWaveBufferIndex();
         }
 
         int nRes;

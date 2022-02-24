@@ -51,7 +51,7 @@ static const SRange ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700
 /***************************************************************************/
 // CProcessFormants::CProcessFormants Constructor
 /***************************************************************************/
-CProcessFormants::CProcessFormants(Context & context) : CProcess(context) {
+CProcessFormants::CProcessFormants(Context context) : CProcess(context) {
     m_bTrack = FALSE;
     m_dwValidFrameCount = 0;
     m_dwFormantFrameCount = 0;
@@ -87,7 +87,7 @@ long CProcessFormants::Exit(int nError) {
 // The processed formant data is stored in the process buffer and in a temporary
 // file if formant tracking is enabled.
 /***************************************************************************/
-long CProcessFormants::Process(void * pCaller, Model * pModel, BOOL bTrack,
+long CProcessFormants::Process(void * pCaller, BOOL bTrack,
                                DWORD dwFrameStart, DWORD dwFrameSize,
                                SSpectProcSelect SpectraSelected,
                                int nProgress, int nLevel) {
@@ -115,12 +115,12 @@ long CProcessFormants::Process(void * pCaller, Model * pModel, BOOL bTrack,
         return MAKELONG(PROCESS_UNNECESSARY, 100);    // data is already ready
     }
 
-    DWORD nSmpSize = pModel->GetSampleSize();
+    DWORD nSmpSize = model.GetSampleSize();
 
     // Process spectrum to get formants.
     SetDataReady(TRUE);
-    CProcessSpectrum * pSpectrum = pModel->GetSpectrum();
-    short int nResult = LOWORD(pSpectrum->Process(this, pModel, dwFrameStart, dwFrameSize, SpectraSelected, nProgress, nLevel+1)); // process data
+    CProcessSpectrum * pSpectrum = model.GetSpectrum();
+    short int nResult = LOWORD(pSpectrum->Process(this, dwFrameStart, dwFrameSize, SpectraSelected, nProgress, nLevel+1)); // process data
 
     // Exit if error has occurred or the spectrum process has been canceled.
     if (nResult < 0) {
@@ -245,7 +245,7 @@ void CProcessFormants::SmoothMedian(Model * pModel) {
 
     // Try to find pole frequency within valid formant frequency range nearest current median value
     if (m_dwFormantFrameCount >= 3) {
-        EGender nGender = pModel->GetGender();
+        EGender nGender = model.GetGender();
 
         SFormant * FormantFrame[3];
         SFormant MedianFreq[MAX_NUM_FORMANTS+1];
@@ -563,7 +563,7 @@ int CProcessFormants::GetVowelCount(EGender nGender) const {
 // CProcessFormants::FindNearestVowel Returns vowel closest to F1, F2, and F3
 /***************************************************************************/
 wstring CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, Model * pModel) const {
-    EGender nGender = pModel->GetGender();
+    EGender nGender = model.GetGender();
     double dMinDistanceSquared = FLT_MAX;
     int nNearestVowel = -1;
 

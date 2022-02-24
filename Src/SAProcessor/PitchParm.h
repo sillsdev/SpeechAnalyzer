@@ -21,7 +21,7 @@ public:
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
     void Init();
-    static void GetAutoRange(Model* pModel, CProcess * pGrappl, int & nUpperBound, int & nLowerBound);
+    static void GetAutoRange(Model & model, CProcess * pGrappl, int & nUpperBound, int & nLowerBound);
 
     int nRangeMode;                 // frequency range display mode
     int nScaleMode;                 // scale display mode

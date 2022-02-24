@@ -735,7 +735,7 @@ void CDlgVocalTract::OnGetAll() {
     CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(m_szSourceFilename);
     {
 
-        CUttParm myUttParm;
+        CUttParm myUttParm = {};
         CUttParm * pUttParm = &myUttParm;
         pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
         CUttParm * pSavedUttParm = new CUttParm;
@@ -757,7 +757,7 @@ void CDlgVocalTract::OnGetAll() {
             pPitch->SetDataInvalid();
         }
         pModel->SetUttParm(pUttParm);
-        short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
+        short int nResult = LOWORD(pPitch->Process(this)); // process data
         pModel->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
         if (nResult == PROCESS_ERROR || nResult == PROCESS_CANCELED) {
             return;
@@ -1148,7 +1148,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     }
 
     enum {PITCH, CALCULATIONS};
-    double fSizeFactor[CALCULATIONS];
+    double fSizeFactor[CALCULATIONS] = {};
 
     if (m_bPitch) { // formants need pitch info
         CProcessSmoothedPitch * pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
@@ -1246,7 +1246,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     }
 
     enum {PITCH, FORMANTS, CALCULATIONS};
-    double fSizeFactor[CALCULATIONS];
+    double fSizeFactor[CALCULATIONS] = {};
 
     BOOL bPitch = TRUE;
     BOOL bVocalTract = TRUE;
@@ -1634,7 +1634,8 @@ void CDlgVocalTract::OnSynthesize() {
 
 
 PCMWAVEFORMAT CDlgVocalTract::pcmWaveFormat() {
-    PCMWAVEFORMAT pcm;
+    
+    PCMWAVEFORMAT pcm = {};
 
     pcm.wBitsPerSample = 16;
     pcm.wf.wFormatTag = 1;  // PCM
@@ -1860,8 +1861,8 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
     return mmioWrite(hmmioFile, (char *) &shortData[0], sizeof(SHORT)*data.size());
 }
 
-BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cChars) {
-    CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
+BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChars) {
+    CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
 
     // open file
     HMMIO hmmioFile; // file handle
@@ -1874,7 +1875,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
 
     /* Create the output file RIFF chunk of form type 'WAVE'.
     */
-    MMCKINFO mmckinfoParent;  // chunk info. for output RIFF chunk
+    MMCKINFO mmckinfoParent = {};  // chunk info. for output RIFF chunk
     mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E');
     if (mmioCreateChunk(hmmioFile, &mmckinfoParent, MMIO_CREATERIFF) != 0) {
         // error writing data chunk
@@ -1888,7 +1889,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cCha
     * specify it in the MMCKINFO structure so MMIO doesn't have to seek
     * back and set the chunk size after ascending from the chunk.
     */
-    MMCKINFO       mmckinfoSubchunk;      // info. for a chunk in output file
+    MMCKINFO mmckinfoSubchunk = {};      // info. for a chunk in output file
     mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
     mmckinfoSubchunk.cksize = sizeof(PCMWAVEFORMAT);  // we know the size of this ck.
     if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0) {
@@ -2041,7 +2042,7 @@ void CDlgVocalTract::OnFileOpen() {
 
         CString szData;
 
-        UINT uRead;
+        UINT uRead = 0;
 
         do {
             char buf[1024];

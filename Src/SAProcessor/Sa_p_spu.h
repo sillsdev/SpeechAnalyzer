@@ -64,12 +64,12 @@ struct SFormantFrame {
 class CProcessSpectrum : public CProcess {
 
 public:
-    CProcessSpectrum(Context& context);
+    CProcessSpectrum(Context context);
     CProcessSpectrum() = delete;
 
     void SetSpectrumParms(CSpectrumParm * pParmSpec);
     CSpectrumParm * GetSpectrumParms(void);
-    virtual long Process(void * pCaller, Model * pModel, DWORD dwFrameStart, DWORD dwFrameSize,
+    virtual long Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrameSize,
                          SSpectProcSelect SpectraSelected, int nProgress = 0, int nLevel = 1);
     virtual DWORD GetDataSize();
     virtual DWORD GetDataSize(size_t nElements);
@@ -81,7 +81,7 @@ public:
     virtual unsigned short GetFormantCount();
     virtual SFormant & GetFormant(unsigned short wIndex);           // returns formant at index
     virtual SFormantFrame * GetFormants();                          // returns pointer to formants
-    virtual float GetSpectralRegionPower(Model * pModel, unsigned short wFreqLo, unsigned short wFreqHi); // returns average power in specified region of spectrum
+    virtual float GetSpectralRegionPower(unsigned short wFreqLo, unsigned short wFreqHi); // returns average power in specified region of spectrum
 
 protected:
     virtual long Exit(int nError, void * mem); // exit processing on error

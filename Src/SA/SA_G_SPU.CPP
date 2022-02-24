@@ -81,7 +81,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 	// Force fragmenter to finish
     pModel->EnableBackgroundProcessing(FALSE);
 	// process data
-    short int nResult = LOWORD(pFragments->Process(this, pModel));
+    short int nResult = LOWORD(pFragments->Process(this));
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (!bDynamicUpdate) {
 			// check the process result
@@ -149,7 +149,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
     }
 
     // Process data.
-    nResult = LOWORD(pSpectrum->Process(this, pModel, dwFrameStart, dwFrameSize, SpectraSelected)); // process data
+    nResult = LOWORD(pSpectrum->Process(this, dwFrameStart, dwFrameSize, SpectraSelected)); // process data
     nResult = CheckResult(nResult, pSpectrum);
     if (nResult == PROCESS_ERROR) {
         return;

@@ -155,13 +155,13 @@ __interface Model {
 };
 
 __interface IProcess {
-    long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
+    long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
     // return processed data pointer to object staring at dwOffset
     void* GetProcessedObject(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwIndex, size_t sObjectSize, BOOL bReverse = FALSE);
     // return the size of the data in bytes for a single channel
     DWORD GetProcessedModelWaveDataSize();
     //  return the number of samples for a single channel
-    DWORD GetNumSamples(Model* pModel) const;
+    DWORD GetNumSamples() const;
 };
 
 __interface ProgressStatusBar {
@@ -201,11 +201,12 @@ __interface View {
     void EndWaitCursor();
 };
 
-__interface Context {
-    App& GetApp();
-    View& GetView();
-    Model& GetModel();
-    MainFrame& GetMainWnd();
+struct Context {
+    Context(App& app, View& view, Model& model, MainFrame& frame) : app(app), view(view), model(model), frame(frame) {}
+    App& app;
+    View& view;
+    Model& model;
+    MainFrame& frame;
 };
 
 #endif

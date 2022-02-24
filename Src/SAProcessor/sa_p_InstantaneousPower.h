@@ -7,12 +7,10 @@
 #ifndef _SA_P_InstantaneousPower_H
 #define _SA_P_InstantaneousPower_H
 
-//###########################################################################
-// CProcessInstantaneousPower data processing
-
 class CProcessInstantaneousPower : public CProcess {
 public:
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
+    CProcessInstantaneousPower(Context context) : CProcess(context) {}
+    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
 };
 
-#endif //_SA_P_InstantaneousPower_H
+#endif

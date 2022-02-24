@@ -79,6 +79,14 @@ class CDlgAdvancedParseWords;
 class CDlgAdvancedSegment;
 class CDlgAdvancedParsePhrases;
 
+struct SaContext {
+    SaContext(CSaApp& app, CSaView& view, CSaDoc& model, CMainFrame& frame) : app(app), view(view), model(model), frame(frame) {}
+    CSaApp& app;
+    CSaDoc& model;
+    CSaView& view;
+    CMainFrame& frame;
+};
+
 class CSaView : public CView, public View {
     
 	DECLARE_DYNCREATE(CSaView)
@@ -249,6 +257,8 @@ public:
     virtual void Dump(CDumpContext & dc) const;
 #endif
     CSaDoc * GetDocument();
+    Context GetContext();
+    SaContext GetSaContext();
 
     // selection
     BOOL SelectFromPosition(int nSegmentIndex, DWORD dwPosition, bool bFindExact);

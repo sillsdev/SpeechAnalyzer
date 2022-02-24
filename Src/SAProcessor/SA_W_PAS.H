@@ -14,8 +14,8 @@
 
 class CProcessWbHighpass : public CProcessButterworth {
 public:
-    CProcessWbHighpass(Context & context);
-    long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
+    CProcessWbHighpass(Context context);
+    long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(CObjectOStream& obs);
     virtual BOOL ReadProperties(CObjectIStream& obs);
     UINT GetCutoff() {return m_nCutoff; };
@@ -36,8 +36,8 @@ private:
 
 class CProcessWbLowpass : public CProcessButterworth {
 public:
-    CProcessWbLowpass(Context & context);
-    long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
+    CProcessWbLowpass(Context context);
+    long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(CObjectOStream& obs);
     virtual BOOL ReadProperties(CObjectIStream& obs);
     UINT GetCutoff() { return m_nCutoff; };
@@ -54,8 +54,8 @@ private:
 
 class CProcessWbBandpass : public CProcessButterworth {
 public:
-    CProcessWbBandpass(Context & context);
-    long Process(void* pCaller, Model* pModel, int nProgress = 0, int nLevel = 1);
+    CProcessWbBandpass(Context context);
+    long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(CObjectOStream& obs);
     virtual BOOL ReadProperties(CObjectIStream& obs);
     UINT GetUpperCutoff() { return m_nUpperCutoff; };

@@ -98,15 +98,15 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
     UNUSED_ALWAYS(dwDataLength);
 
     CProcessZCross * pZeroCrossCount = model.GetZCross();
-    short int nResult = LOWORD(pZeroCrossCount->Process(this, &model, nProgress, nLevel+1000)); // process data
+    short int nResult = LOWORD(pZeroCrossCount->Process(this, nProgress, nLevel+1000)); // process data
     if (pZeroCrossCount->IsDataReady()) {
         // Finish pitch processing if necessary.
         CProcessGrappl * pAutoPitch = (CProcessGrappl *)model.GetGrappl();
-        nResult = LOWORD(pAutoPitch->Process(this, &model, nProgress, nLevel+1000)); // process data
+        nResult = LOWORD(pAutoPitch->Process(this, nProgress, nLevel+1000)); // process data
         if (pAutoPitch->IsDataReady()) {
             // Finish fragmenting if necessary.
             CProcessFragments * pFragments = (CProcessFragments *)model.GetFragments();
-            nResult = LOWORD(pFragments->Process(this, &model, nProgress, nLevel+1000)); // process data
+            nResult = LOWORD(pFragments->Process(this, nProgress, nLevel+1000)); // process data
 
             // If waveform fragmented successfully, generate formant data.
             if (pFragments->IsDataReady() && pZeroCrossCount->IsDataReady()) {
@@ -178,8 +178,8 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                     DWORD dwFrameStart = dwFrameStartIndex * (DWORD)nSmpSize;  // byte offset for beginning of fragment
                     DWORD dwFrameSize = (dwFrameEndIndex) * (DWORD)nSmpSize - dwFrameStart;  // size of frame in bytes
 
-                    bVoiced = pAutoPitch->IsVoiced(&model, dwFrameStart) &&    // beginning of fragment is voiced
-                              pAutoPitch->IsVoiced(&model, dwFrameStart+dwFrameSize-nSmpSize);  // end of fragment is voiced
+                    bVoiced = pAutoPitch->IsVoiced( dwFrameStart) &&    // beginning of fragment is voiced
+                              pAutoPitch->IsVoiced( dwFrameStart+dwFrameSize-nSmpSize);  // end of fragment is voiced
 
                     // Accumulate formants across a voiced, non-fricative contour.
                     if (TRUE || (bVoiced && !bFricative)) {
@@ -187,7 +187,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                         if (dwVoicedFragStart == (DWORD)UNDEFINED_DATA) {
                             dwVoicedFragStart = dwFragmentIndex;    // save index to first voiced spectrum
                         }
-                        nResult = LOWORD(pFormants->Process(this, &model, bFormantTracking,
+                        nResult = LOWORD(pFormants->Process(this, bFormantTracking,
                                                             dwFrameStart, dwFrameSize, SpectraSelected, nMyProgress, nLevel+1000)); // compute formant frequencies
                         if (!pFormants->IsDataReady()) {
                             break;

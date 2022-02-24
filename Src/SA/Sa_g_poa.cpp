@@ -89,7 +89,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
     bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     CProcessGrappl * pAutoPitch = pModel->GetGrappl();   // get pitch process object
     CProcessFragments * pFragments = pModel->GetFragments(); // get fragmenter object
-    short int nResult = LOWORD(pFragments->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pFragments->Process(this)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (!bDynamicUpdate) {
             nResult = CheckResult(nResult, pFragments);    // check the process result
@@ -156,7 +156,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
         pPOA->SetDataInvalid();   // force recalculation
     }
 
-    nResult = LOWORD(pPOA->Process(this, pModel, dwFrameStart, dwFrameEnd));  // process data
+    nResult = LOWORD(pPOA->Process(this, dwFrameStart, dwFrameEnd));  // process data
     nResult = CheckResult(nResult, pPOA); // check the process result
     if (nResult == PROCESS_ERROR) {
         MessageBox(_T("Error occurred in vocal tract analysis"), _T("Vocal Tract"), MB_OK | MB_ICONEXCLAMATION);
@@ -351,7 +351,7 @@ void CPlotPOA::GraphHasFocus(BOOL bFocus) {
             CSaDoc * pModel = pView->GetDocument();
             WORD wSmpSize = (WORD)(pModel->GetSampleSize());          //compute sample size in bytes
             CProcessFragments * pFragments = pModel->GetFragments();  // get fragmenter object
-            pFragments->Process(this, pModel);                        // process data
+            pFragments->Process(this);                        // process data
             if (pFragments->IsDataReady()) {
                 DWORD dwFrameIndex;
                 bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);

@@ -13,7 +13,7 @@
 class CProcessAreaData : public CProcess {
 
 public:
-    CProcessAreaData(Context & context);
+    CProcessAreaData(Context context);
     CProcessAreaData() = delete;
 
     virtual void UpdateArea();

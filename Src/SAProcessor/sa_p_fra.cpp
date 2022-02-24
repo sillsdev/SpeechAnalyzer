@@ -19,7 +19,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessFragments::CProcessFragments Constructor
 /***************************************************************************/
-CProcessFragments::CProcessFragments(Context & context) : CProcess(context) {
+CProcessFragments::CProcessFragments(Context context) : CProcess(context) {
     m_pFragmenter = NULL;
     m_dwFragmentIndex = 0;
     m_dwFragmentCount = 0;
@@ -52,7 +52,7 @@ CProcessFragments::~CProcessFragments() {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessFragments::Process(void* pCaller, Model* pModel, int nProgress, int nLevel) {
+long CProcessFragments::Process(void* pCaller, int nProgress, int nLevel) {
     TRACE(_T("Process: CProcessFragments\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -61,20 +61,20 @@ long CProcessFragments::Process(void* pCaller, Model* pModel, int nProgress, int
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    bool background = pModel->IsBackgroundProcessing();
+    bool background = model.IsBackgroundProcessing();
     if (!background) {
         CScopedCursor cursor(view);
-        return SubProcess(background, pCaller, pModel, nProgress, nLevel);
+        return SubProcess(background, pCaller, nProgress, nLevel);
     } else {
-        return SubProcess(background, pCaller, pModel, nProgress, nLevel);
+        return SubProcess(background, pCaller, nProgress, nLevel);
     }
 }
 
-long CProcessFragments::SubProcess(bool background, void* pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessFragments::SubProcess(bool background, void* pCaller, int nProgress, int nLevel) {
 
     // generate pitch contour
-    CProcessGrappl * pAutoPitch = pModel->GetGrappl();
-    short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
+    CProcessGrappl * pAutoPitch = model.GetGrappl();
+    short int nResult = LOWORD(pAutoPitch->Process(this)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || (nResult == PROCESS_CANCELED)) {
         if ((nResult == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
@@ -93,10 +93,10 @@ long CProcessFragments::SubProcess(bool background, void* pCaller, Model * pMode
     }
 
     // get sample size in bytes
-    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD wSmpSize = model.GetSampleSize();
 
     // save current wave buffer block offset
-    DWORD dwOldWaveBlock = pModel->GetWaveBufferIndex();
+    DWORD dwOldWaveBlock = model.GetWaveBufferIndex();
 
     // if file has not been created
     if (!GetProcessFileName()[0]) {
@@ -127,18 +127,18 @@ long CProcessFragments::SubProcess(bool background, void* pCaller, Model * pMode
         DWORD dwPitchBufferLen = pAutoPitch->GetProcessBufferSize() / sizeof(*pPitchBuffer);
 
         // set signal and wave buffer parameters
-        void * pWaveBuffer = (void *)pModel->GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
+        void * pWaveBuffer = (void *)model.GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
 
         DWORD dwWaveBufferLen;
         SSigParms SigParm;
-        SigParm.SmpRate = pModel->GetSamplesPerSec();
+        SigParm.SmpRate = model.GetSamplesPerSec();
         if (wSmpSize == 1) {
             SigParm.SmpDataFmt = PCM_UBYTE;
-            SigParm.Length = pModel->GetDataSize();
+            SigParm.Length = model.GetDataSize();
             dwWaveBufferLen = GetBufferSize();
         } else {
             SigParm.SmpDataFmt = PCM_2SSHORT;
-            SigParm.Length = pModel->GetDataSize() / 2;
+            SigParm.Length = model.GetDataSize() / 2;
             dwWaveBufferLen = GetBufferSize() / 2;
         }
 
@@ -167,7 +167,7 @@ long CProcessFragments::SubProcess(bool background, void* pCaller, Model * pMode
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
         pAutoPitch->GetProcessedData( m_dwPitchIndex, TRUE);
-        pModel->GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
+        model.GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
     }
 
 
@@ -180,7 +180,7 @@ long CProcessFragments::SubProcess(bool background, void* pCaller, Model * pMode
             // reload waveform buffer
             m_dwWaveIndex = m_pFragmenter->GetWaveBlockIndex();
             if (!background) {
-                pModel->GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
+                model.GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
             }
             break;
         case PITCH_BUFFER_CALLBACK:
@@ -216,7 +216,7 @@ long CProcessFragments::SubProcess(bool background, void* pCaller, Model * pMode
 
     // restore wave and pitch blocks
     if (dwOldWaveBlock != UNDEFINED_OFFSET) {
-        pModel->GetWaveData(dwOldWaveBlock, TRUE);
+        model.GetWaveData(dwOldWaveBlock, TRUE);
     }
     pAutoPitch->GetProcessedData( dwOldPitchBlock, TRUE);
 
@@ -235,7 +235,7 @@ long CProcessFragments::SubProcess(bool background, void* pCaller, Model * pMode
         if (GetDataSize() == 0) {
             return Exit(PROCESS_ERROR);    // error, not enough data
         }
-        pModel->NotifyFragmentDone(this);
+        model.NotifyFragmentDone(this);
     }
 
     // if foreground processing and data is not ready, return a process error

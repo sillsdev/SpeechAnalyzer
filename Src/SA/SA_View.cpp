@@ -617,21 +617,16 @@ CObjectIStream * CSaView::s_pobsAutoload = NULL;
 static LPCSTR psz_sagraph = "sagraph";
 
 CSaView::CSaView() {
-
 	Init();
 }
 
 CSaView::CSaView(const CSaView * right) {
-
 	Init();
-
 	*this = *right;
-
 	lastBoundaryStartCursor = UNDEFINED_OFFSET;
 	lastBoundaryStopCursor = UNDEFINED_OFFSET;
 	lastBoundaryIndex = -1;
 	lastBoundaryCursor = UNDEFINED_CURSOR;
-
 	enableScrolling = false;
 }
 
@@ -5251,6 +5246,22 @@ void CSaView::Dump(CDumpContext & dc) const {
 CSaDoc * CSaView::GetDocument() { // non-debug version is inline
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CSaDoc)));
 	return (CSaDoc *)m_pDocument;
+}
+
+Context CSaView::GetContext() {
+	App& app = *(App*)(CSaApp*)AfxGetApp();
+	Model& model = *(Model*)(CSaDoc*)GetDocument();
+	MainFrame& frame = *(MainFrame*)(CMainFrame*)AfxGetMainWnd();
+	Context context(app, *this, model, frame);
+	return context;
+}
+
+SaContext CSaView::GetSaContext() {
+	CSaApp& app = *(CSaApp*)AfxGetApp();
+	CSaDoc& model = *(CSaDoc*)GetDocument();
+	CMainFrame& frame = *(CMainFrame*)AfxGetMainWnd();
+	SaContext context( app, *this, model, frame);
+	return context;
 }
 
 void CSaView::Clear() {

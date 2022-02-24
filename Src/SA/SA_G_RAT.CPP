@@ -63,7 +63,7 @@ void CPlotRatio::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CSaDoc  *  pModel   = pView->GetDocument();
     // create ratio data
     CProcessRatio * pRatio = (CProcessRatio *)pModel->GetRatio(); // get pointer to ratio object
-    short int nResult = LOWORD(pRatio->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pRatio->Process(this)); // process data
     nResult = CheckResult(nResult, pRatio); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;

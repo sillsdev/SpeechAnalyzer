@@ -102,7 +102,7 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
 
     // Finish fragmenting as needed.
     CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
-    long lResult = LOWORD(pFragments->Process(this, pModel)); // process data
+    long lResult = LOWORD(pFragments->Process(this)); // process data
 
     // create zero crossing data, it is needed to do parsing
     CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to zero crossing object

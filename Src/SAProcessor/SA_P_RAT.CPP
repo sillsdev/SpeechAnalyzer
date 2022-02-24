@@ -34,7 +34,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessRatio::Process(void * pCaller, Model * pModel, int nProgress,
+long CProcessRatio::Process(void * pCaller, int nProgress,
                             int nLevel) {
     //TRACE(_T("Process: CProcessRatio\n"));
     if (IsCanceled()) {
@@ -44,9 +44,9 @@ long CProcessRatio::Process(void * pCaller, Model * pModel, int nProgress,
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     // create raw change data, its quality and smoothed loudness output is needed to calculate change
-    CProcessChange * pChange = (CProcessChange *)pModel->GetChange(); // get pointer to raw change object
-    CProcessSmoothLoudness * pLoudness = (CProcessSmoothLoudness *)pModel->GetSmoothLoudness(); // get pointer to smoothed loudness object
-    long lResult = pChange->Process(pCaller, pModel, nProgress, ++nLevel); // process data
+    CProcessChange * pChange = (CProcessChange *)model.GetChange(); // get pointer to raw change object
+    CProcessSmoothLoudness * pLoudness = (CProcessSmoothLoudness *)model.GetSmoothLoudness(); // get pointer to smoothed loudness object
+    long lResult = pChange->Process(pCaller, nProgress, ++nLevel); // process data
     nLevel = (short int)LOWORD(lResult);
     nProgress = HIWORD(lResult);
 
@@ -67,12 +67,12 @@ long CProcessRatio::Process(void * pCaller, Model * pModel, int nProgress,
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
-    const CUttParm * pUttParm = pModel->GetUttParm(); // get sa parameters utterance member data
-    WORD nBlockAlign = pModel->GetBlockAlign();
+    const CUttParm * pUttParm = model.GetUttParm(); // get sa parameters utterance member data
+    WORD nBlockAlign = model.GetBlockAlign();
     // calculate current processing position (copied but not understood from WINCECIL)
-    DWORD dwLoopStart = ((pModel->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
-                          + pModel->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
-                         + CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(pModel->GetSamplesPerSec()) + 1;
+    DWORD dwLoopStart = ((model.GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
+                          + model.GetSamplesPerSec() / pUttParm->nMinFreq) / 2
+                         + CALCULATION_DATALENGTH(model.GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(model.GetSamplesPerSec()) + 1;
     DWORD dwDataSize = pLoudness->GetDataSize();
     DWORD dwLoopEnd = dwDataSize - dwLoopStart; // end of loop
     // create the temporary change file

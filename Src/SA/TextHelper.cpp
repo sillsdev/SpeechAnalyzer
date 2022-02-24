@@ -129,8 +129,8 @@ TranscriptionDataMap AttemptTabDelimitedRefOnly(const vector<wstring> & lines, c
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens = *it;
-        vector<wstring>::iterator it2 = tokens.begin();
+        vector<wstring> tokens2 = *it;
+        vector<wstring>::iterator it2 = tokens2.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;

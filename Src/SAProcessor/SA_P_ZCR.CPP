@@ -40,8 +40,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
-    //TRACE(_T("Process: CProcessZCross\n"));
+long CProcessZCross::Process(void * pCaller, int nProgress, int nLevel) {
+
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -49,8 +49,8 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     // create loudness data, it is needed to calculate zero crossing
-    CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to loudness object
-    long lResult = pLoudness->Process(pCaller, pModel, nProgress, ++nLevel); // process data
+    CProcessLoudness * pLoudness = (CProcessLoudness *)model.GetLoudness(); // get pointer to loudness object
+    long lResult = pLoudness->Process(pCaller, nProgress, ++nLevel); // process data
     nLevel = (short int)LOWORD(lResult);
     nProgress = HIWORD(lResult);
     int nMaxLoud = pLoudness->GetMaxValue(); // get maximum value of loudness data
@@ -76,15 +76,15 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // process raw data into zero crossing data
-    DWORD dwDataSize = pModel->GetDataSize(); // size of raw data
-    DWORD nSmpSize = pModel->GetSampleSize();
+    DWORD dwDataSize = model.GetDataSize(); // size of raw data
+    DWORD nSmpSize = model.GetSampleSize();
     BPTR pRawData = NULL, pBlockStart; // pointers to raw data
     short int * pZCrossData = (short int *)m_lpBuffer; // pointer to zero crossing data
     // set critical loudness range (10% of max loudness)
     int nMaxCriticalLoud = nMaxLoud / (10);
     int nMinCriticalLoud = -nMaxLoud / (10);
     // prepare processing loop
-    UINT nCalcDataLength = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec()) * pModel->GetSamplesPerSec()/22050;  //!!based on min pitch?
+    UINT nCalcDataLength = CALCULATION_DATALENGTH(model.GetSamplesPerSec()) * model.GetSamplesPerSec()/22050;  //!!based on min pitch?
     UINT nCalcInterval = nCalcDataLength / 3;   // more than 2 x bandwidth
     DWORD dwDataEnd = dwDataSize - nCalcDataLength * nSmpSize; // end of loop
     DWORD dwDataPos = 0; // raw data position pointer
@@ -107,7 +107,7 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
         int nOldData, nData;
         // prepare old data
 		// get pointer to data block
-        pBlockStart = pModel->GetWaveData(dwDataPos);
+        pBlockStart = model.GetWaveData(dwDataPos);
         if (!pBlockStart) {
 			// error, reading failed
             return Exit(PROCESS_ERROR);
@@ -141,7 +141,7 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
             /*
             // does current frame extend past end of buffer?
             if (dwWindowEnd > (DWORD)pBlockStart + GetProcessBufferSize())
-            { pBlockStart = pModel->GetWaveData(dwDataPos, TRUE); // get pointer to data block
+            { pBlockStart = model.GetWaveData(dwDataPos, TRUE); // get pointer to data block
               if (!pRawData) return Exit(PROCESS_ERROR); // error, reading failed
               nBlockNumber++; // new block loaded
               pRawData = pBlockStart;
@@ -149,7 +149,7 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
             ********************************************************************
             */
 			// get pointer to data block
-            pBlockStart = pModel->GetWaveData(dwDataPos);
+            pBlockStart = model.GetWaveData(dwDataPos);
             if (!pBlockStart) {
 				// error, reading failed
                 return Exit(PROCESS_ERROR);
@@ -187,8 +187,8 @@ long CProcessZCross::Process(void * pCaller, Model * pModel, int nProgress, int 
             m_nMaxValue = nZeroCount;    // save maximum value
         }
         // set new calculation window start
-        pRawData -= (nCalcDataLength - ZCROSS_SAMPLEWINDOWWIDTH(pModel->GetSamplesPerSec())) * nSmpSize;
-        dwDataPos -= (nCalcDataLength - ZCROSS_SAMPLEWINDOWWIDTH(pModel->GetSamplesPerSec())) * nSmpSize;
+        pRawData -= (nCalcDataLength - ZCROSS_SAMPLEWINDOWWIDTH(model.GetSamplesPerSec())) * nSmpSize;
+        dwDataPos -= (nCalcDataLength - ZCROSS_SAMPLEWINDOWWIDTH(model.GetSamplesPerSec())) * nSmpSize;
         /*********************************************************************/
         // Added by CLW 9/21-25/98
         // fill zeroes at end of data

@@ -16,7 +16,7 @@ class CProcessMelogram;
 
 class CProcessTonalWeightChart : public CProcess {
 public:
-    CProcessTonalWeightChart(Context & context);
+    CProcessTonalWeightChart(Context context);
     CProcessTonalWeightChart() = delete;
 
     double GetMinSemitone() {
@@ -47,7 +47,7 @@ private:
 protected:
 
 public:
-    long Process(void * pCaller, Model * pModel, DWORD dwFrameStart, DWORD dwFrameSize, short nMinSemitone, short nMaxSemitone, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrameSize, short nMinSemitone, short nMaxSemitone, int nProgress = 0, int nLevel = 1);
 
     // CLW 10/24/00 removed SaveCursorPosition code.
     // This scheme does not work if waveform data is removed.

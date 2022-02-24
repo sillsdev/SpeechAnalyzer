@@ -236,7 +236,7 @@ BOOL CPlot3dPitch::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
 void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // prepare to draw
-    COLORREF Color[256];
+    COLORREF Color[256] = {};
     // get pointer to plot colors
     Colors * pColors = pMain->GetColors();
     // create palette
@@ -396,7 +396,7 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaVie
     return TRUE;
 }
 
-BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, Context& context) {
     if (IsIconic()) {
         return FALSE;    // nothing to draw
     }
@@ -479,7 +479,7 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             pMemDC->FillSolidRect(rClip, pMain->GetColors()->cPlotBkg);
 
             // paint the data into the bitmap
-            OnDraw2(pMemDC, rWnd, rClip, pView);
+            OnDraw2(pMemDC, rWnd, rClip, context);
 
             GdiFlush();  // finish all drawing to pMemDC
 

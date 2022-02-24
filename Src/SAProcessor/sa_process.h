@@ -39,7 +39,7 @@ __interface IProcess;
 class CProcess : public IProcess {
 
 public:
-    CProcess(Context & context);
+    CProcess(Context context);
     CProcess() = delete;
     virtual ~CProcess();
 
@@ -59,7 +59,7 @@ public:
     virtual int GetMinValue() const;
     virtual BOOL IsIdle() const;
     virtual BOOL IsAliased() const;                                                 // return TRUE if processed data is aliased
-    virtual long Process(void * pCaller, Model *, int nProgress = 0, int nLevel = 1);
+    virtual long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     virtual DWORD GetProcessedData(int index);
     virtual DWORD GetProcessBufferIndex(size_t nSize = 1);
     virtual LPCTSTR GetProcessFileName();
@@ -67,10 +67,14 @@ public:
     virtual void WriteProperties(CObjectOStream & obs);
     virtual BOOL ReadProperties(CObjectIStream & obs);
     // special workbench helper functions
-    virtual BPTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);   // return pointer to block of processed wave source
-    virtual DWORD GetProcessedWaveDataSize();                                       // return the sample size in bytes for a single channel
-    virtual DWORD GetProcessedModelWaveDataSize();                                  // return the sample size in bytes for a single channel
-    virtual DWORD GetNumSamples(Model * pModel) const;                              // return number of samples for single channel
+    // return pointer to block of processed wave source
+    virtual BPTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);    
+    // return the sample size in bytes for a single channel
+    virtual DWORD GetProcessedWaveDataSize();
+    // return the sample size in bytes for a single channel
+    virtual DWORD GetProcessedModelWaveDataSize();
+    // return number of samples for single channel    
+    virtual DWORD GetNumSamples() const;
 
     long IsStatusFlag(long nStatus) const;
     DWORD GetProcessBufferSize();
@@ -107,7 +111,7 @@ protected:
     DWORD m_dwBufferOffset;     // actual buffer offset
     int m_nMaxValue;            // maximum value of processed data
     int m_nMinValue;            // minimum value of processed data
-    Context & context;
+    Context context;
     App & app;
     View & view;
     Model & model;

@@ -1010,7 +1010,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
 
     if (m_bPitch) { // formants need pitch info
         CProcessSmoothedPitch * pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-        short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
+        short int nResult = LOWORD(pPitch->Process(this)); // process data
         if (nResult == PROCESS_ERROR) {
             m_bPitch = FALSE;
         } else if (nResult == PROCESS_CANCELED) {
@@ -1639,14 +1639,14 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
             pPitch->SetDataInvalid();
         }
         pModel->SetUttParm(pUttParm);
-        short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
+        short int nResult = LOWORD(pPitch->Process(this)); // process data
         pModel->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
         if (nResult == PROCESS_ERROR) {
             bPitch = FALSE;
         } else if (nResult == PROCESS_CANCELED) {
             return;
         }
-        nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
+        nResult = LOWORD(pAutoPitch->Process(this)); // process data
         if (nResult == PROCESS_ERROR) {
             bPitch = FALSE;
         } else if (nResult == PROCESS_CANCELED) {
@@ -1658,7 +1658,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
 
     if (bFormants) { // process formants
         pZCross = pModel->GetZCross();
-        long nResult = pZCross->Process(this, pModel);
+        long nResult = pZCross->Process(this);
         if (nResult == PROCESS_ERROR) {
             bFormants = FALSE;
         } else if (nResult == PROCESS_CANCELED) {
@@ -1685,7 +1685,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
     DWORD dwFrameLengthSamples = dwSamplesPerSec * nFrameLengthInMs / 1000; // length in samples
 
     CProcessFragments * pFragment = pModel->GetFragments();
-    pFragment->Process(this, pModel); // process data
+    pFragment->Process(this); // process data
     DWORD dwLastFragmentIndex = pFragment->GetFragmentIndex((pModel->GetDataSize() - 1) / wSmpSize);
 
     DWORD dwOffset = 0;

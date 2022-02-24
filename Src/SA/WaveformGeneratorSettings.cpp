@@ -73,10 +73,10 @@ void CWaveformGeneratorSettings::SynthesizeSamples(BPTR pTargetData, DWORD dwDat
     DWORD nSample = dwDataPos/wSmpSize;
     const double pi = 3.14159265358979323846264338327950288419716939937511;
     const double radiansPerCycle = 2*pi;
-    double samplesPerCycle[7];
-    double radiansPerSample[7];
-    double phaseRadians[7];
-    DWORD nHarmonics[7];
+    double samplesPerCycle[7] = {};
+    double radiansPerSample[7] = {};
+    double phaseRadians[7] = {};
+    DWORD nHarmonics[7] = {};
 
     for (int i = 0; i < 7; i++) {
         samplesPerCycle[i] = pcm.wf.nSamplesPerSec/m_dFrequency[i];
@@ -266,23 +266,17 @@ BOOL CWaveformGeneratorSettings::ReadProperties(CObjectIStream & obs) {
     return TRUE;
 }
 
-BOOL CWaveformGeneratorSettings::Synthesize(LPCTSTR szFileName) {
+BOOL CWaveformGeneratorSettings::Synthesize(Context context, LPCTSTR szFileName) {
 
     pcm.wf.nBlockAlign = (unsigned short)(pcm.wf.nChannels*(pcm.wBitsPerSample/8));
     pcm.wf.nAvgBytesPerSec = pcm.wf.nSamplesPerSec*pcm.wf.nBlockAlign;
 
-    CProcessWaveformGenerator * pProcess = new CProcessWaveformGenerator();
-
-    short int nResult = LOWORD(pProcess->Process(*this));
+    unique_ptr<CProcessWaveformGenerator> process = std::make_unique<CProcessWaveformGenerator>(context);
+    short int nResult = LOWORD(process->Process(*this));
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
-        delete pProcess;
         return FALSE;
     }
-
-    CRiff::NewWav(szFileName, pcm, pProcess->GetProcessFileName());
-
-    delete pProcess;
-
+    CRiff::NewWav(szFileName, pcm, process->GetProcessFileName());
     return TRUE;
 }
 

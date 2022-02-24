@@ -21,7 +21,7 @@ const double pi = 3.14159265358979323846264338327950288419716939937511;
 
 extern CFormantTrackerOptions formantTrackerOptions;
 
-CProcessFormantTracker::CProcessFormantTracker(Context & context, CProcess & Real, CProcess & Imag, CProcess & Pitch) : CProcess(context) {
+CProcessFormantTracker::CProcessFormantTracker(Context context, CProcess & Real, CProcess & Imag, CProcess & Pitch) : CProcess(context) {
     // real is the raw audio data
     m_pReal = &Real;
     // imaginary is the hilbert data
@@ -30,7 +30,7 @@ CProcessFormantTracker::CProcessFormantTracker(Context & context, CProcess & Rea
     m_pPitch = &Pitch;
 }
 
-long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessFormantTracker::Process(void * pCaller, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -44,14 +44,14 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
 
     if (!m_pReal->IsDataReady()) {
         SetDataInvalid();
-        long lResult = m_pReal->Process(pCaller, pModel, nProgress, ++nLevel);
+        long lResult = m_pReal->Process(pCaller, nProgress, ++nLevel);
         nLevel = (short int)LOWORD(lResult);
         nProgress = HIWORD(lResult);
     }
 
     if ((nLevel >= 0) && !m_pImag->IsDataReady()) {
         SetDataInvalid();
-        long lResult = m_pImag->Process(pCaller, pModel, nProgress, ++nLevel);
+        long lResult = m_pImag->Process(pCaller, nProgress, ++nLevel);
         nLevel = (short int)LOWORD(lResult);
         nProgress = HIWORD(lResult);
     }
@@ -59,7 +59,7 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
     if ((nLevel >= 0) && (!m_pPitch->IsDataReady())) {
         SetDataInvalid();
         for (int i = 0; (i < 3) && (!m_pPitch->IsDataReady()); i++) { // make sure pitch is finished!
-            long lResult = m_pPitch->Process(pCaller, pModel, nProgress, ++nLevel);
+            long lResult = m_pPitch->Process(pCaller, nProgress, ++nLevel);
             nLevel = (short int)LOWORD(lResult);
             nProgress = HIWORD(lResult);
         }
@@ -104,7 +104,7 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
     STrackState state;
 
     // Set the initial tracking estimates
-    double samplingRate = pModel->GetSamplesPerSec();
+    double samplingRate = model.GetSamplesPerSec();
     double bandwidthInHertz = 250;
     double radius = exp(-bandwidthInHertz/samplingRate*pi);
 
@@ -119,7 +119,7 @@ long CProcessFormantTracker::Process(void * pCaller, Model * pModel, int nProgre
     }
 
     // create the window
-    CDspWin window = CDspWin::FromBandwidth(formantTrackerOptions.m_dWindowBandwidth, pModel->GetSamplesPerSec(), formantTrackerOptions.m_nWindowType);
+    CDspWin window = CDspWin::FromBandwidth(formantTrackerOptions.m_dWindowBandwidth, model.GetSamplesPerSec(), formantTrackerOptions.m_nWindowType);
     state.window.assign(window.WindowDouble(),window.WindowDouble()+window.Length());
 
     // determine processing interval

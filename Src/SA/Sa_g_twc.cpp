@@ -109,7 +109,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
         dwFrameSize  = dwMelDataSize;
     }
 
-    short nResult = LOWORD(pTonalWeightChart->Process(this, pModel, dwFrameStart, dwFrameSize, (short) dMinSemitone, (short) dMaxSemitone)); // process data
+    short nResult = LOWORD(pTonalWeightChart->Process(this, dwFrameStart, dwFrameSize, (short) dMinSemitone, (short) dMaxSemitone)); // process data
     nResult = CheckResult(nResult, pTonalWeightChart); // check the process result
 
     if (nResult == PROCESS_ERROR) {

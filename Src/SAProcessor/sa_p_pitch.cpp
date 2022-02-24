@@ -34,7 +34,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // The return value returns the highest level througout the calling queue, or -1 in case of an error in the lower word of the long value and the end process progress percentage in the higher word.  
 // Uses WinCecil 2.2 pitch algorithm.
 /***************************************************************************/
-long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessPitch::Process(void * pCaller,  int nProgress, int nLevel) {
 
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -42,11 +42,11 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
     if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);           // data is already ready
     }
-    DWORD dwDataSize = pModel->GetDataSize();             // raw data size
+    DWORD dwDataSize = model.GetDataSize();             // raw data size
     if (!dwDataSize) {
         return Exit(PROCESS_NO_DATA);                   // error, no valid data
     }
-    const CUttParm * pUttParm = pModel->GetUttParm();     // get sa parameters utterance member data
+    const CUttParm * pUttParm = model.GetUttParm();     // get sa parameters utterance member data
 
     if (nLevel < 0) {                                   // previous processing error
         if ((nLevel == PROCESS_CANCELED)) {
@@ -74,8 +74,8 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
         // initialize parameters
         m_dwDataPos = 0;
         m_nMinValue = SHRT_MAX;
-        m_CalcParm.sampfreq = (int32)pModel->GetSamplesPerSec();
-        DWORD wSmpSize = pModel->GetSampleSize();
+        m_CalcParm.sampfreq = (int32)model.GetSamplesPerSec();
+        DWORD wSmpSize = model.GetSampleSize();
         m_CalcParm.eightbit = (int16)(wSmpSize == 1);
         m_CalcParm.mode = Grappl_fullpitch;;
         m_CalcParm.smoothfreq = 1000L;
@@ -84,7 +84,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
         m_CalcParm.maxinterp_pc10 = 300;
         m_CalcParm.minpitch = int16(pUttParm->nMinFreq);
         m_CalcParm.maxpitch = int16(pUttParm->nMaxFreq);
-        m_CalcParm.minvoiced16 = int16((pUttParm->TruncatedCritLoud(pModel->GetBitsPerSample())*16+8)/PRECISION_MULTIPLIER);
+        m_CalcParm.minvoiced16 = int16((pUttParm->TruncatedCritLoud(model.GetBitsPerSample())*16+8)/PRECISION_MULTIPLIER);
         m_CalcParm.maxchange_pc10 = int16(pUttParm->nMaxChange * 10);
         m_CalcParm.minsigpoints = int16(pUttParm->nMinGroup);
         m_CalcParm.reslag = 0;
@@ -114,7 +114,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
     bool nomore = false;
 
     // get block size
-    DWORD dwBlockSize = 0x10000 - pModel->GetBlockAlign(true);    // 64k - 1
+    DWORD dwBlockSize = 0x10000 - model.GetBlockAlign(true);    // 64k - 1
     if (GetBufferSize() < dwBlockSize) {
         dwBlockSize = GetBufferSize();
     }
@@ -122,7 +122,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
     // start processing
     while (m_dwDataPos < dwDataSize) {
         // get raw data block
-        pBlockStart = pModel->GetWaveData(m_dwDataPos, TRUE);     // get pointer to data block
+        pBlockStart = model.GetWaveData(m_dwDataPos, TRUE);     // get pointer to data block
         if (!pBlockStart) {
             return Exit(PROCESS_ERROR);                         // error, reading failed
         }
@@ -132,7 +132,7 @@ long CProcessPitch::Process(void * pCaller, Model * pModel, int nProgress, int n
             nomore = TRUE;
         }
         // set grappl input buffer
-        uint16 length = (WORD)(dwBlockSize / pModel->GetBlockAlign(true));
+        uint16 length = (WORD)(dwBlockSize / model.GetBlockAlign(true));
         //TRACE("grappl length %d\n",length);
         if (!grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, length, nomore)) {
             return Exit(PROCESS_ERROR);

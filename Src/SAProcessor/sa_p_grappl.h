@@ -11,11 +11,11 @@
 
 class CProcessGrappl : public CAbstractPitchProcess {
 public:
-    CProcessGrappl(Context & context);
+    CProcessGrappl(Context context);
 
     SGrapplParms & GetCalcParms();
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
-    BOOL IsVoiced(Model * pModel, DWORD dwWaveOffset);
+    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
+    BOOL IsVoiced(DWORD dwWaveOffset);
     double GetAveragePitch();
     virtual void SetDataInvalid();
     void Dump(LPCSTR ofilename);

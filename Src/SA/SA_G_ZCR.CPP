@@ -73,7 +73,7 @@ void CPlotZCross::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CSaDoc  *  pModel   = pView->GetDocument();
     // create zero crossings data
     CProcessZCross * pZCross = (CProcessZCross *)pModel->GetZCross(); // get pointer to zero crossings object
-    short int nResult = LOWORD(pZCross->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pZCross->Process(this)); // process data
     nResult = CheckResult(nResult, pZCross); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;

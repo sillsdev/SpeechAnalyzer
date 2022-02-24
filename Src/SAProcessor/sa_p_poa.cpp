@@ -68,7 +68,7 @@ int CProcessPOA::GetProcessedData(DWORD dwOffset, BOOL *) {
 // pointer to the view instead the pointer to the document like other process
 // calls. It calculates POA data.
 /***************************************************************************/
-long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD dwStop, int nProgress, int nLevel) {
+long CProcessPOA::Process(void * pCaller, DWORD dwStart, DWORD dwStop, int nProgress, int nLevel) {
     //TRACE(_T("Process: CProcessPOA\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -94,13 +94,13 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
 
     // Get waveform and buffer parameters.
     DWORD dwWaveBufferSize = GetBufferSize();
-    DWORD wSmpSize = pModel->GetSampleSize();         //compute sample size in bytes
+    DWORD wSmpSize = model.GetSampleSize();         //compute sample size in bytes
     DWORD dwFrameSize = dwStop - dwStart + wSmpSize;
 
     // Set signal parameters.
-    DWORD dwOldWaveBufferIndex = pModel->GetWaveBufferIndex();    // save current buffer offset into waveform
+    DWORD dwOldWaveBufferIndex = model.GetWaveBufferIndex();    // save current buffer offset into waveform
     SSigParms Signal;
-    Signal.Start = (void *)pModel->GetWaveData(dwStart, TRUE);    //load sample
+    Signal.Start = (void *)model.GetWaveData(dwStart, TRUE);    //load sample
     //buffer starting
     //at begin cursor
     if (wSmpSize == 1) {
@@ -109,7 +109,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
         Signal.SmpDataFmt = PCM_2SSHORT;        //samples are 2's complement 16 bit
     }
 
-    DWORD   dwWaveSize = pModel->GetDataSize();
+    DWORD   dwWaveSize = model.GetDataSize();
     if (dwStart + dwWaveBufferSize <= dwWaveSize) {
         Signal.Length = dwWaveBufferSize/wSmpSize;          //signal fills buffer
     } else {
@@ -119,7 +119,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
     // Specify LPC settings.
     SLPCSettings LpcSetting;
 
-    Signal.SmpRate = pModel->GetSamplesPerSec();              //set sample rate
+    Signal.SmpRate = model.GetSamplesPerSec();              //set sample rate
     LpcSetting.Process.Flags = PRE_EMPHASIS | NORM_CROSS_SECT | MEAN_SQ_ERR | ENERGY;
     LpcSetting.nMethod = LPC_COVAR_LATTICE;                         //use covariance LPC analysis  //!!autocorrelation for vc modeling?
     LpcSetting.nOrder = MODEL_SECTION_COUNT;                        //!!19 sections
@@ -131,7 +131,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
 
     Err = CLinPredCoding::CreateObject(&pLpcObject, app, LpcSetting, Signal);
     if (Err) {
-        pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
+        model.GetWaveData(dwOldWaveBufferIndex, TRUE);
         return Exit(PROCESS_ERROR, NULL);
     }
 
@@ -140,7 +140,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
     Err = pLpcObject->GetLpcModel(&pLpcModel, Signal.Start);
 
     if (Err) {
-        pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
+        model.GetWaveData(dwOldWaveBufferIndex, TRUE);
         return Exit(PROCESS_ERROR, NULL);
     }
 
@@ -152,7 +152,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
             app.ErrorMessage(IDS_ERROR_MEMALLOC);
             SetDataSize(0);
             delete pLpcObject; // delete the Lpc object
-            pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
+            model.GetWaveData(dwOldWaveBufferIndex, TRUE);
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
     }
@@ -172,7 +172,7 @@ long CProcessPOA::Process(void * pCaller, Model * pModel, DWORD dwStart, DWORD d
 	// delete the Lpc object
     delete pLpcObject; 
 	// restore wave buffer
-    pModel->GetWaveData(dwOldWaveBufferIndex, TRUE);
+    model.GetWaveData(dwOldWaveBufferIndex, TRUE);
 	// calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
 	// show progress and allow for cancel (ESC key)

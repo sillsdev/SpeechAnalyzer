@@ -16,7 +16,7 @@ static char THIS_FILE[]=__FILE__;
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-CProcessIIRFilter::CProcessIIRFilter(Context & context, WbDialogType type, BOOL bDstWBench) : CWbProcess(context, type) {
+CProcessIIRFilter::CProcessIIRFilter(Context context, WbDialogType type, BOOL bDstWBench) : CWbProcess(context, type) {
     m_pSourceProcess = NULL;
     m_bSrcWBenchProcess = TRUE;
     m_bDstWBenchProcess = bDstWBench;
@@ -48,7 +48,7 @@ static void StoreWaveData(int nData, int wSmpSize, void * pTargetData) {
     }
 }
 
-long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessIIRFilter::Process(void * pCaller, int nProgress, int nLevel) {
     
 	TRACE("IIRFilter::Process %d %d\n",nProgress,nLevel);
 
@@ -64,7 +64,7 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
     if (pLowerProcess!=NULL) {
         TRACE("process lower\n");
         // there is at least one source processes to process first
-        long lResult = pLowerProcess->Process(pCaller, pModel, nProgress, ++nLevel);
+        long lResult = pLowerProcess->Process(pCaller, nProgress, ++nLevel);
         nLevel = (short int)LOWORD(lResult);
         nProgress = HIWORD(lResult);
     }
@@ -110,9 +110,9 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
 
     // start processing loop
     if (!m_bReverse) {
-        ProcessForward(pModel, pLowerProcess, nProgress, nLevel);
+        ProcessForward( pLowerProcess, nProgress, nLevel);
     } else {
-        ProcessReverse(pCaller, pModel, nProgress, nLevel);
+        ProcessReverse(pCaller, nProgress, nLevel);
     }
 
     // calculate the actual progress
@@ -129,14 +129,14 @@ long CProcessIIRFilter::Process(void * pCaller, Model * pModel, int nProgress, i
     return MAKELONG(nLevel, nProgress);
 }
 
-long CProcessIIRFilter::ProcessForward(Model * pModel, IProcess * pLowerProcess, int & nProgress, int & nLevel) {
+long CProcessIIRFilter::ProcessForward( IProcess * pLowerProcess, int & nProgress, int & nLevel) {
     TRACE("forward\n");
 
     m_bReverse = FALSE;
 
     DWORD dwDataPos = 0;    // data position pointer
 
-    WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? pModel->GetSampleSize() : sizeof(short));
+    WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? model.GetSampleSize() : sizeof(short));
     TRACE("wDstSmpSize=%d\n",wDstSmpSize);
 
     DWORD dwBufferSize = GetBufferSize();
@@ -148,11 +148,11 @@ long CProcessIIRFilter::ProcessForward(Model * pModel, IProcess * pLowerProcess,
         dwDataSize = pLowerProcess->GetProcessedModelWaveDataSize();
     } else {
 		// size of raw data
-        dwDataSize = pModel->GetDataSize();
+        dwDataSize = model.GetDataSize();
     }
     TRACE("dwDataSize=%d\n",dwDataSize);
 
-    WORD wSrcSmpSize = WORD(m_bSrcWBenchProcess ? pModel->GetSampleSize() : sizeof(short));
+    WORD wSrcSmpSize = WORD(m_bSrcWBenchProcess ? model.GetSampleSize() : sizeof(short));
 
     if (wDstSmpSize > wSrcSmpSize) {
         dwBufferSize /= wDstSmpSize/wSrcSmpSize;
@@ -179,7 +179,7 @@ long CProcessIIRFilter::ProcessForward(Model * pModel, IProcess * pLowerProcess,
         DWORD dwBlockStart = dwDataPos;
         DWORD dwLength = dwBlockEnd-dwBlockStart;
         while (dwDataPos < dwBlockEnd) {
-            int nData = ReadSourceData(dwDataPos, wSrcSmpSize, pModel);
+            int nData = ReadSourceData(dwDataPos, wSrcSmpSize);
             dwDataPos += wSrcSmpSize;
             // process data
             nData = round2Int(m_zForwardTransform.Tick(double(nData)));
@@ -226,13 +226,13 @@ long CProcessIIRFilter::ProcessForward(Model * pModel, IProcess * pLowerProcess,
     return MAKELONG(nLevel, nProgress);
 }
 
-long CProcessIIRFilter::ProcessReverse(void * pCaller, Model * pModel, int & nProgress, int & nLevel) {
+long CProcessIIRFilter::ProcessReverse(void * pCaller, int & nProgress, int & nLevel) {
     TRACE("reverse\n");
     int count = 0;
 
     DWORD dwDataPos = 0;    // data position pointer
 
-    WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? pModel->GetSampleSize() : sizeof(short));
+    WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? model.GetSampleSize() : sizeof(short));
     TRACE("wDstSmpSize=%d\n",wDstSmpSize);
 
     DWORD dwBufferSize = GetBufferSize();
@@ -246,7 +246,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, Model * pModel, int & nPr
     forwardPass.SetFilterFilter(true);
     forwardPass.SetFilterFilterSilenceSamples(FilterFilterSilenceSamples());
 
-    long lResult = forwardPass.Process(pCaller, pModel, nProgress, ++nLevel);
+    long lResult = forwardPass.Process(pCaller, nProgress, ++nLevel);
 
     nLevel = (short int)LOWORD(lResult);
     nProgress = HIWORD(lResult);
@@ -260,7 +260,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, Model * pModel, int & nPr
     WORD wSmpSize = wDstSmpSize;
     DWORD dwDataSize = 0;
     if (forwardPass.m_pSourceProcess!=NULL) {
-        dwDataSize = forwardPass.m_pSourceProcess->GetNumSamples(pModel) * wSmpSize;
+        dwDataSize = forwardPass.m_pSourceProcess->GetNumSamples() * wSmpSize;
     } else {
         dwDataSize = (forwardPass.GetDataSize()-FilterFilterSilenceSamples())*wSmpSize;
     }
@@ -273,7 +273,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, Model * pModel, int & nPr
     while (dwDataPos > dwDataSize) {
         // process silence
         dwDataPos-= wSmpSize;
-        int nData = ReadSourceData(dwDataPos, wSmpSize, pModel);
+        int nData = ReadSourceData(dwDataPos, wSmpSize);
         // process data
         nData = round2Int(m_zReverseTransform.Tick(double(nData)));
     }
@@ -302,7 +302,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, Model * pModel, int & nPr
         //TRACE("dwDataPos=%d\n",dwDataPos);
         while (dwDataPos > dwBlockEnd) {
             dwDataPos-= wSmpSize;
-            int nData = ReadSourceData(dwDataPos, wSmpSize, pModel);
+            int nData = ReadSourceData(dwDataPos, wSmpSize);
 
             // process data
             nData = round2Int(m_zReverseTransform.Tick(double(nData)));
@@ -339,21 +339,21 @@ void CProcessIIRFilter::SetSourceProcess(IProcess * pSourceProcess, BOOL bWBench
     m_pSourceProcess = pSourceProcess;
 }
 
-int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, Model * pModel) {
+int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize) {
 
     IProcess * pLowerProcess = m_pSourceProcess;
     if (pLowerProcess==NULL) {
-        pLowerProcess = pModel->GetAdjust();          // This is the default node
+        pLowerProcess = model.GetAdjust();          // This is the default node
     }
 
     // read data
     int nData = 0;
     if (wSmpSize == 1) {
         // 8 bit data
-        void * pSourceData = pLowerProcess->GetProcessedObject(pModel->GetProcessFilename(),
-                             pModel->GetSelectedChannel(),
-                             pModel->GetNumChannels(),
-                             pModel->GetSampleSize(),
+        void * pSourceData = pLowerProcess->GetProcessedObject(model.GetProcessFilename(),
+                             model.GetSelectedChannel(),
+                             model.GetNumChannels(),
+                             model.GetSampleSize(),
                              dwDataPos,
                              1,
                              m_bReverse);
@@ -366,10 +366,10 @@ int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, Model * pMo
         nData = bData - 128;
     } else {
         // 16 bit data
-        void * pSourceData = pLowerProcess->GetProcessedObject(pModel->GetProcessFilename(),
-                             pModel->GetSelectedChannel(),
-                             pModel->GetNumChannels(),
-                             pModel->GetSampleSize(),
+        void * pSourceData = pLowerProcess->GetProcessedObject(model.GetProcessFilename(),
+                             model.GetSelectedChannel(),
+                             model.GetNumChannels(),
+                             model.GetSampleSize(),
                              dwDataPos>>1,
                              2,
                              m_bReverse);

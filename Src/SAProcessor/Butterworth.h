@@ -6,13 +6,13 @@
 
 class CProcessButterworth : public CProcessIIRFilter {
 public:
-    CProcessButterworth(Context & context, WbDialogType type, BOOL bWorkBenchOutput = TRUE);
+    CProcessButterworth(Context context, WbDialogType type, BOOL bWorkBenchOutput = TRUE);
 
     void LowPass(int nOrder, double dFrequency, double dScale=1.);
     void HighPass(int nOrder, double dFrequency, double dScale=1.);
     void BandPass(int nOrder, double dFrequency, double dBandwidth, double dScale=1.);
     void SetFilterFilter(bool bSet);
-    virtual long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
+    virtual long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     void ConfigureProcess(double dSampling);
     double ForwardTick(double data);
     void CascadeLowPass(CZTransform & zTransform, int nOrder, double dFrequency, double dSampling, double & tau);

@@ -80,7 +80,7 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 
     // create grappl data
     CProcessGrappl * pGrappl = (CProcessGrappl *)pModel->GetGrappl(); // get pointer to grappl object
-    short int nResult = LOWORD(pGrappl->Process(this, pModel));       // process data
+    short int nResult = LOWORD(pGrappl->Process(this));       // process data
     nResult = CheckResult(nResult, pGrappl);                        // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -103,7 +103,7 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             nMaxData = pPitchParm->nUpperBound;
         } else {
             // auto range mode
-            CPitchParm::GetAutoRange(pModel, pModel->GetGrappl(), nMaxData, nMinData);
+            CPitchParm::GetAutoRange( pModel->GetGrappl(), nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         SetBold(FALSE);

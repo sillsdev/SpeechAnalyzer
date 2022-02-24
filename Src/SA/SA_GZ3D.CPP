@@ -74,7 +74,7 @@ void CFormantChart::SetStartCursor(CSaView * pView) {
 
     // Finish pitch processing if necessary.
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
-    short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pAutoPitch->Process(this)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (nResult == PROCESS_CANCELED) {
             pFormants->CancelProcess();
@@ -104,7 +104,7 @@ void CFormantChart::SetStopCursor(CSaView * pView) {
     CProcessFormants * pFormants = (CProcessFormants *)pModel->GetFormants(); // get pointer to formants object
     CFormantParm * pFormantSource = pFormants->GetFormantParms();
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
-    short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pAutoPitch->Process(this)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (nResult == PROCESS_CANCELED) {
             pFormants->CancelProcess();
@@ -142,7 +142,7 @@ short int CFormantChart::ProcessFTFormants() {
     // Process FormantTracker formants
     // get pointer to FormantTracker object
     CProcessFormantTracker * pFTFormants = pModel->GetFormantTracker(); 
-    short int nResult = LOWORD(pFTFormants->Process(pView, pModel));
+    short int nResult = LOWORD(pFTFormants->Process(pView));
     // check the process result
     return CheckResult(nResult, pFTFormants); 
 }
@@ -165,7 +165,7 @@ short int CFormantChart::ProcessFormants() {
 
     // Finish pitch processing if necessary.
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
-    short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pAutoPitch->Process(this)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (nResult == PROCESS_CANCELED) {
             pFormants->CancelProcess();
@@ -175,7 +175,7 @@ short int CFormantChart::ProcessFormants() {
 
     // Finish fragmenting if necessary.
     CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
-    nResult = LOWORD(pFragments->Process(this, pModel)); // process data
+    nResult = LOWORD(pFragments->Process(this)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         if (nResult == PROCESS_CANCELED) {
             pFormants->CancelProcess();
@@ -226,7 +226,7 @@ short int CFormantChart::ProcessFormants() {
     if (pView->GetGraphUpdateMode() == STATIC_UPDATE ||
             ((bDynamicUpdate) && (!pView->IsAnimationRequested())) ||
             (((bDynamicUpdate) || (!pFormantParms->bTrackFormants)) && (pView->IsAnimationRequested()))) {
-        nResult = LOWORD(pFormants->Process(this, pModel, bTrackFormants, dwFrameStart, dwFrameSize, SpectraSelected));    // process data
+        nResult = LOWORD(pFormants->Process(this, bTrackFormants, dwFrameStart, dwFrameSize, SpectraSelected));    // process data
     }
     return nResult;
 }

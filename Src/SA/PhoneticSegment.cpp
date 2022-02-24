@@ -217,7 +217,7 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pModel, int nProgress, 
     // Finish fragmenting as needed.
     CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
 	// process data
-    long lResult = LOWORD(pFragments->Process(this, pModel));
+    long lResult = LOWORD(pFragments->Process(this));
 
     // ******** added by CLW 6/98 - 9/24/98 ******************************************
 	// get pointer to zero crossing object

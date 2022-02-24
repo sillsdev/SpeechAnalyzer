@@ -21,7 +21,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessWbEcho
 // Workbench process class to calculate new raw data with a echo function.
 
-CProcessWbEcho::CProcessWbEcho(Context & context) : CWbProcess(context, WbEcho) {
+CProcessWbEcho::CProcessWbEcho(Context context) : CWbProcess(context, WbEcho) {
     m_nDelay = 100;
     m_nGain = -20;
 }
@@ -38,7 +38,7 @@ CProcessWbEcho::CProcessWbEcho(Context & context) : CWbProcess(context, WbEcho) 
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessWbEcho::Process(void * pCaller, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -46,10 +46,10 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
     int nOldLevel = nLevel; // save original level
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
+        pLowerProcess = main.GetWbProcess(model.GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
-            long lResult = pLowerProcess->Process(pCaller, pModel, nProgress, ++nLevel);
+            long lResult = pLowerProcess->Process(pCaller, nProgress, ++nLevel);
             nLevel = (short int)LOWORD(lResult);
             nProgress = HIWORD(lResult);
         }
@@ -87,10 +87,10 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
     if (pLowerProcess) {
         dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
     } else {
-        dwDataSize = pModel->GetDataSize();    // size of raw data
+        dwDataSize = model.GetDataSize();    // size of raw data
     }
     DWORD dwBufferSize = GetBufferSize();
-    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD wSmpSize = model.GetSampleSize();
     BPTR pSourceData, pBlockStart; // pointers to source data
     BPTR pTargetData; // pointers to target data
     DWORD dwDataPos = 0; // data position pointer
@@ -98,7 +98,7 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
     DWORD dwRangeEnd = dwDataSize - wSmpSize;
 
     float fGain = (float)1.0 / (float)pow(10.0, (double)m_nGain / -20.0);
-    DWORD dwFifoSize = pModel->GetSamplesPerSec() * m_nDelay / 1000;
+    DWORD dwFifoSize = model.GetSamplesPerSec() * m_nDelay / 1000;
     // alocate the temporary global buffer for the fifo
     HANDLE hFifo = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwFifoSize * 2); // fifo is 16 bit
     if (!hFifo) {
@@ -125,7 +125,7 @@ long CProcessWbEcho::Process(void * pCaller, Model * pModel, int nProgress, int 
         if (pLowerProcess) {
             pBlockStart = pLowerProcess->GetProcessedWaveData(dwDataPos);
         } else {
-            pBlockStart = pModel->GetAdjustedUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
+            pBlockStart = model.GetAdjustedUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
         }
         if (!pBlockStart) {
             ::GlobalUnlock(hFifo);
@@ -264,7 +264,7 @@ BOOL CProcessWbEcho::ReadProperties(CObjectIStream & obs) {
 // CProcessWbReverb
 // Workbench process class to calculate new raw data with a reverb function.
 
-CProcessWbReverb::CProcessWbReverb(Context & context) : CWbProcess(context, WbReverb) {
+CProcessWbReverb::CProcessWbReverb(Context context) : CWbProcess(context, WbReverb) {
     m_nDelay = 100;
     m_nGain = -20;
 }
@@ -281,7 +281,7 @@ CProcessWbReverb::CProcessWbReverb(Context & context) : CWbProcess(context, WbRe
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessWbReverb::Process(void * pCaller, int nProgress, int nLevel) {
     //  TRACE(_T("Process: CProcessWbReverb\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -290,10 +290,10 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
     int nOldLevel = nLevel; // save original level
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
+        pLowerProcess = main.GetWbProcess(model.GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
-            long lResult = pLowerProcess->Process(pCaller, pModel, nProgress, ++nLevel);
+            long lResult = pLowerProcess->Process(pCaller, nProgress, ++nLevel);
             nLevel = (short int)LOWORD(lResult);
             nProgress = HIWORD(lResult);
         }
@@ -341,10 +341,10 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
         dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
     } else {
 		// size of raw data
-        dwDataSize = pModel->GetDataSize();    
+        dwDataSize = model.GetDataSize();    
     }
     DWORD dwBufferSize = GetBufferSize();
-    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD wSmpSize = model.GetSampleSize();
 	// pointers to source data
     BPTR pSourceData, pBlockStart; 
 	// pointers to target data
@@ -355,7 +355,7 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
     DWORD dwRangeEnd = dwDataSize - wSmpSize;
 
     float fGain = (float)1.0 / (float)pow(10.0, (double)m_nGain / -20.0);
-    DWORD dwFifoSize = pModel->GetSamplesPerSec() * m_nDelay / 1000;
+    DWORD dwFifoSize = model.GetSamplesPerSec() * m_nDelay / 1000;
     // allocate the temporary global buffer for the fifo
 	// fifo is 16 bit
     HANDLE hFifo = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwFifoSize * 2); 
@@ -388,7 +388,7 @@ long CProcessWbReverb::Process(void * pCaller, Model * pModel, int nProgress, in
             pBlockStart = pLowerProcess->GetProcessedWaveData(dwDataPos);
         } else {
             // get pointer to raw data block
-            pBlockStart = pModel->GetAdjustedUnprocessedWaveData(dwDataPos);
+            pBlockStart = model.GetAdjustedUnprocessedWaveData(dwDataPos);
         }
         if (!pBlockStart) {
             ::GlobalUnlock(hFifo);

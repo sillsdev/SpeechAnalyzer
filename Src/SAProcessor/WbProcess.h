@@ -7,7 +7,7 @@
 
 class CWbProcess : public CProcess {
 public:
-    CWbProcess(Context & context, WbDialogType _type) : CProcess(context) {
+    CWbProcess(Context context, WbDialogType _type) : CProcess(context) {
         type = _type;
     }
     CWbProcess() = delete;

@@ -80,7 +80,7 @@ void CPlotChange::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CSaDoc  *  pModel   = pView->GetDocument();
     // create change data
     CProcessChange * pChange = (CProcessChange *)pModel->GetChange(); // get pointer to change object
-    short int nResult = LOWORD(pChange->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pChange->Process(this)); // process data
     nResult = CheckResult(nResult, pChange); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;

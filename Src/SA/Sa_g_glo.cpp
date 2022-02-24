@@ -100,7 +100,7 @@ void CPlotGlottis::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CSaDoc  *  pModel   = pView->GetDocument();
     // create change data
     CProcessGlottis * pGlottalWave = (CProcessGlottis *)pModel->GetGlottalWave(); // get pointer to glottal waveform
-    short int nResult = LOWORD(pGlottalWave->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pGlottalWave->Process(this)); // process data
     nResult = CheckResult(nResult, pGlottalWave); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;

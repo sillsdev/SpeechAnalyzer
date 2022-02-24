@@ -14,10 +14,10 @@
 
 class CProcessFragments : public CProcess {
 public:
-    CProcessFragments(Context & context);
+    CProcessFragments(Context context);
     virtual ~CProcessFragments();
 
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     ULONG GetBufferLength();
     SFragParms * GetFragmentBlock(ULONG dwFragmentIndex);
     const SFragParms & GetFragmentParms(ULONG dwFragmentIndex);
@@ -25,7 +25,7 @@ public:
     ULONG GetFragmentIndex(ULONG dwWaveIndex);
 
 private:
-    long SubProcess(bool background, void* pCaller, Model* pModel, int nProgress, int nLevel);
+    long SubProcess(bool background, void* pCaller, int nProgress, int nLevel);
 
     CFragment* m_pFragmenter;
     ULONG m_dwFragmentCount;

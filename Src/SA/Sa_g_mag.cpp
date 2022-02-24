@@ -84,7 +84,7 @@ void CPlotMagnitude::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     CSaDoc * pModel = pView->GetDocument();
     // create loudness data
     CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to loudness object
-    short int nResult = LOWORD(pLoudness->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pLoudness->Process(this)); // process data
     nResult = CheckResult(nResult, pLoudness); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;

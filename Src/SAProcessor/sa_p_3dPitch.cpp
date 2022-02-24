@@ -12,7 +12,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CProcess3dPitch::CProcess3dPitch(Context & context) : CProcess(context) {
+CProcess3dPitch::CProcess3dPitch(Context context) : CProcess(context) {
     m_dFilterUpperFrequency = 1000.;
     m_dFilterLowerFrequency = 70.;
     m_nFilterOrder = 5;
@@ -58,8 +58,8 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // get source data size
-    DWORD dwDataSize = pModel->GetDataSize();    // size of raw data
-    DWORD wSmpSize = pModel->GetSampleSize();
+    DWORD dwDataSize = model.GetDataSize();    // size of raw data
+    DWORD wSmpSize = model.GetSampleSize();
 
     CProcessButterworth butterworth(context, Plain);
     butterworth.SetSourceProcess(NULL);
@@ -67,7 +67,7 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
     butterworth.LowPass(m_nFilterOrder, m_dFilterUpperFrequency);
 
     // first do forward pass
-    long lResult = butterworth.Process(pCaller, pSaDoc, nProgress, ++nLevel);
+    long lResult = butterworth.Process(pCaller, nProgress, ++nLevel);
     nLevel = (short int)LOWORD(lResult);
     if ((nLevel == PROCESS_CANCELED)) {
         nProgress = HIWORD(lResult);

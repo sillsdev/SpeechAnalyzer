@@ -20,10 +20,10 @@ class CProcessSpectroFormants;
 
 class CProcessSpectrogram : public CProcessAreaData {
 public:
-    CProcessSpectrogram(Context & context, const CSpectroParm & cParm, Model * pModel, BOOL bRealTime = TRUE);
+    CProcessSpectrogram(Context context, const CSpectroParm & cParm, BOOL bRealTime = TRUE);
     virtual ~CProcessSpectrogram();
 
-    long Process(void * pCaller, Model * pModel, View * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, View * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
     void * GetSpectroSlice(DWORD dwIndex);              // return spectrogram slice data
     const CSpectroParm & GetSpectroParm() const;
     void SetSpectroParm(const CSpectroParm & cValue);   // set spectrogram parameters
@@ -53,7 +53,6 @@ private:
     CSpectroParm m_SpectroParm;
     CProcessSpectroFormants * m_pSpectroFormants;
     const BOOL m_bRealTime;
-    Model * m_pDoc;
 };
 
 #endif

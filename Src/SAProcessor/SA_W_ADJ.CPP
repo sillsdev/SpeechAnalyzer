@@ -16,7 +16,7 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessAdjust::CProcessAdjust(Context & context) : CProcessButterworth(context, Plain) {
+CProcessAdjust::CProcessAdjust(Context context) : CProcessButterworth(context, Plain) {
     m_bInvert = FALSE;
     m_bZero = FALSE;
     m_bNormalize = FALSE;
@@ -64,28 +64,28 @@ void CProcessAdjust::SetNormalize(BOOL bNew) {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessAdjust::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessAdjust::Process(void * pCaller, int nProgress, int nLevel) {
 
     if (NeedsAdjustment()) {
-        CProcessDoc * pLowerProcess = pModel->GetUnprocessed();
+        CProcessDoc * pLowerProcess = model.GetUnprocessed();
         double dScale = m_bInvert ? -1 : 1;
         if (m_bNormalize) {
             CProcessButterworth butterworth(context, Plain);
             butterworth.SetSourceProcess(pLowerProcess);
             butterworth.SetFilterFilter(TRUE);
             butterworth.HighPass(m_bZero ? 3 : 0, 40., 1.);
-            butterworth.Process(pCaller, pModel, nProgress, nLevel);
+            butterworth.Process(pCaller, nProgress, nLevel);
 
             int nMax = butterworth.GetMinValue();
             if (butterworth.GetMaxValue() > nMax) {
                 nMax = butterworth.GetMaxValue();
             }
-            dScale *= 1.0/2 * (1 << pModel->GetBitsPerSample()) / (nMax);
+            dScale *= 1.0/2 * (1 << model.GetBitsPerSample()) / (nMax);
         }
         SetSourceProcess(pLowerProcess);
         SetFilterFilter(TRUE);
         HighPass(m_bZero ? 3 : 0, 40., dScale);
-        return CProcessButterworth::Process(pCaller, pModel, nProgress, nLevel);
+        return CProcessButterworth::Process(pCaller, nProgress, nLevel);
     } else {
         SetDataReady();
         return MAKELONG(nLevel, nProgress);

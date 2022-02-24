@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AlignInfo.cpp" />
-    <ClCompile Include="AppContext.cpp" />
     <ClCompile Include="ArchiveTransfer.cpp" />
     <ClCompile Include="AutoSave.cpp" />
     <ClCompile Include="AutoSegmentation.cpp" />
@@ -346,7 +345,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignInfo.h" />
-    <ClInclude Include="AppContext.h" />
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="AutoSegmentation.h" />

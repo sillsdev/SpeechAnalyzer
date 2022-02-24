@@ -15,6 +15,7 @@
 #include "sa_view.h"
 #include "sa_wbch.h"
 #include "mainfrm.h"
+#include "sa.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -34,22 +35,12 @@ IMPLEMENT_DYNCREATE(CPlotLoudness, CPlotWnd)
 BEGIN_MESSAGE_MAP(CPlotLoudness, CPlotWnd)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotLoudness construction/destruction/creation
-
-/***************************************************************************/
-// CPlotLoudness::CPlotLoudness Constructor
-/***************************************************************************/
 CPlotLoudness::CPlotLoudness() {
 }
-
-
 
 void  CPlotLoudness::CopyTo(CPlotWnd * pT) {
     CPlotWnd::CopyTo(pT);
 }
-
-
 
 CPlotWnd * CPlotLoudness::NewCopy(void) {
     CPlotWnd * pRet = new CPlotLoudness();
@@ -59,16 +50,8 @@ CPlotWnd * CPlotLoudness::NewCopy(void) {
     return pRet;
 }
 
-
-
-/***************************************************************************/
-// CPlotLoudness::~CPlotLoudness Destructor
-/***************************************************************************/
 CPlotLoudness::~CPlotLoudness() {
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CPlotLoudness message handlers
 
 /***************************************************************************/
 // CPlotLoudness::OnDraw Painting
@@ -84,7 +67,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
     CSaDoc * pModel = pView->GetDocument();
     // create loudness data
     CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to loudness object
-    short int nResult = LOWORD(pLoudness->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pLoudness->Process(this)); // process data
     nResult = CheckResult(nResult, pLoudness); // chaeck the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -109,11 +92,12 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 
         PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pModel, bPercent ? 0 : PAINT_DB); // do standard data paint
     }
-    if (app.getResearchSettings().m_bShowInstantaneousPower) {
+    CSaApp * pApp = (CSaApp*)AfxGetApp();
+    if (pApp->GetResearchSettings().showInstantaneousPower) {
         // create raw data
         CProcessInstantaneousPower power;
         CProcessInstantaneousPower * pPower = &power;
-        nResult = LOWORD(pPower->Process(this, pModel)); // process data
+        nResult = LOWORD(pPower->Process(this)); // process data
         nResult = CheckResult(nResult, pPower); // check the process result
         if (nResult == PROCESS_ERROR) {
             return;

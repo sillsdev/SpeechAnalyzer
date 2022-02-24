@@ -14,7 +14,7 @@ static char THIS_FILE[]=__FILE__;
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-CProcessButterworth::CProcessButterworth(Context & context, WbDialogType type, BOOL bWorkbenchOutput) : CProcessIIRFilter(context, type, bWorkbenchOutput) {
+CProcessButterworth::CProcessButterworth(Context context, WbDialogType type, BOOL bWorkbenchOutput) : CProcessIIRFilter(context, type, bWorkbenchOutput) {
     m_bFilterFilter = false;
     m_bReverse = FALSE;
     m_nOrder = 0;
@@ -185,9 +185,6 @@ double CProcessButterworth::FilterFilterNorm(int nOrder) const {
 }
 
 /***************************************************************************/
-// CProcessButterworth::Process
-/***************************************************************************/
-/***************************************************************************/
 // CProcessButterworth::Process Processing new raw data with a lowpass function
 // The processed change data is stored in a temporary file. To create it
 // helper functions of the base class are used. While processing a process
@@ -199,18 +196,20 @@ double CProcessButterworth::FilterFilterNorm(int nOrder) const {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessButterworth::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessButterworth::Process(void * pCaller, int nProgress, int nLevel) {
     if (IsCanceled()) {
-        return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
+        // process canceled
+        return MAKELONG(PROCESS_CANCELED, nProgress);    
     }
+
     // check if nested workbench processes
-
     if (IsDataReady()) {
-        return MAKELONG(--nLevel, nProgress);    // data is already ready
+        // data is already ready
+        return MAKELONG(--nLevel, nProgress);    
     }
 
-    ConfigureProcess(pModel->GetSamplesPerSec());
-    return CProcessIIRFilter::Process(pCaller, pModel, nProgress, nLevel);
+    ConfigureProcess(model.GetSamplesPerSec());
+    return CProcessIIRFilter::Process(pCaller, nProgress, nLevel);
 }
 
 

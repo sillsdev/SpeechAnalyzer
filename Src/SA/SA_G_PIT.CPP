@@ -74,7 +74,7 @@ void CPlotPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CSaDoc * pModel = pView->GetDocument();
     // create pitch data
     CProcessPitch * pPitch = (CProcessPitch *)pModel->GetPitch(); // get pointer to pitch object
-    short int nResult = LOWORD(pPitch->Process(this, pModel));    // process data
+    short int nResult = LOWORD(pPitch->Process(this));    // process data
     nResult = CheckResult(nResult, pPitch);                     // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -97,7 +97,7 @@ void CPlotPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             nMaxData = pPitchParm->nUpperBound;
         } else {
             // auto range mode
-            CPitchParm::GetAutoRange(pModel, pModel->GetGrappl(), nMaxData, nMinData);
+            CPitchParm::GetAutoRange(pModel->GetGrappl(), nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         if (pPitchParm->nScaleMode == 1) {

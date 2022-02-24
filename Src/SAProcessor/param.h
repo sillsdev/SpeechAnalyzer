@@ -81,7 +81,7 @@ public:
     BOOL ReadProperties(CObjectIStream & obs);
 
     void Init();
-    static void GetAutoRange(Model* pModel, CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound);
+    static void GetAutoRange(CProcessMelogram* pMelogram, int & nUpperBound, int & nLowerBound);
 };
 
 class CIntensityParm {          // pitch parameters

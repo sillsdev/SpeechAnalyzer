@@ -102,7 +102,7 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 
     // create raw data
     CProcessRaw * pRaw = pModel->GetRaw();                    // get pointer to change object
-    short int nResult = LOWORD(pRaw->Process(this, pModel));  // process data
+    short int nResult = LOWORD(pRaw->Process(this));  // process data
     nResult = CheckResult(nResult, pRaw);                   // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -121,7 +121,7 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     if (app.getResearchSettings().m_bShowHilbertTransform) {
         // create raw data
         CProcessHilbert * pHilbert = pModel->GetHilbert();    // get pointer to change object
-        nResult = LOWORD(pHilbert->Process(this, pModel));    // process data
+        nResult = LOWORD(pHilbert->Process(this));    // process data
         nResult = CheckResult(nResult, pHilbert);           // check the process result
         if (nResult == PROCESS_ERROR) {
             return;

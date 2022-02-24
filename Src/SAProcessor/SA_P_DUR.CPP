@@ -30,7 +30,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessDurations::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessDurations::Process(void * pCaller, int nProgress, int nLevel) {
 
     //TRACE(_T("Process: CProcessDurations\n"));
     if (IsCanceled()) {
@@ -47,7 +47,7 @@ long CProcessDurations::Process(void * pCaller, Model * pModel, int nProgress, i
     }
 
     // set pointer to segment durations
-    PhoneticSegment * pSegment = pModel->GetPhoneticSegment();
+    PhoneticSegment * pSegment = model.GetPhoneticSegment();
     LPCTSTR pPhonetic = pSegment->GetContent();
     m_Durations.RemoveAll();
     for (int i=0; i<pSegment->GetDurationSize(); i++) {

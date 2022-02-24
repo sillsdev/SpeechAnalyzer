@@ -86,20 +86,20 @@ void CPitchParm::Init() {
     nManualPitchLower = nLowerBound;
 }
 
-void CPitchParm::GetAutoRange(Model * pModel, CProcess * pGrappl, int & nUpperBound, int & nLowerBound) {
+void CPitchParm::GetAutoRange(Model& model, CProcess * pGrappl, int & nUpperBound, int & nLowerBound) {
 
     CPitchParm temp;
     temp.Init();
 
     // If auto pitch is not done look for alternates
     if (!pGrappl->IsDataReady()) {
-        pGrappl = pModel->GetSmoothedPitch();
+        pGrappl = model.GetSmoothedPitch();
     }
     if (!pGrappl->IsDataReady()) {
-        pGrappl = pModel->GetPitch();
+        pGrappl = model.GetPitch();
     }
     if (!pGrappl->IsDataReady()) {
-        pGrappl = pModel->GetCustomPitch();
+        pGrappl = model.GetCustomPitch();
     }
     if (pGrappl->IsDataReady() && !pGrappl->IsStatusFlag(PROCESS_NO_PITCH)) {
         // auto range mode

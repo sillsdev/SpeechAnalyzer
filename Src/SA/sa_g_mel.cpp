@@ -91,7 +91,7 @@ bool CPlotMelogram::GetScaleValues(CSaDoc * pModel, double * dMaxSemitone,double
     int nLowerBound = pParm->nLowerBound;
 
     if (pParm->nRangeMode == 0) {
-        CMusicParm::GetAutoRange(pModel, pModel->GetMelogram(), nUpperBound, nLowerBound);
+        CMusicParm::GetAutoRange( pModel->GetMelogram(), nUpperBound, nLowerBound);
     }
 
     if (dMaxSemitone) {
@@ -121,7 +121,7 @@ void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
     CSaDoc  *  pModel   = pView->GetDocument();
     // create melogram data
     CProcessMelogram * pMelogram = (CProcessMelogram *)pModel->GetMelogram(); // get pointer to melogram object
-    short int nResult = LOWORD(pMelogram->Process(this, pModel)); // process data
+    short int nResult = LOWORD(pMelogram->Process(this)); // process data
     nResult = CheckResult(nResult, pMelogram); // check the process result
     if (nResult == PROCESS_ERROR) {
         return;

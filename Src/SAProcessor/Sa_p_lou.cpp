@@ -58,7 +58,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessLoudness::Process(void * pCaller, int nProgress, int nLevel) {
 
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -66,8 +66,8 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
     if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
-    CProcessGrappl * pAutoPitch = (CProcessGrappl *)pModel->GetGrappl();
-    short int nResult = LOWORD(pAutoPitch->Process(this, pModel)); // process data
+    CProcessGrappl * pAutoPitch = (CProcessGrappl *)model.GetGrappl();
+    short int nResult = LOWORD(pAutoPitch->Process(this)); // process data
 
     CScopedCursor cursor(view);
     if (!StartProcess(pCaller, PROCESSLOU)) { // memory allocation failed
@@ -81,12 +81,12 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // process raw data into loudness data
-    DWORD dwDataSize = pModel->GetDataSize(); // size of raw data
-    DWORD nSmpSize = pModel->GetSampleSize();
+    DWORD dwDataSize = model.GetDataSize(); // size of raw data
+    DWORD nSmpSize = model.GetSampleSize();
     // Finish pitch processing if necessary.
-    UINT nCalcDataLength = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec());  //!!this should be based on sampling frequency
+    UINT nCalcDataLength = CALCULATION_DATALENGTH(model.GetSamplesPerSec());  //!!this should be based on sampling frequency
     if (nResult >= 0 && pAutoPitch->GetMaxValue()) {
-        nCalcDataLength = (UINT)(2*pModel->GetSamplesPerSec() / (pAutoPitch->GetMaxValue() / PRECISION_MULTIPLIER));
+        nCalcDataLength = (UINT)(2*model.GetSamplesPerSec() / (pAutoPitch->GetMaxValue() / PRECISION_MULTIPLIER));
     }
     UINT nCalcInterval = nCalcDataLength / 3;   // more than 2 x bandwidth
     nCalcDataLength = nCalcInterval * 3;
@@ -116,7 +116,7 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
     DWORD dwNextBlock = 0;
     while (dwDataPos < dwDataSize) { // processing loop
         if (dwNextBlock <= dwDataPos) {
-            pBlockStart = pModel->GetWaveData(dwDataPos); // get pointer to data block
+            pBlockStart = model.GetWaveData(dwDataPos); // get pointer to data block
             if (!pBlockStart) {
                 return Exit(PROCESS_ERROR);    // error, reading failed
             }
@@ -219,7 +219,7 @@ long CProcessLoudness::Process(void * pCaller, Model * pModel, int nProgress, in
 /***************************************************************************/
 // CProcessSmoothLoudness::CProcessSmoothLoudness Constructor
 /***************************************************************************/
-CProcessSmoothLoudness::CProcessSmoothLoudness(Context & context) : CProcess(context) {
+CProcessSmoothLoudness::CProcessSmoothLoudness(Context context) : CProcess(context) {
     m_pSRDfile = new CFile();
     m_SRDfileStatus.m_szFullName[0] = 0; // no file name
     m_hSRDdata = NULL;
@@ -287,8 +287,7 @@ long CProcessSmoothLoudness::Exit(int nError, HANDLE hSmoothBlock) {
 // that is needed from the old data to calculate the new data block. If an
 // error occurs, NULL is returned.
 /***************************************************************************/
-BPTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, BPTR pTarget, UINT nSmpSize,
-        int nOldBlock, int nBlock, int * pnLastDone,
+BPTR CProcessSmoothLoudness::SmoothRawData( BPTR pTarget, UINT nSmpSize, int nOldBlock, int nBlock, int * pnLastDone,
         DWORD dwSmplPerSec, DWORD dwStart, UINT * nAverage, long * lAverage) {
     if (nOldBlock > nBlock) {
         return pTarget;    // old data needed, just give back the buffer pointer
@@ -327,7 +326,7 @@ BPTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, BPTR pTarget, UINT nS
     // The following section has been cleaned up using nSmoothSamp and
     // nBufferSamp to eliminate 'if (nSmpSize > 1)' tests.
     // References to dwStart have also been removed. CLW 1/6/98
-    DWORD dwDataSize = pModel->GetDataSize();
+    DWORD dwDataSize = model.GetDataSize();
     if (nBlock == 0) { // First block, so no overlap into previous block
         if ((((long)nBlock + 1) * GetProcessBufferSize()) < dwDataSize)
             // not last block, so overlap into next block
@@ -353,7 +352,7 @@ BPTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, BPTR pTarget, UINT nS
         return pTarget + GetProcessBufferSize();    // end of data
     }
     // load new raw data block
-    BPTR pBlockStart = pModel->GetWaveData(dwDataPos, TRUE); // get data
+    BPTR pBlockStart = model.GetWaveData(dwDataPos, TRUE); // get data
     if (!pBlockStart) {
         return NULL;    // reading failed
     }
@@ -393,7 +392,7 @@ BPTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, BPTR pTarget, UINT nS
 				// new data block has to be reloaded
                 DWORD dwNewDataPos = (DWORD)nBlock * GetProcessBufferSize() + nSmoothWidth / 2;
 				// get data
-                pBlockStart = pModel->GetWaveData(dwNewDataPos, TRUE);
+                pBlockStart = model.GetWaveData(dwNewDataPos, TRUE);
                 if (!pBlockStart) {
 					// reading failed
                     return NULL;
@@ -423,7 +422,7 @@ BPTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, BPTR pTarget, UINT nS
         }
         do {
             if (dwEnd == dwReloadPos) { // new data block has to be reloaded
-                pBlockStart = pModel->GetWaveData((DWORD)nBlock * GetProcessBufferSize(), TRUE); // get data
+                pBlockStart = model.GetWaveData((DWORD)nBlock * GetProcessBufferSize(), TRUE); // get data
                 if (!pBlockStart) {
                     return NULL;    // reading failed
                 }
@@ -439,8 +438,8 @@ BPTR CProcessSmoothLoudness::SmoothRawData(Model * pModel, BPTR pTarget, UINT nS
     }
     // write the processed data block into the smoothed raw data temporary file
     DWORD dwAmount = GetProcessBufferSize();
-    if (((DWORD)(nBlock + 1) * GetProcessBufferSize()) > pModel->GetDataSize()) {
-        dwAmount = pModel->GetDataSize() - ((DWORD)nBlock * GetProcessBufferSize());
+    if (((DWORD)(nBlock + 1) * GetProcessBufferSize()) > model.GetDataSize()) {
+        dwAmount = model.GetDataSize() - ((DWORD)nBlock * GetProcessBufferSize());
     }
     try {
         m_pSRDfile->Write((BPTR)(pTarget + GetProcessBufferSize()), dwAmount);
@@ -476,8 +475,7 @@ void CProcessSmoothLoudness::SetDataInvalid() {
 // of the long value and the end process progress percentage in the higher
 // word.
 /***************************************************************************/
-long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
-                                     int nProgress, int nLevel) {
+long CProcessSmoothLoudness::Process(void * pCaller, int nProgress, int nLevel) {
     //TRACE(_T("Process: CProcessSmoothLoudness\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -523,16 +521,16 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
     }
 
     // process raw data into smoothed loudness data
-    DWORD dwDataSize = pModel->GetDataSize(); // size of raw data
+    DWORD dwDataSize = model.GetDataSize(); // size of raw data
     CUttParm myUttParm;
     CUttParm * pUttParm = &myUttParm;
-    pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
-    DWORD nSmpSize = pModel->GetSampleSize();
+    model.GetUttParm(pUttParm); // get sa parameters utterance member data
+    DWORD nSmpSize = model.GetSampleSize();
 
     // It would be nice to adjust these values, BUT
     // The Change process assumes they are constant
-    UINT nCalcDataLength = CALCULATION_DATALENGTH(pModel->GetSamplesPerSec());  //!!this should be based on sampling frequency
-    UINT nCalcInterval = CALCULATION_INTERVAL(pModel->GetSamplesPerSec());   // more than 2 x bandwidth
+    UINT nCalcDataLength = CALCULATION_DATALENGTH(model.GetSamplesPerSec());  //!!this should be based on sampling frequency
+    UINT nCalcInterval = CALCULATION_INTERVAL(model.GetSamplesPerSec());   // more than 2 x bandwidth
 
     BPTR pSmoothData = NULL, pBlockStart; // pointers to raw data
     short int * pLoudData = (short int *)m_lpBuffer; // pointer to loudness data
@@ -541,8 +539,8 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
     if (pUttParm->nMinFreq == 0) {
         pUttParm->nMinFreq = 50;    // to prevent 0 divisions
     }
-    dwLoudStart = ((pModel->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
-                    + pModel->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
+    dwLoudStart = ((model.GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
+                    + model.GetSamplesPerSec() / pUttParm->nMinFreq) / 2
                    + nCalcDataLength / 2 + 5) / nCalcInterval + 1;
     dwDataPos = dwLoudStart * nCalcInterval - nCalcDataLength / 2;
     if (nSmpSize > 1) {
@@ -561,7 +559,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
     UINT nAverage; // smoothing average values
     long lAverage;
     while (dwDataPos < dwDataSize) { // processing loop
-        pBlockStart = pModel->GetWaveData(dwDataPos); // get pointer to data block
+        pBlockStart = model.GetWaveData(dwDataPos); // get pointer to data block
         if (!pBlockStart) {
             return Exit(PROCESS_ERROR, hSmoothBlock);    // error, reading failed
         }
@@ -569,8 +567,8 @@ long CProcessSmoothLoudness::Process(void * pCaller, Model * pModel,
             int nOldBlockNumber = nBlockNumber;
             nBlockNumber = (int)(dwDataPos / GetProcessBufferSize()); // new block loaded
             // smooth the raw data
-            pSmoothData = SmoothRawData(pModel, lpSmoothBlock, nSmpSize, nOldBlockNumber,
-                                        nBlockNumber, &nCalculatedBlock, pModel->GetSamplesPerSec(),
+            pSmoothData = SmoothRawData(lpSmoothBlock, nSmpSize, nOldBlockNumber,
+                                        nBlockNumber, &nCalculatedBlock, model.GetSamplesPerSec(),
                                         dwLoudStart, &nAverage, &lAverage);
             if (!pSmoothData) {
                 return Exit(PROCESS_ERROR, hSmoothBlock);    // error, reading failed

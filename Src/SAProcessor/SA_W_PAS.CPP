@@ -20,7 +20,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcessWbHighpass
 // Workbench process class to calculate new raw data with a highpass function.
 
-CProcessWbHighpass::CProcessWbHighpass(Context & context) : CProcessButterworth(context,WbHiPass) {
+CProcessWbHighpass::CProcessWbHighpass(Context context) : CProcessButterworth(context,WbHiPass) {
     m_nCutoff = 150;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -38,16 +38,16 @@ CProcessWbHighpass::CProcessWbHighpass(Context & context) : CProcessButterworth(
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbHighpass::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessWbHighpass::Process(void * pCaller, int nProgress, int nLevel) {
     // check if nested workbench processes
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
+        pLowerProcess = main.GetWbProcess(model.GetWbProcess() - 1, nLevel);
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter!=FALSE);
     HighPass(m_nOrder, m_nCutoff);
-    return CProcessButterworth::Process(pCaller, pModel, nProgress, nLevel);
+    return CProcessButterworth::Process(pCaller, nProgress, nLevel);
 }
 
 static LPCSTR psz_highpass = "highpass";
@@ -98,7 +98,7 @@ BOOL CProcessWbHighpass::ReadProperties(CObjectIStream & obs) {
 // CProcessWbLowpass
 // Workbench process class to calculate new raw data with a lowpass function.
 
-CProcessWbLowpass::CProcessWbLowpass(Context & context) : CProcessButterworth(context,WbLoPass) {
+CProcessWbLowpass::CProcessWbLowpass(Context context) : CProcessButterworth(context,WbLoPass) {
     m_nCutoff = 3000;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -116,16 +116,16 @@ CProcessWbLowpass::CProcessWbLowpass(Context & context) : CProcessButterworth(co
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbLowpass::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessWbLowpass::Process(void * pCaller, int nProgress, int nLevel) {
     // check if nested workbench processes
     CProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CWbProcess *)main.GetWbProcess(pModel->GetWbProcess() - 1, nLevel));
+        pLowerProcess = ((CWbProcess *)main.GetWbProcess(model.GetWbProcess() - 1, nLevel));
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
     LowPass(m_nOrder, m_nCutoff);
-    return CProcessButterworth::Process(pCaller, pModel, nProgress, nLevel);
+    return CProcessButterworth::Process(pCaller, nProgress, nLevel);
 }
 
 /***************************************************************************/
@@ -171,7 +171,7 @@ BOOL CProcessWbLowpass::ReadProperties(CObjectIStream & obs) {
 /***************************************************************************/
 // CProcessWbBandpass::CProcessWbBandpass Constructor
 /***************************************************************************/
-CProcessWbBandpass::CProcessWbBandpass(Context & context) : CProcessButterworth(context,WbBandPass) {
+CProcessWbBandpass::CProcessWbBandpass(Context context) : CProcessButterworth(context,WbBandPass) {
     m_nUpperCutoff = 3000;
     m_nLowerCutoff = 150;
     m_nOrder = 3;
@@ -190,16 +190,16 @@ CProcessWbBandpass::CProcessWbBandpass(Context & context) : CProcessButterworth(
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbBandpass::Process(void * pCaller, Model * pModel, int nProgress, int nLevel) {
+long CProcessWbBandpass::Process(void * pCaller, int nProgress, int nLevel) {
     // check if nested workbench processes
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess(pModel->GetWbProcess() - 1, nLevel);
+        pLowerProcess = main.GetWbProcess(model.GetWbProcess() - 1, nLevel);
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
     BandPass(m_nOrder, (m_nUpperCutoff + m_nLowerCutoff)/2,m_nUpperCutoff - m_nLowerCutoff);
-    return CProcessButterworth::Process(pCaller, pModel, nProgress, nLevel);
+    return CProcessButterworth::Process(pCaller, nProgress, nLevel);
 }
 
 /***************************************************************************/

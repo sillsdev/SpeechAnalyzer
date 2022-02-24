@@ -15,7 +15,7 @@
 class CProcessChange : public CProcess {
 // Construction/destruction/creation
 public:
-    CProcessChange(Context & context);
+    CProcessChange(Context context);
     virtual ~CProcessChange();
 
 // Attributes
@@ -32,7 +32,7 @@ private:
 // Operations
 public:
     void SetDataInvalid();
-    long Process(void * pCaller, Model * pModel, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     void * GetQualityData( DWORD dwOffset, BOOL bBlockBegin = FALSE); // return quality data pointer on given position (offset)
     int GetQualityData(DWORD dwOffset, BOOL *); // return quality data from given position (offset)
     DWORD GetQualityDataSize() {

@@ -59,7 +59,7 @@ using namespace std;
 //*  Postcondtions : None
 //*  Returns       :
 //**************************************************************************
-long CProcessWavelet::Process(void * pCaller, Model * , int nWidth, int /*nHeight*/, int nProgress, int nLevel) {
+long CProcessWavelet::Process(void * pCaller, int nWidth, int /*nHeight*/, int nProgress, int nLevel) {
     UNUSED_ALWAYS(nWidth);
 
     // check canceled
@@ -997,10 +997,9 @@ double CWaveletNode::_GetMaxTreeBounds(double max, long start, long end) {
 //*  Returns       : TRUE on sucess
 //*                                  FALSE otherwise
 //**************************************************************************
-BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, Model * pModel) {
+BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut) {
+    
     BPTR pData;                                // actual data pointer
-
-
     DWORD dwBufferSizeBytes;
     DWORD dwDataPos;
     DWORD dwDataPosBytes;
@@ -1014,7 +1013,7 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, Mode
 
 
     // Total number of bytes in waveform
-    dwDataSizeBytes = pModel->GetDataSize();
+    dwDataSizeBytes = model.GetDataSize();
 
 
     *pDataOut = (long *)malloc(dwDataSizeBytes * 2);
@@ -1038,7 +1037,7 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, Mode
 
     // Get the data
     while (1) {
-        pData = pModel->GetWaveData(dwDataPosBytes, TRUE);
+        pData = model.GetWaveData(dwDataPosBytes, TRUE);
 
         // Get the data size (8 or 16bit data)
 
@@ -1052,11 +1051,6 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, Mode
             dwDataPos++;
             dwDataPosBytes+=2;
         }
-
-        //memcpy(pDataOut, pData, dwChunkSize);
-
-        //dwDataPos += dwChunkSize;
-        //pDataOut += dwBufferSize;
 
         // see if we are done
         if (dwDataPosBytes == dwDataSizeBytes) {

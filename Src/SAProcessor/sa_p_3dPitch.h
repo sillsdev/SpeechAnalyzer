@@ -7,7 +7,7 @@ __interface Process;
 
 class CProcess3dPitch : public CProcess {
 public:
-    CProcess3dPitch(Context & context);
+    CProcess3dPitch(Context context);
     CProcess3dPitch() = delete;
 
     virtual long Process(void * pCaller, Model *, int nProgress = 0, int nLevel = 1);
