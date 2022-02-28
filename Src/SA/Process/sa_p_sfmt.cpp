@@ -71,9 +71,7 @@ CProcessSpectroFormants::~CProcessSpectroFormants() {
 // function needs a pointer to the view instead the pointer to the document
 // like other process calls. It calculates spectrogram data.
 /***************************************************************************/
-long CProcessSpectroFormants::Process(void * /*pCaller*/, CView * /*pSaView*/, int /*nWidth*/, int /*nHeight*/,
-                                      int nProgress, int /*nLevel*/) {
-    //TRACE(_T("Process: CProcessSpectroFormants\n"));
+long CProcessSpectroFormants::Process(void * /*pCaller*/, CView * /*pSaView*/, int /*nWidth*/, int /*nHeight*/, int nProgress, int /*nLevel*/) {
     return MAKELONG(PROCESS_ERROR, nProgress);
 }
 
@@ -98,7 +96,7 @@ SFormantFreq * CProcessSpectroFormants::GetFormant(DWORD dwIndex) {
 // the spectrogram formant track process temp file.
 /***************************************************************************/
 long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth, int nProgress, int nLevel) {
-    TRACE(_T("Process: CProcessSpectroFormants\n"));
+    TRACE("ExtractFormants\n");
     // check canceled
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -138,8 +136,8 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
 
                 CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
                 SSpectProcSelect SpectraSelected;
-                SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
-                SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
+                SpectraSelected.bCepstralSpectrum = FALSE;      // turn off to reduce processing time
+                SpectraSelected.bLpcSpectrum = -1;              // use Lpc method for estimating formants
                 BOOL bFormantTracking = TRUE;
                 pFormants->ResetTracking();
                 pFormants->SetDataInvalid();

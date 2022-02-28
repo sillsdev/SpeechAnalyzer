@@ -319,9 +319,9 @@ ULONG CProcessFragments::GetFragmentIndex(ULONG dwWaveIndex) {
 
     // Otherwise resort to a binary search.
     while (dwMinSearchIndex < dwMaxSearchIndex) { // true as long as dwWaveIndex within range spanned by fragments
-        SFragParms stFragment = GetFragmentParms(m_dwFragmentIndex);
-        if (dwWaveIndex >= stFragment.dwOffset) {
-            if (dwWaveIndex < stFragment.dwOffset + stFragment.wLength) {
+        SFragParms stFragment2 = GetFragmentParms(m_dwFragmentIndex);
+        if (dwWaveIndex >= stFragment2.dwOffset) {
+            if (dwWaveIndex < stFragment2.dwOffset + stFragment2.wLength) {
                 return m_dwFragmentIndex;
             }
             dwMinSearchIndex = m_dwFragmentIndex;   // previous fragment index becomes lower end of search range

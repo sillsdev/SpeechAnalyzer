@@ -37,6 +37,7 @@ public:
     float Bandwidth() const {
         return Bandwidth(nResolution);
     }
+    void SetShowFormants(boolean value);
 
 private:
     void WriteProperties(LPCSTR pszMarker, CObjectOStream & obs);

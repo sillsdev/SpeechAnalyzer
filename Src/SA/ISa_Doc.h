@@ -73,7 +73,8 @@ public:
     CProcessChange * GetChange();
     CProcessRaw * GetRaw();
     CProcessHilbert * GetHilbert();
-    CProcessSpectrogram * GetSpectrogram(bool bRealTime);
+    CProcessSpectrogram * GetSpectrogram();
+    CProcessSpectrogram* GetSnapshot();
     CProcessWavelet * GetWavelet();
     CProcessSpectrum * GetSpectrum();
     CProcessGrappl * GetGrappl();

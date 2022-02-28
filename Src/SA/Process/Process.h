@@ -96,7 +96,7 @@ protected:
     virtual void SetDataSize(int nElements, size_t nElementSize = 1);
 
     void SetStatus(long nStatus);
-    void SetStatusFlag(long nStatus, BOOL bValue = TRUE);
+    void SetStatusFlag(long nStatus, BOOL bValue);
     void EndProcess(BOOL bProcessBar = TRUE);                                               // end processing data
     BOOL CreateTempFile(TCHAR *);                                                           // create a temporary file
     BOOL CreateTempFile(TCHAR *, CFileStatus *);                                            // create a temporary file

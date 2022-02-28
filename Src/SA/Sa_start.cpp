@@ -198,7 +198,7 @@ void CDlgStartMode::OnCloseButton() {
     CDialog::OnOK();
 }
 
-LRESULT CDlgStartMode::OnMCINotify(WPARAM wParam, LPARAM) {
+LRESULT CDlgStartMode::OnMCINotify(WPARAM, LPARAM) {
 	player.Stop();
 	GetDlgItem(IDC_PLAY)->EnableWindow(TRUE);
 	GetDlgItem(IDC_STOP)->EnableWindow(FALSE);

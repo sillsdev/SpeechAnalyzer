@@ -129,9 +129,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     EndWaitCursor();
     SetDataReady();
 
-    TRACE("end iifilter\n");
     //Dump("iirfilter end process");
-
     return MAKELONG(nLevel, nProgress);
 }
 
@@ -300,10 +298,8 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, ISaDoc * pDoc, int & nPro
             dwBlockEnd = 0;
             dwBufferSize = dwDataPos;
         }
-        TRACE("dwBlockEnd=%d\n",dwBlockEnd);
 
         DWORD dwBlockStart = dwBlockEnd;
-        TRACE("dwBlockStart=%d\n",dwBlockStart);
 
         pTargetData = m_lpBuffer + dwBufferSize;
 

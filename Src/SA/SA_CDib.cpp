@@ -367,10 +367,10 @@ void CDib::Save(void) {
                         szB2PPath = szB2PPath.Left(szB2PPath.ReverseFind('\\')) + _T("\\bmp2png.exe");
                         CSaString szQuotedBmp = _T("\"") + szBmpFilename + _T("\"");
                         CSaString szQuotedPng = _T("\"") + szPngFilename + _T("\"");
-                        int nResult = _wspawnlp(_P_WAIT, szB2PPath, _T("bmp2png.exe"), /*_T("-L"),*/ _T("-E"), _T("-Q"), _T("-O"), (LPCTSTR)szQuotedPng, (LPCTSTR)szQuotedBmp, NULL);
-                        if (nResult != 0) {
+                        int nResult2 = _wspawnlp(_P_WAIT, szB2PPath, _T("bmp2png.exe"), /*_T("-L"),*/ _T("-E"), _T("-Q"), _T("-O"), (LPCTSTR)szQuotedPng, (LPCTSTR)szQuotedBmp, NULL);
+                        if (nResult2 != 0) {
                             AfxMessageBox(IDS_ERROR_SCREEN_CAPTURE_SAVE);
-                            TRACE(_T("bmp2png result = %d\n"), nResult);
+                            TRACE(_T("bmp2png result = %d\n"), nResult2);
                             FileUtils::Remove(szBmpFilename); // delete temporary bmp
                         }
                     } catch (...) {
@@ -412,7 +412,7 @@ BOOL CDib::Read(CFile * pFile) {
 BOOL CDib::Write(CFile * pFile) {
     try {
         pFile->Write(m_lpBuf, m_dwLength);
-    } catch (const CException & e) {
+    } catch (const CException &) {
         AfxMessageBox(_T("Write error--possible disk full condition"));
         return FALSE;
     }

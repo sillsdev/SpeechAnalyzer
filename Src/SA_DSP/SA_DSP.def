@@ -52,7 +52,6 @@ EXPORTS
 ?SetTransform@CAcousticTube@@QAEXABV?$vector@NV?$allocator@N@std@@@std@@0@Z
 ?Tick@CAcousticTube@@QAENN_N0@Z
 rfft2f
-?Dump@CDspWin@@QAEXPBD@Z
 ?Length@CDspWin@@QBEHXZ
 ?WindowDouble@CDspWin@@QAEPBNXZ
 ?FromBandwidth@CDspWin@@SA?AV1@NIH@Z

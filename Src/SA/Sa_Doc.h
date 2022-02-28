@@ -171,7 +171,8 @@ public:
     CProcessChange * GetChange();                                   // process pointer to change object
     CProcessRaw * GetRaw();                                         // process pointer to change object
     CProcessHilbert * GetHilbert();                                 // process pointer to change object
-    CProcessSpectrogram * GetSpectrogram(bool bRealTime);           // returns either the spectrogram or snapshot process dependent on flag
+    CProcessSpectrogram * GetSpectrogram();                         // returns either the spectrogram process
+    CProcessSpectrogram * GetSnapshot();                            // returns either the snapshot process
     CProcessWavelet * GetWavelet();                                 // process pointer to wavelet object  ARH 8/2/01 added for wavelet graph
     CProcessSpectrum * GetSpectrum();                               // process pointer to spectrum object
     CProcessGrappl * GetGrappl();                                   // process pointer to grappl object
@@ -357,8 +358,6 @@ public:
 	void DeselectAll();
 	void ImportSAB( CSaView & view, LPCTSTR filename, int algorithm);
 	void ImportSAB( LPCTSTR filename, bool segmentAudio, bool loadData, int skipCount, int algorithm);
-	void SegmentAudio( );
-	void LoadData( );
 
 	void AdjustZero();
 	int GetZero();
@@ -422,6 +421,8 @@ public:
 	void ErrorMessage(UINT nTextID, LPCTSTR pszText1=NULL, LPCTSTR pszText2=NULL);
 	void ErrorMessage( CSaString & msg);
 
+    void ToggleSpectrogram();
+
 protected:
     virtual void DeleteContents();
     virtual BOOL OnNewDocument();
@@ -464,8 +465,6 @@ private:
     void WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudioDocWriter);
     void WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWriter);
     void WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter);
-
-    void CreateSAXML(LPCTSTR filename, Elan::CAnnotationDocument & document, map<EAnnotation,wstring> & assignments);
 
     void AppendFonipaTag(wstring& str, wstring privateUse);
 

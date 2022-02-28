@@ -180,19 +180,20 @@ void CProgressStatusBar::InitProgress() {
 /***************************************************************************/
 void CProgressStatusBar::SetProgress(int nVal) {
     if (m_ProgressBar.GetProgress() != nVal) {
-        m_ProgressBar.SetProgress(nVal); // set the progress bar
+        // set the progress bar
+        m_ProgressBar.SetProgress(nVal);
+    }
 
-        static DWORD dwTickLast = 0;
-        DWORD dwThis = GetTickCount();
-
-        if (dwThis - dwTickLast > 100) {
-            dwTickLast = dwThis;
-            CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-            CSaDoc * pDoc = pMainWnd->GetCurrDoc();
-            BOOL bState = (pDoc) ? pDoc->EnableBackgroundProcessing(FALSE) : 0;
-            MessageLoop(); // do windows message loop
-            pDoc ? pDoc->EnableBackgroundProcessing(bState) : 0;
-        }
+    // every 100 ms check the message loop
+    static DWORD dwTickLast = 0;
+    DWORD dwThis = GetTickCount();
+    if (dwThis - dwTickLast > 100) {
+        dwTickLast = dwThis;
+        CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+        CSaDoc * pDoc = pMainWnd->GetCurrDoc();
+        BOOL bState = (pDoc) ? pDoc->EnableBackgroundProcessing(FALSE) : 0;
+        MessageLoop(); // do windows message loop
+        pDoc ? pDoc->EnableBackgroundProcessing(bState) : 0;
     }
 }
 

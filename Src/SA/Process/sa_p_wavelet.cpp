@@ -444,9 +444,6 @@ BOOL CWaveletNode::WaveletTransformNode(long * pFinalLow,
             }
         }
         return TRUE;
-
-    default:
-        return FALSE;
     }
     return FALSE;
 }

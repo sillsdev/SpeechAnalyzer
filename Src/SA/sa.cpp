@@ -2728,7 +2728,7 @@ void CSaApp::WakeUp(LPCTSTR aCommandLine) {
 // Type:        Thread function
 // Description: Sleep on events, wake and activate application or wake and quit.
 UINT CSaApp::ActivationThread(CSaApp * pOwner) {
-
+	TRACE("Starting ActivationThread\n");
 	// Build event handle array
 	CSyncObject * lEvents[] = {
 		pOwner->mEvent,

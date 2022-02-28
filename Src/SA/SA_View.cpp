@@ -10599,46 +10599,18 @@ int CSaView::GetAnimationFrameRate() {
 void CSaView::OnSpectroFormants() {
 
 	CSaDoc * pDoc = GetDocument();
-
-	CSpectroParm parameters = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
-
-	BOOL bFormantSelected = !parameters.bShowFormants;
-
-	for (int AB = FALSE; AB <= TRUE; AB++) {
-		bool ab = (AB == TRUE);
-		CSpectroParm parameters = pDoc->GetSpectrogram(ab)->GetSpectroParm();
-		parameters.bShowFormants = bFormantSelected;
-		pDoc->GetSpectrogram(ab)->SetSpectroParm(parameters);
-	}
-
-	{
-		CSpectroParm parameters = *(GetMainFrame().GetSpectrogramParmDefaults());
-		parameters.bShowFormants = bFormantSelected;
-		GetMainFrame().SetSpectrogramParmDefaults(parameters);
-	}
-
-	{
-		CSpectroParm parameters = *(GetMainFrame().GetSnapshotParmDefaults());
-		parameters.bShowFormants = bFormantSelected;
-		GetMainFrame().SetSnapshotParmDefaults(parameters);
-	}
-
-	if ((bFormantSelected) && (pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())) {
-		pDoc->RestartAllProcesses();
-	}
-
+	pDoc->ToggleSpectrogram();
 	RedrawGraphs();
 }
 
 void CSaView::OnUpdateSpectroFormants(CCmdUI * pCmdUI) {
 
 	CSaDoc * pDoc = GetDocument();
-	CSpectroParm parameters = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
-
-	if ((parameters.bShowFormants) && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled()) {
+	CSpectroParm parameters = pDoc->GetSpectrogram()->GetSpectroParm();
+	if ((parameters.bShowFormants) && pDoc->GetSpectrogram()->IsProcessCanceled()) {
+		// update the display with the current state
 		OnSpectroFormants();
 	}
-
 	pCmdUI->SetCheck(parameters.bShowFormants);
 }
 

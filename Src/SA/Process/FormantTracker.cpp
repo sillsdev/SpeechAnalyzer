@@ -126,11 +126,6 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
     CDspWin window = CDspWin::FromBandwidth(formantTrackerOptions.m_dWindowBandwidth, pDoc->GetSamplesPerSec(), formantTrackerOptions.m_nWindowType);
     state.window.assign(window.WindowDouble(),window.WindowDouble()+window.Length());
 
-    char path[MAX_PATH];
-    memset(path,0,_countof(path));
-    sprintf_s(path,_countof(path),"\\working\\sil\\msea\\output\\debug\\selftest\\dspwin_%d.csv",pDoc->GetSamplesPerSec());
-    window.Dump(path);
-
     // determine processing interval
     DWORD dwInterval = DWORD(samplingRate / formantTrackerOptions.m_dUpdateRate);
 
@@ -152,7 +147,9 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
         BOOL bRes = TRUE;
         int pitch = m_pPitch->GetProcessedData((DWORD)(dwDataPos / Grappl_calc_intvl), &bRes) / PRECISION_MULTIPLIER;
 
-        BuildTrack(state, samplingRate, pitch);
+        if (!BuildTrack(state, samplingRate, pitch)) {
+            return Exit(PROCESS_CANCELED);
+        }
         WriteTrack(state, samplingRate, pitch);
 
         state.trackIn = state.trackOut;
@@ -244,8 +241,9 @@ void CProcessFormantTracker::AdvanceData(STrackState & state, DWORD dwDataPos, i
 * @param[in,out] state the current process state
 * @param[in] the wave form sample rate
 * @param[in] the pitch value
+* @returns false if the user cancels the process, otherwise true
 */
-void CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate, int pitch) {
+bool CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate, int pitch) {
     ASSERT(state.window.size() == state.data.size());
 
     size_t tracks = state.trackIn.size();
@@ -275,6 +273,10 @@ void CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate
     CDBL pitchTrack(cos(pitchAngle), sin(pitchAngle));
 
     for (size_t formant = 1; formant < tracksCalculate; formant++) {
+
+        if (IsCanceled()) {
+            return false;
+        }
 
         // Build DTF
         CDBL denominator[] = { 1, ((state.trackIn[formant].imag() > 0) ? - (state.trackIn[formant]/std::abs(state.trackIn[formant]) * radiusDTF) : 0)};
@@ -355,6 +357,7 @@ void CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate
         CDBL predictor = lpc.GetPredictor()[1];
         state.trackOut[formant] = predictor;
     }
+    return true;
 }
 
 /**

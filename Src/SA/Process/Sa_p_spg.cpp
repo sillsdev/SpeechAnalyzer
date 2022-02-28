@@ -38,13 +38,13 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessSpectrogram::CProcessSpectrogram Constructor
 /***************************************************************************/
-CProcessSpectrogram::CProcessSpectrogram(const CSpectroParm & cSpectroParm, ISaDoc * pDoc, BOOL bRealTime) :
+CProcessSpectrogram::CProcessSpectrogram(const CSpectroParm & defaults, ISaDoc * pDoc, BOOL bRealTime) :
     m_bRealTime(bRealTime), m_pDoc(pDoc) {
     // create the spectrogram parameter arrays
     m_nWindowWidth = 0;
     m_nWindowHeight = 0;
     m_pSpectroFormants = new CProcessSpectroFormants;
-    SetSpectroParm(cSpectroParm);
+    SetSpectroParm(defaults);
 }
 
 /***************************************************************************/
@@ -62,13 +62,11 @@ CProcessSpectrogram::~CProcessSpectrogram() {
 /***************************************************************************/
 // CProcessSpectrogram::SetSpectroParm Set spectrogram parameters
 /***************************************************************************/
-void CProcessSpectrogram::SetSpectroParm(const CSpectroParm & cSpectroParm) {
-    m_SpectroParm = cSpectroParm;
-    ISaDoc * pDoc = GetDocument();
-
+void CProcessSpectrogram::SetSpectroParm(const CSpectroParm & parameters) {
+    m_SpectroParm = parameters;
     // Clip frequency limit to Nyquist limit
-    if (m_SpectroParm.nFrequency >= int(pDoc->GetSamplesPerSec()/2)) {
-        m_SpectroParm.nFrequency = pDoc->GetSamplesPerSec()/2 - 1;
+    if (m_SpectroParm.nFrequency >= int(m_pDoc->GetSamplesPerSec()/2)) {
+        m_SpectroParm.nFrequency = m_pDoc->GetSamplesPerSec()/2 - 1;
     }
 }
 
@@ -102,7 +100,6 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
     // get area boundaries
-    BOOL bRealTime = m_bRealTime;
     DWORD dwDataStart, dwDataLength;
     if (IsStatusFlag(KEEP_AREA)) {
         // old boundaries are to keep
@@ -117,7 +114,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
 
     // check if data ready
     if (IsDataReady()) {
-        if (!bRealTime) {
+        if (!m_bRealTime) {
             return MAKELONG(--nLevel, nProgress);
         }
 
@@ -158,8 +155,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
 
     {
         int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(pDoc->GetSamplesPerSec())/2 + 1);
-        BOOL bRealTime = m_bRealTime;
-        if (!bRealTime) {
+        if (!m_bRealTime) {
             // Increase Resolution for high quality snapshot
             int maxWidth = (dwDataLength / minSpectraInterval + 1)*4;
             nWidth = nWidth > maxWidth ? maxWidth : nWidth;
@@ -170,7 +166,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
             dwDataLength = pDoc->GetDataSize();
             nWidth = dwDataLength / minSpectraInterval + 1;
         }
-        SetStatusFlag(MAX_RESOLUTION);
+        SetStatusFlag(MAX_RESOLUTION,TRUE);
     }
 
     // save the frame
@@ -334,10 +330,6 @@ int CProcessSpectrogram::SpectraBandwidth() {
     return (int) pSpectroParm->Bandwidth();
 }
 
-ISaDoc * CProcessSpectrogram::GetDocument() const {
-    return m_pDoc;
-}
-
 const CSpectroParm & CProcessSpectrogram::GetSpectroParm() const {
     // return reference to spectrogram parameters structure
     return m_SpectroParm;
@@ -347,6 +339,7 @@ int CProcessSpectrogram::GetWindowWidth() const {
     // return processed window width
     return m_nWindowWidth;
 }
+
 int CProcessSpectrogram::GetWindowHeight() const {
     // return processed window height
     return m_nWindowHeight;
@@ -354,4 +347,29 @@ int CProcessSpectrogram::GetWindowHeight() const {
 
 CProcessSpectroFormants * CProcessSpectrogram::GetFormantProcess() {
     return m_pSpectroFormants;
+}
+
+void CProcessSpectrogram::SetShowFormants(BOOL value) {
+    m_SpectroParm.bShowFormants = value;
+    // force check on nyquist limits
+    SetSpectroParm(m_SpectroParm);
+}
+
+bool CProcessSpectrogram::IsProcessCanceled() {
+    return (m_pSpectroFormants) ? m_pSpectroFormants->IsCanceled() : false;
+}
+
+void CProcessSpectrogram::SetProcessDataInvalid() {
+    m_pSpectroFormants->SetDataInvalid();
+}
+
+void CProcessSpectrogram::InvalidateAndRestart() {
+    if (IsCanceled()) {
+        SetDataInvalid();
+        RestartProcess();
+    }
+    if (IsProcessCanceled()) {
+        SetProcessDataInvalid();
+        m_pSpectroFormants->RestartProcess();
+    }
 }

@@ -991,7 +991,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
         case IDD_SNAPSHOT: {
             CProcessFormantTracker * pSpectroFormants = pDoc->GetFormantTracker();
             // prepare spectrograms formant data, if ready
-            CProcessSpectrogram * pSpectrogram = pDoc->GetSpectrogram(m_nPlotID==IDD_SPECTROGRAM); // get pointer to spectrogram object
+            // get pointer to spectrogram or snapshot object
+            CProcessSpectrogram * pSpectrogram = (m_nPlotID == IDD_SPECTROGRAM) ? pDoc->GetSpectrogram() : pDoc->GetSnapshot(); 
             const CSpectroParm * pSpectroParm = &pSpectrogram->GetSpectroParm();
             if ((pSpectroParm->bShowFormants) && (pSpectroFormants->IsDataReady())) {
                 double fSizeFactor = (double)pDoc->GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);

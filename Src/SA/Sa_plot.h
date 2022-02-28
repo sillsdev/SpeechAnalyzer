@@ -72,10 +72,14 @@ public:
     CPlotHelperWnd();
     ~CPlotHelperWnd();
 
+    int SetMode(int nMode, int nID = -1, CRect* prParent = NULL); // set the display mode
+    bool IsCanceled();
+
     // Attributes
 private:
     CFont   m_font;     // helper window font
     int     m_nMode;    // display mode
+    int     m_nId;      // display string resource
     CRect   m_rParent;  // parent windows client area
     int     m_nCharWidth; // helper windows font average character width
     int     m_nHeight;  // helper windows font height
@@ -84,8 +88,6 @@ private:
     // Operations
 protected:
     CRect SetPosition(int nWidth, int nHeight, CRect * prParent); // set the helper windows position
-public:
-    int SetMode(int nMode, int nID = -1, CRect * prParent = NULL); // set the display mode
 
     // Generated message map functions
 protected:
@@ -213,7 +215,7 @@ protected:
 	// change the current cursor position
     void ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, bool scroll = false); 
     // check the process result
-	short int CheckResult(short int nResult, CProcess * pProcess); 
+	short int CheckResult(short int nResult, CProcess * pProcess, bool clearPlot=true); 
 	// do the common plot painting before data has been drawn
     void PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend = NULL, bool bCursors = true, bool bPrivateCursor = false);  
 	// standard plot painting

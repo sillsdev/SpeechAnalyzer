@@ -123,9 +123,7 @@ public:
     CFormantParm * GetFormantParmDefaults();
     CSpectrumParm * GetSpectrumParmDefaults();
     const CSpectroParm * GetSpectrogramParmDefaults() const;
-    void SetSpectrogramParmDefaults(const CSpectroParm & cParm);
     const CSpectroParm * GetSnapshotParmDefaults() const;
-    void SetSnapshotParmDefaults(const CSpectroParm & cParm);
     const CSaView * pDefaultViewConfig();
     BOOL DefaultIsValid();
     BOOL IsDefaultViewMaximized();
@@ -214,6 +212,8 @@ public:
     void InitializeAutoSave();
     afx_msg void OnAutoSaveOn();
     afx_msg void OnAutoSaveOff();
+
+    void SetShowFormants(BOOL value);
 
     // transcription fonts
     CStringArray m_GraphFontFaces;			// array of graph font face strings
