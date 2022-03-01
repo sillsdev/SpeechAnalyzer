@@ -1832,7 +1832,7 @@ void CSaApp::OnHelpShortCuts() {
 void CSaApp::OnHelpTrouble() {
 
 	CSaString szPath = m_pszHelpFilePath;
-	szPath += "::/Troubleshooting/Troubleshooting_overview.htm";
+	szPath += "::/troubleshooting/overview.htm";
 	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
@@ -1862,7 +1862,7 @@ void CSaApp::OnHelpGraphs() {
 
 	// create the pathname
 	CSaString szPath = m_pszHelpFilePath;
-	szPath = szPath + "::/User_Interface/Menus/Graphs/Graphs_overview.htm";
+	szPath = szPath + "::/user-interface/menus/graphs/overview.htm";
 	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
@@ -1873,7 +1873,7 @@ void CSaApp::OnHelpMusic() {
 
 	// create the pathname
 	CSaString szPath = m_pszHelpFilePath;
-	szPath = szPath + "::/User_Interface/Menus/Graphs/Graph_Types/Music_Graph_Types/Music_analysis.htm";
+	szPath = szPath + "::/user-interface/menus/graphs/types/music/analysis.htm";
 	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
@@ -1918,7 +1918,7 @@ void CSaApp::OnHelpWorkbench() {
 
 	// create the pathname
 	CString szPath = m_pszHelpFilePath;
-	szPath += "::/User_Interface/Menus/Tools/Workbench.htm";
+	szPath += "::/user-interface/menus/tools/workbench.htm";
 	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 

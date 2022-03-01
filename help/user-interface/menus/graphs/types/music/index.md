@@ -1,0 +1,3 @@
+---
+title: Music Graph Types
+---

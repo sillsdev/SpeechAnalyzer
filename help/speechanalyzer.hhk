@@ -1,0 +1,1590 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<body>
+<!-- Sitemap 1.0 -->
+<!-- ddw object type="text/site properties">
+  <param name="SiteType" value="index">
+</object-->
+<ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value=".saxml extension">
+    <param name="Name" value="Speech Analyzer XML">
+    <param name="Local" value="user-interface/menus/file/saxml.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Number">
+    <param name="Name" value="Note reference chart">
+    <param name="Local" value="user-interface/menus/graphs/types/music/note-reference-chart.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Smoothed">
+    <param name="Name" value="Smoothed Pitch graph">
+    <param name="Local" value="user-interface/menus/graphs/types/smoothed-pitch.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Resolution">
+    <param name="Name" value="Spectrogram tab, resolution examples">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrogram-tab-examples.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Mixer">
+    <param name="Name" value="Recording Control">
+    <param name="Local" value="user-interface/menus/file/recording-control.htm">
+    <param name="Name" value="Playback Volume Control">
+    <param name="Local" value="user-interface/menus/playback/volume.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="IPA">
+    <param name="Name" value="Keyboards for typing Unicode characters">
+    <param name="Local" value="user-interface/menus/edit/transcription/keyboards.htm">
+    <param name="Name" value="Character Chart">
+    <param name="Local" value="user-interface/menus/edit/character-chart.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Unicode">
+    <param name="Name" value="Keyboards for typing Unicode characters">
+    <param name="Local" value="user-interface/menus/edit/transcription/keyboards.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Notation">
+    <param name="Name" value="Shortcut keys for Staff music notation">
+    <param name="Local" value="user-interface/shortcuts/staff-music.htm">
+    <param name="Name" value="Type music notation on the Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/notation.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Transcribe">
+    <param name="Name" value="Transcribe notes to the Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/transcribe-notes.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Tonal center">
+    <param name="Name" value="Measure the tonal center">
+    <param name="Local" value="user-interface/menus/graphs/types/music/measure-tonal-center.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Measure">
+    <param name="Name" value="Measure the tonal center">
+    <param name="Local" value="user-interface/menus/graphs/types/music/measure-tonal-center.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Analysis">
+    <param name="Name" value="Music analysis">
+    <param name="Local" value="user-interface/menus/graphs/types/music/analysis.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="MusicXML">
+    <param name="Name" value="Staff Notes">
+    <param name="Local" value="user-interface/menus/file/export/staff-notes.htm">
+    <param name="Name" value="Import">
+    <param name="Local" value="user-interface/menus/file/import.htm">
+    <param name="Name" value="Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/staff.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Frequency">
+    <param name="Name" value="Note reference chart">
+    <param name="Local" value="user-interface/menus/graphs/types/music/note-reference-chart.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="SFT">
+    <param name="Name" value="Export Time Table (.SFT)">
+    <param name="Local" value="user-interface/menus/file/export/sfm-time-table.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="XML">
+    <param name="Name" value="Import">
+    <param name="Local" value="user-interface/menus/file/import.htm">
+    <param name="Name" value="Export Extensible Markup Language">
+    <param name="Local" value="user-interface/menus/file/export/xml.htm">
+    <param name="Name" value="Speech Analyzer XML">
+    <param name="Local" value="user-interface/menus/file/saxml.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Gender">
+    <param name="Name" value="Source tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/source-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Improve">
+    <param name="Name" value="Improve formant displays">
+    <param name="Local" value="user-interface/menus/graphs/types/improve-formant-displays.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Bar">
+    <param name="Name" value="Shortcut keys for navigating an annotation bar">
+    <param name="Local" value="user-interface/shortcuts/navigating.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Plot line">
+    <param name="Name" value="Changing plot line colors">
+    <param name="Local" value="user-interface/menus/graphs/types/change-spectrum.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Generator">
+    <param name="Name" value="Waveform Generator">
+    <param name="Local" value="user-interface/menus/tools/waveform-generator.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Update">
+    <param name="Name" value="Update All Boundaries">
+    <param name="Local" value="user-interface/menus/edit/transcription/update-all-boundaries.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Palette">
+    <param name="Name" value="Color palette">
+    <param name="Local" value="user-interface/menus/tools/options/color-palette.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Semitones">
+    <param name="Name" value="Status Bar">
+    <param name="Local" value="user-interface/menus/tools/status-bar.htm">
+    <param name="Name" value="Pitch tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/pitch-tab.htm">
+    <param name="Name" value="Melogram">
+    <param name="Local" value="user-interface/menus/graphs/types/music/melogram.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Extensible Markup Language">
+    <param name="Name" value="Standard Format or Extensible Markup">
+    <param name="Local" value="user-interface/menus/file/export/sfm-xml.htm">
+    <param name="Name" value="Export Extensible Markup Language">
+    <param name="Local" value="user-interface/menus/file/export/xml.htm">
+    <param name="Name" value="Speech Analyzer XML">
+    <param name="Local" value="user-interface/menus/file/saxml.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Standard Format">
+    <param name="Name" value="Standard Format or Extensible Markup">
+    <param name="Local" value="user-interface/menus/file/export/sfm-xml.htm">
+    <param name="Name" value="Export Standard Format">
+    <param name="Local" value="user-interface/menus/file/export/sfm.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Notes">
+    <param name="Name" value="Staff Notes">
+    <param name="Local" value="user-interface/menus/file/export/staff-notes.htm">
+    <param name="Name" value="Note reference chart">
+    <param name="Local" value="user-interface/menus/graphs/types/music/note-reference-chart.htm">
+    <param name="Name" value="Transcribe notes to the Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/transcribe-notes.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Only">
+    <param name="Name" value="Spectrogram Formant Tracks Only">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formant-tracks-only.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Tracks">
+    <param name="Name" value="Spectrogram Formant Tracks Only">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formant-tracks-only.htm">
+    <param name="Name" value="Spectrogram Formant Tracks Overlaid">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formant-tracks-overlaid.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Error">
+    <param name="Name" value="Sound device error">
+    <param name="Local" value="troubleshooting/sound-device.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Device">
+    <param name="Name" value="Sound device error">
+    <param name="Local" value="troubleshooting/sound-device.htm">
+    <param name="Name" value="Audio input devices">
+    <param name="Local" value="user-interface/menus/file/audio-input-devices.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Snapshot">
+    <param name="Name" value="Snapshot Spectrogram">
+    <param name="Local" value="user-interface/menus/graphs/types/snapshot-spectrogram.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Text">
+    <param name="Name" value="Shortcut keys for text manipulation">
+    <param name="Local" value="user-interface/shortcuts/text.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Manipulation">
+    <param name="Name" value="Shortcut keys for waveform manipulation">
+    <param name="Local" value="user-interface/shortcuts/waveform.htm">
+    <param name="Name" value="Shortcut keys for text manipulation">
+    <param name="Local" value="user-interface/shortcuts/text.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Navigating">
+    <param name="Name" value="Shortcut keys for navigating an annotation bar">
+    <param name="Local" value="user-interface/shortcuts/navigating.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Delete">
+    <param name="Name" value="Transcription Editor">
+    <param name="Local" value="user-interface/menus/edit/transcription/editor.htm">
+    <param name="Name" value="Shortcut keys for editing, deleting, selecting segments">
+    <param name="Local" value="user-interface/shortcuts/segments.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Activating">
+    <param name="Name" value="Shortcut keys for activating a different graph or file">
+    <param name="Local" value="user-interface/shortcuts/graph.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Time Table">
+    <param name="Name" value="SFM Time Table">
+    <param name="Local" value="user-interface/menus/file/export/sfm-time-table.htm">
+    <param name="Name" value="Export Time Table (.SFT)">
+    <param name="Local" value="user-interface/menus/file/export/time-table.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Not-visible">
+    <param name="Name" value="Segment boundary markers visible/not-visible">
+    <param name="Local" value="troubleshooting/segment-boundary-markers.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Visible">
+    <param name="Name" value="Segment boundary markers visible/not-visible">
+    <param name="Local" value="troubleshooting/segment-boundary-markers.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Sound">
+    <param name="Name" value="Register Speech Analyzer to open Wave Sound files">
+    <param name="Local" value="user-interface/menus/file/register.htm">
+    <param name="Name" value="Sound device error">
+    <param name="Local" value="troubleshooting/sound-device.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Register">
+    <param name="Name" value="Register Speech Analyzer to open Wave Sound files">
+    <param name="Local" value="user-interface/menus/file/register.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Too low">
+    <param name="Name" value="Recording level too low">
+    <param name="Local" value="troubleshooting/recording-level-too-low.htm">
+    <param name="Name" value="Playback level too low">
+    <param name="Local" value="troubleshooting/playback-level-too-low.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Settings">
+    <param name="Name" value="Recorder Settings">
+    <param name="Local" value="user-interface/menus/file/recorder-settings.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Control">
+    <param name="Name" value="Playback Volume Control">
+    <param name="Local" value="user-interface/menus/playback/volume.htm">
+    <param name="Name" value="Recording Control">
+    <param name="Local" value="user-interface/menus/file/recording-control.htm">
+    <param name="Name" value="Shortcut keys to control zoom">
+    <param name="Local" value="user-interface/shortcuts/zoom.htm">
+    <param name="Name" value="Shortcut keys for view control">
+    <param name="Local" value="user-interface/shortcuts/view.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Volume">
+    <param name="Name" value="Playback Volume Control">
+    <param name="Local" value="user-interface/menus/playback/volume.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Level">
+    <param name="Name" value="Playback level too low">
+    <param name="Local" value="troubleshooting/playback-level-too-low.htm">
+    <param name="Name" value="Add Phrase Level">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-phrase-level.htm">
+    <param name="Name" value="Recording level too low">
+    <param name="Local" value="troubleshooting/recording-level-too-low.htm">
+    <param name="Name" value="Cepstral Smoothing Level">
+    <param name="Local" value="user-interface/menus/graphs/parameters/cepstral-smoothing.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Setup">
+    <param name="Name" value="Playback Function Keys Setup">
+    <param name="Local" value="user-interface/menus/playback/function-keys.htm">
+    <param name="Name" value="Page Setup">
+    <param name="Local" value="user-interface/menus/file/page-setup.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Terminology">
+    <param name="Name" value="CECIL vs. Speech Analyzer pitch terminology">
+    <param name="Local" value="user-interface/menus/graphs/cecil.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Linear">
+    <param name="Name" value="Intensity tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/intensity-tab.htm">
+    <param name="Name" value="Pitch tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/pitch-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Shortcut">
+    <param name="Name" value="Graph shortcut menu">
+    <param name="Local" value="user-interface/menus/graphs/shortcut.htm">
+    <param name="Name" value="Staff shortcut menu">
+    <param name="Local" value="user-interface/menus/graphs/types/music/staff-shortcut-menu.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Capture">
+    <param name="Name" value="Screen Capture">
+    <param name="Local" value="user-interface/menus/file/screen-capture/overview.htm">
+    <param name="Name" value="Screen Capture example">
+    <param name="Local" value="user-interface/menus/file/screen-capture/window-example.htm">
+    <param name="Name" value="Graph Capture example">
+    <param name="Local" value="user-interface/menus/file/screen-capture/graph-example.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Encoding Converters">
+    <param name="Name" value="Transcription Encoding Converters">
+    <param name="Local" value="user-interface/menus/file/transcription-encoding-converters.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Feedback">
+    <param name="Name" value="Feedback during recording">
+    <param name="Local" value="troubleshooting/feedback.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="F3">
+    <param name="Name" value="F1 v. F2 v. F3 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f1-v-f2-v-f3.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="F2">
+    <param name="Name" value="F1 v. F2 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f1-v-f2.htm">
+    <param name="Name" value="(F2-F1) v. F1 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f2-f1-v-f1.htm">
+    <param name="Name" value="F2 v. F1 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f2-v-f1.htm">
+    <param name="Name" value="F1 v. F2 v. F3 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f1-v-f2-v-f3.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="F1">
+    <param name="Name" value="F1 v. F2 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f1-v-f2.htm">
+    <param name="Name" value="(F2-F1) v. F1 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f2-f1-v-f1.htm">
+    <param name="Name" value="F2 v. F1 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f2-v-f1.htm">
+    <param name="Name" value="F1 v. F2 v. F3 graph">
+    <param name="Local" value="user-interface/menus/graphs/types/f1-v-f2-v-f3.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Disappearing">
+    <param name="Name" value="Disappearing segment boundary markers">
+    <param name="Local" value="troubleshooting/disappearing-segment-boundary-markers.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Screen">
+    <param name="Name" value="Screen Capture">
+    <param name="Local" value="user-interface/menus/file/screen-capture/overview.htm">
+    <param name="Name" value="Speech Analyzer screen shot">
+    <param name="Local" value="user-interface/screenshot.htm">
+    <param name="Name" value="Screen Capture example">
+    <param name="Local" value="user-interface/menus/file/screen-capture/window-example.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Direct Edit">
+    <param name="Name" value="Direct Edit">
+    <param name="Local" value="user-interface/menus/edit/direct-edit.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="SFM">
+    <param name="Name" value="SFM Time Table">
+    <param name="Local" value="user-interface/menus/file/export/sfm-time-table.htm">
+    <param name="Name" value="Standard Format or Extensible Markup">
+    <param name="Local" value="user-interface/menus/file/export/sfm-xml.htm">
+    <param name="Name" value="Import">
+    <param name="Local" value="user-interface/menus/file/import.htm">
+    <param name="Name" value="Export Standard Format">
+    <param name="Local" value="user-interface/menus/file/export/sfm.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Example">
+    <param name="Name" value="Spectrogram tab, resolution examples">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrogram-tab-examples.htm">
+    <param name="Name" value="Cursor example">
+    <param name="Local" value="user-interface/menus/graphs/cursor-example.htm">
+    <param name="Name" value="Graph Capture example">
+    <param name="Local" value="user-interface/menus/file/screen-capture/graph-example.htm">
+    <param name="Name" value="Screen Capture example">
+    <param name="Local" value="user-interface/menus/file/screen-capture/window-example.htm">
+    <param name="Name" value="Example 1 of all music graphs">
+    <param name="Local" value="user-interface/menus/graphs/types/music/example1-all.htm">
+    <param name="Name" value="Example 1 of Melogram and Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/example1-melogram-staff.htm">
+    <param name="Name" value="Example 2 of all music graphs">
+    <param name="Local" value="user-interface/menus/graphs/types/music/example2-all.htm">
+    <param name="Name" value="Example 2 of Melogram and Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/example2-melogram-staff.htm">
+    <param name="Name" value="Example 3 of all music graphs">
+    <param name="Local" value="user-interface/menus/graphs/types/music/example3-all.htm">
+    <param name="Name" value="Example 3 of Melogram and Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/example3-melogram-staff.htm">
+    <param name="Name" value="Melogram and Staff examples">
+    <param name="Local" value="user-interface/menus/graphs/types/music/melogram-staff-examples.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Alignment">
+    <param name="Name" value="Cursor Alignment">
+    <param name="Local" value="user-interface/menus/graphs/cursor-alignment.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Display">
+    <param name="Name" value="Improving formant displays">
+    <param name="Local" value="user-interface/menus/graphs/types/improve-formant-displays.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Character">
+    <param name="Name" value="Character Chart">
+    <param name="Local" value="user-interface/menus/edit/character-chart.htm">
+    <param name="Name" value="Keyboards for typing Unicode characters">
+    <param name="Local" value="user-interface/menus/edit/transcription/keyboards.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Chart">
+    <param name="Name" value="Character Chart">
+    <param name="Local" value="user-interface/menus/edit/character-chart.htm">
+    <param name="Name" value="Formant charts">
+    <param name="Local" value="user-interface/menus/graphs/types/formant-charts.htm">
+    <param name="Name" value="Note reference chart">
+    <param name="Local" value="user-interface/menus/graphs/types/music/note-reference-chart.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="End">
+    <param name="Name" value="Shortcut keys to begin and end cursor movements">
+    <param name="Local" value="user-interface/shortcuts/cursor.htm">
+    <param name="Name" value="Begin and End Cursors">
+    <param name="Local" value="user-interface/menus/graphs/begin-end-cursors.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Begin">
+    <param name="Name" value="Shortcut keys to begin and end cursor movements">
+    <param name="Local" value="user-interface/shortcuts/cursor.htm">
+    <param name="Name" value="Begin and End Cursors">
+    <param name="Local" value="user-interface/menus/graphs/begin-end-cursors.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Tab">
+    <param name="Name" value="Spectrogram tab, resolution examples">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrogram-tab-examples.htm">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="File Information">
+      <param name="Name" value="Comments tab, File Information">
+      <param name="Local" value="user-interface/menus/file/information/comments-tab.htm">
+      <param name="Name" value="Data tab, File Information">
+      <param name="Local" value="user-interface/menus/file/information/data-tab.htm">
+      <param name="Name" value="Source tab, File Information">
+      <param name="Local" value="user-interface/menus/file/information/source-tab.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Graph Parameters">
+      <param name="Name" value="Formants tab, Graph Parameters">
+      <param name="Local" value="user-interface/menus/graphs/parameters/formants-tab.htm">
+      <param name="Name" value="Intensity tab, Graph Parameters">
+      <param name="Local" value="user-interface/menus/graphs/parameters/intensity-tab.htm">
+      <param name="Name" value="Music tab, Graph Parameters">
+      <param name="Local" value="user-interface/menus/graphs/parameters/music-tab.htm">
+      <param name="Name" value="Pitch tab, Graph Parameters">
+      <param name="Local" value="user-interface/menus/graphs/parameters/pitch-tab.htm">
+      <param name="Name" value="Spectrogram tab, Graph Parameters">
+      <param name="Local" value="user-interface/menus/graphs/parameters/spectrogram-tab.htm">
+      <param name="Name" value="Spectrum tab, Graph Parameters">
+      <param name="Local" value="user-interface/menus/graphs/parameters/spectrum-tab.htm">
+      <param name="Name" value="Waveform tab, Graph Parameters">
+      <param name="Local" value="user-interface/menus/graphs/parameters/waveform-tab.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Options">
+      <param name="Name" value="Colors tab, Options">
+      <param name="Local" value="user-interface/menus/tools/options/colors-tab.htm">
+      <param name="Name" value="Fonts tab, Options">
+      <param name="Local" value="user-interface/menus/tools/options/fonts-tab.htm">
+      <param name="Name" value="Startup tab, Options">
+      <param name="Local" value="user-interface/menus/tools/options/startup-tab.htm">
+      <param name="Name" value="View tab, Options">
+      <param name="Local" value="user-interface/menus/tools/options/view-tab.htm">
+    </object>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Close">
+    <param name="Name" value="Close">
+    <param name="Local" value="user-interface/menus/file/close.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Troubleshooting">
+    <param name="Name" value="Troubleshooting overview">
+    <param name="Local" value="troubleshooting/overview.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Adjust">
+    <param name="Name" value="Adjust Waveform">
+    <param name="Local" value="user-interface/menus/tools/adjust-waveform.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Phrase">
+    <param name="Name" value="Add Phrase Level">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-phrase-level.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Record">
+    <param name="Name" value="AutoRecorder">
+    <param name="Local" value="user-interface/menus/graphs/record-overlay.htm">
+    <param name="Name" value="Recorder Settings">
+    <param name="Local" value="user-interface/menus/file/recorder-settings.htm">
+    <param name="Name" value="Recording Control">
+    <param name="Local" value="user-interface/menus/file/recording-control.htm">
+    <param name="Name" value="Record New">
+    <param name="Local" value="user-interface/menus/file/record-new.htm">
+    <param name="Name" value="Feedback during recording">
+    <param name="Local" value="troubleshooting/feedback.htm">
+    <param name="Name" value="Recording level too low">
+    <param name="Local" value="troubleshooting/recording-level-too-low.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Gridlines">
+    <param name="Name" value="View tab, Options">
+    <param name="Local" value="user-interface/menus/tools/options/view-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Annotation">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+    <param name="Name" value="Comments tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/comments-tab.htm">
+    <param name="Name" value="Source tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/source-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Segment">
+    <param name="Name" value="Segment">
+    <param name="Local" value="user-interface/menus/edit/segment.htm">
+    <param name="Name" value="Add Gloss Word Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-gloss-word-segment.htm">
+    <param name="Name" value="Add Phonetic Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-phonetic-segment.htm">
+    <param name="Name" value="Add Syllable Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-syllable-segment.htm">
+    <param name="Name" value="Segment Boundaries">
+    <param name="Local" value="user-interface/menus/edit/segment-boundaries.htm">
+    <param name="Name" value="Disappearing segment boundary markers">
+    <param name="Local" value="troubleshooting/disappearing-segment-boundary-markers.htm">
+    <param name="Name" value="Segment boundary markers visible/not-visible">
+    <param name="Local" value="troubleshooting/segment-boundary-markers.htm">
+    <param name="Name" value="Select a segment">
+    <param name="Local" value="user-interface/menus/edit/select-segment.htm">
+    <param name="Name" value="Segment resizing details">
+    <param name="Local" value="user-interface/menus/edit/segment-resizing.htm">
+    <param name="Name" value="Shortcut keys for editing, deleting, selecting segments">
+    <param name="Local" value="user-interface/shortcuts/segments.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Auto">
+    <param name="Name" value="Auto Pitch graph">
+    <param name="Local" value="user-interface/menus/graphs/types/auto-pitch.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Coarticulation">
+    <param name="Name" value="Begin and End Cursors">
+    <param name="Local" value="user-interface/menus/graphs/begin-end-cursors.htm">
+    <param name="Name" value="Segment resizing details">
+    <param name="Local" value="user-interface/menus/edit/segment-resizing.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Boundaries">
+    <param name="Name" value="Update All Boundaries">
+    <param name="Local" value="user-interface/menus/edit/transcription/update-all-boundaries.htm">
+    <param name="Name" value="Segment Boundaries">
+    <param name="Local" value="user-interface/menus/edit/segment-boundaries.htm">
+    <param name="Name" value="Disappearing segment boundary markers">
+    <param name="Local" value="troubleshooting/disappearing-segment-boundary-markers.htm">
+    <param name="Name" value="Segment boundary markers visible/not-visible">
+    <param name="Local" value="troubleshooting/segment-boundary-markers.htm">
+    <param name="Name" value="Segment resizing details">
+    <param name="Local" value="user-interface/menus/edit/segment-resizing.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Add">
+    <param name="Name" value="Add Gloss Bookmark">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-gloss-bookmark.htm">
+    <param name="Name" value="Add Gloss Word Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-gloss-word-segment.htm">
+    <param name="Name" value="Add Phonetic Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-phonetic-segment.htm">
+    <param name="Name" value="Add Syllable Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-syllable-segment.htm">
+    <param name="Name" value="Add Overlay">
+    <param name="Local" value="user-interface/menus/graphs/add-overlay.htm">
+    <param name="Name" value="Add Phrase Level">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-phrase-level.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Cursor">
+    <param name="Name" value="Cursor Alignment">
+    <param name="Local" value="user-interface/menus/graphs/cursor-alignment.htm">
+    <param name="Name" value="Zoom">
+    <param name="Local" value="user-interface/menus/graphs/zoom.htm">
+    <param name="Name" value="Shortcut keys to begin and end cursor movements">
+    <param name="Local" value="user-interface/shortcuts/cursor.htm">
+    <param name="Name" value="Begin and End Cursors">
+    <param name="Local" value="user-interface/menus/graphs/begin-end-cursors.htm">
+    <param name="Name" value="Cursor example">
+    <param name="Local" value="user-interface/menus/graphs/cursor-example.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Active">
+    <param name="Name" value="Active graph">
+    <param name="Local" value="user-interface/menus/graphs/active-graph.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="View">
+    <param name="Name" value="View">
+    <param name="Local" value="user-interface/menus/graphs/view.htm">
+    <param name="Name" value="View tab, Options">
+    <param name="Local" value="user-interface/menus/tools/options/view-tab.htm">
+    <param name="Name" value="Shortcut keys for view control">
+    <param name="Local" value="user-interface/shortcuts/view.htm">
+    <param name="Name" value="Position View graph">
+    <param name="Local" value="user-interface/menus/graphs/types/position-view.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Copyright notice">
+    <param name="Name" value="Copyright notice">
+    <param name="Local" value="overview/copyright.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Getting started">
+    <param name="Name" value="Getting started">
+    <param name="Local" value="overview/getting-started.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Technical">
+    <param name="Name" value="Technical support">
+    <param name="Local" value="overview/technical-support.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Support">
+    <param name="Name" value="Technical support">
+    <param name="Local" value="overview/technical-support.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Hide">
+    <param name="Name" value="Show, hide, or move a toolbar">
+    <param name="Local" value="user-interface/toolbar/show.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Move">
+    <param name="Name" value="Show, hide, or move a toolbar">
+    <param name="Local" value="user-interface/toolbar/show.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Menu">
+    <param name="Name" value="menus overview">
+    <param name="Local" value="user-interface/menus/overview.htm">
+    <param name="Name" value="Graph shortcut menu">
+    <param name="Local" value="user-interface/menus/graphs/shortcut.htm">
+    <param name="Name" value="Shortcut keys for menu options">
+    <param name="Local" value="user-interface/shortcuts/menu.htm">
+    <param name="Name" value="Staff shortcut menu">
+    <param name="Local" value="user-interface/menus/graphs/types/music/staff-shortcut-menu.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Open">
+    <param name="Name" value="Open">
+    <param name="Local" value="user-interface/menus/file/open.htm">
+    <param name="Name" value="Register Speech Analyzer to open Wave Sound files">
+    <param name="Local" value="user-interface/menus/file/register.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Save">
+    <param name="Name" value="Save">
+    <param name="Local" value="user-interface/menus/file/save.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Undo">
+    <param name="Name" value="Undo and Redo">
+    <param name="Local" value="user-interface/menus/edit/undo-redo.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Redo">
+    <param name="Name" value="Undo and Redo">
+    <param name="Local" value="user-interface/menus/edit/undo-redo.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Cut">
+    <param name="Name" value="Cut, Copy, and Paste">
+    <param name="Local" value="user-interface/menus/edit/cut-copy-paste.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Copy">
+    <param name="Name" value="Cut, Copy, and Paste">
+    <param name="Local" value="user-interface/menus/edit/cut-copy-paste.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Paste">
+    <param name="Name" value="Cut, Copy, and Paste">
+    <param name="Local" value="user-interface/menus/edit/cut-copy-paste.htm">
+    <param name="Name" value="Paste As New File">
+    <param name="Local" value="user-interface/menus/edit/paste.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Find">
+    <param name="Name" value="Find">
+    <param name="Local" value="user-interface/menus/edit/find.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Replace">
+    <param name="Name" value="Replace">
+    <param name="Local" value="user-interface/menus/edit/replace.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Toolbar">
+    <param name="Name" value="Show, hide, or move a toolbar">
+    <param name="Local" value="user-interface/toolbar/show.htm">
+    <param name="Name" value="Toolbar overview">
+    <param name="Local" value="user-interface/toolbar/overview.htm">
+    <param name="Name" value="Toolbar">
+    <param name="Local" value="user-interface/toolbar/toolbar.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Glossary">
+    <param name="Name" value="Glossary">
+    <param name="Local" value="glossary/index.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Show">
+    <param name="Name" value="Show, hide, or move a toolbar">
+    <param name="Local" value="user-interface/toolbar/show.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Bookmark">
+    <param name="Name" value="Add Gloss Bookmark">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-gloss-bookmark.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="CECIL Terms">
+    <param name="Name" value="Data tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/data-tab.htm">
+    <param name="Name" value="CECIL vs. Speech Analyzer pitch terminology">
+    <param name="Local" value="user-interface/menus/graphs/cecil.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Change">
+    <param name="Name" value="Change graph">
+    <param name="Local" value="user-interface/menus/graphs/types/change.htm">
+    <param name="Name" value="Change Spectrum plot line colors">
+    <param name="Local" value="user-interface/menus/graphs/types/change-spectrum.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Color">
+    <param name="Name" value="Colors tab, Options">
+    <param name="Local" value="user-interface/menus/tools/options/colors-tab.htm">
+    <param name="Name" value="Changing plot line colors">
+    <param name="Local" value="user-interface/menus/graphs/types/change-spectrum.htm">
+    <param name="Name" value="Color palette">
+    <param name="Local" value="user-interface/menus/tools/options/color-palette.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Intensity">
+    <param name="Name" value="Intensity Graph">
+    <param name="Local" value="user-interface/menus/graphs/types/intensity.htm">
+    <param name="Name" value="Intensity tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/intensity-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="User Interface">
+    <param name="Name" value="User Interface overview">
+    <param name="Local" value="user-interface/overview.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Fragment">
+    <param name="Name" value="Fragment">
+    <param name="Local" value="user-interface/menus/graphs/fragment.htm">
+    <param name="Name" value="Update All Boundaries">
+    <param name="Local" value="user-interface/menus/edit/transcription/update-all-boundaries.htm">
+    <param name="Name" value="Cursor Alignment">
+    <param name="Local" value="user-interface/menus/graphs/cursor-alignment.htm">
+    <param name="Name" value="Formant charts">
+    <param name="Local" value="user-interface/menus/graphs/types/formant-charts.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Zero Crossing">
+    <param name="Name" value="Zero Crossing graph">
+    <param name="Local" value="user-interface/menus/graphs/types/zero-crossing.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Magnify">
+    <param name="Name" value="Magnify">
+    <param name="Local" value="user-interface/menus/graphs/magnify.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Private Cursor">
+    <param name="Name" value="Spectrum graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrum.htm">
+    <param name="Name" value="Begin and End Cursors">
+    <param name="Local" value="user-interface/menus/graphs/begin-end-cursors.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Zoom">
+    <param name="Name" value="Zoom">
+    <param name="Local" value="user-interface/menus/graphs/zoom.htm">
+    <param name="Name" value="Shortcut keys to control zoom">
+    <param name="Local" value="user-interface/shortcuts/zoom.htm">
+    <param name="Name" value="View">
+    <param name="Local" value="user-interface/menus/graphs/view.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Drawing Style">
+    <param name="Name" value="Drawing Style">
+    <param name="Local" value="user-interface/menus/graphs/drawing-style.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Syllable">
+    <param name="Name" value="Add Syllable">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-syllable-segment.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Orthographic">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Phonemic">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Reference">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Tone">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+    <param name="Name" value="Chao tone characters do not elide">
+    <param name="Local" value="troubleshooting/chao-tone.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Equalize Length">
+    <param name="Name" value="Equalize Length Function">
+    <param name="Local" value="user-interface/menus/graphs/equalize-length.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="File">
+    <param name="Name" value="File overview">
+    <param name="Local" value="user-interface/menus/file/overview.htm">
+    <param name="Name" value="Register Speech Analyzer to open Wave Sound files">
+    <param name="Local" value="user-interface/menus/file/register.htm">
+    <param name="Name" value="Paste As New File">
+    <param name="Local" value="user-interface/menus/edit/paste.htm">
+    <param name="Name" value="Shortcut keys for activating a different graph or file">
+    <param name="Local" value="user-interface/shortcuts/graph.htm">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Formats">
+      <param name="Name" value="Export Time Table (.SFT)">
+      <param name="Local" value="user-interface/menus/file/export/sfm-time-table.htm">
+      <param name="Name" value="Export Standard Format">
+      <param name="Local" value="user-interface/menus/file/export/sfm.htm">
+      <param name="Name" value="Export Extensible Markup Language">
+      <param name="Local" value="user-interface/menus/file/export/xml.htm">
+    </object>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Bandwidth">
+    <param name="Name" value="Data tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/data-tab.htm">
+    <param name="Name" value="Spectrum tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrum-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Quantization">
+    <param name="Name" value="Data tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/data-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Sampling frequency">
+    <param name="Name" value="Data tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/data-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Source">
+    <param name="Name" value="Source tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/source-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Page">
+    <param name="Name" value="Page Setup">
+    <param name="Local" value="user-interface/menus/file/page-setup.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Print">
+    <param name="Name" value="Print">
+    <param name="Local" value="user-interface/menus/file/print.htm">
+    <param name="Name" value="Print Preview">
+    <param name="Local" value="user-interface/menus/file/print-preview.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Fonts">
+    <param name="Name" value="Fonts tab, Options">
+    <param name="Local" value="user-interface/menus/tools/options/fonts-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Cepstral">
+    <param name="Name" value="Status Bar">
+    <param name="Local" value="user-interface/menus/tools/status-bar.htm">
+    <param name="Name" value="Spectrum tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrum-tab.htm">
+    <param name="Name" value="Spectrum graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrum.htm">
+    <param name="Name" value="Cepstral Smoothing Level">
+    <param name="Local" value="user-interface/menus/graphs/parameters/cepstral-smoothing.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Fast Fourier Transform (FFT)">
+    <param name="Name" value="Spectrogram graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrogram.htm">
+    <param name="Name" value="Status Bar">
+    <param name="Local" value="user-interface/menus/tools/status-bar.htm">
+    <param name="Name" value="Spectrum graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrum.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Formant">
+    <param name="Name" value="Formants">
+    <param name="Local" value="user-interface/menus/graphs/types/formants.htm">
+    <param name="Name" value="Formants tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formants-tab.htm">
+    <param name="Name" value="Formant charts">
+    <param name="Local" value="user-interface/menus/graphs/types/formant-charts.htm">
+    <param name="Name" value="Spectrogram Formant Tracks Only">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formant-tracks-only.htm">
+    <param name="Name" value="Spectrogram Formant Tracks Overlaid">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formant-tracks-overlaid.htm">
+    <param name="Name" value="Improving formant displays">
+    <param name="Local" value="user-interface/menus/graphs/types/improve-formant-displays.htm">
+    <param name="Name" value="Formants are different in the LPC Spectrum">
+    <param name="Local" value="troubleshooting/formants-different.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Parameters">
+    <param name="Name" value="Graph Parameters overview">
+    <param name="Local" value="user-interface/menus/graphs/parameters/overview.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Layout">
+    <param name="Name" value="Layout">
+    <param name="Local" value="user-interface/menus/graphs/layout.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Graph">
+    <param name="Name" value="Graphs overview">
+    <param name="Local" value="user-interface/menus/graphs/overview.htm">
+    <param name="Name" value="Custom Graph Types">
+    <param name="Local" value="user-interface/menus/graphs/types/custom.htm">
+    <param name="Name" value="Graph shortcut menu">
+    <param name="Local" value="user-interface/menus/graphs/shortcut.htm">
+    <param name="Name" value="Shortcut keys for activating a different graph or file">
+    <param name="Local" value="user-interface/shortcuts/graph.htm">
+    <param name="Name" value="Music Graph Types overview">
+    <param name="Local" value="user-interface/menus/graphs/types/music/overview.htm">
+    <param name="Name" value="Graph Capture example">
+    <param name="Local" value="user-interface/menus/file/screen-capture/graph-example.htm">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Parameters">
+      <param name="Name" value="Graph Parameters overview">
+      <param name="Local" value="user-interface/menus/graphs/parameters/overview.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Types">
+      <param name="Name" value="Graph Types">
+      <param name="Local" value="user-interface/menus/graphs/types/types.htm">
+      <param name="Name" value="Graph Types overview">
+      <param name="Local" value="user-interface/menus/graphs/types/overview.htm">
+      <param name="Name" value="Graph Types Order">
+      <param name="Local" value="user-interface/menus/graphs/types/order.htm">
+    </object>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Music">
+    <param name="Name" value="Music tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/music-tab.htm">
+    <param name="Name" value="Music graphs">
+    <param name="Local" value="user-interface/menus/graphs/types/music/overview.htm">
+    <param name="Name" value="Music analysis">
+    <param name="Local" value="user-interface/menus/graphs/types/music/analysis.htm">
+    <param name="Name" value="Shortcut keys for Staff music notation">
+    <param name="Local" value="user-interface/shortcuts/staff-music.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Pitch">
+    <param name="Name" value="Pitch tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/pitch-tab.htm">
+    <param name="Name" value="Auto Pitch graph">
+    <param name="Local" value="user-interface/menus/graphs/types/auto-pitch.htm">
+    <param name="Name" value="Pitch graphs">
+    <param name="Local" value="user-interface/menus/graphs/types/pitch.htm">
+    <param name="Name" value="CECIL vs. Speech Analyzer pitch terminology">
+    <param name="Local" value="user-interface/menus/graphs/cecil.htm">
+    <param name="Name" value="Raw Pitch graph">
+    <param name="Local" value="user-interface/menus/graphs/types/raw-pitch.htm">
+    <param name="Name" value="Custom Pitch graph">
+    <param name="Local" value="user-interface/menus/graphs/types/custom-pitch.htm">
+    <param name="Name" value="Smoothed Pitch graph">
+    <param name="Local" value="user-interface/menus/graphs/types/smoothed-pitch.htm">
+    <param name="Name" value="Pitch contour characters do not elide">
+    <param name="Local" value="troubleshooting/pitch-countour.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Spectrogram">
+    <param name="Name" value="Spectrogram tab, resolution examples">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrogram-tab-examples.htm">
+    <param name="Name" value="Spectrogram Formant Tracks Only">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formant-tracks-only.htm">
+    <param name="Name" value="Spectrogram Formant Tracks Overlaid">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formant-tracks-overlaid.htm">
+    <param name="Name" value="Spectrogram graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrogram.htm">
+    <param name="Name" value="Spectrogram tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrogram-tab.htm">
+    <param name="Name" value="Snapshot Spectrogram">
+    <param name="Local" value="user-interface/menus/graphs/types/snapshot-spectrogram.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Spectrum">
+    <param name="Name" value="Spectrum graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrum.htm">
+    <param name="Name" value="Spectrum tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrum-tab.htm">
+    <param name="Name" value="Cepstral Smoothing Level">
+    <param name="Local" value="user-interface/menus/graphs/parameters/cepstral-smoothing.htm">
+    <param name="Name" value="Peak Sharpening Factor">
+    <param name="Local" value="user-interface/menus/graphs/parameters/peak-sharpening.htm">
+    <param name="Name" value="Change Spectrum plot line colors">
+    <param name="Local" value="user-interface/menus/graphs/types/change-spectrum.htm">
+    <param name="Name" value="Formants are different in the LPC Spectrum">
+    <param name="Local" value="troubleshooting/formants-different.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Waveform">
+    <param name="Name" value="Waveform tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/waveform-tab.htm">
+    <param name="Name" value="Waveform Generator">
+    <param name="Local" value="user-interface/menus/tools/waveform-generator.htm">
+    <param name="Name" value="Raw Waveform graph">
+    <param name="Local" value="user-interface/menus/graphs/types/raw-waveform.htm">
+    <param name="Name" value="Adjust Waveform">
+    <param name="Local" value="user-interface/menus/tools/adjust-waveform.htm">
+    <param name="Name" value="Select Waveform">
+    <param name="Local" value="user-interface/menus/edit/select-waveform.htm">
+    <param name="Name" value="Shortcut keys for waveform manipulation">
+    <param name="Local" value="user-interface/shortcuts/waveform.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Raw">
+    <param name="Name" value="Raw Waveform graph">
+    <param name="Local" value="user-interface/menus/graphs/types/raw-waveform.htm">
+    <param name="Name" value="Raw Pitch graph">
+    <param name="Local" value="user-interface/menus/graphs/types/raw-pitch.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Types">
+    <param name="Name" value="Graph Types">
+    <param name="Local" value="user-interface/menus/graphs/types/types.htm">
+    <param name="Name" value="Graph Types overview">
+    <param name="Local" value="user-interface/menus/graphs/types/overview.htm">
+    <param name="Name" value="Graph Types Order">
+    <param name="Local" value="user-interface/menus/graphs/types/order.htm">
+    <param name="Name" value="Custom Graph Types">
+    <param name="Local" value="user-interface/menus/graphs/types/custom.htm">
+    <param name="Name" value="Music Graph Types overview">
+    <param name="Local" value="user-interface/menus/graphs/types/music/overview.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Shortcut keys">
+    <param name="Name" value="Shortcut keys for menu options">
+    <param name="Local" value="user-interface/shortcuts/menu.htm">
+    <param name="Name" value="Shortcut keys for playback">
+    <param name="Local" value="user-interface/shortcuts/playback.htm">
+    <param name="Name" value="Shortcut keys for text manipulation">
+    <param name="Local" value="user-interface/shortcuts/text.htm">
+    <param name="Name" value="Shortcut keys for View Control">
+    <param name="Local" value="user-interface/shortcuts/view.htm">
+    <param name="Name" value="Shortcut keys for waveform manipulation">
+    <param name="Local" value="user-interface/shortcuts/waveform.htm">
+    <param name="Name" value="Shortcut keys overview">
+    <param name="Local" value="user-interface/shortcuts/overview.htm">
+    <param name="Name" value="Shortcut keys to begin and end cursor movements">
+    <param name="Local" value="user-interface/shortcuts/cursor.htm">
+    <param name="Name" value="Shortcut keys to control zoom">
+    <param name="Local" value="user-interface/shortcuts/zoom.htm">
+    <param name="Name" value="All shortcut keys">
+    <param name="Local" value="user-interface/shortcuts/all.htm">
+    <param name="Name" value="Shortcut keys for activating a different graph or file">
+    <param name="Local" value="user-interface/shortcuts/graph.htm">
+    <param name="Name" value="Shortcut keys for navigating an annotation bar">
+    <param name="Local" value="user-interface/shortcuts/navigating.htm">
+    <param name="Name" value="Shortcut keys for editing, deleting, selecting segments">
+    <param name="Local" value="user-interface/shortcuts/segments.htm">
+    <param name="Name" value="Shortcut keys for Staff music notation">
+    <param name="Local" value="user-interface/shortcuts/staff-music.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Hertz">
+    <param name="Name" value="Status Bar">
+    <param name="Local" value="user-interface/menus/tools/status-bar.htm">
+    <param name="Name" value="Pitch graphs">
+    <param name="Local" value="user-interface/menus/graphs/types/pitch.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="International Phonetic Alphabet">
+    <param name="Name" value="Character Chart">
+    <param name="Local" value="user-interface/menus/edit/character-chart.htm">
+    <param name="Name" value="Keyboards for typing Unicode characters">
+    <param name="Local" value="user-interface/menus/edit/transcription/keyboards.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Keyboard">
+    <param name="Name" value="Keyboards for typing Unicode characters">
+    <param name="Local" value="user-interface/menus/edit/transcription/keyboards.htm">
+    <param name="Name" value="Type music notation on the Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/notation.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Keyman">
+    <param name="Name" value="Keyboards for typing Unicode characters">
+    <param name="Local" value="user-interface/menus/edit/transcription/keyboards.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Function Keys">
+    <param name="Name" value="Playback Function Keys Setup">
+    <param name="Local" value="user-interface/menus/playback/function-keys.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Playback">
+    <param name="Name" value="Playback overview">
+    <param name="Local" value="user-interface/menus/playback/overview.htm">
+    <param name="Name" value="Playback Volume Control">
+    <param name="Local" value="user-interface/menus/playback/volume.htm">
+    <param name="Name" value="Playback Function Keys Setup">
+    <param name="Local" value="user-interface/menus/playback/function-keys.htm">
+    <param name="Name" value="Playback level too low">
+    <param name="Local" value="troubleshooting/playback-level-too-low.htm">
+    <param name="Name" value="Shortcut keys for playback">
+    <param name="Local" value="user-interface/shortcuts/playback.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Player">
+    <param name="Name" value="Player">
+    <param name="Local" value="user-interface/menus/playback/player.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Linear Predictive Coding (LPC)">
+    <param name="Name" value="Spectrogram tab, Graph Parameters">
+    <param name="Local" value="user-interface/menus/graphs/parameters/spectrogram-tab.htm">
+    <param name="Name" value="Spectrum graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrum.htm">
+    <param name="Name" value="Formants are different in the LPC Spectrum">
+    <param name="Local" value="troubleshooting/formants-different.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Status Bar">
+    <param name="Name" value="Status Bar">
+    <param name="Local" value="user-interface/menus/tools/status-bar.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Taskbar">
+    <param name="Name" value="Taskbar">
+    <param name="Local" value="user-interface/menus/tools/options/taskbar.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Workbench">
+    <param name="Name" value="Workbench">
+    <param name="Local" value="user-interface/menus/tools/workbench.htm">
+    <param name="Name" value="Workbench Filter Selections">
+    <param name="Local" value="user-interface/menus/tools/workbench-filter-selections.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Overlay">
+    <param name="Name" value="Overlay">
+    <param name="Local" value="user-interface/menus/graphs/overlay.htm">
+    <param name="Name" value="Add Overlay">
+    <param name="Local" value="user-interface/menus/graphs/add-overlay.htm">
+    <param name="Name" value="Spectrogram Formant Tracks Overlaid">
+    <param name="Local" value="user-interface/menus/graphs/parameters/formant-tracks-overlaid.htm">
+    <param name="Name" value="Record Overlay">
+    <param name="Local" value="user-interface/menus/graphs/record-overlay.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Retile">
+    <param name="Name" value="Window">
+    <param name="Local" value="user-interface/menus/window.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Comments">
+    <param name="Name" value="Comments tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/comments-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Information">
+    <param name="Name" value="Information overview">
+    <param name="Local" value="user-interface/menus/file/information/overview.htm">
+    <param name="Name" value="Information for bug reports">
+    <param name="Local" value="overview/bug-reports.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Data">
+    <param name="Name" value="Data tab, File Information">
+    <param name="Local" value="user-interface/menus/file/information/data-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Custom">
+    <param name="Name" value="Custom Graph Types">
+    <param name="Local" value="user-interface/menus/graphs/types/custom.htm">
+    <param name="Name" value="Color palette">
+    <param name="Local" value="user-interface/menus/tools/options/color-palette.htm">
+    <param name="Name" value="Custom Pitch graph">
+    <param name="Local" value="user-interface/menus/graphs/types/custom-pitch.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Speech Analyzer">
+    <param name="Name" value="How is Speech Analyzer different">
+    <param name="Local" value="overview/different.htm">
+    <param name="Name" value="Limitations in Speech Analyzer">
+    <param name="Local" value="overview/limitations.htm">
+    <param name="Name" value="Speech Analyzer screen shot">
+    <param name="Local" value="user-interface/screenshot.htm">
+    <param name="Name" value="Register Speech Analyzer to open Wave Sound files">
+    <param name="Local" value="user-interface/menus/file/register.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Limitations">
+    <param name="Name" value="Limitations in Speech Analyzer">
+    <param name="Local" value="overview/limitations.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Peak">
+    <param name="Name" value="Peak Sharpening Factor">
+    <param name="Local" value="user-interface/menus/graphs/parameters/peak-sharpening.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Sharpening">
+    <param name="Name" value="Peak Sharpening Factor">
+    <param name="Local" value="user-interface/menus/graphs/parameters/peak-sharpening.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Smoothing">
+    <param name="Name" value="Cepstral Smoothing Level">
+    <param name="Local" value="user-interface/menus/graphs/parameters/cepstral-smoothing.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="New">
+    <param name="Name" value="What is new">
+    <param name="Local" value="overview/what-is-new.htm">
+    <param name="Name" value="Paste As New File">
+    <param name="Local" value="user-interface/menus/edit/paste.htm">
+    <param name="Name" value="Record New">
+    <param name="Local" value="user-interface/menus/file/record-new.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Vowel">
+    <param name="Name" value="Select a vowel fragment">
+    <param name="Local" value="user-interface/menus/graphs/types/select-vowel-fragment.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Staff">
+    <param name="Name" value="Staff Notes">
+    <param name="Local" value="user-interface/menus/file/export/staff-notes.htm">
+    <param name="Name" value="Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/staff.htm">
+    <param name="Name" value="Staff shortcut menu">
+    <param name="Local" value="user-interface/menus/graphs/types/music/staff-shortcut-menu.htm">
+    <param name="Name" value="Shortcut keys for Staff music notation">
+    <param name="Local" value="user-interface/shortcuts/staff-music.htm">
+    <param name="Name" value="Transcribe notes to the Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/transcribe-notes.htm">
+    <param name="Name" value="Type music notation on the Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/notation.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Tools">
+    <param name="Name" value="Tools overview">
+    <param name="Local" value="user-interface/menus/tools/overview.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Options">
+    <param name="Name" value="Options overview">
+    <param name="Local" value="user-interface/menus/tools/options/overview.htm">
+    <param name="Name" value="Shortcut keys for menu options">
+    <param name="Local" value="user-interface/shortcuts/menu.htm">
+    <param name="Name" value="Start Mode options">
+    <param name="Local" value="user-interface/menus/tools/options/start-mode.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Filter">
+    <param name="Name" value="Workbench Filter Selections">
+    <param name="Local" value="user-interface/menus/tools/workbench-filter-selections.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Start Mode">
+    <param name="Name" value="Start Mode">
+    <param name="Local" value="user-interface/start-mode.htm">
+    <param name="Name" value="Start Mode options">
+    <param name="Local" value="user-interface/menus/tools/options/start-mode.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Export">
+    <param name="Name" value="Export overview">
+    <param name="Local" value="user-interface/menus/file/export/overview.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Gloss">
+    <param name="Name" value="Add Gloss Bookmark">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-gloss-bookmark.htm">
+    <param name="Name" value="Add Gloss Word Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-gloss-word-segment.htm">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Word">
+    <param name="Name" value="Add Gloss Word Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-gloss-word-segment.htm">
+    <param name="Name" value="Word Break">
+    <param name="Local" value="user-interface/menus/edit/transcription/word-break.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Phonetic">
+    <param name="Name" value="Add Phonetic Segment">
+    <param name="Local" value="user-interface/menus/edit/transcription/add-phonetic-segment.htm">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Transcription">
+    <param name="Name" value="Transcription Editor">
+    <param name="Local" value="user-interface/menus/edit/transcription/editor.htm">
+    <param name="Name" value="Transcription overview">
+    <param name="Local" value="user-interface/menus/edit/transcription/overview.htm">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+    <param name="Name" value="Transcription Encoding Converters">
+    <param name="Local" value="user-interface/menus/file/transcription-encoding-converters.htm">
+    <param name="Name" value="Transcription bars do not display characters correctly">
+    <param name="Local" value="troubleshooting/transcription-bars.htm">
+    <param name="Name" value="Transcriptions no longer appear">
+    <param name="Local" value="troubleshooting/transcriptions-no-longer-appear.htm">
+    <param name="Name" value="Transcriptions were skipped during import">
+    <param name="Local" value="troubleshooting/transcriptions-skipped.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Editor">
+    <param name="Name" value="Transcription Editor">
+    <param name="Local" value="user-interface/menus/edit/transcription/editor.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Break">
+    <param name="Name" value="Word Break">
+    <param name="Local" value="user-interface/menus/edit/transcription/word-break.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Cascade">
+    <param name="Name" value="Window">
+    <param name="Local" value="user-interface/menus/window.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Window">
+    <param name="Name" value="Window">
+    <param name="Local" value="user-interface/menus/window.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Help">
+    <param name="Name" value="Help">
+    <param name="Local" value="user-interface/menus/Help.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Melogram">
+    <param name="Name" value="Melogram">
+    <param name="Local" value="user-interface/menus/graphs/types/music/melogram.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Duration">
+    <param name="Name" value="Duration graph">
+    <param name="Local" value="user-interface/menus/graphs/types/duration.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Import">
+    <param name="Name" value="Import">
+    <param name="Local" value="user-interface/menus/file/import.htm">
+    <param name="Name" value="Transcriptions were skipped during import">
+    <param name="Local" value="troubleshooting/transcriptions-skipped.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Order">
+    <param name="Name" value="Graph Types Order">
+    <param name="Local" value="user-interface/menus/graphs/types/order.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Position View">
+    <param name="Name" value="Position View graph">
+    <param name="Local" value="user-interface/menus/graphs/types/position-view.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Preview">
+    <param name="Name" value="Print Preview">
+    <param name="Local" value="user-interface/menus/file/print-preview.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Audio">
+    <param name="Name" value="Audio Converter Program">
+    <param name="Local" value="user-interface/menus/tools/audio-converter.htm">
+    <param name="Name" value="Audio input devices">
+    <param name="Local" value="user-interface/menus/file/audio-input-devices.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Converter">
+    <param name="Name" value="Audio Converter Program">
+    <param name="Local" value="user-interface/menus/tools/audio-converter.htm">
+    <param name="Name" value="Transcription Encoding Converters">
+    <param name="Local" value="user-interface/menus/file/transcription-encoding-converters.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Select">
+    <param name="Name" value="Select Waveform">
+    <param name="Local" value="user-interface/menus/edit/select-waveform.htm">
+    <param name="Name" value="Select a segment">
+    <param name="Local" value="user-interface/menus/edit/select-segment.htm">
+    <param name="Name" value="Select a vowel fragment">
+    <param name="Local" value="user-interface/menus/graphs/types/select-vowel-fragment.htm">
+    <param name="Name" value="Workbench Filter Selections">
+    <param name="Local" value="user-interface/menus/tools/workbench-filter-selections.htm">
+    <param name="Name" value="Shortcut keys for editing, deleting, selecting segments">
+    <param name="Local" value="user-interface/shortcuts/segments.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Resizing">
+    <param name="Name" value="Segment resizing details">
+    <param name="Local" value="user-interface/menus/edit/segment-resizing.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Edit">
+    <param name="Name" value="Edit overview">
+    <param name="Local" value="user-interface/menus/edit/overview.htm">
+    <param name="Name" value="Shortcut keys for editing, deleting, selecting segments">
+    <param name="Local" value="user-interface/shortcuts/segments.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Bug Reports">
+    <param name="Name" value="Information for bug reports">
+    <param name="Local" value="overview/bug-reports.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Guidelines">
+    <param name="Name" value="Transcription guidelines">
+    <param name="Local" value="user-interface/menus/edit/transcription/guidelines.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="MIDI">
+    <param name="Name" value="Import">
+    <param name="Local" value="user-interface/menus/file/import.htm">
+    <param name="Name" value="Staff Notes">
+    <param name="Local" value="user-interface/menus/file/export/staff-notes.htm">
+    <param name="Name" value="Note reference chart">
+    <param name="Local" value="user-interface/menus/graphs/types/music/note-reference-chart.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Clefs">
+    <param name="Name" value="Clefs">
+    <param name="Local" value="user-interface/menus/graphs/types/music/clefs.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="FFT">
+    <param name="Name" value="Spectrogram graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrogram.htm">
+    <param name="Name" value="Spectrum graph">
+    <param name="Local" value="user-interface/menus/graphs/types/spectrum.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Startup">
+    <param name="Name" value="Startup tab, Options">
+    <param name="Local" value="user-interface/menus/tools/options/startup-tab.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Factor">
+    <param name="Name" value="Peak Sharpening Factor">
+    <param name="Local" value="user-interface/menus/graphs/parameters/peak-sharpening.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Octaves">
+    <param name="Name" value="Note reference chart">
+    <param name="Local" value="user-interface/menus/graphs/types/music/note-reference-chart.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Tonal Weighting Chart">
+    <param name="Name" value="Tonal Weighting Chart">
+    <param name="Local" value="user-interface/menus/graphs/types/music/tonal-weighting-chart.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Magnitude">
+    <param name="Name" value="Magnitude graph">
+    <param name="Local" value="user-interface/menus/graphs/types/music/magnitude.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Improved">
+    <param name="Name" value="What is new">
+    <param name="Local" value="overview/what-is-new.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Fixed">
+    <param name="Name" value="What is new">
+    <param name="Local" value="overview/what-is-new.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Unusual problems">
+    <param name="Name" value="Unusual problems">
+    <param name="Local" value="troubleshooting/unusual.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="MSKLC">
+    <param name="Name" value="Keyboards for typing Unicode characters">
+    <param name="Local" value="user-interface/menus/edit/transcription/keyboards.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Chao">
+    <param name="Name" value="Chao tone characters do not elide">
+    <param name="Local" value="troubleshooting/chao-tone.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Eliding">
+    <param name="Name" value="Pitch contour characters do not elide">
+    <param name="Local" value="troubleshooting/pitch-countour.htm">
+    <param name="Name" value="Chao tone characters do not elide">
+    <param name="Local" value="troubleshooting/chao-tone.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="saxml extension">
+    <param name="Name" value="Speech Analyzer XML">
+    <param name="Local" value="user-interface/menus/file/saxml.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Histogram">
+    <param name="Name" value="Tonal Weighting Chart">
+    <param name="Local" value="user-interface/menus/graphs/types/music/tonal-weighting-chart.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Typing">
+    <param name="Name" value="Type music notation on the Staff">
+    <param name="Local" value="user-interface/menus/graphs/types/music/notation.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Input">
+    <param name="Name" value="Audio input devices">
+    <param name="Local" value="user-interface/menus/file/audio-input-devices.htm">
+  </object>
+</ul>
+</body>
+</html>

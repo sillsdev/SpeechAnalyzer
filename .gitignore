@@ -73,3 +73,6 @@ ipch/
 obj/
 test_samples/out/
 packages/
+
+# Intermediary help files
+/chm/
