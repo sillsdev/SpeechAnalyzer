@@ -7516,9 +7516,19 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			}
 
 			// build the sense field
-			if (settings.bGloss) {
+			if (settings.bGloss || settings.bGlossNat) {
 				entry.sense = Lift13::sense(L"sense", createUUID().c_str(), i);
-				entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.gloss.c_str(), Lift13::span(SPAN, results[GLOSS]));
+				if (settings.bGloss) {
+					// Gloss
+					entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.gloss.c_str(), Lift13::span(SPAN, results[GLOSS]));
+					if (settings.bGlossNat) {
+						// Gloss and Gloss National
+						entry.sense[0].gloss.append(Lift13::gloss(L"gloss", settings.glossNat.c_str(), Lift13::span(SPAN, results[GLOSS_NAT])));
+					}
+				} else if (settings.bGlossNat) {
+					// Gloss National but not Gloss
+					entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.glossNat.c_str(), Lift13::span(SPAN, results[GLOSS_NAT]));
+				}
 			}
 		}
 		document.entry.append(entry);
