@@ -11624,7 +11624,8 @@ void CSaView::OnFileSaveAs() {
 			wstring originalFilename = FileUtils::GetFilename((LPCTSTR)path);
 			wstring tempFilename = FileUtils::ReplaceExtension((LPCTSTR)originalFilename.c_str(), L".wav");
 			wstring tempFolder = FileUtils::GetParentFolder(doc.GetConvertedWaveFilename().c_str());
-			wstring temp = FileUtils::GetTempFileName(tempFolder.c_str(), tempFilename.c_str(), tempFilename.length());
+			wstring temp = tempFolder;
+			temp.append(tempFilename.c_str());
 			FileUtils::Copy(doc.GetConvertedWaveFilename().c_str(), temp.c_str());
 			path = (CString)temp.c_str();
 
