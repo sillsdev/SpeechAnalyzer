@@ -191,10 +191,10 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         ctlOrthoList.GetWindowTextW(buffer);
         settings.ortho = lookupCountryCode(buffer);
 
-        // Hardcode Phonemic and Phonetic list
+        // Hardcode Phonemic and Phonetic list. Note: Flex just uses "-fonipa" for phonetic
         settings.phonemic = L"-fonipa-x-emic";
 
-        settings.phonetic = L"-fonipa-x-etic";
+        settings.phonetic = L"-fonipa";
 
         ctlPhraseList1List.GetWindowTextW(buffer);
         settings.phrase1 = lookupCountryCode(buffer);
