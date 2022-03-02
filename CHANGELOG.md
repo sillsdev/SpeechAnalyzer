@@ -2,7 +2,7 @@
 - Fixed bug that caused the 'Esc' key to be unresponsive during Formant Track processing.
 - Fix 'Save As' dialog when using .mp3 files
 - Fix several Lift export issues:
-    - Use "Ethnologue ID" if "Orthographic" language not defined
+    - Use an optional "Language Tag" if "Orthographic" language not defined
     - Use -fonipa for "Phonetic (IPA)" to match Fieldworks
     - Fix export of "Gloss National"
     - Remove unused "Fieldworks Project" combo list box
