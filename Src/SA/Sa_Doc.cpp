@@ -7481,12 +7481,12 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", settings.ortho.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[ORTHO]))));
 			}
 
-			// Build the IPA language tags from what's available (Orthographic or "Ethnologue ID"). Fall back to "und" (BCP-47 for undefined)
+			// Build the IPA language tags from what's available (Orthographic or "Optional Language Tag"). Fall back to "und" (BCP-47 for undefined)
 			wstring vernacular = L"und";
 			if (settings.bOrtho) {
 				vernacular = settings.ortho;
-			} else if (m_sourceParm.szEthnoID.Compare(L"   ") != 0) {
-				vernacular = FileUtils::Trim(wstring(m_sourceParm.szEthnoID));
+			} else if (!settings.optionalLanguageTag.IsEmpty()) {
+				vernacular = settings.optionalLanguageTag;
 			}
 
 			// add the phonetic

@@ -46,7 +46,7 @@ VALUE "CompanyName", "SIL International"
 VALUE "FileDescription", "Speech Analyzer Resource DLL"
 VALUE "FileVersion", "v3.1.1.2"
 VALUE "InternalName", "SA_ENU"
-VALUE "LegalCopyright", "© 1996-2021 SIL International"
+VALUE "LegalCopyright", "ï¿½ 1996-2021 SIL International"
 VALUE "OriginalFilename", "SA_ENU.dll"
 VALUE "ProductName", "SA"
 VALUE "ProductVersion", "2.0.0.0"
@@ -2191,7 +2191,7 @@ GROUPBOX        "Waveform", IDC_STATIC, 2, 148, 247, 26
 LTEXT           "Order:", IDC_STATIC, 93, 108, 20, 8
 EDITTEXT        IDC_RESEARCH_LPC_ORDER_FS_MULT_EDIT, 120, 107, 14, 12, ES_AUTOHSCROLL
 EDITTEXT        IDC_RESEARCH_LPC_ORDER_EXTRA_EDIT, 153, 107, 14, 12, ES_AUTOHSCROLL
-LTEXT           "·Fs +", IDC_STATIC, 135, 109, 18, 8
+LTEXT           "ï¿½Fs +", IDC_STATIC, 135, 109, 18, 8
 EDITTEXT        IDC_RESEARCH_LPC_ORDER_AUX_MAX_EDIT, 179, 107, 15, 12, ES_AUTOHSCROLL
 LTEXT           "+", IDC_STATIC, 171, 109, 8, 8
 LTEXT           "(max) aux poles", IDC_STATIC, 196, 109, 51, 9
@@ -2480,9 +2480,11 @@ PUSHBUTTON      "Cancel", IDCANCEL, 177, 243, 50, 14
 DEFPUSHBUTTON   "Export", IDOK, 123, 243, 50, 14, WS_DISABLED
 GROUPBOX        "Include", IDC_STATIC, 9, 6, 271, 170
 PUSHBUTTON      "&Help", IDHELP, 231, 243, 50, 14
-LTEXT           "Export Folder", IDC_STATIC_FIELDWORKS_PROJECT, 15, 181, 260, 8
-EDITTEXT        IDC_EDIT_FOLDER, 15, 195, 212, 14, ES_AUTOHSCROLL
-PUSHBUTTON      "Browse...", IDC_BROWSE, 231, 195, 50, 14
+LTEXT           "Language Tag if Orthographic blank", IDC_OPTIONAL_LANGUAGE_TAG_LABEL, 15, 181, 260, 8
+EDITTEXT        IDC_OPTIONAL_LANGUAGE_TAG, 15, 195, 212, 14, ES_AUTOHSCROLL | ES_WANTRETURN
+LTEXT           "Export Folder", IDC_STATIC_FIELDWORKS_PROJECT, 15, 214, 260, 8
+EDITTEXT        IDC_EDIT_FOLDER, 15, 225, 212, 14, ES_AUTOHSCROLL
+PUSHBUTTON      "Browse...", IDC_BROWSE, 231, 225, 50, 14
 END
 
 IDD_SELECT_TRANSCRIPTION_BARS DIALOGEX 0, 0, 116, 144
@@ -4859,7 +4861,7 @@ END
 
 STRINGTABLE
 BEGIN
-VS_COPYRIGHT            "© 1996-2021 SIL International.\nAll Rights Reserved."
+VS_COPYRIGHT            "ï¿½ 1996-2021 SIL International.\nAll Rights Reserved."
 IDR_MAINFRAME_SA        "Speech Analyzer"
 IDR_MAINFRAME_AS        "Audio-Sync"
 IDR_SPEECHANALYZER      "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
