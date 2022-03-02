@@ -7477,19 +7477,22 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			// build the lexical unit
 			entry.lexical_unit = Lift13::multitext(L"lexical-unit");
 			if (settings.bOrtho) {
+				// Keep orthographic
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", settings.ortho.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[ORTHO]))));
 			}
 
-			// Build the IPA language tags from Ortho if available, fall back to "und" (BCP-47 for undefined)
+			// Build the IPA language tags from what's available (Orthographic or "Ethnologue ID"). Fall back to "und" (BCP-47 for undefined)
+			wstring vernacular = L"und";
+			if (settings.bOrtho) {
+				vernacular = settings.ortho;
+			} else if (m_sourceParm.szEthnoID.Compare(L"   ") != 0) {
+				vernacular = FileUtils::Trim(wstring(m_sourceParm.szEthnoID));
+			}
 
 			// add the phonetic
 			if (settings.bPhonetic) {
 				wstring phonetic;
-				if (settings.bOrtho) {
-					phonetic.append(settings.ortho.c_str());
-				} else {
-					phonetic.append(L"und");
-				}
+				phonetic.append(vernacular);
 				// Flex just uses fonipa instead of fonipa-x-etic for phonetic tag
 				AppendFonipaTag(phonetic, L"etic");
 
@@ -7499,11 +7502,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			// add the phonemic
 			if (settings.bPhonemic) {
 				wstring phonemic;
-				if (settings.bOrtho) {
-					phonemic.append(settings.ortho.c_str());
-				}	else {
-					phonemic.append(L"und");
-				}
+				phonemic.append(vernacular);
 				AppendFonipaTag(phonemic, L"emic");
 
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonemic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONEMIC]))));
