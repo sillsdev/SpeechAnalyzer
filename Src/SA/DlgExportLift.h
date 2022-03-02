@@ -28,7 +28,7 @@ class CSaDoc;
 class CDlgExportLift : public CDialog {
 public:
     CDlgExportLift(LPCTSTR szDocTitle,
-				   LPCTSTR szPath,
+                   LPCTSTR szPath,
                    BOOL gloss,
                    BOOL glossNat,
                    BOOL ortho,
@@ -46,14 +46,10 @@ protected:
     void SetEnable(int nItem, BOOL bEnable);
     void SetCheck(int nItem, BOOL bCheck);
     void UpdateButtonState();
-    CSaString GetFieldWorksProjectDirectory();
-    bool SearchForValue(HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
-	CString lookupCountryCode(LPCTSTR value);
+    CString lookupCountryCode(LPCTSTR value);
 
     afx_msg void OnHelpExportBasic();
     afx_msg void OnClickedBrowse();
-    afx_msg void OnSelchangeComboFieldworksProject();
-    afx_msg void OnKillfocusComboFieldworksProject();
 
     enum { IDD = IDD_EXPORT_LIFT };
 
@@ -74,7 +70,6 @@ protected:
     CComboBox ctlPhraseList1List;
     CComboBox ctlPhraseList2List;
     CComboBox ctlOrthoList;
-    CComboBox ctlComboFieldWorksProject;
 
     wstring refLang;
     wstring phonemicLang;
