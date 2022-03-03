@@ -1,5 +1,13 @@
-# SA - 3.1.1.3 12/18/2021
+# SA - 3.1.1.3 3/4/2022
 - Fixed bug that caused the 'Esc' key to be unresponsive during Formant Track processing.
+- Fix 'Save As' dialog when using .mp3 files
+- Fix several Lift export issues:
+    - Use an optional "Language Tag" if "Orthographic" language not defined
+    - Use -fonipa for "Phonetic (IPA)" to match Fieldworks
+    - Fix export of "Gloss National"
+    - Remove unused "Fieldworks Project" combo list box
+- Developer Changes:
+    - Convert help files to Markdown for maintenance
 
 # SA - 3.1.1.2 9/10/2021
 - Add shortcut keys for Ctrl-Down and Ctrl-Up to select next/previous graph.

@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,1,2
+ FILEVERSION 3,1,1,3
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,9 +44,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.1.2"
+            VALUE "FileVersion", "v3.1.1.3"
             VALUE "InternalName", "SA_DEU"
-            VALUE "LegalCopyright", "� 1996-2021 SIL International"
+            VALUE "LegalCopyright", "(C) 1996-2022 SIL International"
             VALUE "OriginalFilename", "SA_DEU.dll"
             VALUE "ProductName", "SA"
             VALUE "ProductVersion", "2.0.0.0"
@@ -2191,7 +2191,7 @@ BEGIN
     LTEXT           "Order:",IDC_STATIC,93,108,20,8
     EDITTEXT        IDC_RESEARCH_LPC_ORDER_FS_MULT_EDIT,120,107,14,12,ES_AUTOHSCROLL
     EDITTEXT        IDC_RESEARCH_LPC_ORDER_EXTRA_EDIT,153,107,14,12,ES_AUTOHSCROLL
-    LTEXT           "�Fs +",IDC_STATIC,135,109,18,8
+    LTEXT           "·Fs +",IDC_STATIC,135,109,18,8
     EDITTEXT        IDC_RESEARCH_LPC_ORDER_AUX_MAX_EDIT,179,107,15,12,ES_AUTOHSCROLL
     LTEXT           "+",IDC_STATIC,171,109,8,8
     LTEXT           "(max) aux poles",IDC_STATIC,196,109,51,9
@@ -4850,7 +4850,7 @@ END
 
 STRINGTABLE
 BEGIN
-    VS_COPYRIGHT            "� 1996-2021 SIL International.\nAll Rights Reserved."
+    VS_COPYRIGHT            "(C) 1996-2022 SIL International.\nAll Rights Reserved."
     IDR_MAINFRAME_SA        "Speech Analyzer"
     IDR_MAINFRAME_AS        "Audio-Sync"
     IDR_SPEECHANALYZER      "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
