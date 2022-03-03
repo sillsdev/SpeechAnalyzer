@@ -64,7 +64,7 @@ struct SFormantFrame {
 class CProcessSpectrum : public CProcess {
 
 public:
-    CProcessSpectrum(Context context);
+    CProcessSpectrum(Context& context);
     CProcessSpectrum() = delete;
 
     void SetSpectrumParms(CSpectrumParm * pParmSpec);

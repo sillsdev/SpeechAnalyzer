@@ -9,6 +9,8 @@
 
 class CProcessRaw : public CProcess {
 public:
+    CProcessRaw(Context& context) : CProcess(context) {}
+    CProcessRaw() = delete;
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
 };
 

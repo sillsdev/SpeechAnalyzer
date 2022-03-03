@@ -364,19 +364,19 @@ bool CDlgExportLift::SearchForValue(HKEY hRootKey, DWORD sam, wstring keyName, L
     // Enumerate the key values.
     if (cValues>0) {
         TRACE(L"number of values: %d\n", cValues);
-        for (DWORD i=0, retCode=ERROR_SUCCESS; i<cValues; i++) {
+        for (DWORD i=0; i<cValues; i++) {
             cchValue = MAX_VALUE_NAME;
             wmemset(achValue,0,_countof(achValue));
-            retCode = RegEnumValue(hKey, i, achValue, &cchValue, NULL, NULL, NULL, NULL);
-            if (retCode == ERROR_SUCCESS) {
+            DWORD retCode2 = RegEnumValue(hKey, i, achValue, &cchValue, NULL, NULL, NULL, NULL);
+            if (retCode2 == ERROR_SUCCESS) {
                 TRACE(L"considering value %s\n",achValue);
                 // is this the correct value?
                 if (_wcsicmp(achValue, valueName)==0) {
                     TCHAR szValue[1024];
                     wmemset(szValue,0,_countof(szValue));
                     DWORD dwBufLen = sizeof(szValue);
-                    retCode = RegQueryValueEx(hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE)szValue, &dwBufLen);
-                    if (retCode==ERROR_SUCCESS) {
+                    retCode2 = RegQueryValueEx(hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE)szValue, &dwBufLen);
+                    if (retCode2==ERROR_SUCCESS) {
                         value = szValue;
                         TRACE(L"success at %s : %s\n", keyName.c_str(), value.c_str());
                         RegCloseKey(hKey);

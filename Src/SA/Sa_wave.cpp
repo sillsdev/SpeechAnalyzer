@@ -413,7 +413,7 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
 
     if ((nSpeed != 100) && !pFragmenter->IsDataReady()) {
         // finish fragmenting
-        short int nResult = LOWORD(pFragmenter->Process(this, pModel)); // process data
+        short int nResult = LOWORD(pFragmenter->Process(this)); // process data
         if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_NO_DATA) || (nResult == PROCESS_CANCELED)) {
             pFragmenter->SetDataInvalid();
             m_bBackgroundEnabled = FALSE;

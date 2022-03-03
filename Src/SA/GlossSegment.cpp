@@ -106,7 +106,7 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
 
     // create zero crossing data, it is needed to do parsing
     CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to zero crossing object
-    lResult = pLoudness->Process(pCaller, pModel, nProgress, ++nLevel); // process data
+    lResult = pLoudness->Process(pCaller, nProgress, ++nLevel); // process data
     nLevel = (short int)LOWORD(lResult);
     nProgress = HIWORD(lResult);
 
@@ -117,7 +117,7 @@ long CGlossSegment::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int 
         return MAKELONG(nLevel, nProgress);
     }
 
-    CScopedCursor waitCursor(view);
+    CScopedCursor waitCursor(target);
     // start parsing
 	// memory allocation failed or previous processing error
     if (!StartProcess(pCaller, PARSING, FALSE)) {   

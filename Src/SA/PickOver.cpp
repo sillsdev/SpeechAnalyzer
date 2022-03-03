@@ -103,9 +103,8 @@ void CDlgPickOver::SetupItemsList() {
                 CString szText(m_apPlot[i]->GetPlotName());
 
                 CSaApp * pApp = (CSaApp *)AfxGetApp();
-                CDocument  * pModel  = pApp->IsFileOpened(m_szDoc[i]);
-                CSaDoc * pSaDoc = (CSaDoc *)pModel;
-                CString szDocTitle(pSaDoc->GetFilenameFromTitle().c_str()); // load file name
+                CSaDoc * pModel  = pApp->IsFileOpened(m_szDoc[i]);
+                CString szDocTitle(pModel->GetFilenameFromTitle().c_str()); // load file name
                 szText += " - " + szDocTitle;
 
                 int index = m_SelectItems.AddString(szText);

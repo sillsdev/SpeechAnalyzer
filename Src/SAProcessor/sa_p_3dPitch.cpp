@@ -12,7 +12,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CProcess3dPitch::CProcess3dPitch(Context context) : CProcess(context) {
+CProcess3dPitch::CProcess3dPitch(Context& context) : CProcess(context) {
     m_dFilterUpperFrequency = 1000.;
     m_dFilterLowerFrequency = 70.;
     m_nFilterOrder = 5;
@@ -23,11 +23,10 @@ static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwSt
 /***************************************************************************/
 // CProcess3dPitch::Process
 /***************************************************************************/
-long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int nLevel) {
+long CProcess3dPitch::Process(void * pCaller, int nProgress, int nLevel) {
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    Model * pModel = (Model *)pSaDoc; // cast pointer
     // check if nested workbench processes
     int nOldLevel = nLevel; // save original level
 
@@ -45,7 +44,7 @@ long CProcess3dPitch::Process(void * pCaller, Model * pSaDoc, int nProgress, int
     }
 
     // start process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     // memory allocation failed or previous processing error
     if (!StartProcess(pCaller, PROCESSWBLP)) {
         EndProcess(); // end data processing
@@ -136,8 +135,8 @@ static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwSt
     int nData;
     if (wSmpSize == 1) { // 8 bit data
         if (!pSourceData) {
-            ASSERT(FALSE);
-            TRACE(_T("Failed reading source data\n"));
+            assert(FALSE);
+            trace("Failed reading source data\n");
             return 0;
         }
         BYTE bData;
@@ -146,8 +145,8 @@ static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwSt
         nData *= 256;
     } else {              // 16 bit data
         if (!pSourceData) {
-            ASSERT(FALSE);
-            TRACE(_T("Failed reading source data\n"));
+            assert(FALSE);
+            trace("Failed reading source data\n");
             return 0;
         }
         nData = *((short int *)pSourceData);

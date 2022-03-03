@@ -212,7 +212,7 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pModel, int nProgress, 
 	// get pointer to change object
     CProcessChange * pChange = (CProcessChange *)pModel->GetChange();
 	// process change data
-    pChange->Process(pCaller, pModel, nProgress, ++nLevel);
+    pChange->Process(pCaller, nProgress, ++nLevel);
 
     // Finish fragmenting as needed.
     CProcessFragments * pFragments = (CProcessFragments *)pModel->GetFragments();
@@ -223,7 +223,7 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pModel, int nProgress, 
 	// get pointer to zero crossing object
     CProcessZCross * pZCross = (CProcessZCross *)pModel->GetZCross();
 	// process zero crossing data
-    lResult = pZCross->Process(pCaller, pModel, nProgress, nLevel);
+    lResult = pZCross->Process(pCaller, nProgress, nLevel);
     // *******************************************************************************
 
     nLevel = (short int)LOWORD(lResult);
@@ -240,7 +240,7 @@ long CPhoneticSegment::Process( void * pCaller, CSaDoc * pModel, int nProgress, 
 
     // start segmenting
 	// wait cursor
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
 	// memory allocation failed
     if (!StartProcess( pCaller, SEGMENTING, FALSE)) { 
 		// end data processing

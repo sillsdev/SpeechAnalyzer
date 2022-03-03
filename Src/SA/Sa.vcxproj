@@ -146,7 +146,8 @@
     <ClCompile Include="AutoSegmentation.cpp" />
     <ClCompile Include="ChildFrame.cpp" />
     <ClCompile Include="ClipboardHelper.cpp" />
-    <ClCompile Include="ModelImpl.cpp" />
+    <ClCompile Include="ContextProvider.cpp" />
+    <ClCompile Include="IpaVTChar.cpp" />
     <ClCompile Include="WbProcessDlgFactory.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="DataStatusBar.cpp" />
@@ -348,7 +349,9 @@
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="AutoSegmentation.h" />
-    <ClInclude Include="ModelImpl.h" />
+    <ClInclude Include="ContextProvider.h" />
+    <ClInclude Include="IpaVTChar.h" />
+    <ClInclude Include="sa_context.h" />
     <ClInclude Include="WbProcessDlgFactory.h" />
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="DataStatusBar.h" />

@@ -8,25 +8,15 @@
 //   1.5Test8
 //        SDM added changes by CLW in 1.07a
 /////////////////////////////////////////////////////////////////////////////
-
 #include "pch.h"
 #include "sa_process.h"
 #include "sa_p_zcr.h"
 #include "sa_p_lou.h"
 #include "ScopedCursor.h"
 
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessZCross
 // class to calculate zero crossings for wave data.
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessZCross helper functions
 
 /***************************************************************************/
 // CProcessZCross::Process Processing zero crossing data
@@ -64,7 +54,7 @@ long CProcessZCross::Process(void * pCaller, int nProgress, int nLevel) {
     }
 
     // start zero crossing process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSZCR)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

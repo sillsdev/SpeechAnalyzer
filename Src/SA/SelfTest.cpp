@@ -874,7 +874,7 @@ void Test006(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessZCross * pZCross = doc.pModel->GetZCross();
     // attempt to process data
-    ValidateProcess(LOWORD(pZCross->Process(&runner, doc.pModel)));
+    ValidateProcess(LOWORD(pZCross->Process(&runner)));
     ValidateFileCompare(runner.FileCompare(test, pZCross->GetProcessFileName()));
 }
 
@@ -882,7 +882,7 @@ void Test007(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessPitch * pPitch = doc.pModel->GetPitch();
     // attempt to process data
-    ValidateProcess(LOWORD(pPitch->Process(&runner, doc.pModel)));
+    ValidateProcess(LOWORD(pPitch->Process(&runner)));
     ValidateFileCompare(runner.FileCompare(test, pPitch->GetProcessFileName()));
 }
 
@@ -890,21 +890,21 @@ void Test008(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
 
     CProcessCustomPitch * pCustomPitch = doc.pModel->GetCustomPitch();
-    ValidateProcess(LOWORD(pCustomPitch->Process(&runner, doc.pModel)));  // process data
+    ValidateProcess(LOWORD(pCustomPitch->Process(&runner)));  // process data
     ValidateFileCompare(runner.FileCompare(test,  pCustomPitch->GetProcessFileName()));
 }
 
 void Test009(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessSmoothedPitch * pSmoothedPitch = doc.pModel->GetSmoothedPitch();
-    ValidateProcess(LOWORD(pSmoothedPitch->Process(&runner, doc.pModel)));  // process data
+    ValidateProcess(LOWORD(pSmoothedPitch->Process(&runner)));  // process data
     ValidateFileCompare(runner.FileCompare(test,pSmoothedPitch->GetProcessFileName()));
 }
 
 void Test010(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessGrappl * pAutoPitch = doc.pModel->GetGrappl();
-    ValidateProcess(LOWORD(pAutoPitch->Process(&runner, doc.pModel)));  // process data
+    ValidateProcess(LOWORD(pAutoPitch->Process(&runner)));  // process data
     ValidateFileCompare(runner.FileCompare(test,  pAutoPitch->GetProcessFileName()));
 
     UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_GRAPITCH,0,0,0,0,0,0,0,0};
@@ -918,7 +918,7 @@ void Test011(CSelfTestRunner & runner, CSelfTest::Test & test) {
     pFragment->SetDataInvalid();
     doc.pModel->EnableBackgroundProcessing(FALSE);
     pFragment->RestartProcess();
-    pFragment->Process(&runner, doc.pModel);  // process data
+    pFragment->Process(&runner);  // process data
     // wait for idle loop to finish
     while (!pFragment->IsDataReady()) {
         runner.MessageLoop(10);
@@ -929,21 +929,21 @@ void Test011(CSelfTestRunner & runner, CSelfTest::Test & test) {
 void Test012(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessLoudness * pLoudness = doc.pModel->GetLoudness();
-    ValidateProcess(LOWORD(pLoudness->Process(&runner, doc.pModel))); // process data
+    ValidateProcess(LOWORD(pLoudness->Process(&runner))); // process data
     ValidateFileCompare(runner.FileCompare(test,  pLoudness->GetProcessFileName()));
 }
 
 void Test013(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessMelogram * pMelogram = doc.pModel->GetMelogram();
-    ValidateProcess(LOWORD(pMelogram->Process(&runner, doc.pModel))); // process data
+    ValidateProcess(LOWORD(pMelogram->Process(&runner))); // process data
     ValidateFileCompare(runner.FileCompare(test, pMelogram->GetProcessFileName()));
 }
 
 void Test014(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessChange * pChange = doc.pModel->GetChange();
-    ValidateProcess(LOWORD(pChange->Process(&runner,doc.pModel))); // process data
+    ValidateProcess(LOWORD(pChange->Process(&runner))); // process data
     ValidateFileCompare(runner.FileCompare(test, pChange->GetProcessFileName()));
 }
 
@@ -951,7 +951,7 @@ void Test015(CSelfTestRunner & runner, CSelfTest::Test & test) {
 
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessRaw * pRaw = doc.pModel->GetRaw();
-    ValidateProcess(LOWORD(pRaw->Process(&runner, doc.pModel))); // process data
+    ValidateProcess(LOWORD(pRaw->Process(&runner))); // process data
     ValidateFileCompare(runner.FileCompare(test, pRaw->GetProcessFileName()));
 }
 
@@ -980,7 +980,7 @@ void Test016(CSelfTestRunner & runner, CSelfTest::Test & test) {
     // process spectrogram
     // some arbitrary plot width
     // some arbitrary plot height (ignored)
-    ValidateProcess(pSpectrogram->Process(&runner, doc.pModel, doc.pView, 752, 500, 0, 1));
+    ValidateProcess(pSpectrogram->Process( &runner, 752, 500, 0, 1, doc.pView->GetDataPosition(0), doc.pView->GetDataFrame()));
     ValidateFileCompare(runner.FileCompare(test, pSpectrogram->GetProcessFileName()/*,7*/));
 }
 
@@ -995,7 +995,7 @@ void Test017(CSelfTestRunner & runner, CSelfTest::Test & test) {
     pFragmenter->SetDataInvalid();
     doc.pModel->EnableBackgroundProcessing(FALSE);
     pFragmenter->RestartProcess();
-    pFragmenter->Process(&runner, doc.pModel);  // process data
+    pFragmenter->Process(&runner);  // process data
     // wait for idle loop to finish
     while (!pFragmenter->IsDataReady()) {
         runner.MessageLoop(10);
@@ -1012,7 +1012,7 @@ void Test017(CSelfTestRunner & runner, CSelfTest::Test & test) {
     SpectraSelected.bCepstralSpectrum = -1;    // turn off to reduce processing time
     SpectraSelected.bLpcSpectrum = -1;          // use Lpc method for estimating formants
 
-    ValidateProcess(LOWORD(pSpectrum->Process(&runner, doc.pModel, 30870, 4410, SpectraSelected)));   // process data
+    ValidateProcess(LOWORD(pSpectrum->Process(&runner, 30870, 4410, SpectraSelected)));   // process data
 
     DWORD dwDataSize = pSpectrum->GetDataSize();
     void * pData = (char *) pSpectrum->GetProcessedData(0);
@@ -1039,7 +1039,7 @@ void Test018(CSelfTestRunner & runner, CSelfTest::Test & test) {
     pFragmenter->SetDataInvalid();
     doc.pModel->EnableBackgroundProcessing(FALSE);
     pFragmenter->RestartProcess();
-    pFragmenter->Process(&runner, doc.pModel);  // process data
+    pFragmenter->Process(&runner);  // process data
     // wait for idle loop to finish
     while (!pFragmenter->IsDataReady()) {
         runner.MessageLoop(10);
@@ -1051,7 +1051,7 @@ void Test018(CSelfTestRunner & runner, CSelfTest::Test & test) {
     SpectraSelected.bCepstralSpectrum = -1;    // turn off to reduce processing time
     SpectraSelected.bLpcSpectrum = -1;          // use Lpc method for estimating formants
 
-    ValidateProcess(LOWORD(pFormants->Process(&runner, doc.pModel,TRUE,30870,4410,SpectraSelected)));
+    ValidateProcess(LOWORD(pFormants->Process(&runner,TRUE,30870,4410,SpectraSelected)));
     ValidateFileCompare(runner.FileCompare(test, pFormants->GetProcessFileName()/*,20*/));
 }
 
@@ -1061,7 +1061,7 @@ void Test018(CSelfTestRunner & runner, CSelfTest::Test & test) {
 void Test019(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CTestDoc doc(runner,L"chfrench.wav");
     CProcessPOA * pPOA = doc.pModel->GetPOA();
-    ValidateProcess(LOWORD(pPOA->Process(&runner, doc.pModel,(DWORD)30870,(DWORD)35280)));  // process data
+    ValidateProcess(LOWORD(pPOA->Process(&runner,(DWORD)30870,(DWORD)35280)));  // process data
 
     SVocalTractModel * pData = (SVocalTractModel *) pPOA->GetProcessedData(0);
     CString szFileName;
@@ -1086,7 +1086,7 @@ void Test020(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CProcessTonalWeightChart * pTWC = doc.pModel->GetTonalWeightChart();
     CProcessMelogram * pMelogram = (CProcessMelogram *)doc.pModel->GetMelogram(); // get pointer to melogram object
     int nLevel = 0, nProgress = 0;
-    ValidateProcess(LOWORD(pMelogram->Process(&runner, doc.pModel, nProgress, ++nLevel)));
+    ValidateProcess(LOWORD(pMelogram->Process(&runner, nProgress, ++nLevel)));
     DWORD dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
     DWORD wSmpSize = doc.pModel->GetSampleSize();
     DWORD dwRawDataSize = doc.pModel->GetDataSize(); // size of raw data
@@ -1097,7 +1097,7 @@ void Test020(CSelfTestRunner & runner, CSelfTest::Test & test) {
         dwFrameStart = 0;
         dwFrameSize  = dwMelDataSize;
     }
-    ValidateProcess(LOWORD(pTWC->Process(&runner,doc.pModel,dwFrameStart,dwFrameSize, 37,59)));   // process data
+    ValidateProcess(LOWORD(pTWC->Process(&runner,dwFrameStart,dwFrameSize, 37,59)));   // process data
     ValidateFileCompare(runner.FileCompare(test, pTWC->GetProcessFileName()));
 }
 
@@ -1248,7 +1248,7 @@ void Test00a(CSelfTestRunner & runner, CSelfTest::Test & test) {
     DWORD numSamples = doc.pModel->GetNumSamples();
     Assert(numSamples==1481,"wrong number of samples");
 
-    ValidateProcess(LOWORD(pAutoPitch->Process(&runner, doc.pModel)));
+    ValidateProcess(LOWORD(pAutoPitch->Process(&runner)));
 
     string path;
     path.append(Utf8(runner.GetTestOutputFolder()).c_str());
@@ -1274,7 +1274,7 @@ void Test00b(CSelfTestRunner & runner, CSelfTest::Test & test) {
     doc.pView->SetStartStopCursorPosition(start,stop);
 
     CProcessGrappl * pAutoPitch = doc.pModel->GetGrappl();
-    ValidateProcess(LOWORD(pAutoPitch->Process(&runner, doc.pModel)));
+    ValidateProcess(LOWORD(pAutoPitch->Process(&runner)));
 
     string path;
     path.append(Utf8(runner.GetTestOutputFolder()).c_str());
@@ -1305,7 +1305,7 @@ void Test00c(CSelfTestRunner & runner, CSelfTest::Test & test) {
     DWORD numSamples = doc.pModel->GetNumSamples();
     Assert(numSamples==1481,"wrong number of samples");
 
-    ValidateProcess(LOWORD(pHilbert->Process(&runner, doc.pModel)));
+    ValidateProcess(LOWORD(pHilbert->Process(&runner)));
 
     string path;
     path.append(Utf8(runner.GetTestOutputFolder()).c_str());
@@ -1331,7 +1331,7 @@ void Test00d(CSelfTestRunner & runner, CSelfTest::Test & test) {
     doc.pView->SetStartStopCursorPosition(start,stop);
 
     CProcessHilbert * pHilbert = doc.pModel->GetHilbert();
-    ValidateProcess(LOWORD(pHilbert->Process(&runner, doc.pModel)));
+    ValidateProcess(LOWORD(pHilbert->Process(&runner)));
 
     string path;
     path.append(Utf8(runner.GetTestOutputFolder()).c_str());
@@ -1356,7 +1356,7 @@ void Test00e(CSelfTestRunner & runner, CSelfTest::Test & test) {
     doc.pView->SetStartStopCursorPosition(start,stop);
 
     CProcessFormantTracker * pProcess = doc.pModel->GetFormantTracker();
-    ValidateProcess(LOWORD(pProcess->Process(&runner, doc.pModel)));
+    ValidateProcess(LOWORD(pProcess->Process(&runner)));
 
     string path;
     path.append(Utf8(runner.GetTestOutputFolder()).c_str());
@@ -1381,7 +1381,7 @@ void Test00f(CSelfTestRunner & runner, CSelfTest::Test & test) {
     doc.pView->SetStartStopCursorPosition(start,stop);
 
     CProcessFormantTracker * pProcess = doc.pModel->GetFormantTracker();
-    ValidateProcess(LOWORD(pProcess->Process(&runner, doc.pModel)));
+    ValidateProcess(LOWORD(pProcess->Process(&runner)));
 
     string path;
     path.append(Utf8(runner.GetTestOutputFolder()).c_str());

@@ -10,9 +10,9 @@ class CCmdTarget;
 */
 class CScopedCursor {
 public:
-    CScopedCursor(View & view);
+    CScopedCursor(CmdTarget & cmdTarget);
     ~CScopedCursor();
 private:
-    View & view;
+    CmdTarget & cmdTarget;
 };
 

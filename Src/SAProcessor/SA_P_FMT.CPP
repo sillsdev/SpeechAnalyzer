@@ -28,11 +28,6 @@
 #include "VowelFormantsVector.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 static const SRange MenRange[4] =      {{200,1000},{650,2500},{1500,3200}, {3300,3700}};
 static const SRange WomenRange[4] =    {{200,1000},{700,3000},{1850,3500}, {3900,4400}};
 static const SRange ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700,4700}};
@@ -51,7 +46,7 @@ static const SRange ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700
 /***************************************************************************/
 // CProcessFormants::CProcessFormants Constructor
 /***************************************************************************/
-CProcessFormants::CProcessFormants(Context context) : CProcess(context) {
+CProcessFormants::CProcessFormants(Context& context) : CProcess(context) {
     m_bTrack = FALSE;
     m_dwValidFrameCount = 0;
     m_dwFormantFrameCount = 0;
@@ -135,7 +130,7 @@ long CProcessFormants::Process(void * pCaller, BOOL bTrack,
     //       return MAKELONG(--nLevel, nProgress); // data is already ready
 
     // Start formant processing, allocating a process buffer for formant frame data.
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSFMT)) { // memory allocation failed
         SetDataReady(FALSE);
         EndProcess(); // end data processing

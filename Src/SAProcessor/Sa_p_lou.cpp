@@ -20,11 +20,6 @@
 #include "param.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessLoudness
 //
@@ -69,7 +64,7 @@ long CProcessLoudness::Process(void * pCaller, int nProgress, int nLevel) {
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)model.GetGrappl();
     short int nResult = LOWORD(pAutoPitch->Process(this)); // process data
 
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSLOU)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -195,7 +190,6 @@ long CProcessLoudness::Process(void * pCaller, int nProgress, int nLevel) {
     }
 }
 
-
 //###########################################################################
 // CProcessSmoothLoudness
 // class to calculate loudness values for smoothed wave data. It's the same
@@ -213,13 +207,7 @@ long CProcessLoudness::Process(void * pCaller, int nProgress, int nLevel) {
 // same block twice. The smoothed raw data will also be saved into a
 // temporary file for further use (e. g. pitch calculation).
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcessSmoothLoudness construction/destruction/creation
-
-/***************************************************************************/
-// CProcessSmoothLoudness::CProcessSmoothLoudness Constructor
-/***************************************************************************/
-CProcessSmoothLoudness::CProcessSmoothLoudness(Context context) : CProcess(context) {
+CProcessSmoothLoudness::CProcessSmoothLoudness(Context& context) : CProcess(context) {
     m_pSRDfile = new CFile();
     m_SRDfileStatus.m_szFullName[0] = 0; // no file name
     m_hSRDdata = NULL;
@@ -227,9 +215,6 @@ CProcessSmoothLoudness::CProcessSmoothLoudness(Context context) : CProcess(conte
     m_bSRDBlockBegin = FALSE;
 }
 
-/***************************************************************************/
-// CProcessSmoothLoudness::~CProcessSmoothLoudness Destructor
-/***************************************************************************/
 CProcessSmoothLoudness::~CProcessSmoothLoudness() {
     // delete the temporary file
     FileUtils::Remove(m_SRDfileStatus.m_szFullName);
@@ -484,7 +469,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, int nProgress, int nLevel) 
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSSLO)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -640,7 +625,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, int nProgress, int nLevel) 
         m_pSRDfile->Abort();
     }
 
-    CString szFullName = m_SRDfileStatus.m_szFullName;
+    wstring szFullName = m_SRDfileStatus.m_szFullName;
     CFile::GetStatus(szFullName, m_SRDfileStatus); // read the status
     if (GetDataSize() < 2) {
         return Exit(PROCESS_ERROR, hSmoothBlock);    // error, not enough data

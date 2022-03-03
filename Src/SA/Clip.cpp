@@ -44,18 +44,18 @@ CClipboard & CClipboard::operator<<(LPCSTR val) {
     return *this;
 }
 
-CClipboard & CClipboard::operator>>(char *& string) {
+CClipboard & CClipboard::operator>>(char *& right) {
     HANDLE hClipboard = GetClipboardData(CF_OEMTEXT);
     if (!hClipboard) {
         // no data available in the requested format
-        string = NULL;
+        right = NULL;
         return *this;
     }
 
     // allocate memory for the copy operation
     DWORD size = GlobalSize(hClipboard) + 1;
-    string = new char [size];
-    if (!string) {
+    right = new char [size];
+    if (!right) {
         reportError();
         return *this;
     }
@@ -64,7 +64,7 @@ CClipboard & CClipboard::operator>>(char *& string) {
     LPSTR lpClipboard = (LPSTR) GlobalLock(hClipboard);
 
     // copy the data from the clipboard
-    char * cp = string;
+    char * cp = right;
     while (*lpClipboard) {
         *cp++ = *lpClipboard++;
     }
@@ -98,17 +98,15 @@ void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring) {
         return;
     }
 
-    register int i=0;
-
     // copy the data into the clipboard
     LPSTR lpMemory = (LPSTR) GlobalLock(hRTFMemory);
-    for (i=0; RTFprolog[i]; ++i) {
+    for (int i=0; RTFprolog[i]; ++i) {
         *lpMemory++ = RTFprolog[i];
     }
     while (*RTFstring) {
         *lpMemory++ = *RTFstring++;
     }
-    for (i=0; RTFepilog[i]; ++i) {
+    for (int i=0; RTFepilog[i]; ++i) {
         *lpMemory++ = RTFepilog[i];
     }
     *lpMemory = '\0';

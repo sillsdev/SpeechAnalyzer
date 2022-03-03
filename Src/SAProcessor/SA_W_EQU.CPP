@@ -9,27 +9,23 @@
 #include "sa_w_equ.h"
 #include "WbProcess.h"
 #include "ScopedCursor.h"
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
 
 //###########################################################################
 // CProcessWbEquation
 // Workbench process class to calculate new raw data after an equation given
 // by the user.
 
-CProcessWbEquation::CProcessWbEquation(Context context) : CWbProcess( context, WbEquation) {
+CProcessWbEquation::CProcessWbEquation(Context& context) : CWbProcess( context, WbEquation) {
     m_szEquation.clear();
 }
 
 /***************************************************************************/
 // CProcessWbEquation::CheckFunction Check validity of equation
 /***************************************************************************/
-BOOL CProcessWbEquation::CheckFunction(string* pszFunction) {
-    if (pszFunction && pszFunction->length()!=0) {
+BOOL CProcessWbEquation::CheckFunction(LPCSTR pszFunction) {
+    if (pszFunction && strlen(pszFunction)!=0) {
         int nType = 0;
-        ParseUtf8(*pszFunction, &nType, 1.0);
+        ParseUtf8(pszFunction, &nType, 1.0);
         if (nType) {
             return TRUE;
         }
@@ -50,7 +46,6 @@ BOOL CProcessWbEquation::CheckFunction(string* pszFunction) {
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessWbEquation::Process(void * pCaller, int nProgress, int nLevel) {
-    //  TRACE(_T("Process: CProcessWbEquation\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -58,7 +53,7 @@ long CProcessWbEquation::Process(void * pCaller, int nProgress, int nLevel) {
     int nOldLevel = nLevel; // save original level
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess( model.GetWbProcess() - 1, nLevel);
+        pLowerProcess = frame.GetWbProcess( model.GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
             long lResult = pLowerProcess->Process(pCaller, nProgress, ++nLevel);
@@ -83,7 +78,7 @@ long CProcessWbEquation::Process(void * pCaller, int nProgress, int nLevel) {
     }
 
     // start process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSWBEQU)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -147,7 +142,7 @@ long CProcessWbEquation::Process(void * pCaller, int nProgress, int nLevel) {
                 if (!nData) {
                     dData = 1.7E-12;    // to protect parser from crashing
                 }
-                dData = (int)ParseUtf8(m_szEquation, &nType, dData);
+                dData = (int)ParseUtf8(m_szEquation.c_str(), &nType, dData);
                 if (!nType) {
                     return Exit(PROCESS_ERROR);    // error, parsing failed
                 }
@@ -248,7 +243,7 @@ BOOL CProcessWbEquation::ReadProperties(CObjectIStream & obs) {
     return TRUE;
 }
 
-double CProcessWbEquation::ParseUtf8( const string & in, INT* att, double X, double Y) {
-    return parse(in.c_str(), att, X, Y);
+double CProcessWbEquation::ParseUtf8(LPCSTR in, INT* att, double X, double Y) {
+    return parse(in, att, X, Y);
 }
 

@@ -8,6 +8,7 @@
 
 class CTextSegment : public CDependentSegment {
 public:
+    CTextSegment(Context& context, EAnnotation index, int master = -1) : CDependentSegment(context,index,master) {};
     CTextSegment() = delete;
 
 	// insert a new segment

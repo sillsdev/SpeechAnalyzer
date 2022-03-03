@@ -14,7 +14,7 @@
 
 class CProcessFragments : public CProcess {
 public:
-    CProcessFragments(Context context);
+    CProcessFragments(Context& context);
     virtual ~CProcessFragments();
 
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);

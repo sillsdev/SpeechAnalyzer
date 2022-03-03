@@ -12,6 +12,8 @@
 
 class CProcessRatio : public CProcess {
 public:
+    CProcessRatio(Context& context) : CProcess(context) {}
+    CProcessRatio() = delete;
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
 };
 

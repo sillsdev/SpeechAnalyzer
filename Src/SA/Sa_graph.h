@@ -47,6 +47,7 @@ public:
 	// copy constructor
     CGraphWnd(const CGraphWnd & right);
     virtual ~CGraphWnd();
+
 	// assignment operator
 	CGraphWnd & operator=(const CGraphWnd & right);
 

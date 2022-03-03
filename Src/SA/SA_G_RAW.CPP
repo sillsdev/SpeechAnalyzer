@@ -25,6 +25,7 @@
 #include "sa_view.h"
 #include "mainfrm.h"
 #include "sa_mplot.h"
+#include "sa.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -38,26 +39,15 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNCREATE(CPlotRawData, CPlotWnd)
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotRawData message map
-
 BEGIN_MESSAGE_MAP(CPlotRawData, CPlotWnd)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotRawData construction/destruction/creation
-
-/***************************************************************************/
-// CPlotRawData::CPlotRawData Constructor
-/***************************************************************************/
 CPlotRawData::CPlotRawData() {
 }
 
 void  CPlotRawData::CopyTo(CPlotWnd * pT) {
     CPlotWnd::CopyTo(pT);
 }
-
-
 
 CPlotWnd * CPlotRawData::NewCopy(void) {
     CPlotWnd * pRet = new CPlotRawData();
@@ -98,11 +88,11 @@ BOOL CPlotRawData::SetLegendScale() {
 void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 
     // get pointer to graph, view and document
-    CSaDoc * pModel = pView->GetDocument();
-
+    SaContext context = pView->GetSaContext();
+    
     // create raw data
-    CProcessRaw * pRaw = pModel->GetRaw();                    // get pointer to change object
-    short int nResult = LOWORD(pRaw->Process(this));  // process data
+    CProcessRaw * pRaw = context.model.GetRaw();            // get pointer to change object
+    short int nResult = LOWORD(pRaw->Process(this));        // process data
     nResult = CheckResult(nResult, pRaw);                   // check the process result
     if (nResult == PROCESS_ERROR) {
         return;
@@ -115,12 +105,12 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         SetProcessMultiplier(32768.0/100.0);
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);
-        PlotStandardPaint(pDC, rWnd, rClip, pRaw, pModel, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pRaw, &context.model, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
     }
 
-    if (app.getResearchSettings().m_bShowHilbertTransform) {
+    if (context.app.GetResearchSettings().showHilbertTransform) {
         // create raw data
-        CProcessHilbert * pHilbert = pModel->GetHilbert();    // get pointer to change object
+        CProcessHilbert * pHilbert = context.model.GetHilbert();    // get pointer to change object
         nResult = LOWORD(pHilbert->Process(this));    // process data
         nResult = CheckResult(nResult, pHilbert);           // check the process result
         if (nResult == PROCESS_ERROR) {
@@ -130,7 +120,7 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             SetProcessMultiplier(0.5*32768./100.);          // Because of potential for overflow the hilbert transformed data is scaled 50%
             CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
             pMainWnd->SwapInOverlayColors(4);
-            PlotStandardPaint(pDC, rWnd, rClip, pHilbert, pModel, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
+            PlotStandardPaint(pDC, rWnd, rClip, pHilbert, &context.model, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
             pMainWnd->SwapOutOverlayColors();
         }
     }

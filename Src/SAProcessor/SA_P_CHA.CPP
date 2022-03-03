@@ -9,13 +9,8 @@
 #include "sa_process.h"
 #include "sa_p_cha.h"
 #include "sa_p_lou.h"
-
 #include "param.h"
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
+#include "ScopedCursor.h"
 
 //###########################################################################
 // CProcessChange
@@ -23,13 +18,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // using acf best fit residual (quality) and smoothed loudness results,
 // produced by processing smoothed loudness and raw pitch.
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcessChange construction/destruction/creation
-
-/***************************************************************************/
-// CProcessChange::CProcessChange Constructor
-/***************************************************************************/
-CProcessChange::CProcessChange(Context context) : CProcess(context) {
+CProcessChange::CProcessChange(Context& context) : CProcess(context) {
     m_pQualityFile = new CFile;
     m_qualityFileStatus.m_szFullName[0] = 0; // no file name
     m_hQualityData = NULL;
@@ -38,9 +27,6 @@ CProcessChange::CProcessChange(Context context) : CProcess(context) {
     m_bQualityBlockBegin = FALSE;
 }
 
-/***************************************************************************/
-// CProcessChange::~CProcessChange Destructor
-/***************************************************************************/
 CProcessChange::~CProcessChange() {
     // delete the temporary quality file
     FileUtils::Remove(m_qualityFileStatus.m_szFullName);
@@ -53,9 +39,6 @@ CProcessChange::~CProcessChange() {
         ::GlobalFree(m_hQualityData);
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessChange helper functions
 
 /***************************************************************************/
 // CProcessChange::Exit Exit on Error
@@ -239,13 +222,11 @@ long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
 
     // allocate global buffer for the processed quality data
     // start pitch process
-    // wait cursor
-    view.BeginWaitCursor();
+    CScopedCursor cursor(target);
     // start data processing
     if (!StartProcess(pCaller, PROCESSPIT, FALSE)) {
         // end data processing
         EndProcess();
-        view.EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // allocate global buffer for the processed quality data
@@ -258,7 +239,6 @@ long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
             app.ErrorMessage(IDS_ERROR_MEMALLOC);
             // end data processing
             EndProcess();
-            view.EndWaitCursor();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
         m_lpQualityData = (BPTR)::GlobalLock(m_hQualityData); // lock memory
@@ -268,7 +248,6 @@ long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
             ::GlobalFree(m_hQualityData);
             m_hQualityData = NULL;
             EndProcess(); // end data processing
-            view.EndWaitCursor();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
     }
@@ -501,7 +480,7 @@ long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
         m_pQualityFile->Abort();
     }
 
-    CString szFullName = m_qualityFileStatus.m_szFullName;
+    wstring szFullName = m_qualityFileStatus.m_szFullName;
 	// read the status
 	CFile::GetStatus(szFullName, m_qualityFileStatus);
     if (m_qualityFileStatus.m_size < 2 * sizeof(int)) {
@@ -513,7 +492,6 @@ long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
 	if (nLevel < 0) {
 		// end data processing
 		EndProcess();
-        view.EndWaitCursor();
         if ((nLevel == PROCESS_CANCELED)) {
 			// set your own cancel flag
 			CancelProcess();
@@ -524,12 +502,10 @@ long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
     // start change process
     if (!StartProcess(pCaller, PROCESSCHA)) { // start data processing
         EndProcess(); // end data processing
-        view.EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     if (!pLoudness->SmoothData(2)) { // smooth smoothed loudness two times
         EndProcess(); // end data processing
-        view.EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -542,7 +518,6 @@ long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
     // create the temporary change file
     if (!CreateTempFile(_T("CHA"))) { // creating error
         EndProcess(); // end data processing
-        view.EndWaitCursor();
         SetDataInvalid();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -620,7 +595,6 @@ long CProcessChange::Process(void * pCaller, int nProgress, int nLevel) {
     } else {
         EndProcess();
     }
-    view.EndWaitCursor();
     SetDataReady(bRes);
     if (bRes) {
         return MAKELONG(nLevel, nProgress);

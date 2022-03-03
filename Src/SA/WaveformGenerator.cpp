@@ -31,7 +31,7 @@ long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void
     }
 
     // start process
-    CScopedCursor waitCursor(view);
+    CScopedCursor waitCursor(target);
     if (!StartProcess(pCaller, PROCESSWBGENERATOR)) { // memory allocation failed or previous processing error
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

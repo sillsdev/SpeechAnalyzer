@@ -79,15 +79,9 @@ class CDlgAdvancedParseWords;
 class CDlgAdvancedSegment;
 class CDlgAdvancedParsePhrases;
 
-struct SaContext {
-    SaContext(CSaApp& app, CSaView& view, CSaDoc& model, CMainFrame& frame) : app(app), view(view), model(model), frame(frame) {}
-    CSaApp& app;
-    CSaDoc& model;
-    CSaView& view;
-    CMainFrame& frame;
-};
+#include "sa_context.h"
 
-class CSaView : public CView, public View {
+class CSaView : public CView, public CmdTarget {
     
 	DECLARE_DYNCREATE(CSaView)
 
@@ -248,7 +242,6 @@ public:
 	// change graph type
     BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);             
     void RemoveRtPlots();
-    LRESULT OnFrameAnimationDone(WPARAM wParam = 0, LPARAM lParam = 0L);
 	// overridden to draw this view
     virtual void OnDraw(CDC * pDC); 
     void OnGraphsTypesPostProcess(const UINT * GraphIDs, int nLayout = -1);
@@ -257,8 +250,7 @@ public:
     virtual void Dump(CDumpContext & dc) const;
 #endif
     CSaDoc * GetDocument();
-    Context GetContext();
-    SaContext GetSaContext();
+    SaContext & GetSaContext();
 
     // selection
     BOOL SelectFromPosition(int nSegmentIndex, DWORD dwPosition, bool bFindExact);
@@ -809,6 +801,11 @@ private:
     CDlgAdvancedParseWords * m_pDlgAdvancedParseWords;
     CDlgAdvancedSegment * m_pDlgAdvancedSegment;
     CDlgAdvancedParsePhrases * m_pDlgAdvancedParsePhrases;
+
+    void BeginWaitCursor() { CCmdTarget::BeginWaitCursor(); }
+    void EndWaitCursor() { CCmdTarget::EndWaitCursor(); }
+
+    unique_ptr<SaContext> saContext;
 };
 
 #endif

@@ -6,6 +6,7 @@
 
 class CPhoneticSegment : public CIndependentSegment {
 public:
+    CPhoneticSegment(Context& context, EAnnotation index, int master=-1) : CIndependentSegment(context, index, master) {};
     CPhoneticSegment() = delete;
 
     virtual long Process(void * pCaller, CSaDoc * pModel, int nProgress = 0, int nLevel = 1);

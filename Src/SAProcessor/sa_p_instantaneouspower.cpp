@@ -13,14 +13,6 @@
 #include "Butterworth.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
-//###########################################################################
-// CProcessInstantaneousPower
-
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
 // Cascade a zero/pole of the form (s-a)/(s+a) or (s+a)/(s-a) which has a A(w) response = 1
@@ -49,7 +41,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, int nProgress, int nLev
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -109,8 +101,6 @@ long CProcessInstantaneousPower::Process(void * pCaller, int nProgress, int nLev
 
         double dTeager = 3.*pData[1]*pData[1]-2.*pData[1]*pData[0]-2.*pData[1]*pData[2]+0.5*pData[0]*pData[0]+0.5*pData[2]*pData[2];
         double dTeagerPhased = 4*(3.*pDataPhased[1]*pDataPhased[1]-2.*pDataPhased[1]*pDataPhased[0]-2.*pDataPhased[1]*pDataPhased[2]+0.5*pDataPhased[0]*pDataPhased[0]+0.5*pDataPhased[2]*pDataPhased[2]);
-
-        UNUSED_ALWAYS((dTeager, dTeagerPhased));
 
         double dDataPE = pData[1] - dLastData;
         double dPhasedDataPE = 2*(pDataPhased[1] - dLastPhasedData);

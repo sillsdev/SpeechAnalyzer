@@ -20,13 +20,13 @@
 class CProcessSpectroFormants : public CProcess {
 
 public:
-    CProcessSpectroFormants(Context context) : CProcess(context) {};
+    CProcessSpectroFormants(Context& context) : CProcess(context) {};
     CProcessSpectroFormants() = delete;
 
     virtual DWORD GetDataSize();
     // return processed data size in LPC data structures
     virtual DWORD GetDataSize(size_t nElements);
-    long Process(void * pCaller, CView * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, View * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
     SFormantFreq * GetFormant(DWORD dwIndex); // return spectrogram slice data
     long ExtractFormants( DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth = TRUE, int nProgress = 0, int nLevel = 1);
     bool AreFormantTracksReady(); // return TRUE if processed formants data is ready

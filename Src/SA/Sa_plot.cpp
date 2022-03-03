@@ -346,7 +346,7 @@ void CPlotWnd::CopyTo(CPlotWnd * pTarg) {
 
     // copies don't have a process???
     pTarg->m_pAreaProcess = NULL;
-    pTarg->m_pLastProcess = NULL;
+    pTarg->m_pLastProcess = nullptr;
     pTarg->m_bLineDraw = m_bLineDraw;
     pTarg->m_bDotDraw = m_bDotDraw;
     pTarg->m_bCursors = m_bCursors;
@@ -1231,10 +1231,10 @@ void DrawData(CRect & rClip, CDataSource & dataSource, const CXScale & cXScale, 
 // done here.
 //**************************************************************************/
 void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * pProcess, CSaDoc * pProcessDoc, int nFlags) {
+    
     if (rClip.IsRectEmpty()) {
         return;
     }
-
     // get pointer to graph, view, document mainframe and legend window
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();

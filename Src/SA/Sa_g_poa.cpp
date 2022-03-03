@@ -124,7 +124,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView) {
 
     // Check for valid frame.
     CProcessPOA * pPOA = (CProcessPOA *)pModel->GetPOA(); // get pointer to POA object
-    if (!pAutoPitch->IsVoiced(pModel, dwFrameStart) || !pAutoPitch->IsVoiced(pModel, dwFrameStart + dwFrameSize - wSmpSize)) {
+    if (!pAutoPitch->IsVoiced( dwFrameStart) || !pAutoPitch->IsVoiced( dwFrameStart + dwFrameSize - wSmpSize)) {
         // frame is not entirely voiced
 		// get application colors
         Colors * pColor = pMainWnd->GetColors(); 

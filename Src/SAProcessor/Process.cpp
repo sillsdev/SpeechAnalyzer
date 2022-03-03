@@ -8,16 +8,15 @@
 #include "pch.h"
 #include "sa_process.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcess
 // Base class for all data processing classes. Does all jobs, common to all
 // data processing derived classes.
-CProcess::CProcess(Context context) : context(context), app(context.app), view(context.view), model(context.model), main(context.frame) {
+CProcess::CProcess(Context & context) : context(context), app(context.app), model(context.model), frame(context.frame), target(context.target) {
+    assert(&app != nullptr);
+    assert(&model != nullptr);
+    assert(&frame != nullptr);
+    assert(&target != nullptr);
     m_fileStatus.m_size = 0;
     m_fileStatus.m_attribute = 0;
     wmemset(m_fileStatus.m_szFullName,0,_countof(m_fileStatus.m_szFullName));
@@ -48,12 +47,6 @@ CProcess::~CProcess() {
     }
 }
 
-ProgressStatusBar * CProcess::GetStatusBar() {
-    // get pointer to status bar
-    ProgressStatusBar * pStatusBar = main.GetProgressStatusBar();
-    return pStatusBar;
-}
-
 /***************************************************************************/
 // CProcess::StartProcess Starting the process
 // Called by the derived classes to launch the process. The process status
@@ -68,13 +61,13 @@ ProgressStatusBar * CProcess::GetStatusBar() {
 bool CProcess::StartProcess(void * pCaller, ProcessorType processorType, DWORD dwBufferSize) {
     
     // get pointer to status bar
-    ProgressStatusBar * pStatusBar = GetStatusBar();
+    ProgressStatusBar * pStatusBar = frame.GetProgressStatusBar();
     m_dwBufferSize = GetBufferSize();
 
     // no previous process owner? you're the first, show to progress bar
     if (!pStatusBar->GetProcessOwner()) {
 		// show the progress status bar
-        main.ShowDataStatusBar(FALSE);    
+        frame.ShowDataStatusBar(FALSE);
     }
 
 	// set the process owner
@@ -103,7 +96,7 @@ bool CProcess::StartProcess(void * pCaller, ProcessorType processorType, BOOL bB
 // CProcess::SetProgress
 /***************************************************************************/
 void CProcess::SetProgress(int nPercent) {
-    ProgressStatusBar * pStatusBar = GetStatusBar();
+    ProgressStatusBar * pStatusBar = frame.GetProgressStatusBar();
     pStatusBar->SetProgress(nPercent);
 }
 
@@ -114,8 +107,8 @@ void CProcess::SetProgress(int nPercent) {
 /***************************************************************************/
 void CProcess::EndProcess(BOOL bProcessBar) {
     if (bProcessBar) {
-        main.ShowDataStatusBar(TRUE); // show the data status bar
-        ProgressStatusBar * pStatusBar = GetStatusBar();
+        frame.ShowDataStatusBar(TRUE); // show the data status bar
+        ProgressStatusBar * pStatusBar = frame.GetProgressStatusBar();
         pStatusBar->SetProcessOwner(NULL, NULL); // reset the process owner
     }
 }
@@ -460,8 +453,8 @@ BOOL CProcess::CreateTempFile(const wchar_t* szName, CFileStatus * pFileStatus) 
 }
 
 BOOL CProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pError) {
-    ASSERT(lpszFileName!=NULL);
-    ASSERT(wcslen(lpszFileName)>0);
+    assert(lpszFileName!=NULL);
+    assert(wcslen(lpszFileName)>0);
 
     if (m_pFile!=NULL) {
         delete m_pFile;    // We shouldn't really get here...
@@ -557,7 +550,6 @@ void CProcess::DeleteTempFile() {
 long CProcess::Exit(int nError) {
     SetDataInvalid();
     EndProcess(); // end data processing
-    view.EndWaitCursor();
     return MAKELONG(nError, 100);
 }
 

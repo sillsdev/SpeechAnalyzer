@@ -11,11 +11,6 @@
 #include "param.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessCustomPitch
 // class to calculate custom pitch for wave data. 
@@ -56,7 +51,7 @@ long CProcessCustomPitch::Process(void* pCaller, int nProgress, int nLevel) {
     }
 
     // start pitch process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSCPI)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

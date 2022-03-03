@@ -39,7 +39,7 @@ private:
     long max_drawing_level;
 
     BOOL CreateSpectroPalette(CDC* pDC, CDocument* pModel);     // creates the palette
-    void populateBmiColors(RGBQUAD* Quadcolors, CSaView* pView);
+    void PopulateBmiColors(RGBQUAD* Quadcolors, CSaView* pView);
     // Does a scatter plot of "which_leaf"'s data
     BOOL ScatterPlotDataTree(CWaveletNode* root,CDC* pDC, CRect* rWnd, COLORREF crColor, long which_leaf, double start, double end);
     // Does a scatter plot of this leaf's data

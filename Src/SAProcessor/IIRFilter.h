@@ -9,7 +9,7 @@
 
 class CProcessIIRFilter : public CWbProcess {
 public:
-    CProcessIIRFilter(Context context, WbDialogType type, BOOL bDstWBench = TRUE);
+    CProcessIIRFilter(Context& context, WbDialogType type, BOOL bDstWBench = TRUE);
     CProcessIIRFilter() = delete;
 
     void SetSourceProcess(IProcess * pSourceProcess, BOOL bWBenchProcess = TRUE);

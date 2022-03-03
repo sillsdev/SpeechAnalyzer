@@ -12,6 +12,7 @@
 #include "sa.h"
 #include "objectostream.h"
 #include "WbProcessDlgFactory.h"
+#include "SA_View.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -81,20 +82,21 @@ void CSaWorkbenchView::DoDataExchange(CDataExchange * pDX) {
 // CSaWorkbenchView::CreateWbProcess Creates a workbench process
 // The function returns NULL if the process could not create.
 //***************************************************************************/
-CWbProcess * CSaWorkbenchView::CreateWbProcess(int nFilterNumber) {
+CWbProcess * CSaWorkbenchView::CreateWbProcess( int nFilterNumber) {
+    Context& ctx = context.GetContext();
     switch (nFilterNumber) {
     case 1: // highpass
-        return new CProcessWbHighpass;
+        return new CProcessWbHighpass(ctx);
     case 2: // lowpass
-        return new CProcessWbLowpass;
+        return new CProcessWbLowpass(ctx);
     case 3: // bandpass
-        return new CProcessWbBandpass;
+        return new CProcessWbBandpass(ctx);
     case 4: // reverb
-        return new CProcessWbReverb;
+        return new CProcessWbReverb(ctx);
     case 5: // echo
-        return new CProcessWbEcho;
+        return new CProcessWbEcho(ctx);
     case 6: // equation
-        return new CProcessWbEquation;
+        return new CProcessWbEquation(ctx);
     case 7: // generator
         return NULL; // was new CProcessWbGenerator;
     default:
@@ -132,14 +134,15 @@ UINT CSaWorkbenchView::GetFilterResource( int nFilterNumber) {
 // The function acsesses the data of a CWbDlgProcesses dialog and creates
 // and sets up the choosen filters for the given process.
 /***************************************************************************/
-void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog) {
+void CSaWorkbenchView::SetupFilterProcesses( CObject * pDialog) {
 
 	// cast pointer
     CWbDlgProcesses * pDlg = (CWbDlgProcesses *)pDialog; 
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
+
     // make local copy of existing processes and filters and clear originals
-    CProcess * apWbLocalProcess[MAX_FILTER_NUMBER];
-    int anLocalID[MAX_FILTER_NUMBER];
+    CWbProcess* apWbLocalProcess[MAX_FILTER_NUMBER] = {};
+    int anLocalID[MAX_FILTER_NUMBER] = {};
     for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++) {
         apWbLocalProcess[nLoop] = pMain->SetWbProcess(pDlg->m_nProcess, nLoop, NULL);
         anLocalID[nLoop] = pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, 0);
@@ -178,7 +181,7 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog) {
                     pDlg->m_pWbProcessFilter3 = NULL;
                 } else {
                     // filter has to be created
-                    CProcess * pProcess = CreateWbProcess(pDlg->m_nFilter3);
+                    CWbProcess * pProcess = CreateWbProcess( pDlg->m_nFilter3);
                     if (pProcess) {
                         pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pProcess);
                     } else {
@@ -209,7 +212,7 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog) {
                         pDlg->m_pWbProcessFilter2 = NULL;
                     } else {
                         // filter has to be created
-                        CProcess * pProcess = CreateWbProcess(pDlg->m_nFilter2);
+                        CWbProcess * pProcess = CreateWbProcess( pDlg->m_nFilter2);
                         if (pProcess) {
                             pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pProcess);
                         } else {
@@ -240,7 +243,7 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog) {
                             pDlg->m_pWbProcessFilter1 = NULL;
                         } else {
                             // filter has to be created
-                            CProcess * pProcess = CreateWbProcess(pDlg->m_nFilter1);
+                            CWbProcess * pProcess = CreateWbProcess( pDlg->m_nFilter1);
                             if (pProcess) {
                                 pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pProcess);
                             } else {
@@ -811,7 +814,7 @@ BOOL CSaWorkbenchView::ReadProperties(CObjectIStream & obs) {
 
     int nLoop = 0;
     int nFilterID;
-    CProcess * pProcess;
+    CWbProcess * pProcess;
     BOOL bRet = obs.bReadBeginMarker(psz_processlist);
     while (!obs.bAtEnd() && bRet) {
         bRet = obs.bReadBeginMarker(psz_filterlist);

@@ -14,6 +14,7 @@
 
 #include "Sa_plot.h"
 #include "ProgressStatusBar.h"
+#include "ThreadManager.h"
 
 class CProcessSpectrogram;
 class CProcessSpectroFormants;
@@ -62,7 +63,7 @@ private:
     static int nPaletteMode;                // mode of created palette
     static CPalette SpectroPalette;         // color palette
     char SpectroAB;                         // indicates whether the plotted spectrogram is SpectrogramA or SpectrogramB
-    unsigned long threadId = -1;            // thread id for formant track processor
+    thread_handle threadId = -1;            // thread id for formant track processor
 };
 
 #endif

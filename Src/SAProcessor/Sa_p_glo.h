@@ -12,6 +12,9 @@
 
 class CProcessGlottis : public CProcess {
 public:
+    CProcessGlottis(Context& context) : CProcess(context) {};
+    CProcessGlottis() = delete;
+
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
 };
 

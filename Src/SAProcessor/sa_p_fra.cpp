@@ -11,15 +11,10 @@
 #include "sa_p_grappl.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 /***************************************************************************/
 // CProcessFragments::CProcessFragments Constructor
 /***************************************************************************/
-CProcessFragments::CProcessFragments(Context context) : CProcess(context) {
+CProcessFragments::CProcessFragments(Context& context) : CProcess(context) {
     m_pFragmenter = NULL;
     m_dwFragmentIndex = 0;
     m_dwFragmentCount = 0;
@@ -53,7 +48,7 @@ CProcessFragments::~CProcessFragments() {
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessFragments::Process(void* pCaller, int nProgress, int nLevel) {
-    TRACE(_T("Process: CProcessFragments\n"));
+    trace("Process: CProcessFragments\n");
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -63,7 +58,7 @@ long CProcessFragments::Process(void* pCaller, int nProgress, int nLevel) {
 
     bool background = model.IsBackgroundProcessing();
     if (!background) {
-        CScopedCursor cursor(view);
+        CScopedCursor cursor(target);
         return SubProcess(background, pCaller, nProgress, nLevel);
     } else {
         return SubProcess(background, pCaller, nProgress, nLevel);

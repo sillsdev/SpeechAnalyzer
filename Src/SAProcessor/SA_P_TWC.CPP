@@ -23,11 +23,6 @@
 #include "math.h"
 #include "scopedcursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessTonalWeightChart
 // class to calculate zero crossings for wave data.
@@ -35,7 +30,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessTonalWeightChart::CProcessTonalWeightChart Constructor
 /***************************************************************************/
-CProcessTonalWeightChart::CProcessTonalWeightChart(Context context) : CProcess(context) {
+CProcessTonalWeightChart::CProcessTonalWeightChart(Context& context) : CProcess(context) {
     m_dwFrameSize = 0;
 }
 
@@ -94,7 +89,7 @@ long CProcessTonalWeightChart::Process(void* pCaller, DWORD dwFrameStart, DWORD 
     }
 
     // start tonal weighting chart process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     // to do: need new status bar text for TWC
     if (!StartProcess(pCaller, PROCESSTWC)) { // memory allocation failed
         EndProcess(); // end data processing

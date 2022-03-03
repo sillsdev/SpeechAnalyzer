@@ -241,13 +241,13 @@ TranscriptionDataMap AttemptWhitespaceDelimited(vector<wstring> lines, MarkerLis
     }
 
     for (vector<vector<wstring>>::iterator it = list2.begin(); it!=list2.end(); it++) {
-        vector<wstring> tokens = *it;
-        vector<wstring>::iterator it2 = tokens.begin();
+        vector<wstring> tokens2 = *it;
+        vector<wstring>::iterator it2 = tokens2.begin();
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token = *it2;
-            map[marker].push_back(CSaString(token.c_str()));
+            wstring token2 = *it2;
+            map[marker].push_back(CSaString(token2.c_str()));
             it2++;
             it3++;
         }
@@ -308,8 +308,8 @@ TranscriptionDataMap AttemptTwoMarkerWhitespaceDelimited(vector<wstring> lines, 
         MarkerList::const_iterator it3 = markers.begin();
         while (it3!=markers.end()) {
             CSaString marker = *it3;
-            wstring token = *it2;
-            map[marker].push_back(CSaString(token.c_str()));
+            wstring token2 = *it2;
+            map[marker].push_back(CSaString(token2.c_str()));
             it2++;
             it3++;
         }

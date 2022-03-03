@@ -6,7 +6,7 @@
 #include <future>
 
 using namespace std;
-using thread_handle = unsigned long;
+using thread_handle = long;
 
 class CThreadManager {
 
@@ -19,7 +19,7 @@ class CThreadManager {
 private:
     map<thread_handle,shared_ptr<SThread>> threads;
     mutex mutex;
-    unsigned long seed = 0;
+    long seed = 0;
 
 public:
     bool isComplete(thread_handle threadId);

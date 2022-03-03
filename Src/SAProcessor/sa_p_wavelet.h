@@ -18,68 +18,24 @@
 
 #define DEBAUCHES4      4
 
-//**************************************************************************
-// CPlotWavelet Class
-//**************************************************************************
 class CProcessWavelet : public CProcess {
-private:
-    BOOL data_status;               // Is the data ready for display?
-    CWaveletParm m_WaveletParm;     // wavelet parameters
-
 public:
+    CProcessWavelet(Context & context) : CProcess(context) {}
+    CProcessWavelet() = delete;
+
     // Function to get data from SA
     BOOL Get_Raw_Data(long** pDataOut, DWORD* dwDataSize);
     long Process(void* pCaller, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
+
+private:
+    BOOL data_status;               // Is the data ready for display?
+    CWaveletParm m_WaveletParm;     // wavelet parameters
 };
 
 //**************************************************************************
 // CWaveletNode Class
 //**************************************************************************
 class CWaveletNode {
-
-private:
-    // Typical tree links
-    CWaveletNode* parent_node;
-    CWaveletNode* left_node;
-    CWaveletNode* right_node;
-
-    // Data of this node
-    long* data;
-    long dwDataSize;
-
-    // The frequency bounds of this node
-    double upper_freq;
-    double lower_freq;
-
-private:
-    // Main Helper functions
-    BOOL _DoMRAAnalysisTree(long stride);                                            // Recursive routine
-    BOOL WaveletTransformNode(long* pFinalLow,                                  // Convolution and most wavelet work
-            long* pFinalHigh,                             // done here
-            long wavelet_type,
-            long stride);
-
-    // Drawing helper routines
-    long  _DrawColorBandTree(unsigned char* pBits,                           // Recursive routine
-            CRect* rWnd,
-            long thickness,
-            long y,
-            double high,
-            double start,
-            double end);
-
-    BOOL                     DrawColorBandNode(unsigned char* pBits,                           // Draws one color band
-            CRect* rWnd,
-            long thickness,
-            long y_start,
-            double high,
-            double start,
-            double end);
-
-    // Private helper functions
-    double _GetMaxTree(double max);                                                           // recursive routine
-    double _GetMaxTreeBounds(double max, long start, long end);   // recursive routine
-    CWaveletNode* _GetNode(long level, bool reset);                                      // recursive routine
 
 public:
     CWaveletNode();
@@ -161,6 +117,51 @@ public:
             return FALSE;
         }
     }
+
+private:
+    // Typical tree links
+    CWaveletNode* parent_node;
+    CWaveletNode* left_node;
+    CWaveletNode* right_node;
+
+    // Data of this node
+    long* data;
+    long dwDataSize;
+
+    // The frequency bounds of this node
+    double upper_freq;
+    double lower_freq;
+
+private:
+    // Main Helper functions
+    BOOL _DoMRAAnalysisTree(long stride);                                    // Recursive routine
+    BOOL WaveletTransformNode(long* pFinalLow,                              // Convolution and most wavelet work
+            long* pFinalHigh,                                               // done here
+            long wavelet_type,
+            long stride);
+
+    // Drawing helper routines
+    long  _DrawColorBandTree(unsigned char* pBits,                           // Recursive routine
+            CRect* rWnd,
+            long thickness,
+            long y,
+            double high,
+            double start,
+            double end);
+
+    BOOL  DrawColorBandNode(unsigned char* pBits,                           // Draws one color band
+            CRect* rWnd,
+            long thickness,
+            long y_start,
+            double high,
+            double start,
+            double end);
+
+    // Private helper functions
+    double _GetMaxTree(double max);                                                           // recursive routine
+    double _GetMaxTreeBounds(double max, long start, long end);   // recursive routine
+    CWaveletNode* _GetNode(long level, bool reset);                                      // recursive routine
+
 };
 
 BOOL CreateTree(char* tree_definition, CWaveletNode** root_node);

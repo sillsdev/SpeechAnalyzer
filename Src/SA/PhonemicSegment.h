@@ -5,6 +5,7 @@
 
 class CPhonemicSegment : public CDependentSegment {
 public:
+    CPhonemicSegment(Context& context, EAnnotation index, int master = -1) : CDependentSegment(context,index,master) {}
     CPhonemicSegment() = delete;
 
     virtual bool Filter();

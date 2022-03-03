@@ -12,16 +12,11 @@
 #include "AbstractPitchProcess.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessGrappl
 // class to calculate grappl pitch for wave data.
 
-CProcessGrappl::CProcessGrappl(Context context) : CAbstractPitchProcess(context) {
+CProcessGrappl::CProcessGrappl(Context& context) : CAbstractPitchProcess(context) {
     // initialize algorithm parameters
     m_dAvgPitch = 0.;
 }
@@ -62,7 +57,7 @@ long CProcessGrappl::Process(void* pCaller, int nProgress, int nLevel) {
     }
 
     // start grappl process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSGRA)) { 
         // memory allocation failed
         EndProcess();
@@ -126,9 +121,9 @@ long CProcessGrappl::Process(void* pCaller, int nProgress, int nLevel) {
         dwBlockSize = GetBufferSize();
     }
 
-    TRACE("dwBlockSize=%d\n",dwBlockSize);
-    TRACE("dwDataSize=%d\n", dwDataSize);
-    TRACE("block align=%d\n",model.GetBlockAlign(true));
+    trace("dwBlockSize=%d\n",dwBlockSize);
+    trace("dwDataSize=%d\n", dwDataSize);
+    trace("block align=%d\n",model.GetBlockAlign(true));
 
     int iterations = 0;
 

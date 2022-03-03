@@ -10,7 +10,7 @@
 #define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
 #define OEMRESOURCE         // necessary to use system bitmaps
 
-#include <afx.h>
+#include <windows.h>
 #include <algorithm>
 #include <fstream>
 #include <list>
@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <locale.h>
+#include <assert.h>
 
 #include <sa_dsp.h>
 #include <fileutils.h>
@@ -57,10 +58,10 @@ typedef char* BPTR;
 #include <codecvt>
 #include <string>
 
+extern void trace(LPCSTR,...);
+
 #include "sap_defs.h"
-
 #include "resource.h"
-
 #include "context.h"
 
 #endif

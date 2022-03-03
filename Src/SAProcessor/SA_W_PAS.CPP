@@ -11,16 +11,11 @@
 #include "sa_process.h"
 #include "sa_w_pas.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessWbHighpass
 // Workbench process class to calculate new raw data with a highpass function.
 
-CProcessWbHighpass::CProcessWbHighpass(Context context) : CProcessButterworth(context,WbHiPass) {
+CProcessWbHighpass::CProcessWbHighpass(Context& context) : CProcessButterworth(context,WbHiPass) {
     m_nCutoff = 150;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -42,7 +37,7 @@ long CProcessWbHighpass::Process(void * pCaller, int nProgress, int nLevel) {
     // check if nested workbench processes
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess(model.GetWbProcess() - 1, nLevel);
+        pLowerProcess = frame.GetWbProcess(model.GetWbProcess() - 1, nLevel);
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter!=FALSE);
@@ -98,7 +93,7 @@ BOOL CProcessWbHighpass::ReadProperties(CObjectIStream & obs) {
 // CProcessWbLowpass
 // Workbench process class to calculate new raw data with a lowpass function.
 
-CProcessWbLowpass::CProcessWbLowpass(Context context) : CProcessButterworth(context,WbLoPass) {
+CProcessWbLowpass::CProcessWbLowpass(Context& context) : CProcessButterworth(context,WbLoPass) {
     m_nCutoff = 3000;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -120,7 +115,7 @@ long CProcessWbLowpass::Process(void * pCaller, int nProgress, int nLevel) {
     // check if nested workbench processes
     CProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = ((CWbProcess *)main.GetWbProcess(model.GetWbProcess() - 1, nLevel));
+        pLowerProcess = ((CWbProcess *)frame.GetWbProcess(model.GetWbProcess() - 1, nLevel));
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
@@ -171,7 +166,7 @@ BOOL CProcessWbLowpass::ReadProperties(CObjectIStream & obs) {
 /***************************************************************************/
 // CProcessWbBandpass::CProcessWbBandpass Constructor
 /***************************************************************************/
-CProcessWbBandpass::CProcessWbBandpass(Context context) : CProcessButterworth(context,WbBandPass) {
+CProcessWbBandpass::CProcessWbBandpass(Context& context) : CProcessButterworth(context,WbBandPass) {
     m_nUpperCutoff = 3000;
     m_nLowerCutoff = 150;
     m_nOrder = 3;
@@ -194,7 +189,7 @@ long CProcessWbBandpass::Process(void * pCaller, int nProgress, int nLevel) {
     // check if nested workbench processes
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess(model.GetWbProcess() - 1, nLevel);
+        pLowerProcess = frame.GetWbProcess(model.GetWbProcess() - 1, nLevel);
     }
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);

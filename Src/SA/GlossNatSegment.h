@@ -5,6 +5,7 @@
 
 class CGlossNatSegment : public CTextSegment {
 public:
+    CGlossNatSegment(Context& context, EAnnotation index, int master = -1) : CTextSegment(context,index,master) {};
     CGlossNatSegment() = delete;
 
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;

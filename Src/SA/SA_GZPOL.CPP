@@ -210,7 +210,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         double * pDataY = (double *)m_lpDataY; // pointer to X-axis data
         int * pDataSym = (int *)m_lpDataSym; // pointer to symbol data
 
-        pSDP->SetArea(pView);
+        pSDP->SetAreaFromView(pView->GetStartCursorPosition(), pView->GetStopCursorPosition());
         if (TRUE) {
             // new data has to be processed
             dwStart = pSDP->GetAreaPosition();

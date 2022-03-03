@@ -13,9 +13,9 @@
 
 class CProcessWbEquation : public CWbProcess {
 public:
-    CProcessWbEquation(Context context);
+    CProcessWbEquation(Context& context);
 
-    BOOL CheckFunction(string*); // check the function string
+    BOOL CheckFunction(LPCSTR); // check the function string
     long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(CObjectOStream& obs);
     virtual BOOL ReadProperties(CObjectIStream& obs);
@@ -29,7 +29,7 @@ public:
 
 private:
     string m_szEquation; // equation string
-    double ParseUtf8(const string &, INT* att, double X, double Y = 0.0);
+    double ParseUtf8(LPCSTR, INT* att, double X, double Y = 0.0);
 };
 
 #endif //_SA_W_EQU_H

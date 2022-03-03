@@ -45,11 +45,6 @@ static double g_coeff4[] = {-.0105974017850690,
                             0.2303778133088964
                            };
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 using namespace std;
 
 // Process
@@ -60,7 +55,6 @@ using namespace std;
 //*  Returns       :
 //**************************************************************************
 long CProcessWavelet::Process(void * pCaller, int nWidth, int /*nHeight*/, int nProgress, int nLevel) {
-    UNUSED_ALWAYS(nWidth);
 
     // check canceled
     if (data_status & PROCESS_CANCEL) {
@@ -73,7 +67,7 @@ long CProcessWavelet::Process(void * pCaller, int nWidth, int /*nHeight*/, int n
     }
 
     // wait cursor
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSWVL)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -337,9 +331,9 @@ BOOL CWaveletNode::WaveletTransformNode(long * pFinalLow,
 
     double datapoint;               // temp for getting each datapoint
 
-    ASSERT(data != NULL);
-    ASSERT(pFinalLow != NULL);
-    ASSERT(pFinalHigh != NULL);
+    assert(data != NULL);
+    assert(pFinalLow != NULL);
+    assert(pFinalHigh != NULL);
 
     switch (wavelet_type) {
     case DEBAUCHES4:
@@ -606,7 +600,6 @@ BOOL CWaveletNode::TransformSmoothingNode() {
 //*  Returns       : TRUE - on sucess
 //*                                  FALSE - on error
 //**************************************************************************
-
 BOOL CWaveletNode::TransformFitWindowNode(CRect * rWnd) {
     long data_index;
     double max;
@@ -699,19 +692,14 @@ long CWaveletNode::_DrawColorBandTree(unsigned char * pBits,
 BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, CRect * rWnd, long thickness, long y_start, double high, double start, double end) {
     double ColorScale, datapoint;
     double fHScale;
-
     long num_colors = 234;      // Todo: get the actual number from somewhere
     long final_color;
-
     double data_index;
 
-
-    ASSERT(pBits != NULL);
-
+    assert(pBits != NULL);
 
     ColorScale = (num_colors / high);
     fHScale = (double)((double)(end - start)/ (double)rWnd->Width()); // Scale our data to fit our width
-
 
     // Draw
     for (long y = y_start; y < (y_start + thickness); y++) {    // Draw "thickness" num of lines
@@ -743,7 +731,7 @@ BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, CRect * rWnd, long t
 //**************************************************************************
 CWaveletNode * CWaveletNode::GetNode(long level) {
     return _GetNode(level, true);
-}       // Wrapper
+}
 
 CWaveletNode * CWaveletNode::_GetNode(long level, bool reset) {
     CWaveletNode * finalNode = NULL;
@@ -787,7 +775,7 @@ CWaveletNode * CWaveletNode::_GetNode(long level, bool reset) {
 //*  Returns       : the max of the data
 //**************************************************************************
 double CWaveletNode::GetMaxNode() {
-    ASSERT(data != NULL);
+    assert(data != NULL);
 
     double max = 0;
 
@@ -807,7 +795,7 @@ double CWaveletNode::GetMaxNode() {
 //*  Returns       : the max of the data
 //**************************************************************************
 double CWaveletNode::GetMaxNodeBounds(long start, long end) {
-    ASSERT(data != NULL);
+    assert(data != NULL);
 
     double max = 0;
 
@@ -827,7 +815,7 @@ double CWaveletNode::GetMaxNodeBounds(long start, long end) {
 //*  Returns       : the min of the data
 //**************************************************************************
 double CWaveletNode::GetMinNode() {
-    ASSERT(data != NULL);
+    assert(data != NULL);
 
     double min = 0xFFFFFFFF;
 
@@ -847,7 +835,7 @@ double CWaveletNode::GetMinNode() {
 //*  Returns       : the min of the data
 //**************************************************************************
 double CWaveletNode::GetMinNodeBounds(long start, long end) {
-    ASSERT(data != NULL);
+    assert(data != NULL);
 
     double min = 0xFFFFFFFF;
 

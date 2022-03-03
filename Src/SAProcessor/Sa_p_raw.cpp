@@ -15,11 +15,6 @@
 #include "sa_w_adj.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 /***************************************************************************/
 // CProcessRaw::Process Processing raw data (convert raw data to 16-bit)
 /***************************************************************************/
@@ -33,7 +28,7 @@ long CProcessRaw::Process(void * pCaller, int nProgress, int nLevel) {
         return MAKELONG(--nLevel, nProgress);    
     }
     //TRACE(_T("Process: CProcessRaw\n"));
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSRAW)) { 
 		// memory allocation failed
 		// end data processing

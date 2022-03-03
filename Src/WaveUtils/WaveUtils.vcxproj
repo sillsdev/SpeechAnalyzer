@@ -29,9 +29,6 @@
     <ClCompile Include="WaveUtils.cpp" />
     <ClCompile Include="WaveWriter.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7710BEA3-39DC-4485-893F-ED4D9CA91973}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

@@ -7,6 +7,7 @@
 #include "Butterworth.h"
 #include "Hilbert.h"
 #include "WbProcess.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -16,7 +17,7 @@ static char THIS_FILE[]=__FILE__;
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-CProcessIIRFilter::CProcessIIRFilter(Context context, WbDialogType type, BOOL bDstWBench) : CWbProcess(context, type) {
+CProcessIIRFilter::CProcessIIRFilter(Context& context, WbDialogType type, BOOL bDstWBench) : CWbProcess(context, type) {
     m_pSourceProcess = NULL;
     m_bSrcWBenchProcess = TRUE;
     m_bDstWBenchProcess = bDstWBench;
@@ -50,7 +51,7 @@ static void StoreWaveData(int nData, int wSmpSize, void * pTargetData) {
 
 long CProcessIIRFilter::Process(void * pCaller, int nProgress, int nLevel) {
     
-	TRACE("IIRFilter::Process %d %d\n",nProgress,nLevel);
+    trace("IIRFilter::Process %d %d\n",nProgress,nLevel);
 
     if (IsCanceled()) {
 		// process canceled
@@ -62,7 +63,7 @@ long CProcessIIRFilter::Process(void * pCaller, int nProgress, int nLevel) {
     int nOldLevel = nLevel; 
     IProcess * pLowerProcess = m_pSourceProcess;
     if (pLowerProcess!=NULL) {
-        TRACE("process lower\n");
+        trace("process lower\n");
         // there is at least one source processes to process first
         long lResult = pLowerProcess->Process(pCaller, nProgress, ++nLevel);
         nLevel = (short int)LOWORD(lResult);
@@ -85,15 +86,13 @@ long CProcessIIRFilter::Process(void * pCaller, int nProgress, int nLevel) {
         return MAKELONG(nLevel, nProgress);
     }
 
-    TRACE("start process\n");
-    // start process
-	// wait cursor
-    view.BeginWaitCursor();
+    trace("start process\n");
+
+    CScopedCursor cursor(target);
 	// start data processing
     if (!StartProcess(pCaller, PROCESSWBLP)) {
 		// end data processing
         EndProcess(); 
-        view.EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
@@ -101,7 +100,6 @@ long CProcessIIRFilter::Process(void * pCaller, int nProgress, int nLevel) {
     if (!CreateTempFile(L"IIR")) {
         // creation error - end processing
         EndProcess();
-        view.EndWaitCursor();
         SetDataReady(FALSE);
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -122,7 +120,6 @@ long CProcessIIRFilter::Process(void * pCaller, int nProgress, int nLevel) {
     CloseTempFile();
 	// end data processing
     EndProcess((nProgress >= 95)); 
-    view.EndWaitCursor();
     SetDataReady();
 
     //Dump("iirfilter end process");
@@ -130,17 +127,17 @@ long CProcessIIRFilter::Process(void * pCaller, int nProgress, int nLevel) {
 }
 
 long CProcessIIRFilter::ProcessForward( IProcess * pLowerProcess, int & nProgress, int & nLevel) {
-    TRACE("forward\n");
+    trace("forward\n");
 
     m_bReverse = FALSE;
 
     DWORD dwDataPos = 0;    // data position pointer
 
     WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? model.GetSampleSize() : sizeof(short));
-    TRACE("wDstSmpSize=%d\n",wDstSmpSize);
+    trace("wDstSmpSize=%d\n",wDstSmpSize);
 
     DWORD dwBufferSize = GetBufferSize();
-    TRACE("dwBufferSize=%d\n",dwBufferSize);
+    trace("dwBufferSize=%d\n",dwBufferSize);
 
     // get source data size
     DWORD dwDataSize;
@@ -150,7 +147,7 @@ long CProcessIIRFilter::ProcessForward( IProcess * pLowerProcess, int & nProgres
 		// size of raw data
         dwDataSize = model.GetDataSize();
     }
-    TRACE("dwDataSize=%d\n",dwDataSize);
+    trace("dwDataSize=%d\n",dwDataSize);
 
     WORD wSrcSmpSize = WORD(m_bSrcWBenchProcess ? model.GetSampleSize() : sizeof(short));
 
@@ -197,10 +194,10 @@ long CProcessIIRFilter::ProcessForward( IProcess * pLowerProcess, int & nProgres
 
         dwDataPos = dwBlockEnd;
     }
-    TRACE("wrote %d values\n",count);
+    trace("wrote %d values\n",count);
 
     if (m_bFilterFilter) {
-        TRACE("filtering\n");
+        trace("filtering\n");
         // Append some silence to handle phase lag
         DWORD dwSettlingSize = FilterFilterSilenceSamples()*wSrcSmpSize;
         while (dwDataPos < (dwDataSize + dwSettlingSize)) {
@@ -222,21 +219,21 @@ long CProcessIIRFilter::ProcessForward( IProcess * pLowerProcess, int & nProgres
             count += dwLength*wDstSmpSize/wSrcSmpSize;
         }
     }
-    TRACE("wrote %d values\n",count);
+    trace("wrote %d values\n",count);
     return MAKELONG(nLevel, nProgress);
 }
 
 long CProcessIIRFilter::ProcessReverse(void * pCaller, int & nProgress, int & nLevel) {
-    TRACE("reverse\n");
+    trace("reverse\n");
     int count = 0;
 
     DWORD dwDataPos = 0;    // data position pointer
 
     WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? model.GetSampleSize() : sizeof(short));
-    TRACE("wDstSmpSize=%d\n",wDstSmpSize);
+    trace("wDstSmpSize=%d\n",wDstSmpSize);
 
     DWORD dwBufferSize = GetBufferSize();
-    TRACE("dwBufferSize=%d\n",dwBufferSize);
+    trace("dwBufferSize=%d\n",dwBufferSize);
 
     // process in reverse
     // first do forward pass
@@ -264,11 +261,11 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, int & nProgress, int & nL
     } else {
         dwDataSize = (forwardPass.GetDataSize()-FilterFilterSilenceSamples())*wSmpSize;
     }
-    TRACE("dwDataSize=%d\n",dwDataSize);
+    trace("dwDataSize=%d\n",dwDataSize);
 
     dwDataPos = forwardPass.GetDataSize() * wSmpSize;
-    TRACE("forwardPass.GetDataSize()=%d\n",forwardPass.GetDataSize());
-    TRACE("dwDataPos=%d\n",dwDataPos);
+    trace("forwardPass.GetDataSize()=%d\n",forwardPass.GetDataSize());
+    trace("dwDataPos=%d\n",dwDataPos);
 
     while (dwDataPos > dwDataSize) {
         // process silence
@@ -326,7 +323,7 @@ long CProcessIIRFilter::ProcessReverse(void * pCaller, int & nProgress, int & nL
     // Preserve source setting so that we can use it
     m_pSourceProcess = forwardPass.m_pSourceProcess;
     //Dump("butterworth end reverse");
-    TRACE("wrote %d values\n",count);
+    trace("wrote %d values\n",count);
     return MAKELONG(nLevel, nProgress);
 }
 
@@ -358,8 +355,8 @@ int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize) {
                              1,
                              m_bReverse);
         if (pSourceData==NULL) {
-            ASSERT(FALSE);
-            TRACE(_T("Failed reading source data\n"));
+            assert(FALSE);
+            trace("Failed reading source data\n");
             return 0;
         }
         BYTE bData = *((BYTE *)pSourceData); // data range is 0...255 (128 is center)
@@ -374,8 +371,8 @@ int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize) {
                              2,
                              m_bReverse);
         if (pSourceData==NULL) {
-            ASSERT(FALSE);
-            TRACE(_T("Failed reading source data\n"));
+            assert(FALSE);
+            trace("Failed reading source data\n");
             return 0;
         }
         nData = *((short int *)pSourceData);

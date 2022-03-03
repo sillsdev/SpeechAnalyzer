@@ -5,6 +5,7 @@
 
 class COrthographicSegment : public CDependentSegment {
 public:
+    COrthographicSegment(Context& context, EAnnotation index, int master = -1) : CDependentSegment(context,index,master) {}
     COrthographicSegment() = delete;
 
 private:

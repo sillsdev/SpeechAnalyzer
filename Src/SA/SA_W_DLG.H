@@ -20,9 +20,9 @@ public:
     void OnHelpWorkbench();
 
     int m_nProcess; // active process
-    CProcess * m_pWbProcessFilter1;
-    CProcess * m_pWbProcessFilter2;
-    CProcess * m_pWbProcessFilter3;
+    CWbProcess * m_pWbProcessFilter1;
+    CWbProcess * m_pWbProcessFilter2;
+    CWbProcess * m_pWbProcessFilter3;
     enum { IDD = IDD_WB_PROCESSES };
     int m_nFilter1;
     int m_nFilter2;
@@ -112,7 +112,7 @@ public:
     void OnHelpWorkbench();
 
     enum { IDD = IDD_WB_FILTEREQUATION };
-    CSaString m_szEquation;
+    CString m_szEquation;
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support

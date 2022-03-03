@@ -338,7 +338,6 @@ void CDlgKlattAll::OnKlattDisplay() {
             CSaDoc * pModel = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
             m_szSynthesizedFilename.Empty();
             LabelDocument(pModel);
-
             if (m_bMinimize) {
                 ShowWindow(SW_MINIMIZE);
             }
@@ -467,7 +466,7 @@ void CDlgKlattAll::OnPlaySource() {
 }
 
 PCMWAVEFORMAT CDlgKlattAll::pcmWaveFormat() {
-    PCMWAVEFORMAT pcm;
+    PCMWAVEFORMAT pcm = {};
 
     pcm.wBitsPerSample = 16;
     pcm.wf.wFormatTag = 1;  // PCM
@@ -495,7 +494,7 @@ BOOL CDlgKlattAll::SynthesizeWave(LPCTSTR pszPathName, CIpaCharVector & cChars) 
 
     /* Create the output file RIFF chunk of form type 'WAVE'.
     */
-    MMCKINFO mmckinfoParent;  // chunk info. for output RIFF chunk
+    MMCKINFO mmckinfoParent = {};  // chunk info. for output RIFF chunk
     mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E');
     if (mmioCreateChunk(hmmioFile, &mmckinfoParent, MMIO_CREATERIFF) != 0) {
         // error writing data chunk
@@ -509,7 +508,7 @@ BOOL CDlgKlattAll::SynthesizeWave(LPCTSTR pszPathName, CIpaCharVector & cChars) 
     * specify it in the MMCKINFO structure so MMIO doesn't have to seek
     * back and set the chunk size after ascending from the chunk.
     */
-    MMCKINFO       mmckinfoSubchunk;      // info. for a chunk in output file
+    MMCKINFO mmckinfoSubchunk = {};      // info. for a chunk in output file
     mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
     mmckinfoSubchunk.cksize = sizeof(PCMWAVEFORMAT);  // we know the size of this ck.
     if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0) {
@@ -661,7 +660,7 @@ void CDlgKlattAll::ParseConstantsGrid(int nGrid, CKlattConstants & cConstants) {
     for (int i=0; parameterInfo[i].parameterOffset != -1; i++) {
         int row = i + 1;
         CString value = m_cGrid[nGrid].GetTextMatrix(row,2);
-        swscanf(value, parameterInfo[i].typeScanf, ((char *)&cConstants)+parameterInfo[i].parameterOffset);
+        swscanf_s(value, parameterInfo[i].typeScanf, ((char *)&cConstants)+parameterInfo[i].parameterOffset);
     }
 }
 
@@ -684,11 +683,8 @@ void CDlgKlattAll::ParseParameterGrid(int nGrid, CIpaCharVector & cChars) {
         for (int i=0; parameterInfo[i].parameterOffset != -1; i++) {
             TEMPORAL * pTemporal = &columnChar.parameters;
             int row = i + rowParameters;
-
-            CString value;
-
-            value = cGrid.GetTextMatrix(row,column);
-            int scanned = swscanf(value, parameterInfo[i].typeScanf, ((char *)pTemporal)+parameterInfo[i].parameterOffset);
+            CString value = cGrid.GetTextMatrix(row,column);
+            int scanned = swscanf_s(value, parameterInfo[i].typeScanf, ((char *)pTemporal)+parameterInfo[i].parameterOffset);
             if (scanned == 1) {
                 bColumnValid = TRUE;
             }
@@ -786,8 +782,7 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const & szGrid, CIpaCharVe
                 default:
                     if (row >= rowParameters && parameterInfo[i].parameterOffset != -1) {
                         TEMPORAL * pTemporal = &columnChar.parameters;
-
-                        int scanned = swscanf(szField, parameterInfo[i].typeScanf, ((char *)pTemporal)+parameterInfo[i].parameterOffset);
+                        int scanned = swscanf_s(szField, parameterInfo[i].typeScanf, ((char *)pTemporal)+parameterInfo[i].parameterOffset);
                         if (scanned == 1) {
                             bColumnValid = TRUE;
                         }
@@ -882,7 +877,7 @@ void CDlgKlattAll::LabelGrid(int nGrid) {
 
         const SParameterDescription * parameterInfo = GetTemporalKlattDesc();
 
-        for (register int i=0; parameterInfo[i].parameterOffset != -1; i++) {
+        for (int i=0; parameterInfo[i].parameterOffset != -1; i++) {
             int row = i+rowParameters;
 
             if (row >= m_cGrid[nGrid].GetRows()) {
@@ -995,18 +990,19 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid & cGrid) {
     CString szFilename = m_szSourceFilename;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+    CSaDoc * pModel = pApp->IsFileOpened(szFilename);
     if (!pModel) {
         return;
     }
     CSegment * pPhonetic = pModel->GetSegment(PHONETIC);
 
-    if (pPhonetic->IsEmpty()) { // no annotations
+    if (pPhonetic->IsEmpty()) { 
+        // no annotations
         return;
     }
 
     enum {PITCH, CALCULATIONS};
-    double fSizeFactor[CALCULATIONS];
+    double fSizeFactor[CALCULATIONS] = {};
 
     if (m_bPitch) { // formants need pitch info
         CProcessSmoothedPitch * pPitch = pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
@@ -1198,18 +1194,18 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
     BOOL bRes = TRUE;
     CString szString;
 
-    SSpectProcSelect SpectraSelected;
+    SSpectProcSelect SpectraSelected = {};
     SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
-    SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
+    SpectraSelected.bLpcSpectrum = -1;          // use Lpc method for estimating formants
 
-    long nResult = pSpectrum->Process(this,pModel,dwFrameStart * wSmpSize, dwFrameLength * wSmpSize, SpectraSelected);
+    long nResult = pSpectrum->Process(this,dwFrameStart * wSmpSize, dwFrameLength * wSmpSize, SpectraSelected);
     if (nResult == PROCESS_ERROR) {
         return FALSE;
     }
 
     // Get voicing/frication information
-    double fPowerLo = pSpectrum->GetSpectralRegionPower(pModel, 0, 2000);
-    double fPowerHi = (dwSamplesPerSec >= 16000)?pSpectrum->GetSpectralRegionPower(pModel, 6000, 7999):0;
+    double fPowerLo = pSpectrum->GetSpectralRegionPower( 0, 2000);
+    double fPowerHi = (dwSamplesPerSec >= 16000)?pSpectrum->GetSpectralRegionPower( 6000, 7999):0;
     double fPowerAll = 10.0 * log10(pow(10.0, fPowerLo / 10.0) + pow(10.0, fPowerHi / 10.0));
 
     unsigned nAV = 0;
@@ -1230,7 +1226,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
                 nAF = (unsigned)(fBEWt * (fPowerHi + 105.0));
 
                 // Auto-Pitch voicing detector
-                if (pAutoPitch->IsVoiced(pModel, dwFrameStart * wSmpSize)) {
+                if (pAutoPitch->IsVoiced( dwFrameStart * wSmpSize)) {
                     nAV += (unsigned)(fAPWt * (fPowerAll +  85.0));
                 } else {
                     nAF += (unsigned)(fAPWt * (fPowerAll + 100.0));
@@ -1255,7 +1251,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
                 fFractionAF = fBEWt * (fPowerHi/(fPowerLo+fPowerHi));
 
                 // Auto-Pitch voicing detector
-                if (pAutoPitch->IsVoiced(pModel, dwFrameStart * wSmpSize)) {
+                if (pAutoPitch->IsVoiced( dwFrameStart * wSmpSize)) {
                     fFractionAV += fAPWt;
                 } else {
                     fFractionAF += fAPWt;
@@ -1579,7 +1575,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
     CString szFilename = m_szSourceFilename;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+    CSaDoc * pModel = pApp->IsFileOpened(szFilename);
     if (!pModel) {
         return;
     }
@@ -1596,7 +1592,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
     }
 
     enum {PITCH, FORMANTS, CALCULATIONS};
-    double fSizeFactor[CALCULATIONS];
+    double fSizeFactor[CALCULATIONS] = {};
 
     BOOL bPitch = TRUE;
     BOOL bFormants = TRUE;
@@ -1612,10 +1608,10 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
                           };
     CProcessZCross * pZCross = NULL;
     CProcessSpectrum * pSpectrum = NULL;
-    CUttParm myUttParm;
+    CUttParm myUttParm = {};
     CUttParm * pUttParm = &myUttParm;
     pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
-    CUttParm cSavedUttParm;
+    CUttParm cSavedUttParm = {};
     CUttParm * pSavedUttParm = &cSavedUttParm;
 
     CProcessSmoothedPitch * pPitch = NULL;
@@ -2000,22 +1996,22 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid) {
         CString szFilename = m_szSourceFilename;
 
         CSaApp * pApp = (CSaApp *)AfxGetApp();
-        CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+        CSaDoc * pModel = pApp->IsFileOpened(szFilename);
         if (!pModel) {
             return;
         }
 
         enum {PITCH, CALCULATIONS};
-        double fSizeFactor[CALCULATIONS];
+        double fSizeFactor[CALCULATIONS] = {};
 
         BOOL bPitch = TRUE;
 
         // CProcessGrappl* pAutoPitch = NULL;
         CProcessSmoothedPitch * pPitch = NULL;
-        CUttParm myUttParm;
+        CUttParm myUttParm = {};
         CUttParm * pUttParm = &myUttParm;
         pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
-        CUttParm cSavedUttParm;
+        CUttParm cSavedUttParm = {};
         CUttParm * pSavedUttParm = &cSavedUttParm;
 
         if (bPitch) {
@@ -2037,7 +2033,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid) {
                 pPitch->SetDataInvalid();
             }
             pModel->SetUttParm(pUttParm);
-            short int nResult = LOWORD(pPitch->Process(this, pModel)); // process data
+            short int nResult = LOWORD(pPitch->Process(this)); // process data
             pModel->SetUttParm(pSavedUttParm); // restore smoothed pitch parameters
             if (nResult == PROCESS_ERROR) {
                 bPitch = FALSE;
@@ -2083,7 +2079,7 @@ void CDlgKlattAll::OnFileOpen() {
 
         CString szData;
 
-        UINT uRead;
+        UINT uRead = 0;
 
         do {
             char buf[1024];
@@ -2160,9 +2156,8 @@ static double NextValue(LPCTSTR szString,unsigned & uIndex) {
 }
 
 void CDlgKlattAll::OnSmoothe(void) {
-    //long columnLast = m_cGrid[m_nSelectedView].GetCols(0);
 
-    for (register int cRow = rowF0; cRow<rowA8V; ++cRow) {
+    for ( int cRow = rowF0; cRow<rowA8V; ++cRow) {
         CString szData = m_cGrid[m_nSelectedView].SaveRange(cRow, columnFirst, cRow+1, m_cGrid[m_nSelectedView].GetCols(0), TRUE);
         if (!szData.GetLength()) {
             continue;
@@ -2378,7 +2373,7 @@ void CIpaCharVector::Load(CString szPath) {
 
     CString line;
     while (file.ReadString(line)) {
-        TEMPORAL cTemporal;
+        TEMPORAL cTemporal = {};
 
         if (line[0] == '#') { // skip comments
             continue;
@@ -2386,11 +2381,8 @@ void CIpaCharVector::Load(CString szPath) {
 
         for (int i=0; parameterInfo[i].parameterOffset != -1; i++) {
             TEMPORAL * pTemporal = &cTemporal;
-
-            CString value;
-
-            value = CSFMHelper::ExtractTabField(line, i+1);
-            swscanf(value, parameterInfo[i].typeScanf, ((char *)pTemporal)+parameterInfo[i].parameterOffset);
+            CString value = CSFMHelper::ExtractTabField(line, i+1);
+            swscanf_s(value, parameterInfo[i].typeScanf, ((char *)pTemporal)+parameterInfo[i].parameterOffset);
         }
 
         this->push_back(SIpaChar(CSFMHelper::ExtractTabField(line, 0), cTemporal));

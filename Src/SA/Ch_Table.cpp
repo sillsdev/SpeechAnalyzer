@@ -22,14 +22,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // the character chart. The characters are assigned to the static dialog
 // windows.
 
-/////////////////////////////////////////////////////////////////////////////
-// CCharTable construction/destruction/creation
-
-/***************************************************************************/
-// CCharTable::CCharTable Constructor
-/***************************************************************************/
 CCharTable::CCharTable() {
-
     m_pFont = NULL;
     m_pCaller = NULL;
     m_apParent[VOWEL] = NULL;
@@ -38,22 +31,14 @@ CCharTable::CCharTable() {
     m_apParent[SUPRASEG] = NULL;
 }
 
-/***************************************************************************/
-// CCharTable::~CCharTable Destructor
-/***************************************************************************/
 CCharTable::~CCharTable() {
-
     CleanUp();
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CCharTable helper functions
 
 /***************************************************************************/
 // CCharTable::CleanUp
 /***************************************************************************/
 void CCharTable::CleanUp() {
-
     // delete all the objects in the array and empty the array
     int nArraySize = m_CharOb.GetUpperBound() + 1;
     for (int nLoop = 0; nLoop < nArraySize; nLoop++) {
@@ -136,25 +121,11 @@ void CCharTable::InitPage(int nType) {
 // IPA character table class. Sets up and maintains a character table for the
 // character chart based on the IPA font.
 
-/////////////////////////////////////////////////////////////////////////////
-// CIPATable construction/destruction/creation
-
-/***************************************************************************/
-// CIPATable::CIPATable Constructor
-/***************************************************************************/
 CIPATable::CIPATable() {
-
 }
 
-/***************************************************************************/
-// CIPATable::~CIPATable Destructor
-/***************************************************************************/
 CIPATable::~CIPATable() {
-
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CIPATable helper functions
 
 /***************************************************************************/
 // CIPATable::SetupTable Sets up a character table

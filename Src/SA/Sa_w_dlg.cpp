@@ -23,9 +23,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CWbDlgProcesses dialog
 // Lets the user configure the workbench processes
 
-/////////////////////////////////////////////////////////////////////////////
-// CWbDlgProcesses message map
-
 BEGIN_MESSAGE_MAP(CWbDlgProcesses, CDialog)
     ON_BN_CLICKED(IDC_PROPERTIES1, OnProperties1)
     ON_BN_CLICKED(IDC_PROPERTIES2, OnProperties2)
@@ -112,6 +109,7 @@ BOOL CWbDlgProcesses::OnInitDialog() {
 // process created for this filter, it will be deleted first.
 /***************************************************************************/
 void CWbDlgProcesses::OnProperties1() {
+    
     UpdateData(TRUE);
     // check if filter already exists
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
@@ -133,14 +131,16 @@ void CWbDlgProcesses::OnProperties1() {
             // delete existing process
             if (m_pWbProcessFilter1) {
                 delete m_pWbProcessFilter1;
+                m_pWbProcessFilter1 = nullptr;
             }
             // create new process
-            m_pWbProcessFilter1 = ((CSaWorkbenchView *)GetParent())->CreateWbProcess(m_nFilter1);
+            m_pWbProcessFilter1 = ((CSaWorkbenchView *)GetParent())->CreateWbProcess( m_nFilter1);
             m_nLocalFilter1 = m_nFilter1;
         }
         // if process created call process properties dialog
         if (m_pWbProcessFilter1) {
-            m_pWbProcessFilter1->PropertiesDialog();
+            CWbProcessDlgFactory factory;
+            factory.showDialog(m_pWbProcessFilter1);
         } else {
             // error creating filter process
             m_nFilter1 = 0; // switch back to plain
@@ -177,6 +177,7 @@ void CWbDlgProcesses::OnProperties2() {
             // delete existing process
             if (m_pWbProcessFilter2) {
                 delete m_pWbProcessFilter2;
+                m_pWbProcessFilter2 = nullptr;
             }
             // create new process
             m_pWbProcessFilter2 = ((CSaWorkbenchView *)GetParent())->CreateWbProcess(m_nFilter2);
@@ -184,7 +185,8 @@ void CWbDlgProcesses::OnProperties2() {
         }
         // if process created call process properties dialog
         if (m_pWbProcessFilter2) {
-            m_pWbProcessFilter2->PropertiesDialog();
+            CWbProcessDlgFactory factory;
+            factory.showDialog(m_pWbProcessFilter2);
         } else {
             // error creating filter process
             m_nFilter2 = 0; // switch back to plain
@@ -221,6 +223,7 @@ void CWbDlgProcesses::OnProperties3() {
             // delete existing process
             if (m_pWbProcessFilter3) {
                 delete m_pWbProcessFilter3;
+                m_pWbProcessFilter3 = nullptr;
             }
             // create new process
             m_pWbProcessFilter3 = ((CSaWorkbenchView *)GetParent())->CreateWbProcess(m_nFilter3);
@@ -228,7 +231,8 @@ void CWbDlgProcesses::OnProperties3() {
         }
         // if process created call process properties dialog
         if (m_pWbProcessFilter3) {
-            m_pWbProcessFilter3->PropertiesDialog();
+            CWbProcessDlgFactory factory;
+            factory.showDialog(m_pWbProcessFilter3);
         } else {
             // error creating filter process
             m_nFilter3 = 0; // switch back to plain
@@ -328,15 +332,15 @@ void CWbDlgProcesses::OnClose() {
     // delete the created processes
     if (m_pWbProcessFilter1) {
         delete m_pWbProcessFilter1;
-        m_pWbProcessFilter1 = NULL;
+        m_pWbProcessFilter1 = nullptr;
     }
     if (m_pWbProcessFilter2) {
         delete m_pWbProcessFilter2;
-        m_pWbProcessFilter2 = NULL;
+        m_pWbProcessFilter2 = nullptr;
     }
     if (m_pWbProcessFilter3) {
         delete m_pWbProcessFilter3;
-        m_pWbProcessFilter3 = NULL;
+        m_pWbProcessFilter3 = nullptr;
     }
 }
 
@@ -770,7 +774,8 @@ BOOL CWbDlgFilterEquation::OnInitDialog() {
 /***************************************************************************/
 void CWbDlgFilterEquation::OnOK() {
     UpdateData(TRUE);
-    if (((CProcessWbEquation *)GetParent())->CheckFunction(&m_szEquation)) {
+    string value = _to_utf8(m_szEquation.GetString());
+    if (((CProcessWbEquation *)GetParent())->CheckFunction(value.c_str())) {
         EndDialog(IDOK);
     } else {
         AfxMessageBox(IDS_ERROR_EQUATION,MB_OK,0);

@@ -9,13 +9,9 @@
 #include "ProcessDoc.h"
 #include "FileUtils.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
-CProcessDoc::CProcessDoc(Context context) : app(context.app), model(context.model) {
-    m_dwBufferOffset = UNDEFINED_OFFSET;    // buffer undefined, force buffer reload
+CProcessDoc::CProcessDoc(App & app, Model & model) : app(app), model(model) {
+    // buffer undefined, force buffer reload
+    m_dwBufferOffset = UNDEFINED_OFFSET;    
 }
 
 long CProcessDoc::Process(void * /*pCaller*/, int /*nProgress*/, int nLevel) {
@@ -85,7 +81,7 @@ BPTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int
     size_t size = _countof(m_Buffer)*numChannels;
     char * buffer = new char[size];
     memset(buffer,0,size);
-    ASSERT(sampleSize<3);
+    assert(sampleSize<3);
 
     try {
         UINT bytesRead = file.Read(buffer, size);
@@ -181,7 +177,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     size_t size = _countof(m_Buffer)*numChannels;
     char * buffer = new char[size];
     memset(buffer,0,size);
-    ASSERT(sampleSize<3);
+    assert(sampleSize<3);
 
     // read the processed data block
     try {

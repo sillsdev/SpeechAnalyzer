@@ -14,7 +14,7 @@ static char THIS_FILE[]=__FILE__;
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
 
-CProcessButterworth::CProcessButterworth(Context context, WbDialogType type, BOOL bWorkbenchOutput) : CProcessIIRFilter(context, type, bWorkbenchOutput) {
+CProcessButterworth::CProcessButterworth(Context& context, WbDialogType type, BOOL bWorkbenchOutput) : CProcessIIRFilter(context, type, bWorkbenchOutput) {
     m_bFilterFilter = false;
     m_bReverse = FALSE;
     m_nOrder = 0;
@@ -268,7 +268,7 @@ void CProcessButterworth::ConfigureProcess(double dSampling) {
             break;
         default:
             // null filter... We could assert here
-            TRACE(_T("Filter not configured\n"));
+            trace("Filter not configured\n");
         }
     }
     switch (m_ftFilterType) {
@@ -290,7 +290,7 @@ void CProcessButterworth::ConfigureProcess(double dSampling) {
         break;
     default:
         // null filter... We could assert here
-        TRACE(_T("Filter not configured\n"));
+        trace("Filter not configured\n");
     }
     SetFilterFilterSilenceSamples(int(tau*11 + 1));
 }

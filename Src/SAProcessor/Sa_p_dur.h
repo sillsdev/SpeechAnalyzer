@@ -10,6 +10,9 @@
 
 class CProcessDurations : public CProcess {
 public:
+    CProcessDurations(Context& context) : CProcess(context) {};
+    CProcessDurations() = delete;
+
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     DWORD GetProcessedData(int nSegmentIndex);
     virtual DWORD GetDataSize();

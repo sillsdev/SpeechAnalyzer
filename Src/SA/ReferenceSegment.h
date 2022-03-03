@@ -5,6 +5,7 @@
 
 class CReferenceSegment : public CTextSegment {
 public:
+    CReferenceSegment(Context& context, EAnnotation index, int master = -1) : CTextSegment(context, index, master) {};
     CReferenceSegment() = delete;
 
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;

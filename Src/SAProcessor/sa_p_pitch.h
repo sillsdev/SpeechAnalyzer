@@ -11,12 +11,15 @@
 #include <atomic>
 
 class CProcessPitch : public CAbstractPitchProcess {
+public:
+    CProcessPitch(Context& context) : CAbstractPitchProcess(context) {};
+    CProcessPitch() = delete;
+
+    long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
 
 private:
     DWORD m_dwDataPos;  // byte offset into waveform data
 
-public:
-    long Process(void * pCaller,  int nProgress = 0, int nLevel = 1);
 };
 
 #endif

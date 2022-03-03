@@ -32,7 +32,7 @@ const double CProcessHilbert::Pole1000x96dB[] = {
     0 // Real Pole
 };
 
-CProcessHilbert::CProcessHilbert(Context context, CProcess * pSourceProcess, BOOL bWBenchProcess) : CProcessIIRFilter( context, Plain) {
+CProcessHilbert::CProcessHilbert(Context& context, CProcess * pSourceProcess, BOOL bWBenchProcess) : CProcessIIRFilter( context, Plain) {
     const double * poles = Pole1000x96dB;
     double fTauSq=0;
     double rTauSq=0;
@@ -59,7 +59,6 @@ CProcessHilbert::CProcessHilbert(Context context, CProcess * pSourceProcess, BOO
 
     double fTau = sqrt(fTauSq);
     double rTau = sqrt(rTauSq);
-    UNUSED_ALWAYS(rTau);
 
     SetFilterFilterSilenceSamples(int(fTau*11+1.5)+poleLast);
     SetSourceProcess(pSourceProcess, bWBenchProcess);

@@ -11,7 +11,7 @@
 
 class CProcessWbEcho : public CWbProcess {
 public:
-    CProcessWbEcho(Context context);
+    CProcessWbEcho(Context& context);
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(CObjectOStream & obs);
     virtual BOOL ReadProperties(CObjectIStream & obs);
@@ -30,7 +30,7 @@ private:
 
 class CProcessWbReverb : public CWbProcess {
 public:
-    CProcessWbReverb(Context context);
+    CProcessWbReverb(Context& context);
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     virtual void WriteProperties(CObjectOStream & obs);
     virtual BOOL ReadProperties(CObjectIStream & obs);

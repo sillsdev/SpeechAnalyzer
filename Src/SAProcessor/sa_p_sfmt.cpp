@@ -20,11 +20,6 @@
 #include "math.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessSpectroFormants
 // class to calculate spectrogram for wave data. The class creates an object
@@ -49,7 +44,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // like other process calls. It calculates spectrogram data.
 /***************************************************************************/
 
-long CProcessSpectroFormants::Process(void * /*pCaller*/, CView * /*pSaView*/, int /*nWidth*/, int /*nHeight*/, int nProgress, int /*nLevel*/) {
+long CProcessSpectroFormants::Process(void * /*pCaller*/, View * /*pSaView*/, int /*nWidth*/, int /*nHeight*/, int nProgress, int /*nLevel*/) {
     return MAKELONG(PROCESS_ERROR, nProgress);
 }
 
@@ -74,7 +69,7 @@ SFormantFreq * CProcessSpectroFormants::GetFormant(DWORD dwIndex) {
 // the spectrogram formant track process temp file.
 /***************************************************************************/
 long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth, int nProgress, int nLevel) {
-    TRACE("ExtractFormants\n");
+    trace("ExtractFormants\n");
     // check canceled
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -85,7 +80,7 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
     }
 
     DWORD nSmpSize = model.GetSampleSize();
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(this, PROCESSFMT)) {
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -93,9 +88,6 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
 
     DWORD dwDataStart = 0;
     DWORD dwDataLength = model.GetDataSize();
-
-    UNUSED_ALWAYS(dwDataStart);
-    UNUSED_ALWAYS(dwDataLength);
 
     CProcessZCross * pZeroCrossCount = model.GetZCross();
     short int nResult = LOWORD(pZeroCrossCount->Process(this, nProgress, nLevel+1000)); // process data

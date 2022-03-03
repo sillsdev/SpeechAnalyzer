@@ -11,12 +11,7 @@
 #include "ProcessDoc.h"
 #include "sa_w_adj.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
-CProcessAdjust::CProcessAdjust(Context context) : CProcessButterworth(context, Plain) {
+CProcessAdjust::CProcessAdjust(Context& context) : CProcessButterworth(context, Plain) {
     m_bInvert = FALSE;
     m_bZero = FALSE;
     m_bNormalize = FALSE;

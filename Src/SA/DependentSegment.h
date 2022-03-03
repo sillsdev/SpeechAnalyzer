@@ -9,6 +9,7 @@
 
 class CDependentSegment : public CSegment {
 public:
+    CDependentSegment(Context& context, EAnnotation index, int master = -1) : CSegment(context,index,master) {};
     CDependentSegment() = delete;
 	// adjust cursors to the nearest phonetic segment to the given position SDM 1.06.1.2 Added function
     void AdjustCursorsToMaster(CDocument * pSaDoc, BOOL bAdjust = TRUE, DWORD * pdwOffset = NULL, DWORD * pdwStop = NULL) const; 

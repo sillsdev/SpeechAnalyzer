@@ -15,6 +15,8 @@
 
 class CProcessLoudness : public CProcess {
 public:
+    CProcessLoudness(Context& context) : CProcess(context) {};
+    CProcessLoudness() = delete;
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     virtual void SetDataInvalid() {
         CProcess::SetDataInvalid();
@@ -27,7 +29,7 @@ public:
 class CProcessSmoothLoudness : public CProcess {
 // Construction/destruction/creation
 public:
-    CProcessSmoothLoudness(Context context);
+    CProcessSmoothLoudness(Context& context);
     virtual ~CProcessSmoothLoudness();
 
 // Attributes

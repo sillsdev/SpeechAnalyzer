@@ -5,6 +5,7 @@
 
 class CMusicPhraseSegment : public CIndependentSegment {
 public:
+    CMusicPhraseSegment(Context& context, EAnnotation index) : CIndependentSegment(context,index) {};
     CMusicPhraseSegment() = delete;
     virtual int CheckPosition(ISaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
 

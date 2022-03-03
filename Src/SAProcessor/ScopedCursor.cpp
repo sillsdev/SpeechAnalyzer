@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "ScopedCursor.h"
 
-CScopedCursor::CScopedCursor(View & view) : view(view) {
-    view.BeginWaitCursor();
+CScopedCursor::CScopedCursor(CmdTarget & cmdTarget) : cmdTarget(cmdTarget) {
+    cmdTarget.BeginWaitCursor();
 }
 
 CScopedCursor::~CScopedCursor() {
-    view.EndWaitCursor();
+    cmdTarget.EndWaitCursor();
 }

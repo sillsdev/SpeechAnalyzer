@@ -11,7 +11,7 @@
 
 class CProcessGrappl : public CAbstractPitchProcess {
 public:
-    CProcessGrappl(Context context);
+    CProcessGrappl(Context& context);
 
     SGrapplParms & GetCalcParms();
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);

@@ -405,7 +405,7 @@ double CPlotStaff::Note2String(double dNoteQtrNotes, double dMIDINumber, CString
 /***************************************************************************/
 void CPlotStaff::Convert() {
 
-    BeginWaitCursor();
+    CScopedCursor cursor(*this);
 
     CString sMelody;
 
@@ -635,14 +635,7 @@ void CPlotStaff::Convert() {
     // Document has been modified
     pModel->SetModifiedFlag(TRUE);
     pModel->SetTransModifiedFlag(TRUE); // transcription data has been modified
-
-    EndWaitCursor();
 }
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CPlotStaff message handlers
 
 /***************************************************************************/
 // CPlotStaff::OnDraw Drawing

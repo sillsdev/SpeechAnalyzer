@@ -12,7 +12,7 @@ public:
     CWaveformGeneratorSettings();
     virtual void WriteProperties(CObjectOStream & obs);
     virtual BOOL ReadProperties(CObjectIStream & obs);
-    BOOL Synthesize(Context context, LPCTSTR szFileName);
+    BOOL Synthesize( LPCTSTR szFileName);
     void SynthesizeSamples( BPTR pTargetData, DWORD dwDataPos, DWORD dwBufferSize);
 
     // enables for seven signal generators in order

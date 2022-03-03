@@ -1137,20 +1137,19 @@ void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument * pMod
 // documents file names with the one given as parameter (full path). If there
 // is a match it returns a pointer to the document that matches, else NULL.
 /***************************************************************************/
-CDocument * CSaApp::IsFileOpened(LPCTSTR pszFileName) {
-	CSaString szFileName = pszFileName;
+CSaDoc * CSaApp::IsFileOpened(LPCTSTR pszFileName) {
+	wstring szFileName = pszFileName;
 	POSITION position = m_pDocTemplate->GetFirstDocPosition();
 	while (position != NULL) {
 		// get pointer to document
 		CDocument * pModel = m_pDocTemplate->GetNextDoc(position);
 		CString szComparisonFile = pModel->GetPathName();
-		TRACE(_T(":IsFileOpened %s %s\n"), (LPCTSTR)szComparisonFile, (LPCTSTR)szFileName);
-		if (szComparisonFile.CompareNoCase(szFileName) == 0) {
-			// match
-			return pModel;
+		TRACE(_T(":IsFileOpened %s %s\n"), (LPCTSTR)szComparisonFile, (LPCTSTR)szFileName.c_str());
+		if (compare_no_case(szComparisonFile,szFileName.c_str())) {
+			return (CSaDoc*)pModel;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 /***************************************************************************/
@@ -1286,7 +1285,6 @@ void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath) {
 	if (!saAudioDocWriter->Initialize((_bstr_t)m_szLastClipboardPath, szMD5HashCode, VARIANT_TRUE)) {
 		// TODO: Display a meaningful error.
 		ErrorMessage(IDS_ERROR_WRITEPHONETIC, m_szLastClipboardPath);
-		EndWaitCursor();
 		saAudioDocWriter->Close();
 		saAudioDocWriter->Release();
 		saAudioDocWriter = NULL;
@@ -1749,7 +1747,7 @@ BOOL CSaApp::OnIdle(LONG lCount) {
 			}
 			else {
 				// process data
-				short int nResult = LOWORD(pAutoPitch->Process(this, pSaDoc));
+				short int nResult = LOWORD(pAutoPitch->Process(this));
 				if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
 					pAutoPitch->SetDataInvalid();
 					pSaDoc->EnableBackgroundProcessing(FALSE);
@@ -1765,7 +1763,7 @@ BOOL CSaApp::OnIdle(LONG lCount) {
 		CProcessFragments * pFragmenter = pSaDoc->GetFragments();
 		if (!pFragmenter->IsDataReady()) {
 			// process data
-			short int nResult = LOWORD(pFragmenter->Process(this, pSaDoc));
+			short int nResult = LOWORD(pFragmenter->Process(this));
 			if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_NO_DATA) || (nResult == PROCESS_CANCELED)) {
 				pFragmenter->SetDataInvalid();
 				pSaDoc->EnableBackgroundProcessing(FALSE);

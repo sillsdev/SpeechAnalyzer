@@ -10,6 +10,7 @@
 #include "TrackState.h"
 #include "AnalyticLpcAnalysis.h"
 #include "param.h"
+#include "ScopedCursor.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -21,7 +22,7 @@ const double pi = 3.14159265358979323846264338327950288419716939937511;
 
 extern CFormantTrackerOptions formantTrackerOptions;
 
-CProcessFormantTracker::CProcessFormantTracker(Context context, CProcess & Real, CProcess & Imag, CProcess & Pitch) : CProcess(context) {
+CProcessFormantTracker::CProcessFormantTracker(Context& context, CProcess & Real, CProcess & Imag, CProcess & Pitch) : CProcess(context) {
     // real is the raw audio data
     m_pReal = &Real;
     // imaginary is the hilbert data
@@ -74,7 +75,7 @@ long CProcessFormantTracker::Process(void * pCaller, int nProgress, int nLevel) 
 
     // get source data size
     DWORD dwDataSize = m_pReal->GetDataSize();
-    TRACE("dwDataSize=%lu\n",dwDataSize);
+    trace("dwDataSize=%lu\n",dwDataSize);
 
     if (nLevel < 0) { // memory allocation failed or previous processing error
         if ((nLevel == PROCESS_CANCELED)) {
@@ -84,17 +85,16 @@ long CProcessFormantTracker::Process(void * pCaller, int nProgress, int nLevel) 
     }
 
     // start process
-    view.BeginWaitCursor(); // wait cursor
+    CScopedCursor cursor(target);
+
     if (!StartProcess(pCaller, PROCESSFMT)) { // start data processing
         EndProcess(); // end data processing
-        view.EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
     if (!CreateTempFile(_T("FT"))) { // creating error
         EndProcess(); // end data processing
-        view.EndWaitCursor();
         SetDataReady(FALSE);
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -160,7 +160,6 @@ long CProcessFormantTracker::Process(void * pCaller, int nProgress, int nLevel) 
     // close the temporary file and read the status
     CloseTempFile(); // close the file
     EndProcess((nProgress >= 95)); // end data processing
-    view.EndWaitCursor();
     SetDataReady();
     return MAKELONG(nLevel, nProgress);
 }
@@ -240,7 +239,7 @@ void CProcessFormantTracker::AdvanceData(STrackState & state, DWORD dwDataPos, i
 * @returns false if the user cancels the process, otherwise true
 */
 bool CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate, int pitch) {
-    ASSERT(state.window.size() == state.data.size());
+    assert(state.window.size() == state.data.size());
 
     size_t tracks = state.trackIn.size();
     state.trackOut.resize(tracks);

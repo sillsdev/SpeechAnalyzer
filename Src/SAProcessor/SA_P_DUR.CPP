@@ -13,11 +13,6 @@
 #include <limits.h>
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 /***************************************************************************/
 // CProcessDuration::Process Processing Duration data
 // This function points to document duration data is stored as a word array.
@@ -40,7 +35,7 @@ long CProcessDurations::Process(void * pCaller, int nProgress, int nLevel) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSDUR)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

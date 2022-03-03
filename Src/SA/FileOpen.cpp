@@ -47,7 +47,7 @@ void CDlgFileOpen::OnFileNameChange() {
 	StopPlayback();
 }
 
-LRESULT CDlgFileOpen::OnMCINotify(WPARAM wParam, LPARAM ) {
+LRESULT CDlgFileOpen::OnMCINotify(WPARAM, LPARAM ) {
 	// just kill the device for any reason.
 	StopPlayback();
 	return 0;

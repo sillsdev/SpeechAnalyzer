@@ -39,7 +39,7 @@ __interface IProcess;
 class CProcess : public IProcess {
 
 public:
-    CProcess(Context context);
+    CProcess(Context & context);
     CProcess() = delete;
     virtual ~CProcess();
 
@@ -84,6 +84,7 @@ public:
     virtual void Dump(LPCSTR tag);
     DWORD GetProcessedWaveDataBufferSize();
     DWORD GetBufferSize();
+    int GetProcessorText(ProcessorType type) { return model.GetProcessorText(type); }
 
 protected:
     virtual long GetStatus() const;
@@ -111,14 +112,15 @@ protected:
     DWORD m_dwBufferOffset;     // actual buffer offset
     int m_nMaxValue;            // maximum value of processed data
     int m_nMinValue;            // minimum value of processed data
-    Context context;
+    
+    Context& context;
     App & app;
-    View & view;
+    //View & view;
     Model & model;
-    MainFrame& main;
+    MainFrame& frame;
+    CmdTarget& target;
 
 private:
-    ProgressStatusBar * GetStatusBar();
     virtual void DeleteTempFile();      // delete the temporary file (private use SetDataInvalid)
     BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pError = NULL);
 

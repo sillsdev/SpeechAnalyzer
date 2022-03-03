@@ -16,11 +16,15 @@
 #define POINT_UNSET     -1    // there is no data for this point
 
 class CProcessCustomPitch : public CAbstractPitchProcess {
+public:
+    CProcessCustomPitch(Context& context) : CAbstractPitchProcess(context) {};
+    CProcessCustomPitch() = delete;
+
+    long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
+
 private:
     DWORD m_dwDataPos;  // byte offset into waveform data
 
-public:
-    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
 };
 
-#endif //_SA_P_CUSTOMPITCH_H
+#endif

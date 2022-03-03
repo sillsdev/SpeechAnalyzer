@@ -145,7 +145,7 @@ void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, Proces
 
     if (GetSafeHwnd()) {
         CString szText;
-        int nID = pModel->GetProcessorText(processorType);
+        int nID = m_pProcessOwner->GetProcessorText(processorType);
         if (nID >= 0) {
             // display the given text
             szText.LoadString(nID);

@@ -21,17 +21,12 @@
 #include "AbstractPitchProcess.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessMelogram
 // class to calculate melogram for wave data. parameters used in this
 // object give better results for music.
 
-CProcessMelogram::CProcessMelogram(Context context) : CAbstractPitchProcess(context) {
+CProcessMelogram::CProcessMelogram(Context& context) : CAbstractPitchProcess(context) {
     m_nMinValidSemitone100 = 0;
     m_nMaxValidSemitone100 = 0;
 }
@@ -108,7 +103,7 @@ long CProcessMelogram::Process(void * pCaller,  int nProgress, int nLevel) {
     }
 
     // start grappl process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSMEL)) { // memory allocation failed or previous processing error
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

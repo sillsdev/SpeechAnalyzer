@@ -520,9 +520,9 @@ void CDlgCharChart::SetInitialState(CFont * pFont, int nCharTable, CString * psz
     // prepare the font for the characters
     LOGFONT logFont;
     if (!m_pFont) {
-        CFont * pFont = CFont::FromHandle((HFONT)::GetStockObject(SYSTEM_FONT));
-        if (pFont) {
-            pFont->GetObject(sizeof(LOGFONT), (void *)&logFont);    // fill up logFont
+        CFont * pFont2 = CFont::FromHandle((HFONT)::GetStockObject(SYSTEM_FONT));
+        if (pFont2) {
+            pFont2->GetObject(sizeof(LOGFONT), (void *)&logFont);    // fill up logFont
         }
     } else {
         m_pFont->GetObject(sizeof(LOGFONT), (void *)&logFont);    // fill up logFont

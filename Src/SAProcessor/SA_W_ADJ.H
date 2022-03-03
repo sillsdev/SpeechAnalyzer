@@ -15,7 +15,7 @@
 
 class CProcessAdjust : public CProcessButterworth {
 public:
-    CProcessAdjust(Context context);
+    CProcessAdjust(Context& context);
     CProcessAdjust() = delete;
 
     BOOL GetInvert() const;

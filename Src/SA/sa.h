@@ -115,7 +115,7 @@ public:
 	// allow SA to exit
     void CancelBatchMode();
     // check is this file already opened
-    CDocument * IsFileOpened(LPCTSTR pszFileName);
+    CSaDoc * IsFileOpened(LPCTSTR pszFileName);
     // check is this file already opened
     bool IsDocumentOpened(const CSaDoc * pModel);
     BOOL CloseWorkbench(CDocument *);                   // close an already opened workbench document

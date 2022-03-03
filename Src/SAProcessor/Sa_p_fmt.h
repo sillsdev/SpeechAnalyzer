@@ -15,7 +15,7 @@
 class CProcessFormants : public CProcess {
 
 public:
-    CProcessFormants(Context context);
+    CProcessFormants(Context& context);
     virtual ~CProcessFormants();
     void SmoothMedian(Model * pModel);
     SFormantFrame * LoadBuffer(DWORD dwFormantBlockStart);

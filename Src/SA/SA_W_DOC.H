@@ -10,12 +10,13 @@
 //###########################################################################
 // CWorkbenchDoc document
 
-class CWorkbenchDoc : public CDocument {
+class CWorkbenchDoc : public CDocument, public CmdTarget {
     DECLARE_SERIAL(CWorkbenchDoc)
 
-    // Operations
 public:
     BOOL IsDifferentFile();
+    void BeginWaitCursor() { CDocument::BeginWaitCursor(); }
+    void EndWaitCursor() { CDocument::EndWaitCursor(); }
 
 protected:
     CWorkbenchDoc();

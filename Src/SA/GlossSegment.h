@@ -9,6 +9,7 @@
 class CGlossSegment : public CTextSegment {
 
 public:
+    CGlossSegment(Context& context, EAnnotation index, int master = -1) : CTextSegment(context,index,master) {};
     CGlossSegment() = delete;
 
     virtual long Process(void * pCaller, ISaDoc * pModel, int nProgress = 0, int nLevel = 1);

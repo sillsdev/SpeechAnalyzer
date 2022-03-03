@@ -11,11 +11,6 @@
 #include "lpc.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessPOA
 // class to calculate POA for wave data. The class creates an object
@@ -84,7 +79,7 @@ long CProcessPOA::Process(void * pCaller, DWORD dwStart, DWORD dwStop, int nProg
         return MAKELONG(nLevel, nProgress);
     }
 
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     // memory allocation failed
     if (!StartProcess(pCaller, PROCESSPOA, FALSE)) {
         // end data processing

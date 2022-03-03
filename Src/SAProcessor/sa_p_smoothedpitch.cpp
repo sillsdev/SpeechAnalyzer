@@ -11,11 +11,6 @@
 #include "param.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessSmoothedPitch
 // class to calculate smoothed pitch for wave data
@@ -55,7 +50,7 @@ long CProcessSmoothedPitch::Process(void * pCaller, int nProgress, int nLevel) {
     }
 
     // start pitch process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSSPI)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

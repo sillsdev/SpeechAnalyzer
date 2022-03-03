@@ -19,12 +19,15 @@
 #define POINT_UNSET     -1    // there is no data for this point
 
 class CProcessSmoothedPitch : public CAbstractPitchProcess {
+public:
+    CProcessSmoothedPitch(Context& context) : CAbstractPitchProcess(context) {};
+    CProcessSmoothedPitch() = delete;
+
+    long Process(void* pCaller, int nProgress = 0, int nLevel = 1);
 
 private:
     DWORD m_dwDataPos;  // byte offset into waveform data
 
-public:
-    long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
 };
 
-#endif //_SA_P_SMOOTHEDPITCH_H
+#endif

@@ -9,6 +9,7 @@
 #include "sa_plot.h"
 #include "sa_graph.h"
 #include "SA_G_3dPitch.h"
+#include "ContextProvider.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -21,13 +22,10 @@ typedef unsigned char UBYTE;
 /////////////////////////////////////////////////////////////////////////////
 // CPlot3dPitch
 
-CPlot3dPitch::CPlot3dPitch() {
-    m_p3dPitch = new CProcess3dPitch();
-    m_pLastProcess = m_p3dPitch;
-}
-
-CPlot3dPitch::~CPlot3dPitch() {
-    delete m_p3dPitch;
+CPlot3dPitch::CPlot3dPitch() : CPlotWnd() {
+    ContextProvider context;
+    m_p3dPitch = make_unique<CProcess3dPitch>(context.GetContext());
+    m_pLastProcess = m_p3dPitch.get();
 }
 
 IMPLEMENT_DYNCREATE(CPlot3dPitch, CPlotWnd)
@@ -111,9 +109,6 @@ static unsigned char sparseBlack[] = {
     50 ,
     0    // Magenta
 };
-
-/////////////////////////////////////////////////////////////////////////////
-// CPlot3dPitch helper functions
 
 /***************************************************************************/
 // CPlot3dPitch::CreateSpectroPalette Creates the palette for spectrogram
@@ -233,7 +228,7 @@ BOOL CPlot3dPitch::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
 /////////////////////////////////////////////////////////////////////////////
 // CPlot3dPitch message handlers
 
-void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) {
+void CPlot3dPitch::PopulateBmiColors(RGBQUAD * QuadColors) {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // prepare to draw
     COLORREF Color[256] = {};
@@ -321,10 +316,9 @@ void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) 
 // the drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaView & view, CSaDoc & doc) {
+    
     // get pointer to graph, view, document, application and mainframe
-    CSaDoc  *  pModel   = pView->GetDocument();
-
     BITMAP * pBitmap = new BITMAP;
     HBITMAP hBitmap = (HBITMAP) GetCurrentObject(pDC->GetSafeHdc(),OBJ_BITMAP);
 
@@ -337,11 +331,11 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaVie
     }
 
     int nWidth = m_p3dPitch->GetDataSize()/nHeight;
-    double fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
-    double fDataLength = pView->GetDataFrame(); // number of data points to display
+    double fDataStart = view.GetDataPosition(rWnd.Width()); // data index of first sample to display
+    double fDataLength = view.GetDataFrame(); // number of data points to display
 
-    fDataStart *= double(nWidth)/pModel->GetDataSize();
-    fDataLength *= double(nWidth)/pModel->GetDataSize();
+    fDataStart *= double(nWidth)/doc.GetDataSize();
+    fDataLength *= double(nWidth)/doc.GetDataSize();
     double fWidthFactor = double(rWnd.Width())/fDataLength;
 
     double fHeightFactor = (double)rWnd.Height() / (double)nHeight;
@@ -396,23 +390,24 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaVie
     return TRUE;
 }
 
-BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, Context& context) {
+BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView & view, CSaDoc & doc) {
     if (IsIconic()) {
-        return FALSE;    // nothing to draw
+        // nothing to draw
+        return FALSE;    
     }
     // get pointer to graph, view, document, application and mainframe
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pModel   = pView->GetDocument();
 
     if (rWnd.Height() <= 0) {
-        return FALSE;    // nothing to draw
+        // nothing to draw
+        return FALSE;    
     }
 
     // check if process is idle
     {
         // create spectrogram data
-        short int nResult = LOWORD(m_p3dPitch->Process(this, pModel)); // process data
-        nResult = CheckResult(nResult, m_p3dPitch); // check the process result
+        short int nResult = LOWORD(m_p3dPitch->Process(this)); // process data
+        nResult = CheckResult(nResult, m_p3dPitch.get()); // check the process result
         if (nResult == PROCESS_ERROR) {
             return FALSE;
         }
@@ -425,11 +420,8 @@ BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, Context& context)
             // set legend scale
             pGraph->SetLegendScale(SCALE | NUMBERS, 22, 480, _T("integer pitch samples")); // set legend scale
             // prepare to draw
-
             GdiFlush();
-
-            OnDrawCorrelations(pDC, rWnd, rClip, pView);
-
+            OnDrawCorrelations(pDC, rWnd, rClip,view,doc);
             m_HelperWnd.SetMode(MODE_HIDDEN);
         }
     }
@@ -438,11 +430,12 @@ BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, Context& context)
 
 
 void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+    
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc * pModel = pView->GetDocument();
+    CSaDoc * pDoc = pView->GetDocument();
 
-    if (!CreateSpectroPalette(pDC, pModel)) {
+    if (!CreateSpectroPalette(pDC, pDoc)) {
         // error creating color palette
         pApp->ErrorMessage(IDS_ERROR_SPECTROPALETTE);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
@@ -466,7 +459,7 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         pInfo->bmiHeader.biXPelsPerMeter = pInfo->bmiHeader.biYPelsPerMeter = 2835; // 72 DPI
         pInfo->bmiHeader.biClrUsed = 0; // fully populated bmiColors
         pInfo->bmiHeader.biClrImportant = 0;
-        populateBmiColors(pInfo->bmiColors, pView);
+        PopulateBmiColors(pInfo->bmiColors);
 
         void * pBits;
         HBITMAP hBitmap = CreateDIBSection(pMemDC->m_hDC,pInfo,DIB_RGB_COLORS, &pBits,NULL,0);
@@ -479,7 +472,7 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             pMemDC->FillSolidRect(rClip, pMain->GetColors()->cPlotBkg);
 
             // paint the data into the bitmap
-            OnDraw2(pMemDC, rWnd, rClip, context);
+            OnDraw2(pMemDC, rWnd, rClip, *pView, *pDoc);
 
             GdiFlush();  // finish all drawing to pMemDC
 

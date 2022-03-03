@@ -13,11 +13,6 @@
 #include "param.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessRatio
 // class to calculate ratio detector values for wave data.
@@ -58,7 +53,7 @@ long CProcessRatio::Process(void * pCaller, int nProgress,
     }
 
     // start change process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSRAT)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

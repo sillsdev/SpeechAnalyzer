@@ -48,8 +48,6 @@ void CAnalyticLpcAnalysis::BuildPredictorReflectionCoefficients(const CAnalyticL
     CDBL & e = m_error;
     VECTOR_CDBL workingPrediction[2];
 
-    UNUSED_ALWAYS(base);
-
     e = m_autocorrelation[0];
 
     workingPrediction[0].resize(m_nOrder+1);

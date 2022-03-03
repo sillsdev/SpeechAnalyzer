@@ -5,6 +5,18 @@ int round2Int(double value) {
     return (int)floor(value + 0.5);
 }
 
+extern bool compare_no_case(LPCTSTR a, LPCTSTR b) {
+    size_t sza = wcslen(a);
+    size_t szb = wcslen(b);
+    if (sza != szb) return false;
+    for (size_t i = 0; i < sza; ++i) {
+        if (tolower(a[i]) != tolower(b[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
 // convert UTF-8 string to wstring
 wstring _to_wstring(const std::string& str) {
     std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
@@ -17,13 +29,19 @@ string _to_utf8(const std::wstring& str) {
     return myconv.to_bytes(str);
 }
 
+// convert wstring to UTF-8 string
+string _to_utf8(LPCWSTR str) {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+    return myconv.to_bytes(str);
+}
+
 string Utf8(LPCTSTR val) {
     wstring temp = val;
     return _to_utf8(temp.c_str());
 }
 
-string Utf8(CString val) {
-    LPCTSTR temp = (LPCTSTR)val;
+string Utf8(wstring val) {
+    LPCTSTR temp = (LPCTSTR)val.c_str();
     return _to_utf8(temp);
 }
 

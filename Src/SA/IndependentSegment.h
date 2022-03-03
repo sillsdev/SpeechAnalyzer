@@ -12,6 +12,7 @@ class CSaView;
 class CIndependentSegment : public CSegment {
     // Operations
 public:
+    CIndependentSegment(Context& context, EAnnotation index, int master=-1) : CSegment(context, index,master) {}
     CIndependentSegment() = delete;
 
     virtual int CheckPosition(ISaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;

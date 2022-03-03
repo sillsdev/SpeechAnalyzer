@@ -8,11 +8,11 @@ void monitor(int (funcptr)(LPVOID), LPVOID params) {
     funcptr(params);
 }
 
-void CThreadManager::stop(thread_handle threadId) {
+void CThreadManager::stop(thread_handle ) {
     std::lock_guard<std::mutex> lck(mutex);
 }
 
-bool CThreadManager::isComplete(thread_handle threadId) {
+bool CThreadManager::isComplete(thread_handle ) {
     std::lock_guard<std::mutex> lck(mutex);
     return false;
 }

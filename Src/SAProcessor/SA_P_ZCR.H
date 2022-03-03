@@ -9,19 +9,11 @@
 
 #include "sa_process.h"
 
-//###########################################################################
-// CProcessZCross data processing
-
 class CProcessZCross : public CProcess {
-// Construction/destruction/creation
 public:
-    CProcessZCross();
-    virtual ~CProcessZCross();
+    CProcessZCross(Context& context) : CProcess(context) {}
+    CProcessZCross() = delete;
 
-// Attributes
-private:
-
-// Operations
 public:
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
 };

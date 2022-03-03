@@ -13,11 +13,6 @@
 #include "param.h"
 #include "scopedcursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessPitch
 // class to calculate pitch for wave data. This class stores raw pitch and
@@ -56,7 +51,7 @@ long CProcessPitch::Process(void * pCaller,  int nProgress, int nLevel) {
     }
 
     // start pitch process
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSPIT)) { // previous processing error
         EndProcess();                                   // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

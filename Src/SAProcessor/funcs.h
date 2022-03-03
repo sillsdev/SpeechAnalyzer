@@ -7,15 +7,18 @@
 
 extern int round2Int(double value);
 
+extern bool compare_no_case(LPCTSTR, LPCTSTR);
+
 // convert UTF-8 string to wstring
 extern wstring _to_wstring(const std::string& str);
 
 // convert wstring to UTF-8 string
+extern string _to_utf8(LPCWSTR str);
 extern string _to_utf8(const std::wstring& str);
 
 extern string Utf8(LPCTSTR val);
 
-extern string Utf8(CString val);
+extern string Utf8(wstring val);
 
 // trim from start (in place)
 extern void ltrim(string& s);

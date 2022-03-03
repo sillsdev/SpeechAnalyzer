@@ -23,11 +23,6 @@
 #include "ScopedCursor.h"
 #include "ResearchSettings.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessSpectrogram
 // class to calculate spectrogram for wave data. The class creates an object
@@ -37,7 +32,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // a temporary second buffer, into which it copies all the raw data needed
 // for the calculation.
 
-CProcessSpectrogram::CProcessSpectrogram(Context context, const CSpectroParm & defaults, BOOL bRealTime) : CProcessAreaData(context),
+CProcessSpectrogram::CProcessSpectrogram(Context& context, const CSpectroParm & defaults, BOOL bRealTime) : CProcessAreaData(context),
     m_bRealTime(bRealTime) {
     // create the spectrogram parameter arrays
     m_nWindowWidth = 0;
@@ -85,7 +80,7 @@ long CProcessSpectrogram::Exit(int nError) {
 // function needs a pointer to the view instead the pointer to the document
 // like other process calls. It calculates spectrogram data.
 /***************************************************************************/
-long CProcessSpectrogram::Process(void * pCaller, View * pView, int nWidth, int /*nHeight*/, int nProgress, int nLevel) {
+long CProcessSpectrogram::Process(void * pCaller, int nWidth, int /*nHeight*/, int nProgress, int nLevel, double dataPosition, DWORD dataFrame) {
 
     DWORD wSmpSize = (DWORD)(model.GetSampleSize());
     // check canceled
@@ -101,8 +96,8 @@ long CProcessSpectrogram::Process(void * pCaller, View * pView, int nWidth, int 
         dwDataLength = GetAreaLength();
     } else {
         // get new area boundaries from window position
-        dwDataStart = (DWORD) pView->GetDataPosition(0);    // data index of first sample to display
-        dwDataLength = pView->GetDataFrame();               // number of data points to display
+        dwDataStart = (DWORD)dataPosition;      // data index of first sample to display
+        dwDataLength = dataFrame;               // number of data points to display
     }
 
     // check if data ready
@@ -119,7 +114,7 @@ long CProcessSpectrogram::Process(void * pCaller, View * pView, int nWidth, int 
         }
     }
 
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSSPG)) { // memory allocation failed
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);

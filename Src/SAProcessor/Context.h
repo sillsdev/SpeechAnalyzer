@@ -88,7 +88,7 @@ enum ProcessorType {
 };
 
 __interface PhoneticSegment {
-    // will have problem with CString
+    // will have problem with string
     LPCTSTR GetContent();
     DWORD GetDurationAt(int index) const;
     DWORD GetDuration(const int nIndex) const;
@@ -97,18 +97,18 @@ __interface PhoneticSegment {
 
 __interface Model {
     BOOL IsBackgroundProcessing();
-    DWORD GetSampleSize();
+    DWORD GetSampleSize() const;
     DWORD GetSamplesPerSec();
     DWORD GetNumChannels() const;
-    DWORD GetNumSamples();
+    DWORD GetNumSamples() const;
     BPTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
     DWORD GetWaveBufferIndex();
-    uint32 GetDataSize();
+    DWORD GetDataSize() const;
     DWORD GetSignalBandWidth();
     EGender GetGender();
     WORD GetBlockAlign(bool singleChannel = false);
     WORD GetBitsPerSample();
-    CMusicParm* GetMusicParm();
+    const CMusicParm* GetMusicParm() const;
     const CUttParm* GetUttParm();
     void GetUttParm(CUttParm*, BOOL bOriginal = FALSE);
     bool Is16Bit();
@@ -119,8 +119,7 @@ __interface Model {
     int GetWbProcess();
     LPCTSTR GetProcessFilename();
     DWORD GetSelectedChannel();
-    // should return GetSegment(index)->GetContext();
-    string GetSegmentContext(int index);
+    string GetSegmentContent(int index);
     CProcessAdjust* GetAdjust();
     CProcessChange* GetChange();
     CProcessCustomPitch* GetCustomPitch();
@@ -191,22 +190,18 @@ __interface App {
     int AfxMessageBox(UINT nIDPrompt, UINT nType = MB_OK, UINT nIDHelp = (UINT)-1);
 };
 
-__interface View {
-    DWORD GetDataFrame();
-    DWORD GetStartCursorPosition();
-    DWORD GetStopCursorPosition();
-    double GetDataPosition(int nWndWidth);
+__interface CmdTarget {
     // use CCmdTarget
     void BeginWaitCursor();
     void EndWaitCursor();
 };
 
 struct Context {
-    Context(App& app, View& view, Model& model, MainFrame& frame) : app(app), view(view), model(model), frame(frame) {}
+    Context(App& app, Model& model, MainFrame& frame, CmdTarget & target) : app(app), model(model), frame(frame), target(target) {}
     App& app;
-    View& view;
     Model& model;
     MainFrame& frame;
+    CmdTarget& target;
 };
 
 #endif

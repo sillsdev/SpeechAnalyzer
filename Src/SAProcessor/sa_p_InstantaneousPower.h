@@ -9,7 +9,7 @@
 
 class CProcessInstantaneousPower : public CProcess {
 public:
-    CProcessInstantaneousPower(Context context) : CProcess(context) {}
+    CProcessInstantaneousPower(Context& context) : CProcess(context) {}
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
 };
 

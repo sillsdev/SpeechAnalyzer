@@ -93,7 +93,7 @@ class TranscriptionData;
 class CUndoRedoDoc;
 interface ISaDoc;
 
-class CSaDoc : public CUndoRedoDoc, public ISaDoc, public Model {
+class CSaDoc : public CUndoRedoDoc, public ISaDoc, public Model, public CmdTarget {
     
 	DECLARE_DYNCREATE(CSaDoc)
 
@@ -279,7 +279,9 @@ public:
     void DoExportFieldWorks(CExportFWSettings & settings);
     void DoExportLift(CExportLiftSettings & settings);
     const CSaString BuildString(int nSegment);
-    const CSaString BuildImportString(BOOL gloss, BOOL glossNat, BOOL phonetic, BOOL phonemic, BOOL orthographic);
+    const CSaString BuildImportString(BOOL /*gloss*/, BOOL /*glossNat*/, BOOL /*phonetic*/, BOOL /*phonemic*/, BOOL /*orthographic*/) {
+        return CSaString("");
+    }
     const bool ImportTranscription(wistringstream & strm, BOOL gloss, BOOL glossNat, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
     void ApplyTranscriptionChanges(CTranscriptionDataSettings & settings);
     void RevertTranscriptionChanges();
@@ -327,7 +329,7 @@ public:
     wstring GetTranscriptionFilename();
     bool IsUsingHighPassFilter();
     void DisableHighPassFilter();
-    CSaString GetDescription();
+    CString GetDescription();
     void SetDescription(LPCTSTR val);
     bool MatchesDescription(LPCTSTR val);
     bool IsValidRecordFileFormat();
@@ -431,6 +433,15 @@ public:
     CThreadManager & getThreadManager() {
         return *threadManager;
     }
+
+    Context& GetContext();
+
+    PhoneticSegment* GetPhoneticSegment();
+    string GetSegmentContent(int index);
+    int GetProcessorText(ProcessorType processorType);
+
+    void BeginWaitCursor() { CCmdTarget::BeginWaitCursor(); };
+    void EndWaitCursor() { CCmdTarget::EndWaitCursor(); };
 
 protected:
     virtual void DeleteContents();
@@ -591,6 +602,7 @@ private:
     CAutoSave m_AutoSave;
 
     CThreadManager * threadManager = new CThreadManager();
+    unique_ptr<Context> context;
 };
 
 #endif

@@ -7,48 +7,8 @@
 #pragma warning(disable:4786)
 
 #include "flexeditgrid.h"
-
-class CIpaVTChar {
-public:
-    typedef std::vector<double> VocalTract;
-
-    struct CStimulus {
-        CStimulus() {
-            Pitch=AV=AF=AH=VHX=0;
-        }
-        double Pitch;
-        double AV;
-        double AH;
-        double AF;
-        double VHX;
-    };
-
-    CIpaVTChar() {
-        m_duration=m_dVTGain=m_dFrameEnergy=0;
-    }
-    CIpaVTChar(const CString & ipa, double duration, double FEnergy, double VTGain, const CStimulus & stimulus, VocalTract & areas, VocalTract & reflection, VocalTract & pred) {
-        m_ipa = ipa;
-        m_duration = duration;
-        m_dFrameEnergy = FEnergy;
-        m_stimulus = stimulus;
-        m_dVTGain = VTGain;
-        m_areas = areas;
-        m_reflection = reflection;
-        m_pred = pred;
-    }
-
-    CString m_ipa;
-    double m_duration;
-    double m_dFrameEnergy;
-
-    CStimulus m_stimulus;
-
-    double m_dVTGain;
-
-    VocalTract m_areas;
-    VocalTract m_reflection;
-    VocalTract m_pred;
-};
+#include "IpaVTChar.h"
+#include "ContextProvider.h"
 
 class CIpaVTCharVector : public std::vector<CIpaVTChar> {
 public:
@@ -65,17 +25,16 @@ public:
 class CDlgVocalTract : public CFrameWnd {
 private:
     CDlgVocalTract(CWnd * pParent = NULL);          // protected constructor used by dynamic creation
-    virtual ~CDlgVocalTract();           // protected constructor used by dynamic creation
+    virtual ~CDlgVocalTract();                      // protected constructor used by dynamic creation
 
 public:
     static void CreateSynthesizer(CWnd * pParent = NULL);
     static void DestroySynthesizer();
 
+    virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
+
     enum {kFragment = 0, kSegment, kIpaBlended, kDefaults, kGrids};
     CFlexEditGrid m_cGrid[kGrids];
-
-public:
-    virtual BOOL OnCmdMsg(UINT nID, int nCode, void * pExtra, AFX_CMDHANDLERINFO * pHandlerInfo);
 
 protected:
     virtual void PostNcDestroy();
@@ -141,10 +100,9 @@ protected:
     void ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaVTChar & columnChar);
     void ParseParameterGrid(int nGrid, CIpaVTCharVector & cChar);
     void ParseParameterGrid(CFlexEditGrid & cGrid, CIpaVTCharVector & cChars);
-    void SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pModel, DWORD dwDuration, WORD wSmpSize);
+    void SilentColumn(CSaDoc * pModel, CFlexEditGrid & cGrid, int column, DWORD dwDuration, WORD wSmpSize);
     void ShowGrid(int nView);
 
-    void ConvertCStringToCharVector(CString const & szString, CIpaVTCharVector & cChars);
     void OnUpdateSourceName();
     CString GetDefaultsPath(int nOrder);
     int m_nSelectedView;
@@ -175,11 +133,11 @@ protected:
     DWORD m_dwSampleRate;
     static BOOL m_bMinimize;
     static CSaDoc * m_pShowDoc;
-
     std::vector<double> residual;
+    ContextProvider context;
 
     PCMWAVEFORMAT pcmWaveFormat();
-    BOOL SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cChars);
+    BOOL SynthesizeWave( LPCTSTR pszPathName, CIpaVTCharVector & cChars);
     BOOL SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIpaVTCharVector & cChars);
     void OnSynthesize();
 

@@ -95,10 +95,7 @@ IMPLEMENT_DYNCREATE(CPlotWavelet, CPlotWnd)
 //**************************************************************************
 BOOL CPlotWavelet::ScatterPlotDataTree(CWaveletNode* root,CDC* pDC, CRect* rWnd, COLORREF crColor, long which_leaf, double start, double end) {
     CWaveletNode* node_ptr = root->GetNode(which_leaf);
-    if (node_ptr == NULL) {
-        return FALSE;
-    }
-    return node_ptr->ScatterPlotDataNode(root, pDC, rWnd, crColor, start, end);
+    return (node_ptr == NULL) ? FALSE : ScatterPlotDataNode(node_ptr, pDC, rWnd, crColor, start, end);
 }
 
 // ScatterPlotDataNode
@@ -128,12 +125,12 @@ BOOL CPlotWavelet::ScatterPlotDataNode(CWaveletNode* root, CDC* pDC, CRect* rWnd
     fHScale = (double)((double)(end - start) / (double)rWnd->Width());
 
     data_index = start;
-    pDC->MoveTo(0, root->data[0]);
+    pDC->MoveTo(0, root->GetDataPtr()[0]);
 
     // Do the drawing
     for (double x = 0; x < rWnd->Width(); x++) {
 
-        datapoint = root->data[(long)floor(data_index)];                                // Get the data
+        datapoint = root->GetDataPtr()[(long)floor(data_index)];                                // Get the data
         data_index += fHScale;                                                          // Advance the data_index
         //data_index++;
         point_coords.x = long(x);
@@ -153,6 +150,7 @@ BOOL CPlotWavelet::ScatterPlotDataNode(CWaveletNode* root, CDC* pDC, CRect* rWnd
 //*  Returns       : void
 //**************************************************************************
 void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+    
     if (IsIconic()) {
         return;    // nothing to draw
     }
@@ -165,8 +163,6 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CSaDoc * pModel = pView->GetDocument();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-
-    CProcessWavelet * pWavelet = (CProcessWavelet *)pModel->GetWavelet(); // get pointer to wavelet process object
 
     // Set legend scale
     pGraph->SetLegendScale(SCALE | NUMBERS, 0, 100, _T("testing"));
@@ -203,7 +199,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     pInfo->bmiHeader.biXPelsPerMeter = pInfo->bmiHeader.biYPelsPerMeter = 2835; // 72 DPI
     pInfo->bmiHeader.biClrUsed = 0; // fully populated bmiColors
     pInfo->bmiHeader.biClrImportant = 0;
-    populateBmiColors(pInfo->bmiColors, pView);
+    PopulateBmiColors(pInfo->bmiColors, pView);
 
     // Create the bitmap
     unsigned char * pBits = NULL;
@@ -232,7 +228,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // Get the raw data from SA
     long * pData = NULL;
     DWORD dwDataSize = 0;
-    if (!pWavelet->Get_Raw_Data(&pData, &dwDataSize, pModel)) {
+    if (!pModel->GetWavelet()->Get_Raw_Data(&pData, &dwDataSize)) {
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L);
         return;
@@ -398,10 +394,7 @@ BOOL CPlotWavelet::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
     return TRUE;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotWavelet message handlers
-
-// populateBmiColors
+// PopulateBmiColors
 //*  Description   :
 //*
 //*  Parameters    :
@@ -409,7 +402,7 @@ BOOL CPlotWavelet::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
 //*  Postcondtions :
 //*  Returns       :
 //**************************************************************************
-void CPlotWavelet::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) {
+void CPlotWavelet::PopulateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // prepare to draw
     COLORREF Color[256];

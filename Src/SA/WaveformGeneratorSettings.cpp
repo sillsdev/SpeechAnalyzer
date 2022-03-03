@@ -9,6 +9,7 @@
 #include "objectistream.h"
 #include "riff.h"
 #include "WaveformGenerator.h"
+#include "ContextProvider.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -266,12 +267,13 @@ BOOL CWaveformGeneratorSettings::ReadProperties(CObjectIStream & obs) {
     return TRUE;
 }
 
-BOOL CWaveformGeneratorSettings::Synthesize(Context context, LPCTSTR szFileName) {
+BOOL CWaveformGeneratorSettings::Synthesize( LPCTSTR szFileName) {
 
     pcm.wf.nBlockAlign = (unsigned short)(pcm.wf.nChannels*(pcm.wBitsPerSample/8));
     pcm.wf.nAvgBytesPerSec = pcm.wf.nSamplesPerSec*pcm.wf.nBlockAlign;
-
-    unique_ptr<CProcessWaveformGenerator> process = std::make_unique<CProcessWaveformGenerator>(context);
+    
+    ContextProvider context;
+    unique_ptr<CProcessWaveformGenerator> process = std::make_unique<CProcessWaveformGenerator>(context.GetContext());
     short int nResult = LOWORD(process->Process(*this));
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
         return FALSE;

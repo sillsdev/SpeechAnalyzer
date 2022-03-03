@@ -50,9 +50,6 @@ CPlotWnd * CPlotLoudness::NewCopy(void) {
     return pRet;
 }
 
-CPlotLoudness::~CPlotLoudness() {
-}
-
 /***************************************************************************/
 // CPlotLoudness::OnDraw Painting
 // The data to draw is coming from a temporary file, created by the loudness
@@ -61,19 +58,18 @@ CPlotLoudness::~CPlotLoudness() {
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, SaContext & context) {
     // get pointer to main frame, graph, and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc * pModel = pView->GetDocument();
     // create loudness data
-    CProcessLoudness * pLoudness = (CProcessLoudness *)pModel->GetLoudness(); // get pointer to loudness object
+    CProcessLoudness * pLoudness = (CProcessLoudness *)context.model.GetLoudness(); // get pointer to loudness object
     short int nResult = LOWORD(pLoudness->Process(this)); // process data
     nResult = CheckResult(nResult, pLoudness); // chaeck the process result
     if (nResult == PROCESS_ERROR) {
         return;
     }
     if (nResult != PROCESS_CANCELED) {
-        BOOL bPercent = pModel->GetCIntensityParm().nScaleMode == 1;
+        BOOL bPercent = context.model.GetCIntensityParm().nScaleMode == 1;
         if (bPercent) {
             double dLoudToPercent = 32767/2/100.0;
             double dMaxPercent = 103.;
@@ -90,32 +86,28 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
             SetProcessMultiplier(PRECISION_MULTIPLIER);
         }
 
-        PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pModel, bPercent ? 0 : PAINT_DB); // do standard data paint
+        PlotStandardPaint(pDC, rWnd, rClip, pLoudness, &context.model, bPercent ? 0 : PAINT_DB); // do standard data paint
     }
-    CSaApp * pApp = (CSaApp*)AfxGetApp();
-    if (pApp->GetResearchSettings().showInstantaneousPower) {
+    if (context.app.GetResearchSettings().showInstantaneousPower) {
         // create raw data
-        CProcessInstantaneousPower power;
-        CProcessInstantaneousPower * pPower = &power;
-        nResult = LOWORD(pPower->Process(this)); // process data
-        nResult = CheckResult(nResult, pPower); // check the process result
+        CProcessInstantaneousPower power(context.model.GetContext());
+        nResult = LOWORD(power.Process(this)); // process data
+        nResult = CheckResult(nResult, &power); // check the process result
         if (nResult == PROCESS_ERROR) {
             return;
         }
         if (nResult != PROCESS_CANCELED) {
-            BOOL bPercent = pModel->GetCIntensityParm().nScaleMode == 1;
+            BOOL bPercent = context.model.GetCIntensityParm().nScaleMode == 1;
             if (bPercent) {
                 double dLoudToPercent = 32767/4/100.0;
-
                 SetProcessMultiplier(dLoudToPercent);
             } else {
                 // dB
                 SetProcessMultiplier(32768);
             }
-            CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-            pMainWnd->SwapInOverlayColors(4);
-            PlotStandardPaint(pDC, rWnd, rClip, pPower, pModel, bPercent ? 0 : PAINT_DB); // do standard data paint
-            pMainWnd->SwapOutOverlayColors();
+            context.frame.SwapInOverlayColors(4);
+            PlotStandardPaint(pDC, rWnd, rClip, &power, &context.model, bPercent ? 0 : PAINT_DB); // do standard data paint
+            context.frame.SwapOutOverlayColors();
         }
     }
     // do common plot paint jobs

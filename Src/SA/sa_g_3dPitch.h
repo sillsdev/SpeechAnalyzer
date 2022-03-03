@@ -11,35 +11,30 @@ class CPlot3dPitch : public CPlotWnd {
 public:
     CPlot3dPitch();
 
+    virtual BOOL  EraseBkgnd(CDC* /*pDC*/) {
+        return TRUE;   // we dont need to erase this plot
+    }
+    virtual void OnDraw(CDC* pDC, CRect rWnd, CRect rClip, CSaView * pView);
+
+    DECLARE_MESSAGE_MAP()
+
 private:
-    enum PaletteMode {                        // mode of palette
+    BOOL CreateSpectroPalette(CDC* pDC, CDocument* pModel); // creates the palette
+    void PopulateBmiColors(RGBQUAD* Quadcolors);
+    BOOL OnDraw2(CDC* pDC, CRect rWnd, CRect rClip, CSaView& view, CSaDoc& doc);
+    BOOL OnDrawCorrelations(CDC* pDC, CRect rWnd, CRect rClip, CSaView& view, CSaDoc& doc);
+
+    enum PaletteMode {                      // mode of palette
         SYSTEMCOLOR,
         HALFCOLOR,
         FULLCOLOR,
     };
-    static BOOL bPaletteInit;              // TRUE, if palette initialized
-    static int nPaletteMode;        // mode of created palette
-    static CPalette SpectroPalette;     // color palette
+    static BOOL bPaletteInit;               // TRUE, if palette initialized
+    static int nPaletteMode;                // mode of created palette
+    static CPalette SpectroPalette;         // color palette
 
-    CProcess3dPitch * m_p3dPitch;
+    unique_ptr<CProcess3dPitch> m_p3dPitch;
 
-private:
-    BOOL CreateSpectroPalette(CDC * pDC, CDocument * pModel); // creates the palette
-    void populateBmiColors(RGBQUAD * Quadcolors,CSaView * pView);
-    BOOL OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, Context& context);
-    BOOL OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaView & view);
-
-public:
-    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-
-public:
-    virtual ~CPlot3dPitch();
-    virtual BOOL  EraseBkgnd(CDC * /*pDC*/) {
-        return TRUE;   // we dont need to erase this plot
-    }
-
-protected:
-    DECLARE_MESSAGE_MAP()
 };
 
 #endif

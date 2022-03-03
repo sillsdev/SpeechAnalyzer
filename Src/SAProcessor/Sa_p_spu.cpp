@@ -16,17 +16,12 @@
 #include "ScopedCursor.h"
 #include "ResearchSettings.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessSpectrum
 // class to calculate spectrum for wave data. The class creates an object
 // of the class Spectrum that does the calculation.
 
-CProcessSpectrum::CProcessSpectrum(Context context) : CProcess(context) {
+CProcessSpectrum::CProcessSpectrum(Context& context) : CProcess(context) {
     m_nSpectralBands = 0;
     m_stBandPower.Max.Raw = m_stBandPower.Min.Raw = (float)UNDEFINED_DATA;
     m_stBandPower.Max.Smooth = m_stBandPower.Min.Smooth = (float)UNDEFINED_DATA;
@@ -157,7 +152,7 @@ long CProcessSpectrum::Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrame
             dwFrameSize != m_dwFrameSize ||
             m_stParmSpec.nSmoothLevel != m_stParmProc.nSmoothLevel ||
             m_stParmSpec.nPeakSharpFac != m_stParmProc.nPeakSharpFac ||
-            app.GetResearchSettings().window != m_stParmProc.GetWindow() ||
+            app.GetResearchSettings().window != m_stParmProc.window ||
             SpectraSelected.bCepstralSpectrum != m_stSpectraProc.bCepstralSpectrum  ||
             SpectraSelected.bLpcSpectrum != m_stSpectraProc.bLpcSpectrum) {
         // must reprocess
@@ -166,7 +161,7 @@ long CProcessSpectrum::Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrame
         m_dwFrameSize = dwFrameSize;
         m_stParmProc.nSmoothLevel = m_stParmSpec.nSmoothLevel;
         m_stParmProc.nPeakSharpFac = m_stParmSpec.nPeakSharpFac;
-        m_stParmProc.SetWindow(app.GetResearchSettings().window);   // DSP window applied only for
+        m_stParmProc.window = app.GetResearchSettings().window;   // DSP window applied only for
 
         // cursors aligned to samples
         m_stSpectraProc.bCepstralSpectrum = SpectraSelected.bCepstralSpectrum;
@@ -178,7 +173,7 @@ long CProcessSpectrum::Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrame
     }
 
     // Start the process, allocating a buffer for the processed data.
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     m_nSpectralBands = MAX_FFT_LENGTH / 2;   // should be high enough to ensure FFT resolution is greater than screen resolution
     //!!frame size must be less than FFT length (2 x nSpectralBands)
     m_nFormants = MAX_NUM_FORMANTS + 1;  // includes F[0], the fundamental frequency
@@ -197,22 +192,22 @@ long CProcessSpectrum::Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrame
     int nWindowSize = dwFrameSize / wSmpSize;
     int nWindowStart = dwFrameStart / wSmpSize;
 
-    switch (m_stParmProc.GetWindow().lengthMode) {
+    switch (m_stParmProc.window.lengthMode) {
     case kBandwidth:
-        nWindowSize = CDspWin::CalcLength(m_stParmProc.GetWindow().bandwidth, model.GetSamplesPerSec(), m_stParmProc.GetWindow().type);
+        nWindowSize = CDspWin::CalcLength(m_stParmProc.window.bandwidth, model.GetSamplesPerSec(), m_stParmProc.window.type);
         break;
     case kTime:
-        nWindowSize = (int)(0.001* m_stParmProc.GetWindow().time*model.GetSamplesPerSec() + 0.5);
+        nWindowSize = (int)(0.001* m_stParmProc.window.time*model.GetSamplesPerSec() + 0.5);
     case kBetweenCursors:
     default:
-        if (m_stParmProc.GetWindow().equivalentLength) {
-            nWindowSize = CDspWin::CalcEquivalentLength(nWindowSize, m_stParmProc.GetWindow().type);
+        if (m_stParmProc.window.equivalentLength) {
+            nWindowSize = CDspWin::CalcEquivalentLength(nWindowSize, m_stParmProc.window.type);
         }
         break;
     }
 
     nWindowStart -= nWindowSize/2;
-    if (m_stParmProc.GetWindow().center) {
+    if (m_stParmProc.window.center) {
         nWindowStart += dwFrameSize / wSmpSize;
     }
 
@@ -241,7 +236,7 @@ long CProcessSpectrum::Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrame
     stSpectSetting.fSmoothFreq = (float)(m_stParmProc.nSmoothLevel+1.F)*100.F;
     stSpectSetting.fFFTRadius= 1.F - (float)m_stParmProc.nPeakSharpFac/200.F;
 
-    stSpectSetting.nWindowType = (char)m_stParmProc.GetWindow().type;
+    stSpectSetting.nWindowType = (char)m_stParmProc.window.type;
 
     // Allocate a temporary global buffer for the waveform frame data.  Large frames may consume a vast
     // amount of memory, and therefore, the frame size should be limited.  This is not much of a restriction,
@@ -303,7 +298,6 @@ long CProcessSpectrum::Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrame
     ULONG dwFrameStartIndex = nWindowStart;
     ULONG dwFragmentIndex = pFragments->GetFragmentIndex(dwFrameStartIndex);
     SFragParms stFragment = pFragments->GetFragmentParms(dwFragmentIndex);
-    UNUSED_ALWAYS(stFragment);
 
     CProcessGrappl * pAutoPitch = model.GetGrappl();
     BOOL bVoiced = pAutoPitch->IsVoiced( nWindowStart*wSmpSize);

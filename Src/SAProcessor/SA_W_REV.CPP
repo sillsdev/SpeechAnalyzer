@@ -12,16 +12,11 @@
 #include "WbProcess.h"
 #include "ScopedCursor.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CProcessWbEcho
 // Workbench process class to calculate new raw data with a echo function.
 
-CProcessWbEcho::CProcessWbEcho(Context context) : CWbProcess(context, WbEcho) {
+CProcessWbEcho::CProcessWbEcho(Context& context) : CWbProcess(context, WbEcho) {
     m_nDelay = 100;
     m_nGain = -20;
 }
@@ -46,7 +41,7 @@ long CProcessWbEcho::Process(void * pCaller, int nProgress, int nLevel) {
     int nOldLevel = nLevel; // save original level
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess(model.GetWbProcess() - 1, nLevel);
+        pLowerProcess = frame.GetWbProcess(model.GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
             long lResult = pLowerProcess->Process(pCaller, nProgress, ++nLevel);
@@ -69,7 +64,7 @@ long CProcessWbEcho::Process(void * pCaller, int nProgress, int nLevel) {
 
     // start process
     // wait cursor
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSWBECHO)) {
         // memory allocation failed
         // end data processing
@@ -264,7 +259,7 @@ BOOL CProcessWbEcho::ReadProperties(CObjectIStream & obs) {
 // CProcessWbReverb
 // Workbench process class to calculate new raw data with a reverb function.
 
-CProcessWbReverb::CProcessWbReverb(Context context) : CWbProcess(context, WbReverb) {
+CProcessWbReverb::CProcessWbReverb(Context& context) : CWbProcess(context, WbReverb) {
     m_nDelay = 100;
     m_nGain = -20;
 }
@@ -282,7 +277,6 @@ CProcessWbReverb::CProcessWbReverb(Context context) : CWbProcess(context, WbReve
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessWbReverb::Process(void * pCaller, int nProgress, int nLevel) {
-    //  TRACE(_T("Process: CProcessWbReverb\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -290,7 +284,7 @@ long CProcessWbReverb::Process(void * pCaller, int nProgress, int nLevel) {
     int nOldLevel = nLevel; // save original level
     CWbProcess * pLowerProcess = NULL;
     if (nLevel < MAX_FILTER_NUMBER) {
-        pLowerProcess = main.GetWbProcess(model.GetWbProcess() - 1, nLevel);
+        pLowerProcess = frame.GetWbProcess(model.GetWbProcess() - 1, nLevel);
         if (pLowerProcess) {
             // there is at least one more workbench processes to process first
             long lResult = pLowerProcess->Process(pCaller, nProgress, ++nLevel);
@@ -320,7 +314,7 @@ long CProcessWbReverb::Process(void * pCaller, int nProgress, int nLevel) {
 
     // start process
 	// wait cursor
-    CScopedCursor cursor(view);
+    CScopedCursor cursor(target);
 	// memory allocation failed
     if (!StartProcess(pCaller, PROCESSWBREV)) { 
 		// end data processing

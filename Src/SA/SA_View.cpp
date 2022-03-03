@@ -1699,7 +1699,7 @@ void CSaView::OnFileInformation() {
 	szCaption += " - " + szTitle;                               // build new caption string
 	CDlgFileInformation dlg(szCaption, NULL, 0);                // file information dialog
 	// set file description string
-	dlg.m_dlgUserPage.m_szFileDesc = pModel->GetDescription();
+	dlg.m_dlgUserPage.m_szFileDesc = pModel->GetDescription().GetString();
 	dlg.m_dlgUserPage.m_szFreeTranslation = pSourceParm->szFreeTranslation;
 	if (dlg.DoModal() == IDOK) {
 		// get new file description string
@@ -1786,7 +1786,7 @@ void CSaView::OnGraphsRetile() {
 	// arrange icons
 	ArrangeIconicWindows();
 	// find zoomed (maximized) window and set it to normal state
-	WINDOWPLACEMENT wpl;
+	WINDOWPLACEMENT wpl = {};
 
 	wpl.length = sizeof(WINDOWPLACEMENT);
 	for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
@@ -4664,7 +4664,7 @@ void CSaView::RemoveRtPlots() {
 // Override default SetScrollRange function so that we do not hide the scroll bar
 void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw) {
 	if (nBar == SB_HORZ) {
-		SCROLLINFO info;
+		SCROLLINFO info = {};
 
 		info.nMin = nMinPos;
 		info.nMax = nMaxPos;
@@ -4934,7 +4934,7 @@ void CSaView::OnGraphsTypes() {
 	// array and process the request.
 	//**************************************************************
 	if (dlg.DoModal() == IDOK) {
-		UINT anNewGraphID[MAX_GRAPHS_NUMBER];
+		UINT anNewGraphID[MAX_GRAPHS_NUMBER] = {};
 		int nLayout = -1;
 		dlg.GetCheckedGraphs(&anNewGraphID[0], &nLayout);
 		OnGraphsTypesPostProcess(&anNewGraphID[0], nLayout);
@@ -4972,7 +4972,7 @@ void CSaView::OnShowBorders() {
 void CSaView::OnGraphTypesSelect(UINT nID) {
 	int nConfiguration = nID - ID_GRAPHTYPES_SELECT_FIRST;
 
-	UINT anNewGraphID[MAX_GRAPHS_NUMBER];
+	UINT anNewGraphID[MAX_GRAPHS_NUMBER] = {};
 	int nLayout = -1;
 	CDlgGraphsTypes::GetStandardCheckedGraphs(nConfiguration, &anNewGraphID[0], &nLayout);
 	OnGraphsTypesPostProcess(&anNewGraphID[0], nLayout);
@@ -4993,8 +4993,8 @@ void CSaView::OnUpdateGraphTypesSelect(CCmdUI * pCmdUI) {
 // CSaView::OnGraphsTypesPostProcess
 /***************************************************************************/
 void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
-	UINT anTmpGraphID[MAX_GRAPHS_NUMBER];
-	CGraphWnd * apTmpGraphs[MAX_GRAPHS_NUMBER];
+	UINT anTmpGraphID[MAX_GRAPHS_NUMBER] = {};
+	CGraphWnd * apTmpGraphs[MAX_GRAPHS_NUMBER] = {};
 
 	//**************************************************************
 	// Initialize the arrays that will be a temporary holding place
@@ -5248,20 +5248,15 @@ CSaDoc * CSaView::GetDocument() { // non-debug version is inline
 	return (CSaDoc *)m_pDocument;
 }
 
-Context CSaView::GetContext() {
-	App& app = *(App*)(CSaApp*)AfxGetApp();
-	Model& model = *(Model*)(CSaDoc*)GetDocument();
-	MainFrame& frame = *(MainFrame*)(CMainFrame*)AfxGetMainWnd();
-	Context context(app, *this, model, frame);
-	return context;
-}
-
-SaContext CSaView::GetSaContext() {
-	CSaApp& app = *(CSaApp*)AfxGetApp();
-	CSaDoc& model = *(CSaDoc*)GetDocument();
-	CMainFrame& frame = *(CMainFrame*)AfxGetMainWnd();
-	SaContext context( app, *this, model, frame);
-	return context;
+SaContext & CSaView::GetSaContext() {
+	// lazy construction
+	if (saContext.get() == nullptr) {
+		CSaApp& app = *(CSaApp*)AfxGetApp();
+		CSaDoc& model = *(CSaDoc*)GetDocument();
+		CMainFrame& frame = *(CMainFrame*)AfxGetMainWnd();
+		saContext = make_unique<SaContext>(app, *this, model, frame);
+	}
+	return *saContext;
 }
 
 void CSaView::Clear() {
@@ -5351,7 +5346,7 @@ BOOL CSaView::PreCreateWindow(CREATESTRUCT & cs) {
 // graph, otherwise a 0 rectangle, used to create new graphs.
 /***************************************************************************/
 WINDOWPLACEMENT CSaView::DeleteGraphs(int nPosition, BOOL bClearID) {
-	WINDOWPLACEMENT WP;
+	WINDOWPLACEMENT WP = {};
 	WP.length = sizeof(WINDOWPLACEMENT);
 	// use default size if not changed
 	WP.showCmd = SW_HIDE;
@@ -5651,7 +5646,7 @@ void CSaView::ChangeGraph(int idx, int nID) {
 	}
 
 	if (nID == IDD_RECORDING) {
-		UINT anTmpGraphID[MAX_GRAPHS_NUMBER];
+		UINT anTmpGraphID[MAX_GRAPHS_NUMBER] = {};
 		anTmpGraphID[0] = IDD_RECORDING;
 		for (int i = 0; i < MAX_GRAPHS_NUMBER - 1; i++) {
 			anTmpGraphID[i + 1] = m_anGraphID[i];
@@ -5660,7 +5655,7 @@ void CSaView::ChangeGraph(int idx, int nID) {
 	} else {
 		int i = m_nFocusedID ? GetGraphIndexForIDD(m_nFocusedID) : -1;
 		if (idx >= 0) {
-			WINDOWPLACEMENT WP;
+			WINDOWPLACEMENT WP = {};
 			WP.showCmd = SW_HIDE;
 			if (nID != ID_GRAPHS_OVERLAY) {
 				WP = DeleteGraphs(idx);
@@ -7083,7 +7078,7 @@ void CSaView::OnPrepareDC(CDC * pDC, CPrintInfo * pInfo) {
 void CSaView::CalculatePrintOrigin(CDC * pDC) {
 	CPoint desiredOffset(fract_multiply(Print_Margin, m_printerDPI.x),
 		fract_multiply(Print_Margin, m_printerDPI.y));
-	POINT pageOffset;
+	POINT pageOffset = {};
 	pDC->Escape(GETPRINTINGOFFSET, NULL, NULL, &pageOffset);
 	m_printOrigin.x = desiredOffset.x - pageOffset.x;
 	m_printOrigin.y = desiredOffset.y - pageOffset.y;
@@ -10718,7 +10713,7 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void) {
 		return;
 	}
 
-	BeginWaitCursor();
+	CScopedCursor cursor(*this);
 
 	CSegment * pPhonemic = GetAnnotation(PHONEMIC);
 	if (pPhonemic != NULL) {
@@ -10747,8 +10742,6 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void) {
 	}
 
 	RedrawGraphs(TRUE);
-
-	EndWaitCursor();
 }
 
 /***************************************************************************/
@@ -11521,7 +11514,7 @@ void CSaView::OnFileSplitFile() {
 	int dataCount = 0;
 	int wavCount = 0;
 
-	CScopedCursor waitCursor(this);
+	CScopedCursor waitCursor(*this);
 
 	EWordFilenameConvention wordConvention = dlg.GetWordFilenameConvention();
 	EPhraseFilenameConvention phraseConvention = dlg.GetPhraseFilenameConvention();
@@ -11642,7 +11635,7 @@ void CSaView::OnFileSaveAs() {
 	}
 
 	{
-		CScopedCursor waitCursor(this);
+		CScopedCursor cursor(*this);
 
 		// is same file only applies when we have a regular document, not a recording
 		bool same = (recording) ? false : dlg.IsSameFile();
@@ -11724,7 +11717,7 @@ void CSaView::OnGenerateCVData() {
 	}
 
 	{
-		CScopedCursor cursor(this);
+		CScopedCursor cursor(*this);
 		// automatically create CV data for the Tone Segment
 		pModel->GenerateCVData(*this);
 	}
@@ -12404,4 +12397,3 @@ void CSaView::OnMoveRightMergeNextAt() {
 	EditMoveRightNext();
 	EditMerge();
 }
-

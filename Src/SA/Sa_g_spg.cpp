@@ -53,12 +53,6 @@ BEGIN_MESSAGE_MAP(CPlotSpectrogram, CPlotWnd)
 	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
-CPlotSpectrogram::CPlotSpectrogram() {
-}
-
-CPlotSpectrogram::~CPlotSpectrogram() {
-}
-
 void  CPlotSpectrogram::CopyTo(CPlotWnd * pT) {
 	CPlotSpectrogram * pTarg = (CPlotSpectrogram *)pT;
 	CPlotWnd::CopyTo(pT);
@@ -1017,7 +1011,7 @@ bool CPlotSpectrogram::OnDraw2(unique_ptr<CDC> & memDC, CRect rWnd, CRect rClip,
 	}
 
 	// create spectrogram data
-	short int nResult = LOWORD(pSpectrogram->Process(this, &context.view, rWnd.Width(), rWnd.Height())); // process data
+	short int nResult = LOWORD(pSpectrogram->Process( this, rWnd.Width(), rWnd.Height(), 0, 1, context.view.GetDataPosition(0), context.view.GetDataFrame())); // process data
 	nResult = CheckResult(nResult, pSpectrogram); // check the process result
 	if (nResult == PROCESS_ERROR) {
 		return false;

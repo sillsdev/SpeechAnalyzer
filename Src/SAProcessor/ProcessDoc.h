@@ -16,7 +16,7 @@ __interface CmdTarget;
 class CProcessDoc : public IProcess {
 
 public:
-    CProcessDoc(Context context);
+    CProcessDoc(App & app, Model & model);
     CProcessDoc() = delete;
     virtual ~CProcessDoc();
 

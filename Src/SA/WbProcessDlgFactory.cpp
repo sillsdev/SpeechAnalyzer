@@ -12,7 +12,7 @@ int CWbProcessDlgFactory::showDialog(CWbProcess* process) {
         CWbDlgFilterEquation dlgEqu;
         dlgEqu.m_szEquation = pProcess->GetEquation();
         if (dlgEqu.DoModal() == IDOK) {
-            pProcess->SetEquation(dlgEqu.m_szEquation.utf8().c_str());
+            pProcess->SetEquation(_to_utf8(dlgEqu.m_szEquation).c_str());
             pProcess->SetDataInvalid();
             return IDOK;
         }

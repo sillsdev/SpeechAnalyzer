@@ -8,11 +8,6 @@
 #include "ProcessAreaData.h"
 #include "FileUtils.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
-
 //###########################################################################
 // CAreaDataProcess
 // Base class for all area data processing classes. Does all jobs, common to
@@ -21,24 +16,21 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // For each area, determined by an index number, there will be a temporary
 // file, where the processed data is stored in.
 
-CProcessAreaData::CProcessAreaData(Context context) : CProcess(context) {
+CProcessAreaData::CProcessAreaData(Context& context) : CProcess(context) {
     // create the area arrays
     m_dwAreaPos = 0;
     m_dwAreaLength = 0;
 }
 
-BOOL CProcessAreaData::SetArea(View * pView) {
+BOOL CProcessAreaData::SetAreaFromView(DWORD startCursorPosition, DWORD stopCursorPosition) {
     if (IsStatusFlag(KEEP_AREA)) {
         // not a new area
         return FALSE;
     }
-
     // get new area boundaries
-    m_dwAreaPos = pView->GetStartCursorPosition();
-
+    m_dwAreaPos = startCursorPosition;;
     DWORD wSmpSize = model.GetSampleSize();
-    m_dwAreaLength = pView->GetStopCursorPosition() - m_dwAreaPos + wSmpSize;
-
+    m_dwAreaLength = stopCursorPosition - m_dwAreaPos + wSmpSize;
     SetStatusFlag(KEEP_AREA,TRUE);
     return TRUE;
 }
@@ -50,7 +42,6 @@ BOOL CProcessAreaData::SetArea(DWORD dwAreaPos, DWORD dwAreaLength) {
     // get new area boundaries
     m_dwAreaPos = dwAreaPos;
     m_dwAreaLength = dwAreaLength;
-
     return TRUE;
 }
 

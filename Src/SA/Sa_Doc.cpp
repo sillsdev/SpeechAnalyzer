@@ -158,6 +158,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #pragma comment( lib, "elanutils")
 #pragma comment( lib, "fileutils")
 #pragma comment( lib, "uriparser")
+#pragma comment( lib, "saprocessor")
+
 //#ifdef _DEBUG
 //#pragma comment( lib, "xerces-c_3d")
 //#else
@@ -197,55 +199,58 @@ static LPCSTR psz_saview = "saview";
 /***************************************************************************/
 CSaDoc::CSaDoc() :
 	segmentOps(*this),
-	sabLoaded(false) {
+	sabLoaded(false),
+	m_ProcessDoc(CProcessDoc(*(App*)(CSaApp*)AfxGetApp(),*this)) {
 	m_bAudioModified = false;
 	m_bTransModified = false;
 	m_bTempOverlay = false;
 	m_ID = -1;
+	Context& context = GetContext();
 	// create segments
-	m_apSegments[PHONETIC] = new CPhoneticSegment(PHONETIC);
-	m_apSegments[TONE] = new CToneSegment(TONE, PHONETIC);
-	m_apSegments[PHONEMIC] = new CPhonemicSegment(PHONEMIC, PHONETIC);
-	m_apSegments[ORTHO] = new COrthographicSegment(ORTHO, PHONETIC);
-	m_apSegments[GLOSS] = new CGlossSegment(GLOSS, PHONETIC);
-	m_apSegments[GLOSS_NAT] = new CGlossNatSegment(GLOSS_NAT, GLOSS);
-	m_apSegments[REFERENCE] = new CReferenceSegment(REFERENCE, GLOSS);
-	m_apSegments[MUSIC_PL1] = new CMusicPhraseSegment(MUSIC_PL1);
-	m_apSegments[MUSIC_PL2] = new CMusicPhraseSegment(MUSIC_PL2);
-	m_apSegments[MUSIC_PL3] = new CMusicPhraseSegment(MUSIC_PL3);
-	m_apSegments[MUSIC_PL4] = new CMusicPhraseSegment(MUSIC_PL4);
+	m_apSegments[PHONETIC] = new CPhoneticSegment(context,PHONETIC);
+	m_apSegments[TONE] = new CToneSegment(context, TONE, PHONETIC);
+	m_apSegments[PHONEMIC] = new CPhonemicSegment(context, PHONEMIC, PHONETIC);
+	m_apSegments[ORTHO] = new COrthographicSegment(context, ORTHO, PHONETIC);
+	m_apSegments[GLOSS] = new CGlossSegment(context, GLOSS, PHONETIC);
+	m_apSegments[GLOSS_NAT] = new CGlossNatSegment(context, GLOSS_NAT, GLOSS);
+	m_apSegments[REFERENCE] = new CReferenceSegment(context, REFERENCE, GLOSS);
+	m_apSegments[MUSIC_PL1] = new CMusicPhraseSegment(context, MUSIC_PL1);
+	m_apSegments[MUSIC_PL2] = new CMusicPhraseSegment(context, MUSIC_PL2);
+	m_apSegments[MUSIC_PL3] = new CMusicPhraseSegment(context, MUSIC_PL3);
+	m_apSegments[MUSIC_PL4] = new CMusicPhraseSegment(context, MUSIC_PL4);
 
 	// enable background processing
 	m_bProcessBackground = TRUE;
 
 	// create data processing object
-	m_pProcessAdjust = new CProcessAdjust(this);
-	m_pProcessFragments = new CProcessFragments();
-	m_pProcessLoudness = new CProcessLoudness();
-	m_pProcessSmoothLoudness = new CProcessSmoothLoudness();
-	m_pProcessPitch = new CProcessPitch();
-	m_pProcessCustomPitch = new CProcessCustomPitch();
-	m_pProcessSmoothedPitch = new CProcessSmoothedPitch();
-	m_pProcessGrappl = new CProcessGrappl();
-	m_pProcessMelogram = new CProcessMelogram();
-	m_pProcessChange = new CProcessChange();
-	m_pProcessRaw = new CProcessRaw();
-	m_pProcessHilbert = new CProcessHilbert(m_pProcessRaw);
+	m_pProcessAdjust = new CProcessAdjust(context);
+	m_pProcessFragments = new CProcessFragments(context);
+	m_pProcessLoudness = new CProcessLoudness(context);
+	m_pProcessSmoothLoudness = new CProcessSmoothLoudness(context);
+	m_pProcessPitch = new CProcessPitch(context);
+	m_pProcessCustomPitch = new CProcessCustomPitch(context);
+	m_pProcessSmoothedPitch = new CProcessSmoothedPitch(context);
+	m_pProcessGrappl = new CProcessGrappl(context);
+	m_pProcessMelogram = new CProcessMelogram(context);
+	m_pProcessChange = new CProcessChange(context);
+	m_pProcessRaw = new CProcessRaw(context);
+	m_pProcessHilbert = new CProcessHilbert(context,m_pProcessRaw);
 	m_pProcessSpectrogram = NULL;
 	m_pProcessSnapshot = NULL;
-	m_pProcessFormants = new CProcessFormants();
-	m_pProcessFormantTracker = new CProcessFormantTracker(*m_pProcessRaw, *m_pProcessHilbert, *m_pProcessGrappl);
-	m_pProcessZCross = new CProcessZCross();
-	m_pProcessSpectrum = new CProcessSpectrum();
-	m_pProcessDurations = new CProcessDurations();
-	m_pProcessGlottis = new CProcessGlottis();
-	m_pProcessPOA = new CProcessPOA();
+	m_pProcessFormants = new CProcessFormants(context);
+	m_pProcessFormantTracker = new CProcessFormantTracker(context ,*m_pProcessRaw, *m_pProcessHilbert, *m_pProcessGrappl);
+	m_pProcessZCross = new CProcessZCross(context);
+	m_pProcessSpectrum = new CProcessSpectrum(context);
+	m_pProcessDurations = new CProcessDurations(context);
+	m_pProcessGlottis = new CProcessGlottis(context);
+	m_pProcessPOA = new CProcessPOA(context);
 	m_pProcessSDP[0] = NULL;
 	m_pProcessSDP[1] = NULL;
 	m_pProcessSDP[2] = NULL;
-	m_pProcessRatio = new CProcessRatio();
-	m_pProcessTonalWeightChart = new CProcessTonalWeightChart();
+	m_pProcessRatio = new CProcessRatio(context);
+	m_pProcessTonalWeightChart = new CProcessTonalWeightChart(context);
 	m_pCreatedFonts = new CObArray();
+	m_pProcessWavelet = new CProcessWavelet(context);
 
 	//SDM 1.06.6U2
 	m_dwDataSize = 0;
@@ -330,6 +335,10 @@ CSaDoc::~CSaDoc() {
 	if (m_pProcessFormants) {
 		delete m_pProcessFormants;
 		m_pProcessFormants = NULL;
+	}
+	if (m_pProcessWavelet) {
+		delete m_pProcessWavelet;
+		m_pProcessWavelet = nullptr;
 	}
 	if (m_pProcessFormantTracker) {
 		delete m_pProcessFormantTracker;
@@ -425,7 +434,7 @@ EGender CSaDoc::GetGender() {
 	int nGender = pSourceParm->nGender;
 	if (nGender == UNDEFINED_DATA) {
 		// guess
-		m_pProcessGrappl->Process(this, this); // process pitch
+		m_pProcessGrappl->Process(this); // process pitch
 		if (m_pProcessGrappl->IsDataReady()) {
 			double dAvgPitch = m_pProcessGrappl->GetAveragePitch();
 			if (dAvgPitch < 200.0) {
@@ -516,7 +525,7 @@ void CSaDoc::DeleteContents() {
 	m_FmtParm.wBlockAlign = 2;
 	m_FmtParm.wBitsPerSample = 16;
 
-	m_saParam.szDescription.Empty();
+	m_saParam.szDescription.clear();
 	m_saParam.wFlags = SA_FLAG_HIGHPASS;
 	m_saParam.byRecordFileFormat = FILE_FORMAT_WAV;
 	m_saParam.RecordTimeStamp = 0;
@@ -586,35 +595,33 @@ void CSaDoc::DeleteContents() {
 
 	// Set spectrum parameters to default values. // RLJ 1.5Test11.1A
 	CSpectrumParm * pSpectrumParmDefaults = pMain->GetSpectrumParmDefaults();
-	CSpectrumParm Spectrum;
-	Spectrum.nScaleMode = pSpectrumParmDefaults->nScaleMode;
-	Spectrum.nPwrUpperBound = pSpectrumParmDefaults->nPwrUpperBound;
-	Spectrum.nPwrLowerBound = pSpectrumParmDefaults->nPwrLowerBound;
-	Spectrum.nFreqUpperBound = pSpectrumParmDefaults->nFreqUpperBound;
-	Spectrum.nFreqLowerBound = pSpectrumParmDefaults->nFreqLowerBound;
-	Spectrum.nFreqScaleRange = pSpectrumParmDefaults->nFreqScaleRange;
-	Spectrum.nSmoothLevel = pSpectrumParmDefaults->nSmoothLevel;
-	Spectrum.nPeakSharpFac = pSpectrumParmDefaults->nPeakSharpFac;
-	Spectrum.cWindow = pSpectrumParmDefaults->cWindow;
-	Spectrum.bShowLpcSpectrum = pSpectrumParmDefaults->bShowLpcSpectrum;
-	Spectrum.bShowCepSpectrum = pSpectrumParmDefaults->bShowCepSpectrum;
-	Spectrum.bShowFormantFreq = pSpectrumParmDefaults->bShowFormantFreq;
-	Spectrum.bShowFormantBandwidth = pSpectrumParmDefaults->bShowFormantBandwidth;
-	Spectrum.bShowFormantPower = pSpectrumParmDefaults->bShowFormantPower;
+	CSpectrumParm spectrum;
+	spectrum.nScaleMode = pSpectrumParmDefaults->nScaleMode;
+	spectrum.nPwrUpperBound = pSpectrumParmDefaults->nPwrUpperBound;
+	spectrum.nPwrLowerBound = pSpectrumParmDefaults->nPwrLowerBound;
+	spectrum.nFreqUpperBound = pSpectrumParmDefaults->nFreqUpperBound;
+	spectrum.nFreqLowerBound = pSpectrumParmDefaults->nFreqLowerBound;
+	spectrum.nFreqScaleRange = pSpectrumParmDefaults->nFreqScaleRange;
+	spectrum.nSmoothLevel = pSpectrumParmDefaults->nSmoothLevel;
+	spectrum.nPeakSharpFac = pSpectrumParmDefaults->nPeakSharpFac;
+	spectrum.window = pSpectrumParmDefaults->window;
+	spectrum.bShowLpcSpectrum = pSpectrumParmDefaults->bShowLpcSpectrum;
+	spectrum.bShowCepSpectrum = pSpectrumParmDefaults->bShowCepSpectrum;
+	spectrum.bShowFormantFreq = pSpectrumParmDefaults->bShowFormantFreq;
+	spectrum.bShowFormantBandwidth = pSpectrumParmDefaults->bShowFormantBandwidth;
+	spectrum.bShowFormantPower = pSpectrumParmDefaults->bShowFormantPower;
 
-	m_pProcessSpectrum->SetSpectrumParms(&Spectrum);
+	m_pProcessSpectrum->SetSpectrumParms(&spectrum);
 
 	// Set formant chart parameters to default values. // AKE 1.5Test13.1
 	CFormantParm * pFormantParmDefaults = pMain->GetFormantParmDefaults();
-	CFormantParm Formant;
-	Formant.bFromLpcSpectrum = pFormantParmDefaults->bFromLpcSpectrum;
-	Formant.bFromCepstralSpectrum = pFormantParmDefaults->bFromCepstralSpectrum;
-	Formant.bTrackFormants = pFormantParmDefaults->bTrackFormants;
-	Formant.bSmoothFormants = pFormantParmDefaults->bSmoothFormants;
-	Formant.bMelScale = pFormantParmDefaults->bMelScale;
-
-	m_pProcessFormants->SetFormantParms(&Formant);
-
+	CFormantParm formant;
+	formant.bFromLpcSpectrum = pFormantParmDefaults->bFromLpcSpectrum;
+	formant.bFromCepstralSpectrum = pFormantParmDefaults->bFromCepstralSpectrum;
+	formant.bTrackFormants = pFormantParmDefaults->bTrackFormants;
+	formant.bSmoothFormants = pFormantParmDefaults->bSmoothFormants;
+	formant.bMelScale = pFormantParmDefaults->bMelScale;
+	m_pProcessFormants->SetFormantParms(&formant);
 
 	// delete temporary file
 	if (IsUsingTempFile()) {
@@ -710,7 +717,7 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
 	if (FileUtils::EndsWith(pszPathName, L".eaf")) {
 		Elan::CAnnotationDocument document;
 		{
-			CScopedCursor waitCursor(this);
+			CScopedCursor waitCursor(*this);
 			document = Elan::LoadDocument(pszPathName);
 		}
 		int found = 0;
@@ -853,7 +860,7 @@ BOOL CSaDoc::LoadDataFiles(LPCTSTR pszPathName, bool bTemp/*=FALSE*/) {
 
 	CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
 
-	CScopedCursor cursor(this);
+	CScopedCursor cursor(*this);
 
 	wstring szWavePath = pszPathName;
 	if (m_bUsingTempFile) {
@@ -955,7 +962,7 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp) {
 		ReadTranscription(MUSIC_PL3, saAudioDocRdr, limit, exceeded, limited);
 		ReadTranscription(MUSIC_PL4, saAudioDocRdr, limit, exceeded, limited);
 	} else {
-		m_saParam.szDescription.Empty();
+		m_saParam.szDescription.clear();
 		m_saParam.wFlags = 0;
 		m_saParam.byRecordFileFormat = FILE_FORMAT_WAV;
 		m_saParam.lSignalMax = 0;
@@ -1020,7 +1027,7 @@ bool CSaDoc::ReadRiff(LPCTSTR pszPathName) {
 	}
 
 	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
-	MMCKINFO mmckinfoParent;
+	MMCKINFO mmckinfoParent = {};
 	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
 		// error descending into wave chunk
@@ -1030,7 +1037,7 @@ bool CSaDoc::ReadRiff(LPCTSTR pszPathName) {
 	}
 
 	// find the format chunk. It should be a subchunk of the 'RIFF' parent chunk
-	MMCKINFO mmckinfoSubchunk;
+	MMCKINFO mmckinfoSubchunk = {};
 	mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' '); // prepare search code
 	MMRESULT result = mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK);
 	if (result != MMSYSERR_NOERROR) {
@@ -1115,7 +1122,7 @@ void CSaDoc::ReadNonSegmentData(ISaAudioDocumentReaderPtr saAudioDocRdr) {
 	m_szMD5HashCode = saAudioDocRdr->MD5HashCode;
 
 	// Get SA data
-	m_saParam.szDescription = (wchar_t *)saAudioDocRdr->SADescription;
+	m_saParam.szDescription = _to_utf8((wchar_t *)saAudioDocRdr->SADescription);
 	m_saParam.wFlags = (USHORT)saAudioDocRdr->SAFlags;
 	m_saParam.byRecordFileFormat = (BYTE)saAudioDocRdr->RecordFileFormat;
 	m_saParam.RecordTimeStamp = (CTime)saAudioDocRdr->RecordTimeStamp;
@@ -1295,7 +1302,7 @@ BOOL CSaDoc::InsertTranscriptions(LPCTSTR pszPathName, DWORD dwPos) {
 
 	TRACE(L"inserting transcriptions for %s at %d\n", pszPathName, dwPos);
 
-	CScopedCursor waitCursor(this);
+	CScopedCursor waitCursor(*this);
 
 	// initialize com object
 	CoInitialize(NULL);
@@ -1448,7 +1455,7 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
 		return false;
 	}
 	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
-	MMCKINFO mmckinfoParent;
+	MMCKINFO mmckinfoParent = {};
 	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
 		mmioClose(hmmioFile, 0);
@@ -1457,7 +1464,7 @@ bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
 		return false;
 	}
 	// find the format chunk. It should be a subchunk of the 'RIFF' parent chunk
-	MMCKINFO mmckinfoSubchunk;
+	MMCKINFO mmckinfoSubchunk = {};
 	mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' '); // prepare search code
 	LONG lError;
 	if (!mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
@@ -1545,7 +1552,7 @@ bool CSaDoc::IsMultiChannelWave(LPCTSTR pszPathName, int & channels) {
 	}
 
 	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
-	MMCKINFO mmckinfoParent;
+	MMCKINFO mmckinfoParent = {};
 	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
 		mmioClose(hmmioFile, 0);
@@ -1554,7 +1561,7 @@ bool CSaDoc::IsMultiChannelWave(LPCTSTR pszPathName, int & channels) {
 
 	CFmtParm fmtParm;
 	// find the format chunk. It should be a subchunk of the 'RIFF' parent chunk
-	MMCKINFO mmckinfoSubchunk;
+	MMCKINFO mmckinfoSubchunk = {};
 	mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' '); // prepare search code
 	LONG lError = mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK);
 	if (lError != MMSYSERR_NOERROR) {
@@ -1661,8 +1668,6 @@ DWORD CSaDoc::CheckWaveFormatForOpen(LPCTSTR pszPathName) {
 /***************************************************************************/
 bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
 
-	bool result = true;
-
 	CScopedStatusBar scopedStatusBar(IDS_CONVERT_WAVE);
 
 	// create temp file
@@ -1694,6 +1699,7 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName) {
 
 	scopedStatusBar.SetProgress(30);
 
+	bool result = false;
 	try {
 		result = (stAudio->ConvertToWAV(_bstr_t(pszPathName), _bstr_t(m_szTempConvertedWave.c_str()), 22050, 16, 1) == VARIANT_TRUE);
 	} catch (...) {
@@ -1734,7 +1740,7 @@ BOOL CSaDoc::SaveDocument(LPCTSTR pszPathName, bool bSaveAudio) {
 
 	// get pointer to application
 	CSaApp & app = *(CSaApp *)AfxGetApp();
-	CScopedCursor waitCursor(this);
+	CScopedCursor waitCursor(*this);
 
 	if (IsUsingTempFile()) {
 		// check if the file already opened
@@ -1896,7 +1902,7 @@ void CSaDoc::ClearFileStatus(LPCTSTR filename) {
 /***************************************************************************/
 BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipboardFile) {
 
-	CScopedCursor waitCursor(this);
+	CScopedCursor waitCursor(*this);
 
 	DWORD dwDataSize = m_dwDataSize;
 	if (bSaveAudio) {
@@ -1959,7 +1965,7 @@ BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, bool bSaveAudio, bool bIsClipbo
 /***************************************************************************/
 DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
 
-	CScopedCursor waitCursor(this);
+	CScopedCursor waitCursor(*this);
 
 	// open file
 	// file handle
@@ -1972,7 +1978,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
 	}
 
 	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
-	MMCKINFO mmckinfoParent;
+	MMCKINFO mmckinfoParent = {};
 	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
 		// error descending into wave chunk
@@ -1982,7 +1988,7 @@ DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName) {
 	}
 
 	// find the data chunk. It should be a subchunk of the 'RIFF' parent chunk
-	MMCKINFO mmckinfoSubchunk;
+	MMCKINFO mmckinfoSubchunk = {};
 	LONG lError = 0;
 	DWORD dwDataSize = 0;
 	mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
@@ -2082,7 +2088,7 @@ void CSaDoc::WriteNonSegmentData(DWORD dwDataSize, ISaAudioDocumentWriterPtr saA
 	saAudioDocWriter->BlockAlignment = m_FmtParm.wBlockAlign;
 	saAudioDocWriter->BitsPerSample = m_FmtParm.wBitsPerSample;
 
-	saAudioDocWriter->PutSADescription((_bstr_t)m_saParam.szDescription);
+	saAudioDocWriter->PutSADescription((_bstr_t)_to_wstring(m_saParam.szDescription).c_str());
 	saAudioDocWriter->SAFlags = m_saParam.wFlags;
 	saAudioDocWriter->RecordFileFormat = m_saParam.byRecordFileFormat;
 	saAudioDocWriter->RecordBandWidth = m_saParam.dwRecordBandWidth;
@@ -2291,7 +2297,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
 			return FALSE;
 		}
 		// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
-		MMCKINFO mmckinfoParent;
+		MMCKINFO mmckinfoParent = {};
 		mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 		if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
 			// error descending into wave chunk
@@ -2303,7 +2309,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTo
 			return FALSE;
 		}
 		// find the data subchunk
-		MMCKINFO mmckinfoSubchunk;
+		MMCKINFO mmckinfoSubchunk = {};
 		mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
 		if (mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
 			// error descending into data chunk
@@ -2588,7 +2594,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
 	}
 
 	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
-	MMCKINFO mmckinfoParent;
+	MMCKINFO mmckinfoParent = {};
 	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
 		// error descending into wave chunk
@@ -2601,7 +2607,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
 	}
 
 	// find the data subchunk
-	MMCKINFO mmckinfoSubchunk;
+	MMCKINFO mmckinfoSubchunk = {};
 	mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
 	if (mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
 		// error descending into data chunk
@@ -2616,7 +2622,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName) {
 	// get the size of the data subchunk
 	DWORD dwSizeLeft = mmckinfoSubchunk.cksize;
 
-	char buffer[0x10000];
+	char buffer[0x10000] = {};
 
 	VirtualLock(buffer, _countof(buffer));
 	while (dwSizeLeft) {
@@ -2715,7 +2721,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
 	}
 
 	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
-	MMCKINFO mmckinfoParent;
+	MMCKINFO mmckinfoParent = {};
 	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF)) {
 		// error descending into wave chunk
@@ -2728,7 +2734,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
 	}
 
 	// find the data subchunk
-	MMCKINFO mmckinfoSubchunk;
+	MMCKINFO mmckinfoSubchunk = {};
 	mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
 	if (mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK)) {
 		// error descending into data chunk
@@ -2744,7 +2750,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
 	DWORD dwSizeLeft = mmckinfoSubchunk.cksize;
 
 	// use local buffer
-	char buffer[0x10000];
+	char buffer[0x10000] = {};
 
 	VirtualLock(buffer, _countof(buffer));
 	while (dwSizeLeft) {
@@ -3713,7 +3719,7 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart) {
 
 	BOOL bProcess = FALSE;
 	CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
-	m_pProcessAdjust->Process(this, this);
+	m_pProcessAdjust->Process(this);
 
 	if (m_nWbProcess > 0) {
 		// get pointer to view
@@ -3728,7 +3734,7 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart) {
 				pProcess->SetDataInvalid();
 			}
 			// now process
-			short int nResult = LOWORD(pProcess->Process(pView, this));
+			short int nResult = LOWORD(pProcess->Process(pView));
 			bProcess = TRUE;
 			// check process result
 			if (nResult == PROCESS_CANCELED) {
@@ -3824,7 +3830,7 @@ BOOL CSaDoc::PutWaveToClipboard(WAVETIME sectionStart, WAVETIME sectionLength, B
 	}
 
 	// declare one format for transferring
-	FORMATETC format;
+	FORMATETC format = {};
 	format.cfFormat = CF_WAVE;
 	format.ptd = NULL;
 	format.dwAspect = DVASPECT_CONTENT;
@@ -4353,8 +4359,6 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 		return FALSE;
 	}
 
-	CSegment * pSegment = m_apSegments[nLoop];
-
 	if (GetSegment(nLoop)->GetMasterIndex() == -1) {
 		// Prepare for Update Boundaries
 		CIndependentSegment * pSegment = (CIndependentSegment *)pModel->GetSegment(nLoop); //SDM 1.5Test8.1
@@ -4392,6 +4396,7 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 		pSegment->Adjust(this, nSelection, dwNewOffset, dwNewStop - dwNewOffset, false);
 	}
 
+	CSegment* pSegment = m_apSegments[nLoop];
 	if (nLoop == GLOSS) {
 		// gloss mode
 		// Prepare for Update Boundaries
@@ -4580,9 +4585,9 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * p
 	int nSmpSize = m_FmtParm.wBlockAlign;
 
 	// process the necessary data
-	short int nResult1 = LOWORD(m_pProcessGrappl->Process(this, this));
-	short int nResult2 = LOWORD(m_pProcessLoudness->Process(this, this));
-	short int nResult3 = LOWORD(m_pProcessFormantTracker->Process(this, this));
+	short int nResult1 = LOWORD(m_pProcessGrappl->Process(this));
+	short int nResult2 = LOWORD(m_pProcessLoudness->Process(this));
+	short int nResult3 = LOWORD(m_pProcessFormantTracker->Process(this));
 	if (nResult1 < 0 || nResult2 < 0 || nResult3 < 0) { // processing error
 		*pbRes = FALSE;
 		return szMeasurement;
@@ -4735,7 +4740,8 @@ CArchive & operator>> (CArchive & ar, SourceParm & parm) {
 }
 
 void CSaDoc::SerializeForUndoRedo(CArchive & ar) {
-	CSegment * pDummySeg = (CSegment *)new CPhoneticSegment(PHONETIC);
+	Context& context = GetContext();
+	CSegment * pDummySeg = (CSegment *)new CPhoneticSegment(context,PHONETIC);
 	// get pointer to view
 	POSITION pos = GetFirstViewPosition();
 	CSaView * pView = (CSaView *)GetNextView(pos);
@@ -4922,7 +4928,7 @@ BOOL CSaDoc::DoFileSave() {
 */
 void CSaDoc::SaveSection(bool sameFile, LPCTSTR oldFile, LPCTSTR newFile, ESaveArea saveArea, EFileFormat fileFormat, DWORD samplingRate) {
 
-	CScopedCursor waitCursor(this);
+	CScopedCursor waitCursor(*this);
 	TRACE(L"old file = %s\n", oldFile);
 	TRACE(L"new file = %s\n", newFile);
 	TRACE(L"same? = %d\n", sameFile);
@@ -5243,13 +5249,14 @@ BOOL CSaDoc::AdvancedSegment() {
 	pView->SendMessage(WM_COMMAND, ID_PHONETIC_ALL);
 
 	// SDM1.5Test8.2
-	CSegment * pPreserve[ANNOT_WND_NUMBER];
+	CSegment * pPreserve[ANNOT_WND_NUMBER] = {};
+	Context& context = GetContext();
 	for (int nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++) {
 		pPreserve[nLoop] = m_apSegments[nLoop];
 		if (nLoop == GLOSS) {
-			m_apSegments[nLoop] = new CGlossSegment(GLOSS, PHONETIC);
+			m_apSegments[nLoop] = new CGlossSegment(context, GLOSS, PHONETIC);
 		} else {
-			m_apSegments[nLoop] = new CReferenceSegment(REFERENCE, GLOSS);
+			m_apSegments[nLoop] = new CReferenceSegment(context, REFERENCE, GLOSS);
 		}
 	}
 
@@ -5400,7 +5407,7 @@ BOOL CSaDoc::ReadProperties(CObjectIStream & obs) {
 		return TRUE;
 	}
 
-	TRACE(_T("Autoload: %s\n"), sPath);
+	TRACE(_T("Autoload: %s\n"), sPath.GetString());
 	CSaView::SetObjectStream(obs);
 
 	while (!obs.bAtEnd()) {
@@ -5437,11 +5444,11 @@ BOOL CSaDoc::ReadPropertiesOfViews(CObjectIStream & obs, const CSaString & sPath
 				s_bDocumentWasAlreadyOpen = TRUE; // 1996-09-05 MRP: OnOpenDocument clears this flag
 				pdoc = (CSaDoc *)AfxGetApp()->OpenDocumentFile(sPath);
 				if (s_bDocumentWasAlreadyOpen) {
-					TRACE(_T("Not autoloading aliased file: %s\n"), sPath);
+					TRACE(_T("Not autoloading aliased file: %s\n"), sPath.GetString());
 					pdoc = NULL;
 				}
 				if (!pdoc) {
-					TRACE(_T("Database file <%s> does not exist.\n"), sPath);
+					TRACE(_T("Database file <%s> does not exist.\n"), sPath.GetString());
 					obs.SkipToEndMarker(psz_wndlst);
 					break;
 				}
@@ -5622,16 +5629,18 @@ void CSaDoc::GetAlignInfo(CAlignInfo & info) {
 
 CProcessSpectrogram * CSaDoc::GetSpectrogram() {
 	if (!m_pProcessSpectrogram) {
+		Context& context = GetContext();
 		CMainFrame* pMainFrame = (CMainFrame*)::AfxGetMainWnd();
-		m_pProcessSpectrogram = new CProcessSpectrogram(*pMainFrame->GetSpectrogramParmDefaults(), this, TRUE);
+		m_pProcessSpectrogram = new CProcessSpectrogram(context,*pMainFrame->GetSpectrogramParmDefaults(), TRUE);
 	}
 	return m_pProcessSpectrogram;
 }
 
 CProcessSpectrogram* CSaDoc::GetSnapshot() {
 	if (!m_pProcessSnapshot) {
+		Context& context = GetContext();
 		CMainFrame* pMainFrame = (CMainFrame*)::AfxGetMainWnd();
-		m_pProcessSnapshot = new CProcessSpectrogram(*pMainFrame->GetSnapshotParmDefaults(), this, FALSE);
+		m_pProcessSnapshot = new CProcessSpectrogram(context,*pMainFrame->GetSnapshotParmDefaults(), FALSE);
 	}
 	return m_pProcessSnapshot;
 }
@@ -5642,7 +5651,8 @@ CProcessSDP * CSaDoc::GetSDP(int nIndex) {
 	}
 
 	if (!m_pProcessSDP[nIndex]) {
-		m_pProcessSDP[nIndex] = new CProcessSDP();
+		Context& context = GetContext();
+		m_pProcessSDP[nIndex] = new CProcessSDP(context);
 	}
 
 	return m_pProcessSDP[nIndex];
@@ -5745,10 +5755,10 @@ bool CSaDoc::PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selectio
 			DWORD offset = pGloss->GetOffset(i);
 			bool found = false;
 			for (int j = 0; j < pReference->GetOffsetSize(); j++) {
-				CString text = pReference->GetText(j).Trim();
+				CString text2 = pReference->GetText(j).Trim();
 				DWORD roffset = pReference->GetOffset(j);
 				if (roffset == offset) {
-					if (text.GetLength() > 0) {
+					if (text2.GetLength() > 0) {
 						return true;
 					}
 				} else if (roffset > offset) {
@@ -5767,9 +5777,9 @@ bool CSaDoc::PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selectio
 					int r = j - 1;
 					DWORD poffset = pReference->GetOffset(r);
 					DWORD pstop = pReference->GetStop(r);
-					CString text = pReference->GetText(r).Trim();
+					CString text2 = pReference->GetText(r).Trim();
 					if ((poffset < offset) && (offset < pstop)) {
-						if (text.GetLength() > 0) {
+						if (text2.GetLength() > 0) {
 							return true;
 						}
 					}
@@ -6647,13 +6657,6 @@ const CSaString CSaDoc::BuildString(int nSegment) {
 	return szBuild;
 }
 
-/***************************************************************************/
-// CSaDoc::BuildString builds an annotation string
-/***************************************************************************/
-const CSaString CSaDoc::BuildImportString(BOOL /*gloss*/, BOOL /*glossnat*/, BOOL /*phonetic*/, BOOL /*phonemic*/, BOOL /*orthographic*/) {
-	return CSaString("");
-}
-
 /**
 * Read the incoming stream and return the transcription line
 * This is used by the automatic transcription feature returns false on failure
@@ -7431,8 +7434,8 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				if (index >= 0) {
 					int result = ComposePhraseSegmentFilename(MUSIC_PL2, pl2, index, phraseConvention, szPath, filename, L"", L"");
 					if (result == 0) {
-						int result = ExportPhraseSegment(pl2, index, filename, dataCount, wavCount);
-						if (result == 0) {
+						int result2 = ExportPhraseSegment(pl2, index, filename, dataCount, wavCount);
+						if (result2 == 0) {
 							size_t index = filename.find_last_of('\\');
 							wstring uri = filename.substr(index + 1);
 							entry.pronunciation[0].media.append(Lift13::urlref(L"media"));
@@ -8018,16 +8021,16 @@ void CSaDoc::DisableHighPassFilter() {
 	m_saParam.wFlags &= ~SA_FLAG_HIGHPASS;
 }
 
-CSaString CSaDoc::GetDescription() {
-	return m_saParam.szDescription;
+CString CSaDoc::GetDescription() {
+	return m_saParam.szDescription.c_str();
 }
 
 void CSaDoc::SetDescription(LPCTSTR val) {
-	m_saParam.szDescription = val;
+	m_saParam.szDescription = _to_utf8(val);
 }
 
 bool CSaDoc::MatchesDescription(LPCTSTR val) {
-	return (m_saParam.szDescription.CompareNoCase(val) == 0);
+	return (compare_no_case(_to_wstring(m_saParam.szDescription).c_str(),val));
 }
 
 bool CSaDoc::IsValidRecordFileFormat() {
@@ -8762,13 +8765,13 @@ void CSaDoc::ExportTimeTable(LPCTSTR filename,
 
 	short int nResult;
 	enum { MAG, PITCH, MELOGRAM, ZCROSS, FMTTRACKER, CALCULATIONS };
-	double fSizeFactor[CALCULATIONS];
+	double fSizeFactor[CALCULATIONS] = {};
 
 	if (bMagnitude) {
 		// get pointer to loudness object
 		CProcessLoudness * pLoudness = (CProcessLoudness *)GetLoudness();
 		// process data
-		nResult = LOWORD(pLoudness->Process(this, this));
+		nResult = LOWORD(pLoudness->Process(this));
 		if (nResult == PROCESS_ERROR) {
 			bMagnitude = FALSE;
 		} else if (nResult == PROCESS_CANCELED) {
@@ -8785,19 +8788,19 @@ void CSaDoc::ExportTimeTable(LPCTSTR filename,
 		CProcessPitch * pRawPitch = GetPitch();
 		CProcessSmoothedPitch * pSmoothedPitch = GetSmoothedPitch();
 		// process data
-		nResult = LOWORD(pPitch->Process(this, this));
+		nResult = LOWORD(pPitch->Process(this));
 		if (nResult == PROCESS_ERROR) {
 			bPitch = FALSE;
 		} else if (nResult == PROCESS_CANCELED) {
 			return;
 		}
-		nResult = LOWORD(pRawPitch->Process(this, this));
+		nResult = LOWORD(pRawPitch->Process(this));
 		if (nResult == PROCESS_ERROR) {
 			bPitch = bPitch && FALSE;
 		} else if (nResult == PROCESS_CANCELED) {
 			return;
 		}
-		nResult = LOWORD(pSmoothedPitch->Process(this, this));
+		nResult = LOWORD(pSmoothedPitch->Process(this));
 		if (nResult == PROCESS_ERROR) {
 			bPitch = bPitch && FALSE;
 		} else if (nResult == PROCESS_CANCELED) {
@@ -8808,7 +8811,7 @@ void CSaDoc::ExportTimeTable(LPCTSTR filename,
 	}
 	if (bMelogram) {
 		CProcessMelogram * pMelogram = GetMelogram(); // SDM 1.5 Test 11.0
-		nResult = LOWORD(pMelogram->Process(this, this)); // process data
+		nResult = LOWORD(pMelogram->Process(this)); // process data
 		if (nResult == PROCESS_ERROR) {
 			bMelogram = FALSE;
 		} else if (nResult == PROCESS_CANCELED) {
@@ -8819,7 +8822,7 @@ void CSaDoc::ExportTimeTable(LPCTSTR filename,
 	}
 	if (bZeroCrossings || bF1 || bF2 || bF3 || bF4) {
 		CProcessZCross  * pZCross = GetZCross();
-		nResult = LOWORD(pZCross->Process(this, this)); // process data
+		nResult = LOWORD(pZCross->Process(this)); // process data
 		if (nResult == PROCESS_ERROR) {
 			bZeroCrossings = FALSE;
 		} else if (nResult == PROCESS_CANCELED) {
@@ -8833,10 +8836,10 @@ void CSaDoc::ExportTimeTable(LPCTSTR filename,
 
 		// If pitch processed successfully, generate formant data.
 		if (GetGrappl()->IsDataReady()) {
-			short int nResult = LOWORD(pSpectroFormants->Process(this, this));
-			if (nResult == PROCESS_ERROR) {
+			short int nResult2 = LOWORD(pSpectroFormants->Process(this));
+			if (nResult2 == PROCESS_ERROR) {
 				bF1 = bF2 = bF3 = bF4 = FALSE;
-			} else if (nResult == PROCESS_CANCELED) {
+			} else if (nResult2 == PROCESS_CANCELED) {
 				return;
 			} else {
 				fSizeFactor[FMTTRACKER] = (double)GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);
@@ -9270,6 +9273,7 @@ void CSaDoc::GenerateCVData(CSaView & view) {
 
 	POSITION pos = GetFirstViewPosition();
 	CSaView * pView = (CSaView *)GetNextView(pos);
+	Context& context = GetContext();
 
 	pView->SendMessage(WM_COMMAND, ID_PHONETIC_ALL);
 
@@ -9279,9 +9283,9 @@ void CSaDoc::GenerateCVData(CSaView & view) {
 	CSegment * pSaveGloss = m_apSegments[GLOSS];
 	CSegment * pSaveGlossNat = m_apSegments[GLOSS_NAT];
 	CSegment * pSaveRef = m_apSegments[REFERENCE];
-	m_apSegments[GLOSS] = new CGlossSegment(GLOSS, PHONETIC);
-	m_apSegments[GLOSS_NAT] = new CGlossNatSegment(GLOSS_NAT, GLOSS);
-	m_apSegments[REFERENCE] = new CReferenceSegment(REFERENCE, GLOSS);
+	m_apSegments[GLOSS] = new CGlossSegment(context,GLOSS, PHONETIC);
+	m_apSegments[GLOSS_NAT] = new CGlossNatSegment(context,GLOSS_NAT, GLOSS);
+	m_apSegments[REFERENCE] = new CReferenceSegment(context,REFERENCE, GLOSS);
 
 	// for the case of cancelled dependent processes
 	RestartAllProcesses();
@@ -9307,7 +9311,7 @@ void CSaDoc::GenerateCVData(CSaView & view) {
 	// SDM 1.5 Test 11.0
 	CProcessGrappl * pPitch = GetGrappl();
 	// process data
-	nResult = LOWORD(pPitch->Process(this, this));
+	nResult = LOWORD(pPitch->Process(this));
 	if (nResult == PROCESS_ERROR) {
 		ErrorMessage(IDS_ERROR_GENERATE_CV_NOPITCH);
 		return;
@@ -9505,4 +9509,58 @@ void CSaDoc::ToggleSpectrogram() {
 	if ((bFormantSelected) && ((GetSpectrogram()->IsProcessCanceled()) || (GetSnapshot()->IsProcessCanceled()))) {
 		RestartAllProcesses();
 	}
+}
+
+Context& CSaDoc::GetContext() {
+	// lazy construction
+	if (context.get() == nullptr) {
+		App& app = *(App*)(CSaApp*)AfxGetApp();
+		MainFrame& frame = *(MainFrame*)(CMainFrame*)AfxGetMainWnd();
+		context = make_unique<Context>(app, *this, frame, *this);
+	}
+	return *context;
+}
+
+PhoneticSegment* CSaDoc::GetPhoneticSegment() { 
+	return (PhoneticSegment*)GetSegment(PHONETIC); 
+};
+
+string CSaDoc::GetSegmentContent(int index) {
+	CSegment* pSegment = GetSegment(index);
+	return _to_utf8(pSegment->GetContent().GetString());
+}
+
+int CSaDoc::GetProcessorText(ProcessorType processorType) {
+	switch (processorType) {
+	case PROCESSDUR: return IDS_STATTXT_PROCESSDUR;
+	case PROCESSFMT: return IDS_STATTXT_PROCESSFMT;
+	case PROCESSWBLP: return  IDS_STATTXT_PROCESSWBLP;
+	case PROCESSWBEQU: return IDS_STATTXT_PROCESSWBEQU;
+	case PROCESSDFLT: return IDS_STATTXT_PROCESSING;
+	case PROCESSZCR: return IDS_STATTXT_PROCESSZCR;
+	case PROCESSWVL: return IDS_STATTXT_PROCESSWVL;
+	case PROCESSWBECHO: return IDS_STATTXT_PROCESSWBECHO;
+	case PROCESSWBREV: return IDS_STATTXT_PROCESSWBREV;
+	case PROCESSPIT: return IDS_STATTXT_PROCESSPIT;
+	case PROCESSLOU: return IDS_STATTXT_PROCESSLOU;
+	case PROCESSGRA: return IDS_STATTXT_PROCESSGRA;
+	case BACKGNDFRA: return IDS_STATTXT_BACKGNDFRA;
+	case PROCESSFRA: return IDS_STATTXT_PROCESSFRA;
+	case PROCESSTWC: return IDS_STATTXT_PROCESSTWC;
+	case PROCESSCHA: return IDS_STATTXT_PROCESSCHA;
+	case PROCESSCPI: return IDS_STATTXT_PROCESSCPI;
+	case BACKGNDGRA: return IDS_STATTXT_BACKGNDGRA;
+	case PROCESSSLO: return IDS_STATTXT_PROCESSSLO;
+	case PROCESSPOA: return IDS_STATTXT_PROCESSPOA;
+	case PROCESSRAT: return IDS_STATTXT_PROCESSRAT;
+	case PROCESSSPI: return IDS_STATTXT_PROCESSSPI;
+	case PROCESSSPG: return IDS_STATTXT_PROCESSSPG;
+	case PROCESSSPU: return IDS_STATTXT_PROCESSSPU;
+	case PROCESSMEL: return IDS_STATTXT_PROCESSMEL;
+	case PROCESSRAW: return IDS_STATTXT_PROCESSRAW;
+	case SEGMENTING: return IDS_STATTXT_SEGMENTING;
+	case PARSING: return IDS_STATTXT_PARSING;
+	case PROCESSWBGENERATOR: return IDS_STATTXT_PROCESSWBGENERATOR;
+	}
+	return IDS_STATTXT_PROCESSING;
 }

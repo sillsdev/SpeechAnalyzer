@@ -13,11 +13,14 @@
 class CProcessAreaData : public CProcess {
 
 public:
-    CProcessAreaData(Context context);
+    CProcessAreaData(Context& context);
     CProcessAreaData() = delete;
 
     virtual void UpdateArea();
-    BOOL SetArea(View* pView);
+    // m_dwAreaPos = pView->GetStartCursorPosition();
+    // DWORD wSmpSize = model.GetSampleSize();
+    // m_dwAreaLength = pView->GetStopCursorPosition() - m_dwAreaPos + wSmpSize;
+    BOOL SetAreaFromView(DWORD startCursorPosition, DWORD stopCursorPosition);
     DWORD GetAreaPosition();
     DWORD GetAreaLength();
 
@@ -29,6 +32,10 @@ private:
     DWORD  m_dwAreaLength;   // array of graph area lengths
 };
 
-class CProcessSDP : public CProcessAreaData {};
+class CProcessSDP : public CProcessAreaData {
+public:
+    CProcessSDP(Context& context) : CProcessAreaData(context) {};
+    CProcessSDP() = delete;
+};
 
 #endif

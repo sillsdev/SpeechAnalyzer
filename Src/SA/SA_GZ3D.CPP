@@ -88,7 +88,7 @@ void CFormantChart::SetStartCursor(CSaView * pView) {
     }
     m_bVoiced = TRUE;
     for (DWORD dwWave = dwWaveStart; dwWave <= dwWaveStop; dwWave += Grappl_calc_intvl)
-        if (!pAutoPitch->IsVoiced(pModel, dwWave)) {
+        if (!pAutoPitch->IsVoiced( dwWave)) {
             m_bVoiced = FALSE;
             break;
         }
@@ -117,7 +117,7 @@ void CFormantChart::SetStopCursor(CSaView * pView) {
     }
     m_bVoiced = TRUE;
     for (DWORD dwWave = dwWaveStart; dwWave <= dwWaveStop; dwWave += Grappl_calc_intvl)
-        if (!pAutoPitch->IsVoiced(pModel, dwWave)) {
+        if (!pAutoPitch->IsVoiced( dwWave)) {
             m_bVoiced = FALSE;
             break;
         }
@@ -216,8 +216,8 @@ short int CFormantChart::ProcessFormants() {
     }
 
     // If frame unvoiced, exit.
-    if (((!bDynamicUpdate) && ((!m_bVoiced) || (!pAutoPitch->IsVoiced(pModel, dwFrameStart)))) ||
-            ((bDynamicUpdate) && ((!pAutoPitch->IsVoiced(pModel, dwFrameStart)) || (!pAutoPitch->IsVoiced(pModel, dwFrameStart+dwFrameSize-wSmpSize))))) {
+    if (((!bDynamicUpdate) && ((!m_bVoiced) || (!pAutoPitch->IsVoiced( dwFrameStart)))) ||
+            ((bDynamicUpdate) && ((!pAutoPitch->IsVoiced( dwFrameStart)) || (!pAutoPitch->IsVoiced( dwFrameStart+dwFrameSize-wSmpSize))))) {
         return PROCESS_UNVOICED;
     }
 
@@ -1800,7 +1800,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
         double * pDataY = (double *)m_lpDataY; // pointer to X-axis data
         short int * pDataSym = (short int *)m_lpDataSym; // pointer to symbol data
 
-        pSDP->SetArea(pView);
+        pSDP->SetAreaFromView(pView->GetStartCursorPosition(),pView->GetStopCursorPosition());
         if (TRUE) {
             // new data has to be processed
             dwStart = pSDP->GetAreaPosition();

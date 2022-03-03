@@ -7,28 +7,20 @@
 #ifndef _SA_G_LOU_H
 #define _SA_G_LOU_H
 
-//###########################################################################
-// CPlotLoudness plot window
+#include "sa_context.h"
 
 class CPlotLoudness : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotLoudness)
 
-// Construction/destruction/creation
 public:
     CPlotLoudness();
-    virtual ~CPlotLoudness();
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
 
-    // Attributes
-private:
-
-    // Operations
-public:
-    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw( CDC * pDC, CRect rWnd, CRect rClip, SaContext& context);
 
 protected:
     DECLARE_MESSAGE_MAP()
 };
 
-#endif //_SA_G_LOU_H
+#endif

@@ -113,7 +113,7 @@ protected:
 #define PAINT_DB        64 // take linear amplitude data and plot as dB
 #define PAINT_MIN       128
 
-class CPlotWnd : public CWnd {
+class CPlotWnd : public CWnd, public CmdTarget {
 
     DECLARE_DYNCREATE(CPlotWnd)
 
@@ -209,6 +209,8 @@ public:
     void OnPrivateCursorDraw(CDC * pDC, CRect rect);
     void HideCursors();
     void ShowCursors();
+    void BeginWaitCursor() { CWnd::BeginWaitCursor(); }
+    void EndWaitCursor() { CWnd::EndWaitCursor(); }
 
 protected:
     virtual void PostNcDestroy();

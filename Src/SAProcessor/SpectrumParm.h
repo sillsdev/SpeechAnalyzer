@@ -26,8 +26,6 @@ public:
     void Init(App & app);
     void WriteProperties(CObjectOStream& obs);
     BOOL ReadProperties(CObjectIStream& obs);
-    SWindowSettings GetWindow() { return window; }
-    void SetWindow(SWindowSettings val) { window = val; }
 
     int nScaleMode;             // scale display mode
     int nPwrUpperBound;         // upper power display boundary
@@ -42,9 +40,8 @@ public:
     BOOL bShowFormantFreq;      // TRUE = show formant frequencies
     BOOL bShowFormantBandwidth; // TRUE = show formant bandwidths
     BOOL bShowFormantPower;     // TRUE = show formant powers
-
-private:
     SWindowSettings window;     // DSP Window settings
+
 };
 
 #endif

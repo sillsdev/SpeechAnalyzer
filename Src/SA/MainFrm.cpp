@@ -208,6 +208,7 @@ static UINT BASED_CODE progressIndicators[] = {
 /***************************************************************************/
 CMainFrame::CMainFrame() {
 
+    CSaApp & app = *(CSaApp*)AfxGetApp();
     // options default settings
     m_bStatusBar = TRUE;               // status bar enabled at startup
     m_nStatusPosReadout = TIME;        // position readout mode is time
@@ -302,8 +303,7 @@ CMainFrame::CMainFrame() {
         }
     } catch (CMemoryException * e) {
         // handle memory fail exception
-        CSaApp * pApp = (CSaApp *)AfxGetApp();
-        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+        app.ErrorMessage(IDS_ERROR_MEMALLOC);
         e->Delete();
 		return;
     }
@@ -322,7 +322,7 @@ CMainFrame::CMainFrame() {
     m_pitchParmDefaults.Init();
     m_musicParmDefaults.Init();
     m_formantParmDefaults.Init();
-    m_spectrumParmDefaults.Init();
+    m_spectrumParmDefaults.Init(app);
     m_spectrogramParmDefaults.Init();
     m_snapshotParmDefaults.Init();
     m_pDefaultViewConfig = NULL;
@@ -1376,32 +1376,22 @@ CSegment * CMainFrame::GetAnnotation(int annotSetID) {
 /***************************************************************************/
 CSaView * CMainFrame::GetCurrSaView(void) {
     CMDIChildWnd * pMDIWnd = MDIGetActive(); // get active child window
-
     if (pMDIWnd) {
         CSaView * pView = (CSaView *)MDIGetActive()->GetActiveView();
-
         if ((pView != NULL) && pView->IsKindOf(RUNTIME_CLASS(CSaView))) {
             return pView;
         }
     }
-
     return NULL;
 }
-
 
 /***************************************************************************/
 // CMainFrame::GetCurrDoc
 // returns the doc for the active view.
 /***************************************************************************/
 CSaDoc * CMainFrame::GetCurrDoc() {
-    CSaDoc * pModel = NULL;
     CSaView * pView = GetCurrSaView();
-
-    if (pView) {
-        pModel = pView->GetDocument();
-    }
-
-    return pModel;
+    return (pView)?pView->GetDocument():nullptr;
 }
 
 /***************************************************************************/
@@ -1688,7 +1678,7 @@ void CMainFrame::OnSetDefaultParameters() {
         m_spectrumParmDefaults.nFreqScaleRange = pSpectrumParm->nFreqScaleRange;
         m_spectrumParmDefaults.nSmoothLevel    = pSpectrumParm->nSmoothLevel;
         m_spectrumParmDefaults.nPeakSharpFac   = pSpectrumParm->nPeakSharpFac;
-        m_spectrumParmDefaults.cWindow          = pSpectrumParm->cWindow;
+        m_spectrumParmDefaults.window          = pSpectrumParm->window;
         m_spectrumParmDefaults.bShowLpcSpectrum  = pSpectrumParm->bShowLpcSpectrum;
         m_spectrumParmDefaults.bShowCepSpectrum  = pSpectrumParm->bShowCepSpectrum;
         m_spectrumParmDefaults.bShowFormantFreq  = pSpectrumParm->bShowFormantFreq;
@@ -1840,8 +1830,8 @@ void CMainFrame::MaybeCreateFindOrReplaceDlg(bool bWantFindOnly) {
 // CMainFrame::SetWbProcess Set new pointer to workbench process
 // Sets a new pointer to a workbench process and returns the old one.
 /***************************************************************************/
-CProcess * CMainFrame::SetWbProcess(int nProcess, int nFilter, CProcess * pProcess) {
-    CProcess * pTempProcess = m_apWbProcess[nProcess][nFilter];
+CWbProcess * CMainFrame::SetWbProcess(int nProcess, int nFilter, CWbProcess * pProcess) {
+    CWbProcess * pTempProcess = m_apWbProcess[nProcess][nFilter];
     m_apWbProcess[nProcess][nFilter] = pProcess;
     return pTempProcess;
 }

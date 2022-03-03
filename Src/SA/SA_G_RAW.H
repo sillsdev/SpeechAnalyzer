@@ -7,9 +7,6 @@
 #ifndef _SA_G_RAW_H
 #define _SA_G_RAW_H
 
-//###########################################################################
-// CPlotRawData plot window
-
 class CPlotRawData : public CPlotWnd {
 
     DECLARE_DYNCREATE(CPlotRawData)
@@ -22,9 +19,8 @@ public:
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
 protected:
-    virtual BOOL SetLegendScale();                             // 08/29/2000 - DDO
+    virtual BOOL SetLegendScale();
 
-protected:
     DECLARE_MESSAGE_MAP()
 };
 

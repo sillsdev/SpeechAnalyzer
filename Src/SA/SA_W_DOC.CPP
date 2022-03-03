@@ -83,8 +83,9 @@ BOOL CWorkbenchDoc::OnOpenDocument(LPCTSTR pszPathName) {
     CString szPath = *((CSaApp *)AfxGetApp())->GetWorkbenchPath();
     CString szNewPath = pszPathName;
     m_bDifferentFile = (szNewPath != szPath);
-	// wait cursor
-    BeginWaitCursor(); 
+
+    // wait cursor
+    CScopedCursor cursor(*this);
     BOOL bRet = FALSE;
 
     try {
@@ -94,7 +95,6 @@ BOOL CWorkbenchDoc::OnOpenDocument(LPCTSTR pszPathName) {
         bRet = ((CSaWorkbenchView *)GetNextView(pos))->ReadProperties(obs);
     } catch (...) {
     }
-    EndWaitCursor();
     return bRet;
 }
 
@@ -104,7 +104,8 @@ BOOL CWorkbenchDoc::OnOpenDocument(LPCTSTR pszPathName) {
 // settings file.
 /***************************************************************************/
 BOOL CWorkbenchDoc::OnSaveDocument(LPCTSTR pszPathName) {
-    BeginWaitCursor(); // wait cursor
+    
+    CScopedCursor cursor(*this);
     BOOL bRet = FALSE;
 
     try {
@@ -115,7 +116,6 @@ BOOL CWorkbenchDoc::OnSaveDocument(LPCTSTR pszPathName) {
         bRet = TRUE;
     } catch (...) {
     }
-    EndWaitCursor();
     SetModifiedFlag(FALSE);
     return bRet;
 }

@@ -25,8 +25,6 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgVTOrder dialog
-
-
 CDlgVTOrder::CDlgVTOrder(CWnd * pParent /*=NULL*/)
     : CDialog(CDlgVTOrder::IDD, pParent) {
     m_nOrder = 0;
@@ -165,8 +163,8 @@ void CIpaVTCharVector::Load(CString szPath) {
 }
 
 void CIpaVTCharVector::Save(CString szPath) {
-    CFile file;
 
+    CFile file;
     UINT nSuccess = file.Open(szPath,CFile::modeWrite | CFile::modeCreate | CFile::shareDenyWrite);
     if (!nSuccess) {
         ::MessageBoxA(::GetDesktopWindow(),"Could not open IpaVTDefaults#.txt.\n    Check Read-Only status.", "IPAVTDefaults#",MB_OK|MB_ICONEXCLAMATION);
@@ -248,8 +246,8 @@ CSaDoc * CDlgVocalTract::m_pShowDoc = NULL;
 CDlgVocalTract * CDlgVocalTract::m_pDlgSynthesis = NULL;
 
 
-CDlgVocalTract::CDlgVocalTract(CWnd * pParent /*=NULL*/)
-    : CFrameWnd() {
+CDlgVocalTract::CDlgVocalTract(CWnd * pParent /*=NULL*/) : CFrameWnd() {
+
     m_nSelectedView = m_nSelectedMethod;
     m_szGrid[kFragment] = _T("Fragments.txt");
 
@@ -485,13 +483,9 @@ void CDlgVocalTract::OnSynthDisplay() {
     if (CFile::GetStatus(m_szSynthesizedFilename, status)) {
         if (status.m_size!=0) {
             // file created open in SA
-            CSaApp * pApp = (CSaApp *)(AfxGetApp());
-
-            CSaDoc * pModel = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
+            CSaDoc * pModel = context.GetApp().OpenWavFileAsNew(m_szSynthesizedFilename);
             m_szSynthesizedFilename.Empty();
-
             LabelDocument(pModel);
-
             if (m_bMinimize) {
                 ShowWindow(SW_MINIMIZE);
             }
@@ -500,8 +494,8 @@ void CDlgVocalTract::OnSynthDisplay() {
 }
 
 void CDlgVocalTract::OnSynthShow() {
-    CString szSave(m_szSynthesizedFilename);
 
+    CString szSave(m_szSynthesizedFilename);
     m_szSynthesizedFilename  = m_szShowFilename;
 
     OnSynthesize();
@@ -510,8 +504,7 @@ void CDlgVocalTract::OnSynthShow() {
     if (CFile::GetStatus(m_szSynthesizedFilename, status)) {
         if (status.m_size!=0) {
             // file created open in SA
-            CSaApp * pApp = (CSaApp *)(AfxGetApp());
-            CSaDoc * pModel = pApp->IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
+            CSaDoc * pModel = context.GetApp().IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
             if ((pModel!=NULL) && (pModel->GetFileStatus()->m_szFullName != m_szSynthesizedFilename)) {
                 pModel = NULL;
             }
@@ -522,7 +515,7 @@ void CDlgVocalTract::OnSynthShow() {
             }
 
             if (pModel==NULL) {
-                pModel = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
+                pModel = context.GetApp().OpenWavFileAsNew(m_szSynthesizedFilename);
             }
             m_szShowFilename = m_szSynthesizedFilename;
 
@@ -709,15 +702,16 @@ void CDlgVocalTract::NumberGrid(int nGrid) {
 }
 
 CString CDlgVocalTract::GetDefaultsPath(int nOrder) {
-    CSaString szPath = AfxGetApp()->GetProfileString(_T(""), _T("DataLocation"));
-    szPath += "\\";
+    wstring szPath = AfxGetApp()->GetProfileString(_T(""), _T("DataLocation"));
+    szPath.append(L"\\");
     CString szPathOrder;
-    szPathOrder.Format(_T("%sVTDefaults%d.txt"), szPath, nOrder);
+    szPathOrder.Format(_T("%sVTDefaults%d.txt"), szPath.c_str(), nOrder);
     return szPathOrder;
 }
 
 
 void CDlgVocalTract::OnGetAll() {
+
     OnUpdateSourceName();
     if (m_nCurrentOrder != m_nRequestedOrder) {
         m_cDefaults.Save(GetDefaultsPath(m_nCurrentOrder));
@@ -731,10 +725,12 @@ void CDlgVocalTract::OnGetAll() {
     LabelGrid(kIpaBlended);
     LabelGrid(kFragment);
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(m_szSourceFilename);
+    CSaApp& app = *(CSaApp*)AfxGetApp();
+    CSaDoc * pModel = app.IsFileOpened(m_szSourceFilename);
+    if (pModel==nullptr) {
+        return;
+    }
     {
-
         CUttParm myUttParm = {};
         CUttParm * pUttParm = &myUttParm;
         pModel->GetUttParm(pUttParm); // get sa parameters utterance member data
@@ -762,7 +758,6 @@ void CDlgVocalTract::OnGetAll() {
         if (nResult == PROCESS_ERROR || nResult == PROCESS_CANCELED) {
             return;
         }
-
         delete pSavedUttParm;
     }
 
@@ -837,7 +832,7 @@ void CDlgVocalTract::OnApplyIpaDefaults(CFlexEditGrid & cGrid) {
 }
 
 
-static void CurveFitPitch(CSaDoc * pModel, double fSizeFactor, double dBeginWAV, double dEndWAV, double * offset, double * slope) {
+static void CurveFitPitch(CSaDoc & model, double fSizeFactor, double dBeginWAV, double dEndWAV, double * offset, double * slope) {
     DWORD dwIndex;
     DWORD dwBegin = (DWORD)(dBeginWAV/fSizeFactor);
     DWORD dwEnd = (DWORD)(dEndWAV/fSizeFactor);
@@ -852,7 +847,7 @@ static void CurveFitPitch(CSaDoc * pModel, double fSizeFactor, double dBeginWAV,
     BOOL bRes = TRUE;
     for (dwIndex = dwBegin; dwIndex <= dwEnd; dwIndex++) {
         // get data for this pixel
-        int nHere = pModel->GetSmoothedPitch()->GetProcessedData(dwIndex, &bRes); // SDM 1.5Test11.0
+        int nHere = model.GetSmoothedPitch()->GetProcessedData(dwIndex, &bRes); // SDM 1.5Test11.0
         if (nHere > 0) {
             double Y = double(nHere)/PRECISION_MULTIPLIER;
             double X = double(dwIndex-dwBegin)*fSizeFactor;
@@ -920,37 +915,21 @@ static double VHX(double meanSqError, double meanQuadError, double /*analysisLen
     return vhx > samplingRate/2 ? samplingRate/2 - pitch : vhx;
 }
 
-struct SAnalyzer {
+static void Analyze(CSaDoc & model, DWORD smpSize, SSigParms& signal, const SLPCSettings& lpcSetting, BOOL closedPhase, CString szIpa, DWORD dwStart, DWORD dwEnd, CIpaVTChar & cChar, DWORD dwDuration=0, DWORD dwOffset=0, std::vector<double> * pResidual=NULL) {
 
-    SAnalyzer(CSaDoc * ipDoc, WORD iwSmpSize, SSigParms & iSignal, const SLPCSettings & iLpcSetting, BOOL ibClosedPhase = FALSE)
-        : Signal(iSignal), LpcSetting(iLpcSetting) {
-        pModel = ipDoc;
-        wSmpSize = iwSmpSize;
-        bClosedPhase = ibClosedPhase;
-    }
-
-    CSaDoc * pModel;
-    WORD wSmpSize;
-    BOOL bClosedPhase;
-    SSigParms & Signal;
-    const SLPCSettings & LpcSetting;
-};
-
-static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CIpaVTChar & cChar, DWORD dwDuration=0, DWORD dwOffset=0, std::vector<double> * pResidual=NULL) {
+    ContextProvider context;
     double pitch = 0;
-
     cChar.m_ipa = szIpa;
-
-    cChar.m_duration = a.pModel->GetTimeFromBytes((dwEnd - dwStart + 2) * 1000);
+    cChar.m_duration = model.GetTimeFromBytes((dwEnd - dwStart + 2) * 1000);
 
     {
         // Pitch
         double offset;
         double slope;
-        CProcessSmoothedPitch * pPitch = a.pModel->GetSmoothedPitch(); // SDM 1.5 Test 11.0
-        double fSizeFactorPitch = (double)a.pModel->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
+        CProcessSmoothedPitch * pPitch = model.GetSmoothedPitch(); // SDM 1.5 Test 11.0
+        double fSizeFactorPitch = (double)model.GetDataSize() / (double)(pPitch->GetDataSize() - 1);
 
-        CurveFitPitch(a.pModel, fSizeFactorPitch, dwStart, dwEnd, &offset, &slope);
+        CurveFitPitch(model, fSizeFactorPitch, dwStart, dwEnd, &offset, &slope);
         if (offset > 0) {
             pitch = offset + slope*(dwEnd - dwStart + 1)/2.;
         } else {
@@ -961,39 +940,39 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
 
     {
         // Vocal Tract
-        int nSections = a.LpcSetting.nOrder;
+        int nSections = lpcSetting.nOrder;
         int nSamplesPerSection = 5;
-        int nNewStart = dwStart/a.wSmpSize;
-        int nNewEnd = dwEnd/a.wSmpSize;
+        int nNewStart = dwStart/smpSize;
+        int nNewEnd = dwEnd/smpSize;
         int nMinLength = nSections*nSamplesPerSection;
         int nDesiredLength = nMinLength;
 
         if (pitch) {
-            int nPitchLength = int(a.Signal.SmpRate/pitch);
+            int nPitchLength = int(signal.SmpRate/pitch);
 
             if (nDesiredLength < 3*nPitchLength) {
                 nDesiredLength = 3*nPitchLength;
             }
         }
 
-        if (DWORD(nDesiredLength)*a.wSmpSize > dwEnd - dwStart) {
-            if (DWORD(nDesiredLength)*a.wSmpSize <= dwDuration) {
-                int nCenter = (dwStart + dwEnd)/(2*a.wSmpSize);
+        if (DWORD(nDesiredLength)*smpSize > dwEnd - dwStart) {
+            if (DWORD(nDesiredLength)*smpSize <= dwDuration) {
+                int nCenter = (dwStart + dwEnd)/(2*smpSize);
                 nNewStart = nCenter - nDesiredLength/2;
                 nNewEnd = nNewStart + nDesiredLength;
 
-                if (DWORD(nNewEnd*a.wSmpSize) > dwOffset + dwDuration) {
-                    nNewEnd = (dwOffset + dwDuration)/a.wSmpSize;
+                if (DWORD(nNewEnd*smpSize) > dwOffset + dwDuration) {
+                    nNewEnd = (dwOffset + dwDuration)/smpSize;
                     nNewStart = nNewEnd - nDesiredLength;
                 }
 
-                if (DWORD(nNewStart*a.wSmpSize) < dwOffset) {
-                    nNewStart = dwOffset/a.wSmpSize;
+                if (DWORD(nNewStart*smpSize) < dwOffset) {
+                    nNewStart = dwOffset/smpSize;
                     nNewEnd = nNewStart + nDesiredLength;
                 }
             } else if ((dwEnd - dwStart) <= dwDuration) {
-                nNewStart = dwOffset/a.wSmpSize;
-                nNewEnd = (dwOffset + dwDuration)/a.wSmpSize;
+                nNewStart = dwOffset/smpSize;
+                nNewEnd = (dwOffset + dwDuration)/smpSize;
             } else {
                 if (nNewStart < nSections) {
                     nNewEnd += nSections - nNewStart;
@@ -1009,33 +988,33 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         }
 
         // Get waveform and buffer parameters.
-        DWORD    dwFrameSize = nNewEnd - nNewStart + 1;
+        DWORD dwFrameSize = nNewEnd - nNewStart + 1;
 
-        a.Signal.Start = (void *)a.pModel->GetWaveData(nNewStart*a.wSmpSize, TRUE); //load sample
-        a.Signal.Length = dwFrameSize;
+        signal.Start = (void *)model.GetWaveData(nNewStart*smpSize, TRUE); //load sample
+        signal.Length = dwFrameSize;
 
-        SLPCSettings LpcSetting = a.LpcSetting;
+        SLPCSettings LpcSetting = lpcSetting;
         LpcSetting.nOrder = (unsigned short)nSections;
         LpcSetting.nFrameLen = (unsigned short)(dwFrameSize);
 
-        if (a.bClosedPhase && pitch != 0) {
+        if (closedPhase && pitch != 0) {
             // determine pitch phase
             // Construct an LPC object for vocal tract modeling.
             CLinPredCoding * pLpcObject = NULL;
             dspError_t Err;
 
-            Err = CLinPredCoding::CreateObject(&pLpcObject, pApp, LpcSetting, a.Signal);
+            Err = CLinPredCoding::CreateObject(&pLpcObject, context.GetApp(), LpcSetting, signal);
 
             // Perform LPC analysis.
             SLPCModel * pLpc;
-            Err = pLpcObject->GetLpcModel(&pLpc, a.Signal.Start);
+            Err = pLpcObject->GetLpcModel(&pLpc, signal.Start);
 
             double dSin = 0;
             double dCos = 0;
 
             for (int i = 0; i < pLpc->nResiduals; i++) {
                 double dPhase;
-                dPhase= (i+LpcSetting.nOrder)*(pitch/a.Signal.SmpRate)*2*PI;
+                dPhase= (i+LpcSetting.nOrder)*(pitch/signal.SmpRate)*2*PI;
                 dSin += sin(dPhase)*pLpc->pResidual[i]*pLpc->pResidual[i];
                 dCos += cos(dPhase)*pLpc->pResidual[i]*pLpc->pResidual[i];
             }
@@ -1052,11 +1031,11 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         CLinPredCoding * pLpcObject = NULL;
         dspError_t Err;
 
-        Err = CLinPredCoding::CreateObject(&pLpcObject, pApp, LpcSetting, a.Signal);
+        Err = CLinPredCoding::CreateObject(&pLpcObject, context.GetApp(), LpcSetting, signal);
 
         // Perform LPC analysis.
         SLPCModel * pLpc;
-        Err = pLpcObject->GetLpcModel(&pLpc, a.Signal.Start);
+        Err = pLpcObject->GetLpcModel(&pLpc, signal.Start);
 
         cChar.m_dFrameEnergy = 10*log10(pLpc->dMeanEnergy);
 
@@ -1069,7 +1048,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
 
             // This is a place holder...
             // Needs to be replaced by an analysis of the Voicing Aspiration Crossover frequency
-            cChar.m_stimulus.VHX = VHX(pLpc->dMeanSqPredError, pLpc->dMeanQuadPredError, pLpc->nResiduals, a.Signal.SmpRate, pitch);
+            cChar.m_stimulus.VHX = VHX(pLpc->dMeanSqPredError, pLpc->dMeanQuadPredError, pLpc->nResiduals, signal.SmpRate, pitch);
         } else {
             cChar.m_stimulus.AV = 0;
             cChar.m_stimulus.AH = 0;
@@ -1092,8 +1071,8 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         if (pResidual) {
             std::vector<double> & residual = *pResidual;
 
-            int nFirst = dwStart/a.wSmpSize - (nNewStart + nSections);
-            int nLast = dwEnd/a.wSmpSize - (nNewStart + nSections);
+            int nFirst = dwStart/smpSize - (nNewStart + nSections);
+            int nLast = dwEnd/smpSize - (nNewStart + nSections);
             if (nFirst < 0) {
                 residual.insert(residual.end(), -nFirst, 0);
                 nFirst = 0;
@@ -1111,7 +1090,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
     }
 }
 
-void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pModel, DWORD dwDuration, WORD wSmpSize) {
+void CDlgVocalTract::SilentColumn(CSaDoc * pModel, CFlexEditGrid & cGrid, int column, DWORD dwDuration, WORD wSmpSize) {
     CString szString;
 
     // clear parameters
@@ -1124,7 +1103,7 @@ void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pM
     cGrid.SetTextMatrix(rowIpa,column,szString);
 
     if (dwDuration) {
-        szString.Format(_T("%.2f"),pModel->GetTimeFromBytes(dwDuration * wSmpSize)*1000.);
+        szString.Format(_T("%.2f"), pModel->GetTimeFromBytes(dwDuration * wSmpSize)*1000.);
         cGrid.SetTextMatrix(rowDuration,column,szString);
     }
 
@@ -1134,10 +1113,9 @@ void CDlgVocalTract::SilentColumn(CFlexEditGrid & cGrid, int column, CSaDoc * pM
 }
 
 void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
-    CString szFilename = m_szSourceFilename;
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+    CString szFilename = m_szSourceFilename;
+    CSaDoc * pModel = context.GetApp().IsFileOpened(szFilename);
     if (!pModel) {
         return;
     }
@@ -1191,22 +1169,20 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     LpcSetting.nOrder = (unsigned short)m_nCurrentOrder;
     LpcSetting.nFrameLen = 0;
 
-    SAnalyzer analyze(pModel, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
-
     // construct table entries
     while (nIndex != -1) {
         dwPrevOffset = dwOffset;
         dwOffset = pPhonetic->GetOffset(nIndex);
         if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
             dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-            SilentColumn(cGrid, column, pModel, dwDuration, 1);
+            SilentColumn(pModel, cGrid, column, dwDuration, 1);
             column++;
         }
         dwDuration = pPhonetic->GetDuration(nIndex);
 
         szString = pPhonetic->GetSegmentString(nIndex);
 
-        Analyze(analyze, szString, dwOffset, dwOffset + dwDuration, cChar, dwDuration, dwOffset, NULL);
+        Analyze( *pModel, wSmpSize, Signal, LpcSetting, m_bClosedPhase, szString, dwOffset, dwOffset + dwDuration, cChar, dwDuration, dwOffset, NULL);
         PopulateParameterGrid(cGrid, cChar, column);
 
         nIndex = pPhonetic->GetNext(nIndex);
@@ -1223,7 +1199,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
     dwOffset = pModel->GetDataSize();
     if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
         dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-        SilentColumn(cGrid, column, pModel, dwDuration, 1);
+        SilentColumn(pModel, cGrid, column, dwDuration, 1);
         column++;
     }
 
@@ -1234,8 +1210,8 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid) {
 void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     CString szFilename = m_szSourceFilename;
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-    CSaDoc * pModel = (CSaDoc *)pApp->IsFileOpened(szFilename);
+    CSaApp & app = *(CSaApp *)AfxGetApp();
+    CSaDoc * pModel = app.IsFileOpened(szFilename);
     if (!pModel) {
         return;
     }
@@ -1307,15 +1283,13 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     LpcSetting.nOrder = (unsigned short)m_nCurrentOrder;
     LpcSetting.nFrameLen = 0;
 
-    SAnalyzer analyze(pModel, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
-
     // construct table entries
     while (nIndex != -1) {
         dwPrevOffset = dwOffset;
         dwOffset = pPhonetic->GetOffset(nIndex);
         if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
             dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-            SilentColumn(cGrid, column, pModel, dwDuration, 1);
+            SilentColumn(pModel, cGrid, column, dwDuration, 1);
             // clear parameters
             residual.insert(residual.end(), dwDuration/wSmpSize, 0);
 
@@ -1325,7 +1299,6 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
         dwDuration = pPhonetic->GetDuration(nIndex);
         dwFragmentIndex = pFragment->GetFragmentIndex(dwOffset / wSmpSize);
         dwLastFragmentIndex = pFragment->GetFragmentIndex((dwOffset + dwDuration - 1) / wSmpSize);
-
 
         while (dwFragmentIndex <= dwLastFragmentIndex) {
             szString = pPhonetic->GetSegmentString(nIndex);
@@ -1340,7 +1313,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
                 dwFragmentEnd = dwOffset + dwDuration;
             }
 
-            Analyze(analyze, szString, dwFragmentStart, dwFragmentEnd, cChar, dwDuration, dwOffset, &residual);
+            Analyze( *pModel, wSmpSize, Signal, LpcSetting, m_bClosedPhase, szString, dwFragmentStart, dwFragmentEnd, cChar, dwDuration, dwOffset, &residual);
             PopulateParameterGrid(cGrid, cChar, column);
 
             column++;
@@ -1359,7 +1332,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid) {
     dwOffset = pModel->GetDataSize();
     if (dwPrevOffset + dwDuration + dwMinSilence < dwOffset) {
         dwDuration = dwOffset - (dwPrevOffset + dwDuration);
-        SilentColumn(cGrid, column, pModel, dwDuration, 1);
+        SilentColumn(pModel, cGrid, column, dwDuration, 1);
 
         column++;
     }
@@ -1614,8 +1587,8 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid & cGrid, CIpaVTCharVector 
 }
 
 void CDlgVocalTract::OnSynthesize() {
-    CIpaVTCharVector cChars;
 
+    CIpaVTCharVector cChars;
     //  ParseConstantsGrid(kConstants, m_cConstants);
     ParseParameterGrid(m_nSelectedMethod, cChars);
 
@@ -1669,6 +1642,7 @@ static double Impulse(double dImpulsePhase, int nHarmonics) {
 // Preemphasis delay as defined in the LPC code
 #define DECAY  0.95
 BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIpaVTCharVector & cChars) {
+    
     const double pi = 3.14159265358979323846264338327950288419716939937511;
 
     if (cChars.size() == 0) {
@@ -1705,8 +1679,8 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
         // Change from amplitude of impulse to amplitude of single harmonic of impulse train
         double AVSH = AV/pow(nHarmonics*0.5, 0.5);
 
-        CProcessButterworth artificialStimulusAspiration;
-        CProcessButterworth artificialStimulusVoice;
+        CProcessButterworth artificialStimulusAspiration(context.GetContext(), Plain);
+        CProcessButterworth artificialStimulusVoice(context.GetContext(), Plain);
 
         if (artificialStimulus && cChars[i].m_stimulus.VHX) {
             artificialStimulusVoice.LowPass(2, cChars[i].m_stimulus.VHX);
@@ -1809,7 +1783,7 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
 
     if (m_nTilt == DB12 || m_nTilt == DB6) {
         // Apply radiation and glottal spectral shape
-        CProcessButterworth filter(NULL);
+        CProcessButterworth filter(context.GetContext(),Plain);
         double FC = 20;
         double HP = 40;
         double NF = pcm.wf.nSamplesPerSec/2.;
@@ -1861,15 +1835,14 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
     return mmioWrite(hmmioFile, (char *) &shortData[0], sizeof(SHORT)*data.size());
 }
 
-BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChars) {
-    CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
+BOOL CDlgVocalTract::SynthesizeWave( LPCTSTR pszPathName, CIpaVTCharVector& cChars) {
 
     // open file
     HMMIO hmmioFile; // file handle
     hmmioFile = mmioOpen((LPTSTR)pszPathName, NULL, MMIO_READWRITE | MMIO_EXCLUSIVE);
     if (!hmmioFile) {
         // error opening file
-        pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
         return FALSE;
     }
 
@@ -1879,7 +1852,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChar
     mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E');
     if (mmioCreateChunk(hmmioFile, &mmckinfoParent, MMIO_CREATERIFF) != 0) {
         // error writing data chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
@@ -1894,7 +1867,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChar
     mmckinfoSubchunk.cksize = sizeof(PCMWAVEFORMAT);  // we know the size of this ck.
     if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0) {
         // error writing data chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
@@ -1905,7 +1878,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChar
     if (mmioWrite(hmmioFile, (BPTR) &pcm, sizeof(PCMWAVEFORMAT))
             != sizeof(PCMWAVEFORMAT)) {
         // error writing data chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
@@ -1914,7 +1887,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChar
     */
     if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0) != 0) {
         // error writing data chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
@@ -1924,7 +1897,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChar
     mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
     if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0) {
         // error writing data chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
@@ -1938,7 +1911,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChar
     MMIOINFO mmioinfo;
     if (mmioGetInfo(hmmioFile,&mmioinfo,0)) {
         // error writing RIFF chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
@@ -1946,7 +1919,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChar
     // get out of 'data' chunk
     if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0)) {
         // error writing data chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
@@ -1954,7 +1927,7 @@ BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector& cChar
     // get out of 'RIFF' chunk, to write RIFF size
     if (mmioAscend(hmmioFile, &mmckinfoParent, 0)) {
         // error writing RIFF chunk
-        pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
+        context.GetApp().ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
@@ -2039,17 +2012,12 @@ void CDlgVocalTract::OnFileOpen() {
 
     if (dlg.DoModal() == IDOK) {
         CFile data(dlg.GetPathName(), CFile::modeRead | CFile::shareExclusive | CFile::typeBinary);
-
         CString szData;
-
         UINT uRead = 0;
-
         do {
             char buf[1024];
             uRead = data.Read(buf, sizeof(buf)-1);
-
             buf[uRead] = 0;
-
             szData += buf;
         } while (uRead);
 
@@ -2225,8 +2193,6 @@ void CDlgVocalTract::OnOrder() {
     }
 }
 
-
-
 void CDlgVocalTract::On0dB() {
     m_nTilt = DB0;
 }
@@ -2267,8 +2233,6 @@ void CDlgVocalTract::OnMirror() {
 void CDlgVocalTract::OnUpdateMirror(CCmdUI * pCmdUI) {
     pCmdUI->SetCheck(m_bMirror);
 }
-
-
 
 void CDlgVocalTract::OnClosedPhase() {
     m_bClosedPhase = !m_bClosedPhase;
