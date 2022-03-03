@@ -4861,7 +4861,7 @@ END
 
 STRINGTABLE
 BEGIN
-VS_COPYRIGHT            "(C) 1996-2021 SIL International.\nAll Rights Reserved."
+VS_COPYRIGHT            "(C) 1996-2022 SIL International.\nAll Rights Reserved."
 IDR_MAINFRAME_SA        "Speech Analyzer"
 IDR_MAINFRAME_AS        "Audio-Sync"
 IDR_SPEECHANALYZER      "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
