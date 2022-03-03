@@ -7302,7 +7302,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
 	Lift13::header header(L"header");
 	header.fields = fields;
 
-	Lift13::lift document(L"Speech Analyzer 3.1.1.2");
+	Lift13::lift document(L"Speech Analyzer 3.1.1.3");
 	document.header = header;
 
 	ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -7992,6 +7992,10 @@ wstring CSaDoc::GetFilenameFromTitle() {
 		result = result.substr(0, nFind - 1);
 	}
 	return result;
+}
+
+wstring CSaDoc::GetConvertedWaveFilename() {
+	return m_szTempConvertedWave;
 }
 
 wstring CSaDoc::GetTranscriptionFilename() {
