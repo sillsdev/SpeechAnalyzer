@@ -25,6 +25,7 @@ public:
     wstring phrase1;
     wstring phrase2;
 
+    CSaString optionalLanguageTag;
     CString szDocTitle;
     CString szPath;
 };

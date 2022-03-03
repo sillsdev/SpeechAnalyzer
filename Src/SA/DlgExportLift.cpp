@@ -140,6 +140,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
     DDX_Control(pDX, IDC_LIST_MUSIC_PL1, ctlPhraseList1List);
     DDX_Control(pDX, IDC_LIST_MUSIC_PL2, ctlPhraseList2List);
     DDX_Control(pDX, IDC_EDIT_FOLDER, ctlEditFolder);
+    DDX_CBString(pDX, IDC_OPTIONAL_LANGUAGE_TAG, settings.optionalLanguageTag);
 
     if (pDX->m_bSaveAndValidate) {
 
