@@ -96,25 +96,30 @@ BOOL CDlgExportLift::OnInitDialog() {
 
     map<wstring,wstring>::iterator it = countryCodes.begin();
     while (it!=countryCodes.end()) {
-		    // the key is the language name
-		    // the value is the language code
-		    wstring name = it->first;
+        // the key is the language name
+        // the value is the language code
+        wstring name = it->first;
     
         ctlReferenceList.AddString(name.c_str());
         ctlOrthoList.AddString(name.c_str());
         ctlGlossNatList.AddString(name.c_str());
-		    ctlPhraseList1List.AddString(name.c_str());
-		    ctlPhraseList2List.AddString(name.c_str());
+        ctlPhraseList1List.AddString(name.c_str());
+        ctlPhraseList2List.AddString(name.c_str());
         it++;
     }
 
-    // Phonemic, Phonetic, and English Gloss already hard coded
+    // Phonemic, Phonetic, and English Gloss already hard coded. Retrieve rest of preferences from last export
+    GetLastExport(L"LastExport.Reference", &ctlReferenceList);
+    GetLastExport(L"LastExport.Ortho", &ctlOrthoList);
+    GetLastExport(L"LastExport.GlossNat", &ctlGlossNatList);
+    GetLastExport(L"LastExport.Phrase1", &ctlPhraseList1List);
+    GetLastExport(L"LastExport.Phrase2", &ctlPhraseList2List);
 
-    ctlReferenceList.SetCurSel(0);
-    ctlOrthoList.SetCurSel(0);
-    ctlGlossNatList.SetCurSel(0);
-	  ctlPhraseList1List.SetCurSel(0);
-	  ctlPhraseList2List.SetCurSel(0);
+    CSaApp* pApp = (CSaApp*)AfxGetApp();
+    CString lastOptionalLanguageTag = pApp->GetProfileString(L"Lift", L"LastExport.OptionalLanguageTag", L"");
+    if (!lastOptionalLanguageTag.IsEmpty()) {
+      settings.optionalLanguageTag = lastOptionalLanguageTag;
+    }
 
     UpdateData(FALSE);
 
@@ -144,7 +149,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
 
     if (pDX->m_bSaveAndValidate) {
 
-		CString buffer;
+        CString buffer;
         ctlEditFolder.GetWindowTextW(buffer);
         settings.szPath = buffer;
 
@@ -152,13 +157,13 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         settings.gloss = L"en";
 
         ctlGlossNatList.GetWindowTextW(buffer);
-        settings.glossNat = lookupCountryCode(buffer);
+        settings.glossNat = lookupLanguageID(buffer);
 
         ctlReferenceList.GetWindowTextW(buffer);
-        settings.reference = lookupCountryCode(buffer);
+        settings.reference = lookupLanguageID(buffer);
 
         ctlOrthoList.GetWindowTextW(buffer);
-        settings.ortho = lookupCountryCode(buffer);
+        settings.ortho = lookupLanguageID(buffer);
 
         // Hardcode Phonemic and Phonetic list. Note: Flex just uses "-fonipa" for phonetic
         settings.phonemic = L"-fonipa-x-emic";
@@ -166,17 +171,49 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         settings.phonetic = L"-fonipa";
 
         ctlPhraseList1List.GetWindowTextW(buffer);
-        settings.phrase1 = lookupCountryCode(buffer);
+        settings.phrase1 = lookupLanguageID(buffer);
 
         ctlPhraseList2List.GetWindowTextW(buffer);
-        settings.phrase2 = lookupCountryCode(buffer);
+        settings.phrase2 = lookupLanguageID(buffer);
     }
 }
 
-CString CDlgExportLift::lookupCountryCode(LPCTSTR value) {
-	map<wstring,wstring>::iterator it = countryCodes.find(value);
-	if (it!=countryCodes.end()) return it->second.c_str();
-	return L"";
+// Previously named lookupCountryCode
+// Given a language name, find the matching language ID.
+// If not found, return empty string
+CString CDlgExportLift::lookupLanguageID(LPCTSTR value) {
+    map<wstring,wstring>::iterator it = countryCodes.find(value);
+    if (it!=countryCodes.end()) return it->second.c_str();
+    return L"";
+}
+
+// Given a language ID (previously countryCode), find the matching language name
+// If not found, return empty string
+CString CDlgExportLift::lookupLanguageName(LPCTSTR value) {
+    for (map<wstring, wstring>::iterator it = countryCodes.begin(); it != countryCodes.end(); it++) {
+      if (it->second == value) {
+        return CString(it->first.c_str());
+        }
+    }
+
+    return CString(L"");
+}
+
+// Search a ComboBox for a matching preference string. 
+// If found, set the selection. Otherwise, defaults to first selection
+void CDlgExportLift::GetLastExport(LPCTSTR key, CComboBox *comboBox) {
+    CSaApp* pApp = (CSaApp*)AfxGetApp();
+    CString lastPreference = pApp->GetProfileString(L"Lift", key, L"");
+
+    // Cast the last preference and find the matching language name
+    LPCTSTR lastPreferencePtr = (LPCTSTR)lastPreference;
+    CString languageName = lookupLanguageName(lastPreferencePtr);
+    int index = comboBox->FindString(-1, (LPCTSTR)languageName);
+    if (index != CB_ERR) {
+        comboBox->SetCurSel(index);
+    } else {
+        comboBox->SetCurSel(0);
+    }
 }
 
 void CDlgExportLift::SetEnable(int nItem, BOOL bEnable) {
