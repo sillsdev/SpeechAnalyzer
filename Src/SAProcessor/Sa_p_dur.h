@@ -7,6 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_P_DUR_H
 #define _SA_P_DUR_H
+#include "sa_process.h"
 
 class CProcessDurations : public CProcess {
 public:
@@ -21,7 +22,7 @@ public:
     DWORD GetMinDuration();
 
 private:
-    CDWordArray m_Durations;    // pointer to segment durations
+    vector<DWORD> m_Durations;    // pointer to segment durations
     DWORD m_dwMaxValue;         // maximum duration
     DWORD m_dwMinValue;         // minimum duration
 };

@@ -44,7 +44,7 @@ public:
     // Main functions
     BOOL DoMRAAnalysisTree();    // wraps _DoMRAAnalysisTree
     BOOL DrawColorBandTree(unsigned char* pBits,                  // wraps _DrawColorBandTree
-            CRect* rWnd,
+            RECT* rWnd,
             double high,
             double start,
             double end);
@@ -56,7 +56,7 @@ public:
     BOOL TransformEnergyTree();
     BOOL TransformLogScalingTree(double high);
     BOOL TransformSmoothingTree();
-    BOOL TransformFitWindowNode(CRect* rWnd);
+    BOOL TransformFitWindowNode(RECT* rWnd);
 
     // Accessor methods
     BOOL SetDataNode(long* data, DWORD dwDataSize, double _lower_freq, double _upper_freq);
@@ -142,7 +142,7 @@ private:
 
     // Drawing helper routines
     long  _DrawColorBandTree(unsigned char* pBits,                           // Recursive routine
-            CRect* rWnd,
+            RECT* rWnd,
             long thickness,
             long y,
             double high,
@@ -150,7 +150,7 @@ private:
             double end);
 
     BOOL  DrawColorBandNode(unsigned char* pBits,                           // Draws one color band
-            CRect* rWnd,
+            RECT* rWnd,
             long thickness,
             long y_start,
             double high,

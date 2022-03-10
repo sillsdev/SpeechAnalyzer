@@ -54,9 +54,10 @@ BPTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int
         m_dwBufferOffset = dwOffset - (dwOffset % _countof(m_Buffer));      // new block offset
     }
 
-    CFile file;
     // open the temporary file
-    if (!file.Open(szName, CFile::modeRead | CFile::shareExclusive, NULL)) {
+    ifstream file;
+    file.open(szName, ifstream::in | ifstream::binary);
+    if (!file.is_open() || file.bad() || file.fail()) {
         // error opening file
         app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
         return NULL;
@@ -64,15 +65,12 @@ BPTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int
 
     // find the right position in the data
     if (m_dwBufferOffset != 0L) {
-        try {
-            DWORD index = m_dwBufferOffset*numChannels;
-            //TRACE("seek %d\n",index);
-            file.Seek(index, CFile::begin);
-        } catch (CFileException * e) {
+        DWORD index = m_dwBufferOffset*numChannels;
+        file.seekg(index, ifstream::beg);
+        if (file.bad() || file.fail()) {
             // error seeking file
             app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
-            e->Delete();
 			return NULL;
         }
     }
@@ -83,21 +81,18 @@ BPTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int
     memset(buffer,0,size);
     assert(sampleSize<3);
 
-    try {
-        UINT bytesRead = file.Read(buffer, size);
-        LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
-    } catch (CFileException * e) {
+    file.read(buffer, size);
+    if (file.bad() || file.fail()) {
         delete [] buffer;
         // error reading file
         app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
         m_dwBufferOffset = UNDEFINED_OFFSET;
-        e->Delete();
 		return NULL;
     }
+    std::streamsize bytesRead = file.gcount();
+    LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
 
     delete [] buffer;
-
-    file.Close();
 
     // return the new data pointer
     return m_Buffer;
@@ -123,9 +118,6 @@ void * CProcessDoc::GetProcessedObject(LPCTSTR szName, int selectedChannel, int 
 // uses data buffer to optimize requests
 /***************************************************************************/
 void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse) {
-
-    //TRACE("read %d %d %d %d %d\n",dwByteOffset,m_dwBufferOffset,sObjectSize,_countof(m_Buffer),bReverse);
-    //TRACE(L"GetProcessedDataBlock %s\n",szName);
 
     if (dwByteOffset == UNDEFINED_OFFSET) {
         m_dwBufferOffset = UNDEFINED_OFFSET;
@@ -153,8 +145,9 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
         }
     }
 
-    CFile file;
-    if (!file.Open(szName, CFile::modeRead | CFile::shareExclusive, NULL)) {
+    ifstream file;
+    file.open(szName, ifstream::in | ifstream::binary);
+    if (!file.is_open() || file.bad() || file.fail()) {
         // error opening file
         app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
         return NULL;
@@ -162,10 +155,9 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
 
     // find the right position in the data
     if (m_dwBufferOffset != 0L) {
-        try {
-            size_t seek = m_dwBufferOffset*numChannels;
-            file.Seek(seek, CFile::begin);
-        } catch (...) {
+        size_t seek = m_dwBufferOffset*numChannels;
+        file.seekg(seek, ifstream::beg);
+        if (file.bad() || file.fail()) {
             // error seeking file
             app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
@@ -180,10 +172,10 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     assert(sampleSize<3);
 
     // read the processed data block
-    try {
-        UINT bytesRead = file.Read(buffer, size);
-        LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
-    } catch (...) {
+    file.read(buffer, size);
+    std::streamsize bytesRead = file.gcount();
+    LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
+    if (file.bad() || file.fail()) {
         delete [] buffer;
         // error reading file
         app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
@@ -192,13 +184,11 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     }
     delete [] buffer;
 
-    file.Close();
-
     // return the new data pointer
     return &m_Buffer[dwByteOffset - m_dwBufferOffset]; // return pointer to data
 }
 
-void CProcessDoc::LoadBuffer(char * buffer, size_t /*size*/, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead) {
+void CProcessDoc::LoadBuffer(char * buffer, size_t /*size*/, int sampleSize, int selectedChannel, int numChannels, std::streamsize bytesRead) {
     if (sampleSize==1) {
         char * src = buffer;
         char * dest = m_Buffer;

@@ -548,7 +548,7 @@ BOOL CWaveletNode::TransformSmoothingTree() {
 BOOL CWaveletNode::TransformSmoothingNode() {
 
     long num_coeff = 26;
-    double smooth[26];
+    double smooth[26] = {};
 
     long filter_index;
     long data_index;
@@ -600,7 +600,7 @@ BOOL CWaveletNode::TransformSmoothingNode() {
 //*  Returns       : TRUE - on sucess
 //*                                  FALSE - on error
 //**************************************************************************
-BOOL CWaveletNode::TransformFitWindowNode(CRect * rWnd) {
+BOOL CWaveletNode::TransformFitWindowNode(RECT * rWnd) {
     long data_index;
     double max;
     double fVScale;
@@ -608,13 +608,13 @@ BOOL CWaveletNode::TransformFitWindowNode(CRect * rWnd) {
     max = GetMaxNode();
 
     // Scale our data to fit within our width
-    fVScale = rWnd->Height() / max;
+    fVScale = ::abs(rWnd->top-rWnd->bottom) / max;
 
 
     // do transform
     for (data_index = 0; data_index < dwDataSize; data_index++) {
         data[data_index] *= long(fVScale);                              // step through the data
-        data[data_index] += (rWnd->Height() / 2);       // Center in the window
+        data[data_index] += (::abs(rWnd->top - rWnd->bottom) / 2);       // Center in the window
     }
 
 
@@ -634,7 +634,7 @@ BOOL CWaveletNode::TransformFitWindowNode(CRect * rWnd) {
 //*                                  FALSE - on error
 //**************************************************************************
 BOOL CWaveletNode::DrawColorBandTree(unsigned char * pBits,     // this is a (candy) Wrapper function
-                                     CRect * rWnd,
+                                     RECT * rWnd,
                                      double high,
                                      double start,
                                      double end) {
@@ -643,7 +643,7 @@ BOOL CWaveletNode::DrawColorBandTree(unsigned char * pBits,     // this is a (ca
 
 
     num_leaves = GetNumLeaves();
-    thickness = long(floor((double)rWnd->Height() / (double)num_leaves));           // Compute the thickness so we use all screeb space
+    thickness = long(floor((double)::abs(rWnd->top - rWnd->bottom) / (double)num_leaves));           // Compute the thickness so we use all screeb space
 
     _DrawColorBandTree(pBits, rWnd, thickness, 0, high, start, end);
 
@@ -651,7 +651,7 @@ BOOL CWaveletNode::DrawColorBandTree(unsigned char * pBits,     // this is a (ca
 
 }
 long CWaveletNode::_DrawColorBandTree(unsigned char * pBits,
-                                      CRect * rWnd,
+                                      RECT * rWnd,
                                       long thickness,
                                       long y,
                                       double high,
@@ -689,7 +689,7 @@ long CWaveletNode::_DrawColorBandTree(unsigned char * pBits,
 //*  Returns       : true on sucess
 //*                                  false otherwise
 //**************************************************************************
-BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, CRect * rWnd, long thickness, long y_start, double high, double start, double end) {
+BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, RECT * rWnd, long thickness, long y_start, double high, double start, double end) {
     double ColorScale, datapoint;
     double fHScale;
     long num_colors = 234;      // Todo: get the actual number from somewhere
@@ -699,13 +699,13 @@ BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, CRect * rWnd, long t
     assert(pBits != NULL);
 
     ColorScale = (num_colors / high);
-    fHScale = (double)((double)(end - start)/ (double)rWnd->Width()); // Scale our data to fit our width
+    fHScale = (double)((double)(end - start)/ (double)::abs(rWnd->left-rWnd->right)); // Scale our data to fit our width
 
     // Draw
     for (long y = y_start; y < (y_start + thickness); y++) {    // Draw "thickness" num of lines
         data_index = start;
 
-        for (long x = 0; x < rWnd->Width(); x++) {
+        for (long x = 0; x < ::abs(rWnd->left - rWnd->right); x++) {
             datapoint = data[(long)floor(data_index)];
             data_index += fHScale;
             if (data_index > dwDataSize) {
@@ -714,7 +714,7 @@ BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, CRect * rWnd, long t
 
             // FIX THIS!!!! we can't have the mod 4 here!!!
             final_color  = (long)((double)datapoint * ColorScale);
-            pBits[y * (rWnd->Width() + (4 - (rWnd->Width() % 4))) + x] = unsigned char(num_colors - final_color);
+            pBits[y * (::abs(rWnd->left - rWnd->right) + (4 - (::abs(rWnd->left - rWnd->right) % 4))) + x] = unsigned char(num_colors - final_color);
         }
     }
     return TRUE;

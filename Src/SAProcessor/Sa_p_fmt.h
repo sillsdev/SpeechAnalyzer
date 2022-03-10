@@ -21,7 +21,6 @@ public:
     SFormantFrame * LoadBuffer(DWORD dwFormantBlockStart);
     BOOL StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * pFormant, BOOL bWriteThru);
     BOOL WriteData(BPTR pData, UINT nDataSize, BOOL bAppend);
-    BOOL SaveBuffer(UINT nDataSize);
     virtual long Exit(int nError); // exit processing on error
     void SetFormantParms(CFormantParm * pFormantParms);
     virtual void SetDataInvalid();
@@ -37,8 +36,6 @@ public:
     wstring GetVowel(int nIndex, EGender nGender) const; // returns the vowel for the graph
     wstring FindNearestVowel(SFormantFreq FormantFreq, Model * pModel) const; // returns nearest vowel for specified set of F1, F2, and F3 frequencies
     wstring FindNearestVowel(Model * pModel) const;  // returns nearest vowel from F1, F2, and F3 mean frequencies, as tracked internally by object
-
-protected:
 
 private:
     DWORD m_dwProcStart;

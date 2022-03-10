@@ -350,8 +350,9 @@ void CProcessFormants::SmoothMedian(Model * pModel) {
             if (dwBlockEnd >= m_dwBufferOffset + GetProcessBufferSize()) {
                 // all 3 frames not in buffer
                 DWORD dwBlockStart = (dwFrame + 1) * m_nFormantFrameSize;
-                SaveBuffer((UINT)(dwBlockStart - m_dwBufferOffset));  // save buffer
-                LoadBuffer(dwBlockStart);                      // load next block
+                WriteDataBlock(m_dwBufferOffset, m_lpBuffer, (UINT)(dwBlockStart - m_dwBufferOffset), sizeof(char));
+                // load next block
+                LoadBuffer(dwBlockStart);                      
             }
         }
 
@@ -377,7 +378,7 @@ void CProcessFormants::SmoothMedian(Model * pModel) {
         //!!blockend beyond end of buffer?
         // Store last block.
         DWORD dwBlockEnd = (dwFrame + 2) * m_nFormantFrameSize;
-        SaveBuffer((UINT)(dwBlockEnd - m_dwBufferOffset));
+        WriteDataBlock(m_dwBufferOffset, m_lpBuffer, (UINT)(dwBlockEnd - m_dwBufferOffset), sizeof(char));
     }
 
 }
@@ -441,27 +442,15 @@ BOOL CProcessFormants::WriteData(BPTR pData, UINT nDataSize, BOOL bAppend) {
     }
 
     // Write the data to the file.
-    try {
-        Write(pData, nDataSize);
-    } catch (CFileException * e) {
+    if (!Write(pData, nDataSize)) {
         // error writing file
         app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName(),NULL);
-		// error, writing failed
-		e->Delete();
 		return FALSE;
     }
 
     // Close the temporary file and read the status.
     CloseTempFile(); // close the file
     return TRUE;
-}
-
-
-/***************************************************************************/
-// CProcessFormants::SaveBuffer  Save buffer contents to disk
-/***************************************************************************/
-BOOL CProcessFormants::SaveBuffer(UINT nDataSize) {
-    return WriteDataBlock(m_dwBufferOffset, m_lpBuffer, nDataSize, sizeof(char));
 }
 
 /***************************************************************************/

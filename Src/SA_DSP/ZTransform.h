@@ -106,7 +106,7 @@ template<class _Ty> void CZTransformGeneric<_Ty>::SetTransform(const int32 nOrde
         m_pState[i] = 0.0;
     }
 
-    ASSERT(m_pDenominator[0] == 1.0);   // The denominator zero lag coefficient must be 1
+    assert(m_pDenominator[0] == 1.0);   // The denominator zero lag coefficient must be 1
 
     m_cStages.clear();
 }

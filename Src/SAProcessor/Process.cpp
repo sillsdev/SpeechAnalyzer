@@ -17,12 +17,9 @@ CProcess::CProcess(Context & context) : context(context), app(context.app), mode
     assert(&model != nullptr);
     assert(&frame != nullptr);
     assert(&target != nullptr);
-    m_fileStatus.m_size = 0;
-    m_fileStatus.m_attribute = 0;
-    wmemset(m_fileStatus.m_szFullName,0,_countof(m_fileStatus.m_szFullName));
+    filename.clear();
 
     m_nStatus = PROCESS_IDLE;
-    m_pFile = NULL;
     m_lpBuffer = NULL;
     m_nMaxValue = 0;
     m_nMinValue = 0;
@@ -34,12 +31,13 @@ CProcess::CProcess(Context & context) : context(context), app(context.app), mode
 // CProcess::~CProcess Destructor
 /***************************************************************************/
 CProcess::~CProcess() {
-    // delete the temporary file
-    DeleteTempFile();
-    if (m_pFile) {
-        delete m_pFile;
-        m_pFile = NULL;
+    // close the temporary file
+    if (file.is_open()) {
+        file.close();
     }
+    // delete the temporary file
+    FileUtils::Remove(GetProcessFileName());
+    DeleteProcessFileName();
     // free the buffer memory
     if (m_lpBuffer) {
         delete [] m_lpBuffer;
@@ -138,47 +136,43 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin) {
         // this data is actually in buffer
         // return pointer to data
         return m_lpBuffer;
+    }
+
+    // new data block has to be read
+    if (bBlockBegin) {
+        m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
     } else {
-        // new data block has to be read
-        if (bBlockBegin) {
-            m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
-        } else {
-            m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
-        }
-        // open the temporary file
-        if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive)) {
-            // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-            return NULL;
-        }
-        // find the right position in the data
-        if (m_dwBufferOffset != 0L) {
-            try {
-                m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-            } catch (CFileException * e) {
-                // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-				// close the temporary file
-				SetDataInvalid();
-                e->Delete();
-				return NULL;
-            }
-        }
-        // read the processed data block
-        try {
-            m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
-        } catch (CFileException * e) {
-            // error reading file
+        m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
+    }
+    // open the temporary file
+    ifstream file;
+    file.open(GetProcessFileName(), ifstream::in | ifstream::binary);
+    if (!file.is_open() || file.bad() || file.fail()) {
+        // error opening file
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        return NULL;
+    }
+    // find the right position in the data
+    if (m_dwBufferOffset != 0L) {
+        file.seekg(m_dwBufferOffset, ifstream::beg);
+        if (file.bad() ||  file.fail()) {
+            // error seeking file
             app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
 			// close the temporary file
 			SetDataInvalid();
-            e->Delete();
 			return NULL;
         }
-        CloseTempFile(FALSE); // close the temporary file
-        // return the new data pointer
-        return m_lpBuffer;
     }
+    // read the processed data block
+    file.read(m_lpBuffer, GetProcessBufferSize());
+    if (file.bad() || file.fail()) {
+        // error reading file
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+		SetDataInvalid();
+		return NULL;
+    }
+    // return the new data pointer
+    return m_lpBuffer;
 }
 
 /***************************************************************************/
@@ -201,53 +195,50 @@ int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes) {
         // this data is actually in buffer
         // set operation result
         *pbRes = TRUE;
-        return *reinterpret_cast<short int *>(m_lpBuffer + (dwByteOffset - m_dwBufferOffset)); // return data
-    } else {
-        // new data block has to be read
-        m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
-        // open the temporary file
-        if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive)) {
-            // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-            *pbRes = FALSE; // set operation result
-            m_dwBufferOffset = UNDEFINED_OFFSET;
-            return 0;
-        }
-        // find the right position in the data
-        if (m_dwBufferOffset != 0L) {
-            try {
-                m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-            } catch (CFileException * e) {
-                // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-				// set operation result
-				*pbRes = FALSE;
-                m_dwBufferOffset = UNDEFINED_OFFSET;
-                CloseTempFile(FALSE);
-                e->Delete();
-				return 0;
-            }
-        }
-        // read the processed data block
-        try {
-            m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
-        } catch (CFileException * e) {
-            // error reading file
+        return *reinterpret_cast<short int*>(m_lpBuffer + (dwByteOffset - m_dwBufferOffset)); // return data
+    }
+
+    // new data block has to be read
+    m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
+
+                                                                               // open the temporary file
+    ifstream file;
+    file.open(GetProcessFileName(), ifstream::in | ifstream::binary);
+    if (!file.is_open() || file.bad() || file.fail()) {
+        // error opening file
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        *pbRes = FALSE; // set operation result
+        m_dwBufferOffset = UNDEFINED_OFFSET;
+        return 0;
+    }
+    // find the right position in the data
+    if (m_dwBufferOffset != 0L) {
+        file.seekg(m_dwBufferOffset, ifstream::beg);
+        if (file.bad() || file.fail()) {
+            // error seeking file
             app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-			// close the temporary file
-			SetDataInvalid();
 			// set operation result
 			*pbRes = FALSE;
             m_dwBufferOffset = UNDEFINED_OFFSET;
-            e->Delete();
 			return 0;
         }
-        CloseTempFile(FALSE); // close the temporary file
-        // return the data
-        short int * lpData = (short int *)m_lpBuffer; // cast buffer pointer
-        *pbRes = TRUE;  // set operation result
-        return *(lpData + (dwOffset - (m_dwBufferOffset / 2))); // return data
     }
+    // read the processed data block
+    file.read(m_lpBuffer, GetProcessBufferSize());
+    if (file.bad() || file.fail()) {
+        // error reading file
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+		// close the temporary file
+		SetDataInvalid();
+		// set operation result
+		*pbRes = FALSE;
+        m_dwBufferOffset = UNDEFINED_OFFSET;
+		return 0;
+    }
+    // return the data
+    short int * lpData = (short int *)m_lpBuffer; // cast buffer pointer
+    *pbRes = TRUE;  // set operation result
+    return *(lpData + (dwOffset - (m_dwBufferOffset / 2))); // return data
 }
 
 /***************************************************************************/
@@ -262,61 +253,56 @@ int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes) {
 // The data offset contains a byte index.
 /***************************************************************************/
 BPTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
+
     if (GetProcessFileName() == NULL || GetProcessFileName()[0] == 0) {
         return NULL;
     }
-
     if (dwOffset == UNDEFINED_OFFSET) {
         m_dwBufferOffset = UNDEFINED_OFFSET;
         return NULL;
     }
-
     if (((!bBlockBegin) && ((dwOffset >= m_dwBufferOffset) && (dwOffset < m_dwBufferOffset + GetProcessBufferSize()))) ||
             ((bBlockBegin) && (m_dwBufferOffset == dwOffset))) {
         // this data is actually in buffer
         // return pointer to data
         return m_lpBuffer;
+    }
+
+    // new data block has to be read
+    if (bBlockBegin) {
+        m_dwBufferOffset = dwOffset;    // given offset ist first sample in data block
     } else {
-        // new data block has to be read
-        if (bBlockBegin) {
-            m_dwBufferOffset = dwOffset;    // given offset ist first sample in data block
-        } else {
-            m_dwBufferOffset = dwOffset - (dwOffset % GetProcessBufferSize());    // new block offset
-        }
-        // open the temporary file
-        if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive)) {
-            // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-            return NULL;
-        }
-        // find the right position in the data
-        if (m_dwBufferOffset != 0L) {
-            try {
-                m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-            } catch (CFileException * e) {
-                // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-				// close the temporary file
-				SetDataInvalid();
-                e->Delete();
-				return NULL;
-            }
-        }
-        // read the processed data block
-        try {
-            m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
-        } catch (CFileException * e) {
-            // error reading file
+        m_dwBufferOffset = dwOffset - (dwOffset % GetProcessBufferSize());    // new block offset
+    }
+    // open the temporary file
+    ifstream file;
+    file.open(GetProcessFileName(), ifstream::in | ifstream::binary);
+    if (!file.is_open() || file.bad() || file.fail()) {
+        // error opening file
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        return NULL;
+    }
+    // find the right position in the data
+    if (m_dwBufferOffset != 0L) {
+        file.seekg(m_dwBufferOffset, ifstream::beg);
+        if (file.bad() || file.fail()) {
+            // error seeking file
             app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-			// close the temporary file
 			SetDataInvalid();
-            e->Delete();
 			return NULL;
         }
-        CloseTempFile(FALSE); // close the temporary file
-        // return the new data pointer
-        return m_lpBuffer;
     }
+    // read the processed data block
+    file.read(m_lpBuffer, GetProcessBufferSize());
+    if (file.bad() || file.fail()) {
+        // error reading file
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+		// close the temporary file
+		SetDataInvalid();
+		return NULL;
+    }
+    // return the new data pointer
+    return m_lpBuffer;
 }
 
 /***************************************************************************/
@@ -358,189 +344,120 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
         return NULL;
     }
 
-    if ((dwByteOffset >= m_dwBufferOffset) && ((dwByteOffset+sObjectSize) < (m_dwBufferOffset + GetProcessBufferSize()))) {
+    if ((dwByteOffset >= m_dwBufferOffset) && ((dwByteOffset + sObjectSize) < (m_dwBufferOffset + GetProcessBufferSize()))) {
         // this data is actually in buffer
         // return pointer to data
-        return m_lpBuffer + (dwByteOffset - m_dwBufferOffset);  
-    } else {
-        // new data block has to be read
-        // given offset is the first sample in data block
-        m_dwBufferOffset = dwByteOffset;                        
-        if (bReverse) {
-            // since we are traversing the file in reverse, load buffer so that object is biased to end of buffer
-            m_dwBufferOffset = dwByteOffset + sObjectSize;
-            if (m_dwBufferOffset > GetProcessBufferSize()) {
-                m_dwBufferOffset -= GetProcessBufferSize();
-            } else {
-                m_dwBufferOffset = 0;
-            }
-        }
+        return m_lpBuffer + (dwByteOffset - m_dwBufferOffset);
+    }
 
-        // open the temporary file
-        wstring name = GetProcessFileName();
-        if (!Open(name.c_str(), CFile::modeRead | CFile::shareExclusive)) {
-            // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-            return NULL;
+    // new data block has to be read
+    // given offset is the first sample in data block
+    m_dwBufferOffset = dwByteOffset;                        
+    if (bReverse) {
+        // since we are traversing the file in reverse, load buffer so that object is biased to end of buffer
+        m_dwBufferOffset = dwByteOffset + sObjectSize;
+        if (m_dwBufferOffset > GetProcessBufferSize()) {
+            m_dwBufferOffset -= GetProcessBufferSize();
+        } else {
+            m_dwBufferOffset = 0;
         }
-        // find the right position in the data
-        if (m_dwBufferOffset != 0L) {
-            try {
-                m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-            } catch (...) {
-                // error seeking file
-                app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-                // close the temporary file
-                SetDataInvalid();
-                return NULL;
-            }
-        }
-        // read the processed data block
-        try {
-            m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
-        } catch (...) {
-            // error reading file
+    }
+
+    ifstream file;
+    file.open(GetProcessFileName(), ifstream::in | ifstream::binary);
+    if (!file.is_open() || file.bad() || file.fail()) {
+        // error opening file
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        return NULL;
+    }
+    // find the right position in the data
+    if (m_dwBufferOffset != 0L) {
+        file.seekg(m_dwBufferOffset, ifstream::beg);
+        if (file.bad() || file.fail()) {
+            // error seeking file
             app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
             // close the temporary file
             SetDataInvalid();
             return NULL;
         }
+    }
+    // read the processed data block
+    file.read(m_lpBuffer, GetProcessBufferSize());
+    if (file.bad() || file.fail()) {
+        // error reading file
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
         // close the temporary file
-        CloseTempFile(FALSE); 
-        // return the new data pointer
-        return m_lpBuffer + (dwByteOffset - m_dwBufferOffset); 
-    }
-}
-
-/***************************************************************************/
-// CProcess::CreateTempFile Create a temporary file
-// Since the processed data will be stored in a temporary file, the file has
-// to be created first.
-/***************************************************************************/
-BOOL CProcess::CreateTempFile(const wchar_t* szName) {
-    
-	DeleteTempFile();
-    if (!CreateTempFile(szName, &m_fileStatus)) {
-        // error
-		// close the temporary file
         SetDataInvalid();
-        return FALSE;
+        return NULL;
     }
-	// buffer undefined, force buffer reload
-    m_dwBufferOffset = UNDEFINED_OFFSET; 
-    return TRUE;
+    // return the new data pointer
+    return m_lpBuffer + (dwByteOffset - m_dwBufferOffset); 
 }
 
-BOOL CProcess::CreateTempFile(const wchar_t* szName, CFileStatus * pFileStatus) {
+bool CProcess::CreateTempFile(const wchar_t* szName) {
     
-	TCHAR szTempPath[_MAX_PATH];
+    // close the temporary file
+    if (file.is_open()) {
+        file.close();
+    }
+    FileUtils::Remove(GetProcessFileName());
+    DeleteProcessFileName();
+    TCHAR szTempPath[_MAX_PATH];
     FileUtils::GetTempFileName( szName, szTempPath, _countof(szTempPath));
     // create and open the file
-    if (!Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
+    if (!Open(szTempPath, fstream::in | fstream::out | fstream::binary | fstream::trunc)) {
         // error opening file
         app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
-        return FALSE;
+        // close the temporary file
+        SetDataInvalid();
+        return false;
     }
-
-    // read file status
-    if (!CFile::GetStatus(szTempPath, *pFileStatus)) {
-        // error reading file status
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
-        return FALSE;
-    }
-
-    return TRUE;
+    // buffer undefined, force buffer reload
+    m_dwBufferOffset = UNDEFINED_OFFSET;
+    return true;
 }
 
-BOOL CProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pError) {
-    assert(lpszFileName!=NULL);
-    assert(wcslen(lpszFileName)>0);
-
-    if (m_pFile!=NULL) {
-        delete m_pFile;    // We shouldn't really get here...
-        m_pFile = NULL;
+bool CProcess::Open(LPCTSTR lpszFilename, fstream::openmode flags) {
+    assert(lpszFilename !=NULL);
+    assert(wcslen(lpszFilename)>0);
+    if (file.is_open()) {
+        file.close();
     }
 
-    m_pFile = new CFile();
-    return m_pFile->Open(lpszFileName, nOpenFlags, pError);
-
-}
-
-/***************************************************************************/
-// CProcess::CreateAuxTempFile Create an auxilliary temporary file
-// This is used for temp files whose contents are not the primary
-// data for this process.
-/***************************************************************************/
-BOOL CProcess::CreateAuxTempFile(const wchar_t * szName, CFile * pFile, CFileStatus & fileStatus) {
-
-    if (!pFile) {
-        pFile = new CFile();
-    }
-
-    TCHAR szTempPath[_MAX_PATH];
-    FileUtils::GetTempFileName(szName, szTempPath, _countof(szTempPath));
-    // create and open the file
-    if (!pFile->Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive)) {
-        // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
-        return Exit(PROCESS_ERROR);
-    }
-    // read file status
-    if (!CFile::GetStatus(szTempPath, fileStatus)) {
-        // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
-        return Exit(PROCESS_ERROR);
-    }
-
-    return TRUE;
+    file.open(lpszFilename, 0);
+    return (file.is_open() && !file.bad() && !file.fail());
 }
 
 /***************************************************************************/
 // CProcess::OpenFileToAppend  Open temp file and set up for appending
 /***************************************************************************/
-BOOL CProcess::OpenFileToAppend() {
-    if (!Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive)) {
+bool CProcess::OpenFileToAppend() {
+    if (!Open(GetProcessFileName(), fstream::in | fstream::out | fstream::binary | fstream::app | fstream::ate)) {
         // error opening file
         app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-        return FALSE;
+        return false;
     }
 
-    try {
-        m_pFile->SeekToEnd();
-    } catch (CFileException * e) {
+    file.seekg(0, fstream::end);
+    if (file.bad() || file.fail()) {
         // error writing file
         app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
 		// close the temporary file
 		SetDataInvalid();
-        e->Delete();
-		return FALSE;
+		return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 /***************************************************************************/
 // CProcess::CloseTempFile Close the temporary file
 /***************************************************************************/
-void CProcess::CloseTempFile(BOOL bUpdateStatus) {
-    // close the temporary file
-    if (m_pFile) {
-        delete m_pFile;
-        m_pFile = NULL;
+void CProcess::CloseTempFile() {
+    // close the file
+    if (file.is_open()) {
+        file.close();
     }
-    if (bUpdateStatus) {
-        CFile::GetStatus( GetProcessFileName(), m_fileStatus); // read the status
-    }
-}
-
-/***************************************************************************/
-// CProcess::DeleteTempFile Delete the temporary file
-/***************************************************************************/
-void CProcess::DeleteTempFile() {
-    CloseTempFile(FALSE); // close the temporary file
-    FileUtils::Remove(GetProcessFileName());
-    DeleteProcessFileName();
-    m_fileStatus.m_size = 0;
 }
 
 /***************************************************************************/
@@ -561,40 +478,37 @@ long CProcess::Exit(int nError) {
 // the size of the data block, he wants to store.
 // Position and length are array indices with object size nElementSize
 /***************************************************************************/
-BOOL CProcess::WriteDataBlock(DWORD dwPosition, BPTR lpData, DWORD dwDataLength, size_t nElementSize) {
+bool CProcess::WriteDataBlock( DWORD dwPosition, BPTR lpData, DWORD dwDataLength, size_t nElementSize) {
     // open the temporary file
-    BOOL bClose = (m_pFile == NULL);
-    if ((m_pFile==NULL) && (!Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive))) {
-        // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-        return FALSE;
+    bool preExisting = file.is_open();
+    if (!preExisting) {
+        if (!Open(GetProcessFileName(), fstream::in | fstream::out | fstream::binary)) {
+            // error opening file
+            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+            return false;
+        }
     }
     // find the right position in the data
-    try {
-        m_pFile->Seek(dwPosition * nElementSize, CFile::begin);
-    } catch (CFileException * e) {
+    file.seekg(dwPosition * nElementSize, ofstream::beg);
+    if (file.bad() || file.fail()) {
         // error seeking file
         app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-		// close the temporary file
 		SetDataInvalid();
-        e->Delete();
-		return FALSE;
+		return false;
     }
     // write the data block from the buffer
-    try {
-        Write((BPTR)lpData, dwDataLength * nElementSize);
-    } catch (CFileException * e) {
+    file.write((BPTR)lpData, dwDataLength * nElementSize);
+    if (file.bad() || file.fail()) {
         // error writing file
         app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
 		// close the temporary file
 		SetDataInvalid();
-        e->Delete();
-		return FALSE;
+		return false;
     }
-    if (bClose) {
+    if (!preExisting) {
         CloseTempFile();    // close the temporary file
     }
-    return TRUE;
+    return true;
 }
 
 /***************************************************************************/
@@ -764,8 +678,7 @@ BOOL CProcess::SmoothData(int nTimes) {
 // status to processed. It does not create a temporary file and it does not
 // process any data.
 /***************************************************************************/
-long CProcess::Process(void * pCaller, int nProgress, int nLevel) {
-    UNUSED_ALWAYS(pCaller);
+long CProcess::Process(void * /*pCaller*/, int nProgress, int nLevel) {
     if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
@@ -800,7 +713,6 @@ long CProcess::GetStatus() const {
 
 // cancel current process
 void CProcess::CancelProcess() {
-    TRACE("Setting PROCESS_CANCEL\n");
     SetStatusFlag(PROCESS_CANCEL, TRUE);
 }
 
@@ -820,14 +732,15 @@ BOOL CProcess::IsDataReady() const {
 
 void CProcess::SetDataInvalid() {
     SetStatusFlag(DATA_READY, FALSE);
-    DeleteTempFile();
+    if (file.is_open()) {
+        file.close();
+    }
     m_dwBufferOffset = UNDEFINED_OFFSET;
 }
 
 // effectively return the number of samples
 // return processed data size in words (16 bit)
 DWORD CProcess::GetDataSize() const {
-
     return GetDataSize(2);
 }
 
@@ -836,9 +749,11 @@ DWORD CProcess::GetNumSamples() const {
     return GetDataSize(2);
 }
 
-// return processed data size in words (16 bit)
+// return processed element count
 DWORD CProcess::GetDataSize(size_t nElementSize) const {
-    return (DWORD)(m_fileStatus.m_size / nElementSize);
+    ifstream in(filename, ifstream::ate | ifstream::binary);
+    std::streampos length = in.tellg();
+    return (DWORD)(length / nElementSize);
 }
 
 // return maximum value
@@ -892,12 +807,12 @@ void CProcess::SetProcessBufferSize(DWORD dwSize) {
 
 // return process temporary file path and name
 LPCTSTR CProcess::GetProcessFileName() {
-    return m_fileStatus.m_szFullName;
+    return filename.c_str();
 }
 
 // delete the temporary file name
 void CProcess::DeleteProcessFileName() {
-    m_fileStatus.m_szFullName[0] = 0;
+    filename.clear();
 }
 
 void CProcess::SetStatusFlag( long nStatus, BOOL bValue) {
@@ -908,13 +823,9 @@ void CProcess::SetDataReady(BOOL bReady) {
     SetStatusFlag(DATA_READY, bReady);
 }
 
-void CProcess::Write(const void * lpBuf, UINT nCount) {
-    m_pFile->Write(lpBuf, nCount);
-}
-
-// Special case used to bypass file
-void CProcess::SetDataSize(int nElements, size_t nElementSize) {
-    m_fileStatus.m_size = nElements * nElementSize;
+bool CProcess::Write(const void * lpBuf, UINT nCount) {
+    file.write( (const char *)lpBuf, nCount);
+    return (!file.bad() && !file.fail());
 }
 
 DWORD CProcess::GetProcessedWaveDataBufferSize() {

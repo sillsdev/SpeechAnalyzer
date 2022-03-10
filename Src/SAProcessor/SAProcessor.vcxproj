@@ -206,6 +206,7 @@
     <ClInclude Include="SpectroParm.h" />
     <ClInclude Include="SpectrumParm.h" />
     <ClInclude Include="funcs.h" />
+    <ClInclude Include="sa_p_smlou.h" />
     <ClInclude Include="TrackState.h" />
     <ClInclude Include="VowelFormants.h" />
     <ClInclude Include="VowelFormantSet.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="ProcessAreaData.cpp" />
     <ClCompile Include="ProcessDoc.cpp" />
     <ClCompile Include="ResearchSettings.cpp" />
+    <ClCompile Include="SaParam.cpp" />
     <ClCompile Include="sa_p_3dPitch.cpp" />
     <ClCompile Include="SA_P_CHA.CPP" />
     <ClCompile Include="sa_p_cor.cpp" />
@@ -267,6 +269,7 @@
     <ClCompile Include="ScopedCursor.cpp" />
     <ClCompile Include="SpectroParm.cpp" />
     <ClCompile Include="SpectrumParm.cpp" />
+    <ClCompile Include="sa_p_smlou.cpp" />
     <ClCompile Include="TrackState.cpp" />
     <ClCompile Include="VowelFormants.cpp" />
     <ClCompile Include="VowelFormantSet.cpp" />

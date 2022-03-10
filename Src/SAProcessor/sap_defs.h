@@ -28,4 +28,13 @@
 #define CECIL_PITCH_GROUP               6
 #define CECIL_PITCH_INTERPOL            7
 
+// RIFF header definitions
+#define FILE_FORMAT_PCM                 1           // PCM format in format chunk
+
+#define FILE_FORMAT_UTT                 0           // record file format in sa chunk
+#define FILE_FORMAT_WAV                 1           // record file format in sa chunk
+#define FILE_FORMAT_MAC                 2           // record file format in sa chunk
+#define FILE_FORMAT_TIMIT               3           // record file format in sa chunk
+#define FILE_FORMAT_OTHER               4           // record file format in sa chunk
+
 #endif

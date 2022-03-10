@@ -24,6 +24,8 @@
 #include <vector>
 #include <locale.h>
 #include <assert.h>
+#include <fstream>
+#include <sys/stat.h>
 
 #include <sa_dsp.h>
 #include <fileutils.h>
@@ -52,6 +54,8 @@ using std::wistringstream;
 using std::wofstream;
 using std::wstring;
 using std::wstringstream;
+using std::fstream;
+using std::ios_base;
 
 typedef char* BPTR;
 

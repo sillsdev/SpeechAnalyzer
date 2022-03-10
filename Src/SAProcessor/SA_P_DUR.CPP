@@ -5,7 +5,6 @@
 // Author: Alec Epting
 // copyright 1998 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "pch.h"
 #include "sa_process.h"
 #include "sa_p_dur.h"
@@ -27,7 +26,6 @@
 /***************************************************************************/
 long CProcessDurations::Process(void * pCaller, int nProgress, int nLevel) {
 
-    //TRACE(_T("Process: CProcessDurations\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -44,9 +42,9 @@ long CProcessDurations::Process(void * pCaller, int nProgress, int nLevel) {
     // set pointer to segment durations
     PhoneticSegment * pSegment = model.GetPhoneticSegment();
     LPCTSTR pPhonetic = pSegment->GetContent();
-    m_Durations.RemoveAll();
+    m_Durations.clear();
     for (int i=0; i<pSegment->GetDurationSize(); i++) {
-        m_Durations.Add(pSegment->GetDuration(i));
+        m_Durations.push_back(pSegment->GetDuration(i));
     }
 
     // find min and max durations
@@ -63,11 +61,11 @@ long CProcessDurations::Process(void * pCaller, int nProgress, int nLevel) {
 }
 
 DWORD CProcessDurations::GetProcessedData(int nSegmentIndex) {
-    return m_Durations.GetAt(nSegmentIndex);
+    return m_Durations[nSegmentIndex];
 }
 
 DWORD CProcessDurations::GetDataSize() {
-    return (DWORD)m_Durations.GetSize();   //return number of durations
+    return (DWORD)m_Durations.size();   //return number of durations
 }
 
 void CProcessDurations::SetDataInvalid() {

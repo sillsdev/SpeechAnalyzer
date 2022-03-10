@@ -3,82 +3,6 @@
 // Implementation of the CSaDoc class.
 // Author: Urs Ruchti
 // copyright 2000 JAARS Inc. SIL
-//
-// Revision History
-// 1.06.1.2
-//      SDM Added Function CSaDoc::UpdateSegmentBoundaries()
-//      SDM Added delete m_pProcessGlottis to CSaDoc::~CSaDoc() memory leak #1
-// 1.06.4
-//      SDM Added tools/import and advanced/auto-align menu support
-//      SDM Moved UserInterface from CPhoneticSegment::Process()
-// 1.06.5
-//      SDM Removed unused handler for CDlgInput
-//      SDM Added update boundaries command handler
-//      SDM Added auto snap update
-//      SDM Fixed SnapCursor() SNAP_RIGHT to find zero crossing at initial position
-// 1.06.6U2
-//      SDM initialized m_dwDataSize to 0 in constructor to identify an empty document to editor
-//      SDM changed clipboard format for wav to include annotation
-//      SDM changed AdjustSegment to adjust overlapping segments on cut
-//      SDM removed CSaParam.nWordCount
-// 1.06.6U4
-//      SDM changed undo to include m_bModified
-// 1.06.6U5
-//      SDM applied default settings to in ApplyWaveFile()
-//      SDM changed LoadWave to use InsertSegment()
-//      SDM changed InsertSegment to Apply InputFilter to segment string
-// 1.5Test8
-//      SDM added changes by CLW in 1.07a
-// 1.5Test8.1
-//      SDM changed WAV format to RIFF_VERSION 7.1
-//      SDM added support for Reference annotation
-//      SDM added file SaveAs...
-//      SDM added validation of WAV data referenced by SA annotations
-//      SDM changed UpdateBoundaries to handle bOverlap parameter
-// 1.5Test8.2
-//      SDM moved save of Workbench processed data to SaveAs
-//      SDM fixed WriteWave to handle empty Reference segments
-//      SDM cleared database registration in SaveAs
-//      SDM Set SaveAs files to Read-Only
-//      SDM Modified AdvancedSegment to preserve GLOSS, POS, & REFERENCE
-// 1.5Test8.5
-//      SDM added support for mode dependent menu and popups
-// 1.5Test10.0
-//      SDM added support for WAV file database registration
-//      SDM moved CParseParm & CSegmentParm to CMainFrame
-// 1.5Test10.2
-//      SDM fixed LoadWave to correctly set CSaParam.szDescription length
-//      SDM fixed WriteWave to trim file to correct length
-//      SDM disable saving unchanged files
-//      SDM fixed bug in SaveAs for new files
-// 1.5Test10.7
-//      SDM fixed OnAdvancedParse to allow reparsing file
-// 1.5Test11.0
-//      SDM replaced GetOffsets()->GetSize() with GetSize()
-//      SDM replaced GetOffsets()->GetAt(n) with GetOffset(n)
-//      SDM replaced GetDurations()->GetAt(n) with GetDuration(n)
-//      SDM removed changes to durations for gloss and children
-//      SDM split OnAutoSnapUpdate
-// 1.5Test11.3
-//      SDM replaced changes to Gloss and children (see 11.0)
-// 1.5Test11.1A
-//      RLJ Set parsing and segmenting paramters to default values.
-// 06/07/2000
-//      RLJ  Changed OnOpenDocument(const char* pszPathName) so that
-//              "File-->Open As" can selectively bring up graphs for
-//              Phonetic Analysis or Music Analysis (rather than
-//              using waveform default or *.PSA settings).
-//      RLJ Added OnCloseDocument
-// 1.5Test11.4
-//      SDM added support for editing PHONEMIC/TONE/ORTHO to span multiple segments
-// 06/17/2000
-//        RLJ Extend FileOpenAs to support not only Phonetic/Music Analysis,
-//              but also OpenScreenF, OpenScreenG, OpenScreenI, OpenScreenK,
-//              OpenScreenM, etc.
-//
-// 09/25/00 DDO Got rid of the m_bCheckedTWC member var. I rewrote some stuff
-//              in sa_dlg so it's no longer needed.
-//
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "sa_doc.h"
@@ -4740,6 +4664,7 @@ CArchive & operator>> (CArchive & ar, SourceParm & parm) {
 }
 
 void CSaDoc::SerializeForUndoRedo(CArchive & ar) {
+	
 	Context& context = GetContext();
 	CSegment * pDummySeg = (CSegment *)new CPhoneticSegment(context,PHONETIC);
 	// get pointer to view
@@ -4764,7 +4689,14 @@ void CSaDoc::SerializeForUndoRedo(CArchive & ar) {
 		// SDM 1.06.6U4 Undo modified status
 		ar << (BYTE)m_bModified;
 		ar << m_sourceParm;
-		m_saParam.Serialize(ar);
+
+		CSaString temp;
+		temp = m_saParam.szDescription.c_str();
+		ar << temp;
+		ar << m_saParam.dwNumberOfSamples;
+		ar << m_saParam.lSignalMax;
+		ar << m_saParam.lSignalMin;
+
 	} else if (pDummySeg) {
 		CSaString isValid;
 
@@ -4789,7 +4721,13 @@ void CSaDoc::SerializeForUndoRedo(CArchive & ar) {
 		// SDM 1.06.6U4 Undo modified status
 		ar >> (BYTE &)m_bModified;
 		ar >> m_sourceParm;
-		m_saParam.Serialize(ar);
+
+		CSaString temp;
+		ar >> temp;
+		m_saParam.szDescription = ::_to_utf8(temp.GetString());
+		ar >> m_saParam.dwNumberOfSamples;
+		ar >> m_saParam.lSignalMax;
+		ar >> m_saParam.lSignalMin;
 	}
 
 	if (pDummySeg) {

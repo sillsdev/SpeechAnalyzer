@@ -120,3 +120,8 @@ wstring trim_copy(wstring s) {
     trim(s);
     return s;
 }
+
+long get_file_size(LPCTSTR filename) {
+    ifstream in(filename, ifstream::ate | ifstream::binary);
+    return (long)in.tellg();
+}

@@ -22,7 +22,7 @@ private:
     CProcess * m_pPitch;
 
     void AdvanceData(STrackState & state, DWORD dwDataPos, int nSamples);
-    void WriteTrack(STrackState & state, double samplingRate, int pitch); // write a block into the temporary file
+    bool WriteTrack(STrackState & state, double samplingRate, int pitch); // write a block into the temporary file
     bool BuildTrack(STrackState & state, double samplingRate, int pitch);
 };
 

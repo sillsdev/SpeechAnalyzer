@@ -38,7 +38,7 @@ public:
     virtual DWORD GetProcessedModelWaveDataSize();
 
 private:
-    void LoadBuffer(char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead);
+    void LoadBuffer(char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, std::streamsize bytesRead);
 
     App & app;
     Model& model;

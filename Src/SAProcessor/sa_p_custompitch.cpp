@@ -150,13 +150,9 @@ long CProcessCustomPitch::Process(void* pCaller, int nProgress, int nLevel) {
                     pResults->fselect16 = -1;    // set this point as unset
                 }
                 // write one result of the processed grappl pitch data
-                try {
-                    Write((BPTR)&pResults->fselect16, sizeof(int16));
-                } catch (CFileException* e) {
+                if (!Write((BPTR)&pResults->fselect16, sizeof(int16))) {
                     // error writing file
                     app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName(),NULL);
-                    // error, writing failed
-                    e->Delete();
                     return Exit(PROCESS_ERROR);
                 }
 

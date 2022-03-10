@@ -177,8 +177,8 @@ long CProcessSpectrum::Process(void * pCaller, DWORD dwFrameStart, DWORD dwFrame
     m_nSpectralBands = MAX_FFT_LENGTH / 2;   // should be high enough to ensure FFT resolution is greater than screen resolution
     //!!frame size must be less than FFT length (2 x nSpectralBands)
     m_nFormants = MAX_NUM_FORMANTS + 1;  // includes F[0], the fundamental frequency
-    SetDataSize((DWORD)m_nSpectralBands * sizeof(SSpectValue) + sizeof(SFormantFrame));
-    if (!StartProcess(pCaller, PROCESSSPU, (DWORD)GetDataSize(sizeof(char)))) {
+    DWORD bufferSize = (DWORD)m_nSpectralBands * sizeof(SSpectValue) + sizeof(SFormantFrame);
+    if (!StartProcess(pCaller, PROCESSSPU, (DWORD)bufferSize)) {
         EndProcess(); // end data processing
         return MAKELONG(PROCESS_ERROR, nProgress);
     }

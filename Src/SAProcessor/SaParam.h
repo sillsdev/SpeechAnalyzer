@@ -5,9 +5,8 @@
 
 class CSaParam {
 public:
-    CSaParam(void);
+    CSaParam();
     CSaParam operator=(const CSaParam & right);
-    void Serialize(CArchive & ar);
 
     string      szDescription;      // file description
     WORD        wFlags;             // 16 bits of flags for chunks

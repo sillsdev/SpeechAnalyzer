@@ -182,13 +182,9 @@ long CProcessGrappl::Process(void* pCaller, int nProgress, int nLevel) {
                     m_dAvgPitch = ((double)(dwPitchCount-1)*m_dAvgPitch + (double)pResults->fsmooth16/PRECISION_MULTIPLIER) / (double)dwPitchCount;
                 }
                 // write one result of the processed grappl pitch data
-                try {
-                    Write((BPTR)&pResults->fsmooth16, sizeof(int16));
-                } catch (CFileException * e) {
+                if (!Write((BPTR)&pResults->fsmooth16, sizeof(int16))) {
                     // error writing file
                     app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-					// error, writing failed
-					e->Delete();
 					return Exit(PROCESS_ERROR);
                 }
                 pResults++;

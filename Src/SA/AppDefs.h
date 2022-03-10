@@ -2,40 +2,6 @@
 // Application specific include file.
 // Included by stdafx.h
 // copyright 2000 JAARS Inc. SIL
-//
-// Revision History
-//   1.06.5
-//        SDM added user messages WM_USER_CHANGEANNOTATION, WM_USER_CHANGECURSOR
-//            added defines for cursor scrolling and phonetic segment add
-//   1.06.6
-//        SDM added SLOW_CLICK_TIME_LIMIT
-//   1.06.6U2
-//        SDM added ADD_SYLLABLE_TIME
-//        SDM removed nWordCount from CSaParam
-//        SDM added MIN_EDIT_TIME
-//   1.06.8
-//        SDM added SPACE_DELIMITER & EDIT_DELIMITER_REPLACEMENT
-//   1.5Test8
-//        SDM added changes by CLW in 1.07a
-//   1.5Test8.1
-//        SDM Changed to RIFF version 7.1
-//        SDM added szFreeTranslation and szTranscriber to SourceParm
-//        SDM added reference annotation
-//   1.5Test8.2
-//        SDM added WM_USER_GRAPH_ORDERCHANGED
-//        SDM added MAX_AUTOSEGMENT_MOVE_TIME
-//   1.5Test8.3
-//        SDM added EXPORT_FORMANT_SIZE
-//   1.5Test10.0
-//        SDM removed unused code
-//        SDM moved CParseParm & CSegmentParm to Param.h & Param.cpp
-//   1.5Test10.2
-//        SDM added MAX_ADD_JOIN_TIME
-//   1.5Test11.1A
-//        RLJ Changed CPitchParm, CSpectroParm, and CSpectrumParm from
-//              structures here to classes in Param.h.
-//   05/31/2000
-//        RLJ Added OpenModeType
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _APPDEFS_H
 #define _APPDEFS_H
@@ -168,15 +134,6 @@ enum EFileFormat {
     formatStereo = 1,
     formatRight = 2
 };
-
-// RIFF header definitions
-#define FILE_FORMAT_PCM                 1           // PCM format in format chunk
-
-#define FILE_FORMAT_UTT                 0           // record file format in sa chunk
-#define FILE_FORMAT_WAV                 1           // record file format in sa chunk
-#define FILE_FORMAT_MAC                 2           // record file format in sa chunk
-#define FILE_FORMAT_TIMIT               3           // record file format in sa chunk
-#define FILE_FORMAT_OTHER               4           // record file format in sa chunk
 
 #define FILE_DESCRIPTION_SIZE           256         // file description string length
 // user windows messages

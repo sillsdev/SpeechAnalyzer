@@ -2,10 +2,8 @@
 #define HISTGRAM_H
 
 #include "dspTypes.h"
-//#include "MathX.h"
 #include "Error.h"
 #include "Signal.h"
-
 
 enum EHISTOGRAM_TYPE {COUNTS = 0, PDF = 1, CDF = 2};
 
@@ -17,6 +15,9 @@ struct SHistogramParms {
 
 class CHistogram {
 public:
+    CHistogram() = delete;
+    CHistogram(const CHistogram&) = delete;
+
     static char * Copyright(void);
     static float Version(void);
     static dspError_t CreateObject(CHistogram ** ppoHistogram, SHistogramParms & stHistParms, SProcParms & stProcParms);
@@ -26,24 +27,17 @@ public:
     dspError_t GetBinNum(int32 & nBinNum, int16 nData);
     dspError_t GetHistogram(short * pBins, double fCoeff, uint16 wGraphForm);
     ~CHistogram();
-    virtual const SHistogramParms & GetHistogramParms() const {
-        return m_stHistParms;   // return histogram parms as const
-    }
-    virtual short GetMaxValue(void * /*pCaller*/) {
-        return m_nMaxValue;   // return maximum value
-    }
-    virtual short GetMinValue(void * /*pCaller*/) {
-        return m_nMinValue;   // return minimum value
-    }
-    virtual uint32 GetTotalCounts(void * /*pCaller*/) {
-        return m_dwTotalCounts;   // return total counts
-    }
+    virtual const SHistogramParms& GetHistogramParms() const;
+    virtual short GetMaxValue(void* /*pCaller*/);
+    virtual short GetMinValue(void* /*pCaller*/);
+    virtual uint32 GetTotalCounts(void* /*pCaller*/);
+
 private:
     CHistogram(SHistogramParms & stHistParms, SProcParms & stProcParms);
     dspError_t Process(uint8 * pBuffer);
     dspError_t Process(short * pBuffer);
     static void FreeHistMem(void);
-    // member variables
+
     SProcParms m_stProcParms;
     SHistogramParms m_stHistParms;
     void * m_pSigBfr;

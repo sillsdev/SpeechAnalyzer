@@ -44,4 +44,6 @@ extern wstring rtrim_copy(wstring s);
 extern string trim_copy(string s);
 extern wstring trim_copy(wstring s);
 
+extern long get_file_size(LPCTSTR filename);
+
 #endif

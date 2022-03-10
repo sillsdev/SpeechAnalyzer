@@ -222,15 +222,11 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                                         FormantPwr.F[nFormant] = pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels;
                                     }
                                 }
-                                try {
-                                    // write the formant frequenciess
-                                    Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq));
-                                } catch (CFileException * e) {
+                                // write the formant frequenciess
+                                if (!Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq))) {
                                     // error writing file
                                     pFormants->ResetTracking();
                                     app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-									// error, writing failed
-									e->Delete();
 									return Exit(PROCESS_ERROR);
                                 }
                             }
@@ -245,15 +241,10 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                                 FormantFreq.F[nFormant] = (float)NA;    // all others not available
                             }
                         }
-                        try {
-                            // write unvoiced formant frame
-                            Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq));
-                        } catch (CFileException * e) {
+                        if (!Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq))) {
                             // error writing file
                             pFormants->ResetTracking();
                             app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-							// error, writing failed
-							e->Delete();
 							return Exit(PROCESS_ERROR);
                         }
                     }
@@ -294,15 +285,10 @@ long CProcessSpectroFormants::ExtractFormants( DWORD dwWaveDataStart, DWORD dwWa
                                     FormantPwr.F[nFormant] = pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels;
                                 }
                             }
-                            try {
-                                // write the formants
-                                Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq));
-                            } catch (CFileException * e) {
+                            if (!Write((BPTR)&FormantFreq, (UINT)sizeof(FormantFreq))) {
                                 // error writing file
                                 pFormants->ResetTracking();
                                 app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-								e->Delete();
-								// error, writing failed
 								return Exit(PROCESS_ERROR);
                             }
                         }

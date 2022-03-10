@@ -122,30 +122,27 @@ long CProcessPOA::Process(void * pCaller, DWORD dwStart, DWORD dwStop, int nProg
 
     // Construct an LPC object for vocal tract modeling.
     CLinPredCoding * pLpcObject;
-    dspError_t Err;
-
-    Err = CLinPredCoding::CreateObject(&pLpcObject, app, LpcSetting, Signal);
-    if (Err) {
+    dspError_t err = CLinPredCoding::CreateObject(&pLpcObject, app, LpcSetting, Signal);
+    if (err) {
         model.GetWaveData(dwOldWaveBufferIndex, TRUE);
         return Exit(PROCESS_ERROR, NULL);
     }
 
     // Perform LPC analysis.
     SLPCModel * pLpcModel;
-    Err = pLpcObject->GetLpcModel(&pLpcModel, Signal.Start);
+    err = pLpcObject->GetLpcModel(&pLpcModel, Signal.Start);
 
-    if (Err) {
+    if (err) {
         model.GetWaveData(dwOldWaveBufferIndex, TRUE);
         return Exit(PROCESS_ERROR, NULL);
     }
 
     // Allocate global buffer for the processed data
-    SetDataSize(sizeof(SVocalTractModel) + (pLpcModel->nNormCrossSectAreas-1) * sizeof(*pLpcModel->pNormCrossSectArea));
+    long bufferSize = sizeof(SVocalTractModel) + (pLpcModel->nNormCrossSectAreas-1) * sizeof(*pLpcModel->pNormCrossSectArea);
     if (!m_lpBuffer) { // not yet allocated
-        m_lpBuffer = new char[GetDataSize(sizeof(char))];
+        m_lpBuffer = new char[bufferSize];
         if (!m_lpBuffer) {
             app.ErrorMessage(IDS_ERROR_MEMALLOC);
-            SetDataSize(0);
             delete pLpcObject; // delete the Lpc object
             model.GetWaveData(dwOldWaveBufferIndex, TRUE);
             return MAKELONG(PROCESS_ERROR, nProgress);

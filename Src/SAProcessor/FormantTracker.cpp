@@ -146,7 +146,11 @@ long CProcessFormantTracker::Process(void * pCaller, int nProgress, int nLevel) 
         if (!BuildTrack(state, samplingRate, pitch)) {
             return Exit(PROCESS_CANCELED);
         }
-        WriteTrack(state, samplingRate, pitch);
+        if (!WriteTrack(state, samplingRate, pitch)) {
+            EndProcess(); // end data processing
+            SetDataReady(FALSE);
+            return MAKELONG(PROCESS_ERROR, nProgress);
+        }
 
         state.trackIn = state.trackOut;
 
@@ -191,41 +195,44 @@ void CProcessFormantTracker::AdvanceData(STrackState & state, DWORD dwDataPos, i
     unsigned int nImagSmpSize = sizeof(short) / (unsigned int)fSizeFactor;  // imaginary data sample size
 
     if (nSamples > 0) {
-        if (::abs(nSamples) > state.data.size()) {
-            AdvanceData(state, dwDataPos + nSamples - state.data.size(), state.data.size());
+        size_t uSamples = nSamples;
+        if (uSamples > state.data.size()) {
+            AdvanceData(state, dwDataPos + uSamples - state.data.size(), state.data.size());
         } else {
-            state.data.erase(state.data.begin(), state.data.begin() + nSamples);
-            for (int i=0; i< nSamples; i++) {
+            state.data.erase(state.data.begin(), state.data.begin() + uSamples);
+            for (size_t i = 0; i < uSamples; i++) {
                 double dReal = 0;
                 double dImag = 0;
-                if (dwDataPos+i < dwSize) {
-                    dReal = *reinterpret_cast<short *>(m_pReal->GetProcessedObject(dwDataPos + i, sizeof(short)));
+                if (dwDataPos + i < dwSize) {
+                    dReal = *reinterpret_cast<short*>(m_pReal->GetProcessedObject(dwDataPos + i, sizeof(short)));
                     if (nImagSmpSize == 1) {
-                        dImag = *reinterpret_cast<char *>(m_pImag->GetProcessedObject(dwImagPos + i, sizeof(char)));
+                        dImag = *reinterpret_cast<char*>(m_pImag->GetProcessedObject(dwImagPos + i, sizeof(char)));
                     } else {
-                        dImag = *reinterpret_cast<short *>(m_pImag->GetProcessedObject(dwImagPos + i, sizeof(short)));
+                        dImag = *reinterpret_cast<short*>(m_pImag->GetProcessedObject(dwImagPos + i, sizeof(short)));
                     }
                 }
                 CDBL sample(dReal, dImag);
                 state.data.push_back(sample);
             }
         }
-    } else {
-        if (::abs(nSamples) > state.data.size()) {
-            AdvanceData(state, dwDataPos - nSamples + state.data.size(), state.data.size());
-        } else {
-            state.data.erase(state.data.end() - nSamples, state.data.end());
+        return;
+    }
 
-            for (int i=0; i< nSamples; i++) {
-                double dReal = 0;
-                double dImag = 0;
-                if ((dwDataPos >= DWORD(i)) && (dwDataPos < dwSize)) {
-                    dReal = *reinterpret_cast<short *>(m_pReal->GetProcessedObject(dwDataPos-i, sizeof(short), TRUE));
-                    dImag = *reinterpret_cast<short *>(m_pImag->GetProcessedObject(dwDataPos-i, sizeof(short), TRUE));
-                }
-                CDBL sample(dReal, dImag);
-                state.data.push_front(sample);
+    // nSamples is negative
+    if ((size_t)::abs(nSamples) > state.data.size()) {
+        AdvanceData(state, dwDataPos - nSamples + state.data.size(), state.data.size());
+    } else {
+        state.data.erase(state.data.end() - nSamples, state.data.end());
+
+        for (int i=0; i< nSamples; i++) {
+            double dReal = 0;
+            double dImag = 0;
+            if ((dwDataPos >= DWORD(i)) && (dwDataPos < dwSize)) {
+                dReal = *reinterpret_cast<short *>(m_pReal->GetProcessedObject(dwDataPos-i, sizeof(short), TRUE));
+                dImag = *reinterpret_cast<short *>(m_pImag->GetProcessedObject(dwDataPos-i, sizeof(short), TRUE));
             }
+            CDBL sample(dReal, dImag);
+            state.data.push_front(sample);
         }
     }
 }
@@ -361,7 +368,7 @@ bool CProcessFormantTracker::BuildTrack(STrackState & state, double samplingRate
 * @param[in] samplingRate
 * @param[in] pitch the pitch value to be written in the first array entry.
 */
-void CProcessFormantTracker::WriteTrack(STrackState & state, double samplingRate, int pitch) {
+bool CProcessFormantTracker::WriteTrack(STrackState & state, double samplingRate, int pitch) {
     SFormantFreq formant = {};
     BOOL bIsDataValid = state.trackOut.size() && (pitch > 0);
 
@@ -372,7 +379,7 @@ void CProcessFormantTracker::WriteTrack(STrackState & state, double samplingRate
     }
 
     // write unvoiced formant frame
-    Write((BPTR)&formant, (UINT)sizeof(SFormantFreq));
+    return Write((BPTR)&formant, (UINT)sizeof(SFormantFreq));
 }
 
 /**

@@ -41,6 +41,8 @@ class CProcess : public IProcess {
 public:
     CProcess(Context & context);
     CProcess() = delete;
+    CProcess(const CProcess &) = delete;
+    void operator=(const CProcess &) = delete;
     virtual ~CProcess();
 
     virtual void CancelProcess();
@@ -92,22 +94,18 @@ protected:
     virtual bool StartProcess(void * pCaller, ProcessorType nProcessID = PROCESSDFLT, BOOL bBuffer = TRUE);
     virtual void SetProgress(int nPercentProgress);
     virtual long Exit(int nError);                                                          // exit processing on error
-    virtual BOOL WriteDataBlock(DWORD dwPosition, BPTR lpData, DWORD dwDataLength, size_t nElementSize = 2); // write a block into the temporary file
+    virtual bool WriteDataBlock(DWORD dwPosition, BPTR lpData, DWORD dwDataLength, size_t nElementSize = 2); // write a block into the temporary file
     virtual void SetDataReady(BOOL bReady = TRUE);
-    virtual void Write(const void * lpBuf, UINT nCount);
-    // Special case used to bypass file
-    virtual void SetDataSize(int nElements, size_t nElementSize = 1);
+    virtual bool Write(const void * lpBuf, UINT nCount);
 
     void SetStatus(long nStatus);
     void SetStatusFlag(long nStatus, BOOL bValue);
-    void EndProcess(BOOL bProcessBar = TRUE);                                               // end processing data
-    BOOL CreateTempFile(const wchar_t*);                                                           // create a temporary file
-    BOOL CreateTempFile(const wchar_t*, CFileStatus *);                                            // create a temporary file
-    BOOL CreateAuxTempFile(const wchar_t* szName, CFile * pFile, CFileStatus & fileStatus); // create auxilliary temp file
-    BOOL OpenFileToAppend();                                                                // open temporary file to append data
-    void CloseTempFile(BOOL bUpdateStatus = TRUE);                                          // close the temporary file
+    void EndProcess(BOOL bProcessBar = TRUE);               // end processing data
+    bool CreateTempFile(const wchar_t*);                    // create a temporary file
+    bool OpenFileToAppend();                                // open temporary file to append data
+    void CloseTempFile();                                   // close the temporary file
 
-    BPTR m_lpBuffer;     // pointer to processed data
+    BPTR m_lpBuffer;            // pointer to processed data
     DWORD m_dwBufferSize;       // data buffer size
     DWORD m_dwBufferOffset;     // actual buffer offset
     int m_nMaxValue;            // maximum value of processed data
@@ -115,18 +113,17 @@ protected:
     
     Context& context;
     App & app;
-    //View & view;
     Model & model;
     MainFrame& frame;
     CmdTarget& target;
 
 private:
-    virtual void DeleteTempFile();      // delete the temporary file (private use SetDataInvalid)
-    BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pError = NULL);
+    bool Open(LPCTSTR lpszFileName, fstream::openmode flags);
 
     long m_nStatus;
-    CFileStatus m_fileStatus;   // file status
-    CFile * m_pFile;            // file object
+
+    wstring filename;
+    fstream file;
 };
 
 template<class _Ty>

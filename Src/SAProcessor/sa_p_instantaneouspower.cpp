@@ -120,15 +120,12 @@ long CProcessInstantaneousPower::Process(void * pCaller, int nProgress, int nLev
 
         if (dwProcDataCount >= dwBufferSize / sizeof(short)) {
             // write the processed data block
-            try {
-                Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
-            } catch (CFileException * e) {
+            if (!Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short))) {
 				// display message
                 app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 				// end data processing
 				EndProcess();
                 SetDataInvalid();
-                e->Delete();
 				return MAKELONG(-1, nProgress);
             }
             dwProcDataCount = 0; // reset counter
@@ -148,15 +145,12 @@ long CProcessInstantaneousPower::Process(void * pCaller, int nProgress, int nLev
     dwProcDataCount++;
 
     if (dwProcDataCount) {
-        try {
-            Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short));
-        } catch (CFileException * e) {
+        if (!Write(m_lpBuffer, (UINT)dwProcDataCount * sizeof(short))) {
 			// display message
 			app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 			// end data processing
 			EndProcess();
             SetDataInvalid();
-            e->Delete();
 			return MAKELONG(-1, nProgress);
         }
     }

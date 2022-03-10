@@ -79,8 +79,6 @@ long CProcessTonalWeightChart::Process(void* pCaller, DWORD dwFrameStart, DWORD 
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    //TRACE(_T("Process: CProcessTonalWeightChart\n"));
-
     if (nLevel < 0) { // previous processing error
         if ((nLevel == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
@@ -111,32 +109,21 @@ long CProcessTonalWeightChart::Process(void* pCaller, DWORD dwFrameStart, DWORD 
     m_dMinSemitone = nMinSemitone;
     m_dMaxSemitone = nMaxSemitone;
 
-    CHistogram* ppoHist = MakeTwcHistogram(pMelogram, m_nBinsPerSemitone, m_dMinSemitone, m_dMaxSemitone, dwFrameStart / 2, dwFrameSize / 2);
+    unique_ptr<CHistogram> ppoHist;
+    ppoHist.reset(MakeTwcHistogram(pMelogram, m_nBinsPerSemitone, m_dMinSemitone, m_dMaxSemitone, dwFrameStart / 2, dwFrameSize / 2));
     if (!ppoHist) {
-        if (ppoHist) {
-            delete ppoHist;
-            ppoHist = NULL;
-        }
         return Exit(PROCESS_ERROR); // error, reading failed
     }
 
     // set progress bar
     SetProgress(nProgress + (int)(100 * (dwDataPos - dwFrameStart) / dwFrameSize / (DWORD)nLevel));
     if (IsCanceled()) {
-        if (ppoHist) {
-            delete ppoHist;
-            ppoHist = NULL;
-        }
         return Exit(PROCESS_CANCELED); // process canceled
     }
 
     double fCoeff = .001;
     dspError_t Err = ppoHist->GetHistogram((short int*)m_lpBuffer, fCoeff, PDF);
     if (Err) {
-        if (ppoHist) {
-            delete ppoHist;
-            ppoHist = NULL;
-        }
         return Exit(PROCESS_ERROR); // error, reading failed
     }
     // Make max value 0 if the total number of counts is 0. CLW 9/26/00
@@ -147,23 +134,12 @@ long CProcessTonalWeightChart::Process(void* pCaller, DWORD dwFrameStart, DWORD 
     }
 
     // write the processed data block
-    try {
-        Write(m_lpBuffer, ppoHist->GetHistogramParms().nBins * 2);
-    } catch (CFileException* e) {
+    if (!Write(m_lpBuffer, ppoHist->GetHistogramParms().nBins * 2)) {
         // error writing file
         app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-        if (ppoHist) {
-            delete ppoHist;
-            ppoHist = NULL;
-        }
-        // error, writing failed
-        e->Delete();
         return Exit(PROCESS_ERROR);
     }
-    if (ppoHist) {
-        delete ppoHist;
-        ppoHist = NULL;
-    }
+
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
     // close the temporary file and read the status
@@ -178,7 +154,6 @@ long CProcessTonalWeightChart::Process(void* pCaller, DWORD dwFrameStart, DWORD 
 // Creates a new CHistogram object, callers responsibility to delete
 CHistogram* CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram* pMelogram, int nBinsPerSemitone, double dMinSemitone, double dMaxSemitone, DWORD dwFrameStart, DWORD dwFrameSize) {
     // prepare histogram parameters
-    CHistogram* ppoHist = NULL;
     SHistogramParms stHistParms;
     memset(&stHistParms, 0, sizeof(SHistogramParms));
 
@@ -205,9 +180,11 @@ CHistogram* CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram* pMelogr
     stProcParms.stSigParms.Length = pMelogram->GetDataSize();
     stProcParms.stSigParms.SmpDataFmt = PCM_2SSHORT;
     stProcParms.stSigParms.SmpRate = 0; // not applicable
-    dspError_t Err = CHistogram::CreateObject(&ppoHist, stHistParms, stProcParms); // create histogram object
+
+    CHistogram* ppoHist = NULL;
+    dspError_t err = CHistogram::CreateObject(&ppoHist, stHistParms, stProcParms); // create histogram object
     delete[] stHistParms.pBinDivs;
-    if (Err) {
+    if (err) {
         return NULL;
     }
     // process histogram
@@ -222,9 +199,9 @@ CHistogram* CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram* pMelogr
             delete ppoHist;
             return NULL;
         }
-        Err = ppoHist->GenerateHistogram();// process data in buffer
+        err = ppoHist->GenerateHistogram();// process data in buffer
         dwDataPos += dwBatchSize;
-        switch (Err) {
+        switch (err) {
         case DONE:
             break;
 

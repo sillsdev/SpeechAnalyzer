@@ -12,6 +12,7 @@
 #include "sa_p_lou.h"
 #include "param.h"
 #include "ScopedCursor.h"
+#include "sa_p_smlou.h"
 
 //###########################################################################
 // CProcessRatio
@@ -109,13 +110,9 @@ long CProcessRatio::Process(void * pCaller, int nProgress,
         }
         if ((++dwChangeCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize)) { // change buffer is full or processing finished
             // write the processed change data block
-            try {
-                Write(m_lpBuffer, dwChangeCount * 2);
-            } catch (CFileException * e) {
+            if (!Write(m_lpBuffer, dwChangeCount * 2)) {
                 // error writing file
                 app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-				// error, writing failed
-				e->Delete();
 				return Exit(PROCESS_ERROR);
             }
             pChangeData = (short int *)m_lpBuffer; // reset pointer to begin of change data buffer

@@ -1,4 +1,4 @@
-#include "Stdafx.h"
+#include "pch.h"
 #include "SaParam.h"
 
 CSaParam::CSaParam() {
@@ -26,18 +26,4 @@ CSaParam CSaParam::operator=(const CSaParam & right) {
     dwSignalBandWidth = right.dwSignalBandWidth;
     byQuantization = right.byQuantization;
     return *this;
-}
-
-void CSaParam::Serialize(CArchive & ar) {
-    if (ar.IsStoring()) {
-        ar << szDescription;
-        ar << dwNumberOfSamples;
-        ar << lSignalMax;
-        ar << lSignalMin;
-    } else {
-        ar >> szDescription;
-        ar >> dwNumberOfSamples;
-        ar >> lSignalMax;
-        ar >> lSignalMin;
-    }
 }

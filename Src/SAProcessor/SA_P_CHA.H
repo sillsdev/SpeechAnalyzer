@@ -20,10 +20,10 @@ public:
 
 // Attributes
 private:
-    CFile * m_pQualityFile;             // quality data file object
-    CFileStatus m_qualityFileStatus;    // quality data file status
+    wstring qualityFilename;
+
     HANDLE m_hQualityData;              // needed to get m_lpQualityData
-    BPTR m_lpQualityData;              // pointer to processed quality data
+    BPTR m_lpQualityData;               // pointer to processed quality data
     DWORD m_dwQualityBufferOffset;      // actual quality data buffer offset
     BOOL m_bQualityBlockBegin;          // actual quality block begin flag
     int m_nQualityMaxValue;             // maximum value of processed quality data
@@ -35,12 +35,8 @@ public:
     long Process(void * pCaller, int nProgress = 0, int nLevel = 1);
     void * GetQualityData( DWORD dwOffset, BOOL bBlockBegin = FALSE); // return quality data pointer on given position (offset)
     int GetQualityData(DWORD dwOffset, BOOL *); // return quality data from given position (offset)
-    DWORD GetQualityDataSize() {
-        return (DWORD)(m_qualityFileStatus.m_size / 2);   // return processed data size in words (16 bit)
-    }
-    int GetQualityMaxValue() {
-        return m_nQualityMaxValue;   // return maximum value
-    }
+    DWORD GetQualityDataSize();
+    int GetQualityMaxValue();
 private:
     UINT CalculateACF8(CProcess *, unsigned char * pSRDdata, BOOL *, UINT nACFinterval, UINT nLagData,
                        UINT nMaxLag, DWORD * pdwBlockPos, DWORD dwDataPos, int nLoopCount); // calculate auto correlation coefficient for 8bit data

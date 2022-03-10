@@ -12,7 +12,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void * pCaller, int nProgress, int nLevel) {
 
-    //TRACE(_T("Process: CProcessWbGenerator\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }

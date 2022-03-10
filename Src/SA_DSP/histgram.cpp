@@ -183,7 +183,6 @@
 #include <math.h>
 #include "histgram.h"
 
-
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -202,12 +201,10 @@ float CHistogram::Version(void) {
     return((float)atof(VERSION_NUMBER));
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////
 // Macro definitions.                                                                 //
 ////////////////////////////////////////////////////////////////////////////////////////
 #define RetMemErr  { return(Code(OUT_OF_MEMORY)); }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate Histogram settings and construct object.                //
@@ -275,7 +272,6 @@ CHistogram::CHistogram(SHistogramParms & stHistParms, SProcParms & stProcParms) 
     for (j = 0; j <= m_stHistParms.nBins; j++) {
         m_stHistParms.pBinDivs[j] = stHistParms.pBinDivs[j];
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -491,6 +487,18 @@ dspError_t CHistogram::Process(short * pBuffer) { //for 16-bit signed data
     return(DONE);
 }
 
+const SHistogramParms& CHistogram::GetHistogramParms() const {
+    return m_stHistParms;   // return histogram parms as const
+}
+short CHistogram::GetMaxValue(void* /*pCaller*/) {
+    return m_nMaxValue;   // return maximum value
+}
+short CHistogram::GetMinValue(void* /*pCaller*/) {
+    return m_nMinValue;   // return minimum value
+}
+uint32 CHistogram::GetTotalCounts(void* /*pCaller*/) {
+    return m_dwTotalCounts;   // return total counts
+}
 
 #ifdef TEST_HISTGRAM
 #include <stdio.h>

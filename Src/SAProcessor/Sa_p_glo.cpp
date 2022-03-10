@@ -142,15 +142,12 @@ long CProcessGlottis::Process(void * pCaller,  int nProgress, int nLevel) {
             if ((dwProcDataCount >= dwBufferSize / 2) ||
                     (dwWaveOffset == dwLastOffset && (i+1) == pLpcModel->nResiduals)) { // processed data buffer is full or processing finished
                 // write the processed data block
-                try {
-                    Write(m_lpBuffer, (UINT)dwProcDataCount * 2);
-                } catch (CFileException * e) {
+                if (!Write(m_lpBuffer, (UINT)dwProcDataCount * 2)) {
 					// display message
                     app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 					// end data processing
 					EndProcess();
                     SetDataInvalid();
-                    e->Delete();
 					return MAKELONG(-1, nProgress);
                 }
                 dwProcDataCount = 0; // reset counter
@@ -170,15 +167,12 @@ long CProcessGlottis::Process(void * pCaller,  int nProgress, int nLevel) {
         dwProcDataCount++;
     }
     if (dwProcDataCount) {
-        try {
-            Write(m_lpBuffer, (UINT)dwProcDataCount * 2);
-        } catch (CFileException * e) {
+        if (!Write(m_lpBuffer, (UINT)dwProcDataCount * 2)) {
 			// display message
             app.AfxMessageBox(IDS_ERROR_WRITETEMPFILE, MB_OK | MB_ICONEXCLAMATION, 0);
 			// end data processing
 			EndProcess();
             SetDataInvalid();
-            e->Delete();
 			return MAKELONG(-1, nProgress);
         }
     }

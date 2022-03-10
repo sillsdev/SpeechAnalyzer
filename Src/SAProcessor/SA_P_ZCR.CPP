@@ -197,13 +197,9 @@ long CProcessZCross::Process(void * pCaller, int nProgress, int nLevel) {
         if ((++dwZCrossCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataEnd)) { 
 			// zero crossing buffer is full or processing finished
             // write the processed data block
-            try {
-                Write(m_lpBuffer, dwZCrossCount * 2);
-            } catch (CFileException * e) {
+            if (!Write(m_lpBuffer, dwZCrossCount * 2)) {
                 // error writing file
                 app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-				// error, writing failed
-				e->Delete();
 				return Exit(PROCESS_ERROR);
             }
 			// reset pointer to begin of zero crossing data buffer

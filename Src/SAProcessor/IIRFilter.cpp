@@ -127,12 +127,10 @@ long CProcessIIRFilter::Process(void * pCaller, int nProgress, int nLevel) {
 }
 
 long CProcessIIRFilter::ProcessForward( IProcess * pLowerProcess, int & nProgress, int & nLevel) {
-    trace("forward\n");
 
     m_bReverse = FALSE;
 
     DWORD dwDataPos = 0;    // data position pointer
-
     WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? model.GetSampleSize() : sizeof(short));
     trace("wDstSmpSize=%d\n",wDstSmpSize);
 
@@ -167,7 +165,6 @@ long CProcessIIRFilter::ProcessForward( IProcess * pLowerProcess, int & nProgres
 			// process canceled
             return Exit(PROCESS_CANCELED);    
         }
-
         pTargetData = m_lpBuffer;
         DWORD dwBlockEnd = dwDataPos + dwBufferSize;
         if (dwBlockEnd > dwDataSize) {

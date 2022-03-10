@@ -215,13 +215,9 @@ long CProcessMelogram::Process(void * pCaller,  int nProgress, int nLevel) {
                     }
                 }
                 // write one result of the processed melogram data
-                try {
-                    Write((BPTR)&nSemitone100, sizeof(int16));
-                } catch (CFileException * e) {
+                if (!Write((BPTR)&nSemitone100, sizeof(int16))) {
                     // error writing file
                     app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-					// error, writing failed
-					e->Delete();
 					return Exit(PROCESS_ERROR);
                 }
                 pResults++;

@@ -243,25 +243,21 @@ long CProcessSpectrogram::Process(void * pCaller, int nWidth, int /*nHeight*/, i
             delete pSpectrogram; // delete the spectrogram object
             return Exit(PROCESS_CANCELED); // process canceled
         }
-        try {
-            for (int nLoop = 0; nLoop < nBatchWidth; nLoop++) {
-                dspError_t err;
-                uint8 * pPower = pSpectrogram->ReadPowerSlice(&err, (WORD)nXIndex++);
-                if (!pPower) {
-                    delete pSpectrogram; // delete the spectrogram object
-                    return Exit(PROCESS_ERROR); // error, writing failed
-                }
-                // save powers in the file
-                Write(pPower, (DWORD)nSpectSize);
+        for (int nLoop = 0; nLoop < nBatchWidth; nLoop++) {
+            dspError_t err;
+            uint8 * pPower = pSpectrogram->ReadPowerSlice(&err, (WORD)nXIndex++);
+            if (!pPower) {
+                delete pSpectrogram; // delete the spectrogram object
+                return Exit(PROCESS_ERROR); // error, writing failed
             }
-        } catch (CFileException * e) {
-            // error writing file
-            app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-			// delete the spectrogram object
-			delete pSpectrogram;
-			// error, writing failed
-			e->Delete();
-			return Exit(PROCESS_ERROR);
+            // save powers in the file
+            if (!Write(pPower, (DWORD)nSpectSize)) {
+                // error writing file
+                app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+                // delete the spectrogram object
+                delete pSpectrogram;
+                return Exit(PROCESS_ERROR);
+            }
         }
         bAliased = pSpectrogram->IsAliased();
         delete pSpectrogram; // delete the spectrogram object
