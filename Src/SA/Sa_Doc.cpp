@@ -7511,7 +7511,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			// build the field
 			if (settings.bReference) {
 				entry.field = Lift13::field(L"field", L"Reference");
-				entry.field[0].form = Lift13::form(L"form", settings.reference.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[REFERENCE])));
+				entry.field[0].form = Lift13::form(L"form", settings.reference.c_str(), Lift13::text(LTEXT, results[REFERENCE]));
 			}
 
 			// build the sense field

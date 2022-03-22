@@ -150,7 +150,9 @@ public:
 		return true;
     }
 
+    // elements
     zero_more<span> zmspan;
+    // data
     wstring pcdata;
 };
 
