@@ -7517,16 +7517,17 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			// build the sense field
 			if (settings.bGloss || settings.bGlossNat) {
 				entry.sense = Lift13::sense(L"sense", createUUID().c_str(), i);
+				// For Gloss, the <text> elements will be created without <span>
 				if (settings.bGloss) {
-					// Gloss
-					entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.gloss.c_str(), Lift13::span(SPAN, results[GLOSS]));
+					// Gloss English - don't write <span>
+					entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.gloss.c_str(), results[GLOSS]);
 					if (settings.bGlossNat) {
 						// Gloss and Gloss National
-						entry.sense[0].gloss.append(Lift13::gloss(L"gloss", settings.glossNat.c_str(), Lift13::span(SPAN, results[GLOSS_NAT])));
+						entry.sense[0].gloss.append(Lift13::gloss(L"gloss", settings.glossNat.c_str(), results[GLOSS_NAT]));
 					}
 				} else if (settings.bGlossNat) {
 					// Gloss National but not Gloss
-					entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.glossNat.c_str(), Lift13::span(SPAN, results[GLOSS_NAT]));
+					entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.glossNat.c_str(), results[GLOSS_NAT]);
 				}
 			}
 		}
