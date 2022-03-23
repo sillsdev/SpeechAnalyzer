@@ -719,7 +719,7 @@ public:
         trait(L"trait") {
     };
 
-    gloss(LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) : //text _text) : //LPCTSTR _lang, LPCTSTR _data) :
+    gloss(LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) :
         form(_name, _lang, Lift13::text(LTEXT, _data)),
         trait(L"trait") {
     };
