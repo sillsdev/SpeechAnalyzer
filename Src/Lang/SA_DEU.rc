@@ -5976,6 +5976,7 @@ BEGIN
     IDS_MC_CHANNEL_RIGHT    "Channel %1 (Right)"
     IDS_NO_CHOICE           "Select Export Type..."
     IDS_ROWS                "Rows"
+    IDS_ROWS_CSV            "Rows (Comma-Separated Values)"
     IDS_INTERLINEAR         "Interlinear"
     IDS_MULTIRECORD         "Multi-Record"
     IDS_COLUMNAR            "Columnar"

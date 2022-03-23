@@ -44,6 +44,7 @@ protected:
 
     CSaString m_szFileName;
     CSaString m_szDocTitle;
+    CSaString m_szSeparator;
     enum { IDD = IDD_EXPORT_SFM };
     BOOL m_bAllSource;
     BOOL m_bBandwidth;

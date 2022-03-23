@@ -141,18 +141,21 @@ BOOL CDlgExportSFM::OnInitDialog() {
     CString choice2;
     CString choice3;
     CString choice4;
+    CString choice5;
 
     noChoice.LoadStringW(IDS_NO_CHOICE);
     choice1.LoadStringW(IDS_ROWS);
-    choice2.LoadStringW(IDS_COLUMNAR);
-    choice3.LoadStringW(IDS_INTERLINEAR);
-    choice4.LoadStringW(IDS_MULTIRECORD);
+    choice2.LoadStringW(IDS_ROWS_CSV);
+    choice3.LoadStringW(IDS_COLUMNAR);
+    choice4.LoadStringW(IDS_INTERLINEAR);
+    choice5.LoadStringW(IDS_MULTIRECORD);
 
     m_ctlExportType.AddString(noChoice);
     m_ctlExportType.AddString(choice1);
     m_ctlExportType.AddString(choice2);
     m_ctlExportType.AddString(choice3);
     m_ctlExportType.AddString(choice4);
+    m_ctlExportType.AddString(choice5);
 
     m_btnOK.EnableWindow(FALSE);
 
@@ -255,17 +258,19 @@ void CDlgExportSFM::OnOK() {
         m_bLanguage = m_bDialect = m_bSpeaker = m_bGender = m_bEthnologue = m_bFamily = m_bRegion = m_bNotebookRef =
                 m_bTranscriber = m_bComments = m_bCountry = TRUE;
 
+    m_szSeparator = (m_nExportFormat != 2) ? L" " : L",";
     switch (m_nExportFormat) {
     case 1:
+    case 2:
         ExportDefault();
         break;
-    case 2:
+    case 3:
         ExportColumnar();
         break;
-    case 3:
+    case 4:
         ExportInterlinear();
         break;
-    case 4:
+    case 5:
         ExportMultiRecord();
         break;
     }
@@ -302,7 +307,7 @@ void CDlgExportSFM::ExportDefault() {
             }
             if (bBreak) {
                 for (int nLoop = PHONETIC; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-                    szAnnotation[nLoop] += " ";
+                    szAnnotation[nLoop] += m_szSeparator;
                 }
                 szPOS +=" ";
             }
@@ -327,38 +332,38 @@ void CDlgExportSFM::ExportDefault() {
         }
         // write out results
         if (m_bReference) { // \ref  Reference
-            szString = "\\ref " + szAnnotation[REFERENCE] + szCrLf;
+            szString = "\\ref" + m_szSeparator + szAnnotation[REFERENCE] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bPhonetic) { // \ph   Phonetic text
-            szString = "\\ph  " + szAnnotation[PHONETIC] + szCrLf;
+            szString = "\\ph" + m_szSeparator + szAnnotation[PHONETIC] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bTone) { // \tn   Tone
-            szString = "\\tn  " + szAnnotation[TONE] + szCrLf;
+            szString = "\\tn" + m_szSeparator + szAnnotation[TONE] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bPhonemic) { // \pm   Phonemic text
-            szString = "\\pm  " + szAnnotation[PHONEMIC] + szCrLf;
+            szString = "\\pm" + m_szSeparator + szAnnotation[PHONEMIC] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bOrtho) { // \or   Orthographic
-            szString = "\\or  " + szAnnotation[ORTHO] + szCrLf;
+            szString = "\\or" + m_szSeparator + szAnnotation[ORTHO] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bGloss) { // \gl   Gloss
-            szString = "\\gl  " + szAnnotation[GLOSS] + szCrLf;
+            szString = "\\gl" + m_szSeparator + szAnnotation[GLOSS] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bGlossNat) { // \gn   Gloss National
-            szString = "\\gn  " + szAnnotation[GLOSS_NAT] + szCrLf;
+            szString = "\\gn" + m_szSeparator + szAnnotation[GLOSS_NAT] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
     }
 
     for (int nPhrase = MUSIC_PL1; nPhrase <= MUSIC_PL4; nPhrase++) {
 
-        szString.Format(_T("\\phr%d "), nPhrase - MUSIC_PL1 + 1);
+        szString.Format(_T("\\phr%d"), nPhrase - MUSIC_PL1 + 1);
         CSaString szPhrase;
         if ((m_bPhrase) && (!pDoc->GetSegment(nPhrase)->IsEmpty())) {
             int nNumber = 0;
@@ -370,7 +375,7 @@ void CDlgExportSFM::ExportDefault() {
         }
         if (m_bPhrase) { // \phr1-\phr3  Phrase Level
             szPhrase.TrimRight();
-            szString = szString + szPhrase + szCrLf;
+            szString = szString + m_szSeparator + szPhrase + szCrLf;
             WriteFileUtf8(&file, szString);
         }
     }
@@ -941,18 +946,19 @@ EAnnotation CDlgExportSFM::GetAnnotation(int val) {
 void CDlgExportSFM::ExportFile(CSaDoc * pDoc, CFile & file) {
 
     CSaString szString;
+    CSaString szSeparator = (m_nExportFormat != 2) ? L" " : L",";
 
     // \name write filename
-    szString = "\\name " + m_szFileName + szCrLf;
+    szString = "\\name" + szSeparator + m_szFileName + szCrLf;
     WriteFileUtf8(&file, szString);
 
     // \date write current time
     CTime time = CTime::GetCurrentTime();
-    szString = "\\date " + time.Format("%A, %B %d, %Y, %X") + "\r\n";
+    szString = "\\date" + szSeparator + time.Format("%A, %B %d, %Y, %X") + "\r\n";
     WriteFileUtf8(&file, szString);
 
     if (m_bFileName) { // \wav  Audio FileName
-        szString = "\\wav " + pDoc->GetPathName() + szCrLf;
+        szString = "\\wav" + szSeparator + pDoc->GetPathName() + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 }
@@ -962,8 +968,9 @@ void CDlgExportSFM::ExportCounts(CSaDoc * pDoc, CFile & file) {
     WriteFileUtf8(&file, szCrLf);
 
     CSaString szString;
+
     if (m_bFree) { // \ft   Free Translation
-        szString = "\\ft " + pDoc->GetSourceParm()->szFreeTranslation + szCrLf;
+        szString = "\\ft" + m_szSeparator + pDoc->GetSourceParm()->szFreeTranslation + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bPhones) { // \np   Number of Phones
@@ -982,13 +989,13 @@ void CDlgExportSFM::ExportCounts(CSaDoc * pDoc, CFile & file) {
         }
         swprintf_s(szString.GetBuffer(25),25,_T("%u"), nLoop);
         szString.ReleaseBuffer();
-        szString = "\\np " +  szString + szCrLf;
+        szString = "\\np" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bWords) { // \nw   Number of Words
         swprintf_s(szString.GetBuffer(25),25,_T("%u"), ((CTextSegment *)pDoc->GetSegment(GLOSS))->CountWords());
         szString.ReleaseBuffer();
-        szString = "\\nw " +  szString + szCrLf;
+        szString = "\\nw" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 }
@@ -1001,23 +1008,23 @@ void CDlgExportSFM::ExportAllFileInformation(CSaDoc * pDoc, CFile & file) {
     CFileStatus * pFileStatus = pDoc->GetFileStatus();
     if (pFileStatus->m_szFullName[0] != 0) { // file name is defined
         if (m_bOriginalDate) { // \ct   Creation Time
-            szString = "\\ct " + pFileStatus->m_ctime.Format("%A, %B %d, %Y, %X") + szCrLf;
+            szString = "\\ct" + m_szSeparator + pFileStatus->m_ctime.Format("%A, %B %d, %Y, %X") + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bLastModified) { // \le  Last Edit
-            szString = "\\le " + pFileStatus->m_mtime.Format("%A, %B %d, %Y, %X") + szCrLf;
+            szString = "\\le" + m_szSeparator + pFileStatus->m_mtime.Format("%A, %B %d, %Y, %X") + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bFileSize) { // \size File size in bytes
             swprintf_s(szString.GetBuffer(25),25,_T("%lld Bytes"),pFileStatus->m_size);
             szString.ReleaseBuffer();
-            szString = "\\size " +  szString + szCrLf;
+            szString = "\\size" + m_szSeparator +  szString + szCrLf;
             WriteFileUtf8(&file, szString);
         }
         if (m_bOriginalFormat) { // \of   Original Format
             if (pDoc->IsValidRecordFileFormat()) {
                 szString.LoadString((UINT)pDoc->GetRecordFileFormat() + IDS_FILETYPE_UTT);
-                szString = "\\of " + szString + szCrLf;
+                szString = "\\of" + m_szSeparator + szString + szCrLf;
                 WriteFileUtf8(&file, szString);
             }
         }
@@ -1034,7 +1041,7 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file) {
     if (m_bNumberSamples) { // \samp Number of Samples
         swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetNumSamples());
         szString.ReleaseBuffer();
-        szString = "\\samp " +  szString + szCrLf;
+        szString = "\\samp" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bLength) { // \len  Length
@@ -1049,36 +1056,36 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file) {
             swprintf_s(szString.GetBuffer(25),25,_T("%i:%5.3f (Min:Sec)"), nMinutes, fDataSec);
         }
         szString.ReleaseBuffer();
-        szString = "\\len " +  szString + szCrLf;
+        szString = "\\len" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bSampleRate) { // \freq Sampling Frequency
         swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSamplesPerSec());
         szString.ReleaseBuffer();
-        szString = "\\freq " +  szString + szCrLf;
+        szString = "\\freq" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bBandwidth) { // \bw   Bandwidth
         swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetRecordBandWidth());
         szString.ReleaseBuffer();
-        szString = "\\bw " +  szString + szCrLf;
+        szString = "\\bw" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bHighPass) { // \hpf  HighPass Filter
         szString = pDoc->IsUsingHighPassFilter() ? "Yes":"No";
-        szString = "\\hpf " +  szString + szCrLf;
+        szString = "\\hpf" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bBits) { // \bits Storage Format
         swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetBitsPerSample());
         szString.ReleaseBuffer();
-        szString = "\\bits " +  szString + szCrLf;
+        szString = "\\bits" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bQuantization) { // \size Quantization Size
         swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pDoc->GetRecordSampleSize());
         szString.ReleaseBuffer();
-        szString = "\\qsize " +  szString + szCrLf;
+        szString = "\\qsize" + m_szSeparator +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 }
@@ -1090,32 +1097,32 @@ void CDlgExportSFM::ExportAllSource(CSaDoc * pDoc, CFile & file) {
     CSaString szString;
 
     if (m_bLanguage) { // \ln   Language Name
-        szString = "\\ln " + pDoc->GetSourceParm()->szLanguage + szCrLf;
+        szString = "\\ln" + m_szSeparator + pDoc->GetSourceParm()->szLanguage + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 
     if (m_bDialect) { // \dlct Dialect
-        szString = "\\dlct " + pDoc->GetSourceParm()->szDialect + szCrLf;
+        szString = "\\dlct" + m_szSeparator + pDoc->GetSourceParm()->szDialect + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bFamily) { // \fam  Family
-        szString = "\\fam " + pDoc->GetSourceParm()->szFamily + szCrLf;
+        szString = "\\fam" + m_szSeparator + pDoc->GetSourceParm()->szFamily + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bEthnologue) { // \id   Ethnologue ID number
-        szString = "\\id " + pDoc->GetSourceParm()->szEthnoID + szCrLf;
+        szString = "\\id" + m_szSeparator + pDoc->GetSourceParm()->szEthnoID + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bCountry) { // \cnt  Country
-        szString = "\\cnt " + pDoc->GetSourceParm()->szCountry + szCrLf;
+        szString = "\\cnt" + m_szSeparator + pDoc->GetSourceParm()->szCountry + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bRegion) { // \reg  Region
-        szString = "\\reg " + pDoc->GetSourceParm()->szRegion + szCrLf;
+        szString = "\\reg" + m_szSeparator + pDoc->GetSourceParm()->szRegion + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bSpeaker) { // \spkr Speaker Name
-        szString = "\\spkr " + pDoc->GetSourceParm()->szSpeaker + szCrLf;
+        szString = "\\spkr" + m_szSeparator + pDoc->GetSourceParm()->szSpeaker + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bGender) { // \gen  Gender
@@ -1133,19 +1140,19 @@ void CDlgExportSFM::ExportAllSource(CSaDoc * pDoc, CFile & file) {
             szString = "";
             break;
         }
-        szString = "\\gen " + szString + szCrLf;
+        szString = "\\gen" + m_szSeparator + szString + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bNotebookRef) { // \nbr  Notebook Reference
-        szString = "\\nbr " + pDoc->GetSourceParm()->szReference + szCrLf;
+        szString = "\\nbr" + m_szSeparator + pDoc->GetSourceParm()->szReference + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bTranscriber) { // \tr   Transcriber
-        szString = "\\tr " + pDoc->GetSourceParm()->szTranscriber + szCrLf;
+        szString = "\\tr" + m_szSeparator + pDoc->GetSourceParm()->szTranscriber + szCrLf;
         WriteFileUtf8(&file, szString);
     }
     if (m_bComments) { // \desc Description
-        szString = "\\desc " + pDoc->GetDescription() + szCrLf;
+        szString = "\\desc" + m_szSeparator + pDoc->GetDescription() + szCrLf;
         WriteFileUtf8(&file, szString);
     }
 }
