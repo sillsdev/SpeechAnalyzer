@@ -85,6 +85,11 @@ export class iso639Type {
 // End of parameters
 ////////////////////////////////////////////////////////////////////
 
+// Utility to determine if a language tag is for a Sign Language
+function isSignLanguage(l: any) : boolean {
+  return l?.script == 'Zxxx' || l?.name.endsWith('Sign Language');
+}
+
 function loadLangtagsJson() : any {
   const langTagsFile = "langtags.json";
 
@@ -103,7 +108,8 @@ let langtagsJson = loadLangtagsJson();
 
 let langtags : iso639Type[] = [];
 langtagsJson.forEach(l => {
-  if (l.full && l.full != 'x-bad-mru-Cyrl-RU') {
+  // Skip _tags, sign languages, and invalid tags
+  if (!l?.tag.startsWith('_') && !isSignLanguage(l) && l?.full != 'x-bad-mru-Cyrl-RU') {
     let langtag: iso639Type = new iso639Type(l);
     langtags.push(langtag);
   }
