@@ -38,7 +38,7 @@ Download and install Git
 https://git-scm.com/downloads
 
 ### Install Node.js and Dependencies
-Download and install the latest current version for Node.js (>=14.15.0)
+Download and install the latest current version for Node.js (>=16.14.2)
 
 https://nodejs.org/en/download/current/
 
@@ -74,5 +74,5 @@ Edit your applicable parameters in [launch.json](./.vscode/launch.json). If usin
 -------------
 
 ## License for parse-langtags
-Copyright (c) 2021 SIL International. All rights reserved.
+Copyright (c) 2021-2022 SIL International. All rights reserved.
 Licensed under the [MIT license](LICENSE).

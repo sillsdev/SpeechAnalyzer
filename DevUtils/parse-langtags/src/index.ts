@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-// Copyright 2021 SIL International
-import * as program from 'commander';
+// Copyright 2021-2022 SIL International
+import {Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 const {version} = require('../package.json');
+const program = new Command();
 
 ////////////////////////////////////////////////////////////////////
 // Get parameters
