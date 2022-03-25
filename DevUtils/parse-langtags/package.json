@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/sillsdev/SpeechAnalyzer#readme",
   "dependencies": {
+    "ajv": "^8.11.0",
     "commander": "^9.1.0",
     "path": "^0.12.7"
   },

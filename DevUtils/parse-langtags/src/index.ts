@@ -3,6 +3,8 @@
 import {Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
+const Ajv = require('ajv');
+import {ErrorObject} from 'ajv';
 const {version} = require('../package.json');
 const program = new Command();
 
@@ -87,10 +89,14 @@ export class iso639Type {
 
 // Utility to determine if a language tag is for a Sign Language
 function isSignLanguage(l: any) : boolean {
+  if (!l.full) {
+    console.info(l.name + ' does not have full tag. Tag is ' + l.tag);
+  }
   return l!.script == 'Zxxx' || l!.name.endsWith('Sign Language');
 }
 
-function loadLangtagsJson() : any {
+// Load langtags.json
+function loadLangtagsJson() : any[] {
   const langTagsFile = "langtags.json";
 
   // Check if langtags.json file exists
@@ -104,7 +110,24 @@ function loadLangtagsJson() : any {
   return langtagsJson;
 }
 
+// Validate langtags.json file
+function validateLangtagsJson(langtagsJson : any[]) : boolean {
+  const langTagsSchemaFile = "langtags.schema.json";
+
+  // Validate langtags.json
+  let ajv = new Ajv({strict: false});
+  let validate = ajv.compile(JSON.parse(fs.readFileSync(langTagsSchemaFile).toString()));
+  let valid = validate(langtagsJson);
+
+  if(!valid) {
+    console.log(validate.errors);
+  }
+
+  return valid;
+}
+
 let langtagsJson = loadLangtagsJson();
+let valid = validateLangtagsJson(langtagsJson);
 
 let langtags : iso639Type[] = [];
 langtagsJson.forEach(l => {
