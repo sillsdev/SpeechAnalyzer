@@ -220,8 +220,7 @@ ajg|ajg|ajg|Aja|Ajagbe
 aji|aji|aji|Ajië|
 ajn|ajn|ajn|Andajin|
 ajp|ajp|ajp|Arabic, South Levantine Spoken|
-ajt|ajt|ajt|Arabic, Judeo-Tunisian|
-ajt|ajt|ajt-Hebr|Arabic, Judeo-Tunisian (Hebr script)|
+ajt|ajt|ajt-Hebr|Judeo-Tunisian Arabic (Hebr script)|
 aju|aju|aju-Arab|Arabic, Judeo-Moroccan (Arab script)|
 ajw|ajw|ajw|Ajawa|
 ajz|ajz|ajz|Amri Karbi|
@@ -742,8 +741,6 @@ bfe|bfe|bfe|Betaf|
 bff|bff|bff|Bofi|
 bfg|bfg|bfg|Kayan, Busang|
 bfh|bfh|bfh|Blafe|
-bfi|bfi|bfi|British Sign Language|
-bfi|bfi|bfi-x-stokoe|British Sign Language (x-stokoe)|
 bfj|bfj|bfj|Bafanji|
 bfl|bfl|bfl|Banda-Ndélé|
 bfm|bfm|bfm|Mmen|
@@ -1979,7 +1976,6 @@ dsn|dsn|dsn|Dusner|
 dso|dso|dso|Desiya|
 dsq|dsq|dsq|Tadaksahak|
 dsq|dsq|dsq-Arab|Tadaksahak (Arab script)|
-dsq|dsq|dsq-Latn|Tadaksahak (Latn script)|
 dta|dta|dta|Daur|
 dta|dta|dta-Cyrl|Daur (Cyrl script)|
 dta|dta|dta-Hans|Daur (Hans script)|
@@ -3609,8 +3605,7 @@ kgb|kgb|kgb|Kawe|
 kge|kge|kge|Komering|
 kgf|kgf|kgf|Kube|
 kgg|kgg|kgg|Kusunda|
-kgi|kgi|kgi|Selangor Sign Language|
-kgj|kgj|kgj|Kham, Gamale|
+kgj|kgj|kgj|Kham, Gamal|
 kgk|kgk|kgk|Kaiwá|
 kgl|kgl|kgl|Kunggari|
 kgm|kgm|kgm|Karipúna|
@@ -4483,7 +4478,6 @@ lrt|lrt|lrt|Malay, Larantuka|
 lrv|lrv|lrv|Larevat|
 lrz|lrz|lrz|Lemerig|
 lsa|lsa|lsa|Lasgerdi|
-lsb|lsb|lsb|Burundian Sign Language|
 lsd|lsd|lsd|Lishana Deni|
 lse|lse|lse|Lusengo|
 lsh|lsh|lsh|Lish|
@@ -4491,9 +4485,6 @@ lsi|lsi|lsi|Lacid|
 lsm|lsm|lsm|Saamya-Gwe|
 lsr|lsr|lsr|Aruop|
 lss|lss|lss|Lasi|
-lst|lst|lst|Trinidad and Tobago Sign Language|
-lsv|lsv|lsv|Sivia Sign Language|
-lsy|lsy|lsy|Mauritian Sign Language|
 lit|lit|lt|Lithuanian|lietuvių
 lit|lit|lt-Latf|Lithuanian (Latf script)|
 ltc|ltc|ltc-Hans|Late Middle Chinese (Hans script)|
@@ -5250,8 +5241,7 @@ mzb|mzb|mzb-Latn|Tumzabt (Latn script)|
 mzb|mzb|mzb-Tfng|Tumzabt (Tfng script)|
 mzd|mzd|mzd|Malimba|
 mze|mze|mze|Morawa|
-mzg|mzg|mzg|Monastic Sign Language|
-mzh|mzh|mzh|Wichí Lhamtés Güisnay|
+mzh|mzh|mzh|Pilcomayo Wichí|
 mzi|mzi|mzi|Mazatec, Ixcatlán|
 mzj|mzj|mzj|Manya|
 mzk|mzk|mzk|Mambila, Nigeria|Ju Nɔri
@@ -5268,8 +5258,7 @@ mzu|mzu|mzu|Inapang|
 mzv|mzv|mzv|Mandja|
 mzw|mzw|mzw|Deg|
 mzx|mzx|mzx|Mawayana|
-mzy|mzy|mzy|Mozambican Sign Language|
-mzz|mzz|mzz|Maiadom|
+mzz|mzz|mzz|Maiadomu|
 nau|nau|na|Nauruan|
 naa|naa|naa|Namla|
 nab|nab|nab|Nambikuára, Southern|
@@ -5314,7 +5303,7 @@ nbo|nbo|nbo|Nkukoli|
 nbp|nbp|nbp|Nnam|
 nbq|nbq|nbq|Nggem|
 nbr|nbr|nbr|Numana|
-nbs|nbs|nbs|Namibian Sign Language|
+nbt|nbt|nbt|Na|
 nbt|nbt|nbt-Deva|Na (Deva script)|
 nbu|nbu|nbu|Naga, Rongmei|
 nbv|nbv|nbv|Ngamambo|
@@ -5339,7 +5328,7 @@ nco|nco|nco|Sibe|
 ncq|ncq|ncq|Katang, Northern|
 ncq|ncq|ncq-Thai|Katang, Northern (Thai script)|
 ncr|ncr|ncr|Nchane|
-ncs|ncs|ncs|Nicaraguan Sign Language|
+nct|nct|nct|Naga, Chothe|
 nct|nct|nct-Beng|Naga, Chothe (Beng script)|
 ncu|ncu|ncu|Chumburung|Kyo̱ŋbo̱ro̱ŋ-nɔ
 ncx|ncx|ncx|Nahuatl, Central Puebla|
@@ -6512,7 +6501,6 @@ rhg|rhg|rhg-Latn|Rohingya (Latn script)|
 rhg|rhg|rhg-Rohg|Rohingya (Rohg script)|
 rhp|rhp|rhp|Yahang|
 ria|ria|ria|Riang|
-rib|rib|rib|Bribri Sign Language|
 rie|rie|rie|Rien|
 rif|rif|rif|Tarifit|
 rif|rif|rif-Arab|Tarifit (Arab script)|
@@ -6562,7 +6550,6 @@ rmx|rmx|rmx|Romam|
 rmz|rmz|rmz|Marma|
 run|run|rn|Rundi|Ikirundi
 run|run|rn-Brai|Rundi (Brai script)|
-rnb|rnb|rnb|Brunca Sign Language|
 rnd|rnd|rnd|Ruund|
 rng|rng|rng|Ronga|
 rnl|rnl|rnl|Ranglong|
@@ -6597,9 +6584,7 @@ rri|rri|rri|Ririo|
 rro|rro|rro|Waima|
 rrt|rrt|rrt|Arritinngithigh|
 rsb|rsb|rsb|Romano-Serbian|
-rsi|rsi|rsi|Rennellese Sign Language|
-rsl|rsl|rsl|Russian Sign Language|
-rsm|rsm|rsm|Miriwoong Sign Language|
+||rsk|Ruthenian|
 rtc|rtc|rtc|Chin, Rungtu|
 rth|rth|rth|Ratahan|
 rtm|rtm|rtm|Rotuman|
@@ -6804,7 +6789,7 @@ sgb|sgb|sgb|Ayta, Mag-antsi|Ayta Mag-Antsi
 sgc|sgc|sgc|Kipsigis|
 sgd|sgd|sgd|Surigaonon|
 sge|sge|sge|Segai|
-sgg|sgg|sgg|Swiss-German Sign Language|
+sgh|sgh|sgh|Shughni|
 sgh|sgh|sgh-Arab|Shughni (Arab script)|
 sgh|sgh|sgh-Latn|Shughni (Latn script)|
 sgi|sgi|sgi|Nizaa|
@@ -7915,7 +7900,7 @@ uig|uig|ug-MN|Uyghur (Mongolia)|
 uga|uga|uga|Ugaritic|
 ugb|ugb|ugb|Kuku-Ugbanh|
 uge|uge|uge|Ughele|
-ugn|ugn|ugn|Ugandan Sign Language|
+ugh|ugh|ugh|Kubachi|
 ugo|ugo|ugo|Ugong|
 uha|uha|uha|Uhami|
 uhn|uhn|uhn|Damal|
