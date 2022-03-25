@@ -9,7 +9,8 @@
         {"$ref": "#/definitions/_globalvar"},
         {"$ref": "#/definitions/_phonvar"},
         {"$ref": "#/definitions/_version"}
-      ] }
+      ] },
+      "additionalItems": false
     },
 
     "langtag": {
@@ -131,6 +132,10 @@
     "_version": {
       "type": "object",
       "properties": {
+        "tag": {
+          "type": "string",
+          "const": "_version"
+        },
         "api": {
           "type": "string",
           "pattern": "^\\d+\\.\\d+\\.\\d+$"
@@ -138,13 +143,9 @@
         "date": {
           "type": "string",
           "pattern": "^\\d+-\\d+-\\d+$"
-        },
-        "tag": {
-          "type": "string",
-          "const": "_version"
         }
       },
-      "required": ["api", "date", "tag"],
+      "required": ["tag", "api", "date"],
       "additionalProperties": false
     },
 
