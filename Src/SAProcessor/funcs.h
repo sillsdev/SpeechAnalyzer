@@ -5,8 +5,6 @@
 #include <cctype>
 #include <locale>
 
-extern int round2Int(double value);
-
 extern bool compare_no_case(LPCTSTR, LPCTSTR);
 
 // convert UTF-8 string to wstring

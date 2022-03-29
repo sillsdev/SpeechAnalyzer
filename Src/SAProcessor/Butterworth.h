@@ -21,7 +21,6 @@ public:
     void ClearFilter();
     void SetReverse(BOOL bSet);
     double FilterFilterNorm(int nOrder) const;
-    static int round2Int(double value);
 
 private:
     enum FilterType {

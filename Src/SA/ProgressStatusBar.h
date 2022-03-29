@@ -10,22 +10,25 @@
 
 #include "sa_dlWnd.h"
 
-class CProgressStatusBar : public CStatusBar {
+class CProgressStatusBar : public CStatusBar  {
 
 public:
     CProgressStatusBar();
     virtual ~CProgressStatusBar();
 
-    void Init(); // initialisation
-    void SetProcessOwner(void * pProcess, void * pCaller, ProcessorType processorType = PROCESSDFLT); // save the process owner
-    CProcess * GetProcessOwner();   // return the process owner
-    void * GetProcessCaller();      // return the process caller
-    void InitProgress();            // initialisation of progress bar
-    void SetProgress(int nVal);     // set progress bar
-    int  GetProgress();             // get progress
+    // initialisation
+    void Init(); 
+    // save the process owner
+    virtual void SetProgressOwner(CProcess * pProcess, void * pCaller, ProcessorType processorType); 
+    virtual void ClearProgressOwner(CProcess * pProcess);
+    virtual CProcess * GetProgressOwner();   // return the process owner
+    void * GetProgressCaller();              // return the process caller
+    void InitProgress();                    // initialisation of progress bar
+    virtual void SetProgress( int nVal);     // set progress bar
+    int  GetProgress();                     // get progress
     BOOL SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate = TRUE);
     void GetItemRect(int nPaneID, LPRECT lpRect);
-    void SetIsPrintingFlag(BOOL isPrinting);
+    void SetIsPrintingFlag(bool isPrinting);
     virtual void DelayShow();
     BOOL InProcessMessageLoop() const;
 
@@ -36,10 +39,10 @@ protected:
 
 private:
     CFont * m_pFont;                // status bar font
-    CProcess * m_pProcessOwner;     // process owner
-    void * m_pProcessCaller;        // process caller
+    map<CProcess*, void*> callers;
+    list<CProcess*> owners;
     CProgressBar m_ProgressBar;     // progress bar object
-    BOOL m_bIsPrinting;
+    bool isPrinting;
     int m_nInMessageLoop;
 };
 

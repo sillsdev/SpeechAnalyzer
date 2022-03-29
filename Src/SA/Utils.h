@@ -3,4 +3,6 @@
 
 CString FormatGetLastError(DWORD err);
 
+void trace(const char*, ...);
+
 #endif

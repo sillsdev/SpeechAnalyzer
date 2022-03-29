@@ -58,8 +58,6 @@ public:
                           uint8 * MaxPwr);
     dspError_t Generate(void);
     dspError_t ReadPower(short * Power, uint16 SpgmX, uint16 SpgmY);
-    static dspError_t CalcPower(float * PowerInDb, float fFrequency, float fDspWinBandwidth, WindowType, SSigParms Signal, bool bPreEmphasis, float DbRef = 0.F);
-    static dspError_t CalcPower(float * PowerInDb, float Frequency, int32 nBandwidthSelect, WindowType, SSigParms Signal, bool bPreEmphasis);
     uint8 * ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX);
     dspError_t ReadFormants(SFormantFreq * Freq, uint16 SpgmX);
     CDspWin & GetWidebandWindow();
@@ -120,6 +118,9 @@ private:
     uint8 m_MaxPwr;
     uint8 m_Status;
 };
+
+extern dspError_t CalcPower(float* PowerInDb, float fFrequency, float fDspWinBandwidth, WindowType, SSigParms signal, bool bPreEmphasis, float DbRef = 0.F);
+extern dspError_t CalcPower(float* PowerInDb, float Frequency, int nBandwidthSelect, WindowType, SSigParms signal, bool bPreEmphasis);
 
 #endif
 

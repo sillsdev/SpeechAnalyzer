@@ -51,3 +51,5 @@ rfft2f
 ?FromBandwidth@CDspWin@@SA?AV1@NIH@Z
 ?CalcLength@CDspWin@@SAHNIH@Z
 ?CalcEquivalentLength@CDspWin@@SAHHHH@Z
+?CalcPower@@YAHPAMMHW4WindowType@@USSigParms@@_N@Z
+??0CDspWin@@QAE@HIH@Z

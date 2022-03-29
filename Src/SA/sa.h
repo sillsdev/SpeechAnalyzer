@@ -82,7 +82,7 @@ using std::wstring;
 //  };
 //};
 
-class CSaApp : public CWinApp, public App{
+class CSaApp : public CWinApp, public App {
 
 public:
     CSaApp();

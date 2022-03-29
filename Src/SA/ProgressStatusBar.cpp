@@ -35,17 +35,12 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 BEGIN_MESSAGE_MAP(CProgressStatusBar, CStatusBar)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CProgressStatusBar construction/destruction/creation
-
 /***************************************************************************/
 // CProgressStatusBar::CProgressStatusBar Constructor
 /***************************************************************************/
 CProgressStatusBar::CProgressStatusBar() {
-    m_pFont = NULL;
-    m_pProcessOwner = NULL;
-    m_pProcessCaller = NULL;
-    m_bIsPrinting = FALSE;
+	m_pFont = nullptr;
+    isPrinting = false;
     m_nInMessageLoop = 0;
 }
 
@@ -55,12 +50,9 @@ CProgressStatusBar::CProgressStatusBar() {
 CProgressStatusBar::~CProgressStatusBar() {
     if (m_pFont) {
         delete m_pFont;
-		m_pFont=NULL;
+        m_pFont = nullptr;
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CProgressStatusBar helper functions
 
 /***************************************************************************/
 // CProgressStatusBar::MessageLoop Do windows message loop
@@ -74,29 +66,24 @@ void CProgressStatusBar::MessageLoop() {
     static volatile DWORD dwTickLast = 0;
     // MS since system start
     DWORD dwThis = GetTickCount();
-
     if (dwThis - dwTickLast > 90) {
         // Update when timer has expired
         dwTickLast = dwThis; 
         MSG msg;
-
         m_nInMessageLoop++;
-
         // This is risky so only do it if the escape key is pressed
         if (GetAsyncKeyState(VK_ESCAPE) < 0) {
             while (::PeekMessage(&msg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE)) {
                 AfxGetApp()->PumpMessage();
             }
-
-            if (m_pProcessOwner) {
-              m_pProcessOwner->CancelProcess();
+            if (!owners.empty()) {
+              owners.front()->CancelProcess();
             }
             return;
         }
         // let MFC do its idle processing
         LONG lIdle = 0L;
         while (AfxGetApp()->OnIdle(lIdle++));
-
         m_nInMessageLoop--;
     }
 }
@@ -138,14 +125,12 @@ void CProgressStatusBar::Init() {
 /***************************************************************************/
 // CProgressStatusBar::SetProcessOwner Set the owner of the process
 /***************************************************************************/
-void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, ProcessorType processorType) {
-
-    m_pProcessOwner = (CProcess *)pProcess;
-    m_pProcessCaller = pCaller;
-
+void CProgressStatusBar::SetProgressOwner(CProcess * pProcess, void * pCaller, ProcessorType processorType) {
+    owners.push_front(pProcess);
+    callers[pProcess] = pCaller;
     if (GetSafeHwnd()) {
         CString szText;
-        int nID = m_pProcessOwner->GetProcessorText(processorType);
+        int nID = pProcess->GetProcessorText(processorType);
         if (nID >= 0) {
             // display the given text
             szText.LoadString(nID);
@@ -156,6 +141,14 @@ void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, Proces
             SetPaneText(ID_PROGRESSPANE_LEFTTEXT, szText);
         }
     }
+}
+
+/***************************************************************************/
+// CProgressStatusBar::ClearProcessOwner clears the owner and caller
+/***************************************************************************/
+void CProgressStatusBar::ClearProgressOwner(CProcess * pProcess) {
+    owners.remove(pProcess);
+    callers.erase(pProcess);
 }
 
 /***************************************************************************/
@@ -177,10 +170,11 @@ void CProgressStatusBar::InitProgress() {
 // calls the windows message loop processing to allow MFC message processing
 // and it sets the progress bar to the new value.
 /***************************************************************************/
-void CProgressStatusBar::SetProgress(int nVal) {
-    if (m_ProgressBar.GetProgress() != nVal) {
-        // set the progress bar
-        m_ProgressBar.SetProgress(nVal);
+void CProgressStatusBar::SetProgress( int nVal) {
+    
+    // only update for the current owner
+   if (m_ProgressBar.GetProgress() != nVal) {
+       m_ProgressBar.SetProgress(nVal);
     }
 
     // every 100 ms check the message loop
@@ -243,11 +237,6 @@ void CProgressStatusBar::GetItemRect(int nPaneID, LPRECT lpRect) {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CProgressStatusBar message handlers
-
-
-
-/////////////////////////////////////////////////////////////////////////////
 // CProgressStatusBar::DelayShow() - this is disabled because the only code
 // the uses it is the MFC code for print preview which gets confused because
 // we have two status bars and so it ends up displaying both in preview and
@@ -257,20 +246,22 @@ void CProgressStatusBar::DelayShow() {
     // do nothing.
 }
 
-CProcess * CProgressStatusBar::GetProcessOwner() {
-    return m_pProcessOwner;   // return the process owner
+CProcess * CProgressStatusBar::GetProgressOwner() {
+    // return the process owner
+    return (owners.empty())?nullptr:owners.front();   
 }
 
-void * CProgressStatusBar::GetProcessCaller() {
-    return m_pProcessCaller;   // return the process caller
+void * CProgressStatusBar::GetProgressCaller() {
+    // return the process caller
+    return (owners.empty()) ? nullptr : callers[owners.front()];
 }
 
 int  CProgressStatusBar::GetProgress() {
     return m_ProgressBar.GetProgress();   // get progress
 }
 
-void CProgressStatusBar::SetIsPrintingFlag(BOOL isPrinting) {
-    m_bIsPrinting = isPrinting;
+void CProgressStatusBar::SetIsPrintingFlag(bool isPrinting) {
+    isPrinting = isPrinting;
 }
 
 BOOL CProgressStatusBar::InProcessMessageLoop() const {

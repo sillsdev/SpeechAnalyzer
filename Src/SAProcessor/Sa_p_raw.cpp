@@ -27,7 +27,6 @@ long CProcessRaw::Process(void * pCaller, int nProgress, int nLevel) {
 		// data is already ready
         return MAKELONG(--nLevel, nProgress);    
     }
-    //TRACE(_T("Process: CProcessRaw\n"));
     CScopedCursor cursor(target);
     if (!StartProcess(pCaller, PROCESSRAW)) { 
 		// memory allocation failed

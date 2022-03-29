@@ -438,7 +438,7 @@ UINT CMainFrame::GetVisibleMenuItemCount(CMenu * pMenu) {
 /***************************************************************************/
 // CMainFrame::ShowDataStatusBar Show or hide data status bar
 /***************************************************************************/
-void CMainFrame::ShowDataStatusBar(BOOL bShow) {
+void CMainFrame::ShowDataStatusBar(bool bShow) {
 	// status bar is on
     if (m_bStatusBar) { 
         if (bShow) {
@@ -1565,7 +1565,7 @@ void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent) {
 
     if (MDIGetActive(&bMaximized)) {
         m_bDefaultMaximizeView = bMaximized;
-        WINDOWPLACEMENT WP;
+        WINDOWPLACEMENT WP = {};
         WP.length = sizeof(WINDOWPLACEMENT);
         if (MDIGetActive()->GetWindowPlacement(&WP)) {
             // SDM 32 bit conversion
@@ -2006,7 +2006,7 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
     //SDM 1.06.6U5 if there is an active child save its maximized state and normal size as the defaults
     if (MDIGetActive(&bMaximized)) {
         m_bDefaultMaximizeView = bMaximized;
-        WINDOWPLACEMENT WP;
+        WINDOWPLACEMENT WP = {};
         WP.length = sizeof(WINDOWPLACEMENT);
 		// SDM 32bit conversion
         if (MDIGetActive()->GetWindowPlacement(&WP)) { 
@@ -2875,4 +2875,17 @@ LRESULT CMainFrame::OnUpdatePlayer(WPARAM wParam, LPARAM /*lParam*/) {
         }
     }
     return 0;
+}
+
+CProcess* CMainFrame::GetProgressOwner() {
+    return m_progressStatusBar.GetProgressOwner();
+}
+void CMainFrame::SetProgress( int percent) {
+    m_progressStatusBar.SetProgress( percent);
+}
+void CMainFrame::SetProgressOwner(CProcess * pProcess, void * pCaller, ProcessorType processorType) {
+    m_progressStatusBar.SetProgressOwner(pProcess, pCaller, processorType);
+}
+void CMainFrame::ClearProgressOwner(CProcess*pProcess) {
+    m_progressStatusBar.ClearProgressOwner(pProcess);
 }

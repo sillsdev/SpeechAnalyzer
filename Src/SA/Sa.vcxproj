@@ -539,6 +539,9 @@
     <ClInclude Include="WaveWarp.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SAProcessor\SAProcessor.vcxproj">
+      <Project>{bae36fb6-b897-4a12-b3a9-17794485cd9d}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\SA_DSP\SA_DSP.vcxproj">
       <Project>{bb3f670e-28af-42ce-9c9f-de267d3cb986}</Project>
     </ProjectReference>

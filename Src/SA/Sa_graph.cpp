@@ -1015,7 +1015,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     DWORD dwFrameStart = dwWaveOffset - dwHalfFrameSize;
                     Signal.Start = context.model.GetWaveData(dwFrameStart, bBlockBegin);
                     Signal.SmpDataFmt = (nSmpSize == 1) ? (int8)PCM_UBYTE: (int8)PCM_2SSHORT;
-                    CSpectrogram::CalcPower(&fPowerInDb, fFreq, pSpectroParm->nResolution, context.app.GetResearchSettings().window.type, Signal, bPreEmphasis);
+                    CalcPower(&fPowerInDb, fFreq, pSpectroParm->nResolution, context.app.GetResearchSettings().window.type, Signal, bPreEmphasis);
 
                     swprintf_s(szText,_countof(szText), _T("%7.1f Hz"), fFreq);
                     pStat->SetPaneSymbol(ID_STATUSPANE_3, FALSE);

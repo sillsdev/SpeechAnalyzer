@@ -34,7 +34,6 @@ private:
     };
 
     void SetFilterFilter(bool bSet);
-    static int round2Int(double value);
     int ReadSourceData(DWORD dwDataPos, int wSmpSize);
     long ProcessForward(IProcess * pLowerProcess, int & nProgress, int & nLevel);
     long ProcessReverse(void * pCaller, int & nProgress, int & nLevel);

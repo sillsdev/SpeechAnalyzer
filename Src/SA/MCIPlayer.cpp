@@ -11,7 +11,7 @@ void CMCIPlayer::Play( CString path, HWND hWnd) {
 		return;
 	}
 
-	wsprintf(command, L"open \"%s\" type mpegvideo alias audio", path);
+	wsprintf(command, L"open \"%s\" type mpegvideo alias audio", path.GetString());
 	TRACE(L"command: %s\n", command);
 	MCIERROR me = mciSendString(command, response, 1024, 0);
 	if (me != 0) {

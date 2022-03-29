@@ -64,6 +64,8 @@ typedef char* BPTR;
 
 extern void trace(LPCSTR,...);
 
+extern int round2Int(double);
+
 #include "sap_defs.h"
 #include "resource.h"
 #include "context.h"

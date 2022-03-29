@@ -1366,25 +1366,25 @@ dspError_t CSpectrogram::GetFormants(SFormantFreq * fmnt) {
     return(DONE);
 }
 
-dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float DspWinBandwidth, WindowType windowType, SSigParms Signal, bool bPreEmphasis, float DbRef) {
+dspError_t CalcPower(float * PowerInDb, float Frequency, float DspWinBandwidth, WindowType windowType, SSigParms signal, bool bPreEmphasis, float DbRef) {
     // Calculate window for frame data from specified bandwidth.
-    CDspWin Window = CDspWin::FromBandwidth(DspWinBandwidth,Signal.SmpRate, windowType);
+    CDspWin Window = CDspWin::FromBandwidth(DspWinBandwidth,signal.SmpRate, windowType);
     const float * WData = Window.WindowFloat();
 
     double FrameSample;  //!!double
-    double RadianAngle = 2.*PI*(double)Frequency/(double)Signal.SmpRate;
+    double RadianAngle = 2.*PI*(double)Frequency/(double)signal.SmpRate;
     double CosTransform = 0., SinTransform = 0.;
     int32 n;
 
     //!!frame length less than window length?
     //!!doesnt average across pixels
 
-    switch (Signal.SmpDataFmt) {
+    switch (signal.SmpDataFmt) {
     case PCM_UBYTE:
-        CosTransform = (double)((short)(((uint8 *)Signal.Start)[0] - 128))*WData[0];
+        CosTransform = (double)((short)(((uint8 *)signal.Start)[0] - 128))*WData[0];
         for (n = 1; n < Window.Length(); n++) {
-            FrameSample = (double)((short)(((uint8 *)Signal.Start)[n] - 128) -
-                                   bPreEmphasis*((short)(((uint8 *)Signal.Start)[n-1] - 128)))*
+            FrameSample = (double)((short)(((uint8 *)signal.Start)[n] - 128) -
+                                   bPreEmphasis*((short)(((uint8 *)signal.Start)[n-1] - 128)))*
                           WData[n];  //!!check
 
             CosTransform += FrameSample * cos(RadianAngle*n);
@@ -1393,9 +1393,9 @@ dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float Dsp
 
         break;
     case PCM_2SSHORT:
-        CosTransform = (double)((short *)Signal.Start)[0]*WData[0];
+        CosTransform = (double)((short *)signal.Start)[0]*WData[0];
         for (n = 1; n < Window.Length(); n++) {
-            FrameSample = (double)(((short *)Signal.Start)[n] - bPreEmphasis*((short *)Signal.Start)[n-1])*
+            FrameSample = (double)(((short *)signal.Start)[n] - bPreEmphasis*((short *)signal.Start)[n-1])*
                           WData[n];
             CosTransform += FrameSample * cos(RadianAngle*n);
             SinTransform += FrameSample * sin(RadianAngle*n);
@@ -1408,7 +1408,7 @@ dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float Dsp
     return(DONE);
 }
 
-dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, int32 BandwidthSelect, WindowType windowType, SSigParms Signal, bool bPreEmphasis) {
+dspError_t CalcPower(float * PowerInDb, float Frequency, int BandwidthSelect, WindowType windowType, SSigParms signal, bool bPreEmphasis) {
     // dB reference values determined empirically from 215.332 Hz sine wave (20th harmonic of 2048 FFT at 22050 Hz sampling rate)
     // at 70.7% full scale using waveform generator.
     static const double DbRef[2][3][3] = { // pre-emphasis off
@@ -1424,7 +1424,7 @@ dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, int32 Ban
         0., 24.5982, 72.8105
     };  // wideband
     float Bandwidth[] = {NARROW_BW, MEDIUM_BW, WIDE_BW};
-    dspError_t dspError_t = CalcPower(PowerInDb, Frequency, Bandwidth[BandwidthSelect], windowType, Signal, bPreEmphasis, (float) DbRef[bPreEmphasis][BandwidthSelect][abs(Signal.SmpDataFmt)]);
+    dspError_t dspError_t = CalcPower(PowerInDb, Frequency, Bandwidth[BandwidthSelect], windowType, signal, bPreEmphasis, (float) DbRef[bPreEmphasis][BandwidthSelect][abs(signal.SmpDataFmt)]);
     return dspError_t;
 }
 

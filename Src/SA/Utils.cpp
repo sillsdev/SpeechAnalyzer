@@ -6,7 +6,6 @@
 * function to format GetLastError codes
 */
 CString FormatGetLastError(DWORD err) {
-
     LPTSTR s = NULL;
     if (::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, err, 0, (LPTSTR)&s, 0, NULL) == 0) {
         // failure
@@ -24,4 +23,11 @@ CString FormatGetLastError(DWORD err) {
     CString text = s;
     ::LocalFree(s);
     return text;
+}
+
+void trace(const char* msg, ...) {
+    va_list ptr;
+    va_start(ptr, msg);
+    TRACE(msg, ptr);
+    va_end(ptr);
 }

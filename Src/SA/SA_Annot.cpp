@@ -535,7 +535,7 @@ void CXScaleWnd::OnDraw(CDC * pDC,
         }
         // create line pen
         CPen pen(PS_SOLID, 1, pColors->cScaleLines);
-        CPen * pOldPen = pDC->SelectObject(&pen);
+        CPen * pOldPen2 = pDC->SelectObject(&pen);
         // draw the scale
 		// horizontal line vertical position
         int nVertPos = rWnd.top;
@@ -580,7 +580,7 @@ void CXScaleWnd::OnDraw(CDC * pDC,
                 bLargeLine = !bLargeLine;
             }
         }
-        pDC->SelectObject(pOldPen);
+        pDC->SelectObject(pOldPen2);
     }
 	// set back old font
     pDC->SelectObject(pOldFont);

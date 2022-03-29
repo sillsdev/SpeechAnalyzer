@@ -23,6 +23,7 @@
 #include "sa_p_grappl.h"
 #include "sa_p_InstantaneousPower.h"
 #include "sa_p_lou.h"
+#include "sa_p_smlou.h"
 #include "sa_p_melogram.h"
 #include "sa_p_pitch.h"
 #include "sa_p_poa.h"

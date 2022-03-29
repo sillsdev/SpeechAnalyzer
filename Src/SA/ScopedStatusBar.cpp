@@ -6,11 +6,10 @@
 CScopedStatusBar::CScopedStatusBar( UINT resourceID) {
 	CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
 	CProgressStatusBar * pStatusBar = (CProgressStatusBar *)pMainFrame->GetProgressStatusBar();
-
 	// display status bar message
-    if (!pStatusBar->GetProcessOwner()) {
+    if (!pStatusBar->GetProgressOwner()) {
 		// show the progress status bar
-        pMainFrame->ShowDataStatusBar(FALSE); 
+        pMainFrame->ShowDataStatusBar(false); 
     }
 
     CString szText;
@@ -22,7 +21,7 @@ CScopedStatusBar::CScopedStatusBar( UINT resourceID) {
 CScopedStatusBar::~CScopedStatusBar() {
 	// restore data status bar
 	CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
-	pMainFrame->ShowDataStatusBar(TRUE); 
+	pMainFrame->ShowDataStatusBar(true); 
 }
 
 void CScopedStatusBar::SetProgress( int progress) {

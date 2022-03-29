@@ -21,7 +21,7 @@ bool CFileEncodingHelper::CheckEncoding(bool display) {
     if (!ReadFileIntoBuffer(unknown)) {
         if (display) {
             CString msg;
-            msg.FormatMessage(IDS_ERROR_FILENAME,filename);
+            msg.FormatMessage(IDS_ERROR_FILENAME,filename.c_str());
             AfxMessageBox(msg, MB_OK|MB_ICONEXCLAMATION, 0);
         }
         return false;

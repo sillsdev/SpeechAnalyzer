@@ -4732,7 +4732,7 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				// get pointer to status bar
 				pStatusBar = (CProgressStatusBar *)GetMainFrame().GetProgressStatusBar();
 				// get the current process owner
-				pProcessOwner = (CProcess *)pStatusBar->GetProcessOwner();
+				pProcessOwner = pStatusBar->GetProgressOwner();
 				if (pProcessOwner) {
 					// cancel the process
 					pProcessOwner->CancelProcess();

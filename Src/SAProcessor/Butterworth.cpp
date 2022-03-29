@@ -38,8 +38,8 @@ inline static std::complex<double> ButterworthPole(int nOrder, int nPole) {
 }
 
 void CProcessButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau) {
-    double numerator[3];
-    double denominator[3];
+    double numerator[3] = {};
+    double denominator[3] = {};
 
     double dDigitalCutoffFreq = (dFilterCutoffFreq/dSamplingFreq)*2.*pi;
     double dAnalogCutoffFreq = 2.*tan(dDigitalCutoffFreq/2.);  // warp to analog frequency
@@ -111,8 +111,8 @@ void CProcessButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, d
 
 // Cascades a highpass nOrder butterworth filter to current working filter
 void CProcessButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau) {
-    double numerator[3];
-    double denominator[3];
+    double numerator[3] = {};
+    double denominator[3] = {};
 
     double dDigitalCutoffFreq = (dFilterCutoffFreq/dSamplingFreq)*2.*pi;
     double dAnalogCutoffFreq = 2.*tan(dDigitalCutoffFreq/2.);  // warp to analog frequency
@@ -307,8 +307,3 @@ double CProcessButterworth::ForwardTick(double data) {
 void CProcessButterworth::SetReverse(BOOL bSet) {
     m_bReverse = bSet;
 }
-
-int CProcessButterworth::round2Int(double value) {
-    return (value >= 0.0) ? int(value + 0.5) : int(value - 0.5);
-}
-

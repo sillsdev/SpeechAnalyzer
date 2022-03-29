@@ -163,15 +163,12 @@ __interface IProcess {
     DWORD GetNumSamples() const;
 };
 
-__interface ProgressStatusBar {
-    void* GetProcessOwner();
-    void SetProgress(int percent);
-    void SetProcessOwner(void*, void*, ProcessorType processorType = PROCESSDFLT);
-};
-
 __interface MainFrame {
-    ProgressStatusBar* GetProgressStatusBar();
-    void ShowDataStatusBar(BOOL);
+    CProcess* GetProgressOwner();
+    void SetProgress(int percent);
+    void SetProgressOwner(CProcess*, void*, ProcessorType processorType);
+    void ClearProgressOwner(CProcess*);
+    void ShowDataStatusBar(bool);
     CWbProcess* GetWbProcess(int nProcess, int nFilter);
 };
 

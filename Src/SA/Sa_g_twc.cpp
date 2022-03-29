@@ -80,7 +80,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
     rClip.top = 0; // drawing the entire vertical plot gets the correct maximum x value
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    CSaDoc  *  pModel   = pView->GetDocument();
+    CSaDoc * pModel = pView->GetDocument();
 
     CProcessTonalWeightChart * pTonalWeightChart = (CProcessTonalWeightChart *)pModel->GetTonalWeightChart(); // get pointer to TWC object
 

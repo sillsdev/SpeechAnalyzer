@@ -27,9 +27,6 @@ class CPlotSpectrogram : public CPlotWnd {
     DECLARE_DYNCREATE(CPlotSpectrogram)
 
 public:
-    CPlotSpectrogram();
-    virtual ~CPlotSpectrogram();
-
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);

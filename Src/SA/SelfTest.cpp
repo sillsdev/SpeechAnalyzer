@@ -555,7 +555,7 @@ int CSelfTestRunner::FileCompare(CSelfTest::Test & testresult, LPCTSTR szFileOne
         UINT nRead = File1.Read((void *)Buffer1,BUFFERSIZE);
         nRead = File2.Read((void *)Buffer2,BUFFERSIZE);
 
-        for (register unsigned i=1; i<nRead; ++i) {
+        for (unsigned i=1; i<nRead; ++i) {
             if (Buffer1[i-1]!=Buffer2[i-1]) { // Files have different content
                 if (nFirstDifference == -1) {
                     nFirstDifference = (((DWORD)nChunkNumber)*BUFFERSIZE)+i;
@@ -650,7 +650,7 @@ bool CSelfTestRunner::HexDataCompare(CSelfTest::Test & testresult, CFile & file1
     CString szOutString;
     UINT beginPosition=(highlightPosition>7)?highlightPosition-8:0;
     unsigned char buffer[16] = "";
-    register UINT i=0;
+    UINT i=0;
 
     CSelfTest::Test::FileDifference difference;
 
@@ -1071,7 +1071,7 @@ void Test019(CSelfTestRunner & runner, CSelfTest::Test & test) {
     CFile OutputFile(szFileName,CFile::modeCreate|CFile::modeWrite);
     OutputFile.Write(&pData->dErrorRatio,sizeof(pData->dErrorRatio));
     OutputFile.Write(&pData->nNormCrossSectAreas,sizeof(pData->nNormCrossSectAreas));
-    for (register int i=0; i<pData->nNormCrossSectAreas; ++i) {
+    for (int i=0; i<pData->nNormCrossSectAreas; ++i) {
         OutputFile.Write(&pData->dNormCrossSectArea[i],sizeof(double));
     }
     OutputFile.Flush();

@@ -203,8 +203,8 @@ bool CSFMHelper::IsColumnarSFM(wistringstream & stream) {
     // run through all the lines and verify that the counts are no greater
     // than the number of tags
     for (size_t i=start; i<lines.size(); i++) {
-        vector<wstring> tokens = TokenizeLineToTokens(lines[i], 0x09);
-        if (tokens.size()>tagCount) {
+        vector<wstring> tokens2 = TokenizeLineToTokens(lines[i], 0x09);
+        if (tokens2.size()>tagCount) {
             TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
             return false;
         }
@@ -213,9 +213,9 @@ bool CSFMHelper::IsColumnarSFM(wistringstream & stream) {
     // run through all the lines and verify that there are no more tags
     // on any other lines
     for (size_t i=start; i<lines.size(); i++) {
-        vector<wstring> tokens = TokenizeLineToTokens(lines[i], 0x09);
-        for (size_t j=0; j<tokens.size(); j++) {
-            if (CSFMHelper::IsTag(tokens[j].c_str())) {
+        vector<wstring> tokens3 = TokenizeLineToTokens(lines[i], 0x09);
+        for (size_t j=0; j<tokens3.size(); j++) {
+            if (CSFMHelper::IsTag(tokens3[j].c_str())) {
                 TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
                 return false;
             }

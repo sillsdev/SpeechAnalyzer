@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "funcs.h"
 
-int round2Int(double value) {
-    return (int)floor(value + 0.5);
-}
-
 extern bool compare_no_case(LPCTSTR a, LPCTSTR b) {
     size_t sza = wcslen(a);
     size_t szb = wcslen(b);

@@ -9,7 +9,9 @@
 #include "ProcessDoc.h"
 #include "FileUtils.h"
 
-CProcessDoc::CProcessDoc(App & app, Model & model) : app(app), model(model) {
+CProcessDoc::CProcessDoc(App * app, Model * model) : app(app), model(model) {
+    assert(app != nullptr);
+    assert(model != nullptr);
     // buffer undefined, force buffer reload
     m_dwBufferOffset = UNDEFINED_OFFSET;    
 }
@@ -59,7 +61,7 @@ BPTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int
     file.open(szName, ifstream::in | ifstream::binary);
     if (!file.is_open() || file.bad() || file.fail()) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
+        app->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
         return NULL;
     }
 
@@ -69,7 +71,7 @@ BPTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int
         file.seekg(index, ifstream::beg);
         if (file.bad() || file.fail()) {
             // error seeking file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
+            app->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
 			return NULL;
         }
@@ -82,10 +84,10 @@ BPTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int
     assert(sampleSize<3);
 
     file.read(buffer, size);
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         delete [] buffer;
         // error reading file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
+        app->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
         m_dwBufferOffset = UNDEFINED_OFFSET;
 		return NULL;
     }
@@ -108,7 +110,6 @@ void * CProcessDoc::GetProcessedObject(LPCTSTR szName, int selectedChannel, int 
         m_dwBufferOffset = UNDEFINED_OFFSET;
         return NULL;
     }
-
     DWORD dwByteOffset = dwIndex * sObjectSize;
     return GetProcessedDataBlock(szName, selectedChannel, numChannels, sampleSize, dwByteOffset, sObjectSize, bReverse);
 }
@@ -149,7 +150,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     file.open(szName, ifstream::in | ifstream::binary);
     if (!file.is_open() || file.bad() || file.fail()) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
+        app->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
         return NULL;
     }
 
@@ -159,7 +160,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
         file.seekg(seek, ifstream::beg);
         if (file.bad() || file.fail()) {
             // error seeking file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
+            app->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
             return NULL;
         }
@@ -175,10 +176,10 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     file.read(buffer, size);
     std::streamsize bytesRead = file.gcount();
     LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         delete [] buffer;
         // error reading file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
+        app->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
         m_dwBufferOffset = UNDEFINED_OFFSET;
         return NULL;
     }
@@ -218,11 +219,11 @@ void CProcessDoc::LoadBuffer(char * buffer, size_t /*size*/, int sampleSize, int
 }
 
 DWORD CProcessDoc::GetNumSamples() const {
-    return model.GetNumSamples();
+    return model->GetNumSamples();
 }
 
 DWORD CProcessDoc::GetProcessedModelWaveDataSize() {
-    return model.GetDataSize();
+    return model->GetDataSize();
 }
 
 DWORD CProcessDoc::GetProcessBufferIndex(size_t nSize) {

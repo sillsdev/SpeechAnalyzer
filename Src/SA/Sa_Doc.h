@@ -156,7 +156,7 @@ public:
     BOOL EnableBackgroundProcessing(BOOL bState = TRUE);
 
 	// process pointer to Unprocessed
-    CProcessDoc * GetUnprocessed();
+    virtual CProcessDoc * GetUnprocessed();
 	// process pointer to adjust
     CProcessAdjust * GetAdjust();
 	// process pointer to fragment object
@@ -545,7 +545,7 @@ private:
 	// TRUE = enable background processing when idle
     BOOL m_bProcessBackground;
 	// process the raw data
-    CProcessDoc & m_ProcessDoc;
+    unique_ptr<CProcessDoc>  m_pProcessDoc;
     
 	// data processing objects
 	CProcessAdjust * m_pProcessAdjust;
@@ -602,7 +602,7 @@ private:
     CAutoSave m_AutoSave;
 
     CThreadManager * threadManager = new CThreadManager();
-    unique_ptr<Context> context;
+    unique_ptr<Context> pContext;
 };
 
 #endif

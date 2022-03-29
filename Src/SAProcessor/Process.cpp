@@ -59,17 +59,16 @@ CProcess::~CProcess() {
 bool CProcess::StartProcess(void * pCaller, ProcessorType processorType, DWORD dwBufferSize) {
     
     // get pointer to status bar
-    ProgressStatusBar * pStatusBar = frame.GetProgressStatusBar();
     m_dwBufferSize = GetBufferSize();
 
     // no previous process owner? you're the first, show to progress bar
-    if (!pStatusBar->GetProcessOwner()) {
+    if (!frame.GetProgressOwner()) {
 		// show the progress status bar
-        frame.ShowDataStatusBar(FALSE);
+        frame.ShowDataStatusBar(false);
     }
 
 	// set the process owner
-    pStatusBar->SetProcessOwner(this, pCaller, processorType);
+    frame.SetProgressOwner(this, pCaller, processorType);
     if (dwBufferSize) {
         // allocate global buffer for the processed data
 		// not yet allocated
@@ -94,8 +93,7 @@ bool CProcess::StartProcess(void * pCaller, ProcessorType processorType, BOOL bB
 // CProcess::SetProgress
 /***************************************************************************/
 void CProcess::SetProgress(int nPercent) {
-    ProgressStatusBar * pStatusBar = frame.GetProgressStatusBar();
-    pStatusBar->SetProgress(nPercent);
+    frame.SetProgress(nPercent);
 }
 
 /***************************************************************************/
@@ -105,9 +103,8 @@ void CProcess::SetProgress(int nPercent) {
 /***************************************************************************/
 void CProcess::EndProcess(BOOL bProcessBar) {
     if (bProcessBar) {
-        frame.ShowDataStatusBar(TRUE); // show the data status bar
-        ProgressStatusBar * pStatusBar = frame.GetProgressStatusBar();
-        pStatusBar->SetProcessOwner(NULL, NULL); // reset the process owner
+        frame.ShowDataStatusBar(true);  // show the data status bar
+        frame.ClearProgressOwner(this); // reset the process owner
     }
 }
 
@@ -145,11 +142,12 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin) {
         m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
     }
     // open the temporary file
+    LPCTSTR processFileName = GetProcessFileName();
     ifstream file;
-    file.open(GetProcessFileName(), ifstream::in | ifstream::binary);
+    file.open(processFileName, ifstream::in | ifstream::binary);
     if (!file.is_open() || file.bad() || file.fail()) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, processFileName);
         return NULL;
     }
     // find the right position in the data
@@ -157,7 +155,7 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin) {
         file.seekg(m_dwBufferOffset, ifstream::beg);
         if (file.bad() ||  file.fail()) {
             // error seeking file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+            app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
 			// close the temporary file
 			SetDataInvalid();
 			return NULL;
@@ -165,9 +163,9 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin) {
     }
     // read the processed data block
     file.read(m_lpBuffer, GetProcessBufferSize());
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         // error reading file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
 		SetDataInvalid();
 		return NULL;
     }
@@ -201,12 +199,13 @@ int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes) {
     // new data block has to be read
     m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
 
-                                                                               // open the temporary file
+    // open the temporary file
+    LPCTSTR processFileName = GetProcessFileName();
     ifstream file;
-    file.open(GetProcessFileName(), ifstream::in | ifstream::binary);
+    file.open(processFileName, ifstream::in | ifstream::binary);
     if (!file.is_open() || file.bad() || file.fail()) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, processFileName);
         *pbRes = FALSE; // set operation result
         m_dwBufferOffset = UNDEFINED_OFFSET;
         return 0;
@@ -216,7 +215,7 @@ int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes) {
         file.seekg(m_dwBufferOffset, ifstream::beg);
         if (file.bad() || file.fail()) {
             // error seeking file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+            app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
 			// set operation result
 			*pbRes = FALSE;
             m_dwBufferOffset = UNDEFINED_OFFSET;
@@ -225,9 +224,9 @@ int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes) {
     }
     // read the processed data block
     file.read(m_lpBuffer, GetProcessBufferSize());
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         // error reading file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
 		// close the temporary file
 		SetDataInvalid();
 		// set operation result
@@ -275,11 +274,12 @@ BPTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
         m_dwBufferOffset = dwOffset - (dwOffset % GetProcessBufferSize());    // new block offset
     }
     // open the temporary file
+    LPCTSTR processFileName = GetProcessFileName();
     ifstream file;
-    file.open(GetProcessFileName(), ifstream::in | ifstream::binary);
+    file.open(processFileName, ifstream::in | ifstream::binary);
     if (!file.is_open() || file.bad() || file.fail()) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, processFileName);
         return NULL;
     }
     // find the right position in the data
@@ -287,16 +287,16 @@ BPTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
         file.seekg(m_dwBufferOffset, ifstream::beg);
         if (file.bad() || file.fail()) {
             // error seeking file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+            app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
 			SetDataInvalid();
 			return NULL;
         }
     }
     // read the processed data block
     file.read(m_lpBuffer, GetProcessBufferSize());
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         // error reading file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
 		// close the temporary file
 		SetDataInvalid();
 		return NULL;
@@ -363,11 +363,12 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
         }
     }
 
+    LPCTSTR processFileName = GetProcessFileName();
     ifstream file;
-    file.open(GetProcessFileName(), ifstream::in | ifstream::binary);
+    file.open(processFileName, ifstream::in | ifstream::binary);
     if (!file.is_open() || file.bad() || file.fail()) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, processFileName);
         return NULL;
     }
     // find the right position in the data
@@ -375,7 +376,7 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
         file.seekg(m_dwBufferOffset, ifstream::beg);
         if (file.bad() || file.fail()) {
             // error seeking file
-            app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+            app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
             // close the temporary file
             SetDataInvalid();
             return NULL;
@@ -383,9 +384,9 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
     }
     // read the processed data block
     file.read(m_lpBuffer, GetProcessBufferSize());
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         // error reading file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
         // close the temporary file
         SetDataInvalid();
         return NULL;
@@ -412,6 +413,7 @@ bool CProcess::CreateTempFile(const wchar_t* szName) {
         SetDataInvalid();
         return false;
     }
+    filename = szTempPath;
     // buffer undefined, force buffer reload
     m_dwBufferOffset = UNDEFINED_OFFSET;
     return true;
@@ -423,25 +425,26 @@ bool CProcess::Open(LPCTSTR lpszFilename, fstream::openmode flags) {
     if (file.is_open()) {
         file.close();
     }
-
-    file.open(lpszFilename, 0);
-    return (file.is_open() && !file.bad() && !file.fail());
+    file.open(lpszFilename, flags);
+    return (file.is_open() && file.good());
 }
 
 /***************************************************************************/
 // CProcess::OpenFileToAppend  Open temp file and set up for appending
 /***************************************************************************/
 bool CProcess::OpenFileToAppend() {
-    if (!Open(GetProcessFileName(), fstream::in | fstream::out | fstream::binary | fstream::app | fstream::ate)) {
+
+    LPCTSTR processFileName = GetProcessFileName();
+    if (!Open(processFileName, fstream::in | fstream::out | fstream::binary | fstream::app | fstream::ate)) {
         // error opening file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, processFileName);
         return false;
     }
 
     file.seekg(0, fstream::end);
     if (file.bad() || file.fail()) {
         // error writing file
-        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, processFileName);
 		// close the temporary file
 		SetDataInvalid();
 		return false;
@@ -480,11 +483,12 @@ long CProcess::Exit(int nError) {
 /***************************************************************************/
 bool CProcess::WriteDataBlock( DWORD dwPosition, BPTR lpData, DWORD dwDataLength, size_t nElementSize) {
     // open the temporary file
+    LPCTSTR processFileName = GetProcessFileName();
     bool preExisting = file.is_open();
     if (!preExisting) {
-        if (!Open(GetProcessFileName(), fstream::in | fstream::out | fstream::binary)) {
+        if (!Open(processFileName, fstream::in | fstream::out | fstream::binary)) {
             // error opening file
-            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+            app.ErrorMessage(IDS_ERROR_OPENTEMPFILE, processFileName);
             return false;
         }
     }
@@ -492,7 +496,7 @@ bool CProcess::WriteDataBlock( DWORD dwPosition, BPTR lpData, DWORD dwDataLength
     file.seekg(dwPosition * nElementSize, ofstream::beg);
     if (file.bad() || file.fail()) {
         // error seeking file
-        app.ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_READTEMPFILE, processFileName);
 		SetDataInvalid();
 		return false;
     }
@@ -500,7 +504,7 @@ bool CProcess::WriteDataBlock( DWORD dwPosition, BPTR lpData, DWORD dwDataLength
     file.write((BPTR)lpData, dwDataLength * nElementSize);
     if (file.bad() || file.fail()) {
         // error writing file
-        app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+        app.ErrorMessage(IDS_ERROR_WRITETEMPFILE, processFileName);
 		// close the temporary file
 		SetDataInvalid();
 		return false;

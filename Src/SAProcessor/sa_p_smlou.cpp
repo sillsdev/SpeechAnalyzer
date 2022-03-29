@@ -505,7 +505,7 @@ BPTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin) 
     }
     // read the processed data block
     file.read((BPTR)m_lpSRDdata, GetProcessBufferSize());
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         // error reading file
         app.ErrorMessage(IDS_ERROR_READTEMPFILE, srdFilename.c_str());
         return NULL;

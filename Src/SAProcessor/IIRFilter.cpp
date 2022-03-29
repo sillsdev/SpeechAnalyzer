@@ -393,8 +393,3 @@ CZTransform CProcessIIRFilter::GetForward() {
 void CProcessIIRFilter::SetFilterFilter(bool bSet) {
     m_bFilterFilter = bSet;
 }
-
-int CProcessIIRFilter::round2Int(double value) {
-    return (value >= 0.) ? int(value + 0.5) : int(value - 0.5);
-}
-

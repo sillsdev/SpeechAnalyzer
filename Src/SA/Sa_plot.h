@@ -358,7 +358,6 @@ private:
 class CXScale {
 public:
     virtual ~CXScale() {
-        ;
     }
     virtual int GetX(double fSample) const {
         return round2Int(fSample);

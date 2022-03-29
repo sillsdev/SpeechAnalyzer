@@ -16,9 +16,10 @@ __interface CmdTarget;
 class CProcessDoc : public IProcess {
 
 public:
-    CProcessDoc(App & app, Model & model);
+    CProcessDoc(App * app, Model * model);
+    CProcessDoc(const CProcessDoc&) = delete;
     CProcessDoc() = delete;
-    virtual ~CProcessDoc();
+    void operator=(const CProcessDoc&) = delete;
 
     void SetDataInvalid();
     // return pointer to block of processed wave source
@@ -40,8 +41,8 @@ public:
 private:
     void LoadBuffer(char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, std::streamsize bytesRead);
 
-    App & app;
-    Model& model;
+    App * app;
+    Model * model;
     char m_Buffer[0x10000];     // processed data buffer
     DWORD m_dwBufferOffset;     // actual buffer offset in bytes
 };

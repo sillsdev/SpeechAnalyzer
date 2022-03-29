@@ -86,7 +86,9 @@ public:
     virtual void Dump(LPCSTR tag);
     DWORD GetProcessedWaveDataBufferSize();
     DWORD GetBufferSize();
-    int GetProcessorText(ProcessorType type) { return model.GetProcessorText(type); }
+    int GetProcessorText(ProcessorType type) { 
+        return model.GetProcessorText(type); 
+    }
 
 protected:
     virtual long GetStatus() const;

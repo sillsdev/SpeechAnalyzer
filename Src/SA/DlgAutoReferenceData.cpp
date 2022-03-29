@@ -142,15 +142,15 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX) {
                 CTranscriptionData td;
                 CSaString temp = mLastImport;
 
-                CFileEncodingHelper feh(temp);
-                if (!feh.CheckEncoding(false)) {
+                CFileEncodingHelper feh2(temp);
+                if (!feh2.CheckEncoding(false)) {
                     mComboBegin.ResetContent();
                     mComboEnd.ResetContent();
                     mComboBegin.SetCurSel(-1);
                     mComboEnd.SetCurSel(-1);
                 } else {
                     wistringstream stream;
-                    if (!feh.ConvertFileToUTF16(stream)) {
+                    if (!feh2.ConvertFileToUTF16(stream)) {
                         mComboBegin.ResetContent();
                         mComboEnd.ResetContent();
                         mComboBegin.SetCurSel(-1);

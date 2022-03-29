@@ -2305,9 +2305,7 @@ BOOL SPartWindowData::MIDIIn(LPCSTR filename) {
 				break;
 
 			case 0xFF: // meta event
-
 				infile.read((char *)&byEventType, sizeof(byEventType));
-
 				switch (byEventType) {
 				case 0x2F: // end of track
 					if (MelodySize) { //!!
@@ -2329,9 +2327,7 @@ BOOL SPartWindowData::MIDIIn(LPCSTR filename) {
 
 				case 0x7F: // sequencer-specific
 					dwEventLen = InputVarLenNum(infile);
-
 					infile.read(pASCII, 4);
-
 					pASCII[4] = NULL;
 					if (strcmp(pASCII, "SAMA") == 0) {
 						if (dwNoteDeltaTime > dwNoteTolerance && !bNoteOn) { // there is a rest here

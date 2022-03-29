@@ -635,7 +635,7 @@ void * CProcessChange::GetQualityData( DWORD dwOffset, BOOL bBlockBegin) {
     }
     // read the processed quality data block
     file.read((BPTR)m_lpQualityData, GetProcessBufferSize());
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         // error reading file
         app.ErrorMessage(IDS_ERROR_READTEMPFILE, qualityFilename.c_str());
         return NULL;
@@ -687,7 +687,7 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
     }
     // read the processed quality data block
     file.read((BPTR)m_lpQualityData, GetProcessBufferSize());
-    if (file.bad() || file.fail()) {
+    if (file.bad()) {
         // error reading file
         app.ErrorMessage(IDS_ERROR_READTEMPFILE, qualityFilename.c_str());
 		// set operation result

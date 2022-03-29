@@ -69,7 +69,7 @@ typedef UINT(CALLBACK * DLGHOOKPROC)(HWND, UINT, WPARAM, LPARAM);
 //###########################################################################
 // CMainFrame window
 
-class CMainFrame : public CMDIFrameWnd {
+class CMainFrame : public CMDIFrameWnd, public MainFrame {
 
     DECLARE_DYNCREATE(CMainFrame)
 
@@ -150,7 +150,7 @@ public:
 #endif
     // helper functions
 	// show or hide data status bar
-    void ShowDataStatusBar(BOOL bShow); 
+    void ShowDataStatusBar(bool bShow);
     CDataStatusBar * GetDataStatusBar();
     CProgressStatusBar * GetProgressStatusBar();
     int ComputeNumberOfViews(int nNum);
@@ -215,6 +215,11 @@ public:
     afx_msg void OnAutoSaveOff();
 
     void SetShowFormants(bool value);
+
+    CProcess* GetProgressOwner();
+    void SetProgress( int percent);
+    void SetProgressOwner(CProcess*, void*, ProcessorType processorType);
+    void ClearProgressOwner(CProcess*);
 
     // transcription fonts
     CStringArray m_GraphFontFaces;			// array of graph font face strings

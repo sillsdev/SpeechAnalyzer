@@ -45,6 +45,7 @@
 
 #include <locale.h>
 #include <process.h>
+#include <assert.h>
 
 using std::unique_ptr;
 using std::char_traits;
@@ -58,6 +59,7 @@ using std::istringstream;
 using std::list;
 using std::logic_error;
 using std::map;
+using std::fstream;
 using std::ofstream;
 using std::streampos;
 using std::string;
@@ -100,5 +102,7 @@ using std::wstringstream;
 #include <sa_lang_resource.h>
 #include <custom_menu.h>
 #include <SAProcessor.h>
+
+extern int round2Int(double);
 
 #endif

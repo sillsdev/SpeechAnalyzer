@@ -116,20 +116,18 @@ static LPCSTR psz_sadoc = "sadoc";
 static LPCSTR psz_wndlst = "wndlst";
 static LPCSTR psz_saview = "saview";
 
-/////////////////////////////////////////////////////////////////////////////
-// CSaDoc construction/destruction/creation
-/***************************************************************************/
-// CSaDoc::CSaDoc Constructor
-/***************************************************************************/
 CSaDoc::CSaDoc() :
 	segmentOps(*this),
-	sabLoaded(false),
-	m_ProcessDoc(CProcessDoc(*(App*)(CSaApp*)AfxGetApp(),*this)) {
+	sabLoaded(false) {
+	printf("constructor called\n");
+	App * app = (CSaApp*)AfxGetApp();
+	m_pProcessDoc = make_unique<CProcessDoc>( app, this);
 	m_bAudioModified = false;
 	m_bTransModified = false;
 	m_bTempOverlay = false;
 	m_ID = -1;
-	Context& context = GetContext();
+
+	Context & context = GetContext();
 	// create segments
 	m_apSegments[PHONETIC] = new CPhoneticSegment(context,PHONETIC);
 	m_apSegments[TONE] = new CToneSegment(context, TONE, PHONETIC);
@@ -190,9 +188,6 @@ CSaDoc::CSaDoc() :
 	m_bMultiChannel = false;
 }
 
-/***************************************************************************/
-// CSaDoc::~CSaDoc Destructor
-/***************************************************************************/
 CSaDoc::~CSaDoc() {
 
 	for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
@@ -3348,7 +3343,7 @@ DWORD CSaDoc::SnapCursor(ECursorSelect nCursorSelect,
 // CSaDoc::InvalidateAllProcesses Invalidates all the graph processes
 /***************************************************************************/
 void CSaDoc::InvalidateAllProcesses() {
-	m_ProcessDoc.SetDataInvalid();
+	m_pProcessDoc->SetDataInvalid();
 	if (m_pProcessAdjust) {
 		m_pProcessAdjust->SetDataInvalid();
 	}
@@ -4443,7 +4438,8 @@ int CSaDoc::GetWaveData(DWORD dwOffset, BOOL * pbRes) {
 		return 0;
 	}
 	// read sample
-	pData += (dwOffset - GetWaveBufferIndex());
+	DWORD wbi = GetWaveBufferIndex();
+	pData += (dwOffset - wbi);
 	BYTE bData;
 	int nData;
 	if (m_FmtParm.wBlockAlign == 1) { // 8 bit data
@@ -4665,7 +4661,7 @@ CArchive & operator>> (CArchive & ar, SourceParm & parm) {
 
 void CSaDoc::SerializeForUndoRedo(CArchive & ar) {
 	
-	Context& context = GetContext();
+	Context & context = GetContext();
 	CSegment * pDummySeg = (CSegment *)new CPhoneticSegment(context,PHONETIC);
 	// get pointer to view
 	POSITION pos = GetFirstViewPosition();
@@ -5567,18 +5563,16 @@ void CSaDoc::GetAlignInfo(CAlignInfo & info) {
 
 CProcessSpectrogram * CSaDoc::GetSpectrogram() {
 	if (!m_pProcessSpectrogram) {
-		Context& context = GetContext();
 		CMainFrame* pMainFrame = (CMainFrame*)::AfxGetMainWnd();
-		m_pProcessSpectrogram = new CProcessSpectrogram(context,*pMainFrame->GetSpectrogramParmDefaults(), TRUE);
+		m_pProcessSpectrogram = new CProcessSpectrogram(GetContext(),*pMainFrame->GetSpectrogramParmDefaults(), TRUE);
 	}
 	return m_pProcessSpectrogram;
 }
 
 CProcessSpectrogram* CSaDoc::GetSnapshot() {
 	if (!m_pProcessSnapshot) {
-		Context& context = GetContext();
 		CMainFrame* pMainFrame = (CMainFrame*)::AfxGetMainWnd();
-		m_pProcessSnapshot = new CProcessSpectrogram(context,*pMainFrame->GetSnapshotParmDefaults(), FALSE);
+		m_pProcessSnapshot = new CProcessSpectrogram(GetContext(),*pMainFrame->GetSnapshotParmDefaults(), FALSE);
 	}
 	return m_pProcessSnapshot;
 }
@@ -6731,7 +6725,7 @@ BOOL CSaDoc::EnableBackgroundProcessing(BOOL bState) {
 	return result;
 }
 CProcessDoc * CSaDoc::GetUnprocessed() {
-	return &m_ProcessDoc;
+	return m_pProcessDoc.get();
 }
 CProcessAdjust * CSaDoc::GetAdjust() {
 	return m_pProcessAdjust;
@@ -7349,7 +7343,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				if (index >= 0) {
 					int result = ComposePhraseSegmentFilename(MUSIC_PL1, pl1, index, phraseConvention, szPath, filename, L"", L"");
 					if (result == 0) {
-						int result = ExportPhraseSegment(pl1, index, filename, dataCount, wavCount);
+						result = ExportPhraseSegment(pl1, index, filename, dataCount, wavCount);
 						if (result == 0) {
 							size_t index = filename.find_last_of('\\');
 							wstring uri = filename.substr(index + 1);
@@ -7782,20 +7776,19 @@ BOOL CSaDoc::IsWaveToUndo() {
 }
 
 BPTR CSaDoc::GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
-	//TRACE("GetUnprocessedWaveData %d %d\n", dwOffset, bBlockBegin);
-	return m_ProcessDoc.GetProcessedWaveData(GetProcessFilename(), GetSelectedChannel(), GetNumChannels(), GetSampleSize(), dwOffset, bBlockBegin);
+	return m_pProcessDoc->GetProcessedWaveData(GetProcessFilename(), GetSelectedChannel(), GetNumChannels(), GetSampleSize(), dwOffset, bBlockBegin);
 }
 
 DWORD CSaDoc::GetUnprocessedWaveDataBufferSize() {
-	return m_ProcessDoc.GetBufferSize();
+	return m_pProcessDoc->GetBufferSize();
 }
 
 void * CSaDoc::GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse) {
-	return m_ProcessDoc.GetProcessedDataBlock(GetProcessFilename(), GetSelectedChannel(), GetNumChannels(), GetSampleSize(), dwByteOffset, sObjectSize, bReverse);
+	return m_pProcessDoc->GetProcessedDataBlock(GetProcessFilename(), GetSelectedChannel(), GetNumChannels(), GetSampleSize(), dwByteOffset, sObjectSize, bReverse);
 }
 
 DWORD CSaDoc::GetUnprocessedBufferIndex(size_t nSize) {
-	return m_ProcessDoc.GetProcessBufferIndex(nSize);
+	return m_pProcessDoc->GetProcessBufferIndex(nSize);
 }
 
 DWORD CSaDoc::GetSelectedChannel() {
@@ -8122,7 +8115,7 @@ void CSaDoc::MergeSegments(CPhoneticSegment * pPhonetic, int sel) {
 	}
 
 	SetModifiedFlag(((modified) ? TRUE : FALSE) | IsModified());
-	SetTransModifiedFlag(modified | IsTransModified());
+	SetTransModifiedFlag(modified || IsTransModified());
 }
 
 /**
@@ -8205,7 +8198,7 @@ void CSaDoc::MoveDataLeft(DWORD offset) {
 	}
 
 	SetModifiedFlag(((modified) ? TRUE : FALSE) | IsModified());
-	SetTransModifiedFlag(modified | IsTransModified());
+	SetTransModifiedFlag(modified || IsTransModified());
 }
 
 void CSaDoc::MoveDataRight(DWORD offset) {
@@ -8216,7 +8209,7 @@ void CSaDoc::MoveDataRight(DWORD offset) {
 		modified |= pSeg->MoveDataRight(offset, false);
 	}
 	SetModifiedFlag(((modified) ? TRUE : FALSE) | IsModified());
-	SetTransModifiedFlag(modified | IsTransModified());
+	SetTransModifiedFlag(modified || IsTransModified());
 }
 
 /**
@@ -8306,7 +8299,7 @@ void CSaDoc::ImportSAB(CSaView & /*view*/, LPCTSTR filename, int /*algorithm*/) 
 	bool hasGloss = pGloss->GetOffsetSize() > 0;
 	bool hasGlossNat = pGlossNat->GetOffsetSize() > 0;
 
-	bool hasSegments = hasRef | hasGloss | hasGlossNat;
+	bool hasSegments = hasRef || hasGloss || hasGlossNat;
 
 	bool hasData = false;
 	for (int i = 0; i < pRef->GetOffsetSize(); i++) {
@@ -9433,7 +9426,7 @@ void CSaDoc::SplitSegment(CPhoneticSegment * pPhonetic, int sel, DWORD splitPosi
 	bool modified = pPhonetic->SplitSegment(*this, sel, splitPosition);
 
 	SetModifiedFlag(((modified) ? TRUE : FALSE) | IsModified());
-	SetTransModifiedFlag(modified | IsTransModified());
+	SetTransModifiedFlag(modified || IsTransModified());
 }
 
 void CSaDoc::ToggleSpectrogram() {
@@ -9451,12 +9444,12 @@ void CSaDoc::ToggleSpectrogram() {
 
 Context& CSaDoc::GetContext() {
 	// lazy construction
-	if (context.get() == nullptr) {
+	if (pContext.get() == nullptr) {
 		App& app = *(App*)(CSaApp*)AfxGetApp();
 		MainFrame& frame = *(MainFrame*)(CMainFrame*)AfxGetMainWnd();
-		context = make_unique<Context>(app, *this, frame, *this);
+		pContext = make_unique<Context>(app, *this, frame, *this);
 	}
-	return *context;
+	return *pContext;
 }
 
 PhoneticSegment* CSaDoc::GetPhoneticSegment() { 
