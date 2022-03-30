@@ -1,0 +1,20 @@
+[OPTIONS]
+Binary TOC=Yes
+Compatibility=1.1 or later
+Compiled file=Speech_Analyzer_Help.chm
+Contents file=toc.hhc
+Default Window=Main
+Default topic=overview/getting-started.htm
+Display compile progress=Yes
+Full-text search=Yes
+Index file=speechanalyzer.hhk
+Language=0x409 English (United States)
+Title=Speech Analyzer Help
+
+[WINDOWS]
+Main="Speech Analyzer Help","toc.hhc","speechanalyzer.hhk","overview/getting-started.htm","overview/getting-started.htm",,,,,0x2520,,0x306E,,,,,,,,0
+
+[INFOTYPES]
+
+[FILES]
+toc.hhc

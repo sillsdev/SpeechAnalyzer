@@ -61,6 +61,7 @@ private:
     static CPalette SpectroPalette;         // color palette
     char SpectroAB;                         // indicates whether the plotted spectrogram is SpectrogramA or SpectrogramB
     thread_handle threadId = -1;            // thread id for formant track processor
+
 };
 
 #endif

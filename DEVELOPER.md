@@ -53,3 +53,19 @@ Refer to [README.md](DevUtils\parse-langtags\README.md) if you need to re-genera
 - Src\SA.rc : change both instances in FILEVERSION
 - Src\SA\Sa_Doc.cpp : change Lift reference.
 - Src\Lang\SA_DEU.rc : change both instances in FILEVERSION
+
+# Maintaining Speech Analyzer Help
+Help files are maintained as Markdown files in the `help\` folder. To build the .chm help file, the following programs need to be installed:
+* Pandoc
+
+    Via Chocolatey from PowerShell:
+    ```
+    choco install pandoc
+    ```
+
+* HTML Help Workshop
+
+To compile the chm file, run the following script from the `help/` folder
+```
+./build.sh
+```

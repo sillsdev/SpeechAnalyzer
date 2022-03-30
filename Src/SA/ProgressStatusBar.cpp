@@ -173,8 +173,9 @@ void CProgressStatusBar::InitProgress() {
 void CProgressStatusBar::SetProgress( int nVal) {
     
     // only update for the current owner
-   if (m_ProgressBar.GetProgress() != nVal) {
-       m_ProgressBar.SetProgress(nVal);
+    if (m_ProgressBar.GetProgress() != nVal) {
+        // set the progress bar
+        m_ProgressBar.SetProgress(nVal);
     }
 
     // every 100 ms check the message loop

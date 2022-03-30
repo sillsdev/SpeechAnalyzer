@@ -75,3 +75,5 @@ test_samples/out/
 packages/
 /Src/SAProcessor/Release
 /Src/SAProcessor/Debug
+# Intermediary help files
+/chm/

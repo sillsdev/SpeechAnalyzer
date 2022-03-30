@@ -5564,7 +5564,7 @@ void CSaDoc::GetAlignInfo(CAlignInfo & info) {
 CProcessSpectrogram * CSaDoc::GetSpectrogram() {
 	if (!m_pProcessSpectrogram) {
 		CMainFrame* pMainFrame = (CMainFrame*)::AfxGetMainWnd();
-		m_pProcessSpectrogram = new CProcessSpectrogram(GetContext(),*pMainFrame->GetSpectrogramParmDefaults(), TRUE);
+		m_pProcessSpectrogram = new CProcessSpectrogram( GetContext(), *pMainFrame->GetSpectrogramParmDefaults(), TRUE);
 	}
 	return m_pProcessSpectrogram;
 }
@@ -7210,7 +7210,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
 	Lift13::header header(L"header");
 	header.fields = fields;
 
-	Lift13::lift document(L"Speech Analyzer 3.1.1.2");
+	Lift13::lift document(L"Speech Analyzer 3.1.1.3");
 	document.header = header;
 
 	ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -7385,19 +7385,23 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			// build the lexical unit
 			entry.lexical_unit = Lift13::multitext(L"lexical-unit");
 			if (settings.bOrtho) {
+				// Keep orthographic
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", settings.ortho.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[ORTHO]))));
 			}
 
-			// Build the IPA language tags from Ortho if available, fall back to "und" (BCP-47 for undefined)
+			// Build the IPA language tags from what's available (Orthographic or "Optional Language Tag"). Fall back to "und" (BCP-47 for undefined)
+			wstring vernacular = L"und";
+			if (settings.bOrtho) {
+				vernacular = settings.ortho;
+			} else if (!settings.optionalLanguageTag.IsEmpty()) {
+				vernacular = settings.optionalLanguageTag;
+			}
 
 			// add the phonetic
 			if (settings.bPhonetic) {
 				wstring phonetic;
-				if (settings.bOrtho) {
-					phonetic.append(settings.ortho.c_str());
-				} else {
-					phonetic.append(L"und");
-				}
+				phonetic.append(vernacular);
+				// Flex just uses fonipa instead of fonipa-x-etic for phonetic tag
 				AppendFonipaTag(phonetic, L"etic");
 
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonetic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONETIC]))));
@@ -7406,11 +7410,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			// add the phonemic
 			if (settings.bPhonemic) {
 				wstring phonemic;
-				if (settings.bOrtho) {
-					phonemic.append(settings.ortho.c_str());
-				}	else {
-					phonemic.append(L"und");
-				}
+				phonemic.append(vernacular);
 				AppendFonipaTag(phonemic, L"emic");
 
 				entry.lexical_unit.get().form.append(Lift13::form(L"form", phonemic.c_str(), Lift13::text(LTEXT, Lift13::span(SPAN, results[PHONEMIC]))));
@@ -7423,9 +7423,19 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			}
 
 			// build the sense field
-			if (settings.bGloss) {
+			if (settings.bGloss || settings.bGlossNat) {
 				entry.sense = Lift13::sense(L"sense", createUUID().c_str(), i);
-				entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.gloss.c_str(), Lift13::span(SPAN, results[GLOSS]));
+				if (settings.bGloss) {
+					// Gloss
+					entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.gloss.c_str(), Lift13::span(SPAN, results[GLOSS]));
+					if (settings.bGlossNat) {
+						// Gloss and Gloss National
+						entry.sense[0].gloss.append(Lift13::gloss(L"gloss", settings.glossNat.c_str(), Lift13::span(SPAN, results[GLOSS_NAT])));
+					}
+				} else if (settings.bGlossNat) {
+					// Gloss National but not Gloss
+					entry.sense[0].gloss = Lift13::gloss(L"gloss", settings.glossNat.c_str(), Lift13::span(SPAN, results[GLOSS_NAT]));
+				}
 			}
 		}
 		document.entry.append(entry);
@@ -7436,16 +7446,21 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 /**
 * Merges the "fonipa-x-" variant to the language tag.
 * @param str - The language tag
-* @param privateUse - private use variant of "etic" or "emic"
+* @param privateUse - private use variant of "etic" or "emic". If "etic", only add "-fonipa" to match Flex
 */
 void CSaDoc::AppendFonipaTag(wstring & str, wstring privateUse) {
 	// Determine if str already contains private use variant
 	int index = str.find(L"-x-");
 	if (index > 0) {
-		str.insert(index + 3, privateUse + L"-");
+		if (privateUse.compare(L"etic") != 0) {
+			str.insert(index + 3, privateUse + L"-");
+		}
 		str.insert(index, L"-fonipa");
 	} else {
-		str.append(L"-fonipa-x-" + privateUse);
+		str.append(L"-fonipa");
+		if (privateUse.compare(L"etic") != 0) {
+			str.append(L"-x-" + privateUse);
+		}
 	}
 }
 
@@ -7881,6 +7896,10 @@ wstring CSaDoc::GetFilenameFromTitle() {
 		result = result.substr(0, nFind - 1);
 	}
 	return result;
+}
+
+wstring CSaDoc::GetConvertedWaveFilename() {
+	return m_szTempConvertedWave;
 }
 
 wstring CSaDoc::GetTranscriptionFilename() {

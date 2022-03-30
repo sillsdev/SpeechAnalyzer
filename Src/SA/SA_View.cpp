@@ -10601,6 +10601,7 @@ void CSaView::OnSpectroFormants() {
 }
 
 void CSaView::OnUpdateSpectroFormants(CCmdUI * pCmdUI) {
+
 	CSaDoc * pModel = GetDocument();
 	CSpectroParm parameters = pModel->GetSpectrogram()->GetSpectroParm();
 	if ((parameters.GetShowFormants()) && pModel->GetSpectrogram()->IsProcessCanceled()) {
@@ -11605,7 +11606,28 @@ void CSaView::OnFileSaveAs() {
 			// get the current view caption string
 			path = doc.GetFilenameFromTitle().c_str();
 		}
-		path = FileUtils::ReplaceExtension((LPCTSTR)path, L".wav").c_str();
+
+		if (FileUtils::EndsWith((LPCTSTR)path, L".mp3")) {
+			// If path is mp3 file, use the temporary converted wavefile already in use:
+			CString tempConvertedWav = doc.GetConvertedWaveFilename().c_str();
+			if (!doc.CheckWaveFormatForOpen(tempConvertedWav)) {
+				app.ErrorMessage(IDS_ERROR_CANT_READ_WAVE_FILE, (LPCTSTR)tempConvertedWav);
+				return;
+			}
+
+			// Reuse the original filename for the new filename
+			wstring originalFilename = FileUtils::GetFilename((LPCTSTR)path);
+			wstring tempFilename = FileUtils::ReplaceExtension((LPCTSTR)originalFilename.c_str(), L".wav");
+			wstring tempFolder = FileUtils::GetParentFolder(doc.GetConvertedWaveFilename().c_str());
+			wstring temp = tempFolder;
+			temp.append(tempFilename.c_str());
+			FileUtils::Copy(doc.GetConvertedWaveFilename().c_str(), temp.c_str());
+			path = (CString)temp.c_str();
+
+			//path = doc.GetConvertedWaveFilename().c_str();
+		} else {
+			path = FileUtils::ReplaceExtension((LPCTSTR)path, L".wav").c_str();
+		}
 		docname = path;
 	}
 
