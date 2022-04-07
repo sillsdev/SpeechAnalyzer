@@ -2,7 +2,7 @@
 title: Copyright notice
 ---
 
-Copyright © 1996-2021 SIL International. All rights reserved
+Copyright © 1996-2022 SIL International. All rights reserved
 
 This software contains intellectual property owned by SIL International; it is provided under a license agreement containing restrictions on use and disclosure and is also protected by copyright law. Due to continued product development, the contents may change without notice. The intellectual property contained herein is the property of SIL International.
 

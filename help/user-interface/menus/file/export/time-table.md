@@ -5,11 +5,11 @@ title: Export Time Table (.SFT)
 When you export an SFM Time Table, you create a file containing numeric data which may be time-aligned to a Phonetic segment or to a user-selected time frame.
 
 - Here is a description of all the fields on the output file.
-  - **\name** - Exported file name and path (from the [File tab](../information/overview)).
-  - **\date** - Day, month, year, time of export.
-  - **\wav** - Wav file path and name which was exported.
-  - **\calc** - calculations either averaged or mid-point values.
-  - **\table** - table data.
+  - **\\name** - Exported file name and path (from the [File tab](../information/overview)).
+  - **\\date** - Day, month, year, time of export.
+  - **\\wav** - Wav file path and name which was exported.
+  - **\\calc** - calculations either averaged or mid-point values.
+  - **\\table** - table data.
 - All the data for a *particular segment* at a *specific time* displays horizontally. Column headings identify each type of data. For example:
 
 |Start|Length|Ref|Etic|Tone|Emic|Ortho|Gloss|Pos|MagdB|Pitch(Hz)|
