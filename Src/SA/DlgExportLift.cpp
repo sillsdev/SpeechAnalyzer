@@ -109,14 +109,14 @@ BOOL CDlgExportLift::OnInitDialog() {
     }
 
     // Phonemic, Phonetic, and English Gloss already hard coded. Retrieve rest of preferences from last export
-    GetLastExport(L"LastExport.Reference", &ctlReferenceList);
-    GetLastExport(L"LastExport.Ortho", &ctlOrthoList);
-    GetLastExport(L"LastExport.GlossNat", &ctlGlossNatList);
-    GetLastExport(L"LastExport.Phrase1", &ctlPhraseList1List);
-    GetLastExport(L"LastExport.Phrase2", &ctlPhraseList2List);
+    GetLastExport(settings.LAST_EXPORT_REFERENCE, &ctlReferenceList);
+    GetLastExport(settings.LAST_EXPORT_ORTHO, &ctlOrthoList);
+    GetLastExport(settings.LAST_EXPORT_GLOSS_NAT, &ctlGlossNatList);
+    GetLastExport(settings.LAST_EXPORT_PHRASE1, &ctlPhraseList1List);
+    GetLastExport(settings.LAST_EXPORT_PHRASE2, &ctlPhraseList2List);
 
     CSaApp* pApp = (CSaApp*)AfxGetApp();
-    CString lastOptionalLanguageTag = pApp->GetProfileString(L"Lift", L"LastExport.OptionalLanguageTag", L"");
+    CString lastOptionalLanguageTag = pApp->GetProfileString(L"Lift", settings.LAST_EXPORT_OPTIONAL_LANGUAGE_TAG, L"");
     if (!lastOptionalLanguageTag.IsEmpty()) {
       settings.optionalLanguageTag = lastOptionalLanguageTag;
     }
