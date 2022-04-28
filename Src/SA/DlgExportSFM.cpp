@@ -229,8 +229,15 @@ END_MESSAGE_MAP()
 
 void CDlgExportSFM::OnOK() {
 
+    UpdateData(TRUE);
     wstring filename;
-    int result = CSaDoc::GetSaveAsFilename(m_szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), NULL, filename);
+    int result;
+    if (m_nExportFormat != 2) {
+      result = CSaDoc::GetSaveAsFilename(m_szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), NULL, filename);
+    }
+    else {
+      result = CSaDoc::GetSaveAsFilename(m_szDocTitle, _T("Standard Format - Comma-separated values (*.csv) |*.csv||"), _T("csv"), NULL, filename);
+    }
     if (result!=IDOK) {
         return;
     }
@@ -239,7 +246,7 @@ void CDlgExportSFM::OnOK() {
         return;
     }
 
-    UpdateData(TRUE);
+    //UpdateData(TRUE);
 
     // process all flags
     if (m_bAllAnnotations) {
