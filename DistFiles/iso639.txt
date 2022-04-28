@@ -102,7 +102,6 @@ adn|adn|adn|Adang|
 ado|ado|ado|Abu|
 adq|adq|adq|Adangbe|
 adr|adr|adr|Adonara|
-ads|ads|ads|Adamorobe Sign Language|
 adt|adt|adt|Adnyamathanha|
 adu|adu|adu|Aduge|
 adw|adw|adw|Amundava|
@@ -116,15 +115,12 @@ ave|ave|ae-Arab|Avestan (Arab script)|
 ave|ave|ae-Gujr|Avestan (Gujr script)|
 aea|aea|aea|Areba|
 aeb|aeb|aeb|Arabic, Tunisian Spoken|تونسي
-ajt|ajt|aeb-Hebr-IL|Tunisian Arabic (Hebr script, Israel)|
 aeb|aeb|aeb-Latn|Arabic, Tunisian Spoken (Latn script)|Derja
 aec|aec|aec|Arabic, Sa’idi Spoken|
-aed|aed|aed|Argentine Sign Language|
 aee|aee|aee|Pashai, Northeast|
 aek|aek|aek|Haeke|
 ael|ael|ael|Ambele|
 aem|aem|aem|Arem|
-aen|aen|aen|Armenian Sign Language|
 aeq|aeq|aeq|Aer|
 aer|aer|aer|Arrernte, Eastern|Arrernte
 aes|aes|aes|Alsea|
@@ -139,7 +135,6 @@ afr|afr|af-NA|Afrikaans (Namibia)|Afrikaans
 afb|afb|afb|Arabic, Gulf Spoken|
 afd|afd|afd|Andai|
 afe|afe|afe|Utugwang-Irungene-Afrike|
-afg|afg|afg|Afghan Sign Language|
 afh|afh|afh|Afrihili|
 afi|afi|afi|Chini|
 afk|afk|afk|Nanubae|
@@ -225,7 +220,8 @@ ajg|ajg|ajg|Aja|Ajagbe
 aji|aji|aji|Ajië|
 ajn|ajn|ajn|Andajin|
 ajp|ajp|ajp|Arabic, South Levantine Spoken|
-ajs|ajs|ajs|Algerian Jewish Sign Language|
+ajt|ajt|ajt-Hebr|Judeo-Tunisian Arabic (Hebr script)|
+aju|aju|aju-Arab|Arabic, Judeo-Moroccan (Arab script)|
 ajw|ajw|ajw|Ajawa|
 ajz|ajz|ajz|Amri Karbi|
 aka|aka|ak|Akan|Akan
@@ -464,9 +460,6 @@ asm|asm|as|Assamese|অসমীয়া
 asa|asa|asa|Asu|Kipare
 asb|asb|asb|Assiniboine|
 asc|asc|asc|Asmat, Casuarina Coast|
-ase|ase|ase|American Sign Language|
-ase|ase|ase-Zxxx|American Sign Language (Zxxx script)|
-asf|asf|asf|Auslan|
 asg|asg|asg|Cishingini|Cishingini
 ash|ash|ash|Awishira|
 asi|asi|asi|Buruwai|
@@ -475,14 +468,11 @@ ask|ask|ask|Ashkun|
 asl|asl|asl|Asilulu|
 asn|asn|asn|Asurini of Xingú|
 aso|aso|aso|Dano|
-asp|asp|asp|Algerian Sign Language|
-asq|asq|asq|Austrian Sign Language|
 asr|asr|asr-Deva|Asuri (Deva script)|
 ass|ass|ass|Ipulo|
 ast|ast|ast|Asturian|asturianu
 asu|asu|asu|Asurini, Tocantins|
 asv|asv|asv|Asoa|
-asw|asw|asw|Australian Aborigines Sign Language|
 asx|asx|asx|Muratayak|
 asy|asy|asy|Asmat, Yaosakor|
 asz|asz|asz|As|
@@ -751,10 +741,7 @@ bfe|bfe|bfe|Betaf|
 bff|bff|bff|Bofi|
 bfg|bfg|bfg|Kayan, Busang|
 bfh|bfh|bfh|Blafe|
-bfi|bfi|bfi|British Sign Language|
-bfi|bfi|bfi-Zzzz-x-stokoe|British Sign Language (Zzzz script, x-stokoe)|
 bfj|bfj|bfj|Bafanji|
-bfk|bfk|bfk|Ban Khor Sign Language|
 bfl|bfl|bfl|Banda-Ndélé|
 bfm|bfm|bfm|Mmen|
 bfn|bfn|bfn|Bunak|
@@ -1008,7 +995,6 @@ boa|boa|boa|Bora|Booraa
 bob|bob|bob|Aweer|
 boe|boe|boe|Mundabli|
 bof|bof|bof|Bolon|
-bog|bog|bog|Malian Sign Language|
 boh|boh|boh|Boma|
 boi|boi|boi|Barbareño|
 boj|boj|boj|Anjam|Anjam
@@ -1066,7 +1052,6 @@ bqj|bqj|bqj|Bandial|Gubanjalay
 bqk|bqk|bqk|Banda-Mbrès|
 bql|bql|bql|Bilakura|
 bqm|bqm|bqm|Wumboko|
-bqn|bqn|bqn|Bulgarian Sign Language|
 bqo|bqo|bqo|Balo|
 bqp|bqp|bqp|Bisã|Bisã
 bqq|bqq|bqq|Biritai|
@@ -1077,7 +1062,6 @@ bqu|bqu|bqu|Boguru|
 bqv|bqv|bqv|Koro Wachi|
 bqw|bqw|bqw|Buru|
 bqx|bqx|bqx|Baangi|
-bqy|bqy|bqy|Kata Kolok|
 bqz|bqz|bqz|Bakaka|
 bre|bre|br|Breton|brezhoneg
 bra|bra|bra|Braj Bhasha|
@@ -1214,7 +1198,6 @@ bvh|bvh|bvh|Bure|
 bvi|bvi|bvi|Belanda Viri|
 bvj|bvj|bvj|Baan|
 bvk|bvk|bvk|Bukat|
-bvl|bvl|bvl|Bolivian Sign Language|
 bvm|bvm|bvm|Bamunka|
 bvn|bvn|bvn|Buna|
 bvo|bvo|bvo|Bolgo|
@@ -1322,7 +1305,6 @@ bzo|bzo|bzo|Bozaba|
 bzp|bzp|bzp|Kemberano|
 bzq|bzq|bzq|Buli|
 bzr|bzr|bzr|Biri|
-bzs|bzs|bzs|Brazilian Sign Language|
 bzt|bzt|bzt|Brithenig|
 bzu|bzu|bzu|Burmeso|
 bzv|bzv|bzv|Naami|
@@ -1418,7 +1400,6 @@ cdo|cdo|cdo|Chinese, Min Dong|
 cdo|cdo|cdo-Hant|Chinese, Min Dong (Hant script)|
 cdo|cdo|cdo-Latn|Chinese, Min Dong (Latn script)|
 cdr|cdr|cdr|Kamuku|
-cds|cds|cds|Chadian Sign Language|
 cdy|cdy|cdy|Chadong|
 cdz|cdz|cdz|Koda|
 che|che|ce|Chechen|нохчийн
@@ -1658,29 +1639,19 @@ ces|ces|cs|Czech|čeština
 ces|ces|cs-Brai|Czech (Brai script)|
 csa|csa|csa|Chinantec, Chiltepec|
 csb|csb|csb|Kashubian|
-csc|csc|csc|Catalan Sign Language|
-csd|csd|csd|Chiangmai Sign Language|
-cse|cse|cse|Czech Sign Language|
-csf|csf|csf|Cuban Sign Language|
-csg|csg|csg|Chilean Sign Language|
 csh|csh|csh|Chin, Asho|
 csh|csh|csh-Latn|Chin, Asho (Latn script)|
 csi|csi|csi|Miwok, Coast|
 csj|csj|csj|Chin, Songlai|
 csk|csk|csk|Jola-Kasa|Jóola Kaasa
-csl|csl|csl|Chinese Sign Language|
 csm|csm|csm|Miwok, Central Sierra|
-csn|csn|csn|Colombian Sign Language|
 cso|cso|cso|Chinantec, Sochiapam|Jaú jm_
 csp|csp|csp|Pinghua, Southern|
 csp|csp|csp-Hant|Pinghua, Southern (Hant script)|
-csq|csq|csq|Croatian Sign Language|
-csr|csr|csr|Costa Rican Sign Language|
 css|css|css|Ohlone, Southern|
 cst|cst|cst|Ohlone, Northern|
 csv|csv|csv|Chin, Sumtu|
 csw|csw|csw|Cree, Swampy|
-csx|csx|csx|Cambodian Sign Language|
 csy|csy|csy|Chin, Siyin|
 csz|csz|csz|Coos|
 cta|cta|cta|Chatino, Tataltepec|Cha’ jna’a
@@ -1975,7 +1946,6 @@ dol|dol|dol|Doso|
 don|don|don|Toura|
 doo|doo|doo|Dongo|
 dop|dop|dop|Lukpa|
-doq|doq|doq|Dominican Sign Language|
 dor|dor|dor|Dori’o|
 dos|dos|dos|Dogosé|
 dot|dot|dot|Dass|
@@ -2000,15 +1970,12 @@ drt|drt|drt|Drents|
 dru|dru|dru|Rukai|
 dry|dry|dry|Darai|
 dsb|dsb|dsb|Sorbian, Lower|dolnoserbšćina
-dse|dse|dse|Sign Language of the Netherlands|
 dsh|dsh|dsh|Daasanach|Af Daasanach
 dsi|dsi|dsi|Disa|
-dsl|dsl|dsl|Danish Sign Language|
 dsn|dsn|dsn|Dusner|
 dso|dso|dso|Desiya|
 dsq|dsq|dsq|Tadaksahak|
 dsq|dsq|dsq-Arab|Tadaksahak (Arab script)|
-dsz|dsz|dsz|Mardin Sign Language|
 dta|dta|dta|Daur|
 dta|dta|dta-Cyrl|Daur (Cyrl script)|
 dta|dta|dta-Hans|Daur (Hans script)|
@@ -2091,7 +2058,6 @@ ebo|ebo|ebo|Teke-Eboo|
 ebr|ebr|ebr|Tchaman|
 ebu|ebu|ebu|Kiembu|Kĩembu
 ecr|ecr|ecr|Eteocretan|
-ecs|ecs|ecs|Ecuadorian Sign Language|
 ecy|ecy|ecy|Eteocypriot|
 ewe|ewe|ee|Éwé|Eʋegbe
 ewe|ewe|ee-Brai|Éwé (Brai script)|
@@ -2105,7 +2071,6 @@ egl|egl|egl|Emilian|
 egm|egm|egm|Benamanga|
 ego|ego|ego|Eggon|
 egy|egy|egy|Egyptian (Ancient)|
-ehs|ehs|ehs|Miyakubo Sign Language|
 ehu|ehu|ehu|Ehueun|
 eip|eip|eip|Lik|
 eit|eit|eit|Eitiep|
@@ -2326,10 +2291,7 @@ esg|esg|esg-Deva|Gondi, Aheri (Deva script)|
 esg|esg|esg-Telu|Gondi, Aheri (Telu script)|
 esh|esh|esh|Eshtehardi|
 esi|esi|esi|Inupiatun, North Alaskan|
-esl|esl|esl|Egyptian Sign Language|
 esm|esm|esm|Esuma|
-esn|esn|esn|Salvadoran Sign Language|
-eso|eso|eso|Estonian Sign Language|
 esq|esq|esq|Esselen|
 ess|ess|ess|Yupik, Saint Lawrence Island|
 ess|ess|ess-Cyrl|Yupik, Saint Lawrence Island (Cyrl script)|
@@ -2340,7 +2302,6 @@ est|est|et|Estonian|eesti
 est|est|et-Brai|Estonian (Brai script)|
 etb|etb|etb|Etebi|
 etc|etc|etc|Etchemin|
-eth|eth|eth|Ethiopian Sign Language|
 etn|etn|etn|Eton|
 eto|eto|eto|Eton|
 etr|etr|etr|Edolo|Edolo
@@ -2384,7 +2345,6 @@ fax|fax|fax|Fala|
 fay|fay|fay|Fars, Southwestern|
 faz|faz|faz|Fars, Northwestern|
 fbl|fbl|fbl|Bikol, West Albay|
-fcs|fcs|fcs|Quebec Sign Language|
 fer|fer|fer|Feroge|
 ful|ful|ff|Fulah|Pulaar
 ful|ful|ff-Adlm|Fulah (Adlm script)|𞤆𞤵𞤤𞤢𞤪
@@ -2511,9 +2471,6 @@ frq|frq|frq|Forak|
 frr|frr|frr|Frisian, Northern|
 frs|frs|frs|Saxon, East Frisian Low|
 frt|frt|frt|Fortsenal|
-fse|fse|fse|Finnish Sign Language|
-fsl|fsl|fsl|French Sign Language|
-fss|fss|fss|Finland-Swedish Sign Language|
 fub|fub|fub|Fulfulde, Adamawa|
 fub|fub|fub-Latn|Fulfulde, Adamawa (Latn script)|Fulfulde
 fud|fud|fud|Futuna, East|
@@ -2628,7 +2585,6 @@ gdn|gdn|gdn|Umanakaina|Umanakaina
 gdo|gdo|gdo|Ghodoberi|
 gdq|gdq|gdq|Mehri|
 gdr|gdr|gdr|Wipi|Wipi
-gds|gds|gds|Ghandruk Sign Language|
 gdt|gdt|gdt|Kungardutyi|
 gdu|gdu|gdu|Gudu|
 gdx|gdx|gdx|Godwari|
@@ -2823,14 +2779,10 @@ grw|grw|grw|Gweda|Gweda
 grx|grx|grx|Muno|
 gry|gry|gry|Grebo, Barclayville|
 grz|grz|grz|Guramalum|
-gse|gse|gse|Ghanaian Sign Language|
-gsg|gsg|gsg|German Sign Language|
 gsl|gsl|gsl|Gusilay|
-gsm|gsm|gsm|Guatemalan Sign Language|
 gsn|gsn|gsn|Nema|
 gso|gso|gso|Gbaya, Southwest|
 gsp|gsp|gsp|Wasembo|
-gss|gss|gss|Greek Sign Language|
 gsw|gsw|gsw|German, Swiss|Schwiizertüütsch
 gsw|gsw|gsw-FR|Alsatian (France)|Schwiizertüütsch
 gsw|gsw|gsw-LI|Alemannic (Liechtenstein)|Schwiizertüütsch
@@ -2856,7 +2808,6 @@ guo|guo|guo|Guayabero|
 gup|gup|gup|Gunwinggu|
 guq|guq|guq|Aché|
 gur|gur|gur|Farefare|Farefare
-gus|gus|gus|Guinean Sign Language|
 gut|gut|gut|Maléku Jaíka|
 guu|guu|guu|Yanomamö|
 guw|guw|guw|Gun|Gungbe
@@ -2919,11 +2870,9 @@ hau|hau|ha-Latn-NE|Hausa (Latn script, Niger)|Hausa
 hau|hau|ha-NE|Hausa (Niger)|Hausa
 hau|hau|ha-SD|Hausa (Sudan)|
 haa|haa|haa|Han|
-hab|hab|hab|Hanoi Sign Language|
 hac|hac|hac|Gurani|
 had|had|had|Hatam|
 hae|hae|hae|Oromo, Eastern|
-haf|haf|haf|Haiphong Sign Language|
 hag|hag|hag|Hanga|
 hah|hah|hah|Hahon|
 hai|hai|hai|Haida|
@@ -2954,7 +2903,6 @@ hbo|hbo|hbo|Hebrew, Ancient|
 hbu|hbu|hbu|Habun|
 hca|hca|hca|Andaman Hindi Creole|
 hch|hch|hch|Huichol|Wixárika
-hds|hds|hds|Honduran Sign Language|
 hdy|hdy|hdy|Hadiyya|
 hdy|hdy|hdy-Latn|Hadiyya (Latn script)|
 heb|heb|he|Hebrew|עברית
@@ -3000,7 +2948,6 @@ hkh|hkh|hkh-Deva|Khah (Deva script)|
 hkh|hkh|hkh-Latn|Khah (Latn script)|
 hkk|hkk|hkk|Hunjara-Kaina Ke|
 hkn|hkn|hkn|Mel-Khaonh|
-hks|hks|hks|Hong Kong Sign Language|
 hla|hla|hla|Halia|
 hlb|hlb|hlb|Halbi|
 hld|hld|hld|Halang Doan|
@@ -3073,14 +3020,12 @@ hom|hom|hom|Homa|
 hoo|hoo|hoo|Holoholo|
 hop|hop|hop|Hopi|Hopílavayi
 hor|hor|hor|Horo|
-hos|hos|hos|Ho Chi Minh City Sign Language|
 hot|hot|hot|Malei|Malê
 hov|hov|hov|Hovongan|
 how|how|how|Honi|
 hoy|hoy|hoy|Holiya|
 hoz|hoz|hoz|Hozo|
 hpo|hpo|hpo|Hpon|
-hps|hps|hps|Hawaii Sign Language|
 hrv|hrv|hr|Croatian|hrvatski
 hrv|hrv|hr-BA|Croatian (Bosnia and Herzegovina)|hrvatski
 hrv|hrv|hr-Brai|Croatian (Brai script)|
@@ -3098,8 +3043,6 @@ hrw|hrw|hrw|Warwar Feni|
 hrx|hrx|hrx|Hunsrik|
 hrz|hrz|hrz|Harzani|
 hsb|hsb|hsb|Sorbian, Upper|hornjoserbšćina
-hsh|hsh|hsh|Hungarian Sign Language|
-hsl|hsl|hsl|Hausa Sign Language|
 hsn|hsn|hsn|Chinese, Xiang|
 hsn|hsn|hsn-Hant|Chinese, Xiang (Hant script)|
 hss|hss|hss|Harsusi|
@@ -3170,7 +3113,6 @@ ibu|ibu|ibu|Ibu|
 iby|iby|iby|Ibani|
 ica|ica|ica|Ede Ica|
 ich|ich|ich|Etkywan|Kentu
-icl|icl|icl|Icelandic Sign Language|
 icr|icr|icr|Islander English Creole|Islander, San Andrés Creole
 ind|ind|id|Indonesian|Indonesia
 ind|ind|id-Arab|Indonesian (Arab script)|
@@ -3226,7 +3168,6 @@ ikl|ikl|ikl|Ikulu|
 iko|iko|iko|Olulumo-Ikom|
 ikp|ikp|ikp|Ikpeshi|
 ikr|ikr|ikr|Ikaranggal|
-iks|iks|iks|Inuit Sign Language|
 ikt|ikt|ikt|Inuinnaqtun|
 ikt|ikt|ikt-Cans|Inuinnaqtun (Cans script)|
 ikv|ikv|ikv|Iku-Gora-Ankwa|
@@ -3243,7 +3184,6 @@ ilo|ilo|ilo|Ilocano|
 ilo|ilo|ilo-Brai|Ilocano (Brai script)|
 ilo|ilo|ilo-Tglg|Ilocano (Tglg script)|
 ilp|ilp|ilp|Iranun|
-ils|ils|ils|International Sign|
 ilu|ilu|ilu|Ili’uun|
 ilv|ilv|ilv|Ilue|
 ima|ima|ima|Mala Malasar|
@@ -3261,12 +3201,10 @@ inh|inh|inh|Ingush|
 inh|inh|inh-Arab|Ingush (Arab script)|
 inh|inh|inh-Latn|Ingush (Latn script)|
 inj|inj|inj|Inga, Jungle|
-inl|inl|inl|Indonesian Sign Language|
 inm|inm|inm|Minaean|
 inn|inn|inn|Isinay|
 ino|ino|ino|Inoke-Yate|Inoke-Yate
 inp|inp|inp|Iñapari|
-ins|ins|ins|Indian Sign Language|
 int|int|int|Intha|
 inz|inz|inz|Ineseño|
 ido|ido|io|Ido|
@@ -3291,15 +3229,12 @@ isl|isl|is|Icelandic|íslenska
 isa|isa|isa|Isabi|
 isc|isc|isc|Isconahua|
 isd|isd|isd|Isnag|Isnag
-ise|ise|ise|Italian Sign Language|
-isg|isg|isg|Irish Sign Language|
 ish|ish|ish|Esan|
 isi|isi|isi|Nkem-Nkum|
 isk|isk|isk|Ishkashimi|
 ism|ism|ism|Masimasi|
 isn|isn|isn|Isanzu|
 iso|iso|iso|Isoko|
-isr|isr|isr|Israeli Sign Language|
 ist|ist|ist|Istriot|
 isu|isu|isu|Isu|
 ita|ita|it|Italian|italiano
@@ -3381,7 +3316,6 @@ jbr|jbr|jbr|Jofotek-Bromnya|
 jbt|jbt|jbt|Jabutí|
 jbu|jbu|jbu|Jukun Takum|Njikum
 jbw|jbw|jbw|Yawijibaya|
-jcs|jcs|jcs|Konchri Sain|
 jct|jct|jct|Krimchak|
 jct|jct|jct-Latn|Krimchak (Latn script)|
 jda|jda|jda|Jad|
@@ -3406,7 +3340,6 @@ jge|jge|jge-Hebr|Judeo-Georgian (Hebr script)|
 jgk|jgk|jgk|Gwak|Gwak
 jgo|jgo|jgo|Ngomba|Ndaꞌa
 jhi|jhi|jhi|Jehai|
-jhs|jhs|jhs|Jhankot Sign Language|
 jia|jia|jia|Jina|
 jib|jib|jib|Jibu|Jibu
 jic|jic|jic|Tol|Tol
@@ -3430,10 +3363,8 @@ jkm|jkm|jkm|Karen, Mobwa|
 jko|jko|jko|Kubo|
 jkp|jkp|jkp|Karen, Paku|
 jkr|jkr|jkr|Koro|
-jks|jks|jks|Amami Koniya Sign Language|
 jku|jku|jku|Labir|
 jle|jle|jle|Ngile|
-jls|jls|jls|Jamaican Sign Language|
 jma|jma|jma|Dima|
 jmb|jmb|jmb|Zumbun|
 jmc|jmc|jmc|Machame|Kimachame
@@ -3459,7 +3390,6 @@ job|job|job|Joba|
 jod|jod|jod|Wojenaka|
 jog|jog|jog|Jogi|
 jor|jor|jor|Jorá|
-jos|jos|jos|Jordanian Sign Language|
 jow|jow|jow|Jowulu|
 jpa|jpa|jpa|Jewish Palestinian Aramaic|
 jpr|jpr|jpr|Dzhidi|
@@ -3467,11 +3397,10 @@ jqr|jqr|jqr|Jaqaru|
 jra|jra|jra|Jarai|Jơrai
 jra|jra|jra-Khmr|Jarai (Khmr script)|
 jrb|jrb|jrb|Judeo-Arabic|
-aju|aju|jrb-Arab-MA|Arabic, Judeo-Moroccan (Arab script, Morocco)|
+ajt|ajt|jrb-Arab-TN|Judeo-Arabic (Arab script, Tunisia)|
 jrr|jrr|jrr|Jiru|
 jrt|jrt|jrt|Jakattoe|
 jru|jru|jru|Japreria|
-jsl|jsl|jsl|Japanese Sign Language|
 jua|jua|jua|Júma|
 jub|jub|jub|Wannu|
 juc|juc|juc|Jurchen|
@@ -3485,7 +3414,6 @@ jun|jun|jun|Juang|
 juo|juo|juo|Jiba|
 jup|jup|jup|Hupdë|
 jur|jur|jur|Jurúna|
-jus|jus|jus|Jumla Sign Language|
 jut|jut|jut|Jutish|
 juu|juu|juu|Ju|
 juw|juw|juw|Wãpha|
@@ -3677,7 +3605,6 @@ kgb|kgb|kgb|Kawe|
 kge|kge|kge|Komering|
 kgf|kgf|kgf|Kube|
 kgg|kgg|kgg|Kusunda|
-kgi|kgi|kgi|Selangor Sign Language|
 kgj|kgj|kgj|Kham, Gamal|
 kgk|kgk|kgk|Kaiwá|
 kgl|kgl|kgl|Kunggari|
@@ -4029,6 +3956,7 @@ ksm|ksm|ksm|Kumba|
 ksn|ksn|ksn|Kasiguranin|
 kso|kso|kso|Kofa|
 ksp|ksp|ksp|Kabba|Kabba
+lak|lak|ksp-Latn-NG|Kaba (Latn script, Nigeria)|
 ksq|ksq|ksq|Kwaami|
 ksr|ksr|ksr|Borong|Boroŋ
 kss|kss|kss|Kisi, Southern|
@@ -4114,7 +4042,6 @@ kvg|kvg|kvg|Kuni-Boazi|
 kvh|kvh|kvh|Komodo|
 kvi|kvi|kvi|Kwang|
 kvj|kvj|kvj|Psikye|
-kvk|kvk|kvk|Korean Sign Language|
 kvl|kvl|kvl|Kayaw|
 kvm|kvm|kvm|Kendem|
 kvn|kvn|kvn|Kuna, Border|
@@ -4294,7 +4221,6 @@ lbn|lbn|lbn-Laoo|Rmeet (Laoo script)|
 lbo|lbo|lbo|Laven|
 lbq|lbq|lbq|Wampar|
 lbr|lbr|lbr|Lohorung|
-lbs|lbs|lbs|Libyan Sign Language|
 lbt|lbt|lbt|Lachi|
 lbu|lbu|lbu|Labu|
 lbv|lbv|lbv|Lavatbura-Lamusong|
@@ -4453,7 +4379,6 @@ llm|llm|llm|Lasalimu|
 lln|lln|lln|Lele|Lele
 llp|llp|llp|Efate, North|
 llq|llq|llq|Lolak|
-lls|lls|lls|Lithuanian Sign Language|
 llu|llu|llu|Lau|
 llx|llx|llx|Lauan|
 lma|lma|lma|Limba, East|
@@ -4553,24 +4478,13 @@ lrt|lrt|lrt|Malay, Larantuka|
 lrv|lrv|lrv|Larevat|
 lrz|lrz|lrz|Lemerig|
 lsa|lsa|lsa|Lasgerdi|
-lsb|lsb|lsb|Burundian Sign Language|
-lsc|lsc|lsc|Albarradas Sign Language|
 lsd|lsd|lsd|Lishana Deni|
 lse|lse|lse|Lusengo|
-lsg|lsg|lsg|Lyons Sign Language|
 lsh|lsh|lsh|Lish|
 lsi|lsi|lsi|Lacid|
-lsl|lsl|lsl|Latvian Sign Language|
 lsm|lsm|lsm|Saamya-Gwe|
-lsn|lsn|lsn|Tibetan Sign Language|
-lso|lso|lso|Laos Sign Language|
-lsp|lsp|lsp|Panamanian Sign Language|
 lsr|lsr|lsr|Aruop|
 lss|lss|lss|Lasi|
-lst|lst|lst|Trinidad and Tobago Sign Language|
-lsv|lsv|lsv|Sivia Sign Language|
-lsw|lsw|lsw|Seychelles Sign Language|
-lsy|lsy|lsy|Mauritian Sign Language|
 lit|lit|lt|Lithuanian|lietuvių
 lit|lit|lt-Latf|Lithuanian (Latf script)|
 ltc|ltc|ltc-Hans|Late Middle Chinese (Hans script)|
@@ -4621,7 +4535,6 @@ lwl|lwl|lwl|Lawa, Eastern|
 lwm|lwm|lwm|Laomian|
 lwo|lwo|lwo|Luwo|dhe Luuo
 lwo|lwo|lwo-ZA|Luwo (South Africa)|dhe Luuo
-lws|lws|lws|Malawian Sign Language|
 lwt|lwt|lwt|Lewotobi|
 lwu|lwu|lwu|Lawu|
 lww|lww|lww|Lewo|Lewo
@@ -4732,7 +4645,6 @@ mdh|mdh|mdh|Maguindanaon|
 mdi|mdi|mdi|Mamvu|
 mdj|mdj|mdj|Mangbetu|Nɛ́mangbɛtʉ
 mdk|mdk|mdk|Mangbutu|
-mdl|mdl|mdl|Maltese Sign Language|
 mdm|mdm|mdm|Mayogo|
 mdn|mdn|mdn|Mbati|
 mdp|mdp|mdp|Mbala|
@@ -4797,7 +4709,6 @@ mfo|mfo|mfo|Mbe|Mbe
 mfp|mfp|mfp|Indonesian, Makassar|
 mfq|mfq|mfq|Moba|Muaba
 mfr|mfr|mfr|Marrithiyel|
-mfs|mfs|mfs|Mexican Sign Language|
 mft|mft|mft|Idio|
 mfu|mfu|mfu|Mbwela|
 mfv|mfv|mfv|Mandjak|
@@ -5114,7 +5025,6 @@ mra|mra|mra|Mlabri|
 mrb|mrb|mrb|Marino|
 mrc|mrc|mrc|Maricopa|
 mrd|mrd|mrd|Magar, Western|
-mre|mre|mre|Martha's Vineyard Sign Language|
 mrf|mrf|mrf|Elseng|
 mrg|mrg|mrg|Mising|
 mrg|mrg|mrg-Beng|Mising (Beng script)|
@@ -5147,7 +5057,6 @@ msa|msa|ms-ID|Malay (macrolanguage) (Indonesia)|
 msa|msa|ms-SG|Malay (macrolanguage) (Singapore)|Melayu
 msb|msb|msb|Masbatenyo|Masbatenyo
 msc|msc|msc|Maninka, Sankaran|Sankaran
-msd|msd|msd|Yucatec Maya Sign Language|
 mse|mse|mse|Musey|
 msf|msf|msf|Mekwei|
 msg|msg|msg|Moraid|
@@ -5161,7 +5070,6 @@ msn|msn|msn|Vurës|
 mso|mso|mso|Mombum|
 msp|msp|msp|Maritsauá|
 msq|msq|msq|Caac|
-msr|msr|msr|Mongolian Sign Language|
 mss|mss|mss|Masela, West|
 msu|msu|msu|Musom|
 msv|msv|msv|Maslam|
@@ -5331,10 +5239,8 @@ mza|mza|mza|Mixtec, Santa María Zacatepec|Tu'un Va'a
 mzb|mzb|mzb-Arab|Tumzabt (Arab script)|
 mzb|mzb|mzb-Latn|Tumzabt (Latn script)|
 mzb|mzb|mzb-Tfng|Tumzabt (Tfng script)|
-mzc|mzc|mzc|Malagasy Sign Language|
 mzd|mzd|mzd|Malimba|
 mze|mze|mze|Morawa|
-mzg|mzg|mzg|Monastic Sign Language|
 mzh|mzh|mzh|Pilcomayo Wichí|
 mzi|mzi|mzi|Mazatec, Ixcatlán|
 mzj|mzj|mzj|Manya|
@@ -5352,7 +5258,6 @@ mzu|mzu|mzu|Inapang|
 mzv|mzv|mzv|Mandja|
 mzw|mzw|mzw|Deg|
 mzx|mzx|mzx|Mawayana|
-mzy|mzy|mzy|Mozambican Sign Language|
 mzz|mzz|mzz|Maiadomu|
 nau|nau|na|Nauruan|
 naa|naa|naa|Namla|
@@ -5398,7 +5303,6 @@ nbo|nbo|nbo|Nkukoli|
 nbp|nbp|nbp|Nnam|
 nbq|nbq|nbq|Nggem|
 nbr|nbr|nbr|Numana|
-nbs|nbs|nbs|Namibian Sign Language|
 nbt|nbt|nbt|Na|
 nbt|nbt|nbt-Deva|Na (Deva script)|
 nbu|nbu|nbu|Naga, Rongmei|
@@ -5424,7 +5328,6 @@ nco|nco|nco|Sibe|
 ncq|ncq|ncq|Katang, Northern|
 ncq|ncq|ncq-Thai|Katang, Northern (Thai script)|
 ncr|ncr|ncr|Nchane|
-ncs|ncs|ncs|Nicaraguan Sign Language|
 nct|nct|nct|Naga, Chothe|
 nct|nct|nct-Beng|Naga, Chothe (Beng script)|
 ncu|ncu|ncu|Chumburung|Kyo̱ŋbo̱ro̱ŋ-nɔ
@@ -5761,17 +5664,13 @@ nse|nse|nse|Nsenga|
 nsf|nsf|nsf|Nisu, Northwestern|
 nsg|nsg|nsg|Ngasa|
 nsh|nsh|nsh|Ngoshie|
-nsi|nsi|nsi|Nigerian Sign Language|
 nsk|nsk|nsk|Naskapi|
 nsk|nsk|nsk-Latn|Naskapi (Latn script)|
-nsl|nsl|nsl|Norwegian Sign Language|
 nsm|nsm|nsm|Naga, Sumi|
 nsn|nsn|nsn|Nehan|Nehan
 nso|nso|nso|Sotho, Northern|Sesotho sa Leboa
 nso|nso|nso-Brai|Sotho, Northern (Brai script)|
-nsp|nsp|nsp|Nepalese Sign Language|
 nsq|nsq|nsq|Miwok, Northern Sierra|
-nsr|nsr|nsr|Maritime Sign Language|
 nss|nss|nss|Nali|Nali
 nst|nst|nst|Naga, Tangsa|
 nst|nst|nst-Latn|Naga, Tangshang (Latn script)|
@@ -5891,7 +5790,6 @@ nzd|nzd|nzd|Nzadi|
 nzi|nzi|nzi|Nzema|
 nzk|nzk|nzk|Nzakara|
 nzm|nzm|nzm|Naga, Zeme|
-nzs|nzs|nzs|New Zealand Sign Language|
 nzu|nzu|nzu|Teke-Nzikou|
 nzy|nzy|nzy|Nzakambay|
 nzz|nzz|nzz|Dogon, Nanga Dama|
@@ -5955,7 +5853,6 @@ okh|okh|okh|Koresh-e Rostam|
 oki|oki|oki|Okiek|
 okj|okj|okj|Oko-Juwoi|
 okk|okk|okk|One, Kwamtim|
-okl|okl|okl|Old Kentish Sign Language|
 okm|okm|okm|Middle Korean (10th-16th cent.)|
 okn|okn|okn|Oki-No-Erabu|
 oko|oko|oko|Old Korean (3rd-9th cent.)|
@@ -6199,7 +6096,6 @@ pgl|pgl|pgl|Primitive Irish|
 pgn|pgn|pgn|Paelignian|
 pgs|pgs|pgs|Pangseng|
 pgu|pgu|pgu|Pagu|
-pgz|pgz|pgz|Papua New Guinean Sign Language|
 pha|pha|pha|Pa-Hng|
 phd|phd|phd|Phudagi|
 phg|phg|phg|Phuong|
@@ -6260,7 +6156,6 @@ pkn|pkn|pkn|Pakanha|
 pko|pko|pko|Pökoot|
 pkp|pkp|pkp|Pukapuka|
 pkr|pkr|pkr|Kurumba, Attapady|
-pks|pks|pks|Pakistan Sign Language|
 pkt|pkt|pkt|Maleng|
 pku|pku|pku|Paku|
 pol|pol|pl|Polish|polski
@@ -6376,7 +6271,6 @@ prg|prg|prg|Prussian|prūsiskan
 prh|prh|prh|Porohanon|
 pri|pri|pri|Paicî|Paicî
 prk|prk|prk|Wa, Parauk|
-prl|prl|prl|Peruvian Sign Language|
 prm|prm|prm|Kibiri|
 prn|prn|prn|Prasuni|
 pro|pro|pro|Old Provençal (to 1500)|
@@ -6389,12 +6283,9 @@ pru|pru|pru|Puragi|
 prw|prw|prw|Parawen|
 prx|prx|prx|Purig|
 prx|prx|prx-Tibt|Purig (Tibt script)|
-prz|prz|prz|Providencia Sign Language|
 pus|pus|ps|Pushto|پښتو
 pus|pus|ps-PK|Pushto (Pakistan)|پښتو
 psa|psa|psa|Awyu, Asue|
-psc|psc|psc|Iranian Sign Language|
-psd|psd|psd|Plains Indian Sign Language|
 pse|pse|pse|Malay, Central|
 pse|pse|pse-x-enim|Malay, Central (x-enim)|
 pse|pse|pse-x-lintang|Malay, Central (x-lintang)|
@@ -6403,16 +6294,11 @@ pse|pse|pse-x-ogan|Malay, Central (x-ogan)|
 pse|pse|pse-x-pasemah|Malay, Central (x-pasemah)|
 pse|pse|pse-x-semenda|Malay, Central (x-semenda)|
 pse|pse|pse-x-serawai|Malay, Central (x-serawai)|
-psg|psg|psg|Penang Sign Language|
 psh|psh|psh|Pashai, Southwest|
 psi|psi|psi|Pashai, Southeast|
-psl|psl|psl|Puerto Rican Sign Language|
 psm|psm|psm|Pauserna|
 psn|psn|psn|Panasuan|
-pso|pso|pso|Polish Sign Language|
-psp|psp|psp|Filipino Sign Language|
 psq|psq|psq|Pasi|
-psr|psr|psr|Portuguese Sign Language|
 pss|pss|pss|Kaulong|Kaulong
 pst|pst|pst|Pashto, Central|
 psu|psu|psu-Brah|Sauraseni Prākrit (Brah script)|
@@ -6478,7 +6364,6 @@ pxm|pxm|pxm|Mixe, Quetzaltepec|
 pye|pye|pye|Krumen, Pye|
 pym|pym|pym|Pyam|Pyam
 pyn|pyn|pyn|Poyanáwa|
-pys|pys|pys|Paraguayan Sign Language|
 pyu|pyu|pyu|Puyuma|
 pyu|pyu|pyu-Hani|Puyuma (Hani script)|
 pyx|pyx|pyx|Pyu (Myanmar)|
@@ -6616,7 +6501,6 @@ rhg|rhg|rhg-Latn|Rohingya (Latn script)|
 rhg|rhg|rhg-Rohg|Rohingya (Rohg script)|
 rhp|rhp|rhp|Yahang|
 ria|ria|ria|Riang|
-rib|rib|rib|Bribri Sign Language|
 rie|rie|rie|Rien|
 rif|rif|rif|Tarifit|
 rif|rif|rif-Arab|Tarifit (Arab script)|
@@ -6658,7 +6542,6 @@ rmn|rmn|rmn-Grek|Romani, Balkan (Grek script)|
 rmo|rmo|rmo|Romani, Sinte|
 rmp|rmp|rmp|Rempi|
 rmq|rmq|rmq|Caló|
-rms|rms|rms|Romanian Sign Language|
 rmt|rmt|rmt|Domari|
 rmu|rmu|rmu|Romani, Tavringer|
 rmv|rmv|rmv|Romanova|
@@ -6667,7 +6550,6 @@ rmx|rmx|rmx|Romam|
 rmz|rmz|rmz|Marma|
 run|run|rn|Rundi|Ikirundi
 run|run|rn-Brai|Rundi (Brai script)|
-rnb|rnb|rnb|Brunca Sign Language|
 rnd|rnd|rnd|Ruund|
 rng|rng|rng|Ronga|
 rnl|rnl|rnl|Ranglong|
@@ -6702,11 +6584,7 @@ rri|rri|rri|Ririo|
 rro|rro|rro|Waima|
 rrt|rrt|rrt|Arritinngithigh|
 rsb|rsb|rsb|Romano-Serbian|
-rsi|rsi|rsi|Rennellese Sign Language|
 ||rsk|Ruthenian|
-rsl|rsl|rsl|Russian Sign Language|
-rsm|rsm|rsm|Miriwoong Sign Language|
-rsn|rsn|rsn|Rwandan Sign Language|
 rtc|rtc|rtc|Chin, Rungtu|
 rth|rth|rth|Ratahan|
 rtm|rtm|rtm|Rotuman|
@@ -6754,7 +6632,6 @@ ryu|ryu|ryu|Okinawan, Central|
 rzh|rzh|rzh|Rāziḥī|
 san|san|sa|Sanskrit|संस्कृतम्
 san|san|sa-Gran|Sanskrit (Gran script)|
-san|san|sa-Kawi|Sanskrit (Kawi script)|
 san|san|sa-Mymr|Sanskrit (Mymr script)|
 san|san|sa-Nand|Sanskrit (Nand script)|
 san|san|sa-Newa|Sanskrit (Newa script)|
@@ -6859,7 +6736,6 @@ sdg|sdg|sdg|Savi|
 sdh|sdh|sdh|Kurdish, Southern|
 sdj|sdj|sdj|Suundi|
 sdk|sdk|sdk|Sos Kundi|
-sdl|sdl|sdl|Saudi Arabian Sign Language|
 sdm|sdm|sdm|Semandang|
 sdn|sdn|sdn|Sardinian, Gallurese|
 sdo|sdo|sdo|Bidayuh Serian|
@@ -6903,10 +6779,8 @@ sev|sev|sev|Sénoufo, Nyarafolo|
 sew|sew|sew|Sewa Bay|
 sey|sey|sey|Paicoca|Pai Coca
 sez|sez|sez|Chin, Senthang|
-sfb|sfb|sfb|French Belgian Sign Language|
 sfe|sfe|sfe|Subanen, Eastern|
 sfm|sfm|sfm|Miao, Small Flowery|
-sfs|sfs|sfs|South African Sign Language|
 sfw|sfw|sfw|Esahie|
 sag|sag|sg|Sango|Sängö
 sga|sga|sga|Old Irish (to 900)|
@@ -6915,7 +6789,6 @@ sgb|sgb|sgb|Ayta, Mag-antsi|Ayta Mag-Antsi
 sgc|sgc|sgc|Kipsigis|
 sgd|sgd|sgd|Surigaonon|
 sge|sge|sge|Segai|
-sgg|sgg|sgg|Swiss-German Sign Language|
 sgh|sgh|sgh|Shughni|
 sgh|sgh|sgh-Arab|Shughni (Arab script)|
 sgh|sgh|sgh-Latn|Shughni (Latn script)|
@@ -6923,14 +6796,12 @@ sgi|sgi|sgi|Nizaa|
 sgj|sgj|sgj|Surgujia|
 sgk|sgk|sgk|Sangkong|
 sgm|sgm|sgm|Singa|
-sgn|sgn|sgn-MM|Sign languages (Myanmar)|
 sgp|sgp|sgp|Singpho|
 sgr|sgr|sgr|Sangisari|
 sgs|sgs|sgs|Samogitian|
 sgt|sgt|sgt|Brokpake|
 sgu|sgu|sgu|Salas|
 sgw|sgw|sgw|Sebat Bet Gurage|ሰባት ቤት ጉራጌ
-sgx|sgx|sgx|Sierra Leone Sign Language|
 sgy|sgy|sgy|Sanglechi|
 sgz|sgz|sgz|Sursurunga|Sursurunga
 hbs|hbs|sh|Serbo-Croatian|
@@ -7048,7 +6919,6 @@ slv|slv|sl-Brai|Slovene (Brai script)|
 slc|slc|slc|Sáliba|
 sld|sld|sld|Sissala|Sɩ́ssalɩ́
 sle|sle|sle|Sholaga|
-slf|slf|slf|Swiss-Italian Sign Language|
 slg|slg|slg|Murut, Selungai|
 slh|slh|slh|Southern Lushootseed|
 sli|sli|sli|Silesian, Lower|
@@ -7059,7 +6929,6 @@ sln|sln|sln|Salinan|
 slp|slp|slp|Lamaholot|
 slq|slq|slq|Salchuq|
 slr|slr|slr|Salar|
-sls|sls|sls|Singapore Sign Language|
 slt|slt|slt|Sila|
 slu|slu|slu|Selaru|
 slw|slw|slw|Sialum|
@@ -7184,17 +7053,14 @@ sqi|sqi|sq-Vith|Albanian (Vith script)|
 sqi|sqi|sq-XK|Albanian (Kosovo)|shqip
 sqa|sqa|sqa|Shama-Sambuga|
 sqh|sqh|sqh|Shau|
-sqk|sqk|sqk|Albanian Sign Language|
 sqm|sqm|sqm|Suma|
 sqn|sqn|sqn|Susquehannock|
 sqo|sqo|sqo|Sorkhei|
 sqq|sqq|sqq|Sou|
 sqr|sqr|sqr|Siculo Arabic|
-sqs|sqs|sqs|Sri Lankan Sign Language|
 sqt|sqt|sqt|Soqotri|
 sqt|sqt|sqt-Latn|Soqotri (Latn script)|
 squ|squ|squ|Squamish|
-sqx|sqx|sqx|Kufr Qassem Sign Language|
 srp|srp|sr|Serbian|српски
 srp|srp|sr-BA|Serbian (Bosnia and Herzegovina)|српски
 srp|srp|sr-Brai|Serbian (Brai script)|
@@ -7252,9 +7118,7 @@ ssl|ssl|ssl|Sisaala, Western|
 ssm|ssm|ssm|Semnam|
 ssn|ssn|ssn|Waata|
 sso|sso|sso|Essono|
-ssp|ssp|ssp|Spanish Sign Language|
 ssq|ssq|ssq|So’a|
-ssr|ssr|ssr|Swiss-French Sign Language|
 sss|sss|sss|So|
 sss|sss|sss-Thai|So (Thai script)|
 sst|sst|sst|Sinasina|
@@ -7317,7 +7181,6 @@ suw|suw|suw|Sumbwa|
 sux|sux|sux|Sumerian|
 suy|suy|suy|Suyá|
 suz|suz|suz|Sunwar|
-suz|suz|suz-Sunu|Sunwar (Sunu script)|
 swe|swe|sv|Swedish|svenska
 swe|swe|sv-AX|Swedish (Åland Islands)|svenska
 swe|swe|sv-Brai|Swedish (Brai script)|
@@ -7328,7 +7191,6 @@ sva|sva|sva-Latn|Svan (Latn script)|
 svb|svb|svb|Ulau-Suain|
 svc|svc|svc|Vincentian English Creole|
 sve|sve|sve|Serili|
-svk|svk|svk|Slovakian Sign Language|
 svm|svm|svm|Slavomolisano|
 svs|svs|svs|Savosavo|
 svx|svx|svx|Skalvian|
@@ -7348,7 +7210,6 @@ swh|swh|swh-Brai|Swahili (Brai script)|
 swi|swi|swi|Sui|
 swj|swj|swj|Sira|
 swk|swk|swk|Sena, Malawi|
-swl|swl|swl|Swedish Sign Language|
 swm|swm|swm|Samosa|
 swn|swn|swn|Sawknah|
 swo|swo|swo|Shanenawa|
@@ -7390,7 +7251,6 @@ syr|syr|syr|Syriac|ܣܘܪܝܝܐ
 sys|sys|sys|Sinyar|
 syw|syw|syw|Syuba|
 syx|syx|syx|Samay|
-syy|syy|syy|Al-Sayyid Bedouin Sign Language|
 sza|sza|sza|Semelai|
 szb|szb|szb|Ngalum|
 szc|szc|szc|Semaq Beri|
@@ -7400,7 +7260,6 @@ szg|szg|szg|Sengele|
 szl|szl|szl|Silesian|
 szn|szn|szn|Sula|
 szp|szp|szp|Suabo|
-szs|szs|szs|Solomon Islands Sign Language|
 szv|szv|szv|Isu|
 szw|szw|szw|Sawai|
 szy|szy|szy|Sakizaya|
@@ -7843,7 +7702,6 @@ tsa|tsa|tsa|Tsaangi|
 tsb|tsb|tsb|Tsamai|
 tsc|tsc|tsc|Tswa|
 tsd|tsd|tsd|Tsakonian|
-tse|tse|tse|Tunisian Sign Language|
 tsg|tsg|tsg|Tausug|
 tsg|tsg|tsg-Arab|Tausug (Arab script)|
 tsh|tsh|tsh|Tsuvan|
@@ -7851,17 +7709,13 @@ tsi|tsi|tsi|Tsimshian|
 tsj|tsj|tsj|Tshangla|
 tsk|tsk|tsk|Tseku|
 tsl|tsl|tsl|Ts’ün-Lao|
-tsm|tsm|tsm|Turkish Sign Language|
 tsp|tsp|tsp|Toussian, Northern|
-tsq|tsq|tsq|Thai Sign Language|
 tsr|tsr|tsr|Akei|
-tss|tss|tss|Taiwan Sign Language|
 tst|tst|tst|Tondi Songway Kiini|
 tsu|tsu|tsu|Tsou|
 tsv|tsv|tsv|Tsogo|
 tsw|tsw|tsw|Tsishingini|Tsishingini
 tsx|tsx|tsx|Mubami|
-tsy|tsy|tsy|Tebul Sign Language|
 tsz|tsz|tsz|Purepecha|
 tat|tat|tt|Tatar|татар
 tat|tat|tt-Arab|Tatar (Arab script)|
@@ -7991,7 +7845,6 @@ tyv|tyv|tyv|Tuvan|
 tyx|tyx|tyx|Teke-Tyee|
 tyy|tyy|tyy|Tiyaa|
 tyz|tyz|tyz|Tày|
-tza|tza|tza|Tanzanian Sign Language|
 tzh|tzh|tzh|Tzeltal|
 tzh|tzh|tzh-x-amate|Tzeltal (x-amate)|
 tzh|tzh|tzh-x-bachajon|Tzeltal (x-bachajon)|
@@ -8048,9 +7901,7 @@ uga|uga|uga|Ugaritic|
 ugb|ugb|ugb|Kuku-Ugbanh|
 uge|uge|uge|Ughele|
 ugh|ugh|ugh|Kubachi|
-ugn|ugn|ugn|Ugandan Sign Language|
 ugo|ugo|ugo|Ugong|
-ugy|ugy|ugy|Uruguayan Sign Language|
 uha|uha|uha|Uhami|
 uhn|uhn|uhn|Damal|
 uis|uis|uis|Uisai|
@@ -8063,10 +7914,8 @@ ukg|ukg|ukg|Ukuriguma|
 ukh|ukh|ukh|Ukhwejo|
 uki|uki|uki|Kui|
 ukk|ukk|ukk|Muak Sa-aak|
-ukl|ukl|ukl|Ukrainian Sign Language|
 ukp|ukp|ukp|Bukpe|
 ukq|ukq|ukq|Ukwa|
-uks|uks|uks|Kaapor Sign Language|
 uku|uku|uku|Ukue|
 ukv|ukv|ukv|Kuku|
 ukw|ukw|ukw|Ukwuani-Aboh-Ndoni|
@@ -8106,7 +7955,6 @@ unn|unn|unn|Kurnai|
 unr|unr|unr|Mundari|
 unr|unr|unr-Latn|Mundari (Latn script)|
 unr|unr|unr-NP|Mundari (Nepal)|
-unr|unr|unr-Nagm|Mundari (Nagm script)|
 unr|unr|unr-Orya|Mundari (Orya script)|
 unu|unu|unu|Unubahe|
 unx|unx|unx|Munda|
@@ -8209,7 +8057,6 @@ veo|veo|veo|Ventureño|
 vep|vep|vep|Veps|
 ver|ver|ver|Verre|
 vgr|vgr|vgr|Vaghri|
-vgt|vgt|vgt|Flemish Sign Language|
 vie|vie|vi|Vietnamese|Tiếng Việt
 vie|vie|vi-Brai|Vietnamese (Brai script)|
 vie|vie|vi-Hani|Vietnamese (Hani script)|
@@ -8280,9 +8127,6 @@ vra|vra|vra|Vera’a|
 vro|vro|vro|Võro|
 vrs|vrs|vrs|Varisi|
 vrt|vrt|vrt|Banam Bay|
-vsi|vsi|vsi|Moldova Sign Language|
-vsl|vsl|vsl|Venezuelan Sign Language|
-vsv|vsv|vsv|Valencian Sign Language|
 vto|vto|vto|Vitou|
 vum|vum|vum|Vumbu|
 vun|vun|vun|Vunjo|Kyivunjo
@@ -8332,7 +8176,6 @@ wbp|wbp|wbp|Warlpiri|Warlpiri
 wbq|wbq|wbq|Waddar|
 wbq|wbq|wbq-Arab|Waddar (Arab script)|
 wbr|wbr|wbr|Wagdi|
-wbs|wbs|wbs|West Bengal Sign Language|
 wbt|wbt|wbt|Warnman|
 wbv|wbv|wbv|Wajarri|
 wbw|wbw|wbw|Woi|
@@ -8621,7 +8464,7 @@ xha|xha|xha|Harami|
 xhc|xhc|xhc|Hunnic|
 xhd|xhd|xhd|Hadrami|
 xhe|xhe|xhe|Khetrani|
-xhm|xhm|xhm|Middle Khmer (1400 to 1850 CE)|
+xhm|xhm|xhm|Middle Khmer|
 xhr|xhr|xhr|Hernican|
 xht|xht|xht|Hattic|
 xhu|xhu|xhu|Hurrian|
@@ -8643,7 +8486,6 @@ xkd|xkd|xkd|Kayan, Mendalam|
 xke|xke|xke|Kereho|
 xkf|xkf|xkf-Tibt|Khengkha (Tibt script)|
 xkg|xkg|xkg|Kagoro|
-xki|xki|xki|Kenyan Sign Language|
 xkj|xkj|xkj|Kajali|
 xkk|xkk|xkk|Kachok|
 xkl|xkl|xkl|Kenyah, Mainstream|
@@ -8685,14 +8527,12 @@ xmg|xmg|xmg-Zzzz-x-bagam|Mengaka (Zzzz script, x-bagam)|
 xmh|xmh|xmh|Kugu-Muminh|
 xmj|xmj|xmj|Majera|
 xmk|xmk|xmk|Ancient Macedonian|
-xml|xml|xml|Malaysian Sign Language|
 xmm|xmm|xmm|Malay, Manado|
 xmn|xmn|xmn|Manichaean Middle Persian|
 xmo|xmo|xmo|Morerebi|
 xmp|xmp|xmp|Kuku-Mu’inh|
 xmq|xmq|xmq|Kuku-Mangk|
 xmr|xmr|xmr|Meroitic|
-xms|xms|xms|Moroccan Sign Language|
 xmt|xmt|xmt|Matbat|
 xmu|xmu|xmu|Kamu|
 xmv|xmv|xmv|Malagasy, Antankarana|
@@ -8933,13 +8773,11 @@ ygl|ygl|ygl|Yangum Gel|
 ygm|ygm|ygm|Tandɨ|
 ygp|ygp|ygp|Gepo|
 ygr|ygr|ygr|Yagaria|Yagaria
-ygs|ygs|ygs|Yolngu Sign Language|
 ygu|ygu|ygu|Yugul|
 ygw|ygw|ygw|Yagwoia|
 yha|yha|yha|Buyang, Baha|
 yhd|yhd|yhd|Arabic, Judeo-Iraqi|
 yhl|yhl|yhl|Phowa, Hlepho|
-yhs|yhs|yhs|Yan-nhangu Sign Language|
 yid|yid|yi|Yiddish|ייִדיש
 yia|yia|yia|Yinggarda|
 yif|yif|yif|Ache|
@@ -9052,8 +8890,6 @@ yry|yry|yry|Yarluyandi|
 ysc|ysc|ysc|Yassic|
 ysd|ysd|ysd|Samatao|
 ysg|ysg|ysg|Sonaga|
-ysl|ysl|ysl|Serbian Sign Language|
-ysm|ysm|ysm|Myanmar Sign Language|
 ysn|ysn|ysn|Sani|
 yso|yso|yso|Nisi|
 ysp|ysp|ysp|Lolopo, Southern|
@@ -9200,7 +9036,6 @@ zhn|zhn|zhn-Hani|Zhuang, Nong (Hani script)|
 zhw|zhw|zhw|Zhoa|
 zhx|zhx|zhx|Chinese (family)|
 zia|zia|zia|Zia|
-zib|zib|zib|Zimbabwe Sign Language|
 zik|zik|zik|Zimakani|
 zil|zil|zil|Zialo|
 zim|zim|zim|Mesme|
@@ -9305,7 +9140,6 @@ zrp|zrp|zrp|Zarphatic|
 zrs|zrs|zrs|Mairasi|
 zsa|zsa|zsa|Sarasira|
 zsk|zsk|zsk|Kaskean|
-zsl|zsl|zsl|Zambian Sign Language|
 zsr|zsr|zsr|Zapotec, Southern Rincon|
 zsu|zsu|zsu|Sukurum|
 zte|zte|zte|Zapotec, Elotepec|

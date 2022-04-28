@@ -1,9 +1,12 @@
 #!/usr/bin/env node
-// Copyright 2021 SIL International
-import * as program from 'commander';
+// Copyright 2021-2022 SIL International
+import {Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
+const Ajv = require('ajv');
+import {ErrorObject} from 'ajv';
 const {version} = require('../package.json');
+const program = new Command();
 
 ////////////////////////////////////////////////////////////////////
 // Get parameters
@@ -24,6 +27,10 @@ if (debugParameters) {
   }
   console.log('\n');
 }
+
+////////////////////////////////////////////////////////////////////
+// End of parameters
+////////////////////////////////////////////////////////////////////
 
 export class iso639Type {
   abbreviation: string; // 3 letter
@@ -80,11 +87,16 @@ export class iso639Type {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-// End of parameters
-////////////////////////////////////////////////////////////////////
+// Utility to determine if a language tag is for a Sign Language
+function isSignLanguage(l: any) : boolean {
+  if (!l.full) {
+    console.info(l.name + ' does not have full tag. Tag is ' + l.tag);
+  }
+  return l!.script == 'Zxxx' || l!.name.endsWith('Sign Language');
+}
 
-function loadLangtagsJson() : any {
+// Load langtags.json
+function loadLangtagsJson() : any[] {
   const langTagsFile = "langtags.json";
 
   // Check if langtags.json file exists
@@ -98,11 +110,29 @@ function loadLangtagsJson() : any {
   return langtagsJson;
 }
 
+// Validate langtags.json file
+function validateLangtagsJson(langtagsJson : any[]) : boolean {
+  const langTagsSchemaFile = "langtags.schema.json";
+
+  // Validate langtags.json
+  let ajv = new Ajv({strict: false});
+  let validate = ajv.compile(JSON.parse(fs.readFileSync(langTagsSchemaFile).toString()));
+  let valid = validate(langtagsJson);
+
+  if(!valid) {
+    console.log(validate.errors);
+  }
+
+  return valid;
+}
+
 let langtagsJson = loadLangtagsJson();
+let valid = validateLangtagsJson(langtagsJson);
 
 let langtags : iso639Type[] = [];
 langtagsJson.forEach(l => {
-  if (l.full && l.full != 'x-bad-mru-Cyrl-RU') {
+  // Skip _tags, sign languages, and invalid tags
+  if (!l.tag.startsWith('_') && !isSignLanguage(l) && l.full != 'x-bad-mru-Cyrl-RU') {
     let langtag: iso639Type = new iso639Type(l);
     langtags.push(langtag);
   }
