@@ -102,6 +102,10 @@ adn|adn|adn|Adang|
 ado|ado|ado|Abu|
 adq|adq|adq|Adangbe|
 adr|adr|adr|Adonara|
+<<<<<<< HEAD
+=======
+ads|ads|ads|Adamorobe Sign Language|
+>>>>>>> master
 adt|adt|adt|Adnyamathanha|
 adu|adu|adu|Aduge|
 adw|adw|adw|Amundava|
@@ -115,6 +119,7 @@ ave|ave|ae-Arab|Avestan (Arab script)|
 ave|ave|ae-Gujr|Avestan (Gujr script)|
 aea|aea|aea|Areba|
 aeb|aeb|aeb|Arabic, Tunisian Spoken|تونسي
+ajt|ajt|aeb-Hebr-IL|Tunisian Arabic (Hebr script, Israel)|
 aeb|aeb|aeb-Latn|Arabic, Tunisian Spoken (Latn script)|Derja
 aec|aec|aec|Arabic, Sa’idi Spoken|
 aee|aee|aee|Pashai, Northeast|
@@ -220,8 +225,12 @@ ajg|ajg|ajg|Aja|Ajagbe
 aji|aji|aji|Ajië|
 ajn|ajn|ajn|Andajin|
 ajp|ajp|ajp|Arabic, South Levantine Spoken|
+<<<<<<< HEAD
 ajt|ajt|ajt-Hebr|Judeo-Tunisian Arabic (Hebr script)|
 aju|aju|aju-Arab|Arabic, Judeo-Moroccan (Arab script)|
+=======
+ajs|ajs|ajs|Algerian Jewish Sign Language|
+>>>>>>> master
 ajw|ajw|ajw|Ajawa|
 ajz|ajz|ajz|Amri Karbi|
 aka|aka|ak|Akan|Akan
@@ -3397,7 +3406,7 @@ jqr|jqr|jqr|Jaqaru|
 jra|jra|jra|Jarai|Jơrai
 jra|jra|jra-Khmr|Jarai (Khmr script)|
 jrb|jrb|jrb|Judeo-Arabic|
-ajt|ajt|jrb-Arab-TN|Judeo-Arabic (Arab script, Tunisia)|
+aju|aju|jrb-Arab-MA|Arabic, Judeo-Moroccan (Arab script, Morocco)|
 jrr|jrr|jrr|Jiru|
 jrt|jrt|jrt|Jakattoe|
 jru|jru|jru|Japreria|
@@ -3956,7 +3965,6 @@ ksm|ksm|ksm|Kumba|
 ksn|ksn|ksn|Kasiguranin|
 kso|kso|kso|Kofa|
 ksp|ksp|ksp|Kabba|Kabba
-lak|lak|ksp-Latn-NG|Kaba (Latn script, Nigeria)|
 ksq|ksq|ksq|Kwaami|
 ksr|ksr|ksr|Borong|Boroŋ
 kss|kss|kss|Kisi, Southern|
@@ -6632,6 +6640,7 @@ ryu|ryu|ryu|Okinawan, Central|
 rzh|rzh|rzh|Rāziḥī|
 san|san|sa|Sanskrit|संस्कृतम्
 san|san|sa-Gran|Sanskrit (Gran script)|
+san|san|sa-Kawi|Sanskrit (Kawi script)|
 san|san|sa-Mymr|Sanskrit (Mymr script)|
 san|san|sa-Nand|Sanskrit (Nand script)|
 san|san|sa-Newa|Sanskrit (Newa script)|
@@ -7181,6 +7190,7 @@ suw|suw|suw|Sumbwa|
 sux|sux|sux|Sumerian|
 suy|suy|suy|Suyá|
 suz|suz|suz|Sunwar|
+suz|suz|suz-Sunu|Sunwar (Sunu script)|
 swe|swe|sv|Swedish|svenska
 swe|swe|sv-AX|Swedish (Åland Islands)|svenska
 swe|swe|sv-Brai|Swedish (Brai script)|
@@ -7260,6 +7270,10 @@ szg|szg|szg|Sengele|
 szl|szl|szl|Silesian|
 szn|szn|szn|Sula|
 szp|szp|szp|Suabo|
+<<<<<<< HEAD
+=======
+szs|szs|szs|Solomon Islands Sign Language|
+>>>>>>> master
 szv|szv|szv|Isu|
 szw|szw|szw|Sawai|
 szy|szy|szy|Sakizaya|
@@ -7955,6 +7969,7 @@ unn|unn|unn|Kurnai|
 unr|unr|unr|Mundari|
 unr|unr|unr-Latn|Mundari (Latn script)|
 unr|unr|unr-NP|Mundari (Nepal)|
+unr|unr|unr-Nagm|Mundari (Nagm script)|
 unr|unr|unr-Orya|Mundari (Orya script)|
 unu|unu|unu|Unubahe|
 unx|unx|unx|Munda|
@@ -8464,7 +8479,7 @@ xha|xha|xha|Harami|
 xhc|xhc|xhc|Hunnic|
 xhd|xhd|xhd|Hadrami|
 xhe|xhe|xhe|Khetrani|
-xhm|xhm|xhm|Middle Khmer|
+xhm|xhm|xhm|Middle Khmer (1400 to 1850 CE)|
 xhr|xhr|xhr|Hernican|
 xht|xht|xht|Hattic|
 xhu|xhu|xhu|Hurrian|

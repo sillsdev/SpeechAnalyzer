@@ -98,20 +98,27 @@ class annotation;
 
 class text : public lift_base {
 public:
+    text(LPCTSTR _name, LPCTSTR data) :
+        lift_base(_name),
+        zmspan(SPAN) {
+        pcdata = data;
+    };
+
     text(LPCTSTR _name) :
         lift_base(_name),
-		zmspan(SPAN) {
+        zmspan(SPAN) {
     };
 
     text(LPCTSTR _name, span _span) :
         lift_base(_name),
-		zmspan(SPAN) {
-		zmspan.append(_span);
+        zmspan(SPAN) {
+        zmspan.append(_span);
     };
 
     void load(Element * in) {
         expect(in,name);
         load_derived(in);
+        load_value(pcdata, in);
     }
 
     void load_derived(Element * in) {
@@ -121,6 +128,7 @@ public:
     Element * store() {
         Element * out = new Element(name);
         store_derived(out);
+        store_value(pcdata, out);
         return out;
     }
 
@@ -142,7 +150,10 @@ public:
 		return true;
     }
 
-	zero_more<span> zmspan;
+    // elements
+    zero_more<span> zmspan;
+    // data
+    wstring pcdata;
 };
 
 class trait;
@@ -705,6 +716,11 @@ class gloss : public form {
 public:
     gloss(LPCTSTR _name) :
         form(_name),
+        trait(L"trait") {
+    };
+
+    gloss(LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) :
+        form(_name, _lang, Lift13::text(LTEXT, _data)),
         trait(L"trait") {
     };
 
