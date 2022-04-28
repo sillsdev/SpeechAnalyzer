@@ -42,6 +42,25 @@ jobs:
     - name: Generate iso639.txt
       run: node ./dist/index.js -o iso639.txt
 
+    - name: Show file locations
+      run: |
+        pwd
+        ls
+
+    - name: Save iso639.txt artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: iso639.txt
+        path: DevUtils\parse-langtags\iso639.txt
+        retention-days: 30
+
+    - name: Save langtags.json artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: langtags.json
+        path: DevUtils\parse-langtags\langtags.json
+        retention-days: 30
+
     - name: Overwrite file in DistFiles/
       run: move iso639.txt ../../DistFiles/ -Force
       #run: move ./dist/index.js ../../DistFiles/iso639.txt -Force #force diff for testing
