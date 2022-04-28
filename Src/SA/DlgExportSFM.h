@@ -15,15 +15,15 @@ protected:
     virtual void OnOK();
     virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
-    void ExportDefault();
+    void ExportDefault(CSaString separator = L" ");
     void ExportColumnar();
     void ExportInterlinear();
     void ExportMultiRecord();
-    void ExportFile(CSaDoc * pDoc, CFile & file);
-    void ExportCounts(CSaDoc * pDoc, CFile & file);
-    void ExportAllFileInformation(CSaDoc * pDoc, CFile & file);
-    void ExportAllParameters(CSaDoc * pDoc, CFile & file);
-    void ExportAllSource(CSaDoc * pDoc, CFile & file);
+    void ExportFile(CSaDoc * pDoc, CFile & file, CSaString separator = L" ");
+    void ExportCounts(CSaDoc * pDoc, CFile & file, CSaString separator = L" ");
+    void ExportAllFileInformation(CSaDoc * pDoc, CFile & file, CSaString separator = L" ");
+    void ExportAllParameters(CSaDoc * pDoc, CFile & file, CSaString separator = L" ");
+    void ExportAllSource(CSaDoc * pDoc, CFile & file, CSaString separator = L" ");
     bool TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile & file);
     bool TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile & file);
     CSaString BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain);
@@ -44,7 +44,6 @@ protected:
 
     CSaString m_szFileName;
     CSaString m_szDocTitle;
-    CSaString m_szSeparator;
     enum { IDD = IDD_EXPORT_SFM };
     BOOL m_bAllSource;
     BOOL m_bBandwidth;
