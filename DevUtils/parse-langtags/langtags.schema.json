@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema#",
   "$ref": "#/definitions/langtags",
+  "$comment": "Originally from https://gist.github.com/mcdurdin/eff65bb2d77034525120d48cbe280d30",
   "definitions": {
     "langtags": {
       "type": "array",
