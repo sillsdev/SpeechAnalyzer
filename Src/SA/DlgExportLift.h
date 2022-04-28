@@ -46,7 +46,6 @@ protected:
     void SetEnable(int nItem, BOOL bEnable);
     void SetCheck(int nItem, BOOL bCheck);
     void UpdateButtonState();
-    CString lookupCountryCode(LPCTSTR value);
 
     afx_msg void OnHelpExportBasic();
     afx_msg void OnClickedBrowse();
@@ -81,6 +80,11 @@ protected:
     map<wstring,wstring> countryCodes;
 
     DECLARE_MESSAGE_MAP()
+
+private:
+    CString lookupLanguageID(LPCTSTR value); // previously lookupCountryCode
+    CString lookupLanguageName(LPCTSTR value);
+    void CDlgExportLift::GetLastExport(LPCTSTR key, CComboBox *comboBox);
 };
 
 #endif

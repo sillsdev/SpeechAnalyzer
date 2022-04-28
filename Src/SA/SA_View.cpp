@@ -1375,7 +1375,16 @@ void CSaView::OnExportLift() {
 
 	CDlgExportLift dlg(title, exportDir, gloss, glossNat, ortho, phonemic, phonetic, reference, codes);
 	if (dlg.DoModal() == IDOK) {
-		pApp->WriteProfileStringW(L"Lift", L"LastExport", dlg.settings.szPath);
+		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT, dlg.settings.szPath);
+
+		// Write out Lift Export preferences. Gloss, Phonemic, and Phonetic are already hard-coded
+		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_GLOSS_NAT, CSaString(dlg.settings.glossNat.c_str()));
+		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_ORTHO, CSaString(dlg.settings.ortho.c_str()));
+		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_REFERENCE, CSaString(dlg.settings.reference.c_str()));
+		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_PHRASE1, CSaString(dlg.settings.phrase1.c_str()));
+		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_PHRASE2, CSaString(dlg.settings.phrase2.c_str()));
+		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_OPTIONAL_LANGUAGE_TAG, dlg.settings.optionalLanguageTag);
+
 		pDoc->DoExportLift(dlg.settings);
 	}
 }
