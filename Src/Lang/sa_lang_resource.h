@@ -1402,6 +1402,7 @@
 #define IDS_MC_CHANNEL_RIGHT            11026
 #define IDS_NO_CHOICE                   11030
 #define IDS_ROWS                        11031
+#define IDS_ROWS_CSV                    11035
 #define IDS_INTERLINEAR                 11032
 #define IDS_MULTIRECORD                 11033
 #define IDS_COLUMNAR                    11034
