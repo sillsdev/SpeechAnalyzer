@@ -8,8 +8,12 @@ Building Speech Analyzer requires the following software to be installed:
 1. Speech Analyzer.
 1. Microsoft Visual Studio 2022
     1. Workloads
+        * .NET desktop development
         * Desktop development with C++
     1. Individual components
+        * .NET 6.0 Runtime
+        * .NET Framework 4.8 SDK
+        * .NET Framework 4.8 targeting pack
         * Windows 10 SDK
         * C++ MFC for latest v143 build tools (x86 & x64)
 1. .NET Framework 4.6.1 Developer Pack
