@@ -6,12 +6,16 @@ Speech Analyzer is a 32-bit application.  Use (x86) installers where appropriate
 # Software Requirements
 Building Speech Analyzer requires the following software to be installed:
 1. Speech Analyzer.
-1. Microsoft Visual Studio 2019
+1. Microsoft Visual Studio 2022
     1. Workloads
+        * .NET desktop development
         * Desktop development with C++
     1. Individual components
+        * .NET 6.0 Runtime
+        * .NET Framework 4.8 SDK
+        * .NET Framework 4.8 targeting pack
         * Windows 10 SDK
-        * C++ MFC for latest v142 build tools (x86 & x64)
+        * C++ MFC for latest v143 build tools (x86 & x64)
 1. .NET Framework 4.6.1 Developer Pack
 1. InnoSetup 5.5.3 'unicode'.  You will need to install both isetup-5.5.3-unicode.exe and ispack-5.5.3-unicode.exe. 
 Innosetup is found at http://files.jrsoftware.org/is/5/.  Accept all defaults when installing the application(s).
@@ -30,7 +34,7 @@ The following fonts need to be installed before using the music features:
 
 # Build Speech Analyzer
 To build Speech Analyzer, do the following:
-1. Open Visual Studio 2019 as Administrator and select and open the solution file : *SpeechAnalyzer\SpeechAnalyzer.sln.*
+1. Open Visual Studio 2022 as Administrator and select and open the solution file : *SpeechAnalyzer\SpeechAnalyzer.sln.*
 (Administrator rights needed to get SAUtils to register its library)
 1. On the menu bar, select the *Debug* or *Release* configuration.  If you want to build a installer executable later on, you will need to select the *Release* configuration.
 1. In the solution explorer, right click on the *SA* project and select the *Set as Startup Project* menu item.
