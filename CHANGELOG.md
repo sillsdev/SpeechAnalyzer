@@ -1,3 +1,14 @@
+# SA - 3.1.1.4 5/7/2022
+- Updates for Lift export:
+    - Add feature to save language preferences so they can be restored for future Lift exports
+    - Remove optional `<span>` elements for Gloss and Reference so there won't be extra whitespace when importing to Fieldworks
+- Add feature to export SFM Rows as comma-separated values (.csv). This facilitates exporting wordlists to [Cog](https://software.sil.org/cog/)
+- Remove Sign languages (`Zxxx` script) from auto-generated iso639.txt
+- Developer Changes:
+    - Update iso639.txt
+    - Updated SA project so that it is now built with Microsoft Visual Studio 2022
+    - Update parse-langtags GitHub action to save artifacts
+
 # SA - 3.1.1.3 3/4/2022
 - Fixed bug that caused the 'Esc' key to be unresponsive during Formant Track processing.
 - Fix 'Save As' dialog when using .mp3 files
