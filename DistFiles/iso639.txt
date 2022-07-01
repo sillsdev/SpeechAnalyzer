@@ -51,7 +51,7 @@ abq|abq|abq-Cyrl|Abaza (Cyrl script)|
 abq|abq|abq-Latn|Abaza (Latn script)|
 abr|abr|abr|Abron|
 abs|abs|abs|Malay, Ambonese|
-abt|abt|abt|Ambulas|Ambulas
+abt|abt|abt|Ambulas|Abulas
 abt|abt|abt-x-maprik|Ambulas (x-maprik)|
 abt|abt|abt-x-woserak|Ambulas (x-woserak)|
 abu|abu|abu|Abure|
@@ -519,7 +519,7 @@ aur|aur|aur|Aruek|
 aut|aut|aut|Austral|
 auu|auu|auu|Auye|
 auw|auw|auw|Awyi|
-aux|aux|aux|Aurá|
+aux|aux|aux-Latn|Aurá (Latn script)|
 auy|auy|auy|Awiyaana|Awiyaana
 auz|auz|auz|Arabic, Uzbeki Spoken|
 ava|ava|av|Avar|
@@ -529,7 +529,7 @@ avi|avi|avi|Avikam|
 avk|avk|avk|Kotava|
 avl|avl|avl|Arabic, Eastern Egyptian Bedawi Spoken|بدوي
 avm|avm|avm|Angkamuthi|
-avn|avn|avn|Avatime|Si-yà
+avn|avn|avn|Avatime|Sideme
 avo|avo|avo|Agavotaguerra|
 avs|avs|avs|Aushiri|
 avt|avt|avt|Au|Au
@@ -584,7 +584,7 @@ ayy|ayy|ayy|Tayabas Ayta|
 ayz|ayz|ayz|Mai Brat|Mai Brat
 aze|aze|az|Azerbaijani|azərbaycan
 aze|aze|az-Brai|Azerbaijani (Brai script)|
-aze|aze|az-Cyrl-AZ|Azerbaijani (Cyrl script, Azerbaijan)|азәрбајҹан
+aze|aze|az-Cyrl-AZ|Azerbaijani (Cyrl script, Azerbaijan)|azəri
 aze|aze|az-IQ|Azerbaijani (Iraq)|
 aze|aze|az-IR|Azerbaijani (Islamic Republic of Iran)|
 aze|aze|az-RU|Azerbaijani (Russian Federation)|азәрбајҹан
@@ -864,7 +864,7 @@ bjm|bjm|bjm|Bajelani|
 bjn|bjn|bjn|Banjar|
 bjn|bjn|bjn-Arab|Banjar (Arab script)|
 bjo|bjo|bjo|Banda, Mid-Southern|
-bjp|bjp|bjp|Fanamaket|
+bjp|bjp|bjp|Fanamaket|Fanamaket
 bjr|bjr|bjr|Binumarien|Binumarien
 bjs|bjs|bjs|Bajan|
 bjt|bjt|bjt|Balanta-Ganja|
@@ -895,7 +895,7 @@ bks|bks|bks|Sorsoganon, Northern|
 bkt|bkt|bkt|Boloki|
 bku|bku|bku|Buhid|
 bku|bku|bku-Buhd|Buhid (Buhd script)|
-bkv|bkv|bkv|Bekwarra|
+bkv|bkv|bkv|Bekwarra|Ebekwara
 bkw|bkw|bkw|Bekwel|
 bkx|bkx|bkx|Baikeno|
 bky|bky|bky|Bokyi|
@@ -914,7 +914,7 @@ blk|blk|blk|Pa’o|
 bll|bll|bll|Biloxi|
 blm|blm|blm|Beli|
 bln|bln|bln|Bikol, Southern Catanduanes|
-blo|blo|blo|Anii|Anii
+blo|blo|blo|Anii|
 blp|blp|blp|Blablanga|
 blq|blq|blq|Paluai|
 blr|blr|blr|Blang|
@@ -1188,9 +1188,9 @@ bux|bux|bux|Boghom|
 buy|buy|buy|Bullom So|
 buz|buz|buz|Bukwen|
 bva|bva|bva|Barein|
-bvb|bvb|bvb|Bube|
+bvb|bvb|bvb|Bube|Bube
 bvc|bvc|bvc|Baelelea|
-bvd|bvd|bvd|Baeggu|
+bvd|bvd|bvd|Baeggu|Baeggu
 bve|bve|bve|Malay, Berau|
 bvf|bvf|bvf|Boor|
 bvg|bvg|bvg|Bonkeng|
@@ -1214,7 +1214,7 @@ bvz|bvz|bvz|Bauzi|
 bwa|bwa|bwa|Bwatoo|
 bwb|bwb|bwb|Namosi-Naitasiri-Serua|
 bwc|bwc|bwc|Bwile|
-bwd|bwd|bwd|Bwaidoka|
+bwd|bwd|bwd|Bwaidoka|Bwaidoka
 bwe|bwe|bwe|Karen, Bwe|
 bwe|bwe|bwe-Latn|Karen, Bwe (Latn script)|
 bwf|bwf|bwf|Boselewa|
@@ -1574,7 +1574,7 @@ coj|coj|coj|Cochimi|
 cok|cok|cok|Cora, Santa Teresa|Kwéimarusa’na
 col|col|col|Columbia-Wenatchi|
 com|com|com|Comanche|
-con|con|con|Cofán|A'ingae
+con|con|con-Latn|Cofán (Latn script)|A'ingae
 coo|coo|coo|Comox|
 cop|cop|cop|Coptic|
 cop|cop|cop-Arab|Coptic (Arab script)|
@@ -1746,7 +1746,7 @@ dax|dax|dax|Dayi|
 daz|daz|daz|Dao|
 dba|dba|dba|Bangime|
 dbb|dbb|dbb|Deno|
-dbd|dbd|dbd|Dadiya|
+dbd|dbd|dbd|Dadiya|Nyiyo Daddi̱ya
 dbe|dbe|dbe|Dabe|
 dbf|dbf|dbf|Edopi|
 dbg|dbg|dbg|Dogon, Dogul Dom|
@@ -5706,7 +5706,7 @@ nuh|nuh|nuh|Ndunda|
 nui|nui|nui|Kombe|
 nuj|nuj|nuj|Nyole|Lunyole
 nuk|nuk|nuk|Nuu-chah-nulth|
-nul|nul|nul|Nusa Laut|
+nul|nul|nul-Latn|Nusa Laut (Latn script)|
 num|num|num|Niuafo’ou|
 nun|nun|nun|Anong|
 nuo|nuo|nuo|Nguôn|
@@ -6272,7 +6272,7 @@ prh|prh|prh|Porohanon|
 pri|pri|pri|Paicî|Paicî
 prk|prk|prk|Wa, Parauk|
 prm|prm|prm|Kibiri|
-prn|prn|prn|Prasuni|
+prn|prn|prn-Arab|Prasuni (Arab script)|
 pro|pro|pro|Old Provençal (to 1500)|
 prp|prp|prp|Parsi|
 prq|prq|prq|Ashéninka, Perené|
