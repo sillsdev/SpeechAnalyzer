@@ -2,6 +2,9 @@ name: Build and Run Tests. Compile and Upload Installer for Releases
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master

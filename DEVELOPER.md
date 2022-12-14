@@ -1,7 +1,6 @@
 # Building Speech Analyzer
 This document details the build process for Speech Analyzer.
-The source code for Speech Analyzer is stored on GitHub. https://github.com/.
-Speech Analyzer is a 32-bit application.  Use (x86) installers where appropriate.
+Speech Analyzer is a 32-bit Windows application.  Use (x86) installers where appropriate.
 
 # Software Requirements
 Building Speech Analyzer requires the following software to be installed:
@@ -73,3 +72,12 @@ To compile the chm file, run the following script from the `help/` folder
 ```
 ./build.sh
 ```
+
+# Release Process
+The following steps detail how to create a Speech Analyzer release and publish a signed installer
+1. Tag the commit you want to release with a version tag e.g. v2022-12-05
+2. [Create a new GitHub release](https://github.com/sillsdev/SpeechAnalyzer/releases/new) based upon that tag
+3. When the release is published, GitHub Actions will build and publish a Speech Analyzer installer (unsigned) attached to the release
+4. Wait for the installer to be published, then over on [TeamCity](https://build.palaso.org/buildConfiguration/SpeechAnalyzer_SignInstaller), push the `Run` button to create a signed installer from published unsigned installer.
+5. Download the signed installer (artifact from TeamCity build) locally and upload and replace the published installer on the GitHub release.
+6. Update the [Speech Analyzer product page](https://software.sil.org/speech-analyzer/) by logging into WordPress and manually updating the version number and download location.
