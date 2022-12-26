@@ -346,31 +346,31 @@ void CDlgFnKeys::OnSelchangeFnlist() {
 		m_fnKeys.nVolume[m_nSelection] = m_nVolume;
 		m_fnKeys.bRepeat[m_nSelection] = m_bRepeat;
 		switch (m_nPlayMode) {
-		case 0:
+		case 8:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_STARTCUR_TO_FILEEND;
 			break;
-		case 1:
+		case 0:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_ENCCUR_TO_FILEEND;
 			break;
-		case 2:
+		case 1:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_CURSORS;
 			break;
-		case 3:
+		case 2:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_LEFTWIN_TO_STARTCUR;
 			break;
-		case 4:
+		case 3:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_STARTCUR_TO_RIGHTWIN;
 			break;
-		case 5:
+		case 4:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_LEFTWIN_TO_ENDCUR;
 			break;
-		case 6:
+		case 5:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_ENDCUR_TO_RIGHTWIN;
 			break;
-		case 7:
+		case 6:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_WINDOW;
 			break;
-		case 8:
+		case 7:
 			m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_FILE;
 			break;
 		}
@@ -383,31 +383,31 @@ void CDlgFnKeys::OnSelchangeFnlist() {
 	m_bRepeat = m_fnKeys.bRepeat[m_nSelection];
 	switch (m_fnKeys.nMode[m_nSelection]) {
 	case ID_PLAYBACK_STARTCUR_TO_FILEEND:
-		m_nPlayMode = 0;
+		m_nPlayMode = 8;
 		break;
 	case ID_PLAYBACK_ENCCUR_TO_FILEEND:
-		m_nPlayMode = 1;
+		m_nPlayMode = 0;
 		break;
 	case ID_PLAYBACK_CURSORS:
-		m_nPlayMode = 2;
+		m_nPlayMode = 1;
 		break;
 	case ID_PLAYBACK_LEFTWIN_TO_STARTCUR:
-		m_nPlayMode = 3;
+		m_nPlayMode = 2;
 		break;
 	case ID_PLAYBACK_STARTCUR_TO_RIGHTWIN:
-		m_nPlayMode = 4;
+		m_nPlayMode = 3;
 		break;
 	case ID_PLAYBACK_LEFTWIN_TO_ENDCUR:
-		m_nPlayMode = 5;
+		m_nPlayMode = 4;
 		break;
 	case ID_PLAYBACK_ENDCUR_TO_RIGHTWIN:
-		m_nPlayMode = 6;
+		m_nPlayMode = 5;
 		break;
 	case ID_PLAYBACK_WINDOW:
-		m_nPlayMode = 7;
+		m_nPlayMode = 6;
 		break;
 	case ID_PLAYBACK_FILE:
-		m_nPlayMode = 8;
+		m_nPlayMode = 7;
 		break;
 	}
 	TRACE("m_nPlayMode=%d\n", m_nPlayMode);
@@ -495,22 +495,22 @@ void CDlgFnKeys::OnTest() {
 		BOOL bError = FALSE;
 		TRACE("m_nPlayMode=%d\n", m_nPlayMode);
 		switch (m_nPlayMode) {
-		case 0:
+		case 8:
 			//ID_PLAYBACK_STARTCUR_TO_FILEEND
 			dwStart = m_pView->GetStartCursorPosition();
 			dwSize = pDoc->GetDataSize() - dwStart;
 			break;
-		case 1:
+		case 0:
 			//ID_PLAYBACK_ENCCUR_TO_FILEEND
 			dwStart = m_pView->GetStopCursorPosition();
 			dwSize = pDoc->GetDataSize() - dwStart;
 			break;
-		case 2:
+		case 1:
 			//ID_PLAYBACK_CURSORS
 			dwStart = m_pView->GetStartCursorPosition();
 			dwSize = m_pView->GetStopCursorPosition() - dwStart + wSmpSize;
 			break;
-		case 3:
+		case 2:
 			//ID_PLAYBACK_LEFTWIN_TO_STARTCUR
 			dwStart = DWORD(m_pView->GetDataPosition(0));
 			dwSize = m_pView->GetStartCursorPosition();
@@ -520,7 +520,7 @@ void CDlgFnKeys::OnTest() {
 				bError = TRUE;
 			}
 			break;
-		case 4:
+		case 3:
 			//ID_PLAYBACK_STARTCUR_TO_RIGHTWIN
 			dwStart = m_pView->GetStartCursorPosition();
 			dwSize = DWORD(m_pView->GetDataPosition(0) + m_pView->GetDataFrame());
@@ -530,7 +530,7 @@ void CDlgFnKeys::OnTest() {
 				bError = TRUE;
 			}
 			break;
-		case 5:
+		case 4:
 			//ID_PLAYBACK_LEFTWIN_TO_ENDCUR
 			dwStart = DWORD(m_pView->GetDataPosition(0));
 			TRACE("DataPosition=%lu\n", dwStart);
@@ -541,7 +541,7 @@ void CDlgFnKeys::OnTest() {
 				bError = TRUE;
 			}
 			break;
-		case 6:
+		case 5:
 			//ID_PLAYBACK_ENDCUR_TO_RIGHTWIN
 			dwStart = m_pView->GetStopCursorPosition();
 			dwSize = DWORD(m_pView->GetDataPosition(0) + m_pView->GetDataFrame());
@@ -551,12 +551,12 @@ void CDlgFnKeys::OnTest() {
 				bError = TRUE;
 			}
 			break;
-		case 7:
+		case 6:
 			//ID_PLAYBACK_WINDOW
 			dwStart = DWORD(m_pView->GetDataPosition(0));
 			dwSize = m_pView->GetDataFrame();
 			break;
-		case 8:
+		case 7:
 			//ID_PLAYBACK_FILE
 			dwSize = pDoc->GetDataSize();
 			break;
