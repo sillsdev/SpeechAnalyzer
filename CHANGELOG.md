@@ -1,3 +1,8 @@
+# SA - 3.1.1.5 1/18/2022:
+- Fixed function key bindings for menu playback functions
+- Developer Changes:
+    - Generate iso639.txt with GitHub action
+
 # SA - 3.1.1.4 5/7/2022
 - Updates for Lift export:
     - Add feature to save language preferences so they can be restored for future Lift exports
