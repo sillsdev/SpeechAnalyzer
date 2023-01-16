@@ -1,4 +1,4 @@
-# SA - 3.1.1.5 1/18/2022:
+# SA - 3.1.2.0 1/18/2022:
 - Fixed function key bindings for menu playback functions
 - Developer Changes:
     - Generate iso639.txt with GitHub action

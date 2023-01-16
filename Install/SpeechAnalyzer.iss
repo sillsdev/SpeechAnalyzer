@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer"
-#define MyAppVersion "3.1.1.5"
+#define MyAppVersion "3.1.2.0"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "https://software.sil.org/speech-analyzer/"
 #define MyAppExeName "SA.exe"
