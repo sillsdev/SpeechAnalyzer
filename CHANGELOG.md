@@ -2,6 +2,7 @@
 - Fixed function key bindings for menu playback functions
 - Developer Changes:
     - Generate iso639.txt with GitHub action
+    - Update action versions in GitHub action
 
 # SA - 3.1.1.4 5/7/2022
 - Updates for Lift export:
