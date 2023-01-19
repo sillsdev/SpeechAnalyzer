@@ -20,28 +20,18 @@ function die () {
 }
 
 function display_usage() {
-  echo "build.sh [--no-clean]"
+  echo "build.sh [--no-clean] [--htm]"
   echo "Builds help documentation for Speech Analyzer. Converts Markdown"
   echo "    documentation to html using pandoc and then builds .chm"
   echo "Targets:"
   echo " --no-clean: don't clean target folder before building"
+  echo " --htm: only convert Markdown to html, and skip .chm"
 }
 
-# Verify pre-req programs installed
-if ! command -v pandoc ; then
-  die "Pandoc not installed"
-fi
-
-if [ ! -d "/c/program files (x86)/html help workshop/" ]; then
-  die "HTML Help workshop not installed"
-fi
 
 
 DO_CHM=true
 DO_CLEAN=true
-
-# Debug flags
-DO_CHM_CONVERSION=true
 
 #
 # Parse args
@@ -55,12 +45,24 @@ while [[ $# -gt 0 ]] ; do
     --no-clean)
       DO_CLEAN=false
       ;;
+    --htm)
+      DO_CHM=false
+      ;;
     *)
       display_usage
       exit 1
   esac
   shift # past argument
 done
+
+# Verify pre-req programs installed
+if ! command -v pandoc ; then
+  die "Pandoc not installed"
+fi
+
+if [ "$DO_CHM" == true ] && [ ! -d "/c/program files (x86)/html help workshop/" ]; then
+  die "HTML Help workshop not installed"
+fi
 
 #
 # Build toc.hhc
@@ -134,7 +136,7 @@ CSS="./offline-help-style-spec.txt"
 MD=`find -name "*.md"`
 DESTCHM="$THIS_DIR/../chm/"
 
-if $DO_CHM; then
+
   #
   # Clean existing folder
   #
@@ -148,41 +150,42 @@ if $DO_CHM; then
   # Generate HTML files from Markdown
   #
 
-  if $DO_CHM_CONVERSION; then
-    for INFILE in $MD; do
-      OUTFILE="$DESTCHM/${INFILE%.md}.htm"
-      echo "Processing $INFILE to $(basename "$OUTFILE")"
-      mkdir -p "$(dirname "$OUTFILE")"
-      pandoc -s -H "$CSS" --lua-filter="$MDLUA" -t html -o "$OUTFILE" $INFILE
-    done
-  fi
+  for INFILE in $MD; do
+    OUTFILE="$DESTCHM/${INFILE%.md}.htm"
+    echo "Processing $INFILE to $(basename "$OUTFILE")"
+    mkdir -p "$(dirname "$OUTFILE")"
+    pandoc -s -H "$CSS" --lua-filter="$MDLUA" -t html -o "$OUTFILE" $INFILE
+  done
 
   #
   # Copy Images
   #
-
   mkdir -p "$DESTCHM/images"
   cp "$THIS_DIR"/images/* "$DESTCHM/images/"
 
-  #
-  # Prepare TOC and HHP files
-  #
+  if $DO_CHM; then
 
-  pushd "$DESTCHM" > /dev/null
+    #
+    # Prepare TOC and HHP files
+    #
 
-  cp "$THIS_DIR/speechanalyzer.hhk" "$DESTCHM/speechanalyzer.hhk"
-  cp "$THIS_DIR/speechanalyzer.hhp" "$DESTCHM/speechanalyzer.hhp"
-  find -name '*.htm' >> "$DESTCHM/speechanalyzer.hhp"
+    pushd "$DESTCHM" > /dev/null
 
-  build_hhc_header
-  build_hhc .
-  build_hhc_footer
+    cp "$THIS_DIR/speechanalyzer.hhk" "$DESTCHM/speechanalyzer.hhk"
+    cp "$THIS_DIR/speechanalyzer.hhp" "$DESTCHM/speechanalyzer.hhp"
+    find -name '*.htm' >> "$DESTCHM/speechanalyzer.hhp"
 
-  # hhc.exe returns 1 on success!
-  "/c/program files (x86)/html help workshop/hhc.exe" speechanalyzer.hhp && false || true
+    build_hhc_header
+    build_hhc .
+    build_hhc_footer
 
-  # Copy chm to DistFiles/
-  cp Speech_Analyzer_Help.chm "$THIS_DIR/../DistFiles/"
+    # hhc.exe returns 1 on success!
+    "/c/program files (x86)/html help workshop/hhc.exe" speechanalyzer.hhp && false || true
 
-  popd > /dev/null
-fi
+    # Copy chm to DistFiles/
+    cp Speech_Analyzer_Help.chm "$THIS_DIR/../DistFiles/"
+
+    popd > /dev/null
+  fi
+
+
