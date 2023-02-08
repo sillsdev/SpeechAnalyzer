@@ -215,7 +215,7 @@ air|air|air|Airoran|
 ait|ait|ait|Arikem|
 aiw|aiw|aiw|Aari|
 aiw|aiw|aiw-Arab|Aari (Arab script)|
-aiw|aiw|aiw-Ethi|Aari (Ethi script)|Aari
+aiw|aiw|aiw-Ethi|Aari (Ethi script)|አፋን፡ኣሪ፡
 aix|aix|aix|Aighon|
 aiy|aiy|aiy|Ali|
 aja|aja|aja|Aja|
@@ -826,8 +826,7 @@ bhq|bhq|bhq|Tukang Besi South|
 bhr|bhr|bhr|Malagasy, Bara|
 bhs|bhs|bhs|Buwal|
 bht|bht|bht|Bhattiyali|
-bht|bht|bht-Deva|Bhattiyali (Deva script)|
-bht|bht|bht-Latn|Bhattiyali (Latn script)|
+bht|bht|bht-Takr|Bhattiyali (Takr script)|
 bhu|bhu|bhu|Bhunjia|
 bhv|bhv|bhv|Bahau|
 bhw|bhw|bhw|Biak|
@@ -3483,6 +3482,7 @@ kap|kap|kap|Bezhta|
 kaq|kaq|kaq|Capanahua|Capa Baquebo
 kav|kav|kav|Katukína|
 kaw|kaw|kaw|Kawi|
+kaw|kaw|kaw-Bali|Kawi (Bali script)|
 kax|kax|kax|Kao|
 kay|kay|kay|Kamayurá|
 kba|kba|kba|Kalarko|
@@ -5884,7 +5884,7 @@ oia|oia|oia|Oirata|
 oie|oie|oie|Okolie|
 oin|oin|oin|One, Inebu|
 oji|oji|oj|Ojibwa|
-oji|oji|oj-Cans|Ojibwa (Cans script)|
+oji|oji|oj-Latn|Ojibwa (Latn script)|
 ojb|ojb|ojb|Ojibwa, Northwestern|
 ojb|ojb|ojb-Cans|Ojibwa, Northwestern (Cans script)|
 ojc|ojc|ojc|Ojibwa, Central|
@@ -6559,8 +6559,7 @@ ria|ria|ria|Riang|
 rie|rie|rie|Rien|
 rif|rif|rif|Tarifit|
 rif|rif|rif-Arab|Tarifit (Arab script)|
-rif|rif|rif-Latn|Tarifit (Latn script)|
-rif|rif|rif-NL|Tarifit (Netherlands)|
+rif|rif|rif-Tfng|Tarifit (Tfng script)|
 ril|ril|ril|Riang Lang|
 rim|rim|rim|Nyaturu|
 rin|rin|rin|Nungu|
@@ -6639,7 +6638,7 @@ rri|rri|rri|Ririo|
 rro|rro|rro|Waima|
 rrt|rrt|rrt|Arritinngithigh|
 rsb|rsb|rsb|Romano-Serbian|
-||rsk|Ruthenian|
+rsk|rsk|rsk|Ruthenian|
 rtc|rtc|rtc|Chin, Rungtu|
 rth|rth|rth|Ratahan|
 rtm|rtm|rtm|Rotuman|
@@ -6783,8 +6782,8 @@ scv|scv|scv|Sheni|
 scw|scw|scw|Sya|
 scx|scx|scx|Sicel|
 snd|snd|sd|Sindhi|سنڌي
-snd|snd|sd-Deva|Sindhi (Deva script)|सिन्धी
 snd|snd|sd-Guru|Sindhi (Guru script)|
+snd|snd|sd-IN|Sindhi (India)|सिन्धी
 snd|snd|sd-Khoj|Sindhi (Khoj script)|
 snd|snd|sd-Khoj-PK|Sindhi (Khoj script, Pakistan)|
 snd|snd|sd-Sind|Sindhi (Sind script)|
@@ -9082,6 +9081,7 @@ zho|zho|zh-BN|Chinese (Brunei Darussalam)|
 zho|zho|zh-Bopo|Chinese (Bopo script)|
 cmn|cmn|zh-Brai|Chinese, Mandarin (Brai script)|
 zho|zho|zh-CN|Chinese (China)|中文
+cmn|cmn|zh-ES|Chinese, Mandarin (Spain)|
 zho|zho|zh-GB|Chinese (United Kingdom)|
 zho|zho|zh-GF|Chinese (French Guiana)|
 zho|zho|zh-HK|Chinese (Hong Kong)|中文
@@ -9237,6 +9237,7 @@ zum|zum|zum|Kumzari|
 zun|zun|zun|Zuni|
 zuy|zuy|zuy|Zumaya|
 zwa|zwa|zwa-Ethi|Zay (Ethi script)|
+zwa|zwa|zwa-Latn|Zay (Latn script)|
 zxx|zxx|zxx|No linguistic content|
 zyg|zyg|zyg|Zhuang, Yang|
 zyj|zyj|zyj|Zhuang, Youjiang|
