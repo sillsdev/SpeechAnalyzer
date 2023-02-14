@@ -5827,7 +5827,8 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
 		// there are references
 		for (int i = start; i < pGloss->GetOffsetSize(); i++) {
 			CSaString text;
-			text.Format(L"%d", val);
+			// Format with leading 0's for compatibility with PA and Flex
+			text.Format(L"%03d", val);
 			DWORD offset = pGloss->GetOffset(i);
 			DWORD duration = pGloss->GetDuration(i);
 			bool found = false;
