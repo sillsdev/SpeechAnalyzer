@@ -63,6 +63,7 @@ CDlgExportLift::CDlgExportLift(LPCTSTR docTitle,
                                BOOL glossNat,
                                BOOL ortho,
                                BOOL phonemic,
+                               BOOL tone,
                                BOOL phonetic,
                                BOOL reference,
                                map<wstring,wstring> codes,
@@ -73,6 +74,7 @@ CDlgExportLift::CDlgExportLift(LPCTSTR docTitle,
     settings.bGlossNat = bGlossNatDflt = glossNat;
     settings.bOrtho = bOrthoDflt = ortho;
     settings.bPhonemic = bPhonemicDflt = phonemic;
+    settings.bTone = bToneDflt = tone;
     settings.bPhonetic = bPhoneticDflt = phonetic;
     settings.bReference = bReferenceDflt = reference;
     settings.bPhrase1 = false;
@@ -134,6 +136,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
     DDX_Check(pDX, IDC_EXTAB_GLOSS_NAT, settings.bGlossNat);
     DDX_Check(pDX, IDC_EXTAB_ORTHO, settings.bOrtho);
     DDX_Check(pDX, IDC_EXTAB_PHONEMIC, settings.bPhonemic);
+    DDX_Check(pDX, IDC_EXTAB_TONE, settings.bTone);
     DDX_Check(pDX, IDC_EXTAB_PHONETIC,settings. bPhonetic);
     DDX_Check(pDX, IDC_EXTAB_REFERENCE, settings.bReference);
     DDX_Check(pDX, IDC_EXTAB_MUSIC_PL1, settings.bPhrase1);
@@ -169,6 +172,9 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         settings.phonemic = L"-fonipa-x-emic";
 
         settings.phonetic = L"-fonipa";
+
+        // Tone hardcoded to Phonetic or Gloss English?
+        settings.tone = settings.phonetic; // L"en";
 
         ctlPhraseList1List.GetWindowTextW(buffer);
         settings.phrase1 = lookupLanguageID(buffer);

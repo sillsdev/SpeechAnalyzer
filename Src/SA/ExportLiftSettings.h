@@ -9,6 +9,7 @@ public:
     BOOL bGlossNat;
     BOOL bOrtho;
     BOOL bPhonemic;
+    BOOL bTone;
     BOOL bPhonetic;
     BOOL bReference;
     BOOL bPhrase1;
@@ -20,6 +21,7 @@ public:
     wstring glossNat;
     wstring ortho;
     wstring phonemic;
+    wstring tone;
     wstring phonetic;
     wstring reference;
     wstring phrase1;
@@ -31,6 +33,7 @@ public:
 
     // Constants for preferences from last Lift export (Gloss, Phonemic, and Phonetic are already hard-coded)
     const LPCWSTR LAST_EXPORT           = L"LastExport";
+    const LPCWSTR LAST_EXPORT_TONE      = L"LastExport.Tone";
     const LPCWSTR LAST_EXPORT_GLOSS_NAT = L"LastExport.GlossNat";
     const LPCWSTR LAST_EXPORT_ORTHO     = L"LastExport.Ortho";
     const LPCWSTR LAST_EXPORT_REFERENCE = L"LastExport.Reference";

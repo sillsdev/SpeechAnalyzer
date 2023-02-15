@@ -33,6 +33,7 @@ public:
                    BOOL glossNat,
                    BOOL ortho,
                    BOOL phonemic,
+                   BOOL tone,
                    BOOL phonetic,
                    BOOL reference,
                    map<wstring,wstring> contryCodes,
