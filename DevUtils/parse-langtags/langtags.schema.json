@@ -140,7 +140,7 @@
         },
         "api": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
         },
         "date": {
           "type": "string",
@@ -169,7 +169,7 @@
           "additionalItems": false
         }
       },
-      "required": ["tag", "regions", "scripts"],
+      "required": ["regions", "scripts"],
       "additionalProperties": false
     },
 
