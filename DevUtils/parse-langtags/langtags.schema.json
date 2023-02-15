@@ -9,7 +9,8 @@
         {"$ref": "#/definitions/langtag"},
         {"$ref": "#/definitions/_globalvar"},
         {"$ref": "#/definitions/_phonvar"},
-        {"$ref": "#/definitions/_version"}
+        {"$ref": "#/definitions/_version"},
+        {"$ref": "#/definitions/_conformance"}
       ] },
       "additionalItems": false
     },
@@ -139,7 +140,7 @@
         },
         "api": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
         },
         "date": {
           "type": "string",
@@ -147,6 +148,28 @@
         }
       },
       "required": ["tag", "api", "date"],
+      "additionalProperties": false
+    },
+
+    "_conformance": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string",
+          "const": "_conformance"
+        },
+        "regions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/iso3166_1" },
+          "additionalItems": false
+        },
+        "scripts": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/iso15924" },
+          "additionalItems": false
+        }
+      },
+      "required": ["regions", "scripts"],
       "additionalProperties": false
     },
 
