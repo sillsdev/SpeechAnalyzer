@@ -174,7 +174,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX) {
         settings.phonetic = L"-fonipa";
 
         // Tone hardcoded to Phonetic or Gloss English?
-        settings.tone = settings.phonetic; // L"en";
+        //settings.tone = settings.phonetic; // L"en";
 
         ctlPhraseList1List.GetWindowTextW(buffer);
         settings.phrase1 = lookupLanguageID(buffer);
