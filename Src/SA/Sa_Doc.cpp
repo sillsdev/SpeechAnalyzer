@@ -7414,7 +7414,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 				AppendFonipaTag(tone, L"etic");
 
 				entry.pronunciation[0].field = Lift13::field(L"field", L"tone");
-				entry.pronunciation[0].field[0].form = Lift13::form(L"form", /*settings.*/tone.c_str(), Lift13::text(LTEXT, pTone->GetText(i)));
+				entry.pronunciation[0].field[0].form = Lift13::form(L"form", tone.c_str(), Lift13::text(LTEXT, pTone->GetText(i)));
 			}
 
 			// add phonetic media file

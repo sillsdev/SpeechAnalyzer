@@ -1378,9 +1378,7 @@ void CSaView::OnExportLift() {
 	if (dlg.DoModal() == IDOK) {
 		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT, dlg.settings.szPath);
 
-		// Write out Lift Export preferences. Gloss, Phonemic, and Phonetic are already hard-coded
-		// Tone matches EN or Phonetic?
-		//pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_TONE, CSaString(dlg.settings.glossNat.c_str()));
+		// Write out Lift Export preferences. Gloss, Phonemic, Phonetic, and Tone are already hard-coded
 		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_GLOSS_NAT, CSaString(dlg.settings.glossNat.c_str()));
 		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_ORTHO, CSaString(dlg.settings.ortho.c_str()));
 		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_REFERENCE, CSaString(dlg.settings.reference.c_str()));
