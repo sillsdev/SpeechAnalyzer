@@ -17,15 +17,15 @@ jobs:
         working-directory: ./DevUtils/parse-langtags
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         architecture: [x64]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
 
     - name: Install project dependencies
       run: npm install
@@ -66,7 +66,7 @@ jobs:
       #run: move ./dist/index.js ../../DistFiles/iso639.txt -Force #force diff for testing
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v4
       with:
         commit-message: 'auto: update iso639.txt'
         title: 'auto: Update iso639.txt'

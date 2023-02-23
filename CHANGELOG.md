@@ -1,3 +1,10 @@
+# SA - 3.1.2.0 1/19/2022:
+- Fixed function key bindings for menu playback functions
+- Developer Changes:
+    - Generate iso639.txt with GitHub action
+    - Update action versions in GitHub action
+    - Add help build script option `--htm` to skip generating chm
+
 # SA - 3.1.1.4 5/7/2022
 - Updates for Lift export:
     - Add feature to save language preferences so they can be restored for future Lift exports

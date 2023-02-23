@@ -11,6 +11,7 @@ aae|aae|aae|Albanian, Arbëreshë|
 aae|aae|aae-Grek|Albanian, Arbëreshë (Grek script)|
 aae|aae|aae-x-sub84|Albanian, Arbëreshë (x-sub84)|
 aaf|aaf|aaf|Aranadan|
+aaf|aaf|aaf-Arab|Aranadan (Arab script)|
 aag|aag|aag|Ambrak|
 aah|aah|aah|Abu’|
 aai|aai|aai|Miniafia Oyan|
@@ -51,7 +52,7 @@ abq|abq|abq-Cyrl|Abaza (Cyrl script)|
 abq|abq|abq-Latn|Abaza (Latn script)|
 abr|abr|abr|Abron|
 abs|abs|abs|Malay, Ambonese|
-abt|abt|abt|Ambulas|Ambulas
+abt|abt|abt|Ambulas|Abulas
 abt|abt|abt-x-maprik|Ambulas (x-maprik)|
 abt|abt|abt-x-woserak|Ambulas (x-woserak)|
 abu|abu|abu|Abure|
@@ -75,8 +76,8 @@ acn|acn|acn|Achang|
 acp|acp|acp|Acipa, Eastern|
 acq|acq|acq|Arabic, Ta’izzi-Adeni Spoken|
 acr|acr|acr|Achi|Qachʼaʼteem
-acr|acr|acr-x-cubulco|Achi (x-cubulco)|
-acr|acr|acr-x-rabinal|Achi (x-rabinal)|
+acr|acr|acr-x-cubulco|Achi (x-cubulco)|Qachʼaʼteem
+acr|acr|acr-x-rabinal|Achi (x-rabinal)|Qachʼaʼteem
 acs|acs|acs|Acroá|
 act|act|act|Achterhoeks|
 acu|acu|acu|Achuar-Shiwiar|Achuár chícham
@@ -90,13 +91,13 @@ acz|acz|acz|Acheron|
 ada|ada|ada|Dangme|Dangme
 adb|adb|adb|Atauran|
 add|add|add|Lidzonka|
-ade|ade|ade|Adele|Gidire
+ade|ade|ade|Adele|Gɩdɩrɛ
 adf|adf|adf|Arabic, Dhofari Spoken|
 adg|adg|adg|Andegerebinha|
 adh|adh|adh|Jopadhola|
 adi|adi|adi|Adi|
 adi|adi|adi-Tibt|Luoba, Boga’er (Tibt script)|
-adj|adj|adj|Adioukrou|Mɔjukru
+adj|adj|adj|Adioukrou|Mↄjukru
 adl|adl|adl|Adi, Galo|
 adn|adn|adn|Adang|
 ado|ado|ado|Abu|
@@ -115,7 +116,7 @@ ave|ave|ae-Arab|Avestan (Arab script)|
 ave|ave|ae-Gujr|Avestan (Gujr script)|
 aea|aea|aea|Areba|
 aeb|aeb|aeb|Arabic, Tunisian Spoken|تونسي
-ajt|ajt|aeb-Hebr-IL|Tunisian Arabic (Hebr script, Israel)|
+aeb|aeb|aeb-Hebr|Arabic, Tunisian Spoken (Hebr script)|
 aeb|aeb|aeb-Latn|Arabic, Tunisian Spoken (Latn script)|Derja
 aec|aec|aec|Arabic, Sa’idi Spoken|
 aee|aee|aee|Pashai, Northeast|
@@ -198,8 +199,9 @@ aie|aie|aie|Amara|
 aif|aif|aif|Agi|
 aig|aig|aig|Leeward Caribbean English Creole|
 aih|aih|aih|Ai-Cham|
+aii|aii|aii|Assyrian Neo-Aramaic|ܐܬܘܪܝܐ
 aii|aii|aii-Cyrl|Assyrian Neo-Aramaic (Cyrl script)|
-aii|aii|aii-Syrc|Assyrian Neo-Aramaic (Syrc script)|ܐܬܘܪܝܐ
+aii|aii|aii-Elym|Assyrian Neo-Aramaic (Elym script)|
 aij|aij|aij|Inter-Zab Jewish Neo-Aramaic|
 aik|aik|aik|Akye|
 ail|ail|ail|Eibela|
@@ -213,7 +215,7 @@ air|air|air|Airoran|
 ait|ait|ait|Arikem|
 aiw|aiw|aiw|Aari|
 aiw|aiw|aiw-Arab|Aari (Arab script)|
-aiw|aiw|aiw-Ethi|Aari (Ethi script)|Aari
+aiw|aiw|aiw-Ethi|Aari (Ethi script)|አፋን፡ኣሪ፡
 aix|aix|aix|Aighon|
 aiy|aiy|aiy|Ali|
 aja|aja|aja|Aja|
@@ -269,6 +271,7 @@ alp|alp|alp|Alune|Alune
 alq|alq|alq|Algonquin|Anicinàbemowin
 alr|alr|alr|Alutor|
 alt|alt|alt|Altai, Southern|
+alt|alt|alt-Cyrs|Altai, Southern (Cyrs script)|
 alt|alt|alt-Mong|Altai, Southern (Mong script)|
 alu|alu|alu|’Are’are|
 alw|alw|alw|Alaba-K’abeena|
@@ -286,7 +289,6 @@ amf|amf|amf|Hamer-Banna|
 amf|amf|amf-Ethi|Hamer-Banna (Ethi script)|
 amg|amg|amg|Amurdak|
 ami|ami|ami|Amis|
-ais|ais|ami-Zyyy-TW|Amis (Zyyy script, China-Taiwan)|
 amj|amj|amj|Amdang|
 amk|amk|amk|Ambai|
 aml|aml|aml|War-Jaintia|
@@ -316,6 +318,7 @@ and|and|and|Ansus|
 ane|ane|ane|Xârâcùù|
 anf|anf|anf|Animere|
 ang|ang|ang|Old English (ca. 450-1100)|
+ang|ang|ang-Runr|Old English (ca. 450-1100) (Runr script)|
 anh|anh|anh|Nend|
 ani|ani|ani|Andi|
 anj|anj|anj|Anor|
@@ -325,7 +328,7 @@ anm|anm|anm|Anal|
 ann|ann|ann|Obolo|Obolo
 ano|ano|ano|Andoque|
 anp|anp|anp|Angika|
-anq|anq|anq-Deva|Jarawa (Deva script)|
+anq|anq|anq|Jarawa|
 anq|anq|anq-Latn|Jarawa (Latn script)|
 anr|anr|anr|Andh|
 ans|ans|ans|Anserma|
@@ -400,7 +403,7 @@ aqr|aqr|aqr|Arhâ|
 aqt|aqt|aqt|Angaité|
 aqz|aqz|aqz|Akuntsu|
 ara|ara|ar|Arabic|العربية
-ara|ara|ar-001|Arabic (World)|العربية الرسمية الحديثة
+ara|ara|ar-001|Arabic (World)|العربية الفصحى الحديثة
 ara|ara|ar-AE|Arabic (United Arab Emirates)|العربية
 ara|ara|ar-BH|Arabic (Bahrain)|العربية
 ara|ara|ar-Brai|Arabic (Brai script)|
@@ -432,6 +435,7 @@ ara|ara|ar-YE|Arabic (Yemen)|العربية
 arb|arb|arb-EG|Arabic, Standard (Egypt)|
 arb|arb|arb-LB|Arabic, Standard (Lebanon)|
 arc|arc|arc|Official Aramaic (700-300 BCE)|
+arc|arc|arc-Hatr|Official Aramaic (700-300 BCE) (Hatr script)|
 arc|arc|arc-Nbat|Official Aramaic (700-300 BCE) (Nbat script)|
 arc|arc|arc-Palm|Official Aramaic (700-300 BCE) (Palm script)|
 arc|arc|arc-Syrc|Official Aramaic (700-300 BCE) (Syrc script)|
@@ -467,7 +471,7 @@ ask|ask|ask|Ashkun|
 asl|asl|asl|Asilulu|
 asn|asn|asn|Asurini of Xingú|
 aso|aso|aso|Dano|
-asr|asr|asr-Deva|Asuri (Deva script)|
+asr|asr|asr|Asuri|
 ass|ass|ass|Ipulo|
 ast|ast|ast|Asturian|asturianu
 asu|asu|asu|Asurini, Tocantins|
@@ -506,8 +510,10 @@ auc|auc|auc|Waorani|Wao Tededö
 aud|aud|aud|Anuta|
 aug|aug|aug|Aguna|
 auh|auh|auh|Aushi|
-aui|aui|aui|Anuki|
+aui|aui|aui|Anuki|Anuki
 auj|auj|auj|Awjilah|
+auj|auj|auj-Latn|Awjilah (Latn script)|
+auj|auj|auj-Tfng|Awjilah (Tfng script)|
 auk|auk|auk|Heiyoho|
 aul|aul|aul|Aulua|
 aum|aum|aum|Asu|
@@ -519,7 +525,7 @@ aur|aur|aur|Aruek|
 aut|aut|aut|Austral|
 auu|auu|auu|Auye|
 auw|auw|auw|Awyi|
-aux|aux|aux|Aurá|
+aux|aux|aux-Latn|Aurá (Latn script)|
 auy|auy|auy|Awiyaana|Awiyaana
 auz|auz|auz|Arabic, Uzbeki Spoken|
 ava|ava|av|Avar|
@@ -529,7 +535,7 @@ avi|avi|avi|Avikam|
 avk|avk|avk|Kotava|
 avl|avl|avl|Arabic, Eastern Egyptian Bedawi Spoken|بدوي
 avm|avm|avm|Angkamuthi|
-avn|avn|avn|Avatime|Si-yà
+avn|avn|avn|Avatime|Sideme
 avo|avo|avo|Agavotaguerra|
 avs|avs|avs|Aushiri|
 avt|avt|avt|Au|Au
@@ -584,7 +590,7 @@ ayy|ayy|ayy|Tayabas Ayta|
 ayz|ayz|ayz|Mai Brat|Mai Brat
 aze|aze|az|Azerbaijani|azərbaycan
 aze|aze|az-Brai|Azerbaijani (Brai script)|
-aze|aze|az-Cyrl-AZ|Azerbaijani (Cyrl script, Azerbaijan)|азәрбајҹан
+aze|aze|az-Cyrl-AZ|Azerbaijani (Cyrl script, Azerbaijan)|azəri
 aze|aze|az-IQ|Azerbaijani (Iraq)|
 aze|aze|az-IR|Azerbaijani (Islamic Republic of Iran)|
 aze|aze|az-RU|Azerbaijani (Russian Federation)|азәрбајҹан
@@ -600,6 +606,7 @@ azo|azo|azo|Awing|
 azt|azt|azt|Atta, Faire|
 azz|azz|azz|Nahuatl, Highland Puebla|Nahuatlahtolli
 bak|bak|ba|Bashkort|
+bak|bak|ba-Arab|Bashkort (Arab script)|
 baa|baa|baa|Babatana|
 bab|bab|bab|Bainouk-Gunyuño|
 bac|bac|bac|Badui|
@@ -608,13 +615,14 @@ baf|baf|baf|Nubaca|
 bag|bag|bag|Tuki|
 bah|bah|bah|Bahamas English Creole|
 baj|baj|baj|Barakai|
-bal|bal|bal|Baluchi|بلوچی
+bal|bal|bal|Baluchi|بلۆچی
 bal|bal|bal-Latn|Baluchi (Latn script)|Balóchi
 ban|ban|ban|Bali|
 ban|ban|ban-Bali|Bali (Bali script)|
 ban|ban|ban-Java|Bali (Java script)|
 bao|bao|bao|Waimaha|Waimaja
 bap|bap|bap|Bantawa|
+bap|bap|bap-Zzzz-x-kiratrai|Bantawa (Zzzz script, x-kiratrai)|
 bar|bar|bar|Bavarian|
 bas|bas|bas|Basaa|Ɓàsàa
 bau|bau|bau|Mbat|
@@ -627,14 +635,14 @@ bba|bba|bba|Baatonum|Baatonum
 bbb|bbb|bbb|Barai|Barai
 bbc|bbc|bbc|Batak Toba|
 bbc|bbc|bbc-Batk|Batak Toba (Batk script)|
-bbd|bbd|bbd|Fulumu|
+bbd|bbd|bbd|Fulumu|Fulumu
 bbe|bbe|bbe|Bangba|
 bbf|bbf|bbf|Baibai|
 bbg|bbg|bbg|Barama|
 bbh|bbh|bbh|Bugan|
 bbi|bbi|bbi|Barombi|
 bbj|bbj|bbj|Ghomálá’|
-bbk|bbk|bbk|Babanki|
+bbk|bbk|bbk|Babanki|Gaʼa-Kejom
 bbl|bbl|bbl|Bats|
 bbm|bbm|bbm|Babango|
 bbn|bbn|bbn|Uneapa|
@@ -662,18 +670,18 @@ bci|bci|bci|Baoulé|
 bcj|bcj|bcj|Bardi|
 bck|bck|bck|Bunuba|
 bcm|bcm|bcm|Bannoni|Tsunari
-bcn|bcn|bcn|Bali|
+bcn|bcn|bcn|Bali|Abaali
 bco|bco|bco|Kaluli|Kaluli
 bcp|bcp|bcp|Bali|
 bcq|bcq|bcq|Bench|
-bcq|bcq|bcq-Latn|Bench (Latn script)|Bèntʂ nòn
+bcq|bcq|bcq-Latn|Bench (Latn script)|Benc’non
 bcr|bcr|bcr|Babine|
 bcs|bcs|bcs|Hohumono|
 bct|bct|bct|Bendi|
 bcu|bcu|bcu|Awad Bing|Awad Bing
 bcv|bcv|bcv|Shoo-Minda-Nye|
 bcw|bcw|bcw|Bana|kwəmà ká bàná
-bcy|bcy|bcy|Bacama|
+bcy|bcy|bcy|Bacama|Ɓwaare
 bcz|bcz|bcz|Bainouk-Gunyaamolo|
 bda|bda|bda|Bayot|
 bdb|bdb|bdb|Basap|
@@ -702,6 +710,7 @@ bdx|bdx|bdx|Budong-Budong|
 bdy|bdy|bdy|Bandjalang|
 bdz|bdz|bdz|Badeshi|
 bel|bel|be|Belarusian|беларуская
+bel|bel|be-Arab|Belarusian (Arab script)|
 bel|bel|be-Brai|Belarusian (Brai script)|
 bel|bel|be-Latn|Belarusian (Latn script)|
 bea|bea|bea|Beaver|
@@ -817,8 +826,7 @@ bhq|bhq|bhq|Tukang Besi South|
 bhr|bhr|bhr|Malagasy, Bara|
 bhs|bhs|bhs|Buwal|
 bht|bht|bht|Bhattiyali|
-bht|bht|bht-Deva|Bhattiyali (Deva script)|
-bht|bht|bht-Latn|Bhattiyali (Latn script)|
+bht|bht|bht-Takr|Bhattiyali (Takr script)|
 bhu|bhu|bhu|Bhunjia|
 bhv|bhv|bhv|Bahau|
 bhw|bhw|bhw|Biak|
@@ -864,7 +872,7 @@ bjm|bjm|bjm|Bajelani|
 bjn|bjn|bjn|Banjar|
 bjn|bjn|bjn-Arab|Banjar (Arab script)|
 bjo|bjo|bjo|Banda, Mid-Southern|
-bjp|bjp|bjp|Fanamaket|
+bjp|bjp|bjp|Fanamaket|Fanamaket
 bjr|bjr|bjr|Binumarien|Binumarien
 bjs|bjs|bjs|Bajan|
 bjt|bjt|bjt|Balanta-Ganja|
@@ -883,6 +891,7 @@ bkg|bkg|bkg|Buraka|
 bkh|bkh|bkh|Bakoko|
 bki|bki|bki|Baki|Baki
 bkj|bkj|bkj|Pande|
+bkj|bkj|bkk|Brokskat|
 bkk|bkk|bkk-Zzzz-x-baltia|Brokskat (Zzzz script, x-baltia)|
 bkl|bkl|bkl|Berik|
 bkm|bkm|bkm|Kom|Itangikom
@@ -895,7 +904,8 @@ bks|bks|bks|Sorsoganon, Northern|
 bkt|bkt|bkt|Boloki|
 bku|bku|bku|Buhid|
 bku|bku|bku-Buhd|Buhid (Buhd script)|
-bkv|bkv|bkv|Bekwarra|
+bku|bku|bku-Hano|Buhid (Hano script)|
+bkv|bkv|bkv|Bekwarra|Ebekwara
 bkw|bkw|bkw|Bekwel|
 bkx|bkx|bkx|Baikeno|
 bky|bky|bky|Bokyi|
@@ -968,12 +978,12 @@ bnc|bnc|bnc|Bontok|
 bnd|bnd|bnd|Banda|
 bne|bne|bne|Bintauna|
 bnf|bnf|bnf|Masiwang|
-bng|bng|bng|Benga|
+bng|bng|bng|Benga|Benga
 bni|bni|bni|Bangi|
 bnj|bnj|bnj|Bangon|
 bnk|bnk|bnk|Bierebo|
 bnl|bnl|bnl|Boon|
-bnm|bnm|bnm|Bapuku|
+bnm|bnm|bnm|Bapuku|Batanga
 bnn|bnn|bnn|Bunun|
 bno|bno|bno|Bantoanon|Asi
 bnp|bnp|bnp|Bola|Bola-Bakovi
@@ -991,7 +1001,7 @@ bod|bod|bo-IN|Tibetan (India)|བོད་སྐད་
 bod|bod|bo-Latn|Tibetan, Central (Latn script)|
 bod|bod|bo-Marc|Tibetan, Central (Marc script)|
 bod|bod|bo-Phag|Tibetan, Central (Phag script)|
-boa|boa|boa|Bora|Booraa
+boa|boa|boa|Bora|Miamunaa
 bob|bob|bob|Aweer|
 boe|boe|boe|Mundabli|
 bof|bof|bof|Bolon|
@@ -1013,7 +1023,7 @@ bow|bow|bow|Rema|
 box|box|box|Buamu|Buamu
 boy|boy|boy|Bodo|
 boz|boz|boz|Bozo, Tieyaxo|Tieyaxo
-boz|boz|boz-Arab|Bozo, Tieyaxo (Arab script)|
+boz|boz|boz-Arab|Bozo, Tieyaxo (Arab script)|Tieyaxo
 bpa|bpa|bpa|Daakaka|
 bpb|bpb|bpb|Barbacoas|
 bpc|bpc|bpc|Mbuk|
@@ -1064,6 +1074,7 @@ bqw|bqw|bqw|Buru|
 bqx|bqx|bqx|Baangi|
 bqz|bqz|bqz|Bakaka|
 bre|bre|br|Breton|brezhoneg
+bre|bre|br-Ogam|Breton (Ogam script)|
 bra|bra|bra|Braj Bhasha|
 brb|brb|brb|Brao|
 brb|brb|brb-Laoo|Brao (Laoo script)|
@@ -1072,7 +1083,7 @@ brc|brc|brc|Berbice Dutch Creole|
 brd|brd|brd|Baram|
 brf|brf|brf|Bira|
 brg|brg|brg|Baure|
-brh|brh|brh|Brahui|
+brh|brh|brh|Brahui|براہوئی
 brh|brh|brh-Latn|Brahui (Latn script)|
 bri|bri|bri|Mokpwe|
 brj|brj|brj|Bieria|
@@ -1080,8 +1091,8 @@ brk|brk|brk|Birked|
 brl|brl|brl|Birwa|
 brm|brm|brm|Barambu|
 brn|brn|brn|Boruca|
+bro|bro|bro|Brokkat|
 bro|bro|bro-Latn|Brokkat (Latn script)|
-bro|bro|bro-Tibt|Brokkat (Tibt script)|
 brp|brp|brp|Barapasi|
 brq|brq|brq|Breri|
 brr|brr|brr|Birao|
@@ -1094,7 +1105,7 @@ brv|brv|brv|Bru, Western|
 brv|brv|brv-Thai-x-donglng|Bru, Western (Thai script, x-donglng)|
 brv|brv|brv-Thai-x-khongchm|Bru, Western (Thai script, x-khongchm)|
 brv|brv|brv-Thai-x-sakonnkn|Bru, Western (Thai script, x-sakonnkn)|
-brw|brw|brw-Knda|Bellari (Knda script)|
+brw|brw|brw|Bellari|
 brw|brw|brw-Mlym|Bellari (Mlym script)|
 brx|brx|brx|Boro|बड़ो
 brx|brx|brx-Beng|Boro (Beng script)|
@@ -1102,6 +1113,7 @@ brx|brx|brx-Latn|Boro (Latn script)|
 bry|bry|bry|Burui|
 brz|brz|brz|Bilbil|Bel
 bos|bos|bs|Bosnian|bosanski
+bos|bos|bs-Arab|Bosnian (Arab script)|
 bos|bos|bs-Cyrl|Bosnian (Cyrl script)|босански
 bsa|bsa|bsa|Abinomn|
 bsb|bsb|bsb|Bisaya, Brunei|
@@ -1162,7 +1174,7 @@ btz|btz|btz|Batak Alas-Kluet|
 bua|bua|bua|Buriat|
 bub|bub|bub|Bua|
 buc|buc|buc|Bushi|
-bud|bud|bud|Ntcham|Ncham
+bud|bud|bud|Ntcham|Ncam
 bud|bud|bud-Brai|Ntcham (Brai script)|
 bue|bue|bue|Beothuk|
 buf|buf|buf|Bushoong|
@@ -1188,9 +1200,9 @@ bux|bux|bux|Boghom|
 buy|buy|buy|Bullom So|
 buz|buz|buz|Bukwen|
 bva|bva|bva|Barein|
-bvb|bvb|bvb|Bube|
+bvb|bvb|bvb|Bube|Bube
 bvc|bvc|bvc|Baelelea|
-bvd|bvd|bvd|Baeggu|
+bvd|bvd|bvd|Baeggu|Baeggu
 bve|bve|bve|Malay, Berau|
 bvf|bvf|bvf|Boor|
 bvg|bvg|bvg|Bonkeng|
@@ -1214,7 +1226,7 @@ bvz|bvz|bvz|Bauzi|
 bwa|bwa|bwa|Bwatoo|
 bwb|bwb|bwb|Namosi-Naitasiri-Serua|
 bwc|bwc|bwc|Bwile|
-bwd|bwd|bwd|Bwaidoka|
+bwd|bwd|bwd|Bwaidoka|Bwaidoka
 bwe|bwe|bwe|Karen, Bwe|
 bwe|bwe|bwe-Latn|Karen, Bwe (Latn script)|
 bwf|bwf|bwf|Boselewa|
@@ -1258,6 +1270,8 @@ bxp|bxp|bxp|Bebil|
 bxq|bxq|bxq|Beele|
 bxs|bxs|bxs|Busam|
 bxu|bxu|bxu|Buriat, China|
+bxu|bxu|bxu-Cyrl|Buriat, China (Cyrl script)|
+bxu|bxu|bxu-Latn|Buriat, China (Latn script)|
 bxv|bxv|bxv|Berakou|
 bxw|bxw|bxw|Bankagooma|
 bxz|bxz|bxz|Binahari|
@@ -1286,7 +1300,7 @@ byv|byv|byv|Medumba|
 byw|byw|byw|Belhariya|
 byx|byx|byx|Qaqet|Qaqet
 byz|byz|byz|Waran|
-bza|bza|bza|Bandi|
+bza|bza|bza|Bandi|Bandí
 bzb|bzb|bzb|Andio|
 bzc|bzc|bzc|Malagasy, Southern Betsimisaraka|
 bzd|bzd|bzd|Bribri|Bribri
@@ -1318,7 +1332,7 @@ cat|cat|ca-FR|Catalan (France)|català
 cat|cat|ca-IT|Catalan (Italy)|català
 cat|cat|ca-valencia|Catalan (Valencia)|
 caa|caa|caa|Ch’orti’|Chꞌortiꞌ
-cab|cab|cab|Garifuna|Garifuna
+cab|cab|cab|Garifuna|Garífuna
 cac|cac|cac|Chuj|
 cad|cad|cad|Caddo|
 cae|cae|cae|Laalaa|
@@ -1336,7 +1350,7 @@ cak|cak|cak-x-subsa|Kaqchikel (x-subsa)|
 cak|cak|cak-x-subso|Kaqchikel (x-subso)|
 cak|cak|cak-x-subsu|Kaqchikel (x-subsu)|
 cak|cak|cak-x-swestern|Kaqchikel (x-swestern)|
-cak|cak|cak-x-xenacoj|Kaqchikel (x-xenacoj)|
+cak|cak|cak-x-xenacoj|Kaqchikel (x-xenacoj)|Kaqchikel
 cal|cal|cal|Carolinian|
 cam|cam|cam|Cemuhî|Cemuhî
 can|can|can|Chambri|
@@ -1363,7 +1377,7 @@ cbn|cbn|cbn|Nyahkur|
 cbo|cbo|cbo|Izora|
 cbq|cbq|cbq|Tsucuba|
 cbr|cbr|cbr|Kakataibo-Kashibo|Kakataibo-Kashibo
-cbs|cbs|cbs|Kashinawa|Hantxa Kuin
+cbs|cbs|cbs|Kashinawa|Hãtxa Kuī
 cbt|cbt|cbt|Shawi|Shahui
 cbu|cbu|cbu|Kandozi-Chapra|
 cbv|cbv|cbv|Cacua|Cacua
@@ -1378,10 +1392,9 @@ cch|cch|cch|Atsam|
 ccj|ccj|ccj|Kasanga|
 ccl|ccl|ccl|Cutchi-Swahili|
 ccm|ccm|ccm|Malaccan Malay Creole|
-cco|cco|cco|Chinantec, Comaltepec|Jmiiꞌ
+cco|cco|cco|Chinantec, Comaltepec|Jmíiˊ
 ccp|ccp|ccp|Chakma|𑄌𑄋𑄴𑄟𑄳𑄦
 ccp|ccp|ccp-Beng|Chakma (Beng script)|
-ccp|ccp|ccp-IN|Chakma (India)|𑄌𑄋𑄴𑄟𑄳𑄦
 ccp|ccp|ccp-Latn|Chakma (Latn script)|
 ccr|ccr|ccr|Cacaopera|
 cda|cda|cda|Choni|
@@ -1532,7 +1545,9 @@ clw|clw|clw|Chulym|
 cly|cly|cly|Chatino, Eastern Highland|
 cma|cma|cma|Maa|
 cme|cme|cme|Cerma|Cerma
-cmg|cmg|cmg-Soyo|Classical Mongolian (Soyo script)|
+cmg|cmg|cmg|Classical Mongolian|
+cmg|cmg|cmg-Mong|Classical Mongolian (Mong script)|
+cmg|cmg|cmg-Zanb|Classical Mongolian (Zanb script)|
 cmi|cmi|cmi|Ẽbẽra Beɗea|
 cml|cml|cml|Koneq-koneq|
 cmm|cmm|cmm|Michigamea|
@@ -1571,17 +1586,17 @@ cof|cof|cof|Tsafiki|Tsafiki
 cog|cog|cog|Chong|
 coh|coh|coh|Chichonyi-Chidzihana-Chikauma|
 coj|coj|coj|Cochimi|
-cok|cok|cok|Cora, Santa Teresa|Kwéimarusa’na
+cok|cok|cok|Cora, Santa Teresa|Cuéimarusa’na
 col|col|col|Columbia-Wenatchi|
 com|com|com|Comanche|
-con|con|con|Cofán|A'ingae
+con|con|con-Latn|Cofán (Latn script)|A'ingae
 coo|coo|coo|Comox|
 cop|cop|cop|Coptic|
 cop|cop|cop-Arab|Coptic (Arab script)|
 cop|cop|cop-Grek|Coptic (Grek script)|
 coq|coq|coq|Coquille|
 cot|cot|cot|Caquinte|Aguenquetsatsare
-cou|cou|cou|Wamey|Wamey
+cou|cou|cou|Wamey|Wameỹ
 cov|cov|cov|Cao Miao|
 cow|cow|cow|Cowlitz|
 cox|cox|cox|Nanti|
@@ -1671,9 +1686,10 @@ ctp|ctp|ctp|Chatino, Western Highland|Cha’ jna’a
 cts|cts|cts|Bikol, Northern Catanduanes|
 ctt|ctt|ctt|Chetti, Wayanad|
 ctu|ctu|ctu|Chol|Lakty’añ
-ctu|ctu|ctu-x-tila|Chol (x-tila)|
+ctu|ctu|ctu-x-tila|Chol (x-tila)|Lakty’añ
 ctu|ctu|ctu-x-tumbala|Chol (x-tumbala)|
 cty|cty|cty|Chetti, Moundadan|
+cty|cty|cty-Mlym|Chetti, Moundadan (Mlym script)|
 ctz|ctz|ctz|Chatino, Zacatepec|
 chu|chu|cu|Slavonic, Church|церковнослове́нскїй
 chu|chu|cu-Cyrs|Slavonic, Church (Cyrs script)|
@@ -1707,6 +1723,7 @@ cwg|cwg|cwg|Cheq Wong|
 cwt|cwt|cwt|Kuwaataay|
 cym|cym|cy|Welsh|Cymraeg
 cym|cym|cy-Brai|Welsh (Brai script)|
+cym|cym|cy-Ogam|Welsh (Ogam script)|
 cya|cya|cya|Chatino, Nopala|Cha’ jna’a
 cyb|cyb|cyb|Cayubaba|
 cyo|cyo|cyo|Cuyonon|
@@ -1719,6 +1736,7 @@ czt|czt|czt|Chin, Zotung|
 dan|dan|da|Danish|dansk
 dan|dan|da-Brai|Danish (Brai script)|
 dan|dan|da-GL|Danish (Greenland)|dansk
+dan|dan|da-Runr|Danish (Runr script)|
 daa|daa|daa|Dangaléat|Daŋla
 dac|dac|dac|Dambi|
 dad|dad|dad|Marik|Marik od
@@ -1746,7 +1764,7 @@ dax|dax|dax|Dayi|
 daz|daz|daz|Dao|
 dba|dba|dba|Bangime|
 dbb|dbb|dbb|Deno|
-dbd|dbd|dbd|Dadiya|
+dbd|dbd|dbd|Dadiya|Nyiyo Daddi̱ya
 dbe|dbe|dbe|Dabe|
 dbf|dbf|dbf|Edopi|
 dbg|dbg|dbg|Dogon, Dogul Dom|
@@ -1819,7 +1837,7 @@ dgg|dgg|dgg|Doga|
 dgh|dgh|dgh|Dghwede|Dghwéɗè
 dgi|dgi|dgi|Dagara, Northern|Dagara
 dgk|dgk|dgk|Dagba|
-dgl|dgl|dgl-Arab|Andaandi (Arab script)|
+dgl|dgl|dgl|Andaandi|
 dgl|dgl|dgl-Copt|Andaandi (Copt script)|
 dgl|dgl|dgl-Latn|Andaandi (Latn script)|
 dgn|dgn|dgn|Dagoman|
@@ -1853,7 +1871,7 @@ dii|dii|dii|Dimbong|
 dij|dij|dij|Dai|
 dil|dil|dil|Dilling|
 dim|dim|dim|Dime|
-din|din|din|Dinka|Dinka: Southwestern
+din|din|din|Dinka|Thuɔŋjäŋ
 din|din|din-Arab|Dinka (Arab script)|
 dio|dio|dio|Dibo|
 dip|dip|dip|Dinka, Northeastern|
@@ -1917,7 +1935,7 @@ dne|dne|dne|Ndendeule|
 dng|dng|dng|Dungan|
 dng|dng|dng-Arab|Dungan (Arab script)|
 dni|dni|dni|Dani, Lower Grand Valley|
-dnj|dnj|dnj|Dan|Dan
+dnj|dnj|dnj|Dan|Dã̀ã̀
 dnj|dnj|dnj-LR|Dan (Liberia)|Dan
 dnj|dnj|dnj-x-eastern|Dan (x-eastern)|
 dnj|dnj|dnj-x-western|Dan (x-western)|
@@ -2198,6 +2216,7 @@ eng|eng|en-PN|English (Pitcairn)|English
 eng|eng|en-PR|English (Puerto Rico)|English
 eng|eng|en-PW|English (Palau)|English
 eng|eng|en-RW|English (Rwanda)|English
+eng|eng|en-Runr|English (Runr script)|
 eng|eng|en-SB|English (Solomon Islands)|English
 eng|eng|en-SC|English (Seychelles)|English
 eng|eng|en-SD|English (Sudan)|English
@@ -2234,6 +2253,7 @@ enf|enf|enf|Enets, Forest|
 enh|enh|enh|Enets, Tundra|
 enl|enl|enl|Enlhet|
 enm|enm|enm|Middle English (1100-1500)|
+enm|enm|enm-Runr|Middle English (1100-1500) (Runr script)|
 enn|enn|enn|Engenni|Egene
 eno|eno|eno|Enggano|
 enq|enq|enq|Enga|Eŋa
@@ -2252,6 +2272,7 @@ eri|eri|eri|Ogea|Ogea
 erk|erk|erk|Efate, South|
 ero|ero|ero|Horpa|
 err|err|err|Erre|
+ers|ers|ers|Ersu|
 ers|ers|ers-Zzzz-x-ersushab|Ersu (Zzzz script, x-ersushab)|
 ert|ert|ert|Eritai|
 erw|erw|erw|Erokwanas|
@@ -2339,7 +2360,7 @@ fal|fal|fal|Fali, South|
 fam|fam|fam|Fam|
 fan|fan|fan|Fang|Fang
 fap|fap|fap|Paloor|
-far|far|far|Fataleka|
+far|far|far|Fataleka|Fataleka
 fau|fau|fau|Fayu|
 fax|fax|fax|Fala|
 fay|fay|fay|Fars, Southwestern|
@@ -2348,17 +2369,17 @@ fbl|fbl|fbl|Bikol, West Albay|
 fer|fer|fer|Feroge|
 ful|ful|ff|Fulah|Pulaar
 ful|ful|ff-Adlm|Fulah (Adlm script)|𞤆𞤵𞤤𞤢𞤪
-ful|ful|ff-Adlm-BF|Fulah (Adlm script, Burkina Faso)|
-ful|ful|ff-Adlm-CM|Fulah (Adlm script, Cameroon)|
-ful|ful|ff-Adlm-GH|Fulah (Adlm script, Ghana)|
-ful|ful|ff-Adlm-GM|Fulah (Adlm script, Gambia)|
-ful|ful|ff-Adlm-GW|Fulah (Adlm script, Guinea-Bissau)|
-ful|ful|ff-Adlm-LR|Fulah (Adlm script, Liberia)|
-ful|ful|ff-Adlm-MR|Fulah (Adlm script, Mauritania)|
-ful|ful|ff-Adlm-NE|Fulah (Adlm script, Niger)|
-ful|ful|ff-Adlm-NG|Fulah (Adlm script, Nigeria)|
-ful|ful|ff-Adlm-SL|Fulah (Adlm script, Sierra Leone)|
-ful|ful|ff-Adlm-SN|Fulah (Adlm script, Senegal)|
+ful|ful|ff-Adlm-BF|Fulah (Adlm script, Burkina Faso)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-CM|Fulah (Adlm script, Cameroon)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-GH|Fulah (Adlm script, Ghana)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-GM|Fulah (Adlm script, Gambia)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-GW|Fulah (Adlm script, Guinea-Bissau)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-LR|Fulah (Adlm script, Liberia)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-MR|Fulah (Adlm script, Mauritania)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-NE|Fulah (Adlm script, Niger)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-NG|Fulah (Adlm script, Nigeria)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-SL|Fulah (Adlm script, Sierra Leone)|𞤆𞤵𞤤𞤢𞤪
+ful|ful|ff-Adlm-SN|Fulah (Adlm script, Senegal)|𞤆𞤵𞤤𞤢𞤪
 ful|ful|ff-Arab|Fulah (Arab script)|Pulaar
 ful|ful|ff-BF|Fulah (Burkina Faso)|Pulaar
 ful|ful|ff-CM|Fulah (Cameroon)|Pulaar
@@ -2398,13 +2419,14 @@ fll|fll|fll|Fali, North|
 fln|fln|fln|Flinders Island|
 flr|flr|flr|Fuliiru|Kifuliiru
 fly|fly|fly|Flaaitaal|
-fmp|fmp|fmp|Fe’fe’|Feʼefeʼe
+fmp|fmp|fmp|Fe’fe’|fèʼéfěʼè
 fmu|fmu|fmu|Muria, Far Western|
 fnb|fnb|fnb|Fanbak|
 fng|fng|fng|Pidgin Bantu|
 fni|fni|fni|Fania|
 fao|fao|fo|Faroese|føroyskt
 fao|fao|fo-DK|Faroese (Denmark)|føroyskt
+fao|fao|fo-Runr|Faroese (Runr script)|
 fod|fod|fod|Foodo|Fóodo
 foi|foi|foi|Foi|
 fom|fom|fom|Foma|
@@ -2471,7 +2493,7 @@ frq|frq|frq|Forak|
 frr|frr|frr|Frisian, Northern|
 frs|frs|frs|Saxon, East Frisian Low|
 frt|frt|frt|Fortsenal|
-fub|fub|fub|Fulfulde, Adamawa|
+fub|fub|fub|Fulfulde, Adamawa|ڢُلْڢُلْدٜ
 fub|fub|fub-Latn|Fulfulde, Adamawa (Latn script)|Fulfulde
 fud|fud|fud|Futuna, East|
 fue|fue|fue|Fulfulde, Borgu|Fulfulde
@@ -2503,6 +2525,7 @@ gaa|gaa|gaa|Ga|Ga
 gaa|gaa|gaa-Arab|Ga (Arab script)|
 gab|gab|gab|Gabri|
 gac|gac|gac|Great Andamanese, Mixed|
+gac|gac|gac-Deva|Great Andamanese, Mixed (Deva script)|
 gad|gad|gad|Gaddang|
 gae|gae|gae|Guarequena|
 gaf|gaf|gaf|Gende|
@@ -2555,7 +2578,7 @@ gbu|gbu|gbu|Gagadu|
 gbv|gbv|gbv|Gbanu|
 gbw|gbw|gbw|Gabi-Gabi|
 gbx|gbx|gbx|Gbe, Eastern Xwla|
-gby|gby|gby|Gbari|
+gby|gby|gby|Gbari|Gbari
 gbz|gbz|gbz|Dari, Zoroastrian|
 gcc|gcc|gcc|Mali|
 gcd|gcd|gcd|Ganggalida|
@@ -2566,6 +2589,7 @@ gcn|gcn|gcn|Gaina|
 gcr|gcr|gcr|Guianese French Creole|
 gct|gct|gct|German, Colonia Tovar|
 gla|gla|gd|Scottish Gaelic|Gàidhlig
+gla|gla|gd-Ogam|Scottish Gaelic (Ogam script)|
 gda|gda|gda|Lohar, Gade|
 gdb|gdb|gdb|Gadaba, Pottangi Ollar|
 gdb|gdb|gdb-Telu|Gadaba, Pottangi Ollar (Telu script)|
@@ -2619,6 +2643,8 @@ ggt|ggt|ggt|Gitua|
 ggu|ggu|ggu|Gban|
 ggw|ggw|ggw|Gogodala|
 gha|gha|gha|Ghadamès|
+gha|gha|gha-Latn|Ghadamès (Latn script)|
+gha|gha|gha-Tfng|Ghadamès (Tfng script)|
 ghc|ghc|ghc|Hiberno-Scottish Gaelic|
 ghe|ghe|ghe|Ghale, Southern|
 ghh|ghh|ghh|Ghale, Northern|
@@ -2740,7 +2766,7 @@ gor|gor|gor|Gorontalo|
 gos|gos|gos|Gronings|
 got|got|got|Gothic|
 gou|gou|gou|Gavar|
-goo|goo|gov|Goo|
+gov|gov|gov|Goo|
 gow|gow|gow|Gorowa|
 gox|gox|gox|Gobu|
 goy|goy|goy|Goundo|
@@ -2767,7 +2793,8 @@ grj|grj|grj|Grebo, Southern|
 grm|grm|grm|Kota Marudu Talantang|
 gro|gro|gro|Groma|
 grq|grq|grq|Gorovu|
-grr|grr|grr|Taznatit|
+grr|grr|grr-Arab|Taznatit (Arab script)|
+grr|grr|grr-Tfng|Taznatit (Tfng script)|
 grs|grs|grs|Gresi|
 grt|grt|grt|Garo|
 grt|grt|grt-Brai|Garo (Brai script)|
@@ -2814,6 +2841,7 @@ guw|guw|guw|Gun|Gungbe
 gux|gux|gux|Gourmanchéma|Gourma
 guz|guz|guz|Ekegusii|Ekegusii
 glv|glv|gv|Manx|Gaelg
+glv|glv|gv-Ogam|Manx (Ogam script)|
 gva|gva|gva|Guana|
 gvc|gvc|gvc|Wanano|Kotiria
 gve|gve|gve|Duwet|
@@ -2850,8 +2878,9 @@ gyd|gyd|gyd|Kayardild|
 gye|gye|gye|Gyem|
 gyf|gyf|gyf|Gungabula|
 gyg|gyg|gyg|Gbayi|
-gyi|gyi|gyi|Gyele|
+gyi|gyi|gyi|Gyele|Gyele
 gyl|gyl|gyl|Gayil|
+gyl|gyl|gyl-Ethi|Gayil (Ethi script)|
 gym|gym|gym|Ngäbere|Ngäbere
 gyn|gyn|gyn|Guyanese English Creole|
 gyo|gyo|gyo|Gyalsumdo|
@@ -2873,7 +2902,7 @@ haa|haa|haa|Han|
 hac|hac|hac|Gurani|
 had|had|had|Hatam|
 hae|hae|hae|Oromo, Eastern|
-hag|hag|hag|Hanga|
+hag|hag|hag|Hanga|Haŋa
 hah|hah|hah|Hahon|
 hai|hai|hai|Haida|
 haj|haj|haj|Hajong|
@@ -2927,7 +2956,7 @@ hib|hib|hib|Hibito|
 hid|hid|hid|Hidatsa|
 hif|hif|hif|Hindi, Fiji|
 hif|hif|hif-Deva|Hindi, Fiji (Deva script)|
-hig|hig|hig|Kamwe|Kamwǝ
+hig|hig|hig|Kamwe|Kamwə
 hih|hih|hih|Pamosu|Pamosu
 hii|hii|hii|Hinduri|
 hii|hii|hii-Deva|Hinduri (Deva script)|
@@ -2977,7 +3006,7 @@ hmp|hmp|hmp|Miao, Northern Mashan|
 hmq|hmq|hmq|Miao, Eastern Qiandong|
 hmr|hmr|hmr|Hmar|
 hms|hms|hms|Miao, Southern Qiandong|
-hmt|hmt|hmt|Hamtai|
+hmt|hmt|hmt|Hamtai|Hamtai
 hmu|hmu|hmu|Hamap|
 hmv|hmv|hmv|Hmong Dô|
 hmw|hmw|hmw|Miao, Western Mashan|
@@ -3020,7 +3049,7 @@ hom|hom|hom|Homa|
 hoo|hoo|hoo|Holoholo|
 hop|hop|hop|Hopi|Hopílavayi
 hor|hor|hor|Horo|
-hot|hot|hot|Malei|Malê
+hot|hot|hot|Malei|Malei
 hov|hov|hov|Hovongan|
 how|how|how|Honi|
 hoy|hoy|hoy|Holiya|
@@ -3035,6 +3064,7 @@ hre|hre|hre|Hre|
 hre|hre|hre-x-1960|Hre (x-1960)|
 hrk|hrk|hrk|Haruku|
 hrm|hrm|hrm|Miao, Horned|
+hrm|hrm|hrm-Hmng|Miao, Horned (Hmng script)|
 hro|hro|hro|Haroi|
 hrp|hrp|hrp|Nhirrpi|
 hrt|hrt|hrt|Hértevin|
@@ -3094,7 +3124,6 @@ hya|hya|hya|Hya|
 hyw|hyw|hyw|Armenian, Western|
 her|her|hz|Herero|
 ina|ina|ia|Interlingua (International Auxiliary Language|interlingua
-ina|ina|ia-FR|Interlingua (International Auxiliary Language (France)|interlingua
 iai|iai|iai|Iaai|
 ian|ian|ian|Iatmul|gepmakudi
 iap|iap|iap|Iapama|
@@ -3178,6 +3207,8 @@ ila|ila|ila|Ile Ape|
 ilb|ilb|ilb|Ila|
 ilg|ilg|ilg|Garig-Ilgar|
 ili|ili|ili|Ili Turki|
+ili|ili|ili-Arab|Ili Turki (Arab script)|
+ili|ili|ili-Cyrl|Ili Turki (Cyrl script)|
 ilk|ilk|ilk|Bogkalot|
 ilm|ilm|ilm|Iranun|
 ilo|ilo|ilo|Ilocano|
@@ -3226,6 +3257,7 @@ iru|iru|iru-Mlym|Irula (Mlym script)|
 irx|irx|irx|Kamberau|
 iry|iry|iry|Iraya|
 isl|isl|is|Icelandic|íslenska
+isl|isl|is-Runr|Icelandic (Runr script)|
 isa|isa|isa|Isabi|
 isc|isc|isc|Isconahua|
 isd|isd|isd|Isnag|Isnag
@@ -3274,7 +3306,7 @@ iwo|iwo|iwo|Morop|
 iws|iws|iws|Iwam, Sepik|
 ixc|ixc|ixc|Ixcatec|
 ixl|ixl|ixl|Ixil|Ixil
-ixl|ixl|ixl-x-cotzal|Ixil (x-cotzal)|
+ixl|ixl|ixl-x-cotzal|Ixil (x-cotzal)|Ixil
 iya|iya|iya|Iyayu|
 iyo|iyo|iyo|Mesaka|
 iyx|iyx|iyx|Yaka|
@@ -3284,11 +3316,11 @@ izz|izz|izz|Izii|Izii
 jpn|jpn|ja|Japanese|日本語
 jpn|jpn|ja-Brai|Japanese (Brai script)|
 jpn|jpn|ja-Latn|Japanese (Latn script)|
-jaa|jaa|jaa|Jamamadí|
+jaa|jaa|jaa|Jamamadí|Jamamadí
 jaa|jaa|jaa-x-banawa|Jamamadí (x-banawa)|
-jaa|jaa|jaa-x-jarawara|Jamamadí (x-jarawara)|
+jaa|jaa|jaa-x-jarawara|Jamamadí (x-jarawara)|Jamamadí
 jab|jab|jab|Hyam|Jaba
-jac|jac|jac|Jakalteko|Jakalteko-Poptiꞌ
+jac|jac|jac|Jakalteko|Abxubal
 jad|jad|jad|Jahanka|
 jae|jae|jae|Yabem|
 jaf|jaf|jaf|Jara|
@@ -3361,6 +3393,8 @@ jje|jje|jje|Jejueo|
 jjr|jjr|jjr|Bankal|
 jka|jka|jka|Kaera|
 jkm|jkm|jkm|Karen, Mobwa|
+jkm|jkm|jkm-Brai|Karen, Mobwa (Brai script)|
+jkm|jkm|jkm-Latn|Karen, Mobwa (Latn script)|
 jko|jko|jko|Kubo|
 jkp|jkp|jkp|Karen, Paku|
 jkr|jkr|jkr|Koro|
@@ -3420,6 +3454,7 @@ juu|juu|juu|Ju|
 juw|juw|juw|Wãpha|
 juy|juy|juy|Juray|
 jav|jav|jv|Javanese|Jawa
+jav|jav|jv-Arab|Javanese (Arab script)|
 jav|jav|jv-Java|Javanese (Java script)|
 jvd|jvd|jvd|Javindo|
 jvn|jvn|jvn|Javanese, Suriname|Jawa Suriname
@@ -3451,15 +3486,16 @@ kap|kap|kap|Bezhta|
 kaq|kaq|kaq|Capanahua|Capa Baquebo
 kav|kav|kav|Katukína|
 kaw|kaw|kaw|Kawi|
+kaw|kaw|kaw-Bali|Kawi (Bali script)|
 kax|kax|kax|Kao|
 kay|kay|kay|Kamayurá|
 kba|kba|kba|Kalarko|
 kbb|kbb|kbb|Kaxuiâna|
-kbc|kbc|kbc|Kadiwéu|
+kbc|kbc|kbc|Kadiwéu|Goniwoladi ejiwajegi
 kbd|kbd|kbd|Kabardian|
 kbe|kbe|kbe|Kanju|
-kbg|kbg|kbg-Tibt|Khamba (Tibt script)|
-kbh|kbh|kbh|Camsá|Camënts̈á
+kbg|kbg|kbg|Khamba|
+kbh|kbh|kbh|Camsá|Camëntsá
 kbi|kbi|kbi|Kaptiau|
 kbj|kbj|kbj|Kari|
 kbk|kbk|kbk|Koiari, Grass|
@@ -3479,7 +3515,7 @@ kbv|kbv|kbv|Dla|
 kbw|kbw|kbw|Kaiep|
 kbx|kbx|kbx|Ap Ma|
 kby|kby|kby|Kanuri, Manga|
-kby|kby|kby-Latn|Kanuri, Manga (Latn script)|kànòrí
+kby|kby|kby-Latn|Kanuri, Manga (Latn script)|Manga
 kbz|kbz|kbz|Duhwa|
 kca|kca|kca|Khanty|
 kcb|kcb|kcb|Kawacha|
@@ -3487,7 +3523,7 @@ kcc|kcc|kcc|Lubila|
 kcd|kcd|kcd|Kanum, Ngkâlmpw|
 kce|kce|kce|Kaivi|
 kcf|kcf|kcf|Ukaan|
-kcg|kcg|kcg|Tyap|
+kcg|kcg|kcg|Tyap|Tyap
 kch|kch|kch|Vono|
 kci|kci|kci|Kamantan|
 kcj|kcj|kcj|Kobiana|
@@ -3514,7 +3550,7 @@ kde|kde|kde|Makonde|Chimakonde
 kdf|kdf|kdf|Mamusi|
 kdg|kdg|kdg|Seba|
 kdh|kdh|kdh|Tem|Tem
-kdh|kdh|kdh-Arab|Tem (Arab script)|
+kdh|kdh|kdh-Arab|Tem (Arab script)|Tem
 kdi|kdi|kdi|Kumam|
 kdj|kdj|kdj|Ng’akarimojong|
 kdk|kdk|kdk|Numèè|
@@ -3554,7 +3590,7 @@ ker|ker|ker|Kera|
 kes|kes|kes|Kugbo|
 ket|ket|ket|Ket|
 keu|keu|keu|Akebu|
-kev|kev|kev-Mlym|Kanikkaran (Mlym script)|
+kev|kev|kev|Kanikkaran|
 kev|kev|kev-Taml|Kanikkaran (Taml script)|
 kew|kew|kew|Kewapi, West|adaa agaa
 kex|kex|kex|Kukna|
@@ -3570,7 +3606,7 @@ kff|kff|kff|Koya|
 kff|kff|kff-Deva|Koya (Deva script)|
 kff|kff|kff-Orya|Koya (Orya script)|
 kff|kff|kff-Telu|Koya (Telu script)|
-kfg|kfg|kfg-Knda|Kudiya (Knda script)|
+kfg|kfg|kfg|Kudiya|
 kfg|kfg|kfg-Mlym|Kudiya (Mlym script)|
 kfh|kfh|kfh|Kurichiya|
 kfi|kfi|kfi|Kurumba, Kannada|
@@ -3635,13 +3671,13 @@ khh|khh|khh|Kehu|
 khj|khj|khj|Kuturmi|
 khl|khl|khl|Lusi|
 khn|khn|khn|Khandesi|
-kho|kho|kho-Brah|Khotanese (Brah script)|
+kho|kho|kho|Khotanese|
 kho|kho|kho-Khar|Khotanese (Khar script)|
 khp|khp|khp|Kapauri|
 khq|khq|khq|Songhay, Koyra Chiini|Koyra ciini
 khr|khr|khr|Kharia|
 khr|khr|khr-Deva|Kharia (Deva script)|
-khs|khs|khs|Kasua|
+khs|khs|khs|Kasua|Kasua
 kht|kht|kht|Khamti|
 khu|khu|khu|Nkumbi|
 khv|khv|khv|Khvarshi|
@@ -3712,7 +3748,7 @@ kju|kju|kju|Kashaya|
 kjv|kjv|kjv|Kaikavian Literary Language|
 kjx|kjx|kjx|Ramopa|
 kjy|kjy|kjy|Pole|
-kjz|kjz|kjz-Tibt|Bumthangkha (Tibt script)|
+kjz|kjz|kjz|Bumthangkha|
 kaz|kaz|kk|Kazakh|қазақ тілі
 kaz|kaz|kk-AF|Kazakh (Afghanistan)|
 kaz|kaz|kk-Brai|Kazakh (Brai script)|
@@ -3773,7 +3809,7 @@ klt|klt|klt|Nukna|Nukna
 klu|klu|klu|Klao|
 klv|klv|klv|Maskelynes|nasorun ta Uluveu
 klw|klw|klw|Tado|
-klx|klx|klx|Koluwawa|
+klx|klx|klx|Koluwawa|Koluwawa
 kly|kly|kly|Kalao|
 klz|klz|klz|Kabola|
 khm|khm|km|Khmer|ខ្មែរ
@@ -3817,8 +3853,6 @@ knk|knk|knk|Kuranko|
 knk|knk|knk-Arab|Kuranko (Arab script)|
 knl|knl|knl|Keninjal|
 knm|knm|knm|Kanamarí|
-knn|knn|knn-Knda|Konkani (Knda script)|
-knn|knn|knn-Latn|Konkani (Latn script)|
 kno|kno|kno|Kono|
 knp|knp|knp|Kwanja|Kwànjâ
 knq|knq|knq|Kintaq|
@@ -3829,7 +3863,7 @@ knt|knt|knt|Katukína, Panoan|
 knu|knu|knu|Kono|
 knv|knv|knv|Tabo|Tabo
 knv|knv|knv-x-aramia|Tabo (x-aramia)|
-knv|knv|knv-x-flyriver|Tabo (x-flyriver)|
+knv|knv|knv-x-flyriver|Tabo (x-flyriver)|Tabo
 knw|knw|knw|Kung-Ekoka|
 knx|knx|knx|Kendayan|
 kny|kny|kny|Kanyok|
@@ -3849,6 +3883,8 @@ koi|koi|koi|Komi-Permyak|
 koi|koi|koi-Latn|Komi-Permyak (Latn script)|
 koi|koi|koi-Perm|Komi-Permyak (Perm script)|
 kok|kok|kok|Konkani (macrolanguage)|कोंकणी
+kok|kok|kok-Knda|Konkani (macrolanguage) (Knda script)|
+kok|kok|kok-Latn|Konkani (macrolanguage) (Latn script)|
 kol|kol|kol|Kol|
 koo|koo|koo|Konzo|
 kop|kop|kop|Waube|
@@ -3859,7 +3895,7 @@ kou|kou|kou|Koke|
 kov|kov|kov|Kudu-Camo|
 kow|kow|kow|Kugama|
 koy|koy|koy|Koyukon|
-koz|koz|koz|Amako|
+koz|koz|koz|Amako|Amako
 kpa|kpa|kpa|Kutto|
 kpb|kpb|kpb|Kurumba, Mullu|
 kpc|kpc|kpc|Curripaco|
@@ -3900,7 +3936,7 @@ kql|kql|kql|Kyenele|Kiañiŋ Balaŋ
 kqm|kqm|kqm|Khisa|
 kqn|kqn|kqn|Kaonde|
 kqo|kqo|kqo|Krahn, Eastern|
-kqp|kqp|kqp|Kimré|
+kqp|kqp|kqp|Kimré|Gawra
 kqq|kqq|kqq|Krenak|
 kqr|kqr|kqr|Kimaragang|
 kqs|kqs|kqs|Kissi, Northern|Kisi
@@ -3913,7 +3949,7 @@ kqy|kqy|kqy|Koorete|
 kqy|kqy|kqy-Latn|Koorete (Latn script)|
 kqz|kqz|kqz|Korana|
 kau|kau|kr|Kanuri|Kanuri
-knc|knc|kr-Arab|Kanuri, Yerwa (Arab script)|
+knc|knc|kr-Arab|Kanuri, Yerwa (Arab script)|Kanuri
 kra|kra|kra|Kumal|
 krb|krb|krb|Karkin|
 krc|krc|krc|Karachay-Balkar|
@@ -3974,6 +4010,7 @@ ktb|ktb|ktb-Latn|Kambaata (Latn script)|
 ktc|ktc|ktc|Kholok|
 ktd|ktd|ktd|Kokata|
 kte|kte|kte|Nubri|
+kte|kte|kte-Tibt|Nubri (Tibt script)|
 ktf|ktf|ktf|Kwami|
 ktg|ktg|ktg|Kalkutung|
 kth|kth|kth|Karanga|
@@ -4020,7 +4057,7 @@ kun|kun|kun|Kunama|Kunama
 kuo|kuo|kuo|Kumukio|
 kup|kup|kup|Kunimaipa|
 kuq|kuq|kuq|Karipuna|
-kus|kus|kus|Kusaal|Kusaas
+kus|kus|kus|Kusaal|Kʋsaal
 kut|kut|kut|Kutenai|
 kuu|kuu|kuu|Kuskokwim, Upper|
 kuv|kuv|kuv|Kur|
@@ -4038,7 +4075,7 @@ kvc|kvc|kvc|Kove|
 kvd|kvd|kvd|Kui|
 kve|kve|kve|Murut, Kalabakan|
 kvf|kvf|kvf|Kabalai|
-kvg|kvg|kvg|Kuni-Boazi|
+kvg|kvg|kvg|Kuni-Boazi|Kuni-Boazi
 kvh|kvh|kvh|Komodo|
 kvi|kvi|kvi|Kwang|
 kvj|kvj|kvj|Psikye|
@@ -4059,6 +4096,7 @@ kvx|kvx|kvx|Koli, Parkari|پارڪرِي
 kvy|kvy|kvy|Yintale|
 kvz|kvz|kvz|Tsaukambo|
 cor|cor|kw|Cornish|kernewek
+cor|cor|kw-Ogam|Cornish (Ogam script)|
 kwa|kwa|kwa|Dâw|
 kwb|kwb|kwb|Kwa|
 kwc|kwc|kwc|Likwala|
@@ -4068,7 +4106,7 @@ kwf|kwf|kwf|Kwara’ae|Kwara'ae
 kwg|kwg|kwg|Kaba Démé, Sara|
 kwh|kwh|kwh|Kowiai|
 kwi|kwi|kwi|Awa-Cuaiquer|Awapit
-kwj|kwj|kwj|Kwanga|
+kwj|kwj|kwj|Kwanga|Kwanga
 kwk|kwk|kwk|Kwakwala|
 kwl|kwl|kwl|Kofyar|
 kwm|kwm|kwm|Kwambi|
@@ -4123,7 +4161,7 @@ kya|kya|kya|Kwaya|
 kyb|kyb|kyb|Kalinga, Butbut|Butbut Kalinga
 kyc|kyc|kyc|Kyaka|
 kyd|kyd|kyd|Karey|
-kye|kye|kye|Krache|Kaakyi
+kye|kye|kye|Krache|Kaakye
 kyf|kyf|kyf|Kouya|Sɔkɔwɛlɩ
 kyg|kyg|kyg|Keyagana|
 kyh|kyh|kyh|Karok|
@@ -4140,12 +4178,13 @@ kyr|kyr|kyr|Kuruáya|
 kys|kys|kys|Kayan, Baram|
 kyt|kyt|kyt|Kayagar|
 kyu|kyu|kyu|Kayah, Western|ꤊꤢ꤬ꤛꤢ꤭ꤜꤟꤤ꤬
-kyu|kyu|kyu-Latn|Kayah, Western (Latn script)|
+kyu|kyu|kyu-Latn|Kayah, Western (Latn script)|ꤊꤢ꤬ꤛꤢ꤭ꤜꤟꤤ꤬
 kyu|kyu|kyu-Mymr|Kayah, Western (Mymr script)|
 kyv|kyv|kyv|Kewat|
 kyw|kyw|kyw|Kudmali|
 kyw|kyw|kyw-Beng|Kudmali (Beng script)|
 kyw|kyw|kyw-Orya|Kudmali (Orya script)|
+kyw|kyw|kyw-Zzzz-x-chisoi|Kudmali (Zzzz script, x-chisoi)|
 kyx|kyx|kyx|Rapoisi|
 kyy|kyy|kyy|Asa’a|
 kyz|kyz|kyz|Kayabí|
@@ -4208,6 +4247,8 @@ lba|lba|lba|Lui|
 lbb|lbb|lbb|Label|
 lbc|lbc|lbc|Lakkia|
 lbe|lbe|lbe|Lak|
+lbe|lbe|lbe-Arab|Lak (Arab script)|
+lbe|lbe|lbe-Latn|Lak (Latn script)|
 lbf|lbf|lbf|Tinani|
 lbf|lbf|lbf-Tibt|Tinani (Tibt script)|
 lbg|lbg|lbg|Laopang|
@@ -4219,6 +4260,7 @@ lbm|lbm|lbm|Lodhi|
 lbn|lbn|lbn|Rmeet|
 lbn|lbn|lbn-Laoo|Rmeet (Laoo script)|
 lbo|lbo|lbo|Laven|
+lbo|lbo|lbo-Latn|Laven (Latn script)|
 lbq|lbq|lbq|Wampar|
 lbr|lbr|lbr|Lohorung|
 lbt|lbt|lbt|Lachi|
@@ -4234,7 +4276,7 @@ lce|lce|lce|Sekak|
 lcf|lcf|lcf|Lubu|
 lch|lch|lch|Luchazi|
 lcl|lcl|lcl|Lisela|
-lcm|lcm|lcm|Tungag|
+lcm|lcm|lcm|Tungag|Tungag
 lcp|lcp|lcp|Lawa, Western|
 lcq|lcq|lcq|Luhu|
 lcs|lcs|lcs|Lisabata-Nuniali|
@@ -4255,9 +4297,9 @@ ldq|ldq|ldq|Lufu|
 lea|lea|lea|Lega-Shabunda|
 leb|leb|leb|Lala-Bisa|
 lec|lec|lec|Leco|
-led|led|led|Lendu|
+led|led|led|Lendu|Bbaledha
 lee|lee|lee|Lyélé|Lyélé
-lef|lef|lef|Lelemi|
+lef|lef|lef|Lelemi|Lɛlɛmi
 leh|leh|leh|Lenje|
 lei|lei|lei|Lemio|
 lej|lej|lej|Lengola|
@@ -4286,7 +4328,7 @@ lug|lug|lg|Ganda|Luganda
 lug|lug|lg-Arab|Ganda (Arab script)|
 lga|lga|lga|Lungga|
 lgb|lgb|lgb|Laghu|
-lgg|lgg|lgg|Lugbara|Lugbarati
+lgg|lgg|lgg|Lugbara|Lʉgbara tɨ
 lgg|lgg|lgg-Arab|Lugbara (Arab script)|
 lgh|lgh|lgh|Laghuu|
 lgi|lgi|lgi|Lengilu|
@@ -4316,8 +4358,8 @@ lib|lib|lib|Likum|
 lic|lic|lic|Hlai|
 lid|lid|lid|Nyindrou|Nyindrou
 lie|lie|lie|Likila|
-lif|lif|lif|Limbu|
-lif|lif|lif-Limb|Limbu (Limb script)|
+lif|lif|lif|Limbu|यक्थुङ्पन
+lif|lif|lif-Limb|Limbu (Limb script)|यक्थुङ्पन
 lif|lif|lif-x-chathare|Limbu (x-chathare)|
 lif|lif|lif-x-phedappe|Limbu (x-phedappe)|
 lig|lig|lig|Ligbi|
@@ -4330,7 +4372,7 @@ lio|lio|lio|Liki|
 lip|lip|lip|Sekpele|Sɛkpɛlé
 liq|liq|liq|Libido|
 lir|lir|lir|Liberian English|
-lis|lis|lis|Lisu|
+lis|lis|lis|Lisu|ꓡꓲ-ꓢꓴ
 lis|lis|lis-Latn|Lisu (Latn script)|
 liu|liu|liu|Logorik|
 liv|liv|liv|Liv|
@@ -4414,7 +4456,7 @@ lin|lin|ln-CG|Lingala (Congo)|lingála
 lna|lna|lna|Langbashe|
 lnb|lnb|lnb|Mbalanhu|
 lnd|lnd|lnd|Lundayeh|
-lng|lng|lng-Latn|Langobardic (Latn script)|
+lng|lng|lng|Langobardic|
 lng|lng|lng-Runr|Langobardic (Runr script)|
 lnh|lnh|lnh|Lanoh|
 lni|lni|lni|Daantanai’|
@@ -4443,7 +4485,7 @@ lom|lom|lom-Loma|Loma (Loma script)|
 lon|lon|lon|Lomwe, Malawi|
 loo|loo|loo|Lombo|
 lop|lop|lop|Lopa|
-loq|loq|loq|Lobala|
+loq|loq|loq|Lobala|Loɓala
 lor|lor|lor|Téén|Téén
 los|los|los|Loniu|
 lot|lot|lot|Otuho|
@@ -4487,8 +4529,8 @@ lsr|lsr|lsr|Aruop|
 lss|lss|lss|Lasi|
 lit|lit|lt|Lithuanian|lietuvių
 lit|lit|lt-Latf|Lithuanian (Latf script)|
+ltc|ltc|ltc|Late Middle Chinese|
 ltc|ltc|ltc-Hans|Late Middle Chinese (Hans script)|
-ltc|ltc|ltc-Hant|Late Middle Chinese (Hant script)|
 ltg|ltg|ltg|Latgalian|
 lth|lth|lth|Thur|
 lti|lti|lti|Leti|
@@ -4498,7 +4540,7 @@ lts|lts|lts|Lutachoni|
 ltu|ltu|ltu|Latu|
 lub|lub|lu|Luba-Katanga|Tshiluba
 lua|lua|lua|Luba-Kasai|
-luc|luc|luc|Aringa|Ãrị̃ngã
+luc|luc|luc|Aringa|Ãrị̃ngã tị
 lud|lud|lud|Ludian|
 lue|lue|lue|Luvale|
 luf|luf|luf|Laua|
@@ -4552,6 +4594,7 @@ lzz|lzz|lzz-Latn-GE|Laz (Latn script, Georgia)|
 maa|maa|maa|Mazatec, San Jerónimo Tecóatl|
 mab|mab|mab|Mixtec, Yutanduchi|
 mad|mad|mad|Madura|
+mad|mad|mad-Arab|Madura (Arab script)|
 mae|mae|mae|Bo-Rukul|
 maf|maf|maf|Mafa|
 mag|mag|mag|Magahi|
@@ -4578,13 +4621,13 @@ mas|mas|mas-TZ|Maasai (United Republic of Tanzania)|Maa
 mat|mat|mat|Matlatzinca, San Francisco|
 mau|mau|mau|Mazatec, Huautla|Enna
 mav|mav|mav|Sateré-Mawé|Satere Mawe
-maw|maw|maw|Mampruli|
+maw|maw|maw|Mampruli|Ŋmampulli
 maw|maw|maw-Arab|Mampruli (Arab script)|
 max|max|max|Malay, North Moluccan|
 maz|maz|maz|Mazahua, Central|Jnatrjo
 mba|mba|mba|Higaonon|
 mbb|mbb|mbb|Manobo, Western Bukidnon|
-mbc|mbc|mbc|Macushi|
+mbc|mbc|mbc|Macushi|Makusi
 mbd|mbd|mbd|Manobo, Dibabawon|Dibabawon
 mbe|mbe|mbe|Molale|
 mbf|mbf|mbf|Malay, Baba|
@@ -4622,7 +4665,7 @@ mcl|mcl|mcl|Macaguaje|
 mcm|mcm|mcm|Malaccan Portuguese Creole|
 mcn|mcn|mcn|Masana|
 mco|mco|mco|Mixe, Coatlán|Ayuk
-mcp|mcp|mcp|Makaa|Mǝkaá
+mcp|mcp|mcp|Makaa|Məkaá
 mcq|mcq|mcq|Ese|
 mcr|mcr|mcr|Menya|
 mcs|mcs|mcs|Mambai|
@@ -4682,7 +4725,7 @@ meq|meq|meq|Merey|
 mer|mer|mer|Kimîîru|Kĩmĩrũ
 mes|mes|mes|Masmaje|
 met|met|met|Mato|Mato
-meu|meu|meu|Motu|
+meu|meu|meu|Motu|Motu
 mev|mev|mev|Maan|
 mew|mew|mew|Maaka|
 mey|mey|mey|Hassaniyya|
@@ -4722,7 +4765,7 @@ mlg|mlg|mg-Arab|Malagasy (Arab script)|
 mlg|mlg|mg-Brai|Malagasy (Brai script)|
 mga|mga|mga|Middle Irish (900-1200)|
 mgb|mgb|mgb|Mararit|
-mgc|mgc|mgc|Morokodo|Morokodo
+mgc|mgc|mgc|Morokodo|Hᴐ Morokodo
 mgd|mgd|mgd|Moru|
 mgd|mgd|mgd-Arab|Moru (Arab script)|
 mge|mge|mge|Mango|
@@ -4771,7 +4814,7 @@ mhw|mhw|mhw|Mbukushu|
 mhx|mhx|mhx|Lhao Vo|
 mhy|mhy|mhy|Ma’anyan|
 mhz|mhz|mhz|Mor|
-mri|mri|mi|Maori|Māori
+mri|mri|mi|Maori|te reo Māori
 mia|mia|mia|Miami|
 mib|mib|mib|Mixtec, Atatlahuca|
 mic|mic|mic|Mi’kmaq|L'nui'simk
@@ -4798,7 +4841,7 @@ mit|mit|mit|Mixtec, Southern Puebla|Da'an davi
 miu|miu|miu|Mixtec, Cacaloxtepec|
 miw|miw|miw|Akoye|Akoye
 mix|mix|mix|Mixtec, Mixtepec|
-miy|miy|miy|Mixtec, Ayutla|Tuꞌun savi
+miy|miy|miy|Mixtec, Ayutla|Tu̱n savi̱ꞌ Tu̱tyoo̱ꞌ
 miz|miz|miz|Mixtec, Coatzospan|Tuꞌun davi
 mjb|mjb|mjb|Makalero|
 mjc|mjc|mjc|Mixtec, San Juan Colorado|Tu'un sav
@@ -4917,9 +4960,7 @@ khk|khk|mn-Phag-MN|Mongolian, Halh (Phag script, Mongolia)|
 mon|mon|mn-Tibt|Mongolian (Tibt script)|
 mna|mna|mna|Mbula|Mbula
 mnb|mnb|mnb|Muna|
-mnc|mnc|mnc-Mong|Manchu (Mong script)|
-mnc|mnc|mnc-Mong-x-manchu|Manchu (Mong script, x-manchu)|
-mnc|mnc|mnc-Mong-x-olmanchu|Manchu (Mong script, x-olmanchu)|
+mnc|mnc|mnc|Manchu|
 mnd|mnd|mnd|Mondé|
 mne|mne|mne|Naba|
 mnf|mnf|mnf|Mundani|ndɨ̧ Mundàni
@@ -5045,15 +5086,16 @@ mrt|mrt|mrt|Marghi Central|
 mru|mru|mru|Mono|
 mrv|mrv|mrv|Mangareva|
 mrw|mrw|mrw|Maranao|
+mrw|mrw|mrw-Arab|Maranao (Arab script)|
 mrx|mrx|mrx|Dineor|
 mry|mry|mry|Mandaya|
 mrz|mrz|mrz|Marind|
 msa|msa|ms|Malay (macrolanguage)|Melayu
-msa|msa|ms-Arab|Malay (macrolanguage) (Arab script)|بهاس ملايو
+msa|msa|ms-Arab|Malay (macrolanguage) (Arab script)|بهاس مليسيا
 msa|msa|ms-BN|Malay (macrolanguage) (Brunei Darussalam)|Melayu
 zsm|zsm|ms-Brai|Malay, Standard (Brai script)|
 msa|msa|ms-CC|Malay (macrolanguage) (Cocos (Keeling) Islands)|
-msa|msa|ms-ID|Malay (macrolanguage) (Indonesia)|
+msa|msa|ms-ID|Malay (macrolanguage) (Indonesia)|Melayu
 msa|msa|ms-SG|Malay (macrolanguage) (Singapore)|Melayu
 msb|msb|msb|Masbatenyo|Masbatenyo
 msc|msc|msc|Maninka, Sankaran|Sankaran
@@ -5132,8 +5174,7 @@ muz|muz|muz-Latn|Mursi (Latn script)|
 mva|mva|mva|Manam|Manam pile
 mvb|mvb|mvb|Mattole|
 mvd|mvd|mvd|Mamboru|
-mve|mve|mve-Arab|Marwari (Arab script)|
-mve|mve|mve-Arab-x-urdu|Marwari (Arab script, x-urdu)|
+mve|mve|mve|Marwari|
 mvf|mvf|mvf|Mongolian, Peripheral|
 mvf|mvf|mvf-Phag|Mongolian, Peripheral (Phag script)|
 mvg|mvg|mvg|Mixtec, Yucuañe|
@@ -5153,6 +5194,7 @@ mvv|mvv|mvv|Murut, Tahol|
 mvw|mvw|mvw|Machinga|
 mvx|mvx|mvx|Meoswar|
 mvy|mvy|mvy|Kohistani, Indus|
+mvz|mvz|mvz|Mesqan|
 mvz|mvz|mvz-Arab|Mesqan (Arab script)|
 mwa|mwa|mwa|Mwatebu|
 mwb|mwb|mwb|Juwar|
@@ -5197,7 +5239,7 @@ mxi|mxi|mxi|Mozarabic|
 mxj|mxj|mxj|Miju-Mishmi|
 mxk|mxk|mxk|Monumbo|
 mxl|mxl|mxl|Gbe, Maxi|
-mxm|mxm|mxm|Meramera|
+mxm|mxm|mxm|Meramera|Meramera
 mxn|mxn|mxn|Moi|
 mxo|mxo|mxo|Mbowe|
 mxp|mxp|mxp|Mixe, Tlahuitoltepec|
@@ -5206,7 +5248,7 @@ mxr|mxr|mxr|Murik|
 mxs|mxs|mxs|Mixtec, Huitepec|
 mxt|mxt|mxt|Mixtec, Jamiltepec|
 mxu|mxu|mxu|Mada|
-mxv|mxv|mxv|Mixtec, Metlatónoc|
+mxv|mxv|mxv|Mixtec, Metlatónoc|Tuꞌun Sávi
 mxw|mxw|mxw|Namo|
 mxx|mxx|mxx|Mahou|
 mxy|mxy|mxy|Mixtec, Southeastern Nochixtlán|
@@ -5229,7 +5271,7 @@ myo|myo|myo|Anfillo|
 myp|myp|myp|Pirahã|
 myr|myr|myr|Muniche|
 mys|mys|mys|Mesmes|
-myu|myu|myu|Mundurukú|
+myu|myu|myu|Mundurukú|Mõnjoroko
 myv|myv|myv|Erzya|
 myw|myw|myw|Muyuw|Aga-Muyuw
 myx|myx|myx|Masaaba|
@@ -5249,20 +5291,20 @@ mzl|mzl|mzl|Mixe, Mazatlán|
 mzm|mzm|mzm|Mumuye|
 mzn|mzn|mzn|Mazandarani|مازرونی
 mzo|mzo|mzo|Matipuhy|
-mzp|mzp|mzp|Movima|Chosineɬ di' mowi:maj
+mzp|mzp|mzp|Movima|Chosineɬ diꞌ mowi:maj
 mzq|mzq|mzq|Mori Atas|
 mzr|mzr|mzr|Marubo|
 mzs|mzs|mzs|Macanese|
 mzt|mzt|mzt|Mintil|
 mzu|mzu|mzu|Inapang|
 mzv|mzv|mzv|Mandja|
-mzw|mzw|mzw|Deg|
+mzw|mzw|mzw|Deg|Dɛg
 mzx|mzx|mzx|Mawayana|
-mzz|mzz|mzz|Maiadomu|
+mzz|mzz|mzz|Maiadomu|Maiadom
 nau|nau|na|Nauruan|
 naa|naa|naa|Namla|
 nab|nab|nab|Nambikuára, Southern|
-nac|nac|nac|Narak|
+nac|nac|nac|Narak|Narak
 nae|nae|nae|Naka’ela|
 naf|naf|naf|Nabak|
 nag|nag|nag|Nagamese|
@@ -5281,12 +5323,12 @@ naq|naq|naq|Khoekhoe|Khoekhoegowab
 nar|nar|nar|Iguta|
 nas|nas|nas|Naasioi|Naasioi
 nat|nat|nat|Cahungwarya|Cәhungwә̀ryə̀
-naw|naw|naw|Nawuri|
+naw|naw|naw|Nawuri|Nawuri
 nax|nax|nax|Nakwi|
 nay|nay|nay|Ngarrindjeri|
 naz|naz|naz|Nahuatl, Coatepec|
 nob|nob|nb|Norwegian Bokmål|norsk bokmål
-nob|nob|nb-SJ|Norwegian Bokmål (Svalbard and Jan Mayen)|norsk bokmål
+nob|nob|nb-SJ|Norwegian Bokmål (Svalbard and Jan Mayen)|
 nba|nba|nba|Nyemba|
 nbb|nbb|nbb|Ndoe|
 nbc|nbc|nbc|Naga, Chang|
@@ -5352,6 +5394,7 @@ ndq|ndq|ndq|Ndombe|
 ndr|ndr|ndr|Ndoola|
 nds|nds|nds|Saxon, Low|Neddersass’sch
 nds|nds|nds-NL|Low German (Netherlands)|Neddersass’sch
+nds|nds|nds-Runr|Low German (Runr script)|
 ndt|ndt|ndt|Ndunga|
 ndu|ndu|ndu|Dugun|
 ndv|ndv|ndv|Ndut|
@@ -5393,7 +5436,7 @@ nez|nez|nez|Nez Perce|
 nfa|nfa|nfa|Dhao|Lii Dhao
 nfd|nfd|nfd|Ahwai|
 nfl|nfl|nfl|Äiwoo|
-nfr|nfr|nfr|Nafaanra|
+nfr|nfr|nfr|Nafaanra|Nafaanra
 nfu|nfu|nfu|Mfumte|
 ndo|ndo|ng|Ndonga|
 nga|nga|nga|Ngbaka|Ngbaka
@@ -5409,7 +5452,7 @@ ngk|ngk|ngk|Dalabon|
 ngl|ngl|ngl|Lomwe|
 ngm|ngm|ngm|Ngatik Men’s Creole|
 ngn|ngn|ngn|Ngwo|
-ngp|ngp|ngp|Ngulu|
+ngp|ngp|ngp|Ngulu|Ngulu
 ngq|ngq|ngq|Ngoreme|
 ngr|ngr|ngr|Engdewu|
 ngs|ngs|ngs|Gvoko|
@@ -5500,7 +5543,7 @@ nkj|nkj|nkj|Nakai|
 nkk|nkk|nkk|Nokuku|
 nkm|nkm|nkm|Namat|
 nkn|nkn|nkn|Nkangala|
-nko|nko|nko|Nkonya|Nkunya
+nko|nko|nko|Nkonya|Nkonya
 nkp|nkp|nkp|Niuatoputapu|
 nkq|nkq|nkq|Nkami|
 nkr|nkr|nkr|Nukuoro|
@@ -5561,11 +5604,11 @@ nms|nms|nms|Letemboi|
 nmt|nmt|nmt|Namonuito|
 nmu|nmu|nmu|Maidu, Northeast|
 nmv|nmv|nmv|Ngamini|
-nmw|nmw|nmw|Rifao|
+nmw|nmw|nmw|Rifao|Rifao
 nmx|nmx|nmx|Nama|
 nmy|nmy|nmy|Namuyi|
 nmz|nmz|nmz|Nawdm|Nawdm
-nno|nno|nn|Norwegian Nynorsk|nynorsk
+nno|nno|nn|Norwegian Nynorsk|norsk nynorsk
 nna|nna|nna|Nyangumarta|
 nnb|nnb|nnb|Nande|
 nnc|nnc|nnc|Nancere|
@@ -5581,9 +5624,9 @@ nnk|nnk|nnk|Nankina|
 nnl|nnl|nnl|Naga, Northern Rengma|
 nnm|nnm|nnm|Namia|
 nnn|nnn|nnn|Ngete|
+nnp|nnp|nnp|Naga, Wancho|
 nnp|nnp|nnp-Deva|Naga, Wancho (Deva script)|
 nnp|nnp|nnp-Latn|Naga, Wancho (Latn script)|
-nnp|nnp|nnp-Wcho|Naga, Wancho (Wcho script)|
 nnq|nnq|nnq|Ngindo|Ngindo
 nnr|nnr|nnr|Narungga|
 nnt|nnt|nnt|Nanticoke|
@@ -5593,6 +5636,7 @@ nnw|nnw|nnw|Nuni, Southern|Nʋnɩ
 nny|nny|nny|Nyangga|
 nnz|nnz|nnz|Nda’nda’|
 nor|nor|no|Norwegian|norsk
+nor|nor|no-Runr|Norwegian (Runr script)|
 noa|noa|noa|Woun Meu|Woun Meu
 noc|noc|noc|Nuk|
 nod|nod|nod|Thai, Northern|
@@ -5648,12 +5692,16 @@ nri|nri|nri|Naga, Chokri|
 nrk|nrk|nrk|Ngarla|
 nrl|nrl|nrl|Ngarluma|
 nrm|nrm|nrm|Narom|
+nrn|nrn|nrn|Norn|
 nrn|nrn|nrn-Latn|Norn (Latn script)|
-nrn|nrn|nrn-Runr|Norn (Runr script)|
 nrp|nrp|nrp|North Picene|
 nrr|nrr|nrr|Nora|
 nrt|nrt|nrt|Northern Kalapuya|
 nru|nru|nru|Narua|
+nru|nru|nru-Hans|Narua (Hans script)|
+nru|nru|nru-Hant|Narua (Hant script)|
+nru|nru|nru-Nkdb|Narua (Nkdb script)|
+nru|nru|nru-Nkgb|Narua (Nkgb script)|
 nrx|nrx|nrx|Ngurmbur|
 nrz|nrz|nrz|Lala|
 nsa|nsa|nsa|Naga, Sangtam|
@@ -5689,8 +5737,8 @@ ntj|ntj|ntj|Ngaanyatjarra|
 ntk|ntk|ntk|Ikoma-Nata-Isenye|
 ntm|ntm|ntm|Nateni|Naàteǹni
 nto|nto|nto|Ntomba|
-ntp|ntp|ntp|Tepehuan, Northern|O'otham
-ntr|ntr|ntr|Delo|
+ntp|ntp|ntp|Tepehuan, Northern|Oodamicʌdʌ
+ntr|ntr|ntr|Delo|Delo
 ntu|ntu|ntu|Natügu|Natügu
 ntw|ntw|ntw|Nottoway|
 ntx|ntx|ntx|Naga, Tangkhul|
@@ -5703,10 +5751,10 @@ nue|nue|nue|Ngundu|
 nuf|nuf|nuf|Nusu|
 nug|nug|nug|Nungali|
 nuh|nuh|nuh|Ndunda|
-nui|nui|nui|Kombe|
+nui|nui|nui|Kombe|Kombe
 nuj|nuj|nuj|Nyole|Lunyole
 nuk|nuk|nuk|Nuu-chah-nulth|
-nul|nul|nul|Nusa Laut|
+nul|nul|nul-Latn|Nusa Laut (Latn script)|
 num|num|num|Niuafo’ou|
 nun|nun|nun|Anong|
 nuo|nuo|nuo|Nguôn|
@@ -5754,7 +5802,10 @@ nxm|nxm|nxm|Numidian|
 nxn|nxn|nxn|Ngawun|
 nxo|nxo|nxo|Ndambomo|
 nxq|nxq|nxq|Naxi|
+nxq|nxq|nxq-Hans|Naxi (Hans script)|
+nxq|nxq|nxq-Hant|Naxi (Hant script)|
 nxq|nxq|nxq-Lisu|Naxi (Lisu script)|
+nxq|nxq|nxq-Nkdb|Naxi (Nkdb script)|
 nxq|nxq|nxq-Nkgb|Naxi (Nkgb script)|
 nxr|nxr|nxr|Ninggerum|
 nxx|nxx|nxx|Nafri|
@@ -5782,6 +5833,8 @@ nyt|nyt|nyt|Nyawaygi|
 nyu|nyu|nyu|Nyungwe|Cinyungwe
 nyv|nyv|nyv|Nyulnyul|
 nyw|nyw|nyw|Nyaw|
+nyw|nyw|nyw-Latn|Nyaw (Latn script)|
+nyw|nyw|nyw-Zzzz-x-taiyo|Nyaw (Zzzz script, x-taiyo)|
 nyx|nyx|nyx|Nganyaywana|
 nyy|nyy|nyy|Nyakyusa-Ngonde|Kɨnyakyʉsa
 nza|nza|nza|Mbembe, Tigon|Mbémbe
@@ -5816,7 +5869,7 @@ odk|odk|odk|Oadki|
 odt|odt|odt|Old Dutch|
 odu|odu|odu|Odual|Ọḍual
 ofo|ofo|ofo|Ofo|
-ofs|ofs|ofs-Latn|Old Frisian (Latn script)|
+ofs|ofs|ofs|Old Frisian|
 ofs|ofs|ofs-Runr|Old Frisian (Runr script)|
 ofu|ofu|ofu|Efutop|
 ogb|ogb|ogb|Ogbia|
@@ -5826,13 +5879,13 @@ ogg|ogg|ogg|Ogbogolo|
 ogo|ogo|ogo|Khana|
 ogu|ogu|ogu|Ogbronuagum|
 oht|oht|oht|Old Hittite|
+ohu|ohu|ohu|Old Hungarian|
 ohu|ohu|ohu-Hung|Old Hungarian (Hung script)|
-ohu|ohu|ohu-Latn|Old Hungarian (Latn script)|
 oia|oia|oia|Oirata|
 oie|oie|oie|Okolie|
 oin|oin|oin|One, Inebu|
 oji|oji|oj|Ojibwa|
-oji|oji|oj-Cans|Ojibwa (Cans script)|
+oji|oji|oj-Latn|Ojibwa (Latn script)|
 ojb|ojb|ojb|Ojibwa, Northwestern|
 ojb|ojb|ojb-Cans|Ojibwa, Northwestern (Cans script)|
 ojc|ojc|ojc|Ojibwa, Central|
@@ -5899,7 +5952,7 @@ ong|ong|ong|Olo|
 oni|oni|oni|Onin|
 onj|onj|onj|Onjob|
 onk|onk|onk|One, Kabore|
-onn|onn|onn|Onobasulu|
+onn|onn|onn|Onobasulu|Onobasulu
 ono|ono|ono|Onondaga|
 onp|onp|onp|Sartang|
 onp|onp|onp-Deva|Sartang (Deva script)|
@@ -5909,7 +5962,7 @@ ont|ont|ont|Ontenu|
 onu|onu|onu|Unua|
 onw|onw|onw|Old Nubian|
 onx|onx|onx|Onin Based Pidgin|
-ood|ood|ood|Tohono O’odham|Tohono Oꞌotham
+ood|ood|ood|Tohono O’odham|Oʼodham ha-ñeʼokĭ
 ood|ood|ood-x-pima|Tohono O’odham (x-pima)|
 oog|oog|oog|Ong|
 oon|oon|oon|Öñge|
@@ -6022,7 +6075,7 @@ pbe|pbe|pbe|Popoloca, Mezontla|
 pbf|pbf|pbf|Popoloca, Coyotepec|
 pbg|pbg|pbg|Paraujano|
 pbh|pbh|pbh|E’ñapa Woromaipu|
-pbi|pbi|pbi|Parkwa|Gwaɗi Parǝkwa
+pbi|pbi|pbi|Parkwa|Gwaɗi Parəkwa
 pbl|pbl|pbl|Mak|
 pbm|pbm|pbm|Mazatec, Puebla and Northeastern|
 pbn|pbn|pbn|Kpasham|
@@ -6109,9 +6162,9 @@ pho|pho|pho|Phunoi|
 phq|phq|phq|Phana’|
 phr|phr|phr|Pahari-Potwari|
 pht|pht|pht|Phu Thai|
+phu|phu|phu|Phuan|
 phu|phu|phu-Lana|Phuan (Lana script)|
 phu|phu|phu-Laoo|Phuan (Laoo script)|
-phu|phu|phu-Thai|Phuan (Thai script)|
 phv|phv|phv|Pahlavani|
 phw|phw|phw|Phangduwali|
 pli|pli|pi|Pali|
@@ -6246,7 +6299,7 @@ pot|pot|pot|Potawatomi|
 pov|pov|pov|Guinea-Bissau Creole|
 pow|pow|pow|Popoloca, San Felipe Otlaltepec|
 pox|pox|pox|Polabian|
-poy|poy|poy|Pogolo|
+poy|poy|poy|Pogolo|Pogolo
 ppe|ppe|ppe|Baiyamo|
 ppi|ppi|ppi|Paipai|
 ppk|ppk|ppk|Uma|
@@ -6272,7 +6325,7 @@ prh|prh|prh|Porohanon|
 pri|pri|pri|Paicî|Paicî
 prk|prk|prk|Wa, Parauk|
 prm|prm|prm|Kibiri|
-prn|prn|prn|Prasuni|
+prn|prn|prn-Arab|Prasuni (Arab script)|
 pro|pro|pro|Old Provençal (to 1500)|
 prp|prp|prp|Parsi|
 prq|prq|prq|Ashéninka, Perené|
@@ -6301,7 +6354,7 @@ psn|psn|psn|Panasuan|
 psq|psq|psq|Pasi|
 pss|pss|pss|Kaulong|Kaulong
 pst|pst|pst|Pashto, Central|
-psu|psu|psu-Brah|Sauraseni Prākrit (Brah script)|
+psu|psu|psu|Sauraseni Prākrit|
 psu|psu|psu-Deva|Sauraseni Prākrit (Deva script)|
 psw|psw|psw|Port Sandwich|
 psy|psy|psy|Piscataway|
@@ -6371,7 +6424,7 @@ pyy|pyy|pyy|Pyen|
 pzh|pzh|pzh|Pazeh|
 pzn|pzn|pzn|Naga, Jejara|
 que|que|qu|Quechua|Runasimi
-||qu-BO|Quechua (Bolivia)|Runasimi
+||qu-BO|Quechua (Bolivia)|Uralan Buliwya runasimi
 que|que|qu-EC|Quechua (Ecuador)|Runasimi
 qua|qua|qua|Quapaw|
 qub|qub|qub|Quechua, Huallaga|Runa shimi
@@ -6415,7 +6468,7 @@ qvy|qvy|qvy|Queyu|
 qvz|qvz|qvz|Quichua, Northern Pastaza|Runa Shimi
 qwa|qwa|qwa|Quechua, Corongo Ancash|
 qwc|qwc|qwc|Classical Quechua|
-qwh|qwh|qwh|Quechua, Huaylas Ancash|Quechua
+qwh|qwh|qwh|Quechua, Huaylas Ancash|Anqas Qichwa
 qwm|qwm|qwm|Kuman (Russia)|
 qwm|qwm|qwm-Cyrl|Kuman (Russia) (Cyrl script)|
 qwm|qwm|qwm-Runr|Kuman (Russia) (Runr script)|
@@ -6423,7 +6476,7 @@ qws|qws|qws|Quechua, Sihuas Ancash|
 qwt|qwt|qwt|Kwalhioqua-Tlatskanai|
 qxa|qxa|qxa|Quechua, Chiquián|
 qxc|qxc|qxc|Quechua, Chincha|
-qxh|qxh|qxh|Quechua, Panao|Runashimi
+qxh|qxh|qxh|Quechua, Panao|Runa shimi
 qxl|qxl|qxl|Quichua, Salasaca Highland|Runa Shimibi
 qxn|qxn|qxn|Quechua, Northern Conchucos Ancash|Quechua
 qxo|qxo|qxo|Quechua, Southern Conchucos|Quechua
@@ -6482,9 +6535,10 @@ reb|reb|reb|Rembong|
 ree|ree|ree|Kayan, Rejang|
 reg|reg|reg|Kara|
 rei|rei|rei|Reli|
+rei|rei|rei-Telu|Reli (Telu script)|
 rej|rej|rej|Rejang|
 rej|rej|rej-Rjng|Rejang (Rjng script)|
-rel|rel|rel|Rendille|
+rel|rel|rel|Rendille|Afi Renꞌdille
 rem|rem|rem|Remo|
 ren|ren|ren|Rengao|
 rer|rer|rer|Rer Bare|
@@ -6498,16 +6552,15 @@ rgn|rgn|rgn|Romagnol|
 rgr|rgr|rgr|Resígaro|
 rgs|rgs|rgs|Roglai, Southern|
 rgu|rgu|rgu|Rikou|
+rhg|rhg|rhg|Rohingya|
 rhg|rhg|rhg-Arab|Rohingya (Arab script)|
 rhg|rhg|rhg-Latn|Rohingya (Latn script)|
-rhg|rhg|rhg-Rohg|Rohingya (Rohg script)|
 rhp|rhp|rhp|Yahang|
 ria|ria|ria|Riang|
 rie|rie|rie|Rien|
 rif|rif|rif|Tarifit|
 rif|rif|rif-Arab|Tarifit (Arab script)|
-rif|rif|rif-Latn|Tarifit (Latn script)|
-rif|rif|rif-NL|Tarifit (Netherlands)|
+rif|rif|rif-Tfng|Tarifit (Tfng script)|
 ril|ril|ril|Riang Lang|
 rim|rim|rim|Nyaturu|
 rin|rin|rin|Nungu|
@@ -6586,7 +6639,7 @@ rri|rri|rri|Ririo|
 rro|rro|rro|Waima|
 rrt|rrt|rrt|Arritinngithigh|
 rsb|rsb|rsb|Romano-Serbian|
-||rsk|Ruthenian|
+rsk|rsk|rsk|Ruthenian|
 rtc|rtc|rtc|Chin, Rungtu|
 rth|rth|rth|Ratahan|
 rtm|rtm|rtm|Rotuman|
@@ -6603,7 +6656,7 @@ rub|rub|rub|Gungu|Lugungu
 ruc|ruc|ruc|Ruruuli-Runyala|
 rue|rue|rue|Rusyn|
 rue|rue|rue-Latn|Rusyn (Latn script)|
-ruf|ruf|ruf|Luguru|
+ruf|ruf|ruf|Luguru|Luguru
 rug|rug|rug|Roviana|Roviana
 ruh|ruh|ruh|Ruga|
 rui|rui|rui|Rufiji|
@@ -6633,14 +6686,17 @@ rys|rys|rys|Yaeyama|
 ryu|ryu|ryu|Okinawan, Central|
 rzh|rzh|rzh|Rāziḥī|
 san|san|sa|Sanskrit|संस्कृतम्
+san|san|sa-Bhks|Sanskrit (Bhks script)|
 san|san|sa-Gran|Sanskrit (Gran script)|
 san|san|sa-Kawi|Sanskrit (Kawi script)|
+san|san|sa-Khar|Sanskrit (Khar script)|
 san|san|sa-Mymr|Sanskrit (Mymr script)|
 san|san|sa-Nand|Sanskrit (Nand script)|
 san|san|sa-Newa|Sanskrit (Newa script)|
 san|san|sa-Shrd|Sanskrit (Shrd script)|
 san|san|sa-Sidd|Sanskrit (Sidd script)|
 san|san|sa-Sinh|Sanskrit (Sinh script)|
+san|san|sa-Tirh|Sanskrit (Tirh script)|
 saa|saa|saa|Saba|
 sab|sab|sab|Buglere|Buglere
 sac|sac|sac|Meskwaki|
@@ -6649,6 +6705,7 @@ sae|sae|sae|Sabanê|
 saf|saf|saf|Safaliba|Safale̱ba
 sah|sah|sah|Yakut|саха тыла
 sah|sah|sah-Cyrs|Yakut (Cyrs script)|
+sah|sah|sah-Latn|Yakut (Latn script)|
 saj|saj|saj|Sahu|
 sak|sak|sak|Sake|
 sam|sam|sam|Samaritan Aramaic|
@@ -6715,6 +6772,7 @@ scl|scl|scl|Shina|شینا
 scl|scl|scl-IN|Shina (India)|
 scn|scn|scn|Sicilian|
 sco|sco|sco|Scots|
+sco|sco|sco-Runr|Scots (Runr script)|
 scp|scp|scp|Hyolmo|
 scq|scq|scq|Chung|
 scs|scs|scs|Slavey, North|
@@ -6725,8 +6783,8 @@ scv|scv|scv|Sheni|
 scw|scw|scw|Sya|
 scx|scx|scx|Sicel|
 snd|snd|sd|Sindhi|سنڌي
-snd|snd|sd-Deva|Sindhi (Deva script)|सिन्धी
 snd|snd|sd-Guru|Sindhi (Guru script)|
+snd|snd|sd-IN|Sindhi (India)|सिन्धी
 snd|snd|sd-Khoj|Sindhi (Khoj script)|
 snd|snd|sd-Khoj-PK|Sindhi (Khoj script, Pakistan)|
 snd|snd|sd-Sind|Sindhi (Sind script)|
@@ -6744,7 +6802,7 @@ sdn|sdn|sdn|Sardinian, Gallurese|
 sdo|sdo|sdo|Bidayuh Serian|
 sdp|sdp|sdp|Sherdukpen|
 sdq|sdq|sdq|Semandang|
-sdr|sdr|sdr-Beng|Sadri, Oraon (Beng script)|
+sdr|sdr|sdr|Sadri, Oraon|
 sdr|sdr|sdr-Deva|Sadri, Oraon (Deva script)|
 sdr|sdr|sdr-Latn|Sadri, Oraon (Latn script)|
 sds|sds|sds|Sened|
@@ -6833,8 +6891,8 @@ shq|shq|shq|Sala|
 shr|shr|shr|Shi|
 shs|shs|shs|Shuswap|
 sht|sht|sht|Shasta|
-shu|shu|shu|Arabic, Chadian Spoken|العربية
-shu|shu|shu-Latn|Arabic, Chadian Spoken (Latn script)|
+shu|shu|shu|Arabic, Chadian Spoken|عربي هنا تشاد
+shu|shu|shu-Latn|Arabic, Chadian Spoken (Latn script)|arabi hana Tchad
 shv|shv|shv|Shehri|
 shw|shw|shw|Shwai|
 shx|shx|shx|She|
@@ -6850,7 +6908,7 @@ sid|sid|sid|Sidamo|Sidaamu Afoo
 sid|sid|sid-Ethi|Sidamo (Ethi script)|
 sie|sie|sie|Simaa|
 sif|sif|sif|Siamou|
-sig|sig|sig|Paasaal|
+sig|sig|sig|Paasaal|Pasaal
 sih|sih|sih|Sîshëë|
 sii|sii|sii|Shom Peng|
 sij|sij|sij|Numbami|
@@ -6909,6 +6967,7 @@ skr|skr|skr|Saraiki|سرائیکی
 skr|skr|skr-Deva|Saraiki (Deva script)|
 skr|skr|skr-Guru|Saraiki (Guru script)|
 skr|skr|skr-Khoj|Saraiki (Khoj script)|
+skr|skr|skr-Mult|Saraiki (Mult script)|
 sks|sks|sks|Maia|Maia
 skt|skt|skt|Sakata|
 sku|sku|sku|Sakao|
@@ -7008,14 +7067,14 @@ sob|sob|sob|Sobei|
 soc|soc|soc|So|
 sod|sod|sod|Songoora|
 soe|soe|soe|Songomeno|
+sog|sog|sog|Sogdian|
 sog|sog|sog-Mani|Sogdian (Mani script)|
-sog|sog|sog-Sogd|Sogdian (Sogd script)|
 sog|sog|sog-Sogo|Sogdian (Sogo script)|
 sog|sog|sog-Syrc|Sogdian (Syrc script)|
 soh|soh|soh|Aka|
 soi|soi|soi|Sonha|
 soj|soj|soj|Soi|
-sok|sok|sok|Sokoro|
+sok|sok|sok|Sokoro|Soŋoroŋ
 sol|sol|sol|Solos|
 soo|soo|soo|Songo|
 sop|sop|sop|Songe|
@@ -7026,7 +7085,7 @@ sou|sou|sou|Thai, Southern|
 sov|sov|sov|Sonsorolese|
 sow|sow|sow|Sowanda|
 sox|sox|sox|Swo|
-soy|soy|soy|Miyobe|
+soy|soy|soy|Miyobe|Mɛyɔ́pɛ
 soz|soz|soz|Temi|
 spb|spb|spb|Sepa|
 spc|spc|spc|Sapé|
@@ -7036,7 +7095,7 @@ spg|spg|spg|Sihan|
 spi|spi|spi|Saponi|
 spk|spk|spk|Sengo|
 spl|spl|spl|Selepet|Selepet
-spm|spm|spm|Akukem|Akɨghɨman Akam
+spm|spm|spm|Akukem|Akɨghɨm
 spn|spn|spn|Sanapaná|
 spo|spo|spo|Spokane|
 spp|spp|spp|Sénoufo, Supyire|Supyire
@@ -7153,15 +7212,16 @@ stq|stq|stq|Saterfriesisch|
 str|str|str|Northern Straits Salish|
 sts|sts|sts|Shumashti|
 stt|stt|stt|Stieng, Budeh|
-stu|stu|stu|Samtao|
+stu|stu|stu-Lana|Samtao (Lana script)|
+stu|stu|stu-Tale|Samtao (Tale script)|
 stv|stv|stv|Silt’e|የስልጤ
 stv|stv|stv-Arab|Silt’e (Arab script)|
 stw|stw|stw|Satawalese|
 sty|sty|sty|Siberian Tatar|
 sun|sun|su|Sunda|Basa Sunda
 sun|sun|su-Arab|Sunda (Arab script)|
-sun|sun|su-Java|Sunda (Java script)|
-sun|sun|su-Sund|Sunda (Sund script)|
+sun|sun|su-Java|Sunda (Java script)|Basa Sunda
+sun|sun|su-Sund|Sunda (Sund script)|Basa Sunda
 sua|sua|sua|Sulka|Sulka
 sub|sub|sub|Suku|
 suc|suc|suc|Subanon, Western|Subanon
@@ -7189,6 +7249,7 @@ swe|swe|sv|Swedish|svenska
 swe|swe|sv-AX|Swedish (Åland Islands)|svenska
 swe|swe|sv-Brai|Swedish (Brai script)|
 swe|swe|sv-FI|Swedish (Finland)|svenska
+swe|swe|sv-Runr|Swedish (Runr script)|
 sva|sva|sva|Svan|
 sva|sva|sva-Cyrl|Svan (Cyrl script)|
 sva|sva|sva-Latn|Svan (Latn script)|
@@ -7239,6 +7300,7 @@ sxo|sxo|sxo|Sorothaptic|
 sxr|sxr|sxr|Saaroa|
 sxs|sxs|sxs|Sasaru|
 sxu|sxu|sxu|Saxon, Upper|
+sxu|sxu|sxu-Latn|Saxon, Upper (Latn script)|
 sxw|sxw|sxw|Gbe, Saxwe|Saxwɛgbe
 sya|sya|sya|Siang|
 syb|syb|syb|Subanen, Central|Sinubaanen
@@ -7268,6 +7330,7 @@ szv|szv|szv|Isu|
 szw|szw|szw|Sawai|
 szy|szy|szy|Sakizaya|
 tam|tam|ta|Tamil|தமிழ்
+tam|tam|ta-Arab|Tamil (Arab script)|
 tam|tam|ta-Brai|Tamil (Brai script)|
 tam|tam|ta-LK|Tamil (Sri Lanka)|தமிழ்
 tam|tam|ta-MY|Tamil (Malaysia)|தமிழ்
@@ -7287,13 +7350,13 @@ tal|tal|tal|Tal|Tal
 tan|tan|tan|Tangale|
 tao|tao|tao|Yami|
 tap|tap|tap|Taabwa|
-taq|taq|taq|Tamasheq|Tǝmajǝq
+taq|taq|taq|Tamasheq|Təmajəq
 taq|taq|taq-Tfng|Tamasheq (Tfng script)|
 tar|tar|tar|Tarahumara, Central|
 tas|tas|tas|Tay Boi|
 tau|tau|tau|Tanana, Upper|
 tav|tav|tav|Tatuyo|Tatuyo ye
-taw|taw|taw|Tay|Tai
+taw|taw|taw|Tay|Tay
 tax|tax|tax|Tamki|
 tay|tay|tay|Atayal|
 tay|tay|tay-Hans|Atayal (Hans script)|
@@ -7310,6 +7373,7 @@ tbh|tbh|tbh|Dharawal|
 tbi|tbi|tbi|Gaam|
 tbj|tbj|tbj|Tiang|
 tbk|tbk|tbk|Tagbanwa, Calamian|
+tbk|tbk|tbk-Hano|Tagbanwa, Calamian (Hano script)|
 tbk|tbk|tbk-Latn|Tagbanwa, Calamian (Latn script)|Tinagbanwa
 tbl|tbl|tbl|Tboli|Tboli
 tbm|tbm|tbm|Tagbu|
@@ -7322,6 +7386,7 @@ tbt|tbt|tbt|Tembo|
 tbu|tbu|tbu|Tubar|
 tbv|tbv|tbv|Tobo|
 tbw|tbw|tbw|Tagbanwa|Tagbanwa
+tbw|tbw|tbw-Hano|Tagbanwa (Hano script)|
 tbw|tbw|tbw-Tagb|Tagbanwa (Tagb script)|
 tbx|tbx|tbx|Kapin|
 tby|tby|tby|Tabaru|
@@ -7406,7 +7471,7 @@ tew|tew|tew-x-sanclara|Tewa (x-sanclara)|
 tew|tew|tew-x-sanjuan|Tewa (x-sanjuan)|
 tex|tex|tex|Tennet|Tennette
 tey|tey|tey|Tulishi|
-tez|tez|tez-Latn|Tetserret (Latn script)|
+tez|tez|tez|Tetserret|
 tez|tez|tez-Tfng|Tetserret (Tfng script)|
 tfi|tfi|tfi|Gbe, Tofin|
 tfn|tfn|tfn|Tanaina|
@@ -7433,6 +7498,8 @@ tgq|tgq|tgq|Tring|
 tgr|tgr|tgr|Tareng|
 tgs|tgs|tgs|Nume|
 tgt|tgt|tgt|Tagbanwa, Central|
+tgt|tgt|tgt-Hano|Tagbanwa, Central (Hano script)|
+tgt|tgt|tgt-Tagb|Tagbanwa, Central (Tagb script)|
 tgu|tgu|tgu|Tanggu|
 tgv|tgv|tgv|Tingui-Boto|
 tgw|tgw|tgw|Sénoufo, Tagwana|
@@ -7446,7 +7513,7 @@ the|the|the|Tharu, Central|
 thf|thf|thf|Thangmi|
 thh|thh|thh|Tarahumara, Northern|
 thi|thi|thi|Tai Long|
-thk|thk|thk|Kitharaka|Kitharaka
+thk|thk|thk|Kitharaka|Kîîtharaka
 thl|thl|thl|Tharu, Dangaura|
 thm|thm|thm|Aheu|
 thn|thn|thn|Thachanadan|
@@ -7459,14 +7526,14 @@ tht|tht|tht|Tahltan|
 thu|thu|thu|Thuri|
 thv|thv|thv|Tamahaq, Tahaggart|
 thv|thv|thv-Arab|Tamahaq, Tahaggart (Arab script)|
-thv|thv|thv-Latn-DZ-x-ahaggar|Tamahaq, Tahaggart (Latn script, Algeriax-ahaggar)|
+thv|thv|thv-Latn-DZ-x-ahaggar|Tamahaq, Tahaggart (Latn script, Algeriax-ahaggar)|Tamahaq
 thv|thv|thv-Tfng|Tamahaq, Tahaggart (Tfng script)|
 thy|thy|thy|Tha|
 thz|thz|thz|Tamajeq, Tayart|
 thz|thz|thz-Tfng|Tamajeq, Tayart (Tfng script)|
-tir|tir|ti|Tigrigna|ትግርኛ
+tir|tir|ti|Tigrigna|ትግር
 tir|tir|ti-Arab|Tigrigna (Arab script)|
-tir|tir|ti-ER|Tigrigna (Eritrea)|ትግርኛ
+tir|tir|ti-ER|Tigrigna (Eritrea)|ትግር
 tia|tia|tia|Tamazight, Tidikelt|
 tic|tic|tic|Tira|
 tif|tif|tif|Tifal|Tifal
@@ -7506,7 +7573,7 @@ tjw|tjw|tjw|Djabwurrung|
 tuk|tuk|tk|Turkmen|türkmen dili
 tuk|tuk|tk-Arab|Turkmen (Arab script)|türkmen dili
 tuk|tuk|tk-Arab-IR|Turkmen (Arab script, Islamic Republic of Iran)|Türkmen dili
-tuk|tuk|tk-Cyrl|Turkmen (Cyrl script)|türkmen dili
+tuk|tuk|tk-Cyrl|Turkmen (Cyrl script)|түркменче
 tka|tka|tka|Truká|
 tkb|tkb|tkb|Buksa|
 tkd|tkd|tkd|Tukudede|
@@ -7530,6 +7597,7 @@ tkz|tkz|tkz|Takua|
 tgl|tgl|tl|Tagalog|
 tgl|tgl|tl-Brai|Tagalog (Brai script)|
 tgl|tgl|tl-Buhd|Tagalog (Buhd script)|
+tgl|tgl|tl-Hano|Tagalog (Hano script)|
 tgl|tgl|tl-Tglg|Tagalog (Tglg script)|
 tla|tla|tla|Tepehuan, Southwestern|
 tlb|tlb|tlb|Tobelo|
@@ -7541,7 +7609,7 @@ tlh|tlh|tlh|Klingon|
 tlh|tlh|tlh-Latn|Klingon (Latn script)|
 tli|tli|tli|Tlingit|
 tli|tli|tli-Cyrl|Tlingit (Cyrl script)|
-tlj|tlj|tlj|Talinga-Bwisi|Bwisi
+tlj|tlj|tlj|Talinga-Bwisi|Lubwisi
 tlk|tlk|tlk|Taloki|
 tll|tll|tll|Tetela|
 tlm|tlm|tlm|Tolomako|
@@ -7566,8 +7634,8 @@ tme|tme|tme|Tremembé|
 tmf|tmf|tmf|Toba-Maskoy|
 tmg|tmg|tmg|Ternateño|
 tmh|tmh|tmh|Tamashek|Tamajaq, Tawallammat
-ttq|ttq|tmh-Arab|Tamajaq, Tawallammat (Arab script)|Tamajaq, Tawallammat
-ttq|ttq|tmh-Tfng|Tamajaq, Tawallammat (Tfng script)|Tamajaq, Tawallammat
+ttq|ttq|tmh-Arab|Tamajaq, Tawallammat (Arab script)|
+ttq|ttq|tmh-Tfng|Tamajaq, Tawallammat (Tfng script)|
 tmi|tmi|tmi|Tutuba|
 tmj|tmj|tmj|Samarokena|
 tmk|tmk|tmk|Tamang, Northwestern|
@@ -7621,7 +7689,7 @@ toj|toj|toj|Tojolabal|Tojolabal
 tok|tok|tok|Toki Pona|
 tol|tol|tol|Tolowa|
 tom|tom|tom|Tombulu|
-too|too|too|Totonac, Xicotepec de Juárez|
+too|too|too|Totonac, Xicotepec de Juárez|Tachihuin
 top|top|top|Totonac, Papantla|Tutunakú
 toq|toq|toq|Toposa|ŋatoposa
 tor|tor|tor|Banda, Togbo-Vara|
@@ -7642,7 +7710,7 @@ tpi|tpi|tpi|Tok Pisin|Tok Pisin
 tpj|tpj|tpj|Ñandeva|
 tpk|tpk|tpk|Tupinikin|
 tpl|tpl|tpl|Me’phaa, Tlacoapa|
-tpm|tpm|tpm|Tampulma|
+tpm|tpm|tpm|Tampulma|Tampulma
 tpn|tpn|tpn|Tupinambá|
 tpo|tpo|tpo-Zzzz-LA|Tai Pao (Zzzz script, Lao People's Democratic Republic)|
 tpo|tpo|tpo-Zzzz-x-laipao|Tai Pao (Zzzz script, x-laipao)|
@@ -7675,7 +7743,7 @@ tur|tur|tr-Cyrl|Turkish (Cyrl script)|
 tur|tur|tr-Grek|Turkish (Grek script)|
 tra|tra|tra|Tirahi|
 trb|trb|trb|Terebu|
-trc|trc|trc|Triqui, Copala|xnaꞌánj nu̱ꞌ
+trc|trc|trc|Triqui, Copala|Xnaꞌánj nu̱ꞌ
 trd|trd|trd|Turi|
 tre|tre|tre|Tarangan, East|
 trf|trf|trf|Trinidadian English Creole|
@@ -7696,7 +7764,7 @@ trt|trt|trt|Tunggare|
 tru|tru|tru|Turoyo|
 tru|tru|tru-Syrc|Turoyo (Syrc script)|
 trv|trv|trv|Seediq|Seediq
-trw|trw|trw|Torwali|
+trw|trw|trw|Torwali|توروالی
 trx|trx|trx|Bidayuh, Tringgus-Sembaan|
 try|try|try|Turung|
 trz|trz|trz|Torá|
@@ -7706,8 +7774,8 @@ tsa|tsa|tsa|Tsaangi|
 tsb|tsb|tsb|Tsamai|
 tsc|tsc|tsc|Tswa|
 tsd|tsd|tsd|Tsakonian|
-tsg|tsg|tsg|Tausug|
-tsg|tsg|tsg-Arab|Tausug (Arab script)|
+tsg|tsg|tsg|Tausug|Bahasa Sūg
+tsg|tsg|tsg-Arab|Tausug (Arab script)|بَهَسَ سُوگ
 tsh|tsh|tsh|Tsuvan|
 tsi|tsi|tsi|Tsimshian|
 tsj|tsj|tsj|Tshangla|
@@ -7753,8 +7821,8 @@ ttz|ttz|ttz|Tsum|
 tua|tua|tua|Wiarumus|
 tub|tub|tub|Tübatulabal|
 tuc|tuc|tuc|Mutu|Saveeng
-tuc|tuc|tuc-x-oov|Mutu (x-oov)|
-tuc|tuc|tuc-x-tuam|Mutu (x-tuam)|
+tuc|tuc|tuc-x-oov|Mutu (x-oov)|Saveeng
+tuc|tuc|tuc-x-tuam|Mutu (x-tuam)|Saveeng
 tud|tud|tud|Tuxá|
 tue|tue|tue|Tuyuca|
 tuf|tuf|tuf|Tunebo, Central|Uw Cuwa
@@ -7766,7 +7834,7 @@ tul|tul|tul|Tula|KiTulɛ
 tum|tum|tum|Tumbuka|
 tun|tun|tun|Tunica|
 tuo|tuo|tuo|Tucano|Dasea ye
-tuq|tuq|tuq|Tedaga|
+tuq|tuq|tuq|Tedaga|Tudaga
 tus|tus|tus|Tuscarora|
 tuu|tuu|tuu|Tututni|
 tuv|tuv|tuv|Turkana|
@@ -7814,15 +7882,15 @@ txb|txb|txb|Tokharian B|
 txb|txb|txb-Mani|Tokharian B (Mani script)|
 txc|txc|txc|Tsetsaut|
 txe|txe|txe|Totoli|
-txg|txg|txg-Tang|Tangut (Tang script)|
+txg|txg|txg|Tangut|
 txh|txh|txh|Thracian|
 txi|txi|txi|Ikpeng|
 txj|txj|txj|Tarjumo|
 txm|txm|txm|Tomini|
 txn|txn|txn|Tarangan, West|
+txo|txo|txo|Toto|
 txo|txo|txo-Beng|Toto (Beng script)|
 txo|txo|txo-Deva|Toto (Deva script)|
-txo|txo|txo-Toto|Toto (Toto script)|
 txq|txq|txq|Tii|
 txr|txr|txr|Tartessian|
 txs|txs|txs|Tonsea|
@@ -7857,7 +7925,7 @@ tzh|tzh|tzh-x-sibal|Tzeltal (x-sibal)|
 tzh|tzh|tzh-x-tenango|Tzeltal (x-tenango)|
 tzh|tzh|tzh-x-tenejapa|Tzeltal (x-tenejapa)|
 tzj|tzj|tzj|Tz’utujil|Tz'utujil
-tzj|tzj|tzj-x-western|Tz’utujil (x-western)|
+tzj|tzj|tzj-x-western|Tz’utujil (x-western)|Tz'utujil
 tzl|tzl|tzl|Talossan|
 tzm|tzm|tzm|Tamazight, Central Atlas|Tamaziɣt n laṭlaṣ
 tzm|tzm|tzm-Arab|Tamazight, Central Atlas (Arab script)|
@@ -7866,10 +7934,10 @@ tzn|tzn|tzn|Tugun|
 tzo|tzo|tzo|Tzotzil|Bats'i k'op
 tzo|tzo|tzo-x-chamula|Tzotzil (x-chamula)|
 tzo|tzo|tzo-x-chenalho|Tzotzil (x-chenalho)|
-tzo|tzo|tzo-x-huixtan|Tzotzil (x-huixtan)|
-tzo|tzo|tzo-x-sanandre|Tzotzil (x-sanandre)|
+tzo|tzo|tzo-x-huixtan|Tzotzil (x-huixtan)|Bats'i k'op
+tzo|tzo|tzo-x-sanandre|Tzotzil (x-sanandre)|Bats'i k'op
 tzo|tzo|tzo-x-venus|Tzotzil (x-venus)|
-tzo|tzo|tzo-x-zinacntn|Tzotzil (x-zinacntn)|
+tzo|tzo|tzo-x-zinacntn|Tzotzil (x-zinacntn)|Bats'i k'op
 tzx|tzx|tzx|Karawari|
 uam|uam|uam|Uamué|
 uan|uan|uan|Kuan|
@@ -7882,8 +7950,8 @@ ubu|ubu|ubu|Umbu-Ungu|Umbu-Ungu
 ubu|ubu|ubu-x-andelale|Umbu-Ungu (x-andelale)|
 ubu|ubu|ubu-x-kala|Umbu-Ungu (x-kala)|Umbu-Ungu
 ubu|ubu|ubu-x-nopenge|Umbu-Ungu (x-nopenge)|Umbu-Ungu
+uby|uby|uby|Ubykh|
 uby|uby|uby-Cyrl|Ubykh (Cyrl script)|
-uby|uby|uby-Latn|Ubykh (Latn script)|
 uda|uda|uda|Uda|
 ude|ude|ude|Udihe|
 udg|udg|udg|Muduga|
@@ -7993,7 +8061,7 @@ urn|urn|urn|Uruangnirin|
 uro|uro|uro|Ura|
 urp|urp|urp|Uru-Pa-In|
 urr|urr|urr|Löyöp|
-urt|urt|urt|Urat|
+urt|urt|urt|Urat|Urat
 uru|uru|uru|Urumi|
 urv|urv|urv|Uruava|
 urw|urw|urw|Sop|
@@ -8012,7 +8080,7 @@ uta|uta|uta|Itang|
 ute|ute|ute|Ute-Southern Paiute|
 uth|uth|uth|ut-Hun|u̱t-Hun
 utp|utp|utp|Amba|
-utr|utr|utr|Etulo|
+utr|utr|utr|Etulo|Etulo
 utu|utu|utu|Utu|
 uum|uum|uum|Urum|
 uum|uum|uum-Cyrl|Urum (Cyrl script)|
@@ -8033,7 +8101,7 @@ uzs|uzs|uzs|Uzbek, Southern|
 vaa|vaa|vaa|Vaagri Booli|
 vae|vae|vae|Vale|
 vaf|vaf|vaf|Vafsi|
-vag|vag|vag|Vagla|
+vag|vag|vag|Vagla|Vagla
 vah|vah|vah|Varhadi-Nagpuri|
 vai|vai|vai|Vai|ꕙꔤ
 vai|vai|vai-Latn|Vai (Latn script)|Vai
@@ -8137,6 +8205,7 @@ vum|vum|vum|Vumbu|
 vun|vun|vun|Vunjo|Kyivunjo
 vut|vut|vut|Vute|
 vwa|vwa|vwa|Awa|
+vwa|vwa|vwa-Mymr|Awa (Mymr script)|
 wln|wln|wa|Walloon|Walon
 waa|waa|waa|Walla Walla|
 wab|wab|wab|Yote|
@@ -8158,7 +8227,7 @@ waq|waq|waq|Wagiman|
 war|war|war|Waray-Waray|
 war|war|war-Brai|Waray-Waray (Brai script)|
 was|was|was|Washo|
-wat|wat|wat|Kaninuwa|
+wat|wat|wat|Kaninuwa|Kaninuwa
 wau|wau|wau|Waurá|
 wav|wav|wav|Waka|
 waw|waw|waw|Waiwai|
@@ -8170,7 +8239,7 @@ wbb|wbb|wbb|Wabo|
 wbe|wbe|wbe|Waritai|
 wbf|wbf|wbf|Wara|
 wbh|wbh|wbh|Wanda|
-wbi|wbi|wbi|Vwanji|Bavwanji
+wbi|wbi|wbi|Vwanji|Kɨvwanji
 wbj|wbj|wbj|Alagwa|
 wbk|wbk|wbk|Waigali|
 wbl|wbl|wbl|Wakhi|
@@ -8219,7 +8288,7 @@ wha|wha|wha|Sou Upaa|
 whg|whg|whg|Yuwei|
 whk|whk|whk|Kenyah, Wahau|
 whu|whu|whu|Kayan, Wahau|
-wib|wib|wib|Toussian, Southern|Toussian, Southern
+wib|wib|wib|Toussian, Southern|Wĩ́nwɛ́y
 wic|wic|wic|Wichita|
 wie|wie|wie|Wik-Epa|
 wif|wif|wif|Wik-Keyangan|
@@ -8247,7 +8316,9 @@ wkw|wkw|wkw|Wakawaka|
 wky|wky|wky|Wangkayutyuru|
 wla|wla|wla|Walio|
 wlc|wlc|wlc|Comorian, Mwali|
+wle|wle|wle|Wolane|
 wle|wle|wle-Arab|Wolane (Arab script)|
+wle|wle|wle-Latn|Wolane (Latn script)|
 wlg|wlg|wlg|Kunbarlang|
 wlh|wlh|wlh|Welaun|
 wli|wli|wli|Waioli|
@@ -8334,10 +8405,10 @@ wrx|wrx|wrx|Wae Rana|
 wry|wry|wry|Merwari|
 wrz|wrz|wrz|Waray|
 wsa|wsa|wsa|Warembori|
-wsg|wsg|wsg|Gondi, Adilabad|కోయంగ్
+wsg|wsg|wsg|Gondi, Adilabad|
 wsg|wsg|wsg-Deva|Gondi, Adilabad (Deva script)|
 wsg|wsg|wsg-Gonm|Gondi, Adilabad (Gonm script)|
-wsg|wsg|wsg-Telu|Gondi, Adilabad (Telu script)|
+wsg|wsg|wsg-Telu|Gondi, Adilabad (Telu script)|కోయంగ్
 wsi|wsi|wsi|Wusi|
 wsk|wsk|wsk|Waskia|Waskia
 wsr|wsr|wsr|Owenia|
@@ -8403,7 +8474,7 @@ xav|xav|xav|Xavánte|A’uwẽ
 xaw|xaw|xaw|Kawaiisu|
 xay|xay|xay|Kayan Mahakam|
 xbb|xbb|xbb|Lower Burdekin|
-xbc|xbc|xbc-Grek|Bactrian (Grek script)|
+xbc|xbc|xbc|Bactrian|
 xbc|xbc|xbc-Mani|Bactrian (Mani script)|
 xbd|xbd|xbd|Bindal|
 xbe|xbe|xbe|Bigambal|
@@ -8489,7 +8560,7 @@ xkb|xkb|xkb|Nago, Northern|
 xkc|xkc|xkc|Kho’ini|
 xkd|xkd|xkd|Kayan, Mendalam|
 xke|xke|xke|Kereho|
-xkf|xkf|xkf-Tibt|Khengkha (Tibt script)|
+xkf|xkf|xkf|Khengkha|
 xkg|xkg|xkg|Kagoro|
 xkj|xkj|xkj|Kajali|
 xkk|xkk|xkk|Kachok|
@@ -8649,7 +8720,7 @@ xtm|xtm|xtm|Mixtec, Magdalena Peñasco|Sa'an Ñuu Savi
 xtn|xtn|xtn|Mixtec, Northern Tlaxiaco|Saꞌan savi
 xto|xto|xto|Tokharian A|
 xtp|xtp|xtp|Mixtec, San Miguel Piedras|
-xtq|xtq|xtq-Brah|Tumshuqese (Brah script)|
+xtq|xtq|xtq|Tumshuqese|
 xtq|xtq|xtq-Khar|Tumshuqese (Khar script)|
 xtr|xtr|xtr|Early Tripuri|
 xts|xts|xts|Mixtec, Sindihui|
@@ -8707,16 +8778,16 @@ xyy|xyy|xyy|Yorta Yorta|
 xzh|xzh|xzh|Zhang-Zhung|
 xzm|xzm|xzm|Zemgalian|
 xzp|xzp|xzp|Ancient Zapotec|
-yaa|yaa|yaa|Yaminahua|
+yaa|yaa|yaa|Yaminahua|Yaminawá
 yab|yab|yab|Yuhup|
 yac|yac|yac|Yali, Pass Valley|
 yad|yad|yad|Yagua|Nijya̱mi̱ Niquejada
 yae|yae|yae|Pumé|
 yaf|yaf|yaf|Yaka|
 yag|yag|yag|Yámana|
+yah|yah|yah|Yazgulyam|
 yah|yah|yah-Arab|Yazgulyam (Arab script)|
 yah|yah|yah-Cyrl|Yazgulyam (Cyrl script)|
-yah|yah|yah-Latn|Yazgulyam (Latn script)|
 yai|yai|yai|Yagnobi|
 yaj|yaj|yaj|Banda-Yangere|
 yak|yak|yak|Yakama|
@@ -8941,6 +9012,7 @@ ywq|ywq|ywq-Yiii|Yi, Wuding-Luquan (Yiii script)|
 ywr|ywr|ywr|Yawuru|
 ywt|ywt|ywt|Lalo, Central|
 ywu|ywu|ywu|Nasu, Wumeng|
+ywu|ywu|ywu-Yiii|Nasu, Wumeng (Yiii script)|
 yww|yww|yww|Yawarawarga|
 yxa|yxa|yxa|Mayawali|
 yxg|yxg|yxg|Yagara|
@@ -9000,7 +9072,7 @@ zeg|zeg|zeg|Zenag|
 zeh|zeh|zeh|Zhuang, Eastern Hongshuihe|
 zen|zen|zen|Zenaga|
 zen|zen|zen-Arab|Zenaga (Arab script)|
-zga|zga|zga|Kinga|Bakinga
+zga|zga|zga|Kinga|Kɨkɨnga
 zgb|zgb|zgb|Zhuang, Guibei|
 zgh|zgh|zgh|Tamazight, Standard Moroccan|ⵜⴰⵎⴰⵣⵉⵖⵜ
 zgm|zgm|zgm|Zhuang, Minz|
@@ -9012,6 +9084,7 @@ zho|zho|zh-BN|Chinese (Brunei Darussalam)|
 zho|zho|zh-Bopo|Chinese (Bopo script)|
 cmn|cmn|zh-Brai|Chinese, Mandarin (Brai script)|
 zho|zho|zh-CN|Chinese (China)|中文
+cmn|cmn|zh-ES|Chinese, Mandarin (Spain)|
 zho|zho|zh-GB|Chinese (United Kingdom)|
 zho|zho|zh-GF|Chinese (French Guiana)|
 zho|zho|zh-HK|Chinese (Hong Kong)|中文
@@ -9057,8 +9130,8 @@ zkn|zkn|zkn|Kanan|
 zko|zko|zko|Kott|
 zkp|zkp|zkp|Kaingáng, São Paulo|
 zkr|zkr|zkr|Zakhring|
+zkt|zkt|zkt|Kitan|
 zkt|zkt|zkt-Kitl|Kitan (Kitl script)|
-zkt|zkt|zkt-Kits|Kitan (Kits script)|
 zku|zku|zku|Kaurna|
 zkv|zkv|zkv|Krevinian|
 zkz|zkz|zkz|Khazar|
@@ -9137,7 +9210,7 @@ zpz|zpz|zpz|Zapotec, Texmelucan|Rixhquei
 zqe|zqe|zqe|Zhuang, Qiubei|
 zqe|zqe|zqe-Latn|Zhuang, Qiubei (Latn script)|
 zra|zra|zra|Kara (Korea)|
-zrg|zrg|zrg-Orya|Mirgan (Orya script)|
+zrg|zrg|zrg|Mirgan|
 zrg|zrg|zrg-Telu|Mirgan (Telu script)|
 zrn|zrn|zrn|Zerenkel|
 zro|zro|zro|Záparo|
@@ -9167,6 +9240,7 @@ zum|zum|zum|Kumzari|
 zun|zun|zun|Zuni|
 zuy|zuy|zuy|Zumaya|
 zwa|zwa|zwa|Zay|
+zwa|zwa|zwa-Latn|Zay (Latn script)|
 zxx|zxx|zxx|No linguistic content|
 zyg|zyg|zyg|Zhuang, Yang|
 zyj|zyj|zyj|Zhuang, Youjiang|
