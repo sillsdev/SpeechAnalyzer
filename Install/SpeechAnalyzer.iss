@@ -69,6 +69,7 @@ Source: "..\Lib\Fonts\Musique\MusiqueU.ttf"; DestDir: "{fonts}"; FontInstall: "M
 Source: "..\Lib\Fonts\Musique\Musique Unicode.ttf"; DestDir: "{fonts}"; FontInstall: "Musique Unicode"; Flags: onlyifdoesntexist uninsneveruninstall
 ;dtds for musicxml
 Source: "..\DistFiles\MusicXML\dtds\*" ; DestDir: "{app}\dtds"; Flags: ignoreversion
+Source: "..\DistFiles\MSHFLXGD.ocx"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
