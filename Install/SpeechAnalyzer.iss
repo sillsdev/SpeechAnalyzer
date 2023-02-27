@@ -70,7 +70,7 @@ Source: "..\Lib\Fonts\Musique\Musique Unicode.ttf"; DestDir: "{fonts}"; FontInst
 ;dtds for musicxml
 Source: "..\DistFiles\MusicXML\dtds\*" ; DestDir: "{app}\dtds"; Flags: ignoreversion
 Source: "..\DistFiles\MSHFLXGD.ocx"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\DistFiles\OCXInstaller.cmd; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\OCXInstaller.cmd"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
