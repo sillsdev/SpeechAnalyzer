@@ -70,6 +70,7 @@ Source: "..\Lib\Fonts\Musique\Musique Unicode.ttf"; DestDir: "{fonts}"; FontInst
 ;dtds for musicxml
 Source: "..\DistFiles\MusicXML\dtds\*" ; DestDir: "{app}\dtds"; Flags: ignoreversion
 Source: "..\DistFiles\MSHFLXGD.ocx"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\DistFiles\OCXInstaller.cmd; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -81,6 +82,7 @@ Filename: "{app}\components\vc2015\vc_redist.24212.x86.exe"; Parameters: "/q"; W
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "SAUtils.dll /tlb:SAUtils.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering SpeechToolsUtils"
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.mmedia.dll /tlb:yeti.mmedia.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.mmedia"
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "yeti.wmfsdk.dll /tlb:yeti.wmfsdk.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.wmfsdk"
+Filename: "{app}\OCXInstaller.cmd"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering MSHFLXGD.ocx"
 
 [UninstallRun]
 Filename: "{win}\Microsoft.NET\Framework\v4.0.30319\regasm.exe"; Parameters: "SAUtils.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
