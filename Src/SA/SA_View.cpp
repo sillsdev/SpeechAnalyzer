@@ -1342,6 +1342,7 @@ void CSaView::OnExportLift() {
 	BOOL glossNat = pDoc->HasSegmentData(GLOSS_NAT);
 	BOOL ortho = pDoc->HasSegmentData(ORTHO);
 	BOOL phonemic = pDoc->HasSegmentData(PHONEMIC);
+	BOOL tone = pDoc->HasSegmentData(TONE);
 	BOOL phonetic = pDoc->HasSegmentData(PHONETIC);
 	BOOL reference = pDoc->HasSegmentData(REFERENCE);
 
@@ -1373,11 +1374,11 @@ void CSaView::OnExportLift() {
 		exportDir = exportDir.Left(exportDir.GetLength() - 1);
 	}
 
-	CDlgExportLift dlg(title, exportDir, gloss, glossNat, ortho, phonemic, phonetic, reference, codes);
+	CDlgExportLift dlg(title, exportDir, gloss, glossNat, ortho, phonemic, tone, phonetic, reference, codes);
 	if (dlg.DoModal() == IDOK) {
 		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT, dlg.settings.szPath);
 
-		// Write out Lift Export preferences. Gloss, Phonemic, and Phonetic are already hard-coded
+		// Write out Lift Export preferences. Gloss, Phonemic, Phonetic, and Tone are already hard-coded
 		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_GLOSS_NAT, CSaString(dlg.settings.glossNat.c_str()));
 		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_ORTHO, CSaString(dlg.settings.ortho.c_str()));
 		pApp->WriteProfileStringW(L"Lift", dlg.settings.LAST_EXPORT_REFERENCE, CSaString(dlg.settings.reference.c_str()));

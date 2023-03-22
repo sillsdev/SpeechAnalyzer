@@ -7394,6 +7394,7 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 			POSITION pos = GetFirstViewPosition();
 			CSaView * pView = (CSaView *)GetNextView(pos);
 			CGlossSegment * gloss = (CGlossSegment *)pView->GetAnnotation(GLOSS);
+			CToneSegment* pTone = (CToneSegment*)pView->GetAnnotation(TONE);
 			CMusicPhraseSegment * pl1 = (CMusicPhraseSegment *)pView->GetAnnotation(MUSIC_PL1);
 			CMusicPhraseSegment * pl2 = (CMusicPhraseSegment *)pView->GetAnnotation(MUSIC_PL2);
 
@@ -7402,6 +7403,19 @@ bool CSaDoc::ExportSegments(CExportLiftSettings & settings,
 
 			// build the pronunciation for phonetic
 			entry.pronunciation = Lift13::phonetic(L"pronunciation");
+
+			// Add tone
+			if (settings.bTone) {
+				wstring tone;
+				// Tone writing system matches analysis
+				tone.append(settings.bGlossNat ? settings.glossNat.c_str() : settings.gloss.c_str());
+
+				// Flex just uses fonipa instead of fonipa-x-etic for phonetic tag
+				AppendFonipaTag(tone, L"etic");
+
+				entry.pronunciation[0].field = Lift13::field(L"field", L"tone");
+				entry.pronunciation[0].field[0].form = Lift13::form(L"form", tone.c_str(), Lift13::text(LTEXT, pTone->GetText(i)));
+			}
 
 			// add phonetic media file
 			if (settings.bGloss) {

@@ -9,6 +9,7 @@ public:
     BOOL bGlossNat;
     BOOL bOrtho;
     BOOL bPhonemic;
+    BOOL bTone;
     BOOL bPhonetic;
     BOOL bReference;
     BOOL bPhrase1;
