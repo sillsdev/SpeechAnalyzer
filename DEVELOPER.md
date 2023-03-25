@@ -17,7 +17,13 @@ Building Speech Analyzer requires the following software to be installed:
         * C++ MFC for latest v143 build tools (x86 & x64)
 1. .NET Framework 4.6.1 Developer Pack
 1. InnoSetup 5.5.3 'unicode'.  You will need to install both isetup-5.5.3-unicode.exe and ispack-5.5.3-unicode.exe. 
+1. MSHFlexGrid. Found in the repository as MSHFLXGD.OCX, you will need to register it.
 Innosetup is found at http://files.jrsoftware.org/is/5/.  Accept all defaults when installing the application(s).
+
+# Register MSHFlexGrid
+1. Move MSHFLXGD.OCX to C:\Windows\SysWOW64
+2. Open Command Prompt as Administrator
+3. Type command REGSVR32 C:\Windows\SysWOW64\MSHFLXGD.OCX
 
 # Prerequisites
 1. Speech Analyzer.  Install Speech Analyzer to create application directories and install application dependencies that are needed by Speech Analyzer.  Data samples will also be installed.
