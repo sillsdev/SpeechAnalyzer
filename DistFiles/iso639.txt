@@ -179,10 +179,10 @@ ahg|ahg|ahg|Qimant|
 ahh|ahh|ahh|Aghu|
 ahi|ahi|ahi|Aizi, Tiagbamrin|
 ahk|ahk|ahk|Akha|
-ahk|ahk|ahk-Latn-x-louma|Akha (Latn script, x-louma)|
 ahk|ahk|ahk-Mymr|Akha (Mymr script)|
 ahk|ahk|ahk-TH|Akha (Thailand)|
 ahk|ahk|ahk-Thai|Akha (Thai script)|
+ahk|ahk|ahk-x-louma|Akha (x-louma)|
 ahl|ahl|ahl|Igo|Igo
 ahm|ahm|ahm|Aizi, Mobumrin|
 ahn|ahn|ahn|Àhàn|
@@ -4001,6 +4001,8 @@ ksu|ksu|ksu|Khamyang|
 ksv|ksv|ksv|Kusu|
 ksw|ksw|ksw|Karen, S’gaw|
 ksw|ksw|ksw-Latn|Karen, S’gaw (Latn script)|
+ksw|ksw|ksw-TH|Karen, S’gaw (Thailand)|
+ksw|ksw|ksw-Thai|Karen, S’gaw (Thai script)|
 ksx|ksx|ksx|Kedang|
 ksy|ksy|ksy|Kharia Thar|
 ksz|ksz|ksz|Kodaku|
@@ -7855,7 +7857,6 @@ tvu|tvu|tvu|Tunen|Tunen
 tvw|tvw|tvw|Sedoa|
 tvx|tvx|tvx|Taivoan|
 tvy|tvy|tvy|Pidgin, Timor|
-twi|twi|tw-x-asante|Twi (x-asante)|
 twa|twa|twa|Twana|
 twb|twb|twb|Tawbuid|
 twc|twc|twc|Teshenawa|
