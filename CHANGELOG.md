@@ -1,4 +1,14 @@
-# SA - 3.1.2.0 1/19/2022:
+# SA - 3.1.2.1 3/29/2023:
+- Updates for Lift export:
+    - Added tone
+- Added an installer for OCX Mircrosoft Hierarchical Flex Grid
+- Developer Changes:
+    - Fixed project dependencies for LiftUtilsTest and WaveUtilsTest
+    - Updated parse-langtags dependencies
+    - Update langtags schema for _conformance
+    - Update iso639.txt
+
+# SA - 3.1.2.0 1/19/2023:
 - Fixed function key bindings for menu playback functions
 - Developer Changes:
     - Generate iso639.txt with GitHub action

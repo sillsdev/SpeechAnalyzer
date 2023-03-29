@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,2,0
+ FILEVERSION 3,1,2,1
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.2.0"
+            VALUE "FileVersion", "v3.1.2.1"
             VALUE "InternalName", "SA_DEU"
             VALUE "LegalCopyright", "(C) 1996-2023 SIL International"
             VALUE "OriginalFilename", "SA_DEU.dll"
