@@ -403,7 +403,6 @@ aqr|aqr|aqr|Arhâ|
 aqt|aqt|aqt|Angaité|
 aqz|aqz|aqz|Akuntsu|
 ara|ara|ar|Arabic|العربية
-ara|ara|ar-001|Arabic (World)|العربية الفصحى الحديثة
 ara|ara|ar-AE|Arabic (United Arab Emirates)|العربية
 ara|ara|ar-BH|Arabic (Bahrain)|العربية
 ara|ara|ar-Brai|Arabic (Brai script)|
@@ -1327,9 +1326,7 @@ bzx|bzx|bzx|Bozo, Kelengaxo|
 bzy|bzy|bzy|Abanglekuo|
 bzz|bzz|bzz|Evant|
 cat|cat|ca|Catalan|català
-cat|cat|ca-AD|Catalan (Andorra)|català
 cat|cat|ca-FR|Catalan (France)|català
-cat|cat|ca-IT|Catalan (Italy)|català
 cat|cat|ca-valencia|Catalan (Valencia)|
 caa|caa|caa|Ch’orti’|Chꞌortiꞌ
 cab|cab|cab|Garifuna|Garífuna
@@ -1395,7 +1392,6 @@ ccm|ccm|ccm|Malaccan Malay Creole|
 cco|cco|cco|Chinantec, Comaltepec|Jmíiˊ
 ccp|ccp|ccp|Chakma|𑄌𑄋𑄴𑄟𑄳𑄦
 ccp|ccp|ccp-Beng|Chakma (Beng script)|
-ccp|ccp|ccp-IN|Chakma (India)|
 ccp|ccp|ccp-Latn|Chakma (Latn script)|
 ccr|ccr|ccr|Cacaopera|
 cda|cda|cda|Choni|
@@ -1737,7 +1733,6 @@ czo|czo|czo|Chinese, Min Zhong|
 czt|czt|czt|Chin, Zotung|
 dan|dan|da|Danish|dansk
 dan|dan|da-Brai|Danish (Brai script)|
-dan|dan|da-GL|Danish (Greenland)|dansk
 dan|dan|da-Runr|Danish (Runr script)|
 daa|daa|daa|Dangaléat|Daŋla
 dac|dac|dac|Dambi|
@@ -1801,7 +1796,6 @@ dds|dds|dds|Dogon, Donno So|
 ddw|ddw|ddw|Dawera-Daweloor|
 deu|deu|de|German, Standard|Deutsch
 deu|deu|de-AT|German (Austria)|Österreichisches Deutsch
-deu|deu|de-BE|German (Belgium)|Deutsch
 deu|deu|de-Brai|German, Standard (Brai script)|
 deu|deu|de-CH|German (Switzerland)|Schweizer Hochdeutsch
 deu|deu|de-Dupl|German, Standard (Dupl script)|
@@ -2112,9 +2106,9 @@ eko|eko|eko-Arab|Koti (Arab script)|
 ekp|ekp|ekp|Ekpeye|
 ekr|ekr|ekr|Yace|
 eky|eky|eky|Kayah, Eastern|
+eky|eky|eky-Thai|Kayah, Eastern (Thai script)|
 ell|ell|el|Greek|Ελληνικά
 ell|ell|el-Brai|Greek (Brai script)|
-ell|ell|el-CY|Modern Greek (1453-) (Cyprus)|Ελληνικά
 ell|ell|el-Cyrl|Greek (Cyrl script)|
 ele|ele|ele|Elepi|
 elh|elh|elh|El Hugeirat|
@@ -2146,7 +2140,6 @@ eng|eng|en-150|English (Europe)|English
 eng|eng|en-AE|English (United Arab Emirates)|English
 eng|eng|en-AG|English (Antigua and Barbuda)|English
 eng|eng|en-AI|English (Anguilla)|English
-eng|eng|en-AS|English (American Samoa)|English
 eng|eng|en-AT|English (Austria)|English
 eng|eng|en-AU|English (Australia)|Australian English
 eng|eng|en-BB|English (Barbados)|English
@@ -2163,7 +2156,6 @@ eng|eng|en-CH|English (Switzerland)|English
 eng|eng|en-CK|English (Cook Islands)|English
 eng|eng|en-CM|English (Cameroon)|English
 eng|eng|en-CX|English (Christmas Island)|English
-eng|eng|en-CY|English (Cyprus)|English
 eng|eng|en-DE|English (Germany)|English
 eng|eng|en-DG|English (Diego Garcia)|English
 eng|eng|en-DK|English (Denmark)|English
@@ -2174,7 +2166,6 @@ eng|eng|en-ER|English (Eritrea)|English
 eng|eng|en-FI|English (Finland)|English
 eng|eng|en-FJ|English (Fiji)|English
 eng|eng|en-FK|English (Falkland Islands (Malvinas))|English
-eng|eng|en-FM|English (Federated States of Micronesia)|English
 eng|eng|en-GB|English (United Kingdom)|British English
 eng|eng|en-GD|English (Grenada)|English
 eng|eng|en-GG|English (Guernsey)|English
@@ -2219,7 +2210,6 @@ eng|eng|en-PG|English (Papua New Guinea)|English
 eng|eng|en-PH|English (Philippines)|English
 eng|eng|en-PK|English (Pakistan)|English
 eng|eng|en-PN|English (Pitcairn)|English
-eng|eng|en-PR|English (Puerto Rico)|English
 eng|eng|en-PW|English (Palau)|English
 eng|eng|en-RW|English (Rwanda)|English
 eng|eng|en-Runr|English (Runr script)|
@@ -2235,17 +2225,13 @@ eng|eng|en-SS|English (South Sudan)|English
 eng|eng|en-SX|English (Sint Maarten (Dutch part))|English
 eng|eng|en-SZ|English (Swaziland)|English
 eng|eng|en-Shaw|English (Shaw script)|
-eng|eng|en-TC|English (Turks and Caicos Islands)|English
 eng|eng|en-TK|English (Tokelau)|English
 eng|eng|en-TO|English (Tonga)|English
 eng|eng|en-TT|English (Trinidad and Tobago)|English
 eng|eng|en-TV|English (Tuvalu)|English
 eng|eng|en-TZ|English (United Republic of Tanzania)|English
 eng|eng|en-UG|English (Uganda)|English
-eng|eng|en-UM|English (United States Minor Outlying Islands)|English
 eng|eng|en-VC|English (Saint Vincent and the Grenadines)|English
-eng|eng|en-VG|English (British Virgin Islands)|English
-eng|eng|en-VI|English (U.S. Virgin Islands)|English
 eng|eng|en-VU|English (Vanuatu)|English
 eng|eng|en-WS|English (Samoa)|English
 eng|eng|en-ZA|English (South Africa)|English
@@ -2295,12 +2281,10 @@ spa|spa|es-CR|Spanish (Costa Rica)|español
 spa|spa|es-CU|Spanish (Cuba)|español
 spa|spa|es-DO|Spanish (Dominican Republic)|español
 spa|spa|es-Dupl|Spanish (Dupl script)|
-spa|spa|es-EA|Spanish (Ceuta, Melilla)|español
 spa|spa|es-EC|Spanish (Ecuador)|español
 spa|spa|es-GQ|Spanish (Equatorial Guinea)|español
 spa|spa|es-GT|Spanish (Guatemala)|español
 spa|spa|es-HN|Spanish (Honduras)|español
-spa|spa|es-IC|Spanish (Canary Islands)|español
 spa|spa|es-MX|Spanish (Mexico)|español de México
 spa|spa|es-NI|Spanish (Nicaragua)|español
 spa|spa|es-PA|Spanish (Panama)|español
@@ -2388,15 +2372,11 @@ ful|ful|ff-Adlm-NG|Fulah (Adlm script, Nigeria)|𞤆𞤵𞤤𞤢𞤪
 ful|ful|ff-Adlm-SL|Fulah (Adlm script, Sierra Leone)|𞤆𞤵𞤤𞤢𞤪
 ful|ful|ff-Adlm-SN|Fulah (Adlm script, Senegal)|𞤆𞤵𞤤𞤢𞤪
 ful|ful|ff-Arab|Fulah (Arab script)|Pulaar
-ful|ful|ff-BF|Fulah (Burkina Faso)|Pulaar
-ful|ful|ff-CM|Fulah (Cameroon)|Pulaar
 ful|ful|ff-GH|Fulah (Ghana)|Pulaar
 ful|ful|ff-GM|Fulah (Gambia)|Pulaar
 ful|ful|ff-GN|Fulah (Guinea)|Pulaar
-ful|ful|ff-GW|Fulah (Guinea-Bissau)|Pulaar
 ful|ful|ff-LR|Fulah (Liberia)|Pulaar
 ful|ful|ff-MR|Fulah (Mauritania)|Pulaar
-ful|ful|ff-NE|Fulah (Niger)|Pulaar
 ful|ful|ff-NG|Fulah (Nigeria)|Pulaar
 ful|ful|ff-SL|Fulah (Sierra Leone)|Pulaar
 ffi|ffi|ffi|Foia Foia|Foia Foia
@@ -2444,52 +2424,34 @@ fpe|fpe|fpe|Equatorial Guinean Pidgin|Pichi
 fqs|fqs|fqs|Momu|
 fra|fra|fr|French|français
 fra|fra|fr-BE|French (Belgium)|français
-fra|fra|fr-BF|French (Burkina Faso)|français
 fra|fra|fr-BI|French (Burundi)|français
-fra|fra|fr-BJ|French (Benin)|français
-fra|fra|fr-BL|French (Saint Barthélemy)|français
 fra|fra|fr-Brai|French (Brai script)|
 fra|fra|fr-CA|French (Canada)|français canadien
 fra|fra|fr-CD|French (The Democratic Republic of the Congo)|français
-fra|fra|fr-CF|French (Central African Republic)|français
-fra|fra|fr-CG|French (Congo)|français
 fra|fra|fr-CH|French (Switzerland)|français suisse
 fra|fra|fr-CI|French (Côte d'Ivoire)|français
 fra|fra|fr-CM|French (Cameroon)|français
 fra|fra|fr-DJ|French (Djibouti)|français
 fra|fra|fr-DZ|French (Algeria)|français
 fra|fra|fr-Dupl|French (Dupl script)|
-fra|fra|fr-GA|French (Gabon)|français
 fra|fra|fr-GF|French (French Guiana)|français
 fra|fra|fr-GN|French (Guinea)|français
-fra|fra|fr-GP|French (Guadeloupe)|français
-fra|fra|fr-GQ|French (Equatorial Guinea)|français
 fra|fra|fr-HT|French (Haiti)|français
 fra|fra|fr-KM|French (Comoros)|français
 fra|fra|fr-LU|French (Luxembourg)|français
 fra|fra|fr-MA|French (Morocco)|français
-fra|fra|fr-MC|French (Monaco)|français
-fra|fra|fr-MF|French (Saint Martin (French part))|français
 fra|fra|fr-MG|French (Madagascar)|français
 fra|fra|fr-ML|French (Mali)|français
-fra|fra|fr-MQ|French (Martinique)|français
 fra|fra|fr-MR|French (Mauritania)|français
 fra|fra|fr-MU|French (Mauritius)|français
-fra|fra|fr-NC|French (New Caledonia)|français
-fra|fra|fr-NE|French (Niger)|français
-fra|fra|fr-PF|French (French Polynesia)|français
-fra|fra|fr-PM|French (Saint Pierre and Miquelon)|français
 fra|fra|fr-RE|French (Réunion)|français
 fra|fra|fr-RW|French (Rwanda)|français
 fra|fra|fr-SC|French (Seychelles)|français
 fra|fra|fr-SN|French (Senegal)|français
 fra|fra|fr-SY|French (Syrian Arab Republic)|français
 fra|fra|fr-TD|French (Chad)|français
-fra|fra|fr-TG|French (Togo)|français
 fra|fra|fr-TN|French (Tunisia)|français
 fra|fra|fr-VU|French (Vanuatu)|français
-fra|fra|fr-WF|French (Wallis and Futuna)|français
-fra|fra|fr-YT|French (Mayotte)|français
 frc|frc|frc|French, Cajun|
 frd|frd|frd|Fordata|
 frk|frk|frk|Frankish|
@@ -2819,8 +2781,6 @@ gsn|gsn|gsn|Nema|
 gso|gso|gso|Gbaya, Southwest|
 gsp|gsp|gsp|Wasembo|
 gsw|gsw|gsw|German, Swiss|Schwiizertüütsch
-gsw|gsw|gsw-FR|Alsatian (France)|Schwiizertüütsch
-gsw|gsw|gsw-LI|Alemannic (Liechtenstein)|Schwiizertüütsch
 gta|gta|gta|Guató|
 gtu|gtu|gtu|Aghu-Tharnggala|
 guj|guj|gu|Gujarati|ગુજરાતી
@@ -2903,7 +2863,6 @@ hau|hau|ha-Arab|Hausa (Arab script)|
 hau|hau|ha-Brai|Hausa (Brai script)|
 hau|hau|ha-CM|Hausa (Cameroon)|
 hau|hau|ha-GH|Hausa (Ghana)|Hausa
-hau|hau|ha-Latn-NE|Hausa (Latn script, Niger)|Hausa
 hau|hau|ha-NE|Hausa (Niger)|Hausa
 hau|hau|ha-SD|Hausa (Sudan)|
 haa|haa|haa|Han|
@@ -3070,6 +3029,7 @@ hra|hra|hra|Hrangkhol|
 hrc|hrc|hrc|Niwer Mil|
 hre|hre|hre|Hre|
 hre|hre|hre-x-1960|Hre (x-1960)|
+hre|hre|hre-x-1968|Hre (x-1968)|
 hrk|hrk|hrk|Haruku|
 hrm|hrm|hrm|Miao, Horned|
 hrm|hrm|hrm-Hmng|Miao, Horned (Hmng script)|
@@ -3282,8 +3242,6 @@ isu|isu|isu|Isu|
 ita|ita|it|Italian|italiano
 ita|ita|it-Brai|Italian (Brai script)|
 ita|ita|it-CH|Italian (Switzerland)|italiano
-ita|ita|it-SM|Italian (San Marino)|italiano
-ita|ita|it-VA|Italian (Holy See (Vatican City State))|italiano
 itb|itb|itb|Itneg, Binongan|
 itd|itd|itd|Tidung, Southern|
 ite|ite|ite|Itene|
@@ -4237,7 +4195,7 @@ lah|lah|lah|Lahnda|
 lah|lah|lah-Khoj|Lahnda (Khoj script)|
 lah|lah|lah-Latn|Lahnda (Latn script)|
 pnb|pnb|lah-Mahj-IN|Punjabi, Western (Mahj script, India)|
-pnb|pnb|lah-Zzzz-PK|Punjabi, Western (Zzzz script, Pakistan)|
+pnb|pnb|lah-Zzzz-PK-x-landa|Punjabi, Western (Zzzz script, Pakistanx-landa)|
 lai|lai|lai|Lambya|
 laj|laj|laj|Lango|
 lal|lal|lal|Lalia|
@@ -4462,8 +4420,6 @@ lmy|lmy|lmy|Lamboya|
 lmz|lmz|lmz|Lumbee|
 lin|lin|ln|Lingala|lingála
 lin|lin|ln-AO|Lingala (Angola)|lingála
-lin|lin|ln-CF|Lingala (Central African Republic)|lingála
-lin|lin|ln-CG|Lingala (Congo)|lingála
 lna|lna|lna|Langbashe|
 lnb|lnb|lnb|Mbalanhu|
 lnd|lnd|lnd|Lundayeh|
@@ -5774,7 +5730,6 @@ nup|nup|nup-Arab|Nupe-Nupe-Tako (Arab script)|
 nuq|nuq|nuq|Nukumanu|
 nur|nur|nur|Nukeria|
 nus|nus|nus|Nuer|Thok Nath
-nus|nus|nus-SD|Nuer (Sudan)|Thok Nath
 nut|nut|nut|Nung|
 nuu|nuu|nuu|Ngbundu|
 nuv|nuv|nuv|Nuni, Northern|
@@ -6371,9 +6326,7 @@ psy|psy|psy|Piscataway|
 por|por|pt|Portuguese|português
 por|por|pt-AO|Portuguese (Angola)|português
 por|por|pt-Brai|Portuguese (Brai script)|
-por|por|pt-CH|Portuguese (Switzerland)|português
 por|por|pt-CV|Portuguese (Cape Verde)|português
-por|por|pt-GQ|Portuguese (Equatorial Guinea)|português
 por|por|pt-GW|Portuguese (Guinea-Bissau)|português
 por|por|pt-LU|Portuguese (Luxembourg)|português
 por|por|pt-MO|Portuguese (Macao)|português
@@ -6614,6 +6567,7 @@ rmv|rmv|rmv|Romanova|
 rmw|rmw|rmw|Romani, Welsh|
 rmx|rmx|rmx|Romam|
 rmz|rmz|rmz|Marma|
+rmz|rmz|rmz-Beng|Marma (Beng script)|
 run|run|rn|Rundi|Ikirundi
 run|run|rn-Brai|Rundi (Brai script)|
 rnd|rnd|rnd|Ruund|
@@ -7175,7 +7129,6 @@ srx|srx|srx-Takr|Sirmauri (Takr script)|
 sry|sry|sry|Sera|
 srz|srz|srz|Shahmirzadi|
 ssw|ssw|ss|Swati|Siswati
-ssw|ssw|ss-SZ|Swati (Swaziland)|Siswati
 ssb|ssb|ssb|Sama, Southern|
 ssc|ssc|ssc|Suba-Simbiti|
 ssd|ssd|ssd|Siroi|Siroi
@@ -7258,7 +7211,6 @@ suy|suy|suy|Suyá|
 suz|suz|suz|Sunwar|
 suz|suz|suz-Sunu|Sunwar (Sunu script)|
 swe|swe|sv|Swedish|svenska
-swe|swe|sv-AX|Swedish (Åland Islands)|svenska
 swe|swe|sv-Brai|Swedish (Brai script)|
 swe|swe|sv-FI|Swedish (Finland)|svenska
 swe|swe|sv-Runr|Swedish (Runr script)|
@@ -7723,7 +7675,6 @@ tpl|tpl|tpl|Me’phaa, Tlacoapa|
 tpm|tpm|tpm|Tampulma|Tampulma
 tpn|tpn|tpn|Tupinambá|
 tpw|tpw|tpn-Latn-XX|Tupinambá (Latn script, )|
-tpo|tpo|tpo-Zzzz-LA|Tai Pao (Zzzz script, Lao People's Democratic Republic)|
 tpo|tpo|tpo-Zzzz-x-laipao|Tai Pao (Zzzz script, x-laipao)|
 tpp|tpp|tpp|Tepehua, Pisaflores|Tepehua, Pisaflores
 tpq|tpq|tpq|Kinnauri, Chhoyul|
