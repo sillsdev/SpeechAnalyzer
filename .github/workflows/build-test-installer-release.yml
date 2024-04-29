@@ -1,0 +1,126 @@
+name: Build and Run Tests. Build installer and create release on v tag
+
+on:
+  push:
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: .
+
+  BUILD_CONFIGURATION: Release
+  PLATFORM: Win32
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.vcxproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+      
+    - name: NuGet Restore
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Cache build Release folder
+      uses: actions/cache@v4
+      with:
+        path: Release/
+        key: ${{ runner.os }}-build-release
+        restore-keys: |
+          ${{ runner.os }}-build-release
+      
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m /p:Configuration="${{env.BUILD_CONFIGURATION}}" ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Setup VSTest and add to PATH
+        # normally we set this to v1.2 but the repo author hasn't updated it with a tag
+      uses: darenm/Setup-VSTest@3a16d909a1f3bbc65b52f8270d475d905e7d3e44
+
+    - name: Run Unit Tests
+      working-directory: .\${{env.BUILD_CONFIGURATION}}
+      run: vstest.console.exe ElanUtilsTest.dll LiftUtilsTest.dll URIParserTest.dll WaveUtilsTest.dll
+
+    # This currently fails on github actions due to requiring the Speech Analyzer program to load up for scripting and testing
+    #- name: Run Integration Tests
+    #  working-directory: .\Release
+    #  run: vstest.console.exe SAScriptingTest.dll
+
+    - name: Upload Release/ for installer job
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: actions/upload-artifact@v4
+      with:
+        name: Release
+        path: Release/
+        retention-days: 3
+
+  build-installer:
+    name: Build installer
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Release/
+        uses: actions/download-artifact@v4
+        with:
+          name: Release
+          path: Release/
+
+      # Copy iso639.txt to DistFiles
+      - name: Copy iso639.txt file
+        run: copy DistFiles/iso639.txt Release/
+
+      # Create Installer exe
+      - name: Run InnoSetup
+        working-directory: Install/
+        run: iscc SpeechAnalyzer.iss
+
+      - name: list files
+        run: dir Install/Output/
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: SpeechAnalyzerInstaller
+          path: Install/Output/SpeechAnalyzer*.exe
+
+  sign-installer:
+    name: Sign installer
+    needs: build-installer
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: sillsdev/codesign/.github/workflows/sign.yml@v2
+    with:
+      artifact: SpeechAnalyzerInstaller
+    secrets:
+      certificate: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
+
+  create-release:
+    name: Create Release
+    needs: sign-installer
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: SpeechAnalyzerInstaller
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: SpeechAnalyzer*.exe
+          body: |
+            Release for version ${{ github.ref }}
+          draft: true
