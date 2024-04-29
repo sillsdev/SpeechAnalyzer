@@ -31,12 +31,21 @@ jobs:
     - name: NuGet Restore
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
+    - name: Cache build Release folder
+      uses: actions/cache@v4
+      with:
+        path: Release/
+        key: ${{ runner.os }}-build-release
+        restore-keys: |
+          ${{ runner.os }}-build-release
+      
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /m /p:Configuration="${{env.BUILD_CONFIGURATION}}" ${{env.SOLUTION_FILE_PATH}}
 
     - name: Setup VSTest and add to PATH
-      uses: darenm/Setup-VSTest@v1.2
+        # normally we set this to v1.2 but the repo author hasn't updated it with a tag
+      uses: darenm/Setup-VSTest@3a16d909a1f3bbc65b52f8270d475d905e7d3e44
 
     - name: Run Unit Tests
       working-directory: .\${{env.BUILD_CONFIGURATION}}
@@ -111,7 +120,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: SpeechAnalyzerInstaller*.exe
+          files: SpeechAnalyzer*.exe
           body: |
             Release for version ${{ github.ref }}
           draft: true
