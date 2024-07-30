@@ -68,7 +68,7 @@ CAnnotationDocument Elan::LoadDocument(LPCTSTR filename) {
         //  that propogate out
         //
 
-        int errorCount = 0;
+        size_t errorCount = 0;
         Handler handler;
         parser->setContentHandler(&handler);
         parser->setErrorHandler(&handler);

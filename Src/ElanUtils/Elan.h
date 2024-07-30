@@ -109,7 +109,7 @@ public:
     wstring mediaURL;
     wstring relativeMediaURL;
     wstring mimeType;
-    long timeOrigin;
+    long timeOrigin = 0;
     wstring extractedFrom;
 };
 
@@ -163,7 +163,7 @@ public:
     wstring linkURL;
     wstring relativeLinkURL;
     wstring mimeType;
-    long timeOrigin;
+    long timeOrigin = 0;
     wstring associatedWith;
 };
 
@@ -281,7 +281,7 @@ public:
     vector<CProperty> properties;
     // attributes;
     wstring mediaFile;
-    ETimeUnits timeUnits;
+    ETimeUnits timeUnits = NTSC_frames;
 };
 
 /*
@@ -315,7 +315,7 @@ public:
     };
     // attributes
     wstring timeSlotID;
-    unsigned int timeValue;
+    unsigned int timeValue = 0;
 };
 
 /*

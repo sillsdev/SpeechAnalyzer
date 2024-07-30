@@ -76,3 +76,6 @@ packages/
 
 # Intermediary help files
 /chm/
+/Src/SAProcessor/Debug
+/Src/SAProcessor/Release
+/Src/ElanUtils/x64/Debug

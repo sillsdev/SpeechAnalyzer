@@ -63,13 +63,13 @@ string utf8(LPCTSTR in) {
         return "";
     }
     // remove the BOM
-    int length2 = WideCharToMultiByte(CP_UTF8,0,in,wcslen(in),NULL,0,NULL,NULL);
+    size_t length2 = WideCharToMultiByte(CP_UTF8,0,in,int(wcslen(in)),NULL,0,NULL,NULL);
     if (length2==0) {
         return "";
     }
     string result;
     result.resize(length2);
-    length2 = WideCharToMultiByte(CP_UTF8,0,in, wcslen(in),&result[0],result.length(),NULL,NULL);
+    length2 = WideCharToMultiByte(CP_UTF8,0,in, int(wcslen(in)),&result[0],int(result.length()),NULL,NULL);
     if (length2==0) {
         return "";
     }
@@ -81,13 +81,12 @@ wstring utf16(string & in) {
 }
 
 wstring utf16(LPCSTR in) {
-    int length2 = MultiByteToWideChar(CP_ACP,0,in,strlen(in),NULL,0);
-    if (length2==0) {
-        return false;
-    }
     wstring result;
-    result.resize(length2);
-    length2 = MultiByteToWideChar(CP_ACP,0,in,strlen(in),&result[0],result.length());
+    size_t length2 = MultiByteToWideChar(CP_ACP,0,in,int(strlen(in)),NULL,0);
+    if (length2 != 0) {
+        result.resize(length2);
+        length2 = MultiByteToWideChar(CP_ACP, 0, in, int(strlen(in)), &result[0], int(result.length()));
+    }
     return result;
 }
 
