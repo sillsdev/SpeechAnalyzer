@@ -96,7 +96,7 @@ jobs:
         with:
           credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS }}
           files-folder: Install/Output
-          files-folder-filter: exe
+          files-folder-filter: SpeechAnalyzer*.exe
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/v')
