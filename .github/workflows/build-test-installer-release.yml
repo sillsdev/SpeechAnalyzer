@@ -1,6 +1,7 @@
 name: Build and Run Tests. Build installer and create release on v tag
 
 on:
+  workflow_dispatch:
   push:
 
 env:
