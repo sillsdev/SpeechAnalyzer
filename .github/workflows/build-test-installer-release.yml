@@ -16,7 +16,7 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
@@ -58,7 +58,7 @@ jobs:
     #  run: vstest.console.exe SAScriptingTest.dll
 
     - name: Upload Release/ for installer job
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: Release
         path: Release/
@@ -69,10 +69,10 @@ jobs:
     needs: build
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download Release/
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: Release
           path: Release/
